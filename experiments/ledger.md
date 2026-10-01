@@ -2192,3 +2192,35 @@ the previous installed release remain intact. No PR comment was posted.
 Next hypotheses remain private scalar replacement and an actually owned source-only
 compiler boundary; public defaults are mutable. Keep the approximately 40-second
 checked-build loop and short saved-output controls before broad integration.
+
+
+## Phase33 — consolidate generated-program execution loops
+
+[P33-001](phase33/P33-001-program-loop.md) installs one documented benchmark
+entry point with portable checked TypeScript/Phase32 modules, separate checked
+candidate preparation, explicitly unchecked JS prototypes, named sets and
+20 / 60 / 300 / 600-second ceilings. Compiler source and installed release remain
+unchanged. [Design](../design/phase33/program-execution-loop.md) and
+[report](../implementation/phase33/README.md) state the new protocol boundary.
+
+All four presets complete: fast 5 in 16.39s, core 8 in 56.71s, broad 14 in 259.40s
+(three roles), full 15 including raytrace in 351.07s (two roles). Fast preparation
+from an existing checked attempt takes 13.53s for 3 sources; acquisition is outside
+the execution budget. Full execution peaks 132.4 MiB tree RSS on this host. These
+are loop-validation observations, not a compiler optimization or universal speed
+claim. Same-compiler broad median ratios 0.987–1.020 demonstrate remaining noise.
+
+Nine worker scenarios plus receipt preservation and 20 runner controls pass.
+Relocation passes 30 role/points with original-repository filesystem reads denied;
+manual prototype positive/negative controls pass. An intentionally short raytrace
+request stops at its 20s deadline, retaining 0/1 coverage and no ratio; cleanup and
+postflight checks add 0.49s. The initial restricted worker-test EPERM failure is
+recorded separately from its approved-context success. All 42 checked emissions
+pass a catalog/source/module identity audit. Raw data, failed controls and consumed
+producers are preserved in the [capsule](../implementation/phase33/evidence/README.md).
+
+**Updated frontier:** use the [maintained suite](../selfhost/tools/performance/programs/README.md)
+before another optimization. Select the cheapest discriminating case, then widen
+coverage; keep actual checked compiler acquisition and semantic gates separate.
+A short screen does not establish steady state or general application performance.
+All 103 unrelated files remain unchanged; no PR comment was posted.

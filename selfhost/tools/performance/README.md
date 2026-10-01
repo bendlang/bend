@@ -1,5 +1,10 @@
 # Explicit-artifact performance comparisons
 
+For **execution speed of generated programs**, start with
+[`programs/README.md`](programs/README.md). Its maintained runner has
+20 / 60 / 300 / 600-second budgets and separates checked candidate preparation
+from repeated execution. The tools below measure **compiler requests**.
+
 `compare.py CONFIG.json NEW_OUTPUT_DIR` runs independent Node processes serially
 on a specified logical CPU. Each repetition rotates the variant order. The JSON
 report records raw phase timings, CPU time, peak RSS, process wall time, output

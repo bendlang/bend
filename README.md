@@ -49,6 +49,11 @@ in recent runs, using one worker and a 1 GiB heap setting. From `selfhost/`, run
 `npm run build` rebuilds with pinned upstream. Independent BendTT `--verdict`
 is not implemented; no new fixed point is claimed.
 
+For generated JavaScript optimization, use the maintained
+[program execution benchmarks](selfhost/tools/performance/programs/README.md):
+20 / 60 / 300 / 600-second budgets, selectable workload sets, a portable frozen
+TypeScript/Phase32 reference, and separately prepared compiler candidates.
+
 Designs, failed experiments, comparisons, a [Zig history study](design/phase31/zig-lessons.md)
 and promotion decisions are linked from the [Phase32 index](implementation/phase32/README.md),
 [ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).

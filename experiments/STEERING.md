@@ -1,4 +1,4 @@
-# Phase32 current frontier
+# Phase33 current frontier
 
 User authorization covers compiler research, experiments, implementation,
 design/report and commit/push to `rom1504/bend`, branch `selfhost/bootstrap`.
@@ -8,7 +8,20 @@ No PR comments without an explicit request. Prior timed campaigns are historical
 [selection and accepted costs](../design/phase32/admission.md).
 All four investigations, integration, ordinary/relocated CLI checks and evidence
 preservation are complete. The 103 unrelated starting files remain byte-for-byte
-unchanged and unstaged; preserve that separation during the release commit.
+unchanged and unstaged; preserve that separation in later work.
+
+## Generated-program loop consolidation
+
+The user prioritizes a reusable execution loop before more optimization.
+[Phase33 design](../design/phase33/program-execution-loop.md) and
+[report](../implementation/phase33/README.md) consolidate the existing points into
+[one maintained runner](../selfhost/tools/performance/programs/README.md).
+Use 20 / 60 / 300 / 600-second ceilings with independent sets or explicit cases;
+prepare checked candidate modules separately and reuse them. Frozen references
+run from a normal clone. Default sets contain 5 / 8 / 14 / 15 points.
+Short timings are rejection screens; unchanged-compiler noise and JIT drift are
+visible. No historical median is used as a new comparison denominator. Compiler
+throughput and conformance remain separate. Phase32 checked03 remains installed.
 
 ## Installed Phase32 compiler
 

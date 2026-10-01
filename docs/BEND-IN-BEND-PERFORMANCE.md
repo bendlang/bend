@@ -7,6 +7,19 @@ remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`. The comparison is
 between JavaScript emitted from the same Bend source by the two compilers.
 Compiler checking cost is a separate measurement.
 
+## What to run during optimization
+
+The maintained [program execution loop](../selfhost/tools/performance/programs/README.md)
+provides portable compiled references and four wall budgets: **20 seconds** for
+five local cases, **60 seconds** for eight core cases, **300 seconds** for fourteen
+broad cases, and **600 seconds** for all fifteen points including raytrace.
+Use `--set` or `--cases` to select coverage independently of the budget. Prepare a
+checked compiler candidate once, then reuse its modules for execution comparisons.
+These are maximum budgets; incomplete coverage is retained and exits nonzero.
+The [Phase33 report](../implementation/phase33/README.md) records validation of
+the tooling. Its protocol starts a new timing series; historical Phase32 medians
+retain their original warmup, process and validation boundaries.
+
 ## What the backend optimizes
 
 The JavaScript backend retains ordinary function descriptors, partial calls,

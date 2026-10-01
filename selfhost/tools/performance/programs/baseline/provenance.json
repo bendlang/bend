@@ -1,0 +1,33 @@
+{
+  "kind": "bend-program-frozen-reference-provenance",
+  "complete": true,
+  "producer": {
+    "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/freeze-reference.py",
+    "sha256": "f230fffbd70ea26e020b88520c94dceee71833b5054c72b5f753dca648f6e760",
+    "bytes": 6492
+  },
+  "adapterProducer": {
+    "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/prepare.py",
+    "sha256": "a4fe845741f7ab99c5c18431e8c0fbb4f9e8ccddf605f303a8ef865335a79325",
+    "bytes": 9432
+  },
+  "catalog": {
+    "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/catalog.json",
+    "sha256": "32833e4c2372983361b2c9f34a0967cfe38ce0e1052ac9abaab41def3179cfde",
+    "bytes": 20417
+  },
+  "preparations": {
+    "baseline": {
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/programs/reference-preparation-01/preparation.json",
+      "sha256": "623b61bab390c7a897ec89d8c11b7884db55ee5c122f3828d17a066c3f1bfc2d",
+      "bytes": 19962
+    },
+    "typescript": {
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/programs/typescript-preparation-01/preparation.json",
+      "sha256": "9aa6e8b9424479c16854fa54fabb7ade6735a9b6c92248cfc155467119aa23e6",
+      "bytes": 20892
+    }
+  },
+  "acquisitionScope": "Fresh checked sequential emissions, one process per source and compiler. Complete acquisition receipts and logs retained under each role in the archive. Absolute receipt paths are historical provenance only, never runtime dependencies.",
+  "observationScope": "Scalar/string outputs and an explicit full-state generic-row serializer. Archive creation executes no compiler or generated program and establishes no timing result."
+}

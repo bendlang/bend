@@ -1,0 +1,426 @@
+{
+  "kind": "bend-program-bundle",
+  "schemaVersion": 1,
+  "complete": true,
+  "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "catalogSha256": "32833e4c2372983361b2c9f34a0967cfe38ce0e1052ac9abaab41def3179cfde",
+  "roles": {
+    "baseline": {
+      "label": "Phase32 checked03",
+      "compiler": {
+        "kind": "installed-checked-release",
+        "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "sourceSha256": "e3cc44245444ac2509431d44c8909692c9223cd977968ffb087771c1ae2859ae",
+        "artifact": "equality-derived-b1",
+        "api": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+          "sha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92"
+        },
+        "runtime": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+          "sha256": "4121f338a7e4e115bae557343cd3d194a26ed26589bc47d82094969284181e10"
+        },
+        "base": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+          "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+        },
+        "driver": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+          "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+        }
+      }
+    },
+    "typescript": {
+      "label": "Pinned upstream TypeScript",
+      "compiler": {
+        "kind": "checked-pinned-typescript",
+        "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "sources": [
+          {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/bend.ts",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/bend.ts",
+            "sha256": "de2b39db2fcbd2f9115053e85e34d791693e1297bfeb6874da1013ff7b44b7dd"
+          },
+          {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+            "sha256": "3bd7ed49d33f1c61334d75a905e38c0345fb15a10b45d85884b77f49833dc5ee"
+          },
+          {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+            "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+          }
+        ]
+      }
+    }
+  },
+  "archive": {
+    "path": "programs.tar.gz",
+    "sha256": "13df6cfedbdada8b40c3738a37993a50296cc2eca381e37b6a2d05ecd3845bca",
+    "bytes": 412963
+  },
+  "cases": [
+    {
+      "id": "mandelbrot",
+      "sourceSha256": "cb2b9c30aceeb0f8ed0da1f999658aa8d7fb346851877da6902d1ded4cfc0656",
+      "point": {
+        "args": [
+          2,
+          0
+        ],
+        "expected": 887240761,
+        "exportName": "bench"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/mandelbrot.mjs",
+          "sha256": "7f27c5f60864e6a4e8bebf4a7ec5aa80ee3fa9de0a900b81737e7fd9434c363a",
+          "bytes": 109212
+        },
+        "typescript": {
+          "path": "typescript/modules/mandelbrot.mjs",
+          "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+          "bytes": 15442
+        }
+      }
+    },
+    {
+      "id": "editdist",
+      "sourceSha256": "f9cc44d93829d8ea48148c26b8ed7e2c1785611ad0c19a3770f86227a3142e6f",
+      "point": {
+        "args": [
+          2,
+          0
+        ],
+        "expected": 2065873279,
+        "exportName": "bench"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/editdist.mjs",
+          "sha256": "365b0c1bb113fc00f260f6f9c9cba32aa12f7e848c96318a4939eaa0b76bf817",
+          "bytes": 97519
+        },
+        "typescript": {
+          "path": "typescript/modules/editdist.mjs",
+          "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6",
+          "bytes": 11907
+        }
+      }
+    },
+    {
+      "id": "tree-bitonic",
+      "sourceSha256": "ace0242c329b1628cb9d0a0142386380e0ca4e56fa741916974938eb079b2c0d",
+      "point": {
+        "args": [
+          8,
+          0
+        ],
+        "expected": 971629740,
+        "exportName": "bench"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/tree-bitonic.mjs",
+          "sha256": "87cc70fa5820a7af339ff6f7c75b0120e167ad0cfbda1a7ac4d143ec0c0ae807",
+          "bytes": 79946
+        },
+        "typescript": {
+          "path": "typescript/modules/tree-bitonic.mjs",
+          "sha256": "c24fff66dd20c4579b7912b42450f1574e4c0b7a84e5d8b2d3d1d1345ef2b159",
+          "bytes": 10593
+        }
+      }
+    },
+    {
+      "id": "lexer",
+      "sourceSha256": "6014af6bf7e97c8feaafa918e79f28a22d2c9c92bea836203fcd89b6d70a4fbb",
+      "point": {
+        "args": [
+          8,
+          0
+        ],
+        "expected": 1822208108,
+        "exportName": "bench"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/lexer.mjs",
+          "sha256": "866fdf5adf04ba4730253fc48fdf01671a32a3e8fe56193afee4cfd5065c6e4f",
+          "bytes": 84649
+        },
+        "typescript": {
+          "path": "typescript/modules/lexer.mjs",
+          "sha256": "2d9378dfdcacc5904f4b2ac65fd90ba1dcc4a51d9c68b00f6042c42aaeadbbba",
+          "bytes": 14110
+        }
+      }
+    },
+    {
+      "id": "symreg",
+      "sourceSha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+      "point": {
+        "args": [
+          6,
+          42
+        ],
+        "expected": 2490246820,
+        "exportName": "bench"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/symreg.mjs",
+          "sha256": "551e61d6ccbeca827650038d31d93dc5866f59a11283bff9bc6a6ca59e05d875",
+          "bytes": 82590
+        },
+        "typescript": {
+          "path": "typescript/modules/symreg.mjs",
+          "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651",
+          "bytes": 12815
+        }
+      }
+    },
+    {
+      "id": "test-morning-program",
+      "sourceSha256": "9033897714291ea49c25046426457ff2753276466092ba71a4e40c1e2b48a04a",
+      "point": {
+        "args": [],
+        "expected": "a-bb-ccc 8 1877 42 lo hello 3",
+        "exportName": "main.out"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/test-morning-program.mjs",
+          "sha256": "71948963ed19317db321d3327a73b50490798b7057aab96765eb950e346acad6",
+          "bytes": 117258
+        },
+        "typescript": {
+          "path": "typescript/modules/test-morning-program.mjs",
+          "sha256": "faff88b122b84d0d18698210c66233cae52493e3cc68c92d95e0c639e20990ad",
+          "bytes": 48892
+        }
+      }
+    },
+    {
+      "id": "test-evening-program",
+      "sourceSha256": "b254a68ad0208b8a5f388d72095633cd8fc119adf40d45f5621e93f37e7b4f71",
+      "point": {
+        "args": [],
+        "expected": 81111,
+        "exportName": "main.out"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/test-evening-program.mjs",
+          "sha256": "ebd69494dc7e653114c3cec13cf5234caf94a3071a10e2309dc37898b675d061",
+          "bytes": 160856
+        },
+        "typescript": {
+          "path": "typescript/modules/test-evening-program.mjs",
+          "sha256": "0c1d34b107501041c6e5a3bb5b896e91b8ab56b8826c3f616ea6b4e3a3e1d6d0",
+          "bytes": 62658
+        }
+      }
+    },
+    {
+      "id": "test-rle-roundtrip",
+      "sourceSha256": "ce4083dab9a8022b2c8867a30802113735917229341cecb8ce18ff9ac2e33989",
+      "point": {
+        "args": [],
+        "expected": 11,
+        "exportName": "main.out"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/test-rle-roundtrip.mjs",
+          "sha256": "110bed2bacaab3ac27ddf643f0583a155c4bdb1a5b56bfb68ae2185715803379",
+          "bytes": 74692
+        },
+        "typescript": {
+          "path": "typescript/modules/test-rle-roundtrip.mjs",
+          "sha256": "f21a8eb4239ff0db7fbfda6121f24b04b48c5478fe6de5798660ca5b417c80a8",
+          "bytes": 8728
+        }
+      }
+    },
+    {
+      "id": "test-map-set-ops",
+      "sourceSha256": "60966d2aa182c2aabf20eb63270f57c7d8c5f2dc56872e7fed54dab34940c8c6",
+      "point": {
+        "args": [],
+        "expected": 11111,
+        "exportName": "main.out"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/test-map-set-ops.mjs",
+          "sha256": "3d22bab14ed8e7cdeed63bea48cb067909c3fe214a283022680b22c4ebd72b87",
+          "bytes": 137571
+        },
+        "typescript": {
+          "path": "typescript/modules/test-map-set-ops.mjs",
+          "sha256": "91812e3092688bdc609a2f9f21c1280120b8392eab7cd7148586702bf551e9bf",
+          "bytes": 69178
+        }
+      }
+    },
+    {
+      "id": "raytrace",
+      "sourceSha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+      "point": {
+        "args": [
+          80,
+          0
+        ],
+        "expected": 402971,
+        "exportName": "bench"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/raytrace.mjs",
+          "sha256": "3d1bc9a29878c1c079fdafcad3e6733037194323edc9a099efd940d811b3b367",
+          "bytes": 100044
+        },
+        "typescript": {
+          "path": "typescript/modules/raytrace.mjs",
+          "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2",
+          "bytes": 28974
+        }
+      }
+    },
+    {
+      "id": "local-pair",
+      "sourceSha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+      "point": {
+        "exportName": "pair",
+        "args": [
+          0
+        ],
+        "expected": 1866542166
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/local-row.mjs",
+          "sha256": "38c450b3dac6930ec3b39f5e90ca248786805a48327fb0e6ea2b361f0c0e1b5d",
+          "bytes": 98344
+        },
+        "typescript": {
+          "path": "typescript/modules/local-row.mjs",
+          "sha256": "e303d7add56bca3c62ab3a7d636f01b65007556f5a80d43d59f94018b4154de6",
+          "bytes": 12457
+        }
+      }
+    },
+    {
+      "id": "local-fold",
+      "sourceSha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a",
+      "point": {
+        "exportName": "bench",
+        "args": [
+          4096,
+          17
+        ],
+        "expected": 2339999928
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/local-fold.mjs",
+          "sha256": "f1e4a91c96bbcdfe8f3a36a600a9355575fff3289e769d5a4cca9aea91006d8f",
+          "bytes": 76128
+        },
+        "typescript": {
+          "path": "typescript/modules/local-fold.mjs",
+          "sha256": "591c3e3a895f4092a80eac58fef2ea4ecd15f59c01433fc69ce09143055e2444",
+          "bytes": 5191
+        }
+      }
+    },
+    {
+      "id": "scalar-region-0",
+      "sourceSha256": "5c1b7031be03394ea7bfc64358b6db167711765e187e32d06f65a9f06bba3c7d",
+      "point": {
+        "exportName": "bench",
+        "args": [
+          0,
+          524800
+        ],
+        "expected": 0
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/scalar-region.mjs",
+          "sha256": "0bf385d7a04bbd8d31c761c83245953ee5fa27b7fb5d943884911ed0b678834f",
+          "bytes": 80789
+        },
+        "typescript": {
+          "path": "typescript/modules/scalar-region.mjs",
+          "sha256": "752a5711b92b0ba8b0e146f41e70ac3934e50965f77950d009b5e738320b594a",
+          "bytes": 6552
+        }
+      }
+    },
+    {
+      "id": "scalar-region-8192",
+      "sourceSha256": "5c1b7031be03394ea7bfc64358b6db167711765e187e32d06f65a9f06bba3c7d",
+      "point": {
+        "exportName": "bench",
+        "args": [
+          8192,
+          524800
+        ],
+        "expected": 8192
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/scalar-region.mjs",
+          "sha256": "0bf385d7a04bbd8d31c761c83245953ee5fa27b7fb5d943884911ed0b678834f",
+          "bytes": 80789
+        },
+        "typescript": {
+          "path": "typescript/modules/scalar-region.mjs",
+          "sha256": "752a5711b92b0ba8b0e146f41e70ac3934e50965f77950d009b5e738320b594a",
+          "bytes": 6552
+        }
+      }
+    },
+    {
+      "id": "complete-generic-row32",
+      "sourceSha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+      "point": {
+        "exportName": "bench",
+        "args": [
+          32,
+          17
+        ],
+        "expected": "[[0,2,1,1,0,0,0,1,1,0,0,2,3,1,3,1,0,1,0,0,2,1,0,0,0,2,0,2,1,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,2,0,1,0,1,2,0,0,0,0,2,0,0,3,0,1,2,0,1,2,0,0,1,3,3,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]"
+      },
+      "modules": {
+        "baseline": {
+          "path": "baseline/modules/local-row-observed.mjs",
+          "sha256": "c4ed0657efb297933d14caa72bce90806e73502f2f1300583d7728d66f936aa8",
+          "bytes": 98497
+        },
+        "typescript": {
+          "path": "typescript/modules/local-row-observed.mjs",
+          "sha256": "34116f36cf0eb5089e5041abb10f2d0786051e8bd3f9afe350d97aad8303ae10",
+          "bytes": 12616
+        }
+      }
+    }
+  ],
+  "provenance": {
+    "path": "provenance.json",
+    "sha256": "b39ffab3fb0e790034905e1d43da9d88bc861f0012bc6335c7a7a8ef4421d499",
+    "bytes": 1719
+  },
+  "preservation": {
+    "members": 146,
+    "uncompressedBytes": 1972217,
+    "reopenedVerified": true
+  }
+}

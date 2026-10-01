@@ -1,0 +1,555 @@
+{
+  "kind": "bend-program-catalog",
+  "schemaVersion": 1,
+  "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "scope": "Sequential generated JavaScript execution only. Small fixed points, selected algorithms and diagnostics; no typical-production, compiler-throughput or native/GPU claim.",
+  "sets": {
+    "fast": [
+      "local-pair",
+      "local-fold",
+      "scalar-region-0",
+      "scalar-region-8192",
+      "complete-generic-row32"
+    ],
+    "core": [
+      "local-pair",
+      "local-fold",
+      "scalar-region-0",
+      "scalar-region-8192",
+      "complete-generic-row32",
+      "mandelbrot",
+      "editdist",
+      "test-rle-roundtrip"
+    ],
+    "broad": [
+      "local-pair",
+      "local-fold",
+      "scalar-region-0",
+      "scalar-region-8192",
+      "complete-generic-row32",
+      "mandelbrot",
+      "editdist",
+      "tree-bitonic",
+      "lexer",
+      "symreg",
+      "test-morning-program",
+      "test-evening-program",
+      "test-rle-roundtrip",
+      "test-map-set-ops"
+    ],
+    "full": [
+      "local-pair",
+      "local-fold",
+      "scalar-region-0",
+      "scalar-region-8192",
+      "complete-generic-row32",
+      "mandelbrot",
+      "editdist",
+      "tree-bitonic",
+      "lexer",
+      "symreg",
+      "test-morning-program",
+      "test-evening-program",
+      "test-rle-roundtrip",
+      "test-map-set-ops",
+      "raytrace"
+    ]
+  },
+  "cases": [
+    {
+      "id": "mandelbrot",
+      "category": "original",
+      "description": "Integer render, histogram, recolor",
+      "scope": "hd=size; iters=7; seed unused",
+      "source": {
+        "path": "fixtures/mandelbrot.bend",
+        "sha256": "cb2b9c30aceeb0f8ed0da1f999658aa8d7fb346851877da6902d1ded4cfc0656",
+        "bytes": 6576,
+        "provenance": {
+          "kind": "pinned-upstream-with-wrapper",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "bench/runtime/mandelbrot/main.bend",
+            "gitBlob": "8effae68e308c8ae63c3ec8af66f0e4a4e59f282",
+            "sha256": "400b94705df43c5f6506ecba640db11ae91b24f74d58e39a5e5f7f56dcbabcfa",
+            "bytes": 6427
+          },
+          "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  rend(U32.to_nat(size), 7n)\n",
+          "record": "selfhost/tools/performance/phase28/six-cases.json"
+        }
+      },
+      "point": {
+        "args": [
+          2,
+          0
+        ],
+        "expected": 887240761,
+        "exportName": "bench"
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C.",
+      "sets": [
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "editdist",
+      "category": "original",
+      "description": "Mutable-array Levenshtein dynamic programming",
+      "scope": "batch depth=size (2^size pairs); first index=seed; length=256",
+      "source": {
+        "path": "fixtures/editdist.bend",
+        "sha256": "f9cc44d93829d8ea48148c26b8ed7e2c1785611ad0c19a3770f86227a3142e6f",
+        "bytes": 5874,
+        "provenance": {
+          "kind": "pinned-upstream-with-wrapper",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "bench/runtime/editdist/main.bend",
+            "gitBlob": "b3bcc627dde4eccd3f1b96e659a8e1df33ef231c",
+            "sha256": "466891a27b87119b5593209eb98aa0d687ff88b6ff28cc2ca339e248907a3959",
+            "bytes": 5722
+          },
+          "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  batch(U32.to_nat(size), seed)\n",
+          "record": "selfhost/tools/performance/phase28/six-cases.json"
+        }
+      },
+      "point": {
+        "args": [
+          2,
+          0
+        ],
+        "expected": 2065873279,
+        "exportName": "bench"
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C.",
+      "sets": [
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "tree-bitonic",
+      "category": "original",
+      "description": "Tree bitonic sort and sortedness verification",
+      "scope": "tree depth=size (2^size leaves); first index=seed",
+      "source": {
+        "path": "fixtures/tree-bitonic.bend",
+        "sha256": "ace0242c329b1628cb9d0a0142386380e0ca4e56fa741916974938eb079b2c0d",
+        "bytes": 4633,
+        "provenance": {
+          "kind": "pinned-upstream-with-wrapper",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "bench/runtime/tree-bitonic/main.bend",
+            "gitBlob": "00be9f2845778f113d6e00da7926ec33150686dd",
+            "sha256": "1d79c448bae41dff127ff05b6c6a13d010a9a0ebc5c4dcf19da7d6d4641a7d2c",
+            "bytes": 4456
+          },
+          "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  stat_out(scan(bsort(U32.to_nat(size), False{}, seed)))\n",
+          "record": "selfhost/tools/performance/phase28/six-cases.json"
+        }
+      },
+      "point": {
+        "args": [
+          8,
+          0
+        ],
+        "expected": 971629740,
+        "exportName": "bench"
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C.",
+      "sets": [
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "lexer",
+      "category": "original",
+      "description": "Generated-string tokenizer",
+      "scope": "batch depth=size (2^size lines); first index=seed",
+      "source": {
+        "path": "fixtures/lexer.bend",
+        "sha256": "6014af6bf7e97c8feaafa918e79f28a22d2c9c92bea836203fcd89b6d70a4fbb",
+        "bytes": 7134,
+        "provenance": {
+          "kind": "pinned-upstream-with-wrapper",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "bench/runtime/lexer/main.bend",
+            "gitBlob": "a789f9eee9944492da022e6146c75920769a32d9",
+            "sha256": "5187685d61672de9434f3902e06c427af4f2fa5648723fd869a8c26ab311fcf6",
+            "bytes": 6982
+          },
+          "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  batch(U32.to_nat(size), seed)\n",
+          "record": "selfhost/tools/performance/phase28/six-cases.json"
+        }
+      },
+      "point": {
+        "args": [
+          8,
+          0
+        ],
+        "expected": 1822208108,
+        "exportName": "bench"
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C.",
+      "sets": [
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "symreg",
+      "category": "original",
+      "description": "Expression-tree symbolic regression",
+      "scope": "population depth=size (2^size programs); initial seed=seed; rounds=32; points=16",
+      "source": {
+        "path": "fixtures/symreg.bend",
+        "sha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+        "bytes": 5406,
+        "provenance": {
+          "kind": "pinned-upstream-with-wrapper",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "bench/runtime/symreg/main.bend",
+            "gitBlob": "8da2a12b5d970226826e9b894559ff570e55bead",
+            "sha256": "5aafee4856cde2259dd2efac84ed02fe1d999e68ab026d975d1a3593b430fbf0",
+            "bytes": 5246
+          },
+          "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  run(U32.to_nat(size), seed, 32n, 16n)\n",
+          "record": "selfhost/tools/performance/phase28/six-cases.json"
+        }
+      },
+      "point": {
+        "args": [
+          6,
+          42
+        ],
+        "expected": 2490246820,
+        "exportName": "bench"
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C.",
+      "sets": [
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "test-morning-program",
+      "category": "original",
+      "description": "mixed strings, Map, arithmetic and formatting",
+      "scope": "original smoke-size test; repeated unchanged complete computation, no scaling claim",
+      "source": {
+        "path": "fixtures/test-morning-program.bend",
+        "sha256": "9033897714291ea49c25046426457ff2753276466092ba71a4e40c1e2b48a04a",
+        "bytes": 3077,
+        "provenance": {
+          "kind": "unchanged-pinned-upstream",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "tests/run/morning_program.bend",
+            "sha256": "9033897714291ea49c25046426457ff2753276466092ba71a4e40c1e2b48a04a"
+          },
+          "record": "selfhost/tools/performance/phase28/application-cases.json"
+        }
+      },
+      "point": {
+        "args": [],
+        "expected": "a-bb-ccc 8 1877 42 lo hello 3",
+        "exportName": "main.out"
+      },
+      "oracle": "upstream #| golden, full main.out value",
+      "sets": [
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "test-evening-program",
+      "category": "original",
+      "description": "mixed float array, Map/Set, number parsing and tuple reuse",
+      "scope": "original smoke-size test; repeated unchanged complete computation, no scaling claim",
+      "source": {
+        "path": "fixtures/test-evening-program.bend",
+        "sha256": "b254a68ad0208b8a5f388d72095633cd8fc119adf40d45f5621e93f37e7b4f71",
+        "bytes": 2152,
+        "provenance": {
+          "kind": "unchanged-pinned-upstream",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "tests/run/evening_program.bend",
+            "sha256": "b254a68ad0208b8a5f388d72095633cd8fc119adf40d45f5621e93f37e7b4f71"
+          },
+          "record": "selfhost/tools/performance/phase28/application-cases.json"
+        }
+      },
+      "point": {
+        "args": [],
+        "expected": 81111,
+        "exportName": "main.out"
+      },
+      "oracle": "upstream #| golden, full main.out value",
+      "sets": [
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "test-rle-roundtrip",
+      "category": "original",
+      "description": "original six-element compression and decompression test",
+      "scope": "original smoke-size test; repeated unchanged complete computation, no scaling claim",
+      "source": {
+        "path": "fixtures/test-rle-roundtrip.bend",
+        "sha256": "ce4083dab9a8022b2c8867a30802113735917229341cecb8ce18ff9ac2e33989",
+        "bytes": 2743,
+        "provenance": {
+          "kind": "unchanged-pinned-upstream",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "tests/run/rle_roundtrip.bend",
+            "sha256": "ce4083dab9a8022b2c8867a30802113735917229341cecb8ce18ff9ac2e33989"
+          },
+          "record": "selfhost/tools/performance/phase28/application-cases.json"
+        }
+      },
+      "point": {
+        "args": [],
+        "expected": 11,
+        "exportName": "main.out"
+      },
+      "oracle": "upstream #| golden, full main.out value",
+      "sets": [
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "test-map-set-ops",
+      "category": "original",
+      "description": "original Map/Set feature composition checks",
+      "scope": "original smoke-size test; repeated unchanged complete computation, no scaling claim",
+      "source": {
+        "path": "fixtures/test-map-set-ops.bend",
+        "sha256": "60966d2aa182c2aabf20eb63270f57c7d8c5f2dc56872e7fed54dab34940c8c6",
+        "bytes": 5266,
+        "provenance": {
+          "kind": "unchanged-pinned-upstream",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "tests/run/map_set_ops.bend",
+            "sha256": "60966d2aa182c2aabf20eb63270f57c7d8c5f2dc56872e7fed54dab34940c8c6"
+          },
+          "record": "selfhost/tools/performance/phase28/application-cases.json"
+        }
+      },
+      "point": {
+        "args": [],
+        "expected": 11111,
+        "exportName": "main.out"
+      },
+      "oracle": "upstream #| golden, full main.out value",
+      "sets": [
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "raytrace",
+      "category": "original",
+      "description": "F32 recursive sphere ray tracing",
+      "scope": "rows=6; width=size; seed unused",
+      "source": {
+        "path": "fixtures/raytrace.bend",
+        "sha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+        "bytes": 14223,
+        "provenance": {
+          "kind": "pinned-upstream-with-wrapper",
+          "original": {
+            "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+            "path": "bench/runtime/raytrace/main.bend",
+            "gitBlob": "9f42fcc64fe86dabd21d4e94c69a90224f6ae0f4",
+            "sha256": "6c4918b2012696146144c2c7ccc1daad042dbb87df444ca1334cf8d51bebee5f",
+            "bytes": 13929
+          },
+          "wrapper": "\n# Phase28: original source above is unchanged; documented small raytrace input.\ndef bench(+size: U32, seed: U32) -> U32:\n  +rr = U32.to_nat(6)\n  hw = U32.to_f32(U32.div(size, 2))\n  hh = U32.to_f32(U32.div(U32.shln(1, rr), 2))\n  hm = U32.sub(U32.shln(1, rr), 1)\n  rowf(rr, 0, hm, size, hw, hh)\n",
+          "record": "selfhost/tools/performance/phase28/raytrace-typed-retry.json"
+        }
+      },
+      "point": {
+        "args": [
+          80,
+          0
+        ],
+        "expected": 402971,
+        "exportName": "bench"
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C.",
+      "sets": [
+        "full"
+      ]
+    },
+    {
+      "id": "local-pair",
+      "category": "diagnostic",
+      "description": "Complete one-pair edit distance",
+      "scope": "256 by 256 grid, input generation, rows and checksum; same point as Phase32",
+      "source": {
+        "path": "fixtures/local-row.bend",
+        "sha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+        "bytes": 6245,
+        "provenance": {
+          "kind": "maintained-diagnostic",
+          "originalPath": "selfhost/build/phase31/local-data-source-01/row.bend",
+          "description": "Original edit-distance fixture plus row.probe; preserves complete pair and exposes a complete generic row.",
+          "record": "selfhost/tools/performance/phase31/local-data-derive.py"
+        }
+      },
+      "point": {
+        "exportName": "pair",
+        "args": [
+          0
+        ],
+        "expected": 1866542166
+      },
+      "oracle": "Maintained independent pair controls, implementation/phase32/review-local-gates.json; not a universal semantic proof.",
+      "sets": [
+        "fast",
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "local-fold",
+      "category": "diagnostic",
+      "description": "Array read/write and accumulator fold",
+      "scope": "4096 elements, seed17; generation, loop and final scalar checksum",
+      "source": {
+        "path": "fixtures/local-fold.bend",
+        "sha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a",
+        "bytes": 768,
+        "provenance": {
+          "kind": "maintained-diagnostic",
+          "originalPath": "selfhost/tools/performance/phase31/local-data-fold.bend",
+          "record": "selfhost/tools/performance/phase31/local-data-fold-controls.mjs"
+        }
+      },
+      "point": {
+        "exportName": "bench",
+        "args": [
+          4096,
+          17
+        ],
+        "expected": 2339999928
+      },
+      "oracle": "Independent fold oracle in maintained Phase31/32 controls.",
+      "sets": [
+        "fast",
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "scalar-region-0",
+      "category": "canary",
+      "description": "Scalar closed-region guard and loop",
+      "scope": "Initial-zero guard cost",
+      "source": {
+        "path": "fixtures/scalar-region.bend",
+        "sha256": "5c1b7031be03394ea7bfc64358b6db167711765e187e32d06f65a9f06bba3c7d",
+        "bytes": 1496,
+        "provenance": {
+          "kind": "maintained-diagnostic",
+          "originalPath": "selfhost/tools/performance/phase29/fixture-mandelbrot.bend",
+          "description": "Copied pinned Mandelbrot scalar helpers with bounded scalar bench entry."
+        }
+      },
+      "point": {
+        "exportName": "bench",
+        "args": [
+          0,
+          524800
+        ],
+        "expected": 0
+      },
+      "oracle": "Unchanged maintained scalar point; checked both compilers in Phase32.",
+      "sets": [
+        "fast",
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "scalar-region-8192",
+      "category": "canary",
+      "description": "Scalar closed-region guard and loop",
+      "scope": "8192 scalar iterations; boundary guards included",
+      "source": {
+        "path": "fixtures/scalar-region.bend",
+        "sha256": "5c1b7031be03394ea7bfc64358b6db167711765e187e32d06f65a9f06bba3c7d",
+        "bytes": 1496,
+        "provenance": {
+          "kind": "maintained-diagnostic",
+          "originalPath": "selfhost/tools/performance/phase29/fixture-mandelbrot.bend",
+          "description": "Copied pinned Mandelbrot scalar helpers with bounded scalar bench entry."
+        }
+      },
+      "point": {
+        "exportName": "bench",
+        "args": [
+          8192,
+          524800
+        ],
+        "expected": 8192
+      },
+      "oracle": "Unchanged maintained scalar point; checked both compilers in Phase32.",
+      "sets": [
+        "fast",
+        "core",
+        "broad",
+        "full"
+      ]
+    },
+    {
+      "id": "complete-generic-row32",
+      "category": "canary",
+      "description": "Complete generic edit-distance row and serialized state",
+      "scope": "n32 seed17, setup, one row and all four128-slot arrays; JSON serialization included",
+      "source": {
+        "path": "fixtures/local-row.bend",
+        "sha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+        "bytes": 6245,
+        "provenance": {
+          "kind": "maintained-diagnostic",
+          "originalPath": "selfhost/build/phase31/local-data-source-01/row.bend",
+          "description": "Original edit-distance fixture plus row.probe; preserves complete pair and exposes a complete generic row.",
+          "record": "selfhost/tools/performance/phase31/local-data-derive.py"
+        }
+      },
+      "point": {
+        "exportName": "bench",
+        "args": [
+          32,
+          17
+        ],
+        "expected": "[[0,2,1,1,0,0,0,1,1,0,0,2,3,1,3,1,0,1,0,0,2,1,0,0,0,2,0,2,1,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,2,0,1,0,1,2,0,0,0,0,2,0,0,3,0,1,2,0,1,2,0,0,1,3,3,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]"
+      },
+      "adapter": "generic-row",
+      "oracle": "Independent complete-array oracle; selfhost and TypeScript representation adapters observe all four arrays.",
+      "sets": [
+        "fast",
+        "core",
+        "broad",
+        "full"
+      ]
+    }
+  ]
+}
