@@ -56,7 +56,7 @@ static ChanRow* chan_at(Term t) {
   return row != NULL && row->live && row->gen == (u32)(v >> 24) ? row : NULL;
 }
 
-// Cuts w from the queue q (a ring whose tail is *q).
+// Cuts w from the queue q (a ring whose tail is *q), a row's waiters.
 static void chan_cut(IoWork** q, IoWork* w) {
   IoWork* p = *q;
   while (p->next != w) {
@@ -68,9 +68,14 @@ static void chan_cut(IoWork** q, IoWork* w) {
 
 // A try_ waiter's deadline: a timer t on io_park whose hand is the waiter
 // and whose word its row. Past it, the waiter leaves the row and answers
-// Wait{rest}: its value, or Unit for a receiver.
+// Wait{rest}: its value, or Unit for a receiver. A wake that came first
+// cleared hand, and the timer just goes.
 static Term chan_late(Env e, IoWork* t) {
   IoWork* w = (IoWork*)t->hand;
+  if (w == NULL) {
+    free(t);
+    return IO_PARK;
+  }
   chan_cut(&chan_rows[t->word].wait, w);
   Term rest = w->item == TERM_HOLE ? term_pak(CID(Unit), 0) : w->item;
   w->item = io_box(e, CID(Wait), rest);
@@ -100,13 +105,13 @@ static Term chan_park(ChanRow* row, IoWork* w, Term item, u64 at) {
 }
 
 // Wakes the row's first waiter with x, Ready{x} for a try_ waiter, whose
-// timer goes; answers the item it parked with.
+// timer it disarms (in O(1): the timer stays parked until its deadline);
+// answers the item it parked with.
 static Term chan_wake(Env e, ChanRow* row, Term x) {
   IoWork* a    = io_pop(&row->wait);
   Term    item = a->item;
   if (a->made != 0) {
-    chan_cut(&io_park, (IoWork*)a->made);
-    free((IoWork*)a->made);
+    ((IoWork*)a->made)->hand = 0;
     a->made = 0;
     x = io_box(e, CID(Ready), x);
   }
