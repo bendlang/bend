@@ -87,7 +87,7 @@ def fetch_done(s: Socket, chunks: List<&2, List<&2, U32>>) -> IO(String):
 
 # At the exact limit, the one-byte probe must be EOF.
 def fetch_end(
-  m: Socket & Result<&1, &1, U32 & String, List<&2, U32>>,
+  m: Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>>,
   chunks: List<&2, List<&2, U32>>
 ) -> IO(String):
   (s, r) = m
@@ -96,15 +96,15 @@ def fetch_end(
       fetch_fail(s, code, message)
     case Done{chunk}:
       match chunk:
-        case Nil{}:
+        case None{}:
           fetch_done(s, chunks)
-        case h <> t:
+        case Some{bytes}:
           fetch_fail(s, 1, "HTTP response exceeds 65536 bytes")
 
 def fetch_read(
   fuel: Nat,
   remaining: U32,
-  m: Socket & Result<&1, &1, U32 & String, List<&2, U32>>,
+  m: Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>>,
   chunks: List<&2, List<&2, U32>>
 ) -> IO(String):
   match fuel remaining:
@@ -117,31 +117,33 @@ def fetch_read(
       match r:
         case Fail{(code, message)}:
           fetch_fail(s, code, message)
-        case Done{chunk}:
+        case Done{None{}}:
+          fetch_done(s, chunks)
+        case Done{Some{chunk}}:
           match chunk:
             case Nil{}:
               fetch_done(s, chunks)
             case +h <> +t:
               +left = U32.sub(remaining, U32.from_nat(List.length(&2, U32, chunk)))
               do IO<String>:
-                next : Socket & Result<&1, &1, U32 & String, List<&2, U32>> <-
+                next : Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>> <-
                   TCP.recv_bytes(s, U32.max(U32.min(left, 8192), 1))
                 fetch_read(fuel2, left, next, chunk <> chunks)
 
-def fetch_sent(m: Socket & Result<&1, &1, U32 & String, Unit>) -> IO(String):
+def fetch_sent(m: Socket & Result<&1, &1, (U32 & String) & String, Unit>) -> IO(String):
   (s, r) = m
   match r:
-    case Fail{(code, message)}:
+    case Fail{((code, message), rest)}:
       fetch_fail(s, code, message)
     case Done{u}:
       do IO<String>:
-        first : Socket & Result<&1, &1, U32 & String, List<&2, U32>> <-
+        first : Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>> <-
           TCP.recv_bytes(s, 8192)
         fetch_read(65536n, 65536, first, Nil{})
 
 def main() -> IO(Unit):
   do IO<Unit>:
     c    : Socket <- IO.try(Socket, TCP.connect("208.95.112.1", 80))
-    sent : Socket & Result<&1, &1, U32 & String, Unit> <- TCP.send(c, "GET /line/?fields=status,country,city,query HTTP/1.1\r\nHost: ip-api.com\r\nConnection: close\r\n\r\n")
+    sent : Socket & Result<&1, &1, (U32 & String) & String, Unit> <- TCP.send(c, "GET /line/?fields=status,country,city,query HTTP/1.1\r\nHost: ip-api.com\r\nConnection: close\r\n\r\n")
     resp : String <- fetch_sent(sent)
     IO.print(http_body(resp))

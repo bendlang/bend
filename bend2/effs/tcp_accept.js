@@ -3,30 +3,44 @@
 
 // The request parks until the listener is readable, so a backlog never
 // keeps the loop from its timers; an accept that still finds no connection
-// (the listener is non-blocking) parks again. The accepted socket is
-// non-blocking for life.
-function tcp_accept(listener, k) {
+// (the listener is non-blocking) parks again, or, for try_, until its
+// deadline at, then answers Wait{}. at is undefined for the blocking twin.
+// The accepted socket is non-blocking for life.
+function tcp_accept_with(listener, k, at) {
+  const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
   const lfd = listener;
   const go = () => {
     const fd = sys.accept(lfd, null, null);
     if (fd < 0) {
       const code = sys.errno();
-      if (code === (sys.mac ? 35 : 11)) {
-        io_park_on(lfd, false, k, go);
-        return undefined;
+      if (code !== (sys.mac ? 35 : 11)) {
+        return io_tup(listener, ready(io_fail(code)));
       }
-      return io_tup(listener, io_fail(code));
+      if (at !== undefined && performance.now() >= at) {
+        return io_tup(listener, { $: CID(Wait), rest: { $: CID(Unit) } });
+      }
+      io_park_on(lfd, false, k, go, at);
+      return undefined;
     }
     if (sys.fcntl(fd, 4, sys.fcntl(fd, 3, 0) | (sys.mac ? 4 : 0x800)) < 0) {
       const code = sys.errno();
       sys.close(fd);
-      return io_tup(listener, io_fail(code));
+      return io_tup(listener, ready(io_fail(code)));
     }
-    return io_tup(listener, io_done(fd));
+    return io_tup(listener, ready(io_done(fd)));
   };
-  io_park_on(lfd, false, k, go);
+  io_park_on(lfd, false, k, go, at);
   return undefined;
 }
 
+function tcp_accept(listener, k) {
+  return tcp_accept_with(listener, k);
+}
+
+function tcp_try_accept(listener, ms, k) {
+  return tcp_accept_with(listener, k, performance.now() + Number(ms));
+}
+
 io_eff(CID(TCP.accept), tcp_accept);
+io_eff(CID(TCP.try_accept), tcp_try_accept);

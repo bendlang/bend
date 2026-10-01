@@ -1,12 +1,12 @@
-# io (io_tcp_poll): TCP.poll is recv with a deadline. It answers None{}
-# at once when ms is 0 and nothing waits, None{} after ms when nothing
-# arrives (the socket parks on the poller AND on the loop's clock, and
-# the first to fire wakes it), and Some{data} when data does. An
-# accepted socket is polled empty at once, then polled empty for 3 ms
-# with IO.now on both sides (a 2 ms floor shows the loop really
+# io (io_tcp_try_recv): TCP.try_recv is recv with a deadline. It answers
+# Wait{} at once when ms is 0 and nothing waits, Wait{} after ms when
+# nothing arrives (the socket parks on the poller AND on the loop's clock,
+# and the first to fire wakes it), and Ready{Done{Some{data}}} when data
+# does. An accepted socket is tried empty at once, then tried empty for
+# 3 ms with IO.now on both sides (a 2 ms floor shows the loop really
 # waited, with room for a coarse clock), then the peer sends and a 1 s
-# poll answers the data. Every op threads its handle back OUTSIDE the
-# Result.
+# try answers the data. Every op threads its handle back OUTSIDE the
+# Poll.
 import Base
 
 def waited(ok: Bool) -> String:
@@ -16,33 +16,53 @@ def waited(ok: Bool) -> String:
     case False{}:
       "early"
 
+# what a try answers: the data, or idle when it would have waited
+law shown:
+  for idle: String
+  for r: Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit>
+  String
+
+def shown(idle, r):
+  match r:
+    case Ready{Done{Some{data}}}:
+      data
+    case Ready{Done{None{}}}:
+      "ended"
+    case Ready{Fail{(code, message)}}:
+      message
+    case Wait{u}:
+      idle
+
 law finish:
   for l: Listener
   for c: Socket
-  for m: Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>>
+  for m: Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit>
   IO(U32)
 
 def finish(l, c, m):
   (a, r) = m
   do IO<U32>:
-    got : Maybe<&1, String> <- IO.pass(Maybe<&1, String>, r)
-    w   : Unit <- IO.print(Maybe.default(&1, String, got, "none"))
+    w   : Unit <- IO.print(shown("none", r))
     x   : Unit <- Socket.close(a)
     y   : Unit <- Socket.close(c)
     z   : Unit <- Listener.close(l)
     return 0
 
 law send_go:
-  for m: Socket & Result<&1, &1, (U32 & String), Unit>
+  for m: Socket & Result<&1, &1, (U32 & String) & String, Unit>
   IO(Socket)
 
 def send_go(m):
   (s, r) = m
-  do IO<Socket>:
-    u : Unit <- IO.pass(Unit, r)
-    return s
+  match r:
+    case Done{u}:
+      IO.pure(Socket, s)
+    case Fail{((code, message), rest)}:
+      do IO<Socket>:
+        u : Unit <- IO.die(Unit, code, message)
+        return s
 
-# the third poll: the peer has sent, so a 1 s poll answers the data
+# the third try: the peer has sent, so a 1 s try answers the data
 law step_data:
   for l: Listener
   for c: Socket
@@ -51,26 +71,25 @@ law step_data:
 
 def step_data(l, c, a):
   do IO<U32>:
-    sm : Socket & Result<&1, &1, (U32 & String), Unit> <- TCP.send(c, "bend-poll")
+    sm : Socket & Result<&1, &1, (U32 & String) & String, Unit> <- TCP.send(c, "bend-poll")
     c2 : Socket <- send_go(sm)
-    m  : Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>> <- TCP.poll(a, 64, 1000)
+    m  : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit> <- TCP.try_recv(a, 64, 1000)
     finish(l, c2, m)
 
-# the second poll: 3 ms with nothing sent answers None{}, and IO.now
+# the second try: 3 ms with nothing sent answers Wait{}, and IO.now
 # shows the loop waited for it
 law step_timed_go:
   for l: Listener
   for c: Socket
   for t0: Nat
-  for m: Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>>
+  for m: Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit>
   IO(U32)
 
 def step_timed_go(l, c, t0, m):
   (a, r) = m
   do IO<U32>:
-    got : Maybe<&1, String> <- IO.pass(Maybe<&1, String>, r)
     t1  : Nat <- IO.now()
-    w   : Unit <- IO.print(Maybe.default(&1, String, got, "timeout"))
+    w   : Unit <- IO.print(shown("timeout", r))
     v   : Unit <- IO.print(waited(Nat.is_ge(Nat.sub(t1, t0), 2n)))
     step_data(l, c, a)
 
@@ -83,21 +102,20 @@ law step_timed:
 def step_timed(l, c, a):
   do IO<U32>:
     t0 : Nat <- IO.now()
-    m  : Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>> <- TCP.poll(a, 64, 3)
+    m  : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit> <- TCP.try_recv(a, 64, 3)
     step_timed_go(l, c, t0, m)
 
-# the first poll: ms = 0 and nothing sent answers None{} at once
+# the first try: ms = 0 and nothing sent answers Wait{} at once
 law step_empty:
   for l: Listener
   for c: Socket
-  for m: Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>>
+  for m: Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit>
   IO(U32)
 
 def step_empty(l, c, m):
   (a, r) = m
   do IO<U32>:
-    got : Maybe<&1, String> <- IO.pass(Maybe<&1, String>, r)
-    w   : Unit <- IO.print(Maybe.default(&1, String, got, "none"))
+    w   : Unit <- IO.print(shown("none", r))
     step_timed(l, c, a)
 
 law step_accept:
@@ -109,7 +127,7 @@ def step_accept(c, p):
   (l, ar) = p
   do IO<U32>:
     a : Socket <- IO.pass(Socket, ar)
-    m : Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>> <- TCP.poll(a, 64, 0)
+    m : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit> <- TCP.try_recv(a, 64, 0)
     step_empty(l, c, m)
 
 law main_go:
