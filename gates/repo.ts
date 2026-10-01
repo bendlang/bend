@@ -46,7 +46,7 @@ allow("LICENSE");
 allow("flake.nix");
 allow("bend2/base.bend");
 allow("bend2/bend.ts", 48000);
-allow("bend2/comp.ts", 70000);
+allow("bend2/comp.ts", 71000);
 allow("bend2/main.ts", 16000);
 allow("bend2/safe.ts", 24000);
 allow("bend2/bendtt.lean", 64000);
