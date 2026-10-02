@@ -3749,21 +3749,22 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
     throw Err(book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
   }
   const is = book.tmps[tm.k] ??= new Map();
-  if (!is.has(key)) {
+  let o = is.get(key);
+  if (o === undefined) {
     const z = (lhs.z ?? 0) + 1;
     if (z > 64) {
       throw Err(book, ctx, "a template that stops instantiating itself (64 levels at most)", tm, tm.s, lhs.def);
     }
-    const o = tm.k + "~" + String(is.size);
+    o = tm.k + "~" + String(is.size);
     is.set(key, o);
     const inst: Def = { $: "Def", n: def.n - def.x, x: 0, T, v: xs.reduce((v, a) => term_apply(v, a), def.v as HTerm), u: def.u };
     book.tlds[o] = { ...inst, v: null };
     inst.e = def_check(book, o, inst, z);
     book.tlds[o] = inst;
-  } else if (book.tlds[is.get(key)!].v === null && is.get(key) !== lhs.def) {
+  } else if (book.tlds[o].v === null && o !== lhs.def) {
     throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
   }
-  return is.get(key)!;
+  return o;
 }
 
 // Valid
