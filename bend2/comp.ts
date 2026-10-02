@@ -627,12 +627,10 @@ function cid_mac(k: string): string {
 
 function tpl_ops(pre: string, names: string, C: string, JS = C):
   Record<string, Intr> {
-  const out: Record<string, Intr> = {};
-  for (const p of names.split(" ")) {
+  return Object.fromEntries(names.split(" ").map((p) => {
     const [k, o = k, jo = o] = p.split(":");
-    out[pre + k] = { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) };
-  }
-  return out;
+    return [pre + k, { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) }];
+  }));
 }
 
 function tpl_deep(e: string): boolean {
@@ -822,15 +820,6 @@ function term_any(fl: File, t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
     === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
 }
 
-function term_nodes(fl: File, t: HTerm): number {
-  let n = 0;
-  term_any(fl, t, () => {
-    n += 1;
-    return false;
-  });
-  return n;
-}
-
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
@@ -1008,11 +997,7 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
   if (t === null) {
     return BOX;
   }
-  if (WORDS[t.k]) {
-    return WORDS[t.k];
-  }
-  const key = Bend.term_key(Bend.term_lower(t));
-  return memo(LAYS, key, () => {
+  return WORDS[t.k] ?? memo(LAYS, Bend.term_key(Bend.term_lower(t)), (key) => {
     const tld = book.tlds[t.k];
     if (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
       || tld.c.some((c) => ctr_doms(book, c).some((F) => ty_holds(book, F,
@@ -1046,8 +1031,7 @@ function lay_pack(arms: [Name, Lay[]][]): Lay {
     let at = tag;
     for (const k of lays.flatMap((lay) => lay.ks)) {
       const old = ks[at] ?? "w32";
-      ks[at++] = old === "box" || k === "box" ? "box"
-        : old === "w64" || k === "w64" ? "w64" : "w32";
+      ks[at++] = old === "box" || k === "w32" ? old : k;
     }
   }
   return { ks, arms: Object.fromEntries(arms) };
@@ -1929,10 +1913,10 @@ function die(m: string): never {
 // Memo
 // ====
 
-function memo<K, V>(m: Map<K, V>, k: K, f: () => V): V {
+function memo<K, V>(m: Map<K, V>, k: K, f: (k: K) => V): V {
   let v = m.get(k);
   if (v === undefined) {
-    m.set(k, v = f());
+    m.set(k, v = f(k));
   }
   return v;
 }
@@ -2423,7 +2407,10 @@ function emit_fold(fl: File, t: HTerm): HTerm | null {
       if (b === null) {
         return null;
       }
-      FUEL -= term_nodes(fl, b);
+      term_any(fl, b, () => {
+        FUEL -= 1;
+        return false;
+      });
       return term_any(fl, b, (y) => {
         if (y.$ === "App" || y.$ === "Ref") {
           emit_fold(fl, y);
@@ -2741,18 +2728,15 @@ function emit_row(fl: File, t: HTerm, ty: HTerm | null): string | null {
 
 function emit_tab(fl: File, cells: HTerm[] | null, ty: HTerm,
   s: string): string | null {
-  if (cells === null) {
-    return null;
-  }
-  const ls = cells.map((t) => emit_row(fl, t, ty));
-  if (ls.includes(null)) {
+  const ls = cells?.map((t) => emit_row(fl, t, ty));
+  if (ls === undefined || ls.includes(null)) {
     return null;
   }
   const key = (fl.js ? ls : Function("f32_bits", `return [${ls}]`)(
     Bend.f32_to_bits).map((v: number) => BigInt(v) + "ull")).join(", ");
   const tab = "TAB_" + memo(fl.tabs, key, () => fl.tabs.size);
-  return fl.js ? `${tab}[Math.min(${s}, ${cells.length - 1})]`
-    : `TAB_AT(${tab}, ${s}, ${cells.length - 1})`;
+  return fl.js ? `${tab}[Math.min(${s}, ${ls.length - 1})]`
+    : `TAB_AT(${tab}, ${s}, ${ls.length - 1})`;
 }
 
 function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
@@ -2827,11 +2811,8 @@ function emit_chain(fl: File, cond: (i: number) => string,
     return bodies[0]();
   }
   bodies.forEach((body, i) => {
-    if (i === bodies.length - 1) {
-      file_push(fl, "} else {");
-    } else {
-      file_push(fl, `${i === 0 ? "if" : "} else if"} (${cond(i)}) {`);
-    }
+    file_push(fl, i === bodies.length - 1 ? "} else {"
+      : `${i === 0 ? "if" : "} else if"} (${cond(i)}) {`);
     body();
   });
   file_push(fl, "}");
@@ -3138,12 +3119,11 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null, args: string[]): void {
   }
   if (x.$ === "Lam") {
     const all = ty_all(fl.book, ty);
-    const e = quant_live(all.q) ? args[0] : "null";
+    const [e, ...rest] = quant_live(all.q) ? args : ["null", ...args];
     const k = /^(\w*_\d+|null)$/.test(e) || VIEW.test(e) ? e
       : name_local(fl, x.k);
     const at = fl.seg.lines.length;
-    js_func(fl, x.f(Bend.Var(k, 0)), all.B(Bend.Var(k, 0)),
-      quant_live(all.q) ? args.slice(1) : args);
+    js_func(fl, x.f(Bend.Var(k, 0)), all.B(Bend.Var(k, 0)), rest);
     if (k !== e && fl.seg.lines.slice(at).some((l) => l.includes(k))) {
       fl.seg.lines.splice(at, 0, `const ${k} = ${e};`);
     }
