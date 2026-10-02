@@ -5220,6 +5220,32 @@ static void gpu_pass(u32 f) {
 // a row grows into itself, and a column grow's cur tasks land in rows 1
 // to cur, so those rows hold every task.
 
+// Between turns no lane runs, so each ring of the turn's rows clears what it
+// wrote (a stale lap bit reads as written) and lays its tasks from slot 0:
+// its planes are what it held at once, not every push (kmeans 20 MB -> 1).
+
+static void ring_rewind(u64* H, u32 rows) {
+  Term keep[RING_LEN];
+  for (u32 r = 0; r < (rows < CUBE_G ? rows : CUBE_G) * CUBE_T; r += 1) {
+    u32 g = *ring_get(H, r);
+    u32 p = *ring_put(H, r);
+    if (g == 0) {
+      continue;
+    }
+    for (u32 i = g; i < p; i += 1) {
+      keep[i - g] = *ring_slot(H, r, i) & ~RFC_BIT;
+    }
+    for (u32 i = 0; i < p && i < RING_LEN; i += 1) {
+      ((u32*)ring_slot(H, r, i))[1] = 0;
+    }
+    for (u32 i = 0; i < p - g; i += 1) {
+      *ring_slot(H, r, i) = keep[i] | (u64)ring_lap(i) << 63;
+    }
+    *ring_get(H, r) = 0;
+    *ring_put(H, r) = p - g;
+  }
+}
+
 static void cube_run(u64* H, bool gpu) {
   for (;;) {
     u32 f = a32_exch(a32_at(H, H_CURSOR), 0);
@@ -5243,6 +5269,8 @@ static void cube_run(u64* H, bool gpu) {
       }
       f = a32_load(a32_at(H, H_CURSOR));
       pool_turn(false, f > rows ? f : rows);
+      f = a32_load(a32_at(H, H_CURSOR));
+      ring_rewind(H, f > rows ? f : rows);
     }
     u32 ec = a32_load(a32_at(H, H_ERROR_CODE));
     if (ec != 0) {
