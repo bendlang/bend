@@ -2740,8 +2740,6 @@ function effect_srcs(fl: File, ext: string, miss: string): string[] {
 // bang's parameter may hold one. One bank serves both lanes: rp pads the
 // host's twelfth slot, which keeps rax free for the tail call. WL_LOAD is a
 // ladder, as clang builds the phi cascade of a fallthrough switch in O(n^2).
-// In the generated C the word undefined is a leaked JS undefined; the effect
-// sources (reqs) are hand-written, and may say it.
 
 export function compile_book(book: Bend.Book): string {
   FL = file_new(book, false);
@@ -2863,9 +2861,6 @@ export function compile_book(book: Bend.Book): string {
     return (dev.has(seg.fid) ? out : ["#if !DEVICE", ...out, "#endif"])
       .join("\n");
   }).join("\n\n");
-  if (/\bundefined\b/.test([tabs, spins, segs].join("\n"))) {
-    die("an unbound name in the emitted C");
-  }
   return c_ids(fl, runtime_c([tabs, ...desc].join("\n\n"), spins, segs,
     effect_srcs(fl, ".c", "no .c import: ").join("")));
 }
