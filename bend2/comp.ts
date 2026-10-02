@@ -5021,14 +5021,14 @@ static bool gpu_make(const char* path) {
   }
   nvrtcDestroyProgram(&prog);
   u64   key = gpu_hash();
-  FILE* out = path == NULL ? NULL : fopen(path, "wb");
+  FILE* out = fopen(path, "wb");
   bool  ok  = out != NULL && fwrite(&key, 8, 1, out) == 1
     && fwrite(bin, 1, len, out) == len && fclose(out) == 0;
   if (cuModuleLoadData(&gpu_lib, bin) != CUDA_SUCCESS) {
     err_fail("cannot load the CUDA library");
   }
   free(bin);
-  return path == NULL || ok;
+  return ok;
 }
 
 static u64 gpu_span(void) {
@@ -5100,7 +5100,7 @@ static void ring_rewind(u64* H, u32 rows) {
   for (u32 r = 0; r < (rows < CUBE_G ? rows : CUBE_G) * CUBE_T; r += 1) {
     u32 g = *ring_get(H, r);
     u32 n = *ring_put(H, r) - g;
-    if (g == 0 || n > RING_LEN) {
+    if (g == 0) {
       continue;
     }
     for (u32 i = 0; i < n; i += 1) {
@@ -5237,39 +5237,29 @@ static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
 OUTLINE Term corpus_eval(u64* H, Term t) {
   Env  e = { H, ALC[0] };
   Term rv[WL_RESW];
-  for (;;) {
-    Term r = work_loop(e, io_stk, t, !BANGS && pool_size == 1);
-    if (r == 0) {
-      if (root_done(H)) {
+  while ((t = work_loop(e, io_stk, t, !BANGS && pool_size == 1)) != 0) {
+    u64 tl = task_tail(t);
+    if ((u32)H[tl + 1] != 0) {
+      task_deal(H, t, 0, 0, NULL);
+      pool_open();
+      cube_run(H, false);
+      break;
+    }
+    if (io_gpu && fid_bangs((u32)term_aux(t))) {
+      Term cont = H[tl];
+      u32  idx  = (u32)(H[tl + 1] >> 32) & 0xFFFF;
+      H[tl]     = TERM_HOLE;
+      a32_store(a32_at(H, H_CURSOR), 1);
+      ring_push(H, 0, t);
+      cube_run(H, true);
+      t = task_deliver(H, cont, idx, rv, root_take(H, rv));
+      if (t == 0) {
         break;
       }
-      err_fail("solo delivery lost");
     }
-    if ((u32)H[task_tail(r) + 1] == 0) {
-      t = r;
-      if (io_gpu && fid_bangs((u32)term_aux(t))) {
-        u64  tl   = task_tail(t);
-        Term cont = H[tl];
-        u32  idx  = (u32)(H[tl + 1] >> 32) & 0xFFFF;
-        H[tl]     = TERM_HOLE;
-        a32_store(a32_at(H, H_CURSOR), 1);
-        ring_push(H, 0, t);
-        cube_run(H, true);
-        Term p = task_deliver(H, cont, idx, rv, root_take(H, rv));
-        if (root_done(H)) {
-          break;
-        }
-        if (p == 0) {
-          err_fail("seam delivery lost");
-        }
-        t = p;
-      }
-      continue;
-    }
-    task_deal(H, r, 0, 0, NULL);
-    pool_open();
-    cube_run(H, false);
-    break;
+  }
+  if (!root_done(H)) {
+    err_fail("a delivery lost");
   }
   root_take(H, rv);
   return rv[0];
@@ -6002,7 +5992,7 @@ function array_rmw(a, i, f) {
 // ===
 
 function run_tail(f, x) {
-  return {$: "$JMP", f: f.j?.f === f ? f.j : f, x: [x]};
+  return {$: "$JMP", f: f.j?.f === f ? f.j : f, x};
 }
 
 function run_clo(j) {
@@ -6014,7 +6004,7 @@ function run_clo(j) {
 
 function run_loop(r) {
   while (r !== null && typeof r === "object" && r.$ === "$JMP") {
-    r = r.f(...r.x);
+    r = r.f(r.x);
   }
   return r;
 }
