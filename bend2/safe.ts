@@ -165,7 +165,7 @@ function oos(why: string): never {
 function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
   const n0 = Object.keys(book.tlds).length;
   const groups = new Map<Name, Group>();
-  const inst = new Map(Object.entries(book.tmps).flatMap(([k, is]) => Object.entries(is).map(([key, n]): [Name, [Name, HTerm[]]] =>
+  const inst = new Map(Object.entries(book.tmps).flatMap(([k, is]) => [...is].map(([key, n]): [Name, [Name, HTerm[]]] =>
     [n, [k, key.split("\n").map((a) => B.term_higher(JSON.parse(a) as B.LTerm))]])));
   for (let r = safe_pass(book, groups, inst); ; r = safe_pass(book, groups, inst)) {
     if (r !== null) {
