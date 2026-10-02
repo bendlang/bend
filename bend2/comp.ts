@@ -1029,8 +1029,7 @@ function lay_pack(arms: [Name, Lay[]][]): Lay {
     let at = tag;
     for (const k of lays.flatMap((lay) => lay.ks)) {
       const old = ks[at] ?? "w32";
-      ks[at++] = old === "box" || k === "box" ? "box"
-        : old === "w64" || k === "w64" ? "w64" : "w32";
+      ks[at++] = old === "box" || k === "w32" ? old : k;
     }
   }
   return { ks, arms: Object.fromEntries(arms) };
