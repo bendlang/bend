@@ -3865,18 +3865,6 @@ INLINE Term rfc_seal(Env e, Term t) {
   return rfc_wrap(e, t, 1);
 }
 
-// A redirect cell holds its target's loc over a 24-bit count, which
-// changes by atomic adds on the low half, so a host never reads it as one
-// plain word.
-INLINE u64 rfc_view(DEV u64* H, u64 r) {
-  DEV u32* w = a32_at(H, r);
-  u64 cell = ((u64)a32_load(w + 1) << 32) | a32_load(w);
-  if ((cell & RFC_CNT) == 1) {
-    a32_acq(w);
-  }
-  return cell;
-}
-
 INLINE void rfc_bump(Env e, u64 r, u32 k) {
   u32 c = a32_add(a32_at(e.mem, r), k);
   if ((c & RFC_CNT) >= RFC_CNT - k) {
@@ -3895,18 +3883,20 @@ INLINE Term term_keep(Env e, Term t, u32 k) {
   return rfc_wrap(e, t, 1 + k);
 }
 
+// A redirect cell holds its target's loc over a 24-bit count, which
+// changes by atomic adds on the low half. The loc never changes, so one
+// relaxed read of the cell (a plain one on the device), torn or not, finds
+// it; a shared node's fields never change either.
 INLINE u64 term_peek(DEV u64* H, Term t) {
   if (term_rfc(t)) {
-    return rfc_view(H, term_loc(t)) >> 24;
+    return w64_load(&H[term_loc(t)]) >> 24;
   }
   return term_loc(t);
 }
 
 #define blk_shr(t) (BLK_SHR && term_rfc(t))
 
-INLINE u64 blk_loc(DEV u64* H, Term a) {
-  return blk_shr(a) ? w64_load(&H[term_loc(a)]) >> 24 : term_loc(a);
-}
+#define blk_loc(H, a) (BLK_SHR ? term_peek(H, a) : term_loc(a))
 
 INLINE u32 blk_cls(Term t) {
   return (u32)term_aux(t) & 31;
@@ -4017,14 +4007,14 @@ INLINE u64 ctr_take(Env e, Term t, u32 n, THR Term* out) {
     }
     return term_loc(t);
   }
-  u64 r    = term_loc(t);
-  u64 cell = rfc_view(H, r);
-  u64 src  = cell >> 24;
+  u64 src = term_peek(H, t);
   for (u32 j = 0; j < n; j += 1) {
     out[j] = H[src + j];
   }
-  if ((cell & RFC_CNT) == 1) {
-    heap_free(e, 0, r);
+  DEV u32* c = a32_at(H, term_loc(t));
+  if ((a32_load(c) & RFC_CNT) == 1) {
+    a32_acq(c);
+    heap_free(e, 0, term_loc(t));
     return src;
   }
   span_fade(e, t, src, n);
