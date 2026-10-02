@@ -4810,7 +4810,7 @@ static Term* pool_stack(void) {
 
 static u32 pool_step(u32 rows) {
   u32 per = rows * CUBE_T / (32 * pool_size);
-  return CUBE_T / (per >= LINE ? LINE : per < 2 ? 1 : 1u << (31 - CLZ(per)));
+  return CUBE_T >> (31 - CLZ(per < LINE ? per | 1 : LINE));
 }
 
 static u32 pool_rows(Env e, DEV Term* stk) {
@@ -4819,7 +4819,8 @@ static u32 pool_rows(Env e, DEV Term* stk) {
     u32 c    = a32_add(&pool_row, 1);
     u32 r    = c & 32767;
     u32 rows = c >> 15 & 255;
-    if (r >= (c >> 23 & 1 ? rows : rows * pool_step(rows))) {
+    u32 step = c >> 23 & 1 ? 1 : pool_step(rows);
+    if (r >= rows * step) {
       if (n != 0 && a32_sub_rel(&pool_done, n) == n) {
         pthread_mutex_lock(&pool_lock);
         pthread_cond_signal(&pool_join);
@@ -4831,8 +4832,7 @@ static u32 pool_rows(Env e, DEV Term* stk) {
     if (c >> 23 & 1) {
       row_grow(e, stk, r * CUBE_T, 1, CUBE_T);
     } else {
-      u32 step = pool_step(rows);
-      u32 row  = r / step * CUBE_T;
+      u32 row = r / step * CUBE_T;
       for (u32 rg = row + r % step; rg < row + CUBE_T; rg += step) {
         u32 put0 = a32_load(ring_put(e.mem, rg));
         while (*ring_get(e.mem, rg) != put0 && !err_seen(e.mem)) {
@@ -5217,8 +5217,8 @@ static void gpu_pass(u32 f) {
 // 2048 at 16 threads start 384 rounds: 15 MB -> 68 MB), and pool_step
 // splits the few rows finely instead. A turn visits only the rows below
 // its bound: a drain deals task g to ring_flip(g), whose row is at most g,
-// a row grows into itself, and a column grow's cur tasks land in rows 1
-// to cur, so those rows hold every task.
+// a row grows into itself, and a column grow's cur tasks land in rows 0
+// to cur - 1, so those rows hold every task.
 
 // Between turns no lane runs, so each ring of the turn's rows clears what it
 // wrote (a stale lap bit reads as written) and lays its tasks from slot 0:
@@ -5228,21 +5228,20 @@ static void ring_rewind(u64* H, u32 rows) {
   Term keep[RING_LEN];
   for (u32 r = 0; r < (rows < CUBE_G ? rows : CUBE_G) * CUBE_T; r += 1) {
     u32 g = *ring_get(H, r);
-    u32 p = *ring_put(H, r);
-    if (g == 0) {
+    u32 n = *ring_put(H, r) - g;
+    if (g == 0 || n > RING_LEN) {
       continue;
     }
-    for (u32 i = g; i < p; i += 1) {
-      keep[i - g] = *ring_slot(H, r, i) & ~RFC_BIT;
+    for (u32 i = 0; i < n; i += 1) {
+      keep[i] = *ring_slot(H, r, g + i) & ~RFC_BIT;
     }
-    for (u32 i = 0; i < p && i < RING_LEN; i += 1) {
+    for (u32 i = n; i < g + n && i < RING_LEN; i += 1) {
       ((u32*)ring_slot(H, r, i))[1] = 0;
     }
-    for (u32 i = 0; i < p - g; i += 1) {
-      *ring_slot(H, r, i) = keep[i] | (u64)ring_lap(i) << 63;
+    *ring_get(H, r) = *ring_put(H, r) = 0;
+    for (u32 i = 0; i < n; i += 1) {
+      ring_push(H, r, keep[i]);
     }
-    *ring_get(H, r) = 0;
-    *ring_put(H, r) = p - g;
   }
 }
 
@@ -5259,10 +5258,10 @@ static void cube_run(u64* H, bool gpu) {
       gpu_pass(f);
     } else {
       u32 rows = f;
-      if (f * (CUBE_T / LINE) < pool_size) {
-        u32 cur = row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G,
-          (pool_size + CUBE_T / LINE - 1) / (CUBE_T / LINE));
-        rows = cur + 1 > f ? cur + 1 : f;
+      u32 want = (pool_size - 1) / (CUBE_T / LINE) + 1;
+      if (f < want) {
+        u32 cur = row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, want);
+        rows = cur > f ? cur : f;
       }
       if (f < CUBE) {
         pool_turn(true, rows);
