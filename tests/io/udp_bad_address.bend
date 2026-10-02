@@ -5,8 +5,9 @@
 # reads a leading-zero quad as decimal while glibc refuses it, so
 # "0127.0.0.1" sent a real datagram in C where JS refused; earlier
 # the JS codec read Number("") as 0, so "1.2.3." sent to 1.2.3.0
-# where C refused. ONE socket threads through every probe: the
-# handle rides OUTSIDE the Result, so it survives five Fails and
+# where C refused. A host with a NUL in it is refused too, where C would
+# read only the quad before it. ONE socket threads through every probe:
+# the handle rides OUTSIDE the Result, so it survives six Fails and
 # still sends -- the failure paths once dropped it, and a failed op
 # leaked its handle forever. Each Fail hands its datagram back.
 import Base
@@ -49,10 +50,12 @@ def main():
     c : Socket <- probe(b, "1.2.3")
     d : Socket <- probe(c, "0127.0.0.1")
     g : Socket <- probe(d, "010.0.0.1")
-    h : Socket <- probe(g, "127.0.0.1")
+    n : Socket <- probe(g, "127.0.0.1\u{0}x")
+    h : Socket <- probe(n, "127.0.0.1")
     x : Unit <- Socket.close(h)
     return 0
 
+#|Invalid argument, kept x
 #|Invalid argument, kept x
 #|Invalid argument, kept x
 #|Invalid argument, kept x
