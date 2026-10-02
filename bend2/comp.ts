@@ -3699,8 +3699,8 @@ ${tabs}
 // ===
 
 // C11's atomics on every lane; a device FENCE releases or acquires.
-// Metal's a32_load reads through a volatile local, or the M1 pipeline
-// build dies. A weak CAS may fail with the cell still x: a32_cmpx loops.
+// Metal's loads read through a volatile local, or the M1 and M2 pipeline
+// builds die. A weak CAS may fail with the cell still x: a32_cmpx loops.
 
 #define A32_LOOP(k, x) \
   INLINE u32 a32_##k(DEV u32* p, u32 v) { \
@@ -3775,7 +3775,7 @@ ${a32_ops((k) => `a32_${k}(p, v) atomic_fetch_${k}_explicit(A32(p), v, RLX)`)}
 #define a32_at(H, word)     ((DEV u32*)&(H)[word])
 
 INLINE u32 a32_load_acq(DEV u32* p) {
-  u32 v = atomic_load_explicit(A32(p), ACQ);
+  u32 v = DEVICE ? a32_load(p) : atomic_load_explicit(A32(p), ACQ);
   FENCE();
   return v;
 }
