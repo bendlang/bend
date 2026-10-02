@@ -822,15 +822,6 @@ function term_any(fl: File, t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
     === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
 }
 
-function term_nodes(fl: File, t: HTerm): number {
-  let n = 0;
-  term_any(fl, t, () => {
-    n += 1;
-    return false;
-  });
-  return n;
-}
-
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
@@ -2415,7 +2406,10 @@ function emit_fold(fl: File, t: HTerm): HTerm | null {
       if (b === null) {
         return null;
       }
-      FUEL -= term_nodes(fl, b);
+      term_any(fl, b, () => {
+        FUEL -= 1;
+        return false;
+      });
       return term_any(fl, b, (y) => {
         if (y.$ === "App" || y.$ === "Ref") {
           emit_fold(fl, y);
