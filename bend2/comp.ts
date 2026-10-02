@@ -1343,28 +1343,27 @@ function file_new(book: Bend.Book, js: boolean): File {
   };
 }
 
-function file_book(roots: Name[]): File {
-  const fl = FL;
+function file_book(fl: File, roots: Name[]): void {
   for (const k of OWNED) {
-    if (FL.book.tlds[k] && !FL.book.tlds[k].b) {
+    if (fl.book.tlds[k] && !fl.book.tlds[k].b) {
       die(Bend.name_key(k)
         + " is a name the compiler encodes itself: name yours apart");
     }
   }
-  for (const [k, tld] of Object.entries(FL.book.tlds)) {
-    if (def_foreign(tld) && k in FL.book.ctrs) {
+  for (const [k, tld] of Object.entries(fl.book.tlds)) {
+    if (def_foreign(tld) && k in fl.book.ctrs) {
       die(Bend.name_key(k)
         + " names both a constructor and a foreign def: name one apart");
     }
   }
   const queue = roots.slice();
   for (const d of queue) {
-    if (FL.srcs.has(d)) {
+    if (fl.srcs.has(d)) {
       continue;
     }
     memo_gc();
-    const tld = FL.book.tlds[d];
-    FL.srcs.set(d, null);
+    const tld = fl.book.tlds[d];
+    fl.srcs.set(d, null);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
       queue.push(...type_adts(x.T));
     }
@@ -1395,10 +1394,9 @@ function file_book(roots: Name[]): File {
         || (ck.k !== null && (ck.b || (ck.k === d && !tail))));
       return false;
     });
-    FL.srcs.set(d, flat ? deps : null);
+    fl.srcs.set(d, flat ? deps : null);
     queue.push(...refs);
   }
-  return fl;
 }
 
 function facts_hot(fl: File, B: HTerm | null, force: boolean): void {
@@ -2743,18 +2741,18 @@ function effect_srcs(fl: File, ext: string, miss: string): string[] {
 // ladder, as clang builds the phi cascade of a fallthrough switch in O(n^2).
 
 export function compile_book(book: Bend.Book): string {
-  FL = file_new(book, false);
+  const fl = FL = file_new(book, false);
   // a pure main's descriptor names constructors of the types it prints,
   // so their datatypes are roots too
   const show = show_main();
   const fams = (show ?? []).flatMap((c) =>
-    typeof c === "string" ? [Bend.book_fam(FL.book, c)] : []);
-  const fl = file_book(["main", ...RUNTIME_ADTS, ...fams]);
+    typeof c === "string" ? [Bend.book_fam(fl.book, c)] : []);
+  file_book(fl, ["main", ...RUNTIME_ADTS, ...fams]);
   const facts = () => fl.own.size + fl.hot.size + fl.stat.size;
   let was: number;
   do {
     was = facts();
-    [fl.lend, fl.spun, fl.clos, fl.tabs, fl.lits, fl.consts, FL.brws]
+    [fl.lend, fl.spun, fl.clos, fl.tabs, fl.lits, fl.consts, fl.brws]
       .forEach((m) => m.clear());
     fl.segs = [];
     fl.spins = [];
@@ -2801,8 +2799,8 @@ export function compile_book(book: Bend.Book): string {
   const entries = [...fl.segs, seg_new(IO_EMIT, BOX, [""]),
     seg_new(CLO_APPLY, BOX, ["", ""])];
   const cids = new Map<Name, number>();
-  for (const k of FL.srcs.keys()) {
-    for (const c of (FL.book.tlds[k] as Bend.ADT).c ?? []) {
+  for (const k of fl.srcs.keys()) {
+    for (const c of (fl.book.tlds[k] as Bend.ADT).c ?? []) {
       cids.set(c.k, lay_node(c.k).ks.length);
     }
   }
@@ -2872,7 +2870,7 @@ export function compile_book(book: Bend.Book): string {
 // A def's JS name is its key between $s: each . a $, and any other
 // non-word char a $ and its three-digit code, so no two keys share one.
 // Each effect source runs once in a closure of its own and registers
-// its effects with io_eff(CID(k), run, need?), as a C source does. A
+// its effects with io_eff(CID(k), run), as a C source does. A
 // def on a tail cycle is one loop over the cycle's bodies ($pc picks
 // one), each turn binding its parameters afresh, so a closure keeps its
 // own; any other call is direct. Only a closure's tail call bounces
@@ -3173,13 +3171,13 @@ function js_host(fl: File, k: Name): string {
 // A module (for the .bend loader and -o <out>.mjs) roots and exports each
 // def a host can call.
 export function js_lib(book: Bend.Book, mod = false): string {
-  FL = file_new(book, true);
-  const outs = !mod ? null : [...new Set(FL.book.order)].filter((k) => {
-    const t = FL.book.tlds[k];
+  const fl = FL = file_new(book, true);
+  const outs = !mod ? null : [...new Set(fl.book.order)].filter((k) => {
+    const t = fl.book.tlds[k];
     return done_live(t) && !def_foreign(t) && t.b !== true && t.x === 0
-      && io_base(FL.book, t.T) === null;
+      && io_base(fl.book, t.T) === null;
   });
-  const fl = file_book(outs ?? ["main"]);
+  file_book(fl, outs ?? ["main"]);
   for (const [k, def] of done_defs(fun_runs)) {
     memo_gc();
     js_def(fl, k, def);
