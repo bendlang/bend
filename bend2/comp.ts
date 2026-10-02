@@ -912,13 +912,17 @@ function tele_unbind(book: Bend.Book, T: HTerm): { doms: Dom[]; ret: HTerm } {
 // Ty
 // ==
 
+// A rewrite stuck on an open proof runs as its body (ty_peel drops it from
+// a term), so ty_wnf reads a type through it, as every closed proof would.
+
 function ty_ann(t: HTerm): HTerm | null {
   const v = term_force(t);
   return v.$ === "Ann" ? v.T : null;
 }
 
 function ty_wnf(book: Bend.Book, ty: HTerm | null): HTerm | null {
-  return ty && Bend.term_wnf(book, ty);
+  const t = ty && Bend.term_wnf(book, ty);
+  return t?.$ === "Rwt" ? ty_wnf(book, t.f) : t;
 }
 
 function ty_all(book: Bend.Book, ty: HTerm | null): Of<"All"> {
@@ -1481,11 +1485,15 @@ function facts_hot(fl: File, B: HTerm | null, force: boolean,
     if (w?.$ === "Mat") {
       return term_kids(fl, w).forEach((h) => facts_hot(fl, h, true, local));
     }
+    // A type the facts can't read may hold any datatype, so all go hot;
+    // a sort, an index value, an Eql and a law hold no constructor.
     const dom = w?.$ === "Var" && !local && tele_unbind(fl.book,
       fl.book.tlds[fl.def].T).doms[w.i];
+    const inert = w?.$ === "Ref" ? !done_live(fl.book.tlds[w.k])
+      : "Typ Qnt Qua Min Eql Rfl Lit Ctr Efq".split(" ").includes(w?.$ ?? "");
     if (dom && dom[1] === w.k && !dom_live(dom)) {
       fl.hot.add(fl.def + "~" + w.i);
-    } else if ("All Var App".includes(w?.$!)) {
+    } else if (!inert) {
       fl.hot.add("*");
     }
     return;
