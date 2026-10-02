@@ -973,10 +973,17 @@ function later(e: Safe, k: Name): Name[] {
   return at < 0 ? [] : [...refs(e, k)].filter((r) => e.book.order.lastIndexOf(r) > at && (e.book.tlds[r] as Def | undefined)?.e !== undefined);
 }
 
+// k's group: the one it leads, else its first later call's, so a lead
+// that also calls a later def keeps the group its helpers queue
 function group_of(e: Safe, k: Name): Group | null {
   if (!e.groups.has(k)) {
     const tld = e.book.tlds[k];
-    e.groups.set(k, tld?.$ !== "Def" || tld.e === undefined ? null : group_new(e, later(e, k)[0] ?? k));
+    let g: Group | null = null;
+    if (tld?.$ === "Def" && tld.e !== undefined) {
+      const l = later(e, k)[0];
+      g = group_new(e, k) ?? (l === undefined ? null : group_new(e, l));
+    }
+    e.groups.set(k, g);
   }
   const g = e.groups.get(k) ?? null;
   if (g !== null && !g.ms.includes(k)) {
