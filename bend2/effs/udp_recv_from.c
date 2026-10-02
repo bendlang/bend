@@ -25,6 +25,12 @@ static Term udp_recv_from_more(Env e, IoWork* w) {
 // at is the try_ deadline (past it, Wait{}), 0 for the blocking twin.
 static Term udp_recv_from_start(Env e, Term* f, IoWork* w, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
+  w->time = at;
+  if (f[1] == 0) {
+    w->code = EINVAL;
+    return io_tup(e, io_hand(w->hand), io_poll_end(e, w,
+      term_pak(CID(Unit), 0), io_fail(e, EINVAL, NULL)));
+  }
   w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;
   w->data = io_mem(malloc((size_t)w->made + 1));
   return io_wait_on(w, (int)w->hand, POLLIN, at, udp_recv_from_more);

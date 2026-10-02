@@ -14,12 +14,10 @@ static Term tcp_send_with(Env e, IoWork* w, IoPack more,
       return io_wait_on(w, fd, POLLOUT, w->time, more);
     }
   }
-  const char* s    = strerror((int)w->code);
-  u64         left = w->size - (u64)w->made;
-  Term r = io_poll_end(e, w, make(e, w->data + w->made, left), w->code == 0
-    ? io_done(e, term_pak(CID(Unit), 0)) : io_box(e, CID(Fail), io_tup(e,
-      io_tup(e, w->code, io_str(e, s, strlen(s))),
-      make(e, w->data + w->made, left))));
+  u64  left = w->size - (u64)w->made;
+  Term r    = io_poll_end(e, w, make(e, w->data + w->made, left), w->code == 0
+    ? io_done(e, term_pak(CID(Unit), 0)) : io_box(e, CID(Fail),
+      io_tup(e, io_err(e, w->code, NULL), make(e, w->data + w->made, left))));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
@@ -50,11 +48,10 @@ static Term tcp_send_bytes_start(Env e, Term* f, IoWork* w, u64 at) {
   for (Term s = f[1]; term_aux(s) == CID(Con);) {
     u64 l = term_peek(e.mem, s);
     if (e.mem[l] > 255) {
-      const char* m = strerror(EINVAL);
       w->code = EINVAL;
       w->time = at;
       return io_tup(e, f[0], io_poll_end(e, w, f[1], io_box(e, CID(Fail),
-        io_tup(e, io_tup(e, EINVAL, io_str(e, m, strlen(m))), f[1]))));
+        io_tup(e, io_err(e, EINVAL, NULL), f[1]))));
     }
     s = e.mem[l + 1];
   }

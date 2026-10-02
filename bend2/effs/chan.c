@@ -26,7 +26,8 @@ static u32      chan_idle = ~0u;
 #define chan_some(e, v) io_box(e, CID(Some), v)
 #define chan_none       term_pak(CID(None), 0)
 #define chan_done(e)    io_done(e, term_pak(CID(Unit), 0))
-#define chan_rest(item) ((item) == TERM_HOLE ? term_pak(CID(Unit), 0) : (item))
+#define chan_wait(e, item) io_box(e, CID(Wait), \
+  (item) == TERM_HOLE ? term_pak(CID(Unit), 0) : (item))
 
 static Term chan_open(u32 room) {
   u32 i = chan_idle;
@@ -64,26 +65,24 @@ static void chan_cut(IoWork** q, IoWork* w) {
     p = p->next;
   }
   p->next = w->next;
-  *q = p == w ? NULL : *q == w ? p : *q;
+  if (*q == w) {
+    *q = p != w ? p : NULL;
+  }
 }
 
-// A try_ waiter's timer (hand: the waiter, 0 once woken; word: its row).
+// A try_ waiter's timer (hand: the waiter; word: its row), parked on
+// io_park while the waiter sits on the row; the first to come cuts the other.
 static Term chan_late(Env e, IoWork* t) {
   IoWork* w = (IoWork*)t->hand;
-  if (w == NULL) {
-    free(t);
-    return IO_PARK;
-  }
   chan_cut(&chan_rows[t->word].wait, w);
-  w->item = io_box(e, CID(Wait), chan_rest(w->item));
-  w->made = 0;
+  w->item = chan_wait(e, w->item);
   io_push(&io_runs, w);
   free(t);
   return IO_PARK;
 }
 
 // Parks the effect's activation on row with item: a sent value, or
-// TERM_HOLE for a receiver.
+// TERM_HOLE for a receiver. made is its timer if try_, else 0.
 static Term chan_park(ChanRow* row, IoWork* w, Term item, u64 at) {
   w->item = item;
   w->made = 0;
@@ -100,13 +99,13 @@ static Term chan_park(ChanRow* row, IoWork* w, Term item, u64 at) {
   return IO_PARK;
 }
 
-// Wakes the first waiter with x, as Ready{x} if try_ (disarming its timer).
+// Wakes the first waiter with x, as Ready{x} if try_ (cutting its timer).
 static Term chan_wake(Env e, ChanRow* row, Term x) {
   IoWork* a    = io_pop(&row->wait);
   Term    item = a->item;
   if (a->made != 0) {
-    ((IoWork*)a->made)->hand = 0;
-    a->made = 0;
+    io_park_cut((IoWork*)a->made);
+    free((IoWork*)a->made);
     x = io_box(e, CID(Ready), x);
   }
   a->item = x;
@@ -192,7 +191,7 @@ static Term chan_try(Env e, ChanRow* row, IoWork* w, Term x, Term item,
     return io_box(e, CID(Ready), x);
   }
   if (ms == 0) {
-    return io_box(e, CID(Wait), chan_rest(item));
+    return chan_wait(e, item);
   }
   return chan_park(row, w, item, io_until(ms));
 }

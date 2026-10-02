@@ -5,9 +5,12 @@
 // the loop from its timers; a recv that still finds no datagram (the socket
 // is non-blocking) parks again.
 function udp_recv_from_with(socket, max, k, at) {
+  if (Number(max) === 0) {
+    return io_tup(socket, io_ready(at, io_fail(22)));
+  }
   const sys = io_sys();
   const fd = socket;
-  const b = new Uint8Array(Math.max(Number(max), 1));
+  const b = new Uint8Array(Number(max));
   const peer = new Uint8Array(16);
   const len = new Uint32Array([16]);
   const go = () => {

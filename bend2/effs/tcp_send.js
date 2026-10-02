@@ -14,8 +14,7 @@ function tcp_send_with(socket, b, k, make, at) {
       if (n < 0) {
         const code = sys.errno();
         if (code !== again) {
-          const fail = io_fail(code);
-          fail.error = io_tup(fail.error, make(part, part.length));
+          const fail = io_fail(code, make(part, part.length));
           return io_tup(socket, io_ready(at, fail));
         }
         if (io_late(at)) {
@@ -38,9 +37,7 @@ function tcp_send_bytes_with(socket, data, k, at) {
   if (b !== null) {
     return tcp_send_with(socket, b, k, io_list, at);
   }
-  const fail = io_fail(22);
-  fail.error = io_tup(fail.error, data);
-  return io_tup(socket, io_ready(at, fail));
+  return io_tup(socket, io_ready(at, io_fail(22, data)));
 }
 
 function tcp_send(socket, data, k) {
