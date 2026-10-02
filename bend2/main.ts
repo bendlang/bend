@@ -834,7 +834,7 @@ function book_seed(base: Bend.Book): Bend.Book {
   }
   Object.assign(book.ctrs, base.ctrs);
   for (const k of Object.keys(base.tmps)) {
-    book.tmps[k] = { ...base.tmps[k] };
+    book.tmps[k] = new Map(base.tmps[k]);
   }
   book.order.push(...base.order);
   return book;
