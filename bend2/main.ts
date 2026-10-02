@@ -720,10 +720,8 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
       + bad.map((k) => "- " + Bend.name_key(k) + "\n").join(""));
     return 1;
   }
-  const oos: string[] = [];
-  if (kernel && !Safe.safe_check(book, oos)) {
-    cli_say(2, FAIL + "\n" + (oos.length === 0 ? MISMATCH + "\n"
-      : "Sorry - BendTT: out of scope:\n" + oos.join("")));
+  if (kernel && !Safe.safe_check(book)) {
+    cli_say(2, FAIL + "\n" + MISMATCH + "\n");
     return 1;
   }
   cli_say(1, PASS + "\n" + (kernel ? "" : HINT + "\n"));
