@@ -110,8 +110,10 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 // its model), the defs out (an opaque one flagged), each item's kernel
 // name, the items out or going out, the ones named but not yet out, the
 // kernel names taken, why each failed item is out of
-// scope, each item's specialized parameters, each def's group, and each
-// template instance's template and ~ arguments (its key in book.tmps)
+// scope, each item's specialized parameters, the groups found (kept from
+// pass to pass), each template instance's template and ~ arguments (its
+// key in book.tmps), the items going out (outermost first, and as a set),
+// and whether this pass grew a group
 type Safe = {
   book: Book;
   mb: Book;
@@ -125,6 +127,8 @@ type Safe = {
   groups: Map<Name, Group>;
   inst: Map<Name, [Name, HTerm[]]>;
   stack: string[];
+  going: Set<string>;
+  grew: boolean;
 };
 
 // Constants
@@ -159,25 +163,26 @@ function oos(why: string): never {
 // in bend2's fill order, and what they name; a def out of scope goes, as
 // does every def that names it, and oos says why, for each book name
 function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
-  const n = Object.keys(book.tlds).length;
+  const n0 = Object.keys(book.tlds).length;
   const groups = new Map<Name, Group>();
-  for (let r = safe_pass(book, groups); ; r = safe_pass(book, groups)) {
+  const inst = new Map(Object.entries(book.tmps).flatMap(([k, is]) => Object.entries(is).map(([key, n]): [Name, [Name, HTerm[]]] =>
+    [n, [k, key.split("\n").map((a) => B.term_higher(JSON.parse(a) as B.LTerm))]])));
+  for (let r = safe_pass(book, groups, inst); ; r = safe_pass(book, groups, inst)) {
     if (r !== null) {
       return r;
     }
     // the next pass's root constants are named afresh
-    Object.keys(book.tlds).slice(n).forEach((k) => delete book.tlds[k]);
+    Object.keys(book.tlds).slice(n0).forEach((k) => delete book.tlds[k]);
   }
 }
 
-// one pass at the groups found so far, or null when a mention named a
-// member on its own before its group went out (the pass is stale)
-function safe_pass(book: Book, groups: Map<Name, Group>): { text: string; oos: Array<[Name, string]> } | null {
+// one pass at the groups found so far, or null when it is stale: it grew
+// a group some item had already gone out at, or a mention named a member
+// on its own before the member's group was found
+function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups, stack: [],
-    inst: new Map(Object.entries(book.tmps).flatMap(([k, is]) => Object.entries(is).map(([key, n]): [Name, [Name, HTerm[]]] =>
-      [n, [k, key.split("\n").map((a) => B.term_higher(JSON.parse(a) as B.LTerm))]]))) };
+    todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups, inst, stack: [], going: new Set(), grew: false };
   const roots: Array<[Name, string]> = [];
   for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
     try {
@@ -194,7 +199,7 @@ function safe_pass(book: Book, groups: Map<Name, Group>): { text: string; oos: A
   for (let it = e.todo.pop(); it !== undefined; it = e.todo.pop()) {
     item_try(e, it[0], it[1]);
   }
-  if (groups.size > g0 && [...e.names.keys()].some((key) => key[0] !== "\t" && groups.has(key.split("\n")[0]))) {
+  if (e.grew || groups.size > g0 && [...e.names.keys()].some((key) => key[0] !== "\t" && groups.has(key.split("\n")[0]))) {
     return null;
   }
   // a def that names a def out of scope is out too
@@ -281,7 +286,7 @@ function item_key(k: Name, cols: Cols): string {
 // name still going out (not its own) closes a live cycle: a group
 function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
   const key = item_key(k, cols);
-  const m = trail(e);
+  const m = live && !e.seen.has(key) ? trail(e) : null;
   let n = e.names.get(key);
   if (n === undefined) {
     const tag = cols.flatMap((v) => v === null ? [] : [v.$ === "Qua" ? String(quant(v.q)) : "v"]).join("");
@@ -293,9 +298,10 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
   if (why !== undefined && live) {
     oos(why);
   }
-  if (live && !e.seen.has(key)) {
+  if (m !== null) {
     e.seen.add(key);
     e.stack.push(key);
+    e.going.add(key);
     try {
       item_emit(e, k, cols, n);
     } catch (x) {
@@ -309,8 +315,9 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
       throw x;
     } finally {
       e.stack.pop();
+      e.going.delete(key);
     }
-  } else if (live && e.stack.includes(key) && e.stack[e.stack.length - 1] !== key) {
+  } else if (live && e.going.has(key) && e.stack[e.stack.length - 1] !== key) {
     regroup(e, key);
   }
   return n;
@@ -986,12 +993,13 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
     ps.push([quant(F.q), x, F.A, v]);
     U = F.B(v ?? x);
   });
-  const g = typeof k === "string" ? group_of(e, k) : null;
-  if (g !== null) {
-    return group_call(e, s, g, k as Name, ps, U as HTerm, live);
-  }
+  // a call that closed a live cycle goes again, through its group
   let n: string | null;
   try {
+    const g = typeof k === "string" ? group_of(e, k) : null;
+    if (g !== null) {
+      return group_call(e, s, g, k as Name, ps, U as HTerm, live);
+    }
     n = typeof k === "string" ? item_ref(e, k, ps.map((p) => p[3]), live) : null;
   } catch (x) {
     if (x instanceof Reroute) {
@@ -1023,22 +1031,26 @@ function group_of(e: Safe, k: Name): Group | null {
 }
 
 // the live cycle from the item at key to the top of the stack, as a group:
-// a group item on it brings its members and lead; otherwise the lead is
-// the member filled last (the law its helpers call back)
+// a group item on it brings its members, and the lead is the member
+// filled last (the law its helpers call back). A cycle that adds no
+// member (one def, or one group, at other specialized arguments) is not
+// one def. Growing a group stales the pass, which may have sent the group
+// out already
 function regroup(e: Safe, key: string): never {
   const ns = e.stack.slice(e.stack.indexOf(key)).map((x) => x.split("\n")[0]);
-  const gs = ns.filter((x) => x[0] === "\t").map((x) => group_of(e, x.slice(1)) as Group);
+  const gs = [...new Set(ns.filter((x) => x[0] === "\t").map((x) => group_of(e, x.slice(1)) as Group))];
   const ms = [...new Set(ns.flatMap((x) => x[0] === "\t" ? (group_of(e, x.slice(1)) as Group).ms : [x]))];
-  if (ms.length < 2) {
+  if (ms.length < 2 || gs.length === 1 && ms.length === gs[0].ms.length) {
     oos("a recursion through " + B.name_key(ms[0]) + " at other specialized arguments");
   }
   const at = (x: Name): number => e.book.order.lastIndexOf(x);
-  const k = gs[0]?.k ?? ms.reduce((a, b) => at(b) > at(a) ? b : a);
+  const k = ms.reduce((a, b) => at(b) > at(a) ? b : a);
   const g = group_new(e, k, ms.filter((x) => x !== k).sort((a, b) => at(a) - at(b)))
     ?? oos("a mutual recursion through " + ms.map(B.name_key).join(", ") + " that no live parameter of " + B.name_key(k) + " leads");
   for (const x of g.ms) {
     e.groups.set(x, g);
   }
+  e.grew ||= gs.length > 0;
   throw new Regroup(key);
 }
 
@@ -1079,7 +1091,9 @@ function back(t: unknown, k: Name): B.LTerm[][] {
   return f.$ === "Ref" && f.k === k && xs.length > 0 ? [xs] : Object.entries(t).flatMap(([j, v]) => j === "s" ? [] : back(v, k));
 }
 
-// what an emission has added, which a Regroup below it undoes
+// what an emission has added, which a Regroup below it undoes. Emission
+// only appends to these six, so their sizes mark it; other state an
+// emission changes would outlive the undo
 type Trail = [number, number, number, number, number, number];
 
 function trail(e: Safe): Trail {
@@ -1101,15 +1115,7 @@ function group_call(e: Safe, s: Scope, g: Group, m: Name, ps: Arg[], R: HTerm, l
   if (ps.length < (e.book.tlds[m] as Def).n || ps.slice(n).some((p) => p[3] !== null)) {
     oos("a partial or specialized call to " + m + ", mutually recursive");
   }
-  let k: string;
-  try {
-    k = item_ref(e, "\t" + g.k, ps.slice(0, n).map((p) => p[3]), live);
-  } catch (x) {
-    if (x instanceof Reroute) {
-      return group_call(e, s, group_of(e, m) as Group, m, ps, R, live);
-    }
-    throw x;
-  }
+  const k = item_ref(e, "\t" + g.k, ps.slice(0, n).map((p) => p[3]), live);
   const a = { ...s, sub: live && k === s.self };
   const args = (xs: Arg[], qs: Q[]): Array<[Q, O]> => xs.flatMap(([q, x, A, v], j): Array<[Q, O]> =>
     v !== null ? [] : [[qs[j] ?? q, arg_term(e, a, x, A, live && (qs[j] ?? q) > 0)]]);
