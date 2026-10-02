@@ -2720,18 +2720,15 @@ function emit_row(fl: File, t: HTerm, ty: HTerm | null): string | null {
 
 function emit_tab(fl: File, cells: HTerm[] | null, ty: HTerm,
   s: string): string | null {
-  if (cells === null) {
-    return null;
-  }
-  const ls = cells.map((t) => emit_row(fl, t, ty));
-  if (ls.includes(null)) {
+  const ls = cells?.map((t) => emit_row(fl, t, ty));
+  if (ls === undefined || ls.includes(null)) {
     return null;
   }
   const key = (fl.js ? ls : Function("f32_bits", `return [${ls}]`)(
     Bend.f32_to_bits).map((v: number) => BigInt(v) + "ull")).join(", ");
   const tab = "TAB_" + memo(fl.tabs, key, () => fl.tabs.size);
-  return fl.js ? `${tab}[Math.min(${s}, ${cells.length - 1})]`
-    : `TAB_AT(${tab}, ${s}, ${cells.length - 1})`;
+  return fl.js ? `${tab}[Math.min(${s}, ${ls.length - 1})]`
+    : `TAB_AT(${tab}, ${s}, ${ls.length - 1})`;
 }
 
 function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
