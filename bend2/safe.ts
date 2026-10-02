@@ -22,7 +22,8 @@
 // λ{(,): ..} splits the tag from the fields, a λ{.k: ..; ..} chain
 // switches on the tag, and one λ{(,): ..} per field splits the chain,
 // which ends in λ{(): ..; λ{}}. A default arm binds the tag and the
-// fields, and its binder is their pair.
+// fields, and its binder is their pair. A D with no constructors also
+// has D.efq(ps) : D(ps) -> <>, so the kernel checks that D is empty.
 //
 // The kernel's live check reads the case tree: a self-call must pass,
 // left to right, each live column whole until one gets a piece of
@@ -175,7 +176,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
     for (const [k, T, v] of e.out) {
       const r = bad.has(k) ? undefined : [...o_refs(T), ...o_refs(v)].find((r) => bad.has(r));
       if (r !== undefined) {
-        bad.set(k, "names " + r + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
+        bad.set(k, "names " + B.name_key(r) + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
         more = true;
       }
     }
@@ -279,13 +280,13 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
   }
   const tld = e.book.tlds[k];
   if (tld === undefined) {
-    oos("an unknown name " + k);
+    oos("an unknown name " + B.name_key(k));
   }
   if (tld.$ === "ADT") {
     return adt_emit(e, cols, n, tld);
   }
   if (tld.u === true) {
-    oos("uses " + (tld.b === true ? "base's" : "the") + " @unsafe def " + k);
+    oos("uses " + (tld.b === true ? "base's" : "the") + " @unsafe def " + B.name_key(k));
   }
   def_emit(e, k, cols, n, tld);
 }
@@ -295,7 +296,7 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = type_drop(e, tld.T, cols);
-  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + k);
+  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -316,8 +317,11 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const arms = tld.c.reduceRight<O>((m, c) => ({ $: "Mat", k: name_tt(c.k), h: fs(c), m }), { $: "Efq" });
   const Enu: O = { $: "Enu", ks: tld.c.map((c) => name_tt(c.k)) };
   e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: { $: "Typ", q: G } }), lams(ps, arms), false]);
-  const f = ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k: am });
-  e.out.push([n, alls(ps, { $: "Typ", q: G }), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f, x: { $: "Var", l: t } } }), false]);
+  const at = (k: string): O => ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k });
+  e.out.push([n, alls(ps, { $: "Typ", q: G }), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: { $: "Var", l: t } } }), false]);
+  if (tld.c.length === 0) {
+    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(ps, { $: "Prj", h: { $: "Efq" } }), false]);
+  }
 }
 
 // the first n parameters of the telescope T (all, at most), from scope s on: one cols
@@ -483,8 +487,9 @@ function fresh(e: Safe, n: string): string {
   return k;
 }
 
-// a bend2 name spelled with BendTT's name characters: _hex_ escapes
-// underscores too, so a literal escape spelling cannot collide with one.
+// a canonical bend2 key spelled with BendTT's name characters: preserve
+// ns:name (not its dotted display), and escape underscores too so a
+// literal escape spelling cannot collide with one.
 function name_tt(k: Name): string {
   return k.replace(/[^A-Za-z0-9.]|^[.0-9]/gu, (c) => "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
 }
@@ -687,11 +692,12 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
     case "Mat": {
       const ctr = e.book.ctrs[x.k];
       if (ctr === undefined) {
-        oos("an unknown constructor " + x.k);
+        oos("an unknown constructor " + B.name_key(x.k));
       }
       const [hT, mT] = goals(e, all, ctr);
       const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
-      const m = swi(e, s, x.m, mT, fs, cv);
+      const dead = mT?.$ === "All" && no_ctr(e, mT.A) && x.m.$ !== "Mat";
+      const m = swi(e, s, dead ? B.Efq() : x.m, mT, fs, cv);
       return { $: "Mat", k: name_tt(x.k), h, m };
     }
     default: {
@@ -839,7 +845,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     case "ADT": {
       const tld = e.book.tlds[x.k];
       if (tld?.$ !== "ADT") {
-        oos("an unknown datatype " + x.k);
+        oos("an unknown datatype " + B.name_key(x.k));
       }
       return args(e, s, x.k, tld.T, x.x, live);
     }
@@ -914,9 +920,9 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
   // bend2's instance of a template is the template at its ~ arguments
   const g = e.inst.get(f.k);
   const [k, ys] = g === undefined ? [f.k, xs] : [g[0], [...g[1], ...xs]];
-  const tld = e.book.tlds[k] ?? oos("an unknown name " + k);
+  const tld = e.book.tlds[k] ?? oos("an unknown name " + B.name_key(k));
   if (tld.$ === "Def" && ys.length < tld.x) {
-    oos("a template " + k + " short of its ~ arguments");
+    oos("a template " + B.name_key(k) + " short of its ~ arguments");
   }
   return args(e, s, k, tld.T, ys, live);
 }
@@ -1151,7 +1157,7 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
 function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k];
   if (ctr === undefined) {
-    oos("an unknown constructor " + x.k);
+    oos("an unknown constructor " + B.name_key(x.k));
   }
   const w = B.u32_from_term(x) ?? B.u32_from_term(x, "F32");
   if (!s.sub && w !== null) {
@@ -1248,22 +1254,14 @@ function rwt_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Rwt" }>, live: bool
 
 // whether o calls def k with the variable at level l as an argument
 function self_arg(o: O, k: string, l: number): boolean {
-  if (o.$ === "App") {
-    let h: O = o;
-    while (h.$ === "App") {
-      if (h.x.$ === "Var" && h.x.l === l && h.q > 0) {
-        let r: O = h;
-        while (r.$ === "App") {
-          r = r.f;
-        }
-        if (r.$ === "Ref" && r.k === k) {
-          return true;
-        }
-      }
-      h = h.f;
-    }
+  let h: O = o;
+  let found = false;
+  while (h.$ === "App") {
+    found ||= h.x.$ === "Var" && h.x.l === l && h.q > 0;
+    h = h.f;
   }
-  return Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
+  return (found && h.$ === "Ref" && h.k === k)
+    || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
 // the def names o mentions
@@ -1431,7 +1429,7 @@ function kernel_check(text: string): boolean {
 export function safe_emit(book: Book, out: string): string[] {
   const got = safe_book(book);
   fs.writeFileSync(out, got.text);
-  return got.oos.map(([k, why]) => "- " + k + ": " + why + "\n");
+  return got.oos.map(([k, why]) => "- " + B.name_key(k) + ": " + why + "\n");
 }
 
 // --verdict: whether every def of a book bend2 checked is in the kernel's
