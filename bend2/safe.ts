@@ -22,7 +22,8 @@
 // λ{(,): ..} splits the tag from the fields, a λ{.k: ..; ..} chain
 // switches on the tag, and one λ{(,): ..} per field splits the chain,
 // which ends in λ{(): ..; λ{}}. A default arm binds the tag and the
-// fields, and its binder is their pair.
+// fields, and its binder is their pair. A D with no constructors also
+// has D.efq(ps) : D(ps) -> <>, so the kernel checks that D is empty.
 //
 // The kernel's live check reads the case tree: a self-call must pass,
 // left to right, each live column whole until one gets a piece of
@@ -53,6 +54,9 @@ import type { Book, Def, HTerm, Name, Quant, ADT } from "./bend.ts";
 // =====
 
 type Q = 0 | 1 | 2;
+
+// a completed model, or why its search could not supply one
+type Model = { v: HTerm | null; limited: boolean };
 
 // a kernel term; a binder names its variable by its level
 type O =
@@ -114,6 +118,7 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 type Safe = {
   book: Book;
   mb: Book;
+  models: Map<Name, Model>;
   out: Array<[string, O, O, boolean]>;
   names: Map<string, string>;
   seen: Set<string>;
@@ -130,6 +135,12 @@ type Safe = {
 
 // a Nat literal longer than this goes out as arithmetic on shorter ones
 const NAT_MAX = 4096;
+
+// per constant/projection probe, shared by all depth rounds; depth starts
+// small and grows under the budgets, without a separate depth cap
+const MODEL_FUEL = 4096;
+const MODEL_DEPTH = 8;
+const MODEL_COMPARE = 1 << 20;
 
 // Errors
 // ======
@@ -149,7 +160,7 @@ function oos(why: string): never {
 // does every def that names it, and oos says why, for each book name
 function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups: new Map(),
+    todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups: new Map(), models: new Map(),
     inst: new Map(Object.entries(book.tmps).flatMap(([k, is]) => Object.entries(is).map(([key, n]): [Name, [Name, HTerm[]]] =>
       [n, [k, key.split("\n").map((a) => B.term_higher(JSON.parse(a) as B.LTerm))]]))) };
   const roots: Array<[Name, string]> = [];
@@ -175,7 +186,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
     for (const [k, T, v] of e.out) {
       const r = bad.has(k) ? undefined : [...o_refs(T), ...o_refs(v)].find((r) => bad.has(r));
       if (r !== undefined) {
-        bad.set(k, "names " + r + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
+        bad.set(k, "names " + B.name_key(r) + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
         more = true;
       }
     }
@@ -217,8 +228,9 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const def: Def = { $: "Def", n: 0, x: 0, T: F.A, v: null };
   e.book.tlds[c] = def;
   const m = model(e, F.A);
-  if (m !== null) {
-    e.mb.tlds[c] = { ...def, v: m };
+  e.models.set(c, m);
+  if (m.v !== null) {
+    e.mb.tlds[c] = { ...def, v: m.v };
   }
   return at(B.Ref(c));
 }
@@ -279,13 +291,13 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
   }
   const tld = e.book.tlds[k];
   if (tld === undefined) {
-    oos("an unknown name " + k);
+    oos("an unknown name " + B.name_key(k));
   }
   if (tld.$ === "ADT") {
     return adt_emit(e, cols, n, tld);
   }
   if (tld.u === true) {
-    oos("uses " + (tld.b === true ? "base's" : "the") + " @unsafe def " + k);
+    oos("uses " + (tld.b === true ? "base's" : "the") + " @unsafe def " + B.name_key(k));
   }
   def_emit(e, k, cols, n, tld);
 }
@@ -295,7 +307,9 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = type_drop(e, tld.T, cols);
-  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + k);
+  const m = tld.e !== undefined ? null : e.models.get(k) ?? model(e, T);
+  const t = m === null ? null : m.v ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k)
+    + (m.limited ? " (model search limit reached)" : ""));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -316,8 +330,11 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const arms = tld.c.reduceRight<O>((m, c) => ({ $: "Mat", k: name_tt(c.k), h: fs(c), m }), { $: "Efq" });
   const Enu: O = { $: "Enu", ks: tld.c.map((c) => name_tt(c.k)) };
   e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: { $: "Typ", q: G } }), lams(ps, arms), false]);
-  const f = ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k: am });
-  e.out.push([n, alls(ps, { $: "Typ", q: G }), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f, x: { $: "Var", l: t } } }), false]);
+  const at = (k: string): O => ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k });
+  e.out.push([n, alls(ps, { $: "Typ", q: G }), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: { $: "Var", l: t } } }), false]);
+  if (tld.c.length === 0) {
+    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(ps, { $: "Prj", h: { $: "Efq" } }), false]);
+  }
 }
 
 // the first n parameters of the telescope T (all, at most), from scope s on: one cols
@@ -420,25 +437,52 @@ function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
 // Model
 // -----
 // a model of type T: λs around a model of the codomain, a datatype's
-// nullary constructors before its others (none for a type already on
-// the path), Unit for a kind, {==} for an equation bend2
-// converts, else a live λ variable of type T (the codomain's own, so it
-// is used once); none for an empty type. A projection model takes that
-// variable first: a law like {a == sub(add(a, b), b)} holds of it, one
-// like {add(a, b) == add(b, a)} of a constant. It reads the model book,
-// as the kernel checks a model with every opaque def at its own
-
-// Each probe has at most 4096 visits and depth 128;
-// exhaustion means no model, never an unchecked placeholder.
-function model(e: Safe, T: HTerm): HTerm | null {
-  return model_at(e, T, 0, [], [], false, { left: 4096 })
-    ?? model_at(e, T, 0, [], [], true, { left: 4096 });
+// first constructor whose fields have models, Unit for a kind, {==} for
+// an equation bend2 converts, else a live λ variable of type T. A
+// projection probe takes that variable first; constructor fields start
+// without hypotheses so they cannot duplicate an affine variable.
+//
+// Depth rounds keep declaration order. A candidate reached after a
+// cutoff is provisional: deepen before taking it, so an earlier finite
+// choice within the limits still wins. If the budget runs out, keep the
+// first complete candidate from a finished round, never a partial term.
+// Limits bound visits and comparison steps, not a delegated conversion;
+// larger finite searches can be out of scope or get a fallback model.
+function model(e: Safe, T: HTerm): Model {
+  let limited = false;
+  for (const proj of [false, true]) {
+    const work = { left: MODEL_COMPARE };
+    const probe = { left: MODEL_FUEL, depth: MODEL_DEPTH, cut: false, eq: model_equal(e.mb, work) };
+    let fallback: HTerm | null = null;
+    for (; probe.left > 0 && work.left > 0; probe.depth *= 2) {
+      probe.cut = false;
+      const v = model_at(e, T, 0, [], [], proj, probe);
+      if (!probe.cut) {
+        if (v !== null) {
+          return { v, limited: false };
+        }
+        break;
+      }
+      if (probe.left === 0 || work.left <= 0) {
+        break;
+      }
+      fallback ??= v;
+    }
+    if (fallback !== null) {
+      return { v: fallback, limited: true };
+    }
+    limited ||= probe.cut;
+  }
+  return { v: null, limited };
 }
 
-function model_at(e: Safe, T: HTerm, d: number, path: HTerm[], hs: Array<[HTerm, HTerm]>, proj: boolean, fuel: { left: number }): HTerm | null {
-  if (path.length + d > 128 || fuel.left-- <= 0) {
+function model_at(e: Safe, T: HTerm, d: number, path: HTerm[], hs: Array<[HTerm, HTerm]>, proj: boolean,
+  probe: { left: number; depth: number; cut: boolean; eq: (a: HTerm, b: HTerm, d: number) => boolean | null }): HTerm | null {
+  if (path.length + d > probe.depth || probe.left === 0) {
+    probe.cut = true;
     return null;
   }
+  probe.left -= 1;
   const F = B.term_wnf(e.mb, T);
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
@@ -446,27 +490,39 @@ function model_at(e: Safe, T: HTerm, d: number, path: HTerm[], hs: Array<[HTerm,
       return B.ADT("Unit", []);
     }
     case "All": {
-      const x = B.Var(F.k, d);
+      const x: HTerm = B.Var(F.k, d);
       const body = model_at(e, F.B(x), d + 1, path,
-        F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj, fuel);
-      // Rebind the completed model, never restart a search from a closure
-      // whose shared fuel was consumed while checking its first body.
+        F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj, probe);
+      // Freeze only free outer levels; inner binders must still rebind.
       return body === null ? null : B.Ann(B.Lam(F.k, d, (v: HTerm) =>
-        subst(body, d + 1, (o) => o.$ === "Var"
+        subst(body, d + 1, (o) => o.$ === "Var" && (o.i as number) <= d
           ? o.i === d ? v : B.Var(o.k as Name, o.i as number)
           : undefined)), F);
     }
     case "ADT": {
       const tld = e.mb.tlds[F.k] as ADT;
       const h = proj ? hyp() : null;
-      const cycle = path.some((A) => B.term_compare("EQ", e.mb, A, F, d));
-      const cs = cycle || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k));
-      cs.sort((a, b) => a.n - b.n);
-      for (const c of cs) {
+      if (h !== null) {
+        return h;
+      }
+      let cycle = false;
+      for (const A of path) {
+        if (A.$ !== "ADT" || A.k !== F.k) continue;
+        const same = probe.eq(A, F, d);
+        if (same === null) {
+          probe.cut = true;
+          return null;
+        }
+        if (same) {
+          cycle = true;
+          break;
+        }
+      }
+      for (const c of cycle ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
         const xs: HTerm[] = [];
         let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
         let x: HTerm | null = null;
-        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, F], [], proj, fuel)) !== null) {
+        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, F], [], proj, probe)) !== null) {
           xs.push(x);
           U = B.term_wnf(e.mb, U.B(x));
         }
@@ -485,6 +541,63 @@ function model_at(e: Safe, T: HTerm, d: number, path: HTerm[], hs: Array<[HTerm,
   }
 }
 
+// Conversion on the repeated ADT/lambda spines shares its work. Other
+// shapes use bend2's comparison at that binder depth. Only results that
+// did not inspect variables or delegated shapes can cross depths; the
+// caches live for one probe, while its model book stays unchanged and
+// share cells only reduce or coalesce equal terms, preserving meaning.
+// null means the comparison budget ran out, not equality or inequality.
+function model_equal(book: Book, work: { left: number }): (a: HTerm, b: HTerm, d: number) => boolean | null {
+  type Cmp = { equal: boolean; independent: boolean };
+  const normal = new WeakMap<HTerm, HTerm>();
+  const memo = new WeakMap<HTerm, WeakMap<HTerm, Map<number, Cmp>>>();
+  const exhausted = {};
+  const norm = (t: HTerm): HTerm => {
+    const old = normal.get(t);
+    if (old !== undefined) return old;
+    const f = B.term_force(t);
+    const v = normal.get(f) ?? B.term_wnf(book, t);
+    normal.set(t, v);
+    normal.set(f, v);
+    normal.set(v, v);
+    return v;
+  };
+  const go = (lhs: HTerm, rhs: HTerm, d: number): Cmp => {
+    if (work.left-- <= 0) throw exhausted;
+    if (lhs === rhs) return { equal: true, independent: true };
+    const a = norm(lhs), b = norm(rhs);
+    if (a === b) return { equal: true, independent: true };
+    let row = memo.get(a);
+    if (row === undefined) memo.set(a, row = new WeakMap());
+    let depths = row.get(b);
+    if (depths === undefined) row.set(b, depths = new Map());
+    const old = depths.get(-1) ?? depths.get(d);
+    if (old !== undefined) return old;
+    let out: Cmp;
+    if (a.$ === "Lam" || b.$ === "Lam") {
+      const x: HTerm = B.Var("_", d);
+      out = go(B.term_apply(a, x), B.term_apply(b, x), d + 1);
+    } else if (a.$ === "ADT" && b.$ === "ADT") {
+      out = { equal: a.k === b.k && a.x.length === b.x.length && a.r.length === b.r.length
+        && b.r.every((c) => a.r.includes(c)), independent: true };
+      for (let j = 0; out.equal && j < a.x.length; j++) {
+        const child = go(a.x[j], b.x[j], d);
+        out = child.equal ? { equal: true, independent: out.independent && child.independent } : child;
+      }
+    } else if (a.$ === "Qua" && b.$ === "Qua") {
+      out = { equal: a.q.$ === b.q.$, independent: true };
+    } else {
+      out = { equal: B.term_compare("EQ", book, a, b, d), independent: false };
+    }
+    depths.set(out.independent ? -1 : d, out);
+    return out;
+  };
+  return (a, b, d) => {
+    try { return go(a, b, d).equal; }
+    catch (err) { if (err === exhausted) return null; throw err; }
+  };
+}
+
 // Names
 // =====
 
@@ -501,7 +614,7 @@ function fresh(e: Safe, n: string): string {
 // a bend2 name spelled with BendTT's name characters: any other one is
 // _hex_
 function name_tt(k: Name): string {
-  return k.replace(/[^A-Za-z0-9_.]|^[.0-9]/g, (c) => "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
+  return B.name_key(k).replace(/[^A-Za-z0-9_.]|^[.0-9]/g, (c) => "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
 }
 
 // Quant
@@ -702,11 +815,12 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
     case "Mat": {
       const ctr = e.book.ctrs[x.k];
       if (ctr === undefined) {
-        oos("an unknown constructor " + x.k);
+        oos("an unknown constructor " + B.name_key(x.k));
       }
       const [hT, mT] = goals(e, all, ctr);
       const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
-      const m = swi(e, s, x.m, mT, fs, cv);
+      const dead = mT?.$ === "All" && no_ctr(e, mT.A) && x.m.$ !== "Mat";
+      const m = swi(e, s, dead ? B.Efq() : x.m, mT, fs, cv);
       return { $: "Mat", k: name_tt(x.k), h, m };
     }
     default: {
@@ -854,7 +968,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     case "ADT": {
       const tld = e.book.tlds[x.k];
       if (tld?.$ !== "ADT") {
-        oos("an unknown datatype " + x.k);
+        oos("an unknown datatype " + B.name_key(x.k));
       }
       return args(e, s, x.k, tld.T, x.x, live);
     }
@@ -929,9 +1043,9 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
   // bend2's instance of a template is the template at its ~ arguments
   const g = e.inst.get(f.k);
   const [k, ys] = g === undefined ? [f.k, xs] : [g[0], [...g[1], ...xs]];
-  const tld = e.book.tlds[k] ?? oos("an unknown name " + k);
+  const tld = e.book.tlds[k] ?? oos("an unknown name " + B.name_key(k));
   if (tld.$ === "Def" && ys.length < tld.x) {
-    oos("a template " + k + " short of its ~ arguments");
+    oos("a template " + B.name_key(k) + " short of its ~ arguments");
   }
   return args(e, s, k, tld.T, ys, live);
 }
@@ -1166,7 +1280,7 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
 function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k];
   if (ctr === undefined) {
-    oos("an unknown constructor " + x.k);
+    oos("an unknown constructor " + B.name_key(x.k));
   }
   const w = B.u32_from_term(x) ?? B.u32_from_term(x, "F32");
   if (!s.sub && w !== null) {
@@ -1263,22 +1377,14 @@ function rwt_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Rwt" }>, live: bool
 
 // whether o calls def k with the variable at level l as an argument
 function self_arg(o: O, k: string, l: number): boolean {
-  if (o.$ === "App") {
-    let h: O = o;
-    while (h.$ === "App") {
-      if (h.x.$ === "Var" && h.x.l === l && h.q > 0) {
-        let r: O = h;
-        while (r.$ === "App") {
-          r = r.f;
-        }
-        if (r.$ === "Ref" && r.k === k) {
-          return true;
-        }
-      }
-      h = h.f;
-    }
+  let h: O = o;
+  let found = false;
+  while (h.$ === "App") {
+    found ||= h.x.$ === "Var" && h.x.l === l && h.q > 0;
+    h = h.f;
   }
-  return Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
+  return (found && h.$ === "Ref" && h.k === k)
+    || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
 // the def names o mentions
@@ -1446,12 +1552,13 @@ function kernel_check(text: string): boolean {
 export function safe_emit(book: Book, out: string): string[] {
   const got = safe_book(book);
   fs.writeFileSync(out, got.text);
-  return got.oos.map(([k, why]) => "- " + k + ": " + why + "\n");
+  return got.oos.map(([k, why]) => "- " + B.name_key(k) + ": " + why + "\n");
 }
 
 // --verdict: whether every def of a book bend2 checked is in the kernel's
 // scope, and the kernel checks them all
-export function safe_check(book: Book): boolean {
+export function safe_check(book: Book, oos: string[] = []): boolean {
   const got = safe_book(book);
+  oos.push(...got.oos.map(([k, why]) => "- " + B.name_key(k) + ": " + why + "\n"));
   return got.oos.length === 0 && kernel_check(got.text);
 }

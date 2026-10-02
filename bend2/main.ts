@@ -275,7 +275,7 @@ async function cli_file(args: string[]): Promise<void> {
     }
     return cli_bundle(file, outs[0]);
   }
-  if (publish && (outs.length !== 0 || only || checkup)) {
+  if (publish && (outs.length !== 0 || only || verdict || checkup)) {
     cli_fail("--publish takes no other option");
   }
   if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
@@ -717,11 +717,13 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
   if (bad.length !== 0) {
     cli_say(2, FAIL + "\nError: " + String(bad.length) + " def" + (bad.length === 1
       ? " relies" : "s rely") + " on unsafe or foreign code:\n"
-      + bad.map((k) => "- " + k + "\n").join(""));
+      + bad.map((k) => "- " + Bend.name_key(k) + "\n").join(""));
     return 1;
   }
-  if (kernel && !Safe.safe_check(book)) {
-    cli_say(2, FAIL + "\n" + MISMATCH + "\n");
+  const oos: string[] = [];
+  if (kernel && !Safe.safe_check(book, oos)) {
+    cli_say(2, FAIL + "\n" + (oos.length === 0 ? MISMATCH + "\n"
+      : "BendTT: out of scope:\n" + oos.join("")));
     return 1;
   }
   cli_say(1, PASS + "\n" + (kernel ? "" : HINT + "\n"));
@@ -779,6 +781,7 @@ function term_refs(tm: unknown, out: Set<string>): void {
   }
 }
 
+// cli_say writes text to fd, and drops it if the reader has left (EPIPE).
 function cli_say(fd: number, text: string): void {
   try {
     fs.writeSync(fd, text);
@@ -786,7 +789,6 @@ function cli_say(fd: number, text: string): void {
     if ((e as NodeJS.ErrnoException).code !== "EPIPE") {
       throw e;
     }
-    process.exit(0);
   }
 }
 

@@ -13,7 +13,12 @@
 // on a Lean node (bendtt.lean's CLI). Each worktree stages in its own
 // directory on the nodes, so two gates can run at once.
 //
-//   bun gates/safe.ts tests|hub <bendtt binary>
+// A test's #> lines pin its exact --verdict output and exit status (1 for
+// SOME PROOFS FAIL, otherwise 0). A marked regression fails this gate;
+// unmarked corpus results stay diagnostic. Unlike #|, these run the kernel.
+//
+//   bun gates/safe.ts tests|hub|local <bendtt binary>
+// local runs the tests on this machine, using the same verdict runner.
 import * as child from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -21,9 +26,10 @@ import { ROOT, node_pool, ssh } from "./_lib.ts";
 
 const HUB = process.env.SAFE_HUB ?? "";
 const corpus = process.argv[2];
+const local = corpus === "local";
 const bin = path.resolve(process.argv[3] ?? path.join(ROOT, ".tmp", "bendtt"));
 const OUT = path.join(ROOT, ".tmp", "safe", process.env.GATE_OUT ?? "");
-const DIR = "/tmp/bend-safe-gate";
+const DIR = "$HOME/bend-safe-gate";
 const PAR = 8;
 const find = (dir: string, cwd: string) => child.spawnSync("find", [dir, "-name", "*.bend"], { cwd, encoding: "utf8" })
   .stdout.split("\n").filter((l) => l !== "").sort();
@@ -33,20 +39,20 @@ fs.copyFileSync(bin, path.join(stage, "bendtt"));
 const base = ["-czf", "-", "-s", ",^\\./,lib/,", "--exclude", "bend2/docs", "--exclude", "bend2/pack",
   "--exclude", "*.bendtt", "-C", ROOT, "bend2", "gates/safe_node.ts", "gates/safe_diag.ts", "-C", stage, "bendtt"];
 let tar: Buffer;
-if (corpus === "tests") {
+if (corpus === "tests" || local) {
   all = find("tests", ROOT);
-  tar = child.spawnSync("tar", [...base, "-C", ROOT, "tests"], { maxBuffer: 1 << 28 }).stdout;
+  tar = local ? Buffer.alloc(0) : child.spawnSync("tar", [...base, "-C", ROOT, "tests"], { maxBuffer: 1 << 28 }).stdout;
 } else if (corpus === "hub" && fs.existsSync(HUB)) {
   all = find(".", HUB).map((f) => "lib/" + f.slice(2));
   const lib = child.spawnSync("find", [".", "-name", "*.bend", "-o", "-path", "./names/*", "-type", "f"], { cwd: HUB, encoding: "utf8" })
     .stdout.split("\n").filter((l) => l !== "");
   tar = child.spawnSync("tar", [...base, "-C", HUB, ...lib], { maxBuffer: 1 << 28 }).stdout;
 } else {
-  throw new Error("usage: [SAFE_HUB=<hub store>] bun gates/safe.ts tests|hub <bendtt binary>");
+  throw new Error("usage: [SAFE_HUB=<hub store>] bun gates/safe.ts tests|hub|local <bendtt binary>");
 }
 const nodes = Array.from({ length: 0xe9 - 0xce + 1 }, (_, i) => 0xce + i).filter((n) => n !== 0xda && n !== 0xe6);
 const tag = DIR + "/" + path.basename(ROOT) + "/" + corpus;
-const live = (await Promise.all(nodes.map(async (node) =>
+const live = local ? [] : (await Promise.all(nodes.map(async (node) =>
   (await ssh(node, "mkdir -p " + tag + " && cd " + tag + " && tar xzf - && chmod +x bendtt", tar, 120000)).code === 0 ? node : -1)))
   .filter((n) => n >= 0);
 const shards: string[][] = [];
@@ -56,21 +62,33 @@ for (let i = 0; i < all.length; i += PAR) {
 type Got = { f: string; code: number; ms: number; out: string };
 const gots: Got[] = [];
 const t0 = Date.now();
-await node_pool(live, shards.map((fs_) => async (node: number) => {
-  const script = "cd " + tag + " && BEND_LIB=" + tag + "/lib BENDTT=" + tag + "/bendtt PAR=" + PAR
-    + " /usr/local/bun/bin/bun gates/safe_node.ts <<'EOF'\n" + fs_.join("\n") + "\nEOF\n";
-  const got = await ssh(node, script, undefined, 120000);
-  try {
-    gots.push(...JSON.parse(got.out));
-  } catch {
-    if (got.code === 255) {
-      throw new Error("node", { cause: got.err });
-    }
-    for (const f of fs_) {
-      gots.push({ f, code: -1, ms: 0, out: "shard failed on " + node + ": " + got.err.slice(-300) });
-    }
+if (local) {
+  const got = child.spawnSync(process.execPath, ["gates/safe_node.ts"], {
+    cwd: ROOT, input: all.join("\n") + "\n", encoding: "utf8", maxBuffer: 1 << 28,
+    env: { ...process.env, BENDTT: bin, PAR: String(PAR) },
+  });
+  if (got.status !== 0) {
+    throw new Error("local verdict runner failed: " + got.stderr);
   }
-}));
+  gots.push(...JSON.parse(got.stdout));
+} else {
+  await node_pool(live, shards.map((fs_) => async (node: number) => {
+    const script = "cd " + tag + " && BEND_LIB=" + tag + "/lib BENDTT=" + tag + "/bendtt PAR=" + PAR
+      + " /usr/local/bun/bin/bun gates/safe_node.ts <<'EOF'\n" + fs_.join("\n") + "\nEOF\n";
+    const got = await ssh(node, script, undefined, 120000);
+    try {
+      gots.push(...JSON.parse(got.out));
+    } catch {
+      if (got.code === 255) {
+        throw new Error("node", { cause: got.err });
+      }
+      for (const f of fs_) {
+        gots.push({ f, code: -1, ms: 0, out: "shard failed on " + node + ": " + got.err.slice(-300) });
+      }
+    }
+  }));
+}
+fs.rmSync(stage, { recursive: true });
 gots.sort((a, b) => a.f < b.f ? -1 : 1);
 // a verdict's class and its reason (the kernel's or elaborator's first words)
 function judge(g: Got): [string, string] {
@@ -84,12 +102,12 @@ function judge(g: Got): [string, string] {
   if (/^Error: \d+ defs? rel(y|ies) on unsafe or foreign code/m.test(out)) {
     return ["u", "unsafe: " + [...out.matchAll(/^- (\S+)$/gm)].map((m) => m[1]).slice(0, 3).join(" ")];
   }
-  if (!out.includes("Sorry - ")) {
-    return [" ", "bend2 rejects: " + out.split("\n").slice(1, 3).join(" ").slice(0, 80)];
-  }
   const tt = out.slice(out.indexOf("BendTT: ") + 8);
   if (tt.startsWith("out of scope")) {
     return ["-", "out of scope: " + [...tt.matchAll(/^- \S+: (.*)$/gm)].map((m) => m[1]).slice(0, 2).join(" | ").slice(0, 160)];
+  }
+  if (!out.includes("Sorry - ")) {
+    return [" ", "bend2 rejects: " + out.split("\n").slice(1, 3).join(" ").slice(0, 80)];
   }
   return ["!", tt.split("\n").slice(1, 3).join(" | ").slice(0, 300)];
 }
@@ -103,7 +121,7 @@ for (const [c] of rows) {
 }
 const agree = rows.filter(([c, r]) => c === " " && r === "agree").length;
 const b2rej = rows.filter(([c, r]) => c === " " && r !== "agree").length;
-console.log(corpus + ": " + rows.length + " files on " + live.length + " nodes in " + (Date.now() - t0) + " ms");
+console.log(corpus + ": " + rows.length + " files on " + (local ? "this machine" : live.length + " nodes") + " in " + (Date.now() - t0) + " ms");
 console.log("agree (both check): " + agree + ", u unsafe: " + (tally.get("u") ?? 0) + ", bend2 rejects: " + b2rej
   + ", - out of scope: " + (tally.get("-") ?? 0) + ", ! false reject: " + (tally.get("!") ?? 0) + ", t timeout: " + (tally.get("t") ?? 0));
 // the false rejects by failing def, most files first
@@ -115,4 +133,24 @@ for (const [c, r] of rows) {
   }
 }
 [...why].sort((a, b) => b[1] - a[1]).forEach(([k, n]) => console.log("  ! " + String(n).padStart(4) + " " + k));
-process.exit(0);
+// Compare against the raw CLI result, not its diagnostic classification:
+// a crash, timeout, or kernel mismatch cannot stand in for expected OOS.
+let checked = 0;
+let failed = 0;
+if (corpus === "tests" || local) {
+  for (const f of all) {
+    const want = fs.readFileSync(path.join(ROOT, f), "utf8").split("\n")
+      .filter((l) => l.startsWith("#>")).map((l) => l.slice(2)).join("\n");
+    if (want === "") continue;
+    checked += 1;
+    const got = gots.find((g) => g.f === f);
+    const code = want.startsWith("SOME PROOFS FAIL\n") ? 1 : 0;
+    if (got === undefined || got.code !== code || got.out.trim() !== want.trim()) {
+      failed += 1;
+      console.log("FAIL verdict " + f + "\n  expected exit " + code + ": " + JSON.stringify(want)
+        + "\n  observed: " + JSON.stringify(got));
+    }
+  }
+}
+console.log("verdict regressions: " + (checked - failed) + " / " + checked);
+process.exit(failed === 0 ? 0 : 1);

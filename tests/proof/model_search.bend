@@ -25,3 +25,5 @@ def main() -> Nat:
   ignore_n(NNil{}, twice(n => 1n+n, 5n))
 
 #|7n
+
+#>ALL PROOFS CHECK

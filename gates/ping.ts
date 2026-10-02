@@ -83,6 +83,13 @@ function bend(args: string[], env: Record<string, string> = {}):
   return run(BIN, args, env);
 }
 
+// The reader has exited before bend starts: no race with its first write.
+function bend_closed(args: string[]): Promise<lib.Exec> {
+  return run("bash", ["-c",
+    'exec 3> >(true); wait "$!"; exec "$@" >&3 2>&3',
+    "--", BIN, ...args], { BEND_NO_TELEMETRY: "1" });
+}
+
 // the card without its colors
 function plain(out: string): string {
   return out.replace(/\x1b\[[0-9;]*m/g, "");
@@ -282,6 +289,26 @@ try {
   check("guide, base and a program run through the executable",
     guide.out.startsWith("# Bend") && base.out.startsWith("type Map")
     && sum5.code === 0 && sum5.out === "5n\n");
+  const bad_file = path.join(TMP, "bad.bend");
+  const sum_file = path.join(TMP, "sum.bend");
+  const unsafe_file = path.join(TMP, "unsafe.bend");
+  const checkup = path.join(TMP, "checkup.bend");
+  const good_checkup = path.join(TMP, "good_checkup.bend");
+  fs.writeFileSync(unsafe_file,
+    "import Base\n@unsafe\ndef main() -> Nat:\n  0n\n");
+  fs.writeFileSync(checkup,
+    "import ./sum.bend as Good\nimport ./bad.bend as Bad\n");
+  fs.writeFileSync(good_checkup, "import ./sum.bend as Good\n");
+  for (const args of [[bad_file], [bad_file, "--check-only"],
+    [unsafe_file, "--verdict"], ["--unknown"], [checkup, "--checkup"]]) {
+    const got = await bend_closed(args);
+    check("a closed reader keeps failure: " + args.join(" "), got.code === 1);
+  }
+  for (const args of [[sum_file], [sum_file, "--check-only"],
+    ["--help"], [good_checkup, "--checkup"]]) {
+    const got = await bend_closed(args);
+    check("a closed reader keeps success: " + args.join(" "), got.code === 0);
+  }
   const two  = "import Base\ndef two() -> Nat:\n  2n\n";
   const use  = (at: string) => "import Base\nimport ./" + at
     + " as T\ndef main() -> Nat:\n  T.two\n";
@@ -296,6 +323,14 @@ try {
     && got.ok && await got.text() === lics["sub/LICENSE"]);
   check("the notice names the terms and the shallowest LICENSE's SPDX id",
     spdx.err.includes(TERMS + "License: MIT (LICENSE)\n"));
+  for (const flags of [["--verdict", "--publish"], ["--publish", "--verdict"]]) {
+    const count = seen.length;
+    const run = await bend([path.join(TMP, "sum.bend"), ...flags],
+      { BEND_HUB: ORIGIN, BEND_NO_TELEMETRY: "1" });
+    check(flags.join(" ") + " is refused before publishing: " + run.err,
+      run.code === 1 && run.out === "" && run.err === "bend: --publish"
+      + " takes no other option (see bend --help)\n" && seen.length === count);
+  }
   const ids: [string, string][] = [
     ["SPDX-License-Identifier: MIT\r\n", "MIT (LICENSE)"],
     ["SPDX-License-Identifier: (MIT  OR Apache-2.0)\n",
