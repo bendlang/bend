@@ -1141,10 +1141,11 @@ function lits_cond(w: string, j: number, n: number): string {
   return j >= 32 ? `${w} == ${n}` : `(${w} & ${2 ** j - 1}) == ${n}`;
 }
 
-function mat_ctrs(x: HTerm, adt: Of<"ADT">,
-  keep = false): [Name, HTerm][] {
+// An IO.OP match keeps its default arm: a request is none of its arms.
+function mat_ctrs(x: HTerm, adt: Of<"ADT">): [Name, HTerm][] {
   const { arms, end } = mat_arms(x);
-  return keep || arms.length < Bend.book_adt(FL.book, adt, Bend.Emp()).c.length
+  return adt.k === "IO.OP"
+    || arms.length < Bend.book_adt(FL.book, adt, Bend.Emp()).c.length
     ? [...arms, ["", end]] : arms;
 }
 
@@ -2653,7 +2654,7 @@ function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
       }
       return e === 1 ? [v] : val_arm(v).slice(0, e);
     }])
-    : mat_ctrs(x, adt, adt.k === "IO.OP").map(([k, h]) => {
+    : mat_ctrs(x, adt).map(([k, h]) => {
       if (k === "") {
         return ["", h, () => [u]];
       }
@@ -3029,9 +3030,6 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null, args: string[]): void {
   }
   const { adt, ret, rows, cells } = mat_rows(fl, x, ty);
   const s = emit_alias(fl, args[0], "$t");
-  if (adt.k === "IO.OP") {
-    block(fl, `if (${s}.$ === "$FFI") {`, () => file_push(fl, `throw ${s};`));
-  }
   const tab = emit_tab(fl, cells, ret, s);
   if (tab !== null) {
     return file_push(fl, `return ${tab};`);
@@ -3078,9 +3076,8 @@ function js_def(fl: File, k: Name, def: Bend.Def): void {
       `${js_marshal(fl, doms[i][2], true)}(${p})`);
     const n = JSON.stringify(Bend.name_key(k));
     return block(fl, `function ${js_sat(k)}(${params.join(", ")}) {`, () =>
-      file_push(fl, `return { $: "$FFI", run: $0eff[${n}].run, need: $0eff[${
-        n}].need, args: [${xs.slice(0, -1).join(", ")}], kont: ${xs.at(-1)
-        } };`));
+      file_push(fl, `return { $: ${n}, args: [${xs.slice(0, -1).join(", ")
+        }], kont: ${xs.at(-1)} };`));
   }
   block(fl, `function ${js_sat(k)}(${params.join(", ")}) {`, () => {
     if (loop.length === 0) {
@@ -3188,11 +3185,7 @@ export function js_lib(book: Bend.Book, mod = false): string {
     js_def(fl, k, def);
   }
   const srcs = effect_srcs(fl, ".js", "a foreign def without a .js import: ");
-  const effs = srcs.map((t) => `(() => {\n${t}\n})();\n\n`).join("")
-    + (srcs.length === 0 ? "" : `for (const k of ${JSON.stringify(
-      done_defs(def_foreign).map(([k]) => Bend.name_key(k)))}) {
-  if (!(k in $0eff)) {
-    throw new Error("bend: no effect registers " + k);\n  }\n}\n\n`);
+  const effs = srcs.map((t) => `(() => {\n${t}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) =>
     `  "${Bend.name_key(k)}": run_lib(${js_host(fl, k)}, ${
       fun_of(k).lays.length}),`).join("\n")}\n};\n`;
@@ -6301,29 +6294,26 @@ function io_run(m) {
           io_errs(op.message);
           return op.code;
         }
-        const need = op.need?.() ?? {};
+        const eff = $0eff[op.$];
+        if (eff === undefined) {
+          throw "bend: an alien request";
+        }
+        const need = eff.need?.() ?? {};
         if (need.time || need.read) {
-          const more = () => op.run(...op.args, op.kont);
+          const more = () => eff.run(...op.args, op.kont);
           io_park_on(need.read ? op.args[0] : undefined, false, op.kont, more,
             need.read ? undefined : performance.now() + Number(op.args[0]));
           break;
         }
-        const x = op.run(...op.args, op.kont);
+        const x = eff.run(...op.args, op.kont);
         if (x === undefined) {
           break;
         }
         op = op.kont(x);
       }
     }
-  } catch (req) {
-    if (req instanceof RangeError) {
-      throw "bend: ${ERRS[7]}";
-    }
-    if (req?.$ !== "$FFI") {
-      throw req;
-    }
-    io_errs("bend: ${ERRS[2]}");
-    return 1;
+  } catch (e) {
+    throw e instanceof RangeError ? "bend: ${ERRS[7]}" : e;
   }
 }
 `.slice(1);
