@@ -4,11 +4,7 @@
 // A datagram goes whole or not at all; a full send buffer (non-blocking,
 // so EAGAIN) parks the computation until the socket is writable.
 function udp_send_to_with(socket, host, port, data, k, at) {
-  const fail = (code) => {
-    const r = io_fail(code);
-    r.error = io_tup(r.error, data);
-    return io_tup(socket, io_ready(at, r));
-  };
+  const fail = (code) => io_tup(socket, io_ready(at, io_fail(code, data)));
   const sys = io_sys();
   const fd = socket;
   const to = io_addr(host, Number(port));

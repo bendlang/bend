@@ -11,14 +11,16 @@ function chan_done() {
   return { $: CID(Done), value: { $: CID(Unit) } };
 }
 
-function chan_rest(item) {
-  return item === CHAN_RECV ? { $: CID(Unit) } : item;
+function chan_wait(item) {
+  return { $: CID(Wait), rest: item === CHAN_RECV ? { $: CID(Unit) } : item };
 }
 
-// Wakes the first waiter with x, as Ready{x} if try_ (its late then idles).
+// Wakes the first waiter with x, as Ready{x} if try_ (cutting its timer).
 function chan_wake(row, x) {
   const w = row.wait.shift();
   if (w.late !== undefined) {
+    const ws = globalThis.BEND_IO.waits;
+    ws.splice(ws.findIndex((t) => t.more === w.late), 1);
     x = { $: CID(Ready), value: x };
   }
   io_push(w.cont, x, false);
@@ -43,17 +45,14 @@ function chan_shut(row) {
   }
 }
 
-// Parks k on row with item; with ms, a timer too, whose late answers Wait.
+// Parks k on row with item; with ms, a timer too, whose late answers Wait:
+// the first of the two to come cuts the other.
 function chan_park(row, k, item, ms) {
   const w = { cont: k, item: item };
   if (ms !== undefined) {
     w.late = () => {
-      const i = row.wait.indexOf(w);
-      if (i < 0) {
-        return undefined;
-      }
-      row.wait.splice(i, 1);
-      return { $: CID(Wait), rest: chan_rest(item) };
+      row.wait.splice(row.wait.indexOf(w), 1);
+      return chan_wait(item);
     };
     io_park_on(undefined, false, k, w.late, io_until(ms));
   }
@@ -97,7 +96,7 @@ function chan_try(row, x, item, ms, k) {
     return { $: CID(Ready), value: x };
   }
   if (Number(ms) === 0) {
-    return { $: CID(Wait), rest: chan_rest(item) };
+    return chan_wait(item);
   }
   return chan_park(row, k, item, Number(ms));
 }
