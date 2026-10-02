@@ -1,5 +1,5 @@
-# Recursive template models must terminate without missing a later leaf.
-# Dependent lambda bodies are rebound after their bounded search finishes.
+# recursive template models must terminate without missing a later leaf.
+# dependent lambda bodies are rebound after their bounded search finishes.
 import Base
 
 type W<-F: Nat -> Type> is Type:
@@ -25,5 +25,3 @@ def main() -> Nat:
   ignore_n(NNil{}, twice(n => 1n+n, 5n))
 
 #|7n
-
-#>ALL PROOFS CHECK

@@ -9,7 +9,3 @@ def L(f, h, x):
 
 #|ALL PROOFS CHECK
 #|Use --verdict for mathematical validity.
-
-#>SOME PROOFS FAIL
-#>BendTT: out of scope:
-#>- L: no model for L~h

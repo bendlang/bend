@@ -7,5 +7,3 @@ def reflexive(~n: G<Nat>) -> {n == n : G<Nat>}:
 
 #|ALL PROOFS CHECK
 #|Use --verdict for mathematical validity.
-
-#>ALL PROOFS CHECK

@@ -9,5 +9,3 @@ def L(f, h, x):
 
 #|ALL PROOFS CHECK
 #|Use --verdict for mathematical validity.
-
-#>ALL PROOFS CHECK

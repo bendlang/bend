@@ -357,7 +357,7 @@ const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 // and the rest precise::. Metal's atan2 is NaN at the origin,
 // where libm answers +-0 or +-pi, so atan2_c99 answers as libm
 // does. Metal folds a constant dividend within 128 of 2^32 through
-// an f32, so U32_QUO divides its half and then fixes the odd bit.
+// an f32, so its U32_QUO divides the half and then fixes the odd bit.
 
 const SHIMS = "sqrt exp log log2 log10 sin cos tan pow fmod".split(" ")
   .map((n) => "#define " + n.padEnd(5) + ("sin cos tan".includes(n)
@@ -372,12 +372,13 @@ INLINE f32 atan2_c99(f32 y, f32 x) {
     ? copysign(signbit(x) ? M_PI_F : 0.0f, y) : atan2(y, x);
 }
 ${SHIMS}
+#define U32_QUO(a, b) \
+  ((a) / 2 / (b) * 2 + ((a) - (a) / 2 / (b) * 2 * (b) >= (b)))
+#else
+#define U32_QUO(a, b) ((a) / (b))
 #endif
 
 #define U32_BIN(a, o, b) ((u64)((u32)(a) o (u32)(b)))
-
-#define U32_QUO(a, b) \
-  ((a) / 2 / (b) * 2 + ((a) - (a) / 2 / (b) * 2 * (b) >= (b)))
 
 INLINE f32 f32_unbox(u64 x) {
   union { u32 u; f32 f; } p = { (u32)x };
@@ -998,7 +999,9 @@ function type_adts(fl: File, T: HTerm): Name[] {
 // that re-enters it under layout (a family hid the cycle) are one box.
 // An Array cell takes the open layout of its element type (the return
 // type of its constructors), so all callers agree. lay_el refuses an
-// open element type; adt_of and js_expr call it only for that check.
+// open element type, except equality: its sides may mention type variables,
+// since its layout does not depend on them. adt_of and js_expr call it
+// only for that check.
 
 function lay_of(book: Bend.Book, A: HTerm | null): Lay {
   const t = ty_adt(book, A);
@@ -1024,7 +1027,13 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
 }
 
 function lay_el(book: Bend.Book, A: HTerm | null): Lay {
-  const t = ty_adt(book, A) ?? die("an open Array element type");
+  const t = ty_wnf(book, A);
+  if (t?.$ === "Eql") {
+    return lay_of(book, A);
+  }
+  if (t?.$ !== "ADT") {
+    die("an open Array element type");
+  }
   const tld = book.tlds[t.k];
   return lay_of(book, tld?.$ === "ADT" && tld.c[0]
     ? tele_unbind(book, tld.c[0].T).ret : A);
@@ -3699,8 +3708,8 @@ ${tabs}
 // ===
 
 // C11's atomics on every lane; a device FENCE releases or acquires.
-// Metal's a32_load reads through a volatile local, or the M1 pipeline
-// build dies. A weak CAS may fail with the cell still x: a32_cmpx loops.
+// Metal's loads read through a volatile local, or the M1 and M2 pipeline
+// builds die. A weak CAS may fail with the cell still x: a32_cmpx loops.
 
 #define A32_LOOP(k, x) \
   INLINE u32 a32_##k(DEV u32* p, u32 v) { \
@@ -3775,7 +3784,7 @@ ${a32_ops((k) => `a32_${k}(p, v) atomic_fetch_${k}_explicit(A32(p), v, RLX)`)}
 #define a32_at(H, word)     ((DEV u32*)&(H)[word])
 
 INLINE u32 a32_load_acq(DEV u32* p) {
-  u32 v = atomic_load_explicit(A32(p), ACQ);
+  u32 v = DEVICE ? a32_load(p) : atomic_load_explicit(A32(p), ACQ);
   FENCE();
   return v;
 }

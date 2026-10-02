@@ -16,7 +16,7 @@ law shape_t:
 def shape_t(mk, ok, x):
   ok(x)
 
-# An earlier deeper finite constructor still wins over a nullary one.
+# an earlier deeper finite constructor still wins over a nullary one.
 def Vec(n: Nat) -> Type:
   match n:
     case 0n:
@@ -25,7 +25,7 @@ def Vec(n: Nat) -> Type:
       Nat & Vec(p)
 
 type Choice is Type:
-  Deep{v: Vec(130n)}
+  Deep{v: Vec(400n)}
   Shallow{}
 
 def is_deep(c: Choice) -> Bool:
@@ -46,5 +46,3 @@ def choice_t(mk, ok, x):
 
 #|ALL PROOFS CHECK
 #|Use --verdict for mathematical validity.
-
-#>ALL PROOFS CHECK

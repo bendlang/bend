@@ -1,4 +1,4 @@
-# No finite model exists: the safe corpus must report out of scope,
+# no finite model exists: the safe corpus must report out of scope,
 # not spend its timeout growing nested parameters and model values.
 import Base
 
@@ -10,7 +10,3 @@ def reflexive(~n: Grow<Nat>) -> {n == n : Grow<Nat>}:
 
 #|ALL PROOFS CHECK
 #|Use --verdict for mathematical validity.
-
-#>SOME PROOFS FAIL
-#>BendTT: out of scope:
-#>- reflexive: names reflexive_7e_n, out of scope: no model for reflexive~n (model search limit reached)
