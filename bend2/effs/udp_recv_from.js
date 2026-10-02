@@ -1,12 +1,15 @@
 // UDP
 // ===
 
-// The loop parked the request until the socket was readable; a recv that
-// still finds no datagram (the socket is non-blocking) parks again.
-function udp_recv_from(socket, max, k) {
+// A recv that finds no datagram (the socket is non-blocking) parks until
+// the socket is readable.
+function udp_recv_from_with(socket, max, k, at) {
+  if (Number(max) === 0) {
+    return io_tup(socket, io_ready(at, io_fail(22)));
+  }
   const sys = io_sys();
   const fd = socket;
-  const b = new Uint8Array(Math.max(Number(max), 1));
+  const b = new Uint8Array(Number(max));
   const peer = new Uint8Array(16);
   const len = new Uint32Array([16]);
   const go = () => {
@@ -15,21 +18,31 @@ function udp_recv_from(socket, max, k) {
     const n = Number(got);
     if (n < 0) {
       const code = sys.errno();
-      if (code === (sys.mac ? 35 : 11)) {
-        io_park_on(fd, false, k, go);
-        return undefined;
+      if (code !== (sys.mac ? 35 : 11)) {
+        return io_tup(socket, io_ready(at, io_fail(code)));
       }
-      return io_tup(socket, io_fail(code));
+      if (io_late(at)) {
+        return io_tup(socket, { $: CID(Wait), rest: { $: CID(Unit) } });
+      }
+      io_park_on(fd, false, k, go, at);
+      return undefined;
     }
     const host = peer[4] + "." + peer[5] + "." + peer[6] + "." + peer[7];
     const port = (peer[2] << 8) | peer[3];
-    return io_tup(socket, io_done(io_tup(host, port, io_text(b, n))));
+    const dgram = io_tup(host, port, io_text(b, n));
+    return io_tup(socket, io_ready(at, io_done(dgram)));
   };
   return go();
 }
 
-function udp_recv_from_need() {
-  return { read: true };
+function udp_recv_from(socket, max, k) {
+  return udp_recv_from_with(socket, max, k);
 }
 
-io_eff(CID(UDP.recv_from), udp_recv_from, udp_recv_from_need);
+// try_ passes a deadline at: past it, a recv that would wait answers Wait{}.
+function udp_try_recv_from(socket, max, ms, k) {
+  return udp_recv_from_with(socket, max, k, io_until(ms));
+}
+
+io_eff(CID(UDP.recv_from), udp_recv_from);
+io_eff(CID(UDP.try_recv_from), udp_try_recv_from);

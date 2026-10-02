@@ -24,30 +24,34 @@ def http_body.go(s: String, e: Bool, w: U32) -> String:
 def http_body(s: String) -> String:
   http_body.go(s, False{}, 0)
 
-def fetch_tail(head: String, m: Socket & Result<&1, &1, U32 & String, String>) -> IO(String):
+def fetch_tail(head: String, m: Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>) -> IO(String):
   (s, r) = m
   do IO<String>:
-    tail : String <- IO.pass(String, r)
+    tail : Maybe<&1, String> <- IO.pass(Maybe<&1, String>, r)
     Socket.close(s)
-    return head ++ tail
+    return head ++ Maybe.default(&1, String, tail, "")
 
-def fetch_head(m: Socket & Result<&1, &1, U32 & String, String>) -> IO(String):
+def fetch_head(m: Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>) -> IO(String):
   (s, r) = m
   do IO<String>:
-    head : String <- IO.pass(String, r)
-    rest : Socket & Result<&1, &1, U32 & String, String> <- TCP.recv(s, 8192)
-    fetch_tail(head, rest)
+    head : Maybe<&1, String> <- IO.pass(Maybe<&1, String>, r)
+    rest : Socket & Result<&1, &1, U32 & String, Maybe<&1, String>> <- TCP.recv(s, 8192)
+    fetch_tail(Maybe.default(&1, String, head, ""), rest)
 
-def fetch_sent(m: Socket & Result<&1, &1, U32 & String, Unit>) -> IO(String):
+def fetch_sent(m: Socket & Result<&1, &1, (U32 & String) & String, Unit>) -> IO(String):
   (s, r) = m
-  do IO<String>:
-    IO.pass(Unit, r)
-    read : Socket & Result<&1, &1, U32 & String, String> <- TCP.recv(s, 8192)
-    fetch_head(read)
+  match r:
+    case Done{u}:
+      IO.bind(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>, String,
+        TCP.recv(s, 8192), fetch_head)
+    case Fail{((code, message), rest)}:
+      do IO<String>:
+        Socket.close(s)
+        IO.die(String, code, message)
 
 def main() -> IO(Unit):
   do IO<Unit>:
     c    : Socket <- IO.try(Socket, TCP.connect("208.95.112.1", 80))
-    sent : Socket & Result<&1, &1, U32 & String, Unit> <- TCP.send(c, "GET /line/?fields=status,country,city,query HTTP/1.1\r\nHost: ip-api.com\r\nConnection: close\r\n\r\n")
+    sent : Socket & Result<&1, &1, (U32 & String) & String, Unit> <- TCP.send(c, "GET /line/?fields=status,country,city,query HTTP/1.1\r\nHost: ip-api.com\r\nConnection: close\r\n\r\n")
     resp : String <- fetch_sent(sent)
     IO.print(http_body(resp))

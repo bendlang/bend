@@ -346,7 +346,7 @@ const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
 } satisfies Record<Name, Native>, null);
 
 const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
-  "Maybe", "Bool", "Unit"];
+  "Poll", "Maybe", "Bool", "Unit"];
 
 const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 
@@ -5409,6 +5409,7 @@ typedef struct IoWork {
   u64            time;
   short          evts;
   struct IoWork* next;
+  struct IoWork* prev;
 } IoWork;
 
 typedef Term (*Effect)(Env e, Term* f, IoWork* w);
@@ -5491,16 +5492,25 @@ static void io_spawn(Term m) {
 
 // io_park stays in deadline order (time 0, none, sorts last; ties keep
 // their park order), so io_wait wakes due timers in the order they expire.
+// It links both ways, so io_park_cut drops a waiter in O(1).
 static void io_park_add(IoWork* w) {
   IoWork* p = io_park;
   if (p == NULL || p->time - 1 <= w->time - 1) {
     io_push(&io_park, w);
-    return;
+  } else {
+    while (p->next->time - 1 <= w->time - 1) {
+      p = p->next;
+    }
+    io_push(&p, w);
   }
-  while (p->next->time - 1 <= w->time - 1) {
-    p = p->next;
-  }
-  io_push(&p, w);
+  w->prev       = w->next == w ? w : w->next->prev;
+  w->next->prev = w;
+}
+
+static void io_park_cut(IoWork* w) {
+  w->prev->next = w->next;
+  w->next->prev = w->prev;
+  io_park = w->next == w ? NULL : io_park == w ? w->prev : io_park;
 }
 
 static Term io_wait_on(IoWork* w, int fd, short evts, u64 time, IoPack more) {
@@ -5648,6 +5658,11 @@ static Term io_list(Env e, const char* p, u64 n) {
 #define io_done(e, v)   io_box(e, CID(Done), v)
 #define io_res(e, w, v) ((w)->code ? io_fail(e, (w)->code, NULL) \
   : io_done(e, v))
+#define io_until(ms)    (io_tick() + (u64)(ms) * 1000000ull)
+#define io_again(w) ((w)->code == EAGAIN \
+  && ((w)->time == 0 || io_tick() < (w)->time))
+#define io_poll_end(e, w, rest, r) ((w)->code == EAGAIN \
+  ? io_box(e, CID(Wait), rest) : (w)->time ? io_box(e, CID(Ready), r) : (r))
 
 static Term io_box(Env e, u64 cid, Term v) {
   u64 l = heap_alloc(e, 0);
@@ -5655,11 +5670,12 @@ static Term io_box(Env e, u64 cid, Term v) {
   return term_ctr(cid, l);
 }
 
-static Term io_fail(Env e, u32 code, const char* text) {
+static Term io_err(Env e, u32 code, const char* text) {
   const char* s = text != NULL ? text : strerror((int)code);
-  Term t = io_tup(e, code, io_str(e, s, strlen(s)));
-  return io_box(e, CID(Fail), t);
+  return io_tup(e, code, io_str(e, s, strlen(s)));
 }
+
+#define io_fail(e, code, text) io_box(e, CID(Fail), io_err(e, code, text))
 
 static pthread_mutex_t io_gate = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t  io_bell = PTHREAD_COND_INITIALIZER;
@@ -6201,9 +6217,10 @@ function show_val(D, N, d, v, chain) {
 // Apple arm64 passes variadic fcntl flags on the stack, so io_sys
 // binds fcntl there with the flags as the ninth fixed argument. A
 // parked effect waits for fd (a write when out) or until at
-// (performance.now()), either one undefined when unused; io_wake
-// resumes k with the value of more, and undefined parks it again. The
-// waits stay in deadline order, as io_park does in C.
+// (performance.now()), either one undefined when unused; once due, io_wait
+// calls more at once, as C calls pack, and resumes k with its value, while
+// undefined parks it again. The waits stay in deadline order, as io_park
+// does in C.
 
 function io_exit(main, show) {
   try {
@@ -6270,13 +6287,25 @@ function io_sys() {
   return globalThis.BEND_SYS;
 }
 
-function io_fail(code) {
-  return { $: "Fail",
-    error: io_tup(code >>> 0, String(io_sys().strerror(code))) };
+function io_fail(code, ...rest) {
+  const err = io_tup(code >>> 0, String(io_sys().strerror(code)));
+  return { $: "Fail", error: io_tup(err, ...rest) };
 }
 
 function io_done(value) {
   return { $: "Done", value };
+}
+
+function io_until(ms) {
+  return performance.now() + Number(ms);
+}
+
+function io_late(at) {
+  return at !== undefined && performance.now() >= at;
+}
+
+function io_ready(at, r) {
+  return at === undefined ? r : { $: "Ready", value: r };
 }
 
 function io_tup(...xs) {
@@ -6350,19 +6379,16 @@ function io_wait(io, block) {
     set.fill(0);
   }
   const now = performance.now();
-  io.waits = io.waits.filter((w) => {
-    const ready = w.at <= now || w.fd !== undefined
-      && set[at(w)] & 1 << (w.fd & 7);
-    if (ready) {
-      io_push(io_wake, w, false);
+  const due = (w) => w.at <= now || w.fd !== undefined
+    && set[at(w)] & 1 << (w.fd & 7);
+  const todo = io.waits;
+  io.waits = todo.filter((w) => !due(w));
+  for (const w of todo.filter(due)) {
+    const x = w.more();
+    if (x !== undefined) {
+      io_push(w.k, x, false);
     }
-    return !ready;
-  });
-}
-
-function io_wake(w) {
-  const x = w.more();
-  return x === undefined ? undefined : w.k(x);
+  }
 }
 
 function io_park_on(fd, out, k, more, at) {
