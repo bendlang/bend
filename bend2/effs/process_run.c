@@ -343,5 +343,5 @@ Term process_run_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) process_run_use(void) {
-  io_eff(CID(Process.run), process_run_run, 0);
+  io_eff(CID(Process.run), process_run_run);
 }
