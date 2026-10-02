@@ -3111,12 +3111,11 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null, args: string[]): void {
   }
   if (x.$ === "Lam") {
     const all = ty_all(fl.book, ty);
-    const e = quant_live(all.q) ? args[0] : "null";
+    const [e, ...rest] = quant_live(all.q) ? args : ["null", ...args];
     const k = /^(\w*_\d+|null)$/.test(e) || VIEW.test(e) ? e
       : name_local(fl, x.k);
     const at = fl.seg.lines.length;
-    js_func(fl, x.f(Bend.Var(k, 0)), all.B(Bend.Var(k, 0)),
-      quant_live(all.q) ? args.slice(1) : args);
+    js_func(fl, x.f(Bend.Var(k, 0)), all.B(Bend.Var(k, 0)), rest);
     if (k !== e && fl.seg.lines.slice(at).some((l) => l.includes(k))) {
       fl.seg.lines.splice(at, 0, `const ${k} = ${e};`);
     }
