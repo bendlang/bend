@@ -2813,11 +2813,8 @@ function emit_chain(fl: File, cond: (i: number) => string,
     return bodies[0]();
   }
   bodies.forEach((body, i) => {
-    if (i === bodies.length - 1) {
-      file_push(fl, "} else {");
-    } else {
-      file_push(fl, `${i === 0 ? "if" : "} else if"} (${cond(i)}) {`);
-    }
+    file_push(fl, i === bodies.length - 1 ? "} else {"
+      : `${i === 0 ? "if" : "} else if"} (${cond(i)}) {`);
     body();
   });
   file_push(fl, "}");
