@@ -4733,9 +4733,6 @@ extern "C" __global__ void window_dev(DEV u64* H, Term root, u32 w, u32 h,
 // Row
 // ===
 
-// A grow pushes its i-th task to the i-th lane after base (ring_pick), and
-// says how many it pushed.
-
 static u32 row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want) {
   u64* H = e.mem;
   u32 cur = 0;
@@ -4804,9 +4801,6 @@ static Term* pool_stack(void) {
     pthread_cond_wait(&cv, &pool_lock); \
   } \
   pthread_mutex_unlock(&pool_lock);
-
-// A drain unit is the lanes of a row pool_step apart: as few as leave 32
-// units a thread, LINE at most, so 256 tasks drain as 256 units, not 16.
 
 static u32 pool_step(u32 rows) {
   u32 per = rows * CUBE_T / (32 * pool_size);
@@ -5220,9 +5214,7 @@ static void gpu_pass(u32 f) {
 // a row grows into itself, and a column grow's cur tasks land in rows 0
 // to cur - 1, so those rows hold every task.
 
-// Between turns no lane runs, so each ring of the turn's rows clears what it
-// wrote (a stale lap bit reads as written) and lays its tasks from slot 0:
-// its planes are what it held at once, not every push (kmeans 20 MB -> 1).
+// Between turns, each ring's pending tasks move back to slot 0.
 
 static void ring_rewind(u64* H, u32 rows) {
   Term keep[RING_LEN];
