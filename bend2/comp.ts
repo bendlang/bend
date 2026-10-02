@@ -995,11 +995,7 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
   if (t === null) {
     return BOX;
   }
-  if (WORDS[t.k]) {
-    return WORDS[t.k];
-  }
-  const key = Bend.term_key(Bend.term_lower(t));
-  return memo(LAYS, key, () => {
+  return WORDS[t.k] ?? memo(LAYS, Bend.term_key(Bend.term_lower(t)), (key) => {
     const tld = book.tlds[t.k];
     if (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
       || tld.c.some((c) => ctr_doms(book, c).some((F) => ty_holds(book, F,
@@ -1909,10 +1905,10 @@ function die(m: string): never {
 // Memo
 // ====
 
-function memo<K, V>(m: Map<K, V>, k: K, f: () => V): V {
+function memo<K, V>(m: Map<K, V>, k: K, f: (k: K) => V): V {
   let v = m.get(k);
   if (v === undefined) {
-    m.set(k, v = f());
+    m.set(k, v = f(k));
   }
   return v;
 }
