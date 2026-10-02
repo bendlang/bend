@@ -110,8 +110,9 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 // its model), the defs out (an opaque one flagged), each item's kernel
 // name, the items out or going out, the ones named but not yet out, the
 // kernel names taken, why each failed item is out of
-// scope, each item's specialized parameters, each def's group, and each
-// template instance's template and ~ arguments (its key in book.tmps)
+// scope, each item's specialized parameters, each def's group, each
+// template instance's template and ~ arguments (its key in book.tmps),
+// each root constant's split, and whether each field reaches its datatype
 type Safe = {
   book: Book;
   mb: Book;
@@ -124,6 +125,8 @@ type Safe = {
   spec: Map<Name, boolean[]>;
   groups: Map<Name, Group | null>;
   inst: Map<Name, [Name, HTerm[]]>;
+  splits: Map<Name, [string, number]>;
+  rec: Map<string, boolean>;
 };
 
 // Constants
@@ -135,11 +138,15 @@ const NAT_MAX = 4096;
 // Errors
 // ======
 
-// a book the kernel cannot express
-class Scope_Error extends Error {}
+// a book the kernel cannot express, and the term stuck on a root constant
+class Scope_Error extends Error {
+  constructor(why: string, readonly stuck?: HTerm) {
+    super(why);
+  }
+}
 
-function oos(why: string): never {
-  throw new Scope_Error(why);
+function oos(why: string, stuck?: HTerm): never {
+  throw new Scope_Error(why, stuck);
 }
 
 // Book
@@ -152,11 +159,11 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
     todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups: new Map(),
     inst: new Map(Object.entries(book.tmps).flatMap(([k, is]) => Object.entries(is).map(([key, n]): [Name, [Name, HTerm[]]] =>
-      [n, [k, key.split("\n").map((a) => B.term_higher(JSON.parse(a) as B.LTerm))]]))) };
+      [n, [k, key.split("\n").map((a) => B.term_higher(JSON.parse(a) as B.LTerm))]]))), splits: new Map(), rec: new Map() };
   const roots: Array<[Name, string]> = [];
   for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
     try {
-      roots.push(...root_cols(e, k, book.tlds[k].T, 0).map((cols): [Name, string] => [k, item_try(e, k, cols)]));
+      roots.push(...root_at(e, k, new Map()));
     } catch (x) {
       if (!(x instanceof Scope_Error)) {
         throw x;
@@ -165,9 +172,6 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
       e.fail.set(n, x.message);
       roots.push([k, n]);
     }
-  }
-  for (let it = e.todo.pop(); it !== undefined; it = e.todo.pop()) {
-    item_try(e, it[0], it[1]);
   }
   // a def that names a def out of scope is out too
   const bad = new Map(e.fail);
@@ -181,58 +185,138 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
       }
     }
   }
-  e.out = e.out.filter(([k]) => !bad.has(k));
+  // only what the roots reach goes out
+  const by = new Map(e.out.map(([k, T, v]) => [k, [...o_refs(T), ...o_refs(v)]]));
+  const keep = new Set<string>();
+  const go = (n: string): void => {
+    if (by.has(n) && !keep.has(n)) {
+      keep.add(n);
+      by.get(n)?.forEach(go);
+    }
+  };
+  roots.forEach(([, n]) => go(n));
+  e.out = e.out.filter(([k]) => keep.has(k) && !bad.has(k));
   const oos = roots.filter(([, n]) => bad.has(n)).map(([k, n]): [Name, string] => [k, bad.get(n) as string]);
   return { text: book_show(e), oos };
 }
 
-// the columns root k checks at, from its telescope T's parameter j on:
-// a specialized parameter of a finite type (Quant, or a datatype whose
-// constructors have no fields) at each value, any other at an opaque
-// constant k~p of its type, which models read at its model (as bend2
-// checks a template: its body holds at every argument)
-function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
-  const sp = spec_of(e, k);
-  const F = B.term_wnf(e.book, T);
-  if (j === sp.length || F.$ !== "All") {
-    return [[]];
-  }
-  const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
-  if (!sp[j]) {
-    return at(null);
-  }
-  const A = B.term_wnf(e.book, F.A);
-  const adt = A.$ === "ADT" && A.x.length === 0 ? e.book.tlds[A.k] as ADT : null;
-  const vs = A.$ === "Qnt" ? [B.None(), B.Lone(), B.Many()].map((q) => B.Qua(q))
-    : adt !== null && adt.c.every((c) => B.term_wnf(e.book, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
-  if (vs !== null) {
-    return vs.flatMap(at);
-  }
-  if (mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
-    oos("a specialized parameter whose type names a parameter");
-  }
-  let c = k + "~" + F.k;
-  while (e.book.tlds[c] !== undefined) {
-    c += "~";
-  }
-  const def: Def = { $: "Def", n: 0, x: 0, T: F.A, v: null };
-  e.book.tlds[c] = def;
-  const m = model(e, F.A);
-  if (m !== null) {
-    e.mb.tlds[c] = { ...def, v: m };
-  }
-  return at(B.Ref(c));
-}
-
-// item_ref, with a failure kept as the item's reason
-function item_try(e: Safe, k: Name, cols: Cols): string {
+// root k at the decisions ds, split where stuck on a constant
+function root_at(e: Safe, k: Name, ds: Map<string, number>): Array<[Name, string]> {
+  e.splits.clear();
   try {
-    return item_ref(e, k, cols, true);
+    const n = item_ref(e, k, root_cols(e, k, ds), true);
+    drain(e);
+    return [[k, n]];
   } catch (x) {
-    if (!(x instanceof Scope_Error)) {
+    const sp = x instanceof Scope_Error ? split(e, x.stuck) : undefined;
+    if (sp === undefined) {
+      e.splits.clear();
+      drain(e);
       throw x;
     }
-    return e.names.get(item_key(k, cols)) as string;
+    return [...Array(sp[1]).keys()].flatMap((i) => root_at(e, k, new Map([...ds, [sp[0], i]])));
+  }
+}
+
+// root k's columns at ds
+function root_cols(e: Safe, k: Name, ds: Map<string, number>): Cols {
+  const sp = spec_of(e, k);
+  const cols: Cols = [];
+  let T = e.book.tlds[k].T;
+  for (let j = 0; j < sp.length; j++) {
+    const F = B.term_wnf(e.book, T);
+    if (F.$ !== "All") {
+      break;
+    }
+    if (sp[j] && !is_qnt(e, F.A) && mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
+      oos("a specialized parameter whose type names a parameter");
+    }
+    cols.push(sp[j] ? value(e, k + "~" + F.k, F.A, String(j), ds, true) : null);
+    T = F.B(cols[j] ?? B.Var(F.k, j));
+  }
+  return cols;
+}
+
+// the value at path p: ds's choice there, else a constant that splits if
+// may and it has values
+function value(e: Safe, n: string, T: HTerm, p: string, ds: Map<string, number>, may: boolean): HTerm {
+  const i = ds.get(p);
+  const A = B.term_wnf(e.book, T);
+  if (i === undefined) {
+    let c = n;
+    for (let j = 1; e.book.tlds[c] !== undefined; j++) {
+      c = n + "~" + j;
+    }
+    const def: Def = { $: "Def", n: 0, x: 0, T, v: null };
+    e.book.tlds[c] = def;
+    e.mb.tlds[c] = { ...def, v: model(e, T) };
+    const k = A.$ === "Qnt" ? 3 : A.$ === "ADT" && may ? B.book_adt(e.book, A, B.ctx_nil()).c.length : 0;
+    if (k > 0) {
+      e.splits.set(c, [p, k]);
+    }
+    return B.Ref(c);
+  }
+  if (A.$ !== "ADT") {
+    return B.Qua([B.None(), B.Lone(), B.Many()][i]);
+  }
+  const d = B.book_adt(e.book, A, B.ctx_nil()).c[i];
+  const xs: HTerm[] = [];
+  for (let U = B.term_wnf(e.book, B.tele_fill(e.book, d.T, A.x, B.ctx_nil())); U.$ === "All"; U = B.term_wnf(e.book, U.B(xs[xs.length - 1]))) {
+    xs.push(value(e, n + "." + U.k, U.A, p + "." + xs.length, ds, !recurs(e, A, d, A.x.length + xs.length)));
+  }
+  return B.term_snf(e.book, B.Ctr(d.k, xs));
+}
+
+// whether binder j of constructor d's telescope, at A's arguments, reaches A
+function recurs(e: Safe, A: Extract<HTerm, { $: "ADT" }>, d: B.Ctr, j: number): boolean {
+  const key = [B.term_key(B.term_lower(A)), d.k, j].join("\n");
+  if (!e.rec.has(key)) {
+    e.rec.set(key, reaches(e, B.term_lower(B.tele_unbind(e.book, d.T).doms[j][2], j), A.k, A.x));
+  }
+  return e.rec.get(key) as boolean;
+}
+
+// whether the lowered t reaches datatype k through its names
+function reaches(e: Safe, t: unknown, k: Name, ps: HTerm[] = [], seen = new Set<Name>()): boolean {
+  return names(t, ps).some((n) => {
+    const d = e.book.tlds[n];
+    const us = d?.$ === "ADT" ? d.c.map((c) => c.T) : d?.$ === "Def" && d.v !== null ? [d.v] : [];
+    return n === k || !seen.has(n) && seen.add(n) && us.some((u) => reaches(e, B.term_lower(u), k, [], seen));
+  });
+}
+
+// the names in a lowered term, and in ps[i] where it applies parameter i
+// or hands it to a def (not where it holds it as data)
+function names(t: unknown, ps: HTerm[] = [], data = true): Name[] {
+  if (typeof t !== "object" || t === null) {
+    return [];
+  }
+  if (Array.isArray(t)) {
+    return t.flatMap((x) => names(x, ps, data));
+  }
+  const o = t as Record<string, unknown>;
+  const i = o.i as number;
+  if (o.$ === "Var") {
+    return !data && i >= 0 && i < ps.length ? names(B.term_lower(ps[i])) : [];
+  }
+  return [...o.$ === "Ref" || o.$ === "ADT" ? [o.k as Name] : [], ...Object.entries(o).flatMap(([f, v]) => f === "s" ? [] : names(v, ps, o.$ === "ADT"))];
+}
+
+// the first constant in t that splits: its path and value count
+function split(e: Safe, t?: HTerm): [string, number] | undefined {
+  return t && names(B.term_lower(t)).map((n) => e.splits.get(n)).find((x) => x !== undefined);
+}
+
+// the pending items; a failure a split may help goes up
+function drain(e: Safe): void {
+  for (let it = e.todo.pop(); it !== undefined; it = e.todo.pop()) {
+    try {
+      item_ref(e, it[0], it[1], true);
+    } catch (x) {
+      if (!(x instanceof Scope_Error) || split(e, x.stuck) !== undefined) {
+        throw x;
+      }
+    }
   }
 }
 
@@ -296,7 +380,7 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = type_drop(e, tld.T, cols);
-  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
+  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k), B.Ref(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -480,8 +564,8 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
 // a def name, taken here
 function fresh(e: Safe, n: string): string {
   let k = n;
-  while (e.taken.has(k)) {
-    k += "_";
+  for (let i = 1; e.taken.has(k); i++) {
+    k = n + "_" + i;
   }
   e.taken.add(k);
   return k;
@@ -507,7 +591,7 @@ function is_qnt(e: Safe, T: HTerm): boolean {
 // a Quant term's literal
 function quant_eval(e: Safe, s: Scope, t: HTerm): Q {
   const x = spec_val(e, s, t);
-  return x.$ === "Qua" ? quant(x.q) : oos("a Quant that is not a literal");
+  return x.$ === "Qua" ? quant(x.q) : oos("a Quant that is not a literal", x);
 }
 
 // Scope
@@ -749,7 +833,7 @@ function pick(e: Safe, t: HTerm, v: HTerm): [HTerm, HTerm[]] {
     [m] = open(m.m);
   }
   if (c.$ !== "Ctr" || m.$ === "Efq") {
-    return oos("a specialized argument that is not a constructor");
+    return oos("a specialized argument that is not a constructor", c.$ === "Ctr" ? undefined : w);
   }
   return m.$ === "Mat" ? [m.h, c.x] : [m, [c]];
 }
@@ -814,12 +898,8 @@ function kind(e: Safe, s: Scope, T: HTerm): Q | null {
   if (tld === undefined) {
     return null;
   }
-  try {
-    const K = B.term_wnf(e.book, B.tele_fill(e.book, tld.T, xs, B.ctx_nil()));
-    return K.$ === "Typ" ? Math.max(1, quant_eval(e, s, K.g)) as Q : null;
-  } catch {
-    return null;
-  }
+  const K = B.term_wnf(e.book, B.tele_fill(e.book, tld.T, xs, B.ctx_nil()));
+  return K.$ === "Typ" ? Math.max(1, quant_eval(e, s, K.g)) as Q : null;
 }
 
 // Term
