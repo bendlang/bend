@@ -119,7 +119,6 @@ freely and may call a def written below it, but falls outside Bend's proof
 guarantees: `bend` runs it, but a check prints SOME PROOFS FAIL and names every
 def that relies on it. Types are not code, so the order binds only defs: two
 datatypes, or a datatype and a type-level def, may name each other in any order.
-Forward references alone do not make definitions mutually recursive.
 
 A `match` inspects a parameter or a variable bound by a pattern, never a
 computed value: `match sum(xs, 0):` is rejected. Scrutinees follow binder order,

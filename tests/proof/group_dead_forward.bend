@@ -1,5 +1,6 @@
-# Dead references neither add group members nor select a group's leader.
-# h names unrelated L2 first; L names it after its real cycle through h.
+# Only live calls form groups. h first names unrelated L2 in a dead
+# argument, then L; neither reference makes h or d a member of L.
+# The laws catch a dead reference rerouting d through L's selector.
 import Base
 
 def keep(-p: Nat, x: Nat) -> Nat:
@@ -22,17 +23,17 @@ def d(n: Nat) -> Nat:
 def L(n):
   match n:
     case Zero{}:
-      keep(L2(0n), 0n)
+      0n
     case Succ{m}:
       h(m)
 
 def L2(n):
   0n
 
-law member:
+law helper:
   {L(4n) == 3n : Nat}
 
-def member():
+def helper():
   {==}
 
 law non_member:
