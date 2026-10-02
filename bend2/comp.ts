@@ -2151,11 +2151,12 @@ function emit_fuse(fl: File, ck: Spine, dst: Val | null, tail = false): void {
   emit_put(fl, dst, out);
 }
 
+// A foreign def's last parameter, past its live ones, is its continuation k.
 function emit_open(fl: File, k: Name): [File, Val[]] {
   FUEL = FOLD_FUEL;
   const { live, lays, ret } = fun_of(k);
   const vals = lays.map((l, i) =>
-    val_new(l.ks.map(() => name_local(fl, live[i][1])), l));
+    val_new(l.ks.map(() => name_local(fl, live[i]?.[1] ?? "k")), l));
   brw_of(fl, k).forEach((b, i) => vals[i].ws.forEach((w, j) => {
     if (b && lays[i].ks[j] === "box") {
       fl.brwl.set(w, k + "~" + i);
@@ -2770,12 +2771,10 @@ export function compile_book(book: Bend.Book): string {
       emit_body(dl, fun_of(k).h!, tld.T, [], vals, null);
     }
     for (const [k] of done_defs(def_foreign)) {
-      const qp = [...fun_of(k).live.map(([, n]) => name_local(fl, n)),
-        name_local(fl, "k")];
-      const rl = { ...fl, seg: seg_new(k, BOX, qp), spares: [] };
+      const [rl, vals] = emit_open(fl, k);
       fl.segs.push(rl.seg);
-      file_push(rl, `r0 = ${ctr_build(rl, k, qp)};`);
-      file_push(rl, "WL_RETN(1);");
+      emit_put(rl, null, val_new([ctr_build(rl, k, vals.flatMap((v) => v.ws))],
+        BOX));
     }
     graph_close(fl.lend, [...fl.lend].flatMap((l) => {
       const [a, r] = l.split("<");
