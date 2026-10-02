@@ -357,7 +357,7 @@ const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 // and the rest precise::. Metal's atan2 is NaN at the origin,
 // where libm answers +-0 or +-pi, so atan2_c99 answers as libm
 // does. Metal folds a constant dividend within 128 of 2^32 through
-// an f32, so U32_QUO divides its half and then fixes the odd bit.
+// an f32, so its U32_QUO divides the half and then fixes the odd bit.
 
 const SHIMS = "sqrt exp log log2 log10 sin cos tan pow fmod".split(" ")
   .map((n) => "#define " + n.padEnd(5) + ("sin cos tan".includes(n)
@@ -372,12 +372,13 @@ INLINE f32 atan2_c99(f32 y, f32 x) {
     ? copysign(signbit(x) ? M_PI_F : 0.0f, y) : atan2(y, x);
 }
 ${SHIMS}
+#define U32_QUO(a, b) \
+  ((a) / 2 / (b) * 2 + ((a) - (a) / 2 / (b) * 2 * (b) >= (b)))
+#else
+#define U32_QUO(a, b) ((a) / (b))
 #endif
 
 #define U32_BIN(a, o, b) ((u64)((u32)(a) o (u32)(b)))
-
-#define U32_QUO(a, b) \
-  ((a) / 2 / (b) * 2 + ((a) - (a) / 2 / (b) * 2 * (b) >= (b)))
 
 INLINE f32 f32_unbox(u64 x) {
   union { u32 u; f32 f; } p = { (u32)x };
