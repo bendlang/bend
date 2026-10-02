@@ -68,7 +68,7 @@ type File = {
   tails: Map<Name, Set<Name>>;
   img: string[];
   lits: Map<string, number>;
-  consts: Map<Lay, Map<HTerm, Val>>;
+  consts: Map<number, Map<HTerm, Val>>;
   fresh: Map<string, number>;
   brwl: Map<string, string>;
   seg: Seg;
@@ -583,6 +583,8 @@ const NODES = new Map<Name, Lay>();
 
 const LAYS = new Map<string, Lay>();
 
+const LAY_IDS = new Map<Lay | string, number>();
+
 const CONSTS = new Map<HTerm, boolean>();
 
 const LITS = new Map<HTerm, HTerm>();
@@ -997,6 +999,8 @@ function type_adts(fl: File, T: HTerm): Name[] {
 // An Array cell takes the open layout of its element type (the return
 // type of its constructors), so all callers agree. lay_el refuses an
 // open element type; adt_of and js_expr call it only for that check.
+// lay_id numbers a layout by its shape, naming each field by its own
+// number, so a field shared by every arm is read once and not per arm.
 
 function lay_of(book: Bend.Book, A: HTerm | null): Lay {
   const t = ty_adt(book, A);
@@ -1050,6 +1054,15 @@ function lay_node(book: Bend.Book, k: Name): Lay {
       lay.ks.push("w32");
     }
     return lay;
+  });
+}
+
+function lay_id(lay: Lay): number {
+  return memo(LAY_IDS, lay, () => {
+    const arms = lay.arms && Object.entries(lay.arms)
+      .map(([k, ls]) => [k, ls.map(lay_id)]);
+    return memo(LAY_IDS, lay.ks.join() + JSON.stringify(arms),
+      () => LAY_IDS.size);
   });
 }
 
@@ -1387,7 +1400,8 @@ function file_book(book: Bend.Book, roots: Name[], js: boolean): File {
       die(k + " names both a constructor and a foreign def: name one apart");
     }
   }
-  [TELES, SRCS, LOOPS, NODES, LAYS, FLATS, FUNS, BRWS, IDS, TAKEN]
+  [TELES, SRCS, LOOPS, NODES, LAYS, LAY_IDS, FLATS, FUNS, BRWS, IDS,
+    TAKEN]
     .forEach((m) => m.clear());
   "FID_EXIT FID_ENTER FID_T CID_T".split(" ").forEach((id) => TAKEN.add(id));
   PROBES.length = 1;
@@ -2268,8 +2282,7 @@ function emit_open(fl: File, k: Name): [File, Val[]] {
 }
 
 function emit_native(fl: File, k: Name, ers: HTerm[]): string {
-  const key = [k, ...ers.map((e) => JSON.stringify(lay_of(fl.book, e)))]
-    .join("|");
+  const key = [k, ...ers.map((e) => lay_id(lay_of(fl.book, e)))].join("|");
   const got = fl.spun.get(key);
   if (got !== undefined) {
     return seg_ref(fl, got);
@@ -2376,7 +2389,7 @@ function emit_ctr(fl: File, x: Of<"Ctr">, ty: HTerm | null,
     facts_ctr(fl, fl.book.ctrs[x.k], adt.x);
   }
   const pos = at ?? lay_of(fl.book, adt);
-  const seen = memo(fl.consts, pos, () => new Map());
+  const seen = memo(fl.consts, lay_id(pos), () => new Map());
   const got = seen.get(x);
   if (got !== undefined) {
     return got;
