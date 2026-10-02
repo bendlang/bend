@@ -627,12 +627,10 @@ function cid_mac(k: string): string {
 
 function tpl_ops(pre: string, names: string, C: string, JS = C):
   Record<string, Intr> {
-  const out: Record<string, Intr> = {};
-  for (const p of names.split(" ")) {
+  return Object.fromEntries(names.split(" ").map((p) => {
     const [k, o = k, jo = o] = p.split(":");
-    out[pre + k] = { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) };
-  }
-  return out;
+    return [pre + k, { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) }];
+  }));
 }
 
 function tpl_deep(e: string): boolean {
