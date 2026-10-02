@@ -5276,8 +5276,6 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#define IO_READ 1
-#define IO_TIME 2
 #define IO_PARK TERM_HOLE
 
 #define io_hand(v)   term_make(TAG_PAK, (u64)(v) >> 40, (u64)(v) & LOC_MASK)
@@ -5306,13 +5304,8 @@ typedef struct IoWork {
 
 typedef Term (*Effect)(Env e, Term* f, IoWork* w);
 
-typedef struct {
-  Effect run;
-  u32    ask;
-} IoEff;
-
-static IoEff io_eff_rows[1 << 16];
-static u32   io_live;
+static Effect io_eff_rows[1 << 16];
+static u32    io_live;
 
 static u64 io_tick(void) {
   struct timespec ts;
@@ -5344,11 +5337,11 @@ static int io_sys_addr(const char* host, u32 port, struct sockaddr_in* at) {
 static int    io_argc;
 static char** io_argv;
 
-static void io_eff(u32 cid, Effect run, u32 need) {
-  if (io_eff_rows[cid].run != NULL) {
+static void io_eff(u32 cid, Effect run) {
+  if (io_eff_rows[cid] != NULL) {
     err_fail("two effects register one request");
   }
-  io_eff_rows[cid] = (IoEff){ run, need };
+  io_eff_rows[cid] = run;
 }
 
 static u64 io_sys_end(IoWork* w, ssize_t n) {
@@ -5606,15 +5599,6 @@ static Term io_work(IoWork* w, IoCall call, IoPack pack) {
   return IO_PARK;
 }
 
-static Term io_exec(Env e, IoWork* w) {
-  Term fs[256];
-  u32  c = (u32)term_aux(w->cont);
-  u32  n = cid_arity(c);
-  spare_free(e, cls_fit(n), ctr_take(e, w->cont, n, fs));
-  w->cont = fs[n - 1];
-  return io_eff_rows[c].run(e, fs, w);
-}
-
 static bool io_bit(u8* set, int fd, bool put) {
   u8* at = set + fd / 8;
   *at |= put << fd % 8;
@@ -5816,29 +5800,24 @@ static void io_step(Env e, IoWork* a) {
     e.mem[ap + 1] = a->item;
     Term req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
     u32  c   = (u32)term_aux(req);
-    u64  at  = term_peek(e.mem, req);
     if (c == CID(Emit)) {
       term_drop(e, req);
       free(a);
       io_live -= 1;
       return;
     }
+    Term fs[256];
+    u32  n = cid_arity(c);
+    spare_free(e, cls_fit(n), ctr_take(e, req, n, fs));
     if (c == CID(Halt)) {
-      io_errs(e, e.mem[at + 1]);
-      exit((int)(u32)e.mem[at]);
+      io_errs(e, fs[1]);
+      exit((int)(u32)fs[0]);
     }
-    if (io_eff_rows[c].run == NULL) {
+    if (io_eff_rows[c] == NULL) {
       err_fail("an alien request");
     }
-    u32 need = io_eff_rows[c].ask;
-    u32 word = (u32)(need & IO_READ ? io_hand_v(e.mem[at]) : e.mem[at]);
-    a->cont  = req;
-    if (need != 0) {
-      io_wait_on(a, (int)word, need & IO_READ ? POLLIN : 0,
-        need & IO_TIME ? io_tick() + (u64)word * 1000000ull : 0, io_exec);
-      return;
-    }
-    Term x = io_exec(e, a);
+    a->cont = fs[n - 1];
+    Term x  = io_eff_rows[c](e, fs, a);
     if (x == IO_PARK) {
       return;
     }
@@ -6017,11 +5996,11 @@ function run_lib(f, n) {
 
 const $0eff = Object.create(null);
 
-function io_eff(k, run, need) {
+function io_eff(k, run) {
   if (k in $0eff) {
     throw new Error("bend: two effects register " + k);
   }
-  $0eff[k] = { run, need };
+  $0eff[k] = run;
 }
 `.slice(1);
 
@@ -6309,18 +6288,11 @@ function io_run(m) {
           io_errs(op.message);
           return op.code;
         }
-        const eff = $0eff[op.$];
-        if (eff === undefined) {
+        const run = $0eff[op.$];
+        if (run === undefined) {
           throw "bend: an alien request";
         }
-        const need = eff.need?.() ?? {};
-        if (need.time || need.read) {
-          const more = () => eff.run(...op.args, op.kont);
-          io_park_on(need.read ? op.args[0] : undefined, false, op.kont, more,
-            need.read ? undefined : performance.now() + Number(op.args[0]));
-          break;
-        }
-        const x = eff.run(...op.args, op.kont);
+        const x = run(...op.args, op.kont);
         if (x === undefined) {
           break;
         }

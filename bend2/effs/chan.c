@@ -109,7 +109,7 @@ Term chan_new_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) chan_new_use(void) {
-  io_eff(CID(Chan.new), chan_new_run, 0);
+  io_eff(CID(Chan.new), chan_new_run);
 }
 
 #endif
@@ -135,7 +135,7 @@ Term chan_send_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) chan_send_use(void) {
-  io_eff(CID(Chan.send), chan_send_run, 0);
+  io_eff(CID(Chan.send), chan_send_run);
 }
 
 #endif
@@ -165,7 +165,7 @@ Term chan_recv_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) chan_recv_use(void) {
-  io_eff(CID(Chan.recv), chan_recv_run, 0);
+  io_eff(CID(Chan.recv), chan_recv_run);
 }
 
 #endif
@@ -181,7 +181,7 @@ Term chan_close_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) chan_close_use(void) {
-  io_eff(CID(Chan.close), chan_close_run, 0);
+  io_eff(CID(Chan.close), chan_close_run);
 }
 
 #endif

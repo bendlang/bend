@@ -1,4 +1,4 @@
-# Reversing discovery order also preserves the scheduling helper's call.
+# Reversing discovery order also preserves the helper function's call.
 import Base
 
 def A.run(ms: U32) -> IO(U32):

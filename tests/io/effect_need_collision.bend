@@ -1,4 +1,4 @@
-# An effect named like another module's scheduling helper keeps its value.
+# An effect named like a helper function of another module's keeps its value.
 import Base
 
 def A.run(ms: U32) -> IO(U32):

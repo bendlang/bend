@@ -176,7 +176,7 @@ Term audio_open_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) audio_open_use(void) {
-  io_eff(CID(Audio.open), audio_open_run, 0);
+  io_eff(CID(Audio.open), audio_open_run);
 }
 #endif
 
@@ -203,7 +203,7 @@ Term audio_write_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) audio_write_use(void) {
-  io_eff(CID(Audio.write), audio_write_run, 0);
+  io_eff(CID(Audio.write), audio_write_run);
 }
 #endif
 
@@ -214,6 +214,6 @@ Term audio_close_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) audio_close_use(void) {
-  io_eff(CID(Audio.close), audio_close_run, 0);
+  io_eff(CID(Audio.close), audio_close_run);
 }
 #endif

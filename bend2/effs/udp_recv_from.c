@@ -1,8 +1,8 @@
 // UDP
 // ===
 
-// The loop parked the request until the socket was readable; a recv that
-// still finds no datagram (the socket is non-blocking) parks again.
+// A recv that finds no datagram (the socket is non-blocking) parks until
+// the socket is readable.
 static Term udp_recv_from_more(Env e, IoWork* w) {
   struct sockaddr_in at = { 0 };
   socklen_t alen = sizeof(at);
@@ -28,5 +28,5 @@ Term udp_recv_from_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) udp_recv_from_use(void) {
-  io_eff(CID(UDP.recv_from), udp_recv_from_run, IO_READ);
+  io_eff(CID(UDP.recv_from), udp_recv_from_run);
 }
