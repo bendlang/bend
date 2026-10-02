@@ -87,8 +87,6 @@ allow(/^tools\/bend-fmt-lsp\/src\/test\/[a-z_]+\.test\.ts$/);
 // Gate
 // ====
 
-// A ttok that is missing, fails or prints no count stops the gate: read as
-// 0, it passed every file.
 function ttok(file: string): number {
   const got = child.spawnSync("ttok", [], { input: fs.readFileSync(file) });
   const n = Number(got.stdout?.toString().trim() || NaN);
