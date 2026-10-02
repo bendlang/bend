@@ -105,7 +105,7 @@ type Of<K> = Extract<HTerm, { $: K }>;
 
 type Row = [HTerm, number, number, number];
 
-type Intr = { C?: string | string[]; call?: boolean; JS: string };
+type Intr = { C?: string | string[] | null; JS: string };
 
 type Dom = [Bend.Quant, Name, HTerm];
 
@@ -221,8 +221,8 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
   },
   f32_bits: { C: "$0", JS: "f32_bits($0)" },
-  f32_show: { C: "f32_show(e, $0)", call: true, JS: "f32_show($0)" },
-  f32_read: { C: "f32_read(e, $0)", call: true, JS: "f32_read($0)" },
+  f32_show: { C: "f32_show(e, $0)", JS: "f32_show($0)" },
+  f32_read: { C: "f32_read(e, $0)", JS: "f32_read($0)" },
   nat_add: { C: "nat_chk(e, $0 + $1)", JS: "nat_chk($0 + $1)" },
   nat_mul: { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
   nat_double: { C: "nat_chk(e, $0 + $0)", JS: "nat_chk($0 + $0)" },
@@ -231,9 +231,8 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("nat_", "is_lt:<", "($0 $o $1)"),
   ...tpl_ops("nat_", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
   nat_divmod: {
-    C:    ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
-    call: true,
-    JS:   "nat_divmod($0, $1)",
+    C:  ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
+    JS: "nat_divmod($0, $1)",
   },
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   string_append: { JS: "($0 + $1)" },
@@ -243,21 +242,19 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     get: "{$: \"Tuple\", fst: $0, snd: $0[$1 % $0.length]}",
     swap: "array_rmw($0, $1, () => $2)",
     size: "{$: \"Tuple\", fst: $0, snd: $0.length}",
-  }).map(([k, JS]) => ["array_" + k, { call: true, JS }])),
+  }).map(([k, JS]) => ["array_" + k, { C: null, JS }])),
   array_clone: {
-    C:    ["$0", "blk_copy(e, $0)"],
-    call: true,
-    JS:   "{$: \"Tuple\", fst: $0, snd: $0.slice()}",
+    C:  ["$0", "blk_copy(e, $0)"],
+    JS: "{$: \"Tuple\", fst: $0, snd: $0.slice()}",
   },
   ...Object.fromEntries(Object.entries({
     add: "(o + $2) >>> 0", min: "Math.min(o, $2)", max: "Math.max(o, $2)",
     and: "(o & $2) >>> 0", or: "(o | $2) >>> 0", xor: "(o ^ $2) >>> 0",
     exch: "$2", cmpx: "o === $2 ? $3 : o", fadd: "Math.fround(o + $2)",
   }).map(([k, js]) => ["array_atomic_" + k.replace("cmpx", "cas"), {
-    C:    ["$0", "a32_" + k + "(blk_ptr(e.mem, blk_loc(e.mem, $0),"
+    C:  ["$0", "a32_" + k + "(blk_ptr(e.mem, blk_loc(e.mem, $0),"
       + " blk_at($0, $1, 0)), (u32)$2" + (k === "cmpx" ? ", (u32)$3)" : ")")],
-    call: true,
-    JS:   `array_rmw($0, $1, (o) => ${js})`,
+    JS: `array_rmw($0, $1, (o) => ${js})`,
   }])),
 }, null);
 
@@ -816,7 +813,7 @@ function intr_of(k: Name, js = false): Intr | undefined {
   const tld = FL.book.tlds[k];
   const it = tld?.$ === "Def" && tld.i === undefined && tld.b
     ? OPERATIONS[op_name(k)] : undefined;
-  return it && (js || it.C !== undefined || it.call) ? it : undefined;
+  return it && (js || it.C !== undefined) ? it : undefined;
 }
 
 function op_name(k: Name): string {
@@ -2210,7 +2207,7 @@ function emit_intr(fl: File, it: Intr, m: Spine, ty: HTerm | null): Val {
     && !(op === "array_new" && facts_packed(m.all[2]))) {
     facts_hot(fl, m.all[0], true);
   }
-  if (it.call === true && it.C === undefined) {
+  if (it.C === null) {
     return arr_op(fl, op, lay_el(m.all[0]), args);
   }
   const ws = args.map((v, i) =>
@@ -2319,7 +2316,7 @@ function emit_fold(t: HTerm): HTerm | null {
       }) ? null : b;
     }
     const as = emit_fold_args(m);
-    return it.call === true ? null : as.every((a, i) => a === m.all[i]) ? s
+    return as.every((a, i) => a === m.all[i]) ? s
       : as.reduce((f, x) => Bend.App(f, x), m.t as HTerm);
   });
   const T = ty_ann(t);
@@ -2954,7 +2951,7 @@ function js_expr(fl: File, tm: HTerm, ty0: HTerm | null): string {
       }
       const k = (m.t as Of<"Ref">).k;
       const it = intr_of(k, true);
-      if (it?.call === true && it.C === undefined) {
+      if (it?.C === null) {
         lay_el(m.all[0]);
       }
       return js_call(fl, k, m.args, false);
