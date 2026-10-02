@@ -1038,9 +1038,12 @@ function calls(e: Safe, t: B.LTerm, xs: B.LTerm[] = [], T: HTerm | null = null):
       let U = t.$ === "ADT" ? e.book.tlds[t.k].T : A?.$ === "ADT"
         ? B.tele_fill(e.book, e.book.ctrs[t.k].T, A.x, B.ctx_nil())
         : oos("a grouping constructor with no known datatype");
+      // a field's quantity is its declared binder's, whatever the fields
+      // before it hold, so a placeholder steps the telescope (raising x
+      // there would re-raise the rest of a deep chain at every field)
       return t.x.flatMap((x) => {
         const F = all_of(e, U) ?? oos("a grouping datatype or constructor past its arguments");
-        U = F.B(B.term_higher(x));
+        U = F.B(B.Var("_", -1));
         return F.q.$ === "None" ? [] : calls(e, x);
       });
     }
