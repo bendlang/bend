@@ -4733,7 +4733,10 @@ extern "C" __global__ void window_dev(DEV u64* H, Term root, u32 w, u32 h,
 // Row
 // ===
 
-static void row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want) {
+// A grow pushes its i-th task to the i-th lane after base (ring_pick), and
+// says how many it pushed.
+
+static u32 row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want) {
   u64* H = e.mem;
   u32 cur = 0;
   for (;;) {
@@ -4744,7 +4747,7 @@ static void row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want) {
       has += put0[i] != *ring_get(H, base + i * stride);
     }
     if (root_done(H) || has >= want) {
-      return;
+      return cur;
     }
     u32 grew = 0;
     u32 ran  = 0;
@@ -4754,7 +4757,7 @@ static void row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want) {
       grew += ran == 1;
     }
     if (grew == 0) {
-      return;
+      return cur;
     }
   }
 }
@@ -4802,24 +4805,33 @@ static Term* pool_stack(void) {
   } \
   pthread_mutex_unlock(&pool_lock);
 
+// A drain unit is the lanes of a row pool_step apart: as few as leave 32
+// units a thread, LINE at most, so 256 tasks drain as 256 units, not 16.
+
+static u32 pool_step(u32 rows) {
+  u32 per = rows * CUBE_T / (32 * pool_size);
+  return CUBE_T / (per >= LINE ? LINE : per < 2 ? 1 : 1u << (31 - CLZ(per)));
+}
+
 static u32 pool_rows(Env e, DEV Term* stk) {
   u32 n = 0;
   for (;;) {
-    u32 c = a32_add(&pool_row, 1);
-    u32 r = c & 2047;
-    if (r >= (c >> 11 & 2047)) {
+    u32 c    = a32_add(&pool_row, 1);
+    u32 r    = c & 32767;
+    u32 rows = c >> 15 & 255;
+    if (r >= (c >> 23 & 1 ? rows : rows * pool_step(rows))) {
       if (n != 0 && a32_sub_rel(&pool_done, n) == n) {
         pthread_mutex_lock(&pool_lock);
         pthread_cond_signal(&pool_join);
         pthread_mutex_unlock(&pool_lock);
       }
-      return c >> 23;
+      return c >> 24;
     }
     a32_acq(&pool_row);
-    if (c >> 22 & 1) {
+    if (c >> 23 & 1) {
       row_grow(e, stk, r * CUBE_T, 1, CUBE_T);
     } else {
-      u32  step = CUBE_T / LINE;
+      u32 step = pool_step(rows);
       u32 row  = r / step * CUBE_T;
       for (u32 rg = row + r % step; rg < row + CUBE_T; rg += step) {
         u32 put0 = a32_load(ring_put(e.mem, rg));
@@ -4836,7 +4848,7 @@ static void* pool_work(void* arg) {
   Term* stk  = pool_stack();
   u32   seen = 0;
   for (;;) {
-    POOL_WAIT(a32_load(&pool_row) >> 23 == seen, pool_wake)
+    POOL_WAIT(a32_load(&pool_row) >> 24 == seen, pool_wake)
     seen = pool_rows((Env){ CORPUS, ALC[(uintptr_t)arg] }, stk);
   }
 }
@@ -4887,11 +4899,11 @@ static long cpu_count(void) {
 
 OUTLINE void pool_turn(bool grow, u32 rows) {
   static u32 turn;
-  u32 n = (rows < CUBE_G ? rows : CUBE_G) * (grow ? 1 : CUBE_T / LINE);
+  u32 n = rows < CUBE_G ? rows : CUBE_G;
   turn += 1;
-  a32_store(&pool_done, n);
+  a32_store(&pool_done, grow ? n : n * pool_step(n));
   pthread_mutex_lock(&pool_lock);
-  a32_store_rel(&pool_row, turn << 23 | grow << 22 | n << 11);
+  a32_store_rel(&pool_row, turn << 24 | grow << 23 | n << 15);
   pthread_cond_broadcast(&pool_wake);
   pthread_mutex_unlock(&pool_lock);
   pool_rows((Env){ CORPUS, ALC[0] }, io_stk);
@@ -5200,11 +5212,13 @@ static void gpu_pass(u32 f) {
 // Cube
 // ====
 
-// Under a row per thread, the host's column grows to a row per thread: a
-// row is CUBE_T / LINE units, and each touches a page of every plane. A turn
-// visits only the rows below its bound: a drain deals task g to ring_flip(g),
-// whose row is at most g, and a row grows into itself, so the f rows hold
-// every task; a column grow reaches any row, so after one a turn takes all.
+// The host's column grows to the rows that give a LINE of tasks a thread,
+// no more: every task a grow starts early is live at once (tree-matmul's
+// 2048 at 16 threads start 384 rounds: 15 MB -> 68 MB), and pool_step
+// splits the few rows finely instead. A turn visits only the rows below
+// its bound: a drain deals task g to ring_flip(g), whose row is at most g,
+// a row grows into itself, and a column grow's cur tasks land in rows 1
+// to cur, so those rows hold every task.
 
 static void cube_run(u64* H, bool gpu) {
   for (;;) {
@@ -5219,9 +5233,10 @@ static void cube_run(u64* H, bool gpu) {
       gpu_pass(f);
     } else {
       u32 rows = f;
-      if (f < pool_size) {
-        row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, pool_size);
-        rows = CUBE_G;
+      if (f * (CUBE_T / LINE) < pool_size) {
+        u32 cur = row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G,
+          (pool_size + CUBE_T / LINE - 1) / (CUBE_T / LINE));
+        rows = cur + 1 > f ? cur + 1 : f;
       }
       if (f < CUBE) {
         pool_turn(true, rows);
