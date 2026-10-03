@@ -1,6 +1,133 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { formatBend } from "../formatter.js";
+
+const inlineLayouts = [
+  [
+    "import Base",
+    "def f(n: Bool) -> U32:",
+    "  match n: case True{}: 0",
+    "           case False{}: 1",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do IO<Unit>: IO.print(\"a\")",
+    "               IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do",
+    "    IO<Unit>: IO.print(\"a\")",
+    "              IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do IO<",
+    "    Unit>: IO.print(\"a\")",
+    "           IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do IO<Unit>",
+    "    : IO.print(\"a\")",
+    "      IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def f() -> IO(@x: Unit -> Unit):",
+    "  do IO<@x:",
+    "    Unit -> Unit>: IO.print(\"a\")",
+    "                   return x => x",
+    "",
+  ].join("\n"),
+];
+
+test("leaves column-sensitive inline blocks unchanged", () => {
+  const sources = [
+    ...inlineLayouts,
+    "def f(n: Bool) -> U32: match n: case True{}: 0\n                              case False{}: 1\n",
+    "def main() -> IO(Unit):\n  do IO<Unit>: match flag:\n                 case True{}: IO.print(\"a\")\n                 case False{}: IO.print(\"b\")\n",
+    "def main() -> IO(Unit):\n  do IO<Unit>: value: U32 <- get()\n               return value\n",
+    "import Base\ndef main() -> IO(Unit):\n  do IO<(Unit : Type)>:\n    IO.print(\"a\")\n    IO.print(\"b\")\n",
+  ];
+  for (const source of sources) {
+    for (const text of [source, source.replace(/\n/g, "\r\n").trimEnd()]) {
+      for (const options of [{}, { tabSize: 4 }, { tabSize: 4, insertSpaces: false }]) {
+        assert.equal(formatBend(text, options), text);
+      }
+    }
+  }
+});
+
+test("inline layout guards ignore comments and literal contents", () => {
+  const source = "# do IO<Unit>: action; match x: case y\ndef text()->String:\n    \"do IO<Unit>: action; match x: case y\"";
+  assert.equal(formatBend(source), "# do IO<Unit>: action; match x: case y\ndef text() -> String:\n  \"do IO<Unit>: action; match x: case y\"");
+});
+
+test("continues formatting do blocks whose first statement is on a new line", () => {
+  for (const header of ["IO<Unit>", "IO<U32>", "Effect.IO<Base.Unit>"]) {
+    const source = `def main()->IO(Unit):\n    do ${header}: # first statement follows\n        IO.print("a")\n        IO.print("b")`;
+    assert.equal(formatBend(source), `def main() -> IO(Unit):\n  do ${header}:  # first statement follows\n    IO.print("a")\n    IO.print("b")`);
+  }
+});
+
+const bun = process.env.BEND_FMT_TEST_BUN;
+const compiler = process.env.BEND_FMT_TEST_COMPILER;
+test("inline blocks still check with the real Bend compiler", {
+  skip: !bun || !compiler ? "set BEND_FMT_TEST_BUN and BEND_FMT_TEST_COMPILER to absolute executable/source paths" : false,
+}, () => {
+  const directory = mkdtempSync(join(tmpdir(), "bend-fmt-inline-"));
+  try {
+    for (const [index, source] of inlineLayouts.entries()) {
+      const surrounded = source.replace("import Base\n", "import Base\ndef before()->U32:\n    0\n")
+        + "\ndef after()->U32:\n    1\n";
+      for (const [variant, text] of [source, formatBend(source), surrounded, formatBend(surrounded)].entries()) {
+        const file = join(directory, `${index}-${variant}.bend`);
+        writeFileSync(file, text);
+        const result = spawnSync(bun!, [compiler!, file, "--check-only"], {
+          cwd: directory, encoding: "utf8", timeout: 30_000,
+        });
+        assert.equal(result.error, undefined);
+        assert.equal(result.status, 0, result.stdout + result.stderr);
+      }
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("preserves unsupported declarations while formatting their neighbours", () => {
+  for (const layout of inlineLayouts) {
+    for (const eol of ["\n", "\r\n"]) {
+      const source = "def before()->U32:\n    0\n" + layout + "\ndef after()->U32:\n    1\n";
+      const expected = "def before() -> U32:\n  0\n" + layout + "\ndef after() -> U32:\n  1\n";
+      const formatted = formatBend(source.replace(/\n/g, eol));
+      assert.equal(formatted, expected.replace(/\n/g, eol));
+      assert.equal(formatBend(formatted), formatted);
+    }
+  }
+});
+
+test("keeps attributes and uncertain boundaries with unsupported layouts", () => {
+  const attributed = "@unsafe\ndef f() -> IO<Unit>:\n  do IO<Unit>: return Unit{}\n";
+  assert.equal(formatBend(attributed + "def g()->U32:\n    0"),
+    attributed + "def g() -> U32:\n  0");
+  const uncertain = "def f() -> IO<Unit>:\n  do IO<(Unit:\ndef g()->U32:\n    0";
+  assert.equal(formatBend(uncertain), uncertain);
+});
 
 test("formats Bend 2 declarations and nested blocks", () => {
   const source = [
