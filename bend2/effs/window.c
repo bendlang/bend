@@ -32,6 +32,37 @@ typedef struct {
 
 #endif
 
+#ifdef CID(Window.export_ref)
+
+Term window_export_ref_run(Env e, Term* f, IoWork* w) {
+#if defined(__linux__) && !defined(__OBJC__)
+  BendWin* win = (BendWin*)(intptr_t)io_hand_v(f[0]);
+  const char* display = DisplayString(win->dpy);
+  if (display == NULL || display[0] == 0 || win->win == 0) {
+    return io_tup(e, f[0], io_fail(e, EIO,
+      "Window.export_ref: missing X11 display or window"));
+  }
+  if (win->win > UINT32_MAX) {
+    return io_tup(e, f[0], io_fail(e, EOVERFLOW,
+      "Window.export_ref: X11 ID exceeds U32"));
+  }
+  // Publish prior requests to other connections without discarding events.
+  XSync(win->dpy, False);
+  Term ref = io_node(e, CID(X11WindowRef),
+    io_str(e, display, strlen(display)), (u32)win->win);
+  return io_tup(e, f[0], io_done(e, ref));
+#else
+  return io_tup(e, f[0], io_fail(e, ENOTSUP,
+    "Window.export_ref: external reference is unavailable on this backend"));
+#endif
+}
+
+static void __attribute__((constructor)) window_export_ref_use(void) {
+  io_eff(CID(Window.export_ref), window_export_ref_run, 0);
+}
+
+#endif
+
 #ifdef CID(Window.open)
 
 #ifdef __OBJC__

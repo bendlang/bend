@@ -105,6 +105,10 @@ law Listener:
 law Window:
   Type
 
+# A copyable external identity; it owns nothing and expires with the Window.
+type WindowRef is Data:
+  X11WindowRef{display: String, id: U32}
+
 law Audio:
   Type
 
@@ -374,6 +378,12 @@ def Window.open(title: String, width: U32, height: U32) ->
   IO(Result<&1, &1, U32 & String, Window>):
   import "./effs/window.c"
   import "./effs/window_open.js"
+
+# Export only this owned window. The owner returns even when export fails.
+def Window.export_ref(window: Window) ->
+  IO(Window & Result<&1, &1, U32 & String, WindowRef>):
+  import "./effs/window.c"
+  import "./effs/window_export_ref.js"
 
 def Window.frame(window: Window, image: Image) ->
   IO(Window & Image & List<Event>):
