@@ -24,6 +24,10 @@ const BINARY = new Set(["=", "==", "!=", "->", "<-", "=>", "+", "-", "*", "/", "
 const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ":", "=", "for", "case", "~"]);
 const ANGLES = new Set(["<", ">", "<<", ">>"]);
 const KEYWORDS = new Set(["return", "match", "case", "do", "for", "exs", "where", "is", "import", "def", "type", "law"]);
+const DELIMITERS = [["(", ")"], ["[", "]"], ["{", "}"]] as const;
+const DELIMITER_PAIRS = new Map<string, string>(DELIMITERS);
+const OPENING_DELIMITERS = new Set<string>(DELIMITERS.map(([opening]) => opening));
+const CLOSING_DELIMITERS = new Set<string>(DELIMITERS.map(([, closing]) => closing));
 const SUPPORTED_DO_HEADER = ["name", "<", "name", ">", ":"] as const;
 
 function splitLine(text: string): Line {
@@ -107,14 +111,14 @@ function needsSpace(tokens: Token[], index: number): boolean {
   const left = tokens[index - 1];
   const right = tokens[index];
   if (!left) return false;
-  if ([")", "]", "}", ",", ";"].includes(right.text)) return false;
+  if (CLOSING_DELIMITERS.has(right.text) || [",", ";"].includes(right.text)) return false;
   if (right.text === ":") return right.gap;
-  if (["(", "[", "{"].includes(left.text)) return false;
+  if (OPENING_DELIMITERS.has(left.text)) return false;
   if (left.text === ",") return true;
-  if (right.text === "!" && (left.kind === "word" || [")", "]", "}"].includes(left.text))) return false;
+  if (right.text === "!" && (left.kind === "word" || CLOSING_DELIMITERS.has(left.text))) return false;
   if (left.text === "!" && right.text === "(") return false;
   if (right.text === "(" || right.text === "[") {
-    const suffix = (left.kind === "word" && !KEYWORDS.has(left.text)) || left.kind === "number" || left.kind === "literal" || [")", "]", "}", ">", ">>"].includes(left.text);
+    const suffix = (left.kind === "word" && !KEYWORDS.has(left.text)) || left.kind === "number" || left.kind === "literal" || (CLOSING_DELIMITERS.has(left.text) || [">", ">>"].includes(left.text));
     return !suffix;
   }
   if (right.text === "{" && ((left.kind === "word" && !["return", "case"].includes(left.text)) || [">", ">>", "}"].includes(left.text))) return false;
@@ -123,7 +127,7 @@ function needsSpace(tokens: Token[], index: number): boolean {
   if (left.kind === "number" && left.text.endsWith("n") && (right.text === "+" || right.text === "++")) return right.gap;
   if ((left.text === "+" || left.text === "++") && tokens[index - 2]?.kind === "number" && tokens[index - 2].text.endsWith("n")) return right.gap;
   if (unary(tokens, index - 1)) return false;
-  if (unary(tokens, index)) return !["(", "[", "{", "<"].includes(left.text);
+  if (unary(tokens, index)) return !(OPENING_DELIMITERS.has(left.text) || left.text === "<");
   const angle = keepAngleGap(left, right);
   if (angle !== null) return angle;
   if (BINARY.has(left.text) || BINARY.has(right.text)) return true;
@@ -184,7 +188,6 @@ function unsupportedLayout(line: Line): boolean {
 function declarationRanges(lines: Line[]): number[] | null {
   const starts = [0];
   const closing: string[] = [];
-  const pairs: Record<string, string> = { "(": ")", "[": "]", "{": "}" };
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index];
     // Only column-zero declaration keywords outside delimiters are boundaries.
@@ -199,8 +202,9 @@ function declarationRanges(lines: Line[]): number[] | null {
     }
     for (const token of line.tokens) {
       if (token.kind !== "symbol") continue;
-      if (pairs[token.text]) closing.push(pairs[token.text]);
-      else if ([")", "]", "}"].includes(token.text) && closing.pop() !== token.text) return null;
+      const expected = DELIMITER_PAIRS.get(token.text);
+      if (expected) closing.push(expected);
+      else if (CLOSING_DELIMITERS.has(token.text) && closing.pop() !== token.text) return null;
     }
   }
   return closing.length === 0 ? [...starts, lines.length] : null;
