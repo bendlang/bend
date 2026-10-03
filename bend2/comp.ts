@@ -2754,6 +2754,9 @@ export function compile_book(book: Bend.Book): string {
   const fams = (show ?? []).flatMap((c) =>
     typeof c === "string" ? [Bend.book_fam(book, c)] : []);
   const fl = file_book(book, ["main", ...RUNTIME_ADTS, ...fams], false);
+  // Foreign sources may name these segments before any emitted call does.
+  seg_fid(IO_EMIT);
+  seg_fid(CLO_APPLY);
   const facts = () => fl.own.size + fl.hot.size + fl.stat.size;
   let was: number;
   let reqs: string;
