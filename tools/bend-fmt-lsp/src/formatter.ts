@@ -24,7 +24,7 @@ const BINARY = new Set(["=", "==", "!=", "->", "<-", "=>", "+", "-", "*", "/", "
 const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ":", "=", "for", "case", "~"]);
 const ANGLES = new Set(["<", ">", "<<", ">>"]);
 const KEYWORDS = new Set(["return", "match", "case", "do", "for", "exs", "where", "is", "import", "def", "type", "law"]);
-const SIMPLE_DO_HEADER = ["name", "<", "name", ">", ":"] as const;
+const SUPPORTED_DO_HEADER = ["name", "<", "name", ">", ":"] as const;
 
 function splitLine(text: string): Line {
   const indent = text.match(/^[\t ]*/)?.[0] ?? "";
@@ -162,23 +162,48 @@ function fingerprint(lines: Line[]): string {
   return lines.map((line, index) => line.tokens.length === 0 ? "" : depths[index] + ":" + line.tokens.map((token) => token.text).join("\u0000")).join("\n");
 }
 
+function isSupportedDoHeader(header: Token[]): boolean {
+  // Only do NAME<NAME>: with the first statement on the next line.
+  // For do IO<Unit>: the tokens are ["IO", "<", "Unit", ">", ":"].
+  // Nested types, annotations, multiline headers and inline statements
+  // need column-aware formatting before they can be supported here.
+  return header.length === SUPPORTED_DO_HEADER.length
+    && SUPPORTED_DO_HEADER.every((expected, at) => expected === "name"
+      ? header[at].kind === "word" : header[at].text === expected);
+}
+
 function unsupportedLayout(line: Line): boolean {
   return line.tokens.some((token, index) => {
     if (token.kind !== "word") return false;
-    // Following rows align with the first case's physical column, which
-    // can be inside a line rather than at its indentation boundary.
+    // Inline case rows anchor subsequent rows to a physical column.
     if (token.text === "case" && index > 0) return true;
-    // After do, expect five tokens: NAME, <, NAME, >, :.
-    // For do IO<Unit>: these are ["IO", "<", "Unit", ">", ":"].
-    // Names may vary; the colon must end the line so the first statement
-    // starts on the next line. Other headers can span lines or contain
-    // type-internal colons, whose continuation columns we cannot infer.
-    if (token.text !== "do") return false;
-    const header = line.tokens.slice(index + 1);
-    return header.length !== SIMPLE_DO_HEADER.length
-      || SIMPLE_DO_HEADER.some((expected, at) => expected === "name"
-        ? header[at].kind !== "word" : header[at].text !== expected);
+    return token.text === "do" && !isSupportedDoHeader(line.tokens.slice(index + 1));
   });
+}
+
+function declarationRanges(lines: Line[]): number[] | null {
+  const starts = [0];
+  const closing: string[] = [];
+  const pairs: Record<string, string> = { "(": ")", "[": "]", "{": "}" };
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    // Only column-zero declaration keywords outside delimiters are boundaries.
+    // Keep preceding @unsafe attributes with their declaration.
+    if (index > 0 && line.indent === "" && closing.length === 0
+      && ["def", "type", "law", "import"].includes(line.tokens[0]?.text)) {
+      let start = index;
+      while (start > starts[starts.length - 1] && lines[start - 1].tokens.length === 0) start--;
+      const previous = lines[start - 1]?.tokens;
+      if (previous?.length === 2 && previous[0].text === "@" && previous[1].text === "unsafe") start--;
+      if (start > starts[starts.length - 1]) starts.push(start);
+    }
+    for (const token of line.tokens) {
+      if (token.kind !== "symbol") continue;
+      if (pairs[token.text]) closing.push(pairs[token.text]);
+      else if ([")", "]", "}"].includes(token.text) && closing.pop() !== token.text) return null;
+    }
+  }
+  return closing.length === 0 ? [...starts, lines.length] : null;
 }
 
 export function formatBend(source: string, options: FormatOptions = {}): string {
@@ -192,13 +217,25 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   } catch {
     return source;
   }
-  // Both spacing the header and reindenting a later line can invalidate
-  // inline alignment. Return the whole source, not a partial formatting.
-  if (lines.some(unsupportedLayout)) return source;
+  const preserved = new Set<number>();
+  if (lines.some(unsupportedLayout)) {
+    const ranges = declarationRanges(lines);
+    // Uncertain boundaries must not allow edits into an unsupported block.
+    if (!ranges || /(?<!\r)\n/.test(source) && source.includes("\r\n")) return source;
+    for (let range = 0; range < ranges.length - 1; range++) {
+      const start = ranges[range];
+      const end = ranges[range + 1];
+      if (lines.slice(start, end).some(unsupportedLayout)) {
+        // Preserve the whole declaration, including its header and columns.
+        for (let index = start; index < end; index++) preserved.add(index);
+      }
+    }
+  }
   const depths = indentDepths(lines);
   const size = Math.max(1, options.tabSize ?? 2);
   const spaces = options.insertSpaces !== false;
   const formatted = lines.map((line, index) => {
+    if (preserved.has(index)) return rawLines[index];
     if (line.code === "" && line.comment === "") return "";
     const prefix = spaces ? " ".repeat(depths[index] * size) : "\t".repeat(depths[index]);
     const code = formatTokens(line.tokens);

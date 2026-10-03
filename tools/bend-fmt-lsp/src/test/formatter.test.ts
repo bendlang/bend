@@ -92,7 +92,9 @@ test("inline blocks still check with the real Bend compiler", {
   const directory = mkdtempSync(join(tmpdir(), "bend-fmt-inline-"));
   try {
     for (const [index, source] of inlineLayouts.entries()) {
-      for (const [variant, text] of [source, formatBend(source)].entries()) {
+      const surrounded = source.replace("import Base\n", "import Base\ndef before()->U32:\n    0\n")
+        + "\ndef after()->U32:\n    1\n";
+      for (const [variant, text] of [source, formatBend(source), surrounded, formatBend(surrounded)].entries()) {
         const file = join(directory, `${index}-${variant}.bend`);
         writeFileSync(file, text);
         const result = spawnSync(bun!, [compiler!, file, "--check-only"], {
@@ -105,6 +107,26 @@ test("inline blocks still check with the real Bend compiler", {
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test("preserves unsupported declarations while formatting their neighbours", () => {
+  for (const layout of inlineLayouts) {
+    for (const eol of ["\n", "\r\n"]) {
+      const source = "def before()->U32:\n    0\n" + layout + "\ndef after()->U32:\n    1\n";
+      const expected = "def before() -> U32:\n  0\n" + layout + "\ndef after() -> U32:\n  1\n";
+      const formatted = formatBend(source.replace(/\n/g, eol));
+      assert.equal(formatted, expected.replace(/\n/g, eol));
+      assert.equal(formatBend(formatted), formatted);
+    }
+  }
+});
+
+test("keeps attributes and uncertain boundaries with unsupported layouts", () => {
+  const attributed = "@unsafe\ndef f() -> IO<Unit>:\n  do IO<Unit>: return Unit{}\n";
+  assert.equal(formatBend(attributed + "def g()->U32:\n    0"),
+    attributed + "def g() -> U32:\n  0");
+  const uncertain = "def f() -> IO<Unit>:\n  do IO<(Unit:\ndef g()->U32:\n    0";
+  assert.equal(formatBend(uncertain), uncertain);
 });
 
 test("formats Bend 2 declarations and nested blocks", () => {
