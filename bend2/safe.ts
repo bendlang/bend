@@ -635,14 +635,16 @@ function scope_move(s: Scope, a: number, b: number): Scope {
     tags: s.tags.flatMap((t) => t === a ? [t, b] : [t]) };
 }
 
-// binds the convoyed variables cv again, then the tree t (or k's term)
+// binds the convoyed variables cv again, each at its quantity, then the
+// tree t (or k's term)
 function convoy_bind(e: Safe, s: Scope, cv: number[], t: HTerm | ((s: Scope) => O), fs: Chain[]): O {
   if (cv.length === 0) {
     return typeof t === "function" ? t(s) : tree(e, s, t, fs);
   }
   const l = s.D;
-  const f = convoy_bind(e, scope_move(scope_kq(scope_hide(s), l, 1), cv[0], l), cv.slice(1), t, fs);
-  return lams([[1, l]], f);
+  const q = s.kq[cv[0]] ?? 1;
+  const f = convoy_bind(e, scope_move(scope_kq(scope_hide(s), l, q), cv[0], l), cv.slice(1), t, fs);
+  return lams([[q, l]], f);
 }
 
 // Open
@@ -740,21 +742,30 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     }
     const l = s.D;
     const sw = swi(e, scope_kq(scope_hide({ ...s1, dry, again: true }), l, q), x, T, fs2, cv);
-    const app = cv.reduce<O>((f, y) => ({ $: "App", q: 1, f, x: { $: "Var", l: y } }), { $: "App", q, f: { $: "Prj", h: sw }, x: { $: "Var", l } });
+    const app = cv.reduce<O>((f, y) => ({ $: "App", q: s.kq[y] ?? 1, f, x: { $: "Var", l: y } }), { $: "App", q, f: { $: "Prj", h: sw }, x: { $: "Var", l } });
     return wrap({ $: "Lam", q, l, f: app });
   };
   // the arms, to count uses: dry inside a match being built again (an
-  // inner match is then only the variables it uses, once each, as after
-  // its convoy), so no match is built more than twice
+  // inner match is then only the variables it names, once each, as after
+  // its convoy, dead if only dead there), so no match is built more than twice
   const o = mat([], s.dry || s.again);
   // a q=1 variable used in two arms rides into them, unless it is Data:
   // then its binder copies it (a q=2 λ)
   const data = (l: number): boolean => s.c.some((b) => b?.o.$ === "Var" && b.o.l === l && b.T !== null && kind(e, s, b.T) === 2);
   const cv0 = s.kq.flatMap((k, l) => k === 1 && l < s.D && uses(o, l) > 1 && !data(l) ? [l] : []);
   // a default's tag and fields go together: the fields' type names the tag
-  const cv = [...new Set(cv0.flatMap((l) => s.tags.includes(l) ? [l, l + 1] : s.tags.includes(l - 1) ? [l - 1, l] : [l]))].sort((a, b) => a - b);
+  const cv1 = [...new Set(cv0.flatMap((l) => s.tags.includes(l) ? [l, l + 1] : s.tags.includes(l - 1) ? [l - 1, l] : [l]))];
+  // a variable the arms name, at a type that names one riding, rides too
+  // (at its own quantity): left out, its type names the level outside
+  const cv = s.c.reduce<number[]>((vs, b, i) => {
+    if (vs.length === 0 || b?.o.$ !== "Var" || b.T === null || vs.includes(b.o.l) || !occurs(o, b.o.l)) {
+      return vs;
+    }
+    const A = B.term_lower(b.T, s.d);
+    return s.c.some((x, j) => j < i && x?.o.$ === "Var" && vs.includes(x.o.l) && mentions(A, (k) => k === j)) ? [...vs, b.o.l] : vs;
+  }, cv1).sort((a, b) => a - b);
   if (s.dry) {
-    return [...Array(s.D).keys()].filter((l) => uses(o, l) > 0).reduce<O>((f, l) => ({ $: "App", q: 1, f, x: { $: "Var", l } }), { $: "Efq" });
+    return [...Array(s.D).keys()].filter((l) => occurs(o, l)).reduce<O>((f, l) => ({ $: "App", q: uses(o, l) > 0 ? 1 : 0, f, x: { $: "Var", l } }), { $: "Efq" });
   }
   if (cv.length === 0 && !s.again) {
     return o;
@@ -1401,6 +1412,11 @@ function lams(ps: Array<[Q, number, ...unknown[]]>, b: O): O {
 
 function inferable(o: O): boolean {
   return o.$ === "App" ? inferable(o.f) : ["Var", "Ref", "Ann", "Typ", "All", "Enu", "Eql"].includes(o.$);
+}
+
+// whether o names level l, live or erased
+function occurs(o: O, l: number): boolean {
+  return o.$ === "Var" ? o.l === l : Object.values(o).some((v) => is_o(v) && occurs(v, l));
 }
 
 // the live uses of level l in o, as the kernel counts them
