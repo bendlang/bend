@@ -518,6 +518,8 @@ const LOOPS = new Map<Name, Name[]>();
 
 const FOLDS = new Map<Term, Term | null>();
 
+const KNOWN = new Map<Name, Map<Term, Term | null>>();
+
 const FLATS = new Map<Name, boolean>();
 
 const FUNS = new Map<Name, Fun>();
@@ -797,9 +799,43 @@ function fun_live(book: Book, x: Term, ty: Term | null): boolean {
   return mat_head(x) || x.$ === "Lam" && quant_live(ty_all(book, ty).q);
 }
 
+function call_known(fl: File, m: Spine, tail = false): Term | null {
+  if (!m.k || m.b || !done_live(m.tld) || def_foreign(m.tld)) return null;
+  const { h, n } = fun_of(fl, m.k);
+  const callbacks = m.all.filter((a) => term_strip(a).$ === "Lam");
+  if (!h || m.all.length !== n || callbacks.length !== 1) return null;
+  const callback = callbacks[0];
+  const at = m.all.indexOf(callback);
+  const captures = term_uses(fl, callback);
+  if ([...fl.uses].some(([p, b]) => term_use(captures, p)
+    && b.val.lay.ks.includes("box"))) return null;
+  if (term_any(fl, h, (s) => s.$ === "Ref"
+    && (s.b || s.k === m.k || !tail && !flat_of(s.k))
+    || s.$ === "Let" && s.k.length > 1)) return null;
+  if (!tail && term_any(fl, callback, (s) => {
+    const c = term_spine(fl, s);
+    return c.k !== null && !flat_of(c.k) || s.$ === "Let" && s.k.length > 1;
+  })) return null;
+  // ANF rebuilds calls; keep admission stable after fuel is spent.
+  return memo(memo(KNOWN, m.k, () => new Map()), term_strip(callback), () => {
+    if (FUEL < 0) return null;
+    const bake = (tm: Term, i: number): Term => {
+      const [s, T] = ty_peel(tm, null);
+      if (s.$ === "Lam") return Ann(Lam(s.k, s.i, (x: Term) =>
+        bake(s.f(i === at ? callback : x), i + 1), s.s, s.q), T!);
+      if (s.$ === "Mat") return Ann(Mat(s.k,
+        bake(s.h, i + 1 - fl.book.ctrs[s.k].n), bake(s.m, i), s.s), T!);
+      return tm;
+    };
+    const body = bake(h, 0);
+    term_any(fl, body, () => { --FUEL; return false; });
+    return FUEL < 0 ? null : body;
+  });
+}
+
 function flat_call(fl: File, t: Term): boolean {
   const ck = term_spine(fl, t);
-  return ck.k !== null && !ck.b && flat_of(ck.k);
+  return ck.k !== null && !ck.b && (flat_of(ck.k) || call_known(fl, ck) !== null);
 }
 
 // Dom
@@ -1821,7 +1857,7 @@ function memo<K, V>(m: Map<K, V>, k: K, f: (k: K) => V): V {
 }
 
 function memo_gc(): void {
-  [OPENS, USES, FOLDS, SPINES, CONSTS, LITS].forEach((m) => m.clear());
+  [OPENS, USES, FOLDS, KNOWN, SPINES, CONSTS, LITS].forEach((m) => m.clear());
 }
 
 // Show
@@ -1937,6 +1973,10 @@ function anf(fl: File, t: Term, ty: Term | null = null): Term {
       case "Ref":
       case "App": {
         const m = term_spine(fl, s);
+        if (m.t.$ === "Lam") {
+          const b = emit_fold(fl, s);
+          if (b && b !== s) return go(b, top, T);
+        }
         const spine = (v: Term): Term => {
           const f = term_force(v);
           if (f.$ === "Ann") {
@@ -2111,10 +2151,27 @@ function emit_fuse(fl: File, ck: Spine, dst: Val | null, tail = false): void {
   const doms = tele_unbind(fl.book, T).doms;
   const { n, h, lays, ret } = fun_of(fl, k);
   const ers = ck.all.filter((_, i) => i < n && !dom_live(doms[i]));
-  const flat = flat_of(k);
+  const body = call_known(fl, ck, tail);
+  const flat = !body && flat_of(k);
+  let uses = fl.uses;
+  if (body) {
+    const callback = ck.all.find((a) => term_strip(a).$ === "Lam")!;
+    ck = { ...ck, xs: ck.xs.map((a) => a === callback ? Lit("U32", 0) : a) };
+    uses = new Map();
+    const before = term_uses(fl, callback);
+    const after = term_uses(fl, body);
+    // Callee bindings must not kill captures still used by the caller.
+    for (const [p, b] of fl.uses) {
+      const n = term_use(after, p);
+      if (n > 0) {
+        bind_set(fl, p, b, b.n - term_use(before, p));
+        uses.set(p, { ...b, n });
+      }
+    }
+  }
   const ws = emit_args(fl, ck, tail && !flat);
   if (!flat) {
-    return emit_body({ ...fl, def: k }, h!, T, ers,
+    return emit_body({ ...fl, def: k, uses }, body ?? h!, T, ers,
       lays.map((lay) => val_new(ws.splice(0, lay.ks.length), lay)), dst);
   }
   const out = emit_dst(fl, ret);
@@ -2311,17 +2368,14 @@ function emit_fold_args(fl: File, m: Spine): Term[] {
 }
 
 function emit_unfold(fl: File, m: Spine): Term | null {
-  if (m.t.$ !== "Ref") {
-    return null;
-  }
-  const { h, n } = fun_of(fl, m.t.k);
-  if (h == null || m.all.length !== n || !flat_of(m.t.k)) {
-    return null;
-  }
+  const lam = m.t.$ === "Lam";
+  const f = m.t.$ === "Ref" && flat_of(m.t.k) ? fun_of(fl, m.t.k) : null;
+  const h = f?.h ?? (lam ? m.h : null);
+  if (h == null || f && m.all.length !== f.n) return null;
   const fs = emit_fold_args(fl, m);
   const walk = (xs: Term[]) => {
     let b = h;
-    let hit = m.args.every((a) => term_const(fs[m.all.indexOf(a)]));
+    let hit = lam || m.args.every((a) => term_const(fs[m.all.indexOf(a)]));
     for (let w = term_strip(b); xs.length > 0; w = term_strip(b)) {
       if (w.$ === "Lam") {
         b = w.f(xs[0]);
@@ -2338,10 +2392,10 @@ function emit_unfold(fl: File, m: Spine): Term | null {
       xs = arm ? [...ctr_flds(fl.book, c.k, c.x), ...xs.slice(1)] : xs;
       hit = true;
     }
-    return !hit || term_any(fl, b, (y) => y.$ === "Lam" || mat_head(y))
+    return !hit || !lam && term_any(fl, b, (y) => y.$ === "Lam" || mat_head(y))
       ? null : b;
   };
-  const doms = tele_unbind(fl.book, m.tld!.T).doms;
+  const doms = tele_unbind(fl.book, m.tld?.T ?? ty_ann(m.h)!).doms;
   const bind = (i: number, ys: Term[]): Term => {
     const a = fs[i];
     return i === fs.length ? walk(ys)! : !m.args.includes(m.all[i])
@@ -2478,7 +2532,7 @@ function emit_body(fl: File, tm: Term, ty0: Term | null,
         return emit_put(fl, dst, v);
       }
       const ret = fun_of(fl, ck.k).ret;
-      const once = fl.sites.get(ck.k) === 1 && !ck.b
+      const once = (fl.sites.get(ck.k) === 1 || call_known(fl, ck, true)) && !ck.b
         && !def_foreign(fl.book.tlds[ck.k])
         && (!lay_box(ret) || lay_box(fl.seg.ret));
       if (fl.seg.def !== ck.k && (flat_call(fl, x) || (dst === null && once))) {
