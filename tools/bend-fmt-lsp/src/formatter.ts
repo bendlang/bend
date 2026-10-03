@@ -161,16 +161,20 @@ function fingerprint(lines: Line[]): string {
   return lines.map((line, index) => line.tokens.length === 0 ? "" : depths[index] + ":" + line.tokens.map((token) => token.text).join("\u0000")).join("\n");
 }
 
-function inlineLayout(line: Line): boolean {
+function unsupportedLayout(line: Line): boolean {
   return line.tokens.some((token, index) => {
     if (token.kind !== "word") return false;
     // Following rows align with the first case's physical column, which
     // can be inside a line rather than at its indentation boundary.
     if (token.text === "case" && index > 0) return true;
-    // The same applies to do statements. Conservatively decline a line
-    // with code after a colon following do; this is not a Bend parser.
-    return token.text === "do" && line.tokens.slice(index + 1, -1)
-      .some((next) => next.text === ":");
+    // Recognize only do NAME<NAME>: ending this line. Other headers can
+    // span lines or contain type-internal colons; without a parser we
+    // cannot establish their first statement's column.
+    if (token.text !== "do") return false;
+    const header = line.tokens.slice(index + 1);
+    return header.length !== 5 || header[0].kind !== "word"
+      || header[1].text !== "<" || header[2].kind !== "word"
+      || header[3].text !== ">" || header[4].text !== ":";
   });
 }
 
@@ -187,7 +191,7 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   }
   // Both spacing the header and reindenting a later line can invalidate
   // inline alignment. Return the whole source, not a partial formatting.
-  if (lines.some(inlineLayout)) return source;
+  if (lines.some(unsupportedLayout)) return source;
   const depths = indentDepths(lines);
   const size = Math.max(1, options.tabSize ?? 2);
   const spaces = options.insertSpaces !== false;

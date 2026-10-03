@@ -18,9 +18,13 @@ The server handles documents whose language ID is `bend` or `bend2`. It
 preserves line breaks, blank lines, comments, literal spelling, line endings,
 and the final-newline state. Formatting normalizes indentation and safe token
 spacing without wrapping code. When a document cannot be tokenized safely, the
-server returns no edits. Documents with inline `case` rows or code after a
-`do` header are also left unchanged: their continuations depend on physical
-columns that this line-based formatter does not reconstruct.
+server returns no edits. Documents with inline `case` rows or unrecognized
+`do` headers are also left unchanged: their continuations depend on physical
+columns that this line-based formatter does not reconstruct. Supported `do`
+headers have the simple shape `do M<T>:` on one line, where `M` and `T` are
+names (possibly qualified); the first statement follows on a new line.
+Complex types and multiline headers are left untouched. This conservative fallback
+leaves the entire document unchanged, including unrelated declarations.
 
 ## Tests
 

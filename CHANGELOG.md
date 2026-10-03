@@ -5,8 +5,9 @@ latest one; the GitHub release carries the same notes.
 
 ## Unreleased
 
-- The formatter leaves inline `case` and `do` blocks unchanged instead of
-  moving their continuations to columns that make valid Bend fail to parse.
+- The formatter leaves documents with inline `case` rows or unrecognized
+  `do` headers unchanged instead of moving their continuations to columns
+  that make valid Bend fail to parse.
 
 ## 2.0.35 (2026-10-03)
 

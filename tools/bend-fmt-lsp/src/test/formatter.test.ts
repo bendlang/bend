@@ -9,6 +9,10 @@ import { formatBend } from "../formatter.js";
 const inlineLayouts = [
   "import Base\ndef f(n: Bool) -> U32:\n  match n: case True{}: 0\n           case False{}: 1\n",
   "import Base\ndef main() -> IO(Unit):\n  do IO<Unit>: IO.print(\"a\")\n               IO.print(\"b\")\n",
+  "import Base\ndef main() -> IO(Unit):\n  do\n    IO<Unit>: IO.print(\"a\")\n              IO.print(\"b\")\n",
+  "import Base\ndef main() -> IO(Unit):\n  do IO<\n    Unit>: IO.print(\"a\")\n           IO.print(\"b\")\n",
+  "import Base\ndef main() -> IO(Unit):\n  do IO<Unit>\n    : IO.print(\"a\")\n      IO.print(\"b\")\n",
+  "import Base\ndef f() -> IO(@x: Unit -> Unit):\n  do IO<@x:\n    Unit -> Unit>: IO.print(\"a\")\n                   return x => x\n",
 ];
 
 test("leaves column-sensitive inline blocks unchanged", () => {
@@ -17,6 +21,7 @@ test("leaves column-sensitive inline blocks unchanged", () => {
     "def f(n: Bool) -> U32: match n: case True{}: 0\n                              case False{}: 1\n",
     "def main() -> IO(Unit):\n  do IO<Unit>: match flag:\n                 case True{}: IO.print(\"a\")\n                 case False{}: IO.print(\"b\")\n",
     "def main() -> IO(Unit):\n  do IO<Unit>: value: U32 <- get()\n               return value\n",
+    "import Base\ndef main() -> IO(Unit):\n  do IO<(Unit : Type)>:\n    IO.print(\"a\")\n    IO.print(\"b\")\n",
   ];
   for (const source of sources) {
     for (const text of [source, source.replace(/\n/g, "\r\n").trimEnd()]) {
@@ -33,8 +38,10 @@ test("inline layout guards ignore comments and literal contents", () => {
 });
 
 test("continues formatting do blocks whose first statement is on a new line", () => {
-  const source = "def main()->IO(Unit):\n    do IO<Unit>: # first statement follows\n        IO.print(\"a\")\n        IO.print(\"b\")";
-  assert.equal(formatBend(source), "def main() -> IO(Unit):\n  do IO<Unit>:  # first statement follows\n    IO.print(\"a\")\n    IO.print(\"b\")");
+  for (const header of ["IO<Unit>", "IO<U32>", "Effect.IO<Base.Unit>"]) {
+    const source = `def main()->IO(Unit):\n    do ${header}: # first statement follows\n        IO.print("a")\n        IO.print("b")`;
+    assert.equal(formatBend(source), `def main() -> IO(Unit):\n  do ${header}:  # first statement follows\n    IO.print("a")\n    IO.print("b")`);
+  }
 });
 
 const bun = process.env.BEND_FMT_TEST_BUN;
