@@ -410,12 +410,26 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
 // whether each parameter of item k is specialized: a Quant one, a
 // template's ~ one, or one a kind in its telescope (or a constructor's)
 // depends on, through a Kind(g) or an argument at a specialized
-// parameter of another item
+// parameter of another item. Depth first, as a least fixpoint: an item in
+// progress reads as nothing specialized, and an item is redone whenever an
+// answer it read grows, so a cycle's items see what each other specialize
 function spec_of(e: Safe, k: Name): boolean[] {
-  let sp = e.spec.get(k);
-  if (sp === undefined) {
-    e.spec.set(k, []);
-    const tld = e.book.tlds[k];
+  const todo = new Set<Name>();
+  const readers = new Map<Name, Set<Name>>();
+  const open = (h: Name): boolean[] => {
+    if (!e.spec.has(h)) {
+      e.spec.set(h, []);
+      redo(h);
+    }
+    return e.spec.get(h)!;
+  };
+  const redo = (r: Name): void => {
+    const tld = e.book.tlds[r];
+    const read = (h: Name): boolean[] => {
+      const sp = open(h);
+      readers.set(h, (readers.get(h) ?? new Set()).add(r));
+      return sp;
+    };
     const got = new Set<number>();
     const go = (t: unknown, q: boolean): void => {
       if (typeof t !== "object" || t === null) {
@@ -426,17 +440,25 @@ function spec_of(e: Safe, k: Name): boolean[] {
         got.add(o.i);
       }
       const [h, xs] = o.$ === "ADT" ? [o, o.x] : o.$ === "App" ? B.term_unapply(o) : [o, []];
-      const hs = (h.$ === "Ref" || h.$ === "ADT") && e.book.tlds[h.k] !== undefined ? spec_of(e, h.k) : [];
+      const hs = (h.$ === "Ref" || h.$ === "ADT") && e.book.tlds[h.k] !== undefined ? read(h.k) : [];
       xs.forEach((x, j) => go(x, q || hs[j] === true));
       if (xs.length === 0) {
         Object.entries(o).forEach(([f, v]) => f !== "s" && go(v, q || o.$ === "Typ"));
       }
     };
     [tld.T, ...(tld.$ === "ADT" ? tld.c.map((c) => c.T) : [])].forEach((T) => go(B.term_lower(T), false));
-    sp = B.tele_unbind(e.book, tld.T).doms.slice(0, tld.n).map(([, , A], j) => got.has(j) || is_qnt(e, A) || (tld.$ === "Def" && j < tld.x));
-    e.spec.set(k, sp);
+    const sp = B.tele_unbind(e.book, tld.T).doms.slice(0, tld.n).map(([, , A], j) => got.has(j) || is_qnt(e, A) || (tld.$ === "Def" && j < tld.x));
+    if (sp.some((b, j) => b && e.spec.get(r)![j] !== true)) {
+      readers.get(r)?.forEach((x) => todo.add(x));
+    }
+    e.spec.set(r, sp);
+  };
+  open(k);
+  for (const r of todo) {
+    todo.delete(r);
+    redo(r);
   }
-  return sp;
+  return e.spec.get(k)!;
 }
 
 // a specialized argument: closed, in normal form
