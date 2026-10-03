@@ -623,9 +623,9 @@ function probe_of(t: HTerm): Of<"Var"> {
 // =====
 
 function graph_close<K>(set: Set<K>, edges: K[][]): Set<K> {
-  for (const k of set) {
-    edges.forEach(([a, b]) => a === k && set.add(b));
-  }
+  const out = new Map();
+  edges.forEach(([a, b]) => out.get(a)?.push(b) ?? out.set(a, [b]));
+  set.forEach((k) => out.get(k)?.map(set.add, set));
   return set;
 }
 
