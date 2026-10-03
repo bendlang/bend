@@ -2606,7 +2606,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
 // values. the + marks of a column's rows join into its binder (a +
 // lambda), or into its fields when a constructor row splits it.
 
-export function body_sub(b: Body, i: number, v: Patt): Body {
+export function body_sub(b: Body, i: number, v: Patt, fold: boolean = false): Body {
   function scrut(e: LTerm): LTerm {
     if (e.$ === "Var") {
       return e.i !== i ? e : patt_term(v, e.s);
@@ -2616,17 +2616,68 @@ export function body_sub(b: Body, i: number, v: Patt): Body {
   }
   switch (b.$) {
     case "Match": {
+      const j = b.e.findIndex((e) => e.$ === "Var" && e.i === i);
+      if (fold && v.$ === "PCtr" && j >= 0) {
+        return body_sub(match_fold(b, j, v), i, v, fold);
+      }
       const es = b.e.map(scrut);
-      const rs = b.r.map((row): Case => ({ p: row.p, f: body_sub(row.f, i, v) }));
+      const rs = b.r.map((row): Case => ({ p: row.p, f: body_sub(row.f, i, v, fold) }));
       return { $: "Match", e: es, r: rs, s: b.s };
     }
     case "Local": {
+      const e = b.v[0];
+      if (fold && b.k.length === 1 && b.k[0].$ === "PCtr" && e.$ === "Var" && e.i === i) {
+        return body_sub({ $: "Match", e: [e], r: [{ p: [b.k[0]], f: b.f }], s: e.s }, i, v, fold);
+      }
       const w = b.v.map(scrut);
-      const f = body_sub(b.f, i, v);
+      const f = body_sub(b.f, i, v, fold);
       return { $: "Local", k: b.k, q: b.q, v: w, f };
     }
     default: {
       return Sub(i, v, b);
+    }
+  }
+}
+
+export function match_fold(m: Match, j: number, v: PCtr): Body {
+  const ys = v.x as PVar[];
+  const es = [...m.e.slice(0, j), ...ys.map((y) => patt_term(y)), ...m.e.slice(j + 1)];
+  let rs = m.r.flatMap((row): Rows => {
+    const p = row.p[j];
+    if (p.$ === "PCtr" && p.k !== v.k) {
+      return [];
+    }
+    const ps = p.$ === "PCtr" ? p.x : ys;
+    const f  = p.$ === "PCtr" ? row.f : body_sub(row.f, p.i, v, true);
+    return [{ p: [...row.p.slice(0, j), ...ps, ...row.p.slice(j + 1)], f }];
+  });
+  for (let n = ys.length - 1; n >= 0; n--) {
+    const k = j + n;
+    if (rs.every((row) => row.p[k].$ === "PVar")) {
+      rs = rs.map((row): Case => ({ p: row.p.filter((_, l) => l !== k), f: body_sub(row.f, (row.p[k] as PVar).i, ys[n]) }));
+      es.splice(k, 1);
+    }
+  }
+  return { $: "Match", e: es, r: rs, s: m.s };
+}
+
+export function body_drop(b: Body, i: number, k: Name): Body {
+  switch (b.$) {
+    case "Match": {
+      const j  = b.e.findIndex((e) => e.$ === "Var" && e.i === i);
+      const rs = b.r.filter((row) => j < 0 || row.p[j].$ !== "PCtr" || (row.p[j] as PCtr).k !== k)
+        .map((row): Case => ({ p: row.p, f: body_drop(row.f, i, k) }));
+      return { $: "Match", e: b.e, r: rs, s: b.s };
+    }
+    case "Local": {
+      const e = b.v[0];
+      if (b.k.length === 1 && b.k[0].$ === "PCtr" && e.$ === "Var" && e.i === i) {
+        return body_drop({ $: "Match", e: [e], r: [{ p: [b.k[0]], f: b.f }], s: e.s }, i, k);
+      }
+      return { $: "Local", k: b.k, q: b.q, v: b.v, f: body_drop(b.f, i, k) };
+    }
+    default: {
+      return b;
     }
   }
 }
@@ -2696,7 +2747,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
             }
             case "PVar": {
               const g = body_sub(row.f, p0.i, x);
-              const f = body_sub(g, x.i, kx);
+              const f = body_sub(g, x.i, kx, true);
               return [{ p: [...xs, ...row.p.slice(1)], f }];
             }
           }
@@ -2704,7 +2755,10 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         const pe = xs.map((q) => patt_term(q)).concat(m.e.slice(1));
         const pv = xs.concat(vars.slice(1));
         const pt = match_flatten({ $: "Match", e: pe, r: ps, s: m.s }, pv, fr);
-        const ds = m.r.filter((row) => row.p[0].$ !== "PCtr" || row.p[0].k !== c.k);
+        const ds = m.r.filter((row) => row.p[0].$ !== "PCtr" || row.p[0].k !== c.k).map((row): Case => {
+          const p0 = row.p[0];
+          return p0.$ === "PVar" ? { p: row.p, f: body_drop(body_drop(row.f, p0.i, c.k), x.i, c.k) } : row;
+        });
         const dt = match_flatten({ $: "Match", e: m.e, r: ds, s: m.s }, vars, fr);
         return Mat(c.k, pt, dt, c.s);
       }
