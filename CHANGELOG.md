@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- The formatter leaves documents with inline `case` rows or unrecognized
-  `do` headers unchanged instead of moving their continuations to columns
-  that make valid Bend fail to parse.
-
 ## 2.0.35 (2026-10-03)
 
 - **M1 and M2 run the GPU again** (#1154, PR #1274 by nicolas-abril): since
