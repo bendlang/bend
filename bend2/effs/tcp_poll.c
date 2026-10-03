@@ -34,5 +34,5 @@ Term tcp_poll_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_poll_use(void) {
-  io_eff(CID(TCP.poll), tcp_poll_run, 0);
+  io_eff(CID(TCP.poll), tcp_poll_run);
 }
