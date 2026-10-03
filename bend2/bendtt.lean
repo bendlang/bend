@@ -163,6 +163,12 @@ def Quan.kind : Quan → Quan → Quan
   | Q1, g => g
   | Q2, _ => Q2
 
+-- the quantity a λ+ steps to in Par: q=2 only says how a λ runs (it
+-- copies), so a λ+ converts as a λ
+def Quan.lin : Quan → Quan
+  | Q2 => Q1
+  | q  => q
+
 -- a q binder allows n live uses
 def Quan.allows : Quan → Nat → Bool
   | Q0, n => n == 0
@@ -882,10 +888,11 @@ def Ctx.wnf (ck : Lib) (c : Ctx) (t : Term) : Term :=
 -- ========
 
 -- the parts two weak heads must match on: the children of one former,
--- as pairs; none when the heads differ
+-- as pairs; none when the heads differ. Two λs match at one liveness,
+-- as they type
 def Term.parts : Term → Term → Option (List (Term × Term))
   | All q A B, All p C D => if q = p then some [(A, C), (B, D)] else none
-  | Lam q f,   Lam p g   => if q = p then some [(f, g)] else none
+  | Lam q f,   Lam p g   => if q.live = p.live then some [(f, g)] else none
   | App q f x, App p g y => if q = p then some [(f, g), (x, y)] else none
   | Sig q A B, Sig p C D => if q = p then some [(A, C), (B, D)] else none
   | Tup q a b, Tup p c d => if q = p then some [(a, c), (b, d)] else none
@@ -1338,7 +1345,8 @@ def Term.Closed (t : Term) : Prop :=
 def Book.Closed (bk : Book) : Prop :=
   ∀ k d, Book.get bk k = some d → Term.Closed d.v
 
--- δ unfolds only a closed body, so Par commutes with substitution
+-- δ unfolds only a closed body, so Par commutes with substitution; a
+-- λ+ steps to a λ and never back, so a step keeps types
 inductive Par (bk : Book) : Term → Term → Prop
   | var   : Par bk (Var i) (Var i)
   | ref   : Par bk (Ref k) (Ref k)
@@ -1346,7 +1354,7 @@ inductive Par (bk : Book) : Term → Term → Prop
   | lett  : Par bk v v' → Par bk f f' → Par bk (Let q v f) (Let q v' f')
   | typ   : Par bk (Typ q) (Typ q)
   | all   : Par bk A A' → Par bk B B' → Par bk (All q A B) (All q A' B')
-  | lam   : Par bk f f' → Par bk (Lam q f) (Lam q f')
+  | lam   : Par bk f f' → (p = q ∨ p = q.lin) → Par bk (Lam q f) (Lam p f')
   | app   : Par bk f f' → Par bk x x' → Par bk (App q f x) (App q f' x')
   | sig   : Par bk A A' → Par bk B B' → Par bk (Sig q A B) (Sig q A' B')
   | tup   : Par bk a a' → Par bk b b' → Par bk (Tup q a b) (Tup q a' b')
@@ -1691,7 +1699,7 @@ noncomputable def Term.dev (bk : Book) : Term → Term
   | Ann x _ => Term.dev bk x
   | Let _ v f => Term.inst (Term.dev bk f) (Term.dev bk v)
   | All q A B => All q (Term.dev bk A) (Term.dev bk B)
-  | Lam q f => Lam q (Term.dev bk f)
+  | Lam q f => Lam q.lin (Term.dev bk f)
   | App _ (Lam _ f) x => Term.inst (Term.dev bk f) (Term.dev bk x)
   | App q (Prj h) (Tup r a b) =>
     App q (App (Quan.fld r q) (Term.dev bk h) (Term.dev bk a)) (Term.dev bk b)
@@ -1707,8 +1715,11 @@ noncomputable def Term.dev (bk : Book) : Term → Term
   | Rwt e P f => Rwt (Term.dev bk e) (Term.dev bk P) (Term.dev bk f)
   | t => t
 
+theorem lin_eq {p q : Quan} : q.live = p.live → q.lin = p.lin := by
+  cases p <;> cases q <;> decide
+
 theorem par_refl (t : Term) : Par bk t t := by
-  induction t <;> constructor <;> assumption
+  induction t <;> constructor <;> first | assumption | exact .inl rfl
 
 theorem pars_trans : Pars bk a b → Pars bk b c → Pars bk a c
   | .refl, g => g
@@ -1771,7 +1782,8 @@ theorem triangle : Par bk t u → Par bk u (Term.dev bk t) := by
   case split ih1 ih2 ih3 => exact .app (.app ih1 ih2) ih3
   case hit => show Par _ _ (ite ..); simpa
   case miss hne _ ih => show Par _ _ (ite ..); simp only [hne]; exact .app ih .lab
-  all_goals first | assumption | (first | constructor | apply par_inst) <;> assumption
+  all_goals first | assumption | (first | constructor | apply par_inst) <;>
+    first | assumption | (rcases ‹_ ∨ _› with rfl | rfl <;> simp)
 
 -- the strip lemma, from the triangle
 theorem strip : Par bk a b → Pars bk a c → ∃ d, Pars bk b d ∧ Par bk c d := by
@@ -1953,6 +1965,13 @@ theorem fold_true {g : Nat → Term → Term → Bool × Nat} : ∀ {s},
     · exact ⟨‹_›, fun x m => (List.mem_cons.1 m).elim (· ▸ ⟨_, h1⟩) (h2 x)⟩
     · contradiction
 
+-- λs of one liveness convert when their bodies do
+theorem conv_lam (e : q.live = p.live) : Conv bk f g → Conv bk (Lam q f) (Lam p g)
+  | ⟨_, h1, h2⟩ =>
+    have L {q f c} (h : Pars bk f c) : Pars bk (Lam q f) (Lam q.lin c) :=
+      .step (.lam (par_refl _) (.inr rfl)) (pars_map _ (.lam · (.inl rfl)) h)
+    ⟨_, L h1, lin_eq e ▸ L h2⟩
+
 -- heads whose parts convert convert
 theorem parts_conv (h : Term.parts a b = some ps) (H : ∀ p ∈ ps, Conv bk p.1 p.2) :
     Conv bk a b := by
@@ -1961,6 +1980,7 @@ theorem parts_conv (h : Term.parts a b = some ps) (H : ∀ p ∈ ps, Conv bk p.1
     simp only [List.mem_cons, List.mem_nil_iff, forall_eq_or_imp, or_false, forall_eq] at H
   all_goals first
     | exact ⟨_, .refl, .refl⟩
+    | exact conv_lam ‹_› H
     | (obtain ⟨_, h1, h2⟩ := H; refine ⟨_, pars_map _ ?_ h1, pars_map _ ?_ h2⟩)
     | (obtain ⟨⟨_, h1, h2⟩, _, h3, h4⟩ := H; refine ⟨_, pars2 _ ?_ h1 h3, pars2 _ ?_ h2 h4⟩)
     | (obtain ⟨⟨_, h1, h2⟩, ⟨_, h3, h4⟩, _, h5, h6⟩ := H
@@ -2340,10 +2360,13 @@ theorem sr : Claim.sr := by
       have ⟨ha, hb⟩ := conv_eql (fits_conv hU)
       exact .conv (ihf _ pf) (fits_trans (.inl (conv_inst (conv_trans (csym ha) (conv_trans hc hb)))) hF)
   case conv _ hf ih => exact .conv (ih _ hp) hf
+  -- a λ+ stepped to a λ keeps its liveness and needs no Data
+  case lam q _ _ _ _ _ hl hq _ _ ihf => cases hp with
+    | lam pf e => cases q <;> rcases e with rfl | rfl <;> exact .lam hl (by first | exact hq | nofun) (ihf _ pf)
   case app _ hx ihf ihx => cases hp with
     | app pf px => exact .conv (.app (ihf _ pf) (ihx _ px)) (.inl (pi px))
     | beta pf px =>
-      obtain ⟨_, ⟨_, _, _, rfl, _, _, hb⟩, hF, _⟩ := gen (ihf _ (.lam pf))
+      obtain ⟨_, ⟨_, _, _, rfl, _, _, hb⟩, hF, _⟩ := gen (ihf _ (.lam pf (.inl rfl)))
       have ⟨_, hA, hB⟩ := conv_all (fits_conv hF)
       exact .conv (typed_inst hb (.conv (ihx _ px) (.inl (csym hA))))
         (.inl (conv_trans (conv_sub hB) (pi px)))
