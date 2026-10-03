@@ -74,6 +74,26 @@ test("keeps parallel execution call suffixes glued", () => {
   assert.equal(formatBend("result = run ! (20n)"), "result = run!(20n)");
 });
 
+test("keeps unsafe declaration suffixes adjacent to names", () => {
+  assert.equal(formatBend("def value?()->U32:\n  1"), "def value?() -> U32:\n  1");
+  assert.equal(formatBend("def value? ()->U32:\n  1"), "def value?() -> U32:\n  1");
+  assert.equal(formatBend("def\n  value?()->U32:\n  1"), "def\n  value?() -> U32:\n  1");
+  assert.equal(formatBend("def # declaration\n  value? ()->U32:\n  1"), "def  # declaration\n  value?() -> U32:\n  1");
+});
+
+test("keeps unsafe suffixes on dotted declarations with inline attributes", () => {
+  assert.equal(formatBend("@unsafe def Value.get? ()->U32:\n  1"), "@unsafe def Value.get?() -> U32:\n  1");
+});
+
+test("preserves invalid gaps before unsafe declaration suffixes", () => {
+  assert.equal(formatBend("def value ?()->U32:\n  1"), "def value ?() -> U32:\n  1");
+});
+
+test("keeps prefix holes glued", () => {
+  assert.equal(formatBend("def value()->U32:\n  ?TODO\n  result=?help"), "def value() -> U32:\n  ?TODO\n  result = ?help");
+  assert.equal(formatBend("case?help:"), "case ?help:");
+});
+
 test("leaves unterminated literals unchanged", () => {
   for (const literal of [
     "\"", "'", "\"unfinished", "'unfinished", "\"unfinished\\", "'unfinished\\",
