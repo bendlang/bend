@@ -7,12 +7,52 @@ import { join } from "node:path";
 import { formatBend } from "../formatter.js";
 
 const inlineLayouts = [
-  "import Base\ndef f(n: Bool) -> U32:\n  match n: case True{}: 0\n           case False{}: 1\n",
-  "import Base\ndef main() -> IO(Unit):\n  do IO<Unit>: IO.print(\"a\")\n               IO.print(\"b\")\n",
-  "import Base\ndef main() -> IO(Unit):\n  do\n    IO<Unit>: IO.print(\"a\")\n              IO.print(\"b\")\n",
-  "import Base\ndef main() -> IO(Unit):\n  do IO<\n    Unit>: IO.print(\"a\")\n           IO.print(\"b\")\n",
-  "import Base\ndef main() -> IO(Unit):\n  do IO<Unit>\n    : IO.print(\"a\")\n      IO.print(\"b\")\n",
-  "import Base\ndef f() -> IO(@x: Unit -> Unit):\n  do IO<@x:\n    Unit -> Unit>: IO.print(\"a\")\n                   return x => x\n",
+  [
+    "import Base",
+    "def f(n: Bool) -> U32:",
+    "  match n: case True{}: 0",
+    "           case False{}: 1",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do IO<Unit>: IO.print(\"a\")",
+    "               IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do",
+    "    IO<Unit>: IO.print(\"a\")",
+    "              IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do IO<",
+    "    Unit>: IO.print(\"a\")",
+    "           IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def main() -> IO(Unit):",
+    "  do IO<Unit>",
+    "    : IO.print(\"a\")",
+    "      IO.print(\"b\")",
+    "",
+  ].join("\n"),
+  [
+    "import Base",
+    "def f() -> IO(@x: Unit -> Unit):",
+    "  do IO<@x:",
+    "    Unit -> Unit>: IO.print(\"a\")",
+    "                   return x => x",
+    "",
+  ].join("\n"),
 ];
 
 test("leaves column-sensitive inline blocks unchanged", () => {
