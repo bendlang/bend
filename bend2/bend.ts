@@ -2650,7 +2650,9 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       }
       case "Ctr":
       case "Lit": {
-        throw Err(book_nil(), ctx_nil(), "an undestructed scrutinee (match it in the same match as the pattern that introduced it)", undefined, m.s);
+        const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
+        throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
+          + " (match it in the same match as the pattern that introduced it)", undefined, m.s);
       }
       default: {
         throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);

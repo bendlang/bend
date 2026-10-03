@@ -22,7 +22,7 @@ def main() -> U32:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : an undestructed scrutinee (match it in the same match as the pattern that introduced it)
+#|- message  : 'W' can't be matched here (match it in the same match as the pattern that introduced it)
 #|Location:
 #| 9 |     case 0n, Con{h, W}:
 #|10>|       match W:
