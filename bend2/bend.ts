@@ -2323,7 +2323,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
     [p.pos, T] = [at, null];
   }
   if (T === null && q.$ === "Lone" && ts.length === 1 && !(parse_at(p, "=") && !parse_at(p, "=="))) {
-    const w = term_write(ts[0]);
+    const w = term_write(ts[0], beg);
     if (w === null || !parse_more(p, parse_col(p.str, beg))) {
       return ts[0];
     }
@@ -2350,9 +2350,11 @@ export function parse_body(p: Parse, col: number = 0): Body {
   return { $: "Local", k: ks, q, v: vs, f };
 }
 
-export function term_write(t: LTerm): LTerm | null {
+// the a of a statement a[i] <- v: its a opens the statement, so an
+// explicit Array.set(..) call or a parenthesized write is a term.
+export function term_write(t: LTerm, beg: number): LTerm | null {
   const [h, xs] = term_unapply(t);
-  if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var") {
+  if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var" && xs[1].s?.beg === beg) {
     return xs[1];
   }
   return null;
