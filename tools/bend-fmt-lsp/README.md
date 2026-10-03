@@ -18,7 +18,22 @@ The server handles documents whose language ID is `bend` or `bend2`. It
 preserves line breaks, blank lines, comments, literal spelling, line endings,
 and the final-newline state. Formatting normalizes indentation and safe token
 spacing without wrapping code. When a document cannot be tokenized safely, the
-server returns no edits.
+server returns no edits. Documents with inline `case` rows or code after a
+`do` header are also left unchanged: their continuations depend on physical
+columns that this line-based formatter does not reconstruct.
+
+## Tests
+
+`npm test` runs formatter and LSP tests. To include the real compiler layout
+regressions, set absolute paths to Bun and the Bend CLI source:
+
+```sh
+BEND_FMT_TEST_BUN=/absolute/path/to/bun \
+BEND_FMT_TEST_COMPILER=/absolute/path/to/bend/bend2/main.ts npm test
+```
+
+These regressions use `--check-only`; they never execute the fixture's I/O.
+Without both paths, the compiler test is explicitly skipped.
 
 ## Editor setup
 

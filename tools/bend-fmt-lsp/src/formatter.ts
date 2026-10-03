@@ -161,6 +161,19 @@ function fingerprint(lines: Line[]): string {
   return lines.map((line, index) => line.tokens.length === 0 ? "" : depths[index] + ":" + line.tokens.map((token) => token.text).join("\u0000")).join("\n");
 }
 
+function inlineLayout(line: Line): boolean {
+  return line.tokens.some((token, index) => {
+    if (token.kind !== "word") return false;
+    // Following rows align with the first case's physical column, which
+    // can be inside a line rather than at its indentation boundary.
+    if (token.text === "case" && index > 0) return true;
+    // The same applies to do statements. Conservatively decline a line
+    // with code after a colon following do; this is not a Bend parser.
+    return token.text === "do" && line.tokens.slice(index + 1, -1)
+      .some((next) => next.text === ":");
+  });
+}
+
 export function formatBend(source: string, options: FormatOptions = {}): string {
   const eol = source.includes("\r\n") ? "\r\n" : "\n";
   const finalEol = source.endsWith("\n");
@@ -172,6 +185,9 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   } catch {
     return source;
   }
+  // Both spacing the header and reindenting a later line can invalidate
+  // inline alignment. Return the whole source, not a partial formatting.
+  if (lines.some(inlineLayout)) return source;
   const depths = indentDepths(lines);
   const size = Math.max(1, options.tabSize ?? 2);
   const spaces = options.insertSpaces !== false;
