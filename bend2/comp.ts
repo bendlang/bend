@@ -2648,7 +2648,7 @@ function emit_fork(fl: File, x: Of<"Let">, ers: HTerm[]): void {
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
   calls.forEach((c, i) => {
-    const cargs = emit_args({ ...fl, rest: [chain[i]] }, c);
+    const cargs = emit_args({ ...fl, rest: [...hold, chain[i]] }, c);
     const vs = i === 0 ? [...fl.uses]
       : [[o.ps[i - 1], fl.uses.get(o.ps[i - 1])!] as [Of<"Var">, Bind]];
     const kn = seg_name(fl, "k");
