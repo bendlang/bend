@@ -2651,9 +2651,13 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       case "Ctr":
       case "Lit": {
         const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
-        throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched " + (char_is_head(x) && [...x].every(char_is_name)
-          ? "here (match it in the same match as the pattern that introduced it)"
-          : "(this value is already a constructor: bind its fields directly)"), undefined, m.s);
+        if (char_is_head(x) && [...x].every(char_is_name)) {
+          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
+            + " (match it in the same match as the pattern that introduced it)", undefined, m.s);
+        } else {
+          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched"
+            + " (this value is already a constructor: bind its fields directly)", undefined, m.s);
+        }
       }
       default: {
         throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
