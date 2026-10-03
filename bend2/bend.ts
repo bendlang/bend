@@ -2650,7 +2650,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       }
       case "Ctr":
       case "Lit": {
-        throw Err(book_nil(), ctx_nil(), "an undestructed scrutinee (an outer match already split this value: match it in the same match as the pattern that introduced it, nesting its patterns there; a constructor written here binds its fields directly)", undefined, m.s);
+        throw Err(book_nil(), ctx_nil(), "an undestructed scrutinee (match it in the same match as the pattern that introduced it)", undefined, m.s);
       }
       default: {
         throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);

@@ -29,7 +29,7 @@ def main(): f(Zw3{})
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : an undestructed scrutinee (an outer match already split this value: match it in the same match as the pattern that introduced it, nesting its patterns there; a constructor written here binds its fields directly)
+#|- message  : an undestructed scrutinee (match it in the same match as the pattern that introduced it)
 #|Location:
 #|18 |     case Sw3{p}:
 #|19>|       match a:

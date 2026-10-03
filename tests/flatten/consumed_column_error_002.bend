@@ -22,7 +22,7 @@ def main() -> U32:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : an undestructed scrutinee (an outer match already split this value: match it in the same match as the pattern that introduced it, nesting its patterns there; a constructor written here binds its fields directly)
+#|- message  : an undestructed scrutinee (match it in the same match as the pattern that introduced it)
 #|Location:
 #| 9 |     case 0n, Con{h, W}:
 #|10>|       match W:
