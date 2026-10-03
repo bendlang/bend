@@ -2350,8 +2350,6 @@ export function parse_body(p: Parse, col: number = 0): Body {
   return { $: "Local", k: ks, q, v: vs, f };
 }
 
-// the a of a statement a[i] <- v: its a opens the statement, so an
-// explicit Array.set(..) call or a parenthesized write is a term.
 export function term_write(t: LTerm, beg: number): LTerm | null {
   const [h, xs] = term_unapply(t);
   if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var" && xs[1].s?.beg === beg) {
