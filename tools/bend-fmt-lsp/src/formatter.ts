@@ -112,6 +112,8 @@ function needsSpace(tokens: Token[], index: number): boolean {
   if (left.text === ",") return true;
   if (right.text === "!" && (left.kind === "word" || [")", "]", "}"].includes(left.text))) return false;
   if (left.text === "!" && right.text === "(") return false;
+  if (right.text === "?" && left.kind === "word" && (!tokens[index + 1] || tokens[index + 1].text === "(")) return right.gap;
+  if (left.text === "?" && right.text === "(" && tokens[index - 2]?.kind === "word") return false;
   if (right.text === "(" || right.text === "[") {
     const suffix = (left.kind === "word" && !KEYWORDS.has(left.text)) || left.kind === "number" || left.kind === "literal" || [")", "]", "}", ">", ">>"].includes(left.text);
     return !suffix;
