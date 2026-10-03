@@ -2606,7 +2606,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
 // values. the + marks of a column's rows join into its binder (a +
 // lambda), or into its fields when a constructor row splits it.
 
-export function body_sub(b: Body, i: number, v: Patt, fold: boolean = false): Body {
+export function body_sub(b: Body, i: number, v: Patt): Body {
   function scrut(e: LTerm): LTerm {
     if (e.$ === "Var") {
       return e.i !== i ? e : patt_term(v, e.s);
@@ -2616,21 +2616,13 @@ export function body_sub(b: Body, i: number, v: Patt, fold: boolean = false): Bo
   }
   switch (b.$) {
     case "Match": {
-      const j = b.e.findIndex((e) => e.$ === "Var" && e.i === i);
-      if (fold && v.$ === "PCtr" && j >= 0) {
-        return body_sub(match_fold(b, j, v), i, v, fold);
-      }
       const es = b.e.map(scrut);
-      const rs = b.r.map((row): Case => ({ p: row.p, f: body_sub(row.f, i, v, fold) }));
+      const rs = b.r.map((row): Case => ({ p: row.p, f: body_sub(row.f, i, v) }));
       return { $: "Match", e: es, r: rs, s: b.s };
     }
     case "Local": {
-      const e = b.v[0];
-      if (fold && b.k.length === 1 && b.k[0].$ === "PCtr" && e.$ === "Var" && e.i === i) {
-        return body_sub({ $: "Match", e: [e], r: [{ p: [b.k[0]], f: b.f }], s: e.s }, i, v, fold);
-      }
       const w = b.v.map(scrut);
-      const f = body_sub(b.f, i, v, fold);
+      const f = body_sub(b.f, i, v);
       return { $: "Local", k: b.k, q: b.q, v: w, f };
     }
     default: {
@@ -2648,7 +2640,7 @@ export function match_fold(m: Match, j: number, v: PCtr): Body {
       return [];
     }
     const ps = p.$ === "PCtr" ? p.x : ys;
-    const f  = p.$ === "PCtr" ? row.f : body_sub(row.f, p.i, v, true);
+    const f  = p.$ === "PCtr" ? row.f : body_sub(body_fold(row.f, p.i, v), p.i, v);
     return [{ p: [...row.p.slice(0, j), ...ps, ...row.p.slice(j + 1)], f }];
   });
   for (let n = ys.length - 1; n >= 0; n--) {
@@ -2659,6 +2651,26 @@ export function match_fold(m: Match, j: number, v: PCtr): Body {
     }
   }
   return { $: "Match", e: es, r: rs, s: m.s };
+}
+
+export function body_fold(b: Body, i: number, v: PCtr): Body {
+  switch (b.$) {
+    case "Match": {
+      const j = b.e.findIndex((e) => e.$ === "Var" && e.i === i);
+      const m = j < 0 ? b : match_fold(b, j, v);
+      return { $: "Match", e: m.e, r: m.r.map((row): Case => ({ p: row.p, f: body_fold(row.f, i, v) })), s: m.s };
+    }
+    case "Local": {
+      const e = b.v[0];
+      if (b.k.length === 1 && b.k[0].$ === "PCtr" && e.$ === "Var" && e.i === i) {
+        return body_fold({ $: "Match", e: [e], r: [{ p: [b.k[0]], f: b.f }], s: e.s }, i, v);
+      }
+      return { $: "Local", k: b.k, q: b.q, v: b.v, f: body_fold(b.f, i, v) };
+    }
+    default: {
+      return b;
+    }
+  }
 }
 
 export function body_drop(b: Body, i: number, k: Name): Body {
@@ -2747,7 +2759,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
             }
             case "PVar": {
               const g = body_sub(row.f, p0.i, x);
-              const f = body_sub(g, x.i, kx, true);
+              const f = body_sub(body_fold(g, x.i, kx), x.i, kx);
               return [{ p: [...xs, ...row.p.slice(1)], f }];
             }
           }
