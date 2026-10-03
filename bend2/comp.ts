@@ -1890,9 +1890,12 @@ function bind_set(fl: File, p: Of<"Var">, b: Bind, n: number): void {
   }
 }
 
-function bind_dead(fl: File, rest: HTerm[]): void {
-  for (const [p, b] of [...fl.uses]) {
-    bind_set(fl, p, b, Math.min(b.n, rest_use(fl, rest, p)));
+function bind_dead(fl: File, rest: HTerm[], ps = [...fl.uses.keys()]): void {
+  for (const p of ps) {
+    const b = fl.uses.get(p);
+    if (b) {
+      bind_set(fl, p, b, Math.min(b.n, rest_use(fl, rest, p)));
+    }
   }
 }
 
@@ -2236,7 +2239,8 @@ function emit_fuse(fl: File, ck: Spine, dst: Val | null, tail = false): void {
   block(fl, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(fl, "return 0;"));
   out.ws.forEach((v, j) => file_push(fl, `${v} = ${o}[${j}];`));
-  bind_dead(fl, tail ? [] : fl.rest);
+  bind_dead(fl, tail ? [] : fl.rest, tail ? undefined
+    : ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
   emit_put(fl, dst, out);
 }
 
@@ -2648,7 +2652,7 @@ function emit_fork(fl: File, x: Of<"Let">, ers: HTerm[]): void {
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
   calls.forEach((c, i) => {
-    const cargs = emit_args({ ...fl, rest: [...hold, chain[i]] }, c);
+    const cargs = emit_args({ ...fl, rest: [chain[i]] }, c);
     const vs = i === 0 ? [...fl.uses]
       : [[o.ps[i - 1], fl.uses.get(o.ps[i - 1])!] as [Of<"Var">, Bind]];
     const kn = seg_name(fl, "k");
