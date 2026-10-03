@@ -35,6 +35,7 @@ function allow(at: string | RegExp, cap = Infinity): void {
 }
 
 allow(/^\.github\/ISSUE_TEMPLATE\/(bug|feature|config)\.yml$/);
+allow(".github/workflows/repo-gate.yml");
 allow(".gitattributes");
 allow(".gitignore");
 allow("AGENTS.md");
