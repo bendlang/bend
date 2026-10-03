@@ -3697,6 +3697,12 @@ static void err_trap(int sig) {
 #define err_seen(H)    (DEVICE && a32_load(a32_at(H, H_ERROR_CODE)) != 0)
 #define err_spun(H, n) ((++*(n) & 4095) == 0 && err_seen(H))
 
+#if __METAL_VERSION__ >= 320
+#define err_peek(H) *(volatile DEV u32*)a32_at(H, H_ERROR_CODE)
+#else
+#define err_peek err_seen
+#endif
+
 ${NATIVE.C}
 A32_LOOP(fadd, f32_rewrap(f32_unbox(o) + f32_unbox(v)))
 
@@ -3809,7 +3815,7 @@ INLINE u64 heap_alloc(Env e, u32 cls) {
 }
 
 INLINE void heap_free(Env e, u32 cls, u64 loc) {
-  if (err_seen(e.mem)) {
+  if (err_peek(e.mem)) {
     return;
   }
   e.mem[loc]       = ALC_AT(e, cls);
