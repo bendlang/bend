@@ -24,6 +24,7 @@ const BINARY = new Set(["=", "==", "!=", "->", "<-", "=>", "+", "-", "*", "/", "
 const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ":", "=", "for", "case", "~"]);
 const ANGLES = new Set(["<", ">", "<<", ">>"]);
 const KEYWORDS = new Set(["return", "match", "case", "do", "for", "exs", "where", "is", "import", "def", "type", "law"]);
+const SIMPLE_DO_HEADER = ["name", "<", "name", ">", ":"] as const;
 
 function splitLine(text: string): Line {
   const indent = text.match(/^[\t ]*/)?.[0] ?? "";
@@ -167,14 +168,16 @@ function unsupportedLayout(line: Line): boolean {
     // Following rows align with the first case's physical column, which
     // can be inside a line rather than at its indentation boundary.
     if (token.text === "case" && index > 0) return true;
-    // Recognize only do NAME<NAME>: ending this line. Other headers can
-    // span lines or contain type-internal colons; without a parser we
-    // cannot establish their first statement's column.
+    // After do, expect five tokens: NAME, <, NAME, >, :.
+    // For do IO<Unit>: these are ["IO", "<", "Unit", ">", ":"].
+    // Names may vary; the colon must end the line so the first statement
+    // starts on the next line. Other headers can span lines or contain
+    // type-internal colons, whose continuation columns we cannot infer.
     if (token.text !== "do") return false;
     const header = line.tokens.slice(index + 1);
-    return header.length !== 5 || header[0].kind !== "word"
-      || header[1].text !== "<" || header[2].kind !== "word"
-      || header[3].text !== ">" || header[4].text !== ":";
+    return header.length !== SIMPLE_DO_HEADER.length
+      || SIMPLE_DO_HEADER.some((expected, at) => expected === "name"
+        ? header[at].kind !== "word" : header[at].text !== expected);
   });
 }
 
