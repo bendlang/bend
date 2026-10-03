@@ -18,26 +18,9 @@ The server handles documents whose language ID is `bend` or `bend2`. It
 preserves line breaks, blank lines, comments, literal spelling, line endings,
 and the final-newline state. Formatting normalizes indentation and safe token
 spacing without wrapping code. When a document cannot be tokenized safely, the
-server returns no edits. Documents with inline `case` rows or unrecognized
-`do` headers are also left unchanged: their continuations depend on physical
-columns that this line-based formatter does not reconstruct. Supported `do`
-headers have the simple shape `do M<T>:` on one line, where `M` and `T` are
-names (possibly qualified); the first statement follows on a new line.
-Complex types and multiline headers are left untouched. This conservative fallback
-leaves the entire document unchanged, including unrelated declarations.
-
-## Tests
-
-`npm test` runs formatter and LSP tests. To include the real compiler layout
-regressions, set absolute paths to Bun and the Bend CLI source:
-
-```sh
-BEND_FMT_TEST_BUN=/absolute/path/to/bun \
-BEND_FMT_TEST_COMPILER=/absolute/path/to/bend/bend2/main.ts npm test
-```
-
-These regressions use `--check-only`; they never execute the fixture's I/O.
-Without both paths, the compiler test is explicitly skipped.
+server returns no edits. Inline `case` rows also leave the document unchanged.
+Only single-line `do M<T>:` headers with named `M` and `T` and the first
+statement on the next line are formatted; other `do` headers leave it unchanged.
 
 ## Editor setup
 
