@@ -28,6 +28,36 @@ test("preserves comments, literals, line endings, and final newline state", () =
   assert.equal(formatBend(source), "def main() -> String:\r\n  \"a # b\\n\"  # exact comment");
 });
 
+for (const [name, source, expected] of [
+  [
+    "relative",
+    "import   lib/dep.bend   as   Dep # dependency\n\ndef main()->U32:\n    Dep.answer()\n",
+    "import lib/dep.bend as Dep  # dependency\n\ndef main() -> U32:\n  Dep.answer()\n",
+  ],
+  [
+    "absolute",
+    "import   /tmp/bend-lib/dep.bend   as   Dep # dependency\n\ndef main()->U32:\n    Dep.answer()\n",
+    "import /tmp/bend-lib/dep.bend as Dep  # dependency\n\ndef main() -> U32:\n  Dep.answer()\n",
+  ],
+  [
+    "dot-relative",
+    "import   ./lib/dep.bend   as   Dep # dependency\n\ndef main()->U32:\n    Dep.answer()\n",
+    "import ./lib/dep.bend as Dep  # dependency\n\ndef main() -> U32:\n  Dep.answer()\n",
+  ],
+]) {
+  test(`preserves ${name} module paths while formatting neighbouring code`, () => {
+    assert.equal(formatBend(source), expected);
+    assert.equal(formatBend(expected), expected);
+  });
+}
+
+test("formats Base and quoted foreign imports without changing comments or arithmetic", () => {
+  const source = "import   Base # base\n# import lib/dep.bend as Dep\n\ndef read()->IO(U32):\n    import   \"./lib/foreign-dep.js\" # foreign\n\ndef main()->U32:\n    (6/3-1:U32)\n";
+  const expected = "import Base  # base\n# import lib/dep.bend as Dep\n\ndef read() -> IO(U32):\n  import \"./lib/foreign-dep.js\"  # foreign\n\ndef main() -> U32:\n  (6 / 3 - 1: U32)\n";
+  assert.equal(formatBend(source), expected);
+  assert.equal(formatBend(expected), expected);
+});
+
 test("preserves escaped quotes and hashes inside literals", () => {
   for (const literal of [String.raw`"a \" # b"`, String.raw`'a \' # b'`]) {
     assert.equal(formatBend(literal + "# exact"), literal + "  # exact");
