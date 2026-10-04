@@ -44,12 +44,31 @@ for (const [name, source, expected] of [
     "import   ./lib/dep.bend   as   Dep # dependency\n\ndef main()->U32:\n    Dep.answer()\n",
     "import ./lib/dep.bend as Dep  # dependency\n\ndef main() -> U32:\n  Dep.answer()\n",
   ],
+  [
+    "parent-relative",
+    "import   ../lib/dep.bend   as   Dep# dependency\n\ndef main()->U32:\n    Dep.answer()\n",
+    "import ../lib/dep.bend as Dep  # dependency\n\ndef main() -> U32:\n  Dep.answer()\n",
+  ],
+  [
+    "content-hash",
+    "import   0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/main.bend   as   Dep\n\ndef main()->U32:\n    Dep.answer()\n",
+    "import 0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/main.bend as Dep\n\ndef main() -> U32:\n  Dep.answer()\n",
+  ],
+  [
+    "named-package",
+    "import   math-lib@1.2.3/main.bend   as   Dep # dependency\n\ndef main()->U32:\n    Dep.answer()\n",
+    "import math-lib@1.2.3/main.bend as Dep  # dependency\n\ndef main() -> U32:\n  Dep.answer()\n",
+  ],
 ]) {
   test(`preserves ${name} module paths while formatting neighbouring code`, () => {
     assert.equal(formatBend(source), expected);
     assert.equal(formatBend(expected), expected);
   });
 }
+
+test("keeps separated import path parts separated", () => {
+  assert.equal(formatBend("import lib /dep.bend as Dep"), "import lib / dep.bend as Dep");
+});
 
 test("formats Base and quoted foreign imports without changing comments or arithmetic", () => {
   const source = "import   Base # base\n# import lib/dep.bend as Dep\n\ndef read()->IO(U32):\n    import   \"./lib/foreign-dep.js\" # foreign\n\ndef main()->U32:\n    (6/3-1:U32)\n";

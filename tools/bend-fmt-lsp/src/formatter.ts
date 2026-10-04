@@ -57,6 +57,9 @@ function splitLine(text: string): Line {
         }
       }
       if (!closed) throw new Error("unterminated literal");
+    } else if (tokens.length === 1 && tokens[0].text === "import" && hadGap) {
+      kind = "word";
+      while (i < code.length && !/\s/.test(code[i]) && code[i] !== "#") i++;
     } else if (HEAD.test(char)) {
       kind = "word";
       i++;
