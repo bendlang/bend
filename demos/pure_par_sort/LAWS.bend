@@ -2,7 +2,7 @@
 import Base
 import ./main.bend as Sort
 
-# LAW: the leaves of x and y are their lesser leaves plus their greater leaves
+# LAW: the leaves of x and y sum to the leaves of their two mixes
 law mix_leaves:
   for +d: Nat
   for +s: Bool
