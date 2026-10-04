@@ -15,6 +15,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
+import * as Bend from "../bend2/bend";
+import * as Comp from "../bend2/comp";
 import * as lib from "./_lib";
 
 // Types
@@ -76,6 +78,23 @@ function test_fails(t: Test): boolean {
 
 function test_runs(shard: Test[]): Test[] {
   return shard.filter((t) => t.main && t.lanes.length > 0 && !test_fails(t));
+}
+
+async function compiler_cache(): Promise<void> {
+  const load = async (name: string): Promise<Bend.Book> => {
+    const book = Bend.book_nil();
+    await Bend.book_load(book, path.join(TESTS, "reg", name), "", new Map());
+    Bend.book_valid(book, 0);
+    return book;
+  };
+  const a = await load("cache_layout_a.bend");
+  const b = await load("cache_layout_b.bend");
+  const before = Comp.compile_book(b);
+  Comp.compile_book(a);
+  const after = Comp.compile_book(b);
+  if (before !== after) {
+    throw new Error("C emission changed across an independent compilation");
+  }
 }
 
 function test_probes(t: Test, got: Got): string[] {
@@ -199,6 +218,7 @@ async function shard_run(shard: Test[], pack: Buffer, tag: number,
 // ====
 
 if (import.meta.main) {
+  await compiler_cache();
   const tests = fs.readdirSync(TESTS).sort().flatMap((dir) =>
     fs.readdirSync(path.join(TESTS, dir)).filter((f) => f.endsWith(".bend"))
       .sort().map((f) => test_read(dir, f)));

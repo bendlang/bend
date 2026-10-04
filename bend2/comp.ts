@@ -1846,6 +1846,8 @@ function memo_gc(): void {
 // function, a Type, an erased or dependent field) refuses the build.
 
 function show_main(book: Bend.Book): (number | Name)[] | null {
+  NODES.clear();
+  LAYS.clear();
   const main = book.tlds.main;
   if (!book.tlds.IO) {
     die("a build needs import Base");
