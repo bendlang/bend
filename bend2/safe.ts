@@ -1525,11 +1525,14 @@ export function run_read(bin: string, args: string[],
 function kernel_check(text: string): boolean {
   const env = { ...process.env, LEAN_STACK_SIZE_KB: "4194304" };
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bendtt-"));
-  const inp = path.join(dir, "in.bendtt");
-  fs.writeFileSync(inp, text, { flag: "wx" });
-  const [got, out] = run_read(kernel_bin(), [inp], { env });
-  fs.rmSync(dir, { recursive: true });
-  return got.status === 0 && out.trim() === "ALL PROOFS CHECK";
+  try {
+    const inp = path.join(dir, "in.bendtt");
+    fs.writeFileSync(inp, text, { flag: "wx" });
+    const [got, out] = run_read(kernel_bin(), [inp], { env });
+    return got.status === 0 && out.trim() === "ALL PROOFS CHECK";
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 // -o <out>.bendtt: writes the elaboration of a book bend2 checked to
