@@ -2168,31 +2168,29 @@ function emit_open(fl: File, k: Name): [File, Val[]] {
 function emit_native(fl: File, k: Name, ers: HTerm[]): string {
   const key = [k, ...ers.map((e) => memo(LAY_IDS, lay_of(fl.book, e),
     () => LAY_IDS.size))].join("|");
-  const got = fl.spun.get(key);
-  if (got !== undefined) {
-    return seg_ref(fl, got);
-  }
-  const name = seg_ref(fl, `spin_${fl.spun.size}`);
-  fl.spun.set(key, name);
-  const fuel = FUEL;
-  const [sl, vals] = emit_open(fl, k);
-  const seg = sl.seg;
-  seg.fid = name;
-  const dst = val_new(seg.ret.ks.map(() => name_local(fl, "v")), seg.ret);
-  emit_body(sl, fun_of(fl, k).h!, fl.book.tlds[k].T, ers, vals, dst);
-  FUEL = fuel;
-  fl.spins.push({ ...seg, lines: [`${seg.lines.length < SPIN_FAR
-    ? "INLINE" : "FAR"} Term ${name}(Env e, THR Term* o${
-    seg.ks.map((k, i) => `, ${lay_c(k)} r${i}${arr_q(fl, k)
-      ? `, u64 q${i}` : ""}`).join("")}) {`,
-  ...seg_text(["u32 wpoll = 0;", ...seg.ks.flatMap((k, i) =>
-    arr_q(fl, k) ? [`Term h${i} = r${i};`] : []),
-  ...dst.ws.map((v, j) => `${lay_c(seg.ret.ks[j])} ${v} = 0;`),
-  ...seg_take(seg), "WL_SPIN"], 1),
-  ...seg_text(seg.lines, 2), "  break;", "  }",
-  ...dst.ws.map((v, j) => `  o[${j}] = ${v};`),
-  "  return 1;", "}"] });
-  return name;
+  return seg_ref(fl, memo(fl.spun, key, () => {
+    const name = `spin_${fl.spun.size}`;
+    fl.spun.set(key, name);
+    const fuel = FUEL;
+    const [sl, vals] = emit_open(fl, k);
+    const seg = sl.seg;
+    seg.fid = name;
+    const dst = val_new(seg.ret.ks.map(() => name_local(fl, "v")), seg.ret);
+    emit_body(sl, fun_of(fl, k).h!, fl.book.tlds[k].T, ers, vals, dst);
+    FUEL = fuel;
+    fl.spins.push({ ...seg, lines: [`${seg.lines.length < SPIN_FAR
+      ? "INLINE" : "FAR"} Term ${name}(Env e, THR Term* o${
+      seg.ks.map((k, i) => `, ${lay_c(k)} r${i}${arr_q(fl, k)
+        ? `, u64 q${i}` : ""}`).join("")}) {`,
+    ...seg_text(["u32 wpoll = 0;", ...seg.ks.flatMap((k, i) =>
+      arr_q(fl, k) ? [`Term h${i} = r${i};`] : []),
+    ...dst.ws.map((v, j) => `${lay_c(seg.ret.ks[j])} ${v} = 0;`),
+    ...seg_take(seg), "WL_SPIN"], 1),
+    ...seg_text(seg.lines, 2), "  break;", "  }",
+    ...dst.ws.map((v, j) => `  o[${j}] = ${v};`),
+    "  return 1;", "}"] });
+    return name;
+  }));
 }
 
 function emit_dst(fl: File, lay: Lay, k = "v"): Val {
@@ -3143,37 +3141,35 @@ function js_marshal(fl: File, A: HTerm | null, out: boolean): string {
       }(x)), a))`;
   }
   const key = (out ? "out " : "in ") + Bend.term_key(Bend.term_lower(t));
-  const got = fl.spun.get(key);
-  if (got !== undefined) {
-    return got;
-  }
-  const name = "$0m" + fl.spun.size;
-  fl.spun.set(key, name);
-  const cs = (book.tlds[t.k] as Bend.ADT).c;
-  const arms = cs.map((c) => {
-    const fs = ctr_live(book, c, t.x).flatMap(([, n, B]) => {
-      const f = js_marshal(fl, B, out);
-      return f === "" ? [] : [[n, f]];
+  return memo(fl.spun, key, () => {
+    const name = "$0m" + fl.spun.size;
+    fl.spun.set(key, name);
+    const cs = (book.tlds[t.k] as Bend.ADT).c;
+    const arms = cs.map((c) => {
+      const fs = ctr_live(book, c, t.x).flatMap(([, n, B]) => {
+        const f = js_marshal(fl, B, out);
+        return f === "" ? [] : [[n, f]];
+      });
+      const [n] = fs.filter(([, f]) => f === name).pop() ?? [];
+      const copy = fs.filter(([m]) => m !== n).map(([m, f]) =>
+        `, ${js_key(m)}${f}(v["${m}"])`).join("");
+      const tag = Bend.name_key(c.k);
+      return `case "${tag}": ` + (fs.length === 0 ? "at[key] = v; return top[0];"
+        : `at = at[key] = {...v${copy}}; ` + (n === undefined ? "return top[0];"
+        : `key = "${n}"; v = v[key]; continue;`));
     });
-    const [n] = fs.filter(([, f]) => f === name).pop() ?? [];
-    const copy = fs.filter(([m]) => m !== n).map(([m, f]) =>
-      `, ${js_key(m)}${f}(v["${m}"])`).join("");
-    const tag = Bend.name_key(c.k);
-    return `case "${tag}": ` + (fs.length === 0 ? "at[key] = v; return top[0];"
-      : `at = at[key] = {...v${copy}}; ` + (n === undefined ? "return top[0];"
-      : `key = "${n}"; v = v[key]; continue;`));
-  });
-  const tk = Bend.name_key(t.k);
-  const tags = cs.map((c) => Bend.name_key(c.k)).join(", ");
-  fl.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v) {`,
-    "const top = [v];", "for (let at = top, key = 0;;) {", "switch (v.$) {",
-    // TODO(#1105): a tag is the key the loading book gives its constructor,
-    // so it depends on the root file; make tags the same in every book
-    ...arms, `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
-      tags}); a tag names its constructor as the"
+    const tk = Bend.name_key(t.k);
+    const tags = cs.map((c) => Bend.name_key(c.k)).join(", ");
+    fl.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v) {`,
+      "const top = [v];", "for (let at = top, key = 0;;) {", "switch (v.$) {",
+      // TODO(#1105): a tag is the key the loading book gives its constructor,
+      // so it depends on the root file; make tags the same in every book
+      ...arms, `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
+        tags}); a tag names its constructor as the"
       + " loading file sees it, which a later version will make the same"
       + " everywhere (#1105)";`, "}", "}", "}", ""] });
-  return name;
+    return name;
+  });
 }
 
 function js_host(fl: File, k: Name): string {
