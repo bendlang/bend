@@ -1,4 +1,4 @@
-# Parallel sort -- the laws: mix loses no leaf, and sort keeps the leaves' sum.
+# Parallel sort -- the laws: both mix and sort keep the leaves' sum.
 import Base
 import ./main.bend as Sort
 
