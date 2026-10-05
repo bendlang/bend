@@ -944,11 +944,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return { $: "Rfl" };
     }
     case "Rwt": {
-      // the kernel fits a rewrite's type P[b, e] to its goal T without
-      // going under a binder, where bend2's LE does: then it goes out at P[b, e]
-      const R = rwt_type(e, x);
-      const o = rwt_term(e, s, x, live);
-      return R !== null && T !== null && !B.term_compare("EQ", e.book, R, T, s.d) ? { $: "Ann", x: o, T: term(e, s, R, false) } : o;
+      return rwt_term(e, s, x, live);
     }
     case "Qnt": {
       return { $: "Enu", ks: ["Q0", "Q1", "Q2"] };
@@ -974,7 +970,7 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
   const [h, xs] = unapply(t);
   const [f, T] = open(h);
   if (f.$ !== "Ref") {
-    const U = f.$ === "Var" ? s.c[f.i]?.T ?? null : f.$ === "Rwt" ? rwt_type(e, f) ?? T : T;
+    const U = f.$ === "Var" ? s.c[f.i]?.T ?? null : T;
     const o = term(e, s, h, live);
     return args(e, s, inferable(o) ? o : { $: "Ann", x: o, T: term(e, s, U ?? oos("an application with no known head type"), false) }, U, xs, live);
   }
@@ -1214,22 +1210,18 @@ function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   return term(e, s, T === null && tree ? B.Ann(x, A) : x, live);
 }
 
-// whether two function types bind at the same quantities (the kernel
-// compares binders exactly; bend2 lets a function fit a domain whose
-// binders differ), at domains bend2 compares EQ, and end in the same
-// kind: the kernel converts under a binder, so Kind(&0) is not Kind(&1)
-// there, as in bend2's EQ, though bend2's LE fits either way
+// whether two function types bind at the same quantities: the kernel's
+// fit compares binders exactly, and bend2 lets a function fit a domain
+// whose binders differ; the kernel fits their domains, codomains and kinds
+// as bend2 does
 function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   const F = B.term_wnf(e.book, T);
   const G = B.term_wnf(e.book, A);
-  if (F.$ === "Typ" && G.$ === "Typ") {
-    return B.term_compare("EQ", e.book, F, G, d);
-  }
   if (F.$ !== "All" || G.$ !== "All") {
     return F.$ !== "All" && G.$ !== "All";
   }
   const x = B.Var(G.k, d);
-  return F.q.$ === G.q.$ && B.term_compare("EQ", e.book, F.A, G.A, d) && qsig_eq(e, F.B(x), G.B(x), d + 1);
+  return F.q.$ === G.q.$ && qsig_eq(e, F.B(x), G.B(x), d + 1);
 }
 
 // a constructor as a tuple of its tag and fields
@@ -1307,13 +1299,6 @@ function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: bool
 
 // a rewrite: the kernel's J, whose motive binds the endpoint at l and
 // its evidence at l + 1
-// a rewrite's own type, P[b, e], when its evidence's type is known
-function rwt_type(e: Safe, x: Extract<HTerm, { $: "Rwt" }>): HTerm | null {
-  const E = open(x.e)[1];
-  const q = E === null ? null : B.term_wnf(e.book, E);
-  return q?.$ === "Eql" ? B.term_apply(B.term_apply(x.p, q.b), x.e) : null;
-}
-
 function rwt_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Rwt" }>, live: boolean): O {
   const E0 = open(x.e)[1];
   const e0 = term(e, s, x.e, live);
