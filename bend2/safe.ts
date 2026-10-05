@@ -33,8 +33,9 @@
 // reads it as the column (K3-R).
 //
 // A kind goes out as the kernel's *(q), and a meet as (a <&> b), so a
-// Quant is a kernel value like any other: a closed one folds (a kind's
-// &0 to *(.Q1), bend2's rung for it). An item (a book name) goes out
+// Quant is a kernel value like any other, and a kind converts in the
+// kernel where it does in bend2: Kind(&0) is *(.Q0), and fits *(.Q1)
+// (Type) only as bend2's LE does. An item (a book name) goes out
 // once per tuple of closed arguments at its template (~) parameters, with
 // those parameters gone. Every def goes out after the defs its live code
 // names; a name in a type may come later. A def with no body (a law, a
@@ -420,13 +421,15 @@ function spec_of(e: Safe, k: Name): boolean[] {
 
 // a specialized argument: closed, in normal form
 function spec_val(e: Safe, s: Scope, x: HTerm): HTerm {
+  return closed_val(e, s, x) ?? oos("a template argument that depends on a run-time value");
+}
+
+// x's normal form, when it is closed; null when it depends on a run-time value
+function closed_val(e: Safe, s: Scope, x: HTerm): HTerm | null {
   // bend2's annotations name a variable by its level
   const v = B.term_snf(e.book, subst(x, s.d, (o) => o.$ === "Var" && (o.i as number) >= 0 && (o.i as number) < s.d
     ? s.c[o.i as number]?.v ?? B.Var(o.k as Name, o.i as number) : undefined));
-  if (mentions(B.term_lower(v, s.d), (i) => i >= 0 && i < s.d)) {
-    oos("a template argument that depends on a run-time value");
-  }
-  return v;
+  return mentions(B.term_lower(v, s.d), (i) => i >= 0 && i < s.d) ? null : v;
 }
 
 // t at depth d, with each node f maps replaced, through its lowered form
@@ -566,20 +569,6 @@ function name_tt(k: Name): string {
 
 function quant(q: Quant): Q {
   return q.$ === "None" ? 0 : q.$ === "Lone" ? 1 : 2;
-}
-
-// the literal a quantity term folds to (a closed meet at its value); null
-// when it depends on a run-time value
-function quant_lit(e: Safe, s: Scope, x: HTerm): Q | null {
-  try {
-    const v = spec_val(e, s, x);
-    return v.$ === "Qua" ? quant(v.q) : null;
-  } catch (x) {
-    if (!(x instanceof Scope_Error)) {
-      throw x;
-    }
-    return null;
-  }
 }
 
 // Scope
@@ -874,7 +863,8 @@ function no_ctr(e: Safe, T: HTerm): boolean {
 
 // T's kind, Data (2) or Type (1), as the kernel infers it: a datatype's
 // declared kind, or the kind a type-valued def returns (never through
-// the def's body); null when neither
+// the def's body), Data only where its quantity is closed at &2; null
+// when neither
 function kind(e: Safe, s: Scope, T: HTerm): Q | null {
   const [x] = open(T);
   const [h, xs] = x.$ === "ADT" ? [x, x.x] : unapply(x);
@@ -885,8 +875,8 @@ function kind(e: Safe, s: Scope, T: HTerm): Q | null {
   }
   try {
     const K = B.term_wnf(e.book, B.tele_fill(e.book, tld.T, xs, B.ctx_nil()));
-    const g = K.$ === "Typ" ? spec_val(e, s, K.g) : null;
-    return g?.$ === "Qua" ? Math.max(1, quant(g.q)) as Q : null;
+    const g = K.$ === "Typ" ? closed_val(e, s, K.g) : undefined;
+    return g === undefined ? null : g?.$ === "Qua" && g.q.$ === "Many" ? 2 : 1;
   } catch {
     return null;
   }
@@ -919,9 +909,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return args(e, s, x.k, tld.T, x.x, live);
     }
     case "Typ": {
-      // bend2's &0 and &1 kinds are one rung; the kernel's *(.Q0) and *(.Q1) are two
-      const q = quant_lit(e, s, x.g);
-      return { $: "Typ", q: q === null ? term(e, s, x.g, false) : { $: "Lab", k: "Q" + String(Math.max(1, q)) } };
+      return { $: "Typ", q: term(e, s, x.g, false) };
     }
     case "All": {
       const l = s.D;
@@ -965,8 +953,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return { $: "Lab", k: "Q" + String(quant(x.q)) };
     }
     case "Min": {
-      const q = quant_lit(e, s, x);
-      return q !== null ? { $: "Lab", k: "Q" + String(q) } : { $: "Min", a: term(e, s, x.a, live), b: term(e, s, x.b, live) };
+      return { $: "Min", a: term(e, s, x.a, live), b: term(e, s, x.b, live) };
     }
     case "Hol": {
       return oos("a hole");
@@ -1226,14 +1213,12 @@ function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
 // whether two function types bind at the same quantities (the kernel
 // compares binders exactly; bend2 lets a function fit a domain whose
 // binders differ), and end in the same kind: the kernel converts kinds
-// under a binder, as term emits them (a literal at its rung, else as is)
+// under a binder, so Kind(&0) is not Kind(&1) there, as in bend2's EQ
 function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   const F = B.term_wnf(e.book, T);
   const G = B.term_wnf(e.book, A);
   if (F.$ === "Typ" && G.$ === "Typ") {
-    const [a, b] = [B.term_wnf(e.book, F.g), B.term_wnf(e.book, G.g)];
-    return a.$ === "Qua" && b.$ === "Qua" ? Math.max(1, quant(a.q)) === Math.max(1, quant(b.q))
-      : a.$ !== "Qua" && b.$ !== "Qua" && B.term_compare("EQ", e.book, a, b, d);
+    return B.term_compare("EQ", e.book, F, G, d);
   }
   if (F.$ !== "All" || G.$ !== "All") {
     return F.$ !== "All" && G.$ !== "All";

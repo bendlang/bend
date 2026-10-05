@@ -1,7 +1,7 @@
-# bend2's Kind(&0) and Kind(&1) are one rung, so K0 fits go's Nat -> Type:
-# a literal &0 in a kind goes to --verdict as *(.Q1), since the kernel's
-# *(.Q0) and *(.Q1) are two. go's self-call passes K0 as is (no eta), so
-# the kernel compares the two kinds
+# bend2's Kind(&0) fits Type (LE) but is not Type (EQ), and --verdict emits
+# it as the kernel's *(.Q0), which fits *(.Q1) and does not convert to it.
+# go's self-call passes K0 : Nat -> Kind(&0) at its Nat -> Type column, so
+# the argument goes eta-long, and the kernel fits the kinds at the leaf
 import Base
 
 def K0(A: Nat) -> Kind(&0):
