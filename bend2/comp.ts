@@ -3289,14 +3289,12 @@ using namespace metal;
 // Dialect
 // =======
 
-// Metal needs coherent(device) (MSL 3.2), or M1-class parts lose stores
-// across the threadgroups of a dispatch. CUDA keeps plain data cacheable
-// in L1: lanes hand off through a32 and FENCE. Only clang 19+ has both
-// preserve_none and preserve_most, and compiles preserve_most soundly; at
-// -O0 its register allocator cannot place a preserve_none segment, so an
-// unoptimized build takes neither. A segment is a case of the device's
-// switch; on the host, a preserve_none function (WL_SIG) entered by
-// musttail, its words fresh at WL_OPEN.
+// MSL 3.2 coherent(device) prevents M1 cross-threadgroup store loss;
+// CUDA caches plain data in L1, with a32/FENCE hand-offs.
+// Clang 19+ provides preserve_none and sound preserve_most. At -O0 its
+// allocator cannot place preserve_none, so both are disabled.
+// Segments: device switch cases; host preserve_none (WL_SIG), musttail,
+// fresh words at WL_OPEN.
 
 #ifdef __METAL_VERSION__
 #if __METAL_VERSION__ >= 320
@@ -4796,12 +4794,10 @@ OUTLINE void pool_turn(bool grow, u32 rows) {
 // Gpu
 // ===
 
-// gpu_make compiles the device program into <binary>.gpu
-// (--gpu-build): Metal's binary archive, or CUDA's cubin behind a
-// hash of the text. A launch loads it, else notes and compiles. CUDA
-// shapes the bag by the device: a group of 128 lanes per 64 KB of
-// L2, a power of two in 16..128 (Apple keeps the tuned 128). CUDA
-// runs one stream: the default 8 cost about half of the startup.
+// gpu_make (--gpu-build) writes <binary>.gpu: Metal archive or source-hashed
+// CUDA cubin. Launch loads it, else notes and rebuilds. CUDA uses one stream
+// (default 8 cost half the startup) and 128 lanes per 64 KB L2, with
+// power-of-two groups 16..128; Apple keeps 128.
 
 static const char* gpu_path(void) {
   static char path[4096];
@@ -4858,8 +4854,9 @@ static void gpu_fail(NSError* err) {
   err_fail([[err localizedDescription] UTF8String]);
 }
 
-static bool gpu_probe(void) {
-  return (gpu_dev = MTLCreateSystemDefaultDevice()) != nil;
+static const char* gpu_probe(void) {
+  gpu_dev = MTLCreateSystemDefaultDevice();
+  return gpu_dev == nil ? "this binary found no usable Metal GPU" : NULL;
 }
 
 static MTLComputePipelineDescriptor* gpu_desc(void) {
@@ -4968,21 +4965,45 @@ static void gpu_shape(int units) {
   CUBE_LOG = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
 }
 
-static bool gpu_probe(void) {
-  int       managed = 0;
+#define GPU_CHECK(call) do { \
+  if ((result = (call)) != CUDA_SUCCESS) { why = #call; goto fail; } \
+} while (0)
+
+static const char* gpu_probe(void) {
+  static char error[192];
+  const char* why;
+  CUresult result;
+  int managed = 0;
   CUcontext ctx;
   setenv("CUDA_DEVICE_MAX_CONNECTIONS", "1", 0);
-  if (cuInit(0) == CUDA_SUCCESS && cuDeviceGet(&gpu_dev, 0) == CUDA_SUCCESS) {
-    cuDeviceGetAttribute(&managed,
-      CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS, gpu_dev);
+  GPU_CHECK(cuInit(0));
+  GPU_CHECK(cuDeviceGet(&gpu_dev, 0));
+  GPU_CHECK(cuDeviceGetAttribute(&managed,
+    CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS, gpu_dev));
+  if (managed == 0) {
+    return "CUDA device lacks concurrent managed access";
   }
   int l2 = 1 << 23;
   cuDeviceGetAttribute(&l2, CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, gpu_dev);
   gpu_shape(l2 >> 16);
-  return managed != 0
-    && cuDevicePrimaryCtxRetain(&ctx, gpu_dev) == CUDA_SUCCESS
-    && cuCtxSetCurrent(ctx) == CUDA_SUCCESS;
+  GPU_CHECK(cuDevicePrimaryCtxRetain(&ctx, gpu_dev));
+  result = cuCtxSetCurrent(ctx);
+  if (result != CUDA_SUCCESS) {
+    cuDevicePrimaryCtxRelease(gpu_dev);
+    why = "cuCtxSetCurrent";
+    goto fail;
+  }
+  return NULL;
+fail:;
+  const char* name = NULL;
+  if (cuGetErrorName(result, &name) != CUDA_SUCCESS || name == NULL) {
+    name = "unknown CUDA error";
+  }
+  snprintf(error, sizeof error, "%s failed: %s", why, name);
+  return error;
 }
+
+#undef GPU_CHECK
 
 static u64* gpu_map(u64 bytes) {
   CUdeviceptr p = 0;
@@ -5084,7 +5105,7 @@ static void gpu_pass(u32 f) {
 
 #else
 
-#define gpu_probe() false
+#define gpu_probe() "this binary has no CUDA or Metal GPU support"
 #define gpu_make(p) true
 #define gpu_span()  0
 #define gpu_load(b)
@@ -5095,13 +5116,10 @@ static void gpu_pass(u32 f) {
 // Cube
 // ====
 
-// The host's column grows to the rows that give a LINE of tasks a thread,
-// no more: every task a grow starts early is live at once (tree-matmul's
-// 2048 at 16 threads start 384 rounds: 15 MB -> 68 MB), and pool_step
-// splits the few rows finely instead. A turn visits only the rows below
-// its bound: a drain deals task g to ring_flip(g), whose row is at most g,
-// a row grows into itself, and a column grow's cur tasks land in rows 0
-// to cur - 1, so those rows hold every task.
+// Grow enough host rows for LINE tasks/thread; eager grows keep tasks live.
+// pool_step splits small frontiers. Drain task g lands at row <= g; a row
+// grow stays in its row; column-grow tasks land in 0..cur-1. Thus rows below
+// the turn's bound hold every task.
 
 // Between turns, each ring's pending tasks move back to slot 0.
 
@@ -5936,7 +5954,7 @@ int main(int argc, char** argv) {
       printf(CLI_HELP, argv[0]);
       return 0;
     } else if (strcmp(a, "--gpu-build") == 0) {
-      if (gpu_probe() && !gpu_make(gpu_path())) {
+      if (gpu_probe() == NULL && !gpu_make(gpu_path())) {
         fprintf(stderr, "bend: cannot write %s\n", gpu_path());
         return 1;
       }
@@ -5966,10 +5984,11 @@ int main(int argc, char** argv) {
       io_argv[io_argc++] = argv[i];
     }
   }
-  bool dev = gpu != 0 && BANGS != 0 && gpu_probe();
-  if (gpu == 1 && BANGS != 0 && !dev) {
-    err_fail("--gpu on, but this binary found no usable GPU (a CUDA GPU needs"
-      " concurrent managed access, which WSL2's lack)");
+  bool active = gpu != 0 && BANGS != 0;
+  const char* why = active ? gpu_probe() : NULL;
+  bool dev = active && why == NULL;
+  if (gpu == 1 && active && why != NULL) {
+    err_fail(why);
   }
   io_loop(corpus_setup(dev, thr > 0 ? thr : cpu_count(), mem));
   io_sync();
