@@ -242,13 +242,13 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
 // constant of its type, one per place for all roots, which models read at
 // its model (as bend2 checks a template: its body holds at every argument)
 function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
-  const sp = spec_of(e, k);
-  const F = j === sp.length ? null : B.term_wnf(e.book, T);
+  const tld = e.book.tlds[k];
+  const F = j === tld.n ? null : B.term_wnf(e.book, T);
   if (F?.$ !== "All") {
     return [[]];
   }
   const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
-  if (!sp[j]) {
+  if (tld.$ !== "Def" || j >= tld.x) {
     return at(null);
   }
   const A = B.term_wnf(e.book, F.A);
@@ -419,12 +419,6 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
 
 // Specialize
 // ----------
-
-// whether each parameter of item k is specialized: a template's ~ one
-function spec_of(e: Safe, k: Name): boolean[] {
-  const tld = e.book.tlds[k];
-  return Array.from({ length: tld.n }, (_, j) => tld.$ === "Def" && j < tld.x);
-}
 
 // a specialized argument: closed, in normal form
 function spec_val(e: Safe, s: Scope, x: HTerm): HTerm {
@@ -1014,7 +1008,8 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
 // the item named k (or the term k) applied to xs along its telescope T:
 // the arguments of an item's specialized parameters pick its instance and go
 function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live: boolean): O {
-  const sp = typeof k === "string" ? spec_of(e, k) : [];
+  const tld = typeof k === "string" ? e.book.tlds[k] : null;
+  const sp = tld?.$ === "Def" ? tld.x : 0;
   const ps: Arg[] = [];
   let U = T;
   xs.forEach((x, j) => {
@@ -1022,7 +1017,7 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
     if (F?.$ !== "All") {
       return oos("an application past its head's known type");
     }
-    const v = sp[j] === true ? spec_val(e, s, x) : null;
+    const v = j < sp ? spec_val(e, s, x) : null;
     ps.push([quant(F.q), x, F.A, v]);
     U = F.B(v ?? x);
   });
@@ -1105,8 +1100,9 @@ function group_new(e: Safe, k: Name, hs: Name[]): Group | null {
     }
     return j;
   }));
-  const doms = B.tele_unbind(e.book, e.book.tlds[k].T).doms.slice(0, lead);
-  if (hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && spec_of(e, k)[j] !== true)) {
+  const tld = e.book.tlds[k];
+  const doms = B.tele_unbind(e.book, tld.T).doms.slice(0, lead);
+  if (hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && (tld.$ !== "Def" || j >= tld.x))) {
     return null;
   }
   return { k, ms: [k, ...hs], qs: doms.map(([q]) => quant(q)) };
@@ -1166,10 +1162,11 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   // member m past the lead, from scope s1 on: its binders, its terms (but
   // at its specialized parameters), its cols and type
   const rest = (s1: Scope, m: Name) => {
-    const sp = spec_of(e, m);
-    const r = tele_open(e, s1, e.book.tlds[m].T, lead, sp.length);
-    const qs = B.tele_unbind(e.book, e.book.tlds[m].T).doms.map(([q]) => quant(q));
-    return { ...r, vs: r.xs.flatMap((x, j): Array<[Q, O]> => sp[j] ? [] : [[qs[j], term(e, r.s, x, false)]]), cs: r.xs.map((x, j) => sp[j] ? x : null) };
+    const tld = e.book.tlds[m];
+    const sp = tld.$ === "Def" ? tld.x : 0;
+    const r = tele_open(e, s1, tld.T, lead, tld.n);
+    const qs = B.tele_unbind(e.book, tld.T).doms.map(([q]) => quant(q));
+    return { ...r, vs: r.xs.flatMap((x, j): Array<[Q, O]> => j < sp ? [] : [[qs[j], term(e, r.s, x, false)]]), cs: r.xs.map((x, j) => j < sp ? x : null) };
   };
   // the selector's match: a member's arm past its tag (and a helper's (.k, ()))
   const efq: O = { $: "Efq" };
