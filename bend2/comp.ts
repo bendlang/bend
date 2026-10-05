@@ -1320,11 +1320,6 @@ function file_book(book: Bend.Book, roots: Name[], js: boolean): File {
         + " names both a constructor and a foreign def: name one apart");
     }
   }
-  [TELES, SRCS, LOOPS, NODES, LAYS, LAY_IDS, FLATS, FUNS, BRWS, IDS,
-    TAKEN]
-    .forEach((m) => m.clear());
-  "FID_EXIT FID_ENTER FID_T CID_T".split(" ").forEach((id) => TAKEN.add(id));
-  PROBES.length = 1;
   const fl: File = {
     book,
     js,
@@ -1836,6 +1831,15 @@ function memo_gc(): void {
   [OPENS, USES, FOLDS, SPINES, CONSTS, LITS].forEach((m) => m.clear());
 }
 
+// A compilation starts with no other book's names in the caches.
+function memo_reset(): void {
+  memo_gc();
+  [TELES, SRCS, LOOPS, NODES, LAYS, LAY_IDS, FLATS, FUNS, BRWS, IDS,
+    TAKEN].forEach((m) => m.clear());
+  "FID_EXIT FID_ENTER FID_T CID_T".split(" ").forEach((id) => TAKEN.add(id));
+  PROBES.length = 1;
+}
+
 // Show
 // ====
 
@@ -1846,8 +1850,6 @@ function memo_gc(): void {
 // function, a Type, an erased or dependent field) refuses the build.
 
 function show_main(book: Bend.Book): (number | Name)[] | null {
-  NODES.clear();
-  LAYS.clear();
   const main = book.tlds.main;
   if (!book.tlds.IO) {
     die("a build needs import Base");
@@ -2745,6 +2747,7 @@ function effect_srcs(fl: File, ext: string, miss: string): string[] {
 // sources (reqs) are hand-written, and may say it.
 
 export function compile_book(book: Bend.Book): string {
+  memo_reset();
   // a pure main's descriptor names constructors of the types it prints,
   // so their datatypes are roots too
   const show = show_main(book);
@@ -3184,6 +3187,7 @@ function js_host(fl: File, k: Name): string {
 // A module (for the .bend loader and -o <out>.mjs) roots and exports each
 // def a host can call.
 export function js_lib(book: Bend.Book, mod = false): string {
+  memo_reset();
   const outs = !mod ? null : [...new Set(book.order)].filter((k) => {
     const t = book.tlds[k];
     return done_live(t) && !def_foreign(t) && t.b !== true && t.x === 0
