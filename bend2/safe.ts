@@ -959,7 +959,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
         return term(e, s, B.App(B.App(B.Ref("Nat.add"), product), B.Lit("Nat", r)), live);
       }
       if (x.k === "Nat" && x.v > NAT_MAX) {
-        return nat_literal(e, s, x.v, live);
+        return nat_literal(e, x.v);
       }
       return term(e, s, B.term_higher(B.lit_step(x)), live);
     }
@@ -1252,13 +1252,13 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
 
 // a Nat literal as unary constructors without recursively lowering its
 // predecessor, which would overflow the JS stack for large values
-function nat_literal(e: Safe, s: Scope, value: number, live: boolean): O {
+function nat_literal(e: Safe, value: number): O {
   const zero = e.book.ctrs.Zero;
   const succ = e.book.ctrs.Succ;
   if (zero === undefined || succ === undefined) {
     oos("an unknown Nat constructor");
   }
-  let out = ctr_term(e, s, B.Ctr("Zero", []), null, live);
+  let out = pack_ctr("Zero", []);
   const field = B.term_wnf(e.book, succ.T);
   if (field.$ !== "All") {
     oos("a malformed Nat successor");
