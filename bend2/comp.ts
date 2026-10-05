@@ -1644,14 +1644,13 @@ function val_sink(fl: File, v: Val): void {
 function val_to(fl: File, v: Val, lay: Lay): Val {
   return lay_eq(v.lay, lay) ? v : lay_box(lay) ? val_new([val_box(fl, v)], BOX)
     : lay_box(v.lay) ? val_unbox(fl, v, lay)
-    : val_arms(fl, lay, v.ws[0], (_, k) => val_arm(v, k));
+    : val_arms(fl, lay, v.ws[0], (k) => val_arm(v, k));
 }
 
-function val_arms(fl: File, lay: Lay, sel: string,
-  read: (al: File, k: Name) => Val[],
+function val_arms(fl: File, lay: Lay, sel: string, read: (k: Name) => Val[],
   cond = (t: string, i: number) => `${t} == ${i}`): Val {
   const arms = Object.keys(lay.arms!);
-  const ws = (al: File, k: Name) => read(al, k).flatMap((f, j) =>
+  const ws = (al: File, k: Name) => read(k).flatMap((f, j) =>
     val_to(al, f, lay.arms![k][j]).ws);
   if (arms.length <= 1) {
     return val_new(arms.flatMap((k) => ws(fl, k)), lay);
@@ -1660,13 +1659,11 @@ function val_arms(fl: File, lay: Lay, sel: string,
   const t = emit_alias(fl, sel, "t");
   const rs: string[][] = out.map(() => []);
   emit_chain(fl, (i) => cond(t, i), arms.map((k, i) => () => {
-    const al = { ...fl, spares: [] };
-    file_push(al, `${out[0]} = ${i};`);
-    ws(al, k).forEach((w, n) => {
-      rs[1 + n].push(al.brwl.get(w) ?? "");
-      file_push(al, `${out[1 + n]} = ${w};`);
+    file_push(fl, `${out[0]} = ${i};`);
+    ws({ ...fl, spares: [] }, k).forEach((w, n) => {
+      rs[1 + n].push(fl.brwl.get(w) ?? "");
+      file_push(fl, `${out[1 + n]} = ${w};`);
     });
-    spare_flush(al);
   }));
   rs.forEach((r, k) => {
     if (r[0] && r.every((x) => x === r[0])) {
@@ -1703,7 +1700,7 @@ function val_unbox(fl: File, v: Val, lay: Lay): Val {
     return val_new(v.ws, lay);
   }
   const t = emit_alias(fl, v.ws[0], "u");
-  return val_arms(fl, lay, t, (al, k) => node_fields(al, t, k), (_, i) =>
+  return val_arms(fl, lay, t, (k) => node_fields(fl, t, k), (_, i) =>
     `term_aux(${t}) == ${cid_mac(Object.keys(lay.arms!)[i])}`);
 }
 
