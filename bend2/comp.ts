@@ -2157,16 +2157,16 @@ function emit_fuse(sc: Scope, ck: Spine, dst: Val | null, tail = false): void {
     return emit_body({ ...sc, def: k }, h!, T, ers,
       lays.map((lay) => val_new(ws.splice(0, lay.ks.length), lay)), dst);
   }
-  const out = emit_dst(sc, ret);
   const name = emit_native(sc, k, ers);
   const o = name_local(sc, "o");
+  const out = val_new(ret.ks.map((k, j) =>
+    `${k === "w32" ? "(u32)" : ""}${o}[${j}]`), ret);
   file_push(sc, `Term ${o}[${out.ws.length}];`);
   const ks = lays.flatMap((l) => l.ks);
   const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
     : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
   block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(sc, "return 0;"));
-  out.ws.forEach((v, j) => file_push(sc, `${v} = ${o}[${j}];`));
   bind_dead(sc, tail ? [] : sc.rest, tail ? undefined
     : ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
   emit_put(sc, dst, out);
@@ -2198,7 +2198,7 @@ function emit_native(sc: Scope, k: Name, ers: HTerm[]): string {
     const [sl, vals] = emit_open(sc, k);
     const seg = sl.seg;
     seg.fid = name;
-    const dst = val_new(seg.ret.ks.map(() => name_local(sc, "v")), seg.ret);
+    const dst = val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret);
     emit_body(sl, fun_of(k).h!, FL.book.tlds[k].T, ers, vals, dst);
     FUEL = fuel;
     FL.spins.push({ ...seg, lines: [`${seg.lines.length < SPIN_FAR
@@ -2207,10 +2207,8 @@ function emit_native(sc: Scope, k: Name, ers: HTerm[]): string {
         ? `, u64 q${i}` : ""}`).join("")}) {`,
     ...seg_text(["u32 wpoll = 0;", ...seg.ks.flatMap((k, i) =>
       arr_q(k) ? [`Term h${i} = r${i};`] : []),
-    ...dst.ws.map((v, j) => `${lay_c(seg.ret.ks[j])} ${v} = 0;`),
     ...seg_take(seg), "WL_SPIN"], 1),
     ...seg_text(seg.lines, 2), "  break;", "  }",
-    ...dst.ws.map((v, j) => `  o[${j}] = ${v};`),
     "  return 1;", "}"] });
     return name;
   }));
