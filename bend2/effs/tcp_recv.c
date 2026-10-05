@@ -37,7 +37,7 @@ Term tcp_recv_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_recv_use(void) {
-  io_eff(CID(TCP.recv), tcp_recv_run, 0);
+  io_eff(CID(TCP.recv), tcp_recv_run);
 }
 
 #endif
@@ -53,7 +53,7 @@ Term tcp_recv_bytes_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_recv_bytes_use(void) {
-  io_eff(CID(TCP.recv_bytes), tcp_recv_bytes_run, 0);
+  io_eff(CID(TCP.recv_bytes), tcp_recv_bytes_run);
 }
 
 #endif

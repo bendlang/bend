@@ -294,6 +294,13 @@ try {
   const unsafe_file = path.join(TMP, "unsafe.bend");
   const checkup = path.join(TMP, "checkup.bend");
   const good_checkup = path.join(TMP, "good_checkup.bend");
+  const verdict_tmp = path.join(TMP, "verdict-tmp");
+  fs.mkdirSync(verdict_tmp);
+  const no_lean = await bend([sum_file, "--verdict"],
+    { BENDTT: "", TMPDIR: verdict_tmp, BEND_NO_TELEMETRY: "1" });
+  check("a failed kernel build leaves no private BendTT input",
+    no_lean.code === 1 && no_lean.err.includes("--verdict needs Lean")
+    && fs.readdirSync(verdict_tmp).every((name) => !name.startsWith("bendtt-")));
   fs.writeFileSync(unsafe_file,
     "import Base\n@unsafe\ndef main() -> Nat:\n  0n\n");
   fs.writeFileSync(checkup,

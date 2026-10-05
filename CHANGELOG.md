@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- Forced CUDA runs report the failed Driver API call and CUDA error name,
-  or the missing managed-memory capability, rather than blaming WSL2
-  (#1145). Automatic GPU selection still falls back to the CPU.
-
 ## 2.0.35 (2026-10-03)
 
 - **M1 and M2 run the GPU again** (#1154, PR #1274 by nicolas-abril): since

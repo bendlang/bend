@@ -25,5 +25,5 @@ Term udp_poll_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) udp_poll_use(void) {
-  io_eff(CID(UDP.poll), udp_poll_run, 0);
+  io_eff(CID(UDP.poll), udp_poll_run);
 }
