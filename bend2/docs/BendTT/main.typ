@@ -1044,7 +1044,7 @@ counter.
 = Mechanization <sec:mech>
 
 The kernel of BendTT, the statements of the theorems and their proofs
-are one Lean 4 file @demoura2021, `bendtt.lean`, of 4,118 lines. Every
+are one Lean 4 file @demoura2021, `bendtt.lean`, of 3,924 lines. Every
 proof is complete, and the file declares no axioms of its own, so the
 proofs rest only on Lean's standard axioms. The file has three parts.
 Part 1 is the kernel: terms, evaluation, conversion, the checker, the
