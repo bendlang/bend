@@ -6010,6 +6010,9 @@ function run_lib(f, n) {
 const $0eff = Object.create(null);
 
 function io_eff(k, run) {
+  if (arguments.length > 2) {
+    throw new Error("bend: " + k + " takes no need: an effect that waits parks itself");
+  }
   if (k in $0eff) {
     throw new Error("bend: two effects register " + k);
   }
@@ -6303,7 +6306,7 @@ function io_run(m) {
         }
         const run = $0eff[op.$];
         if (run === undefined) {
-          throw "bend: an alien request";
+          throw "bend: no effect registers " + op.$;
         }
         const x = run(...op.args, op.kont);
         if (x === undefined) {
