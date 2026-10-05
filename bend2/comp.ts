@@ -5320,7 +5320,7 @@ typedef struct IoWork {
 
 typedef Term (*Effect)(Env e, Term* f, IoWork* w);
 
-static Effect io_eff_rows[1 << 16];
+Effect io_eff_rows[1 << 16];
 static u32    io_live;
 
 static u64 io_tick(void) {
