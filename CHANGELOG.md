@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- The HTTP fetch demo reads through EOF rather than stopping after two
-  receives. It joins fragmented headers and body, closes on completion or
-  failure, and bounds the response to 65536 decoded characters (#1309).
-
 ## 2.0.35 (2026-10-03)
 
 - **M1 and M2 run the GPU again** (#1154, PR #1274 by nicolas-abril): since
