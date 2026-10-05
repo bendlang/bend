@@ -356,11 +356,11 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
   def_emit(e, k, cols, n, tld);
 }
 
-// a def at its specialized arguments: the type drops those binders, and
-// the tree takes them; a def with no body goes out opaque, at a model of
-// its type
+// a def at its specialized arguments: non-null cols are the leading
+// template prefix, filled into its type; the tree takes them. A def with
+// no body goes out opaque, at a model of its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
-  const T = type_drop(e, tld.T, cols);
+  const T = B.tele_fill(e.book, tld.T, cols.filter((v): v is HTerm => v !== null), B.ctx_nil());
   const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
@@ -445,21 +445,6 @@ function subst(t: HTerm, d: number, f: (o: Record<string, unknown>) => HTerm | u
       : Array.isArray(u) ? u.map(go) : Object.fromEntries(Object.entries(o).map(([k, x]) => [k, k === "s" ? x : go(x)]));
   };
   return B.term_higher(go(B.term_lower(t, d)) as B.LTerm);
-}
-
-// the telescope T with the parameters cols specializes fixed and gone
-function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
-  if (!cols.some((v) => v !== null)) {
-    return T;
-  }
-  const F = B.term_wnf(e.book, T);
-  if (F.$ !== "All") {
-    return T;
-  }
-  if (cols[0] !== null) {
-    return type_drop(e, F.B(cols[0]), cols.slice(1));
-  }
-  return B.All(F.q, F.k, F.i, F.A, (x: HTerm) => type_drop(e, F.B(x), cols.slice(1)));
 }
 
 // Model
