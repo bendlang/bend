@@ -551,8 +551,8 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
 // a def name, taken here
 function fresh(e: Safe, n: string): string {
   let k = n;
-  while (e.taken.has(k)) {
-    k += "_";
+  for (let i = 1; e.taken.has(k); i++) {
+    k = n + "_" + String(i);
   }
   e.taken.add(k);
   return k;
