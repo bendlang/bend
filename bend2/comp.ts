@@ -867,6 +867,9 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
 function ty_holds(A: HTerm | null,
   p: (t: HTerm | null) => boolean | null, seen = new Set<Name>()): boolean {
   const t = ty_wnf(A);
+  if (t?.$ === "Lam") {
+    return ty_holds(t.f(DUMMY), p, seen);
+  }
   const got = p(t);
   if (got !== null || t?.$ !== "ADT") {
     return got === true;
