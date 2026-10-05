@@ -867,27 +867,22 @@ def Term.wnf (ck : Book) (cl : Bool) : Nat → Term → List Arg → Term × Nat
       Term.wnf ck cl (min m n) t xs
     | (none, m) => (Term.spine t xs, m)
 
--- walks a def's case tree on a spine, binding its variables in the
--- environment e: some leaf when the walk leaves the tree
+-- walks a def's case-tree nodes on a spine, binding variables in e;
+-- a non-node is a leaf, returned with its environment substituted
 def Term.run (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Option Term × Nat
   | 0, _, _, _ => (none, 0)
-  | n + 1, App q f (Var v), e, xs =>
-    if Term.takes (Term.unspine f []).1 then
-      Term.run ck cl n f e ((q, Env.sub e v) :: xs)
+  | n + 1, t, e, xs =>
+    if Term.node t then
+      match t with
+      | App q f (Var v) => Term.run ck cl n f e ((q, Env.sub e v) :: xs)
+      | _ =>
+        match Term.fire ck cl n t e xs with
+        | (some (t, e, xs), m) => Term.run ck cl (min m n) t e xs
+        | (none, m) => (none, m)
     else
-      let t := Term.sub (Env.sub e) (App q f (Var v))
+      let t := Term.sub (Env.sub e) t
       let t := Term.spine t xs
       (some t, n)
-  | n + 1, t, e, xs =>
-    match Term.fire ck cl n t e xs with
-    | (some (t, e, xs), m) => Term.run ck cl (min m n) t e xs
-    | (none, m) =>
-      if Term.takes t then
-        (none, m)
-      else
-        let t := Term.sub (Env.sub e) t
-        let t := Term.spine t xs
-        (some t, m)
 
 -- fires a λ or a λ-match on its next argument; a λ binds it in e
 def Term.fire (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Option Step × Nat
@@ -2042,7 +2037,7 @@ theorem wnf_pars (hb : Sees ck bk) :
       exact W (.step (par_spine (.delta hd hc)) this)
     · rename_i hf; exact W (by simpa [env_nil, sub_var] using F hf)
   · unfold Term.run at h
-    split at h <;> (try split at h) <;> (try split at h) <;> (try cases h) <;> try exact .refl
+    (repeat' split at h) <;> (try cases h) <;> try exact .refl
     · exact (R1 h :)
     · exact pars_trans (F ‹_›) (R1 h)
   · unfold Term.fire at h
