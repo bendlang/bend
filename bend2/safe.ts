@@ -147,6 +147,9 @@ const NAT_MAX = 4096;
 const MODEL_FUEL = 1 << 22;
 const MODEL_DEPTH = 8;
 
+// only this compiler release may build a cached kernel
+const LEAN_VERSION = "4.34.0";
+
 // Errors
 // ======
 
@@ -1470,7 +1473,7 @@ function o_show(o: O, p: string): string {
 // ======
 
 // the kernel's CLI: $BENDTT, else a build of bendtt.lean (in BEND_DIR,
-// beside base.bend) cached in ~/.bend/bendtt/<hash>, made once with Lean
+// beside base.bend) cached by source and Lean version, made once with
 // v4.34.0 (elan's toolchain, or lean and leanc on the PATH)
 function kernel_bin(): string {
   const env = process.env.BENDTT;
@@ -1479,23 +1482,31 @@ function kernel_bin(): string {
   }
   const src = path.join(B.BEND_DIR, "bendtt.lean");
   const text = fs.readFileSync(src, "utf8");
-  const hash = crypto.createHash("sha256").update(text).digest("hex").slice(0, 16);
+  const hash = crypto.createHash("sha256").update(LEAN_VERSION).update("\0").update(text).digest("hex").slice(0, 16);
   const dir = path.join(os.homedir(), ".bend", "bendtt", hash);
   const bin = path.join(dir, "bendtt");
   if (fs.existsSync(bin)) {
     return bin;
   }
-  const home = path.join(os.homedir(), ".elan", "toolchains", "leanprover--lean4---v4.34.0", "bin");
+  const home = path.join(os.homedir(), ".elan", "toolchains", "leanprover--lean4---v" + LEAN_VERSION, "bin");
   const tool = (t: string): string => fs.existsSync(path.join(home, t)) ? path.join(home, t) : t;
   fs.mkdirSync(dir, { recursive: true });
-  fs.copyFileSync(src, path.join(dir, "bendtt.lean"));
-  const run = (bin: string, args: string[]): void => {
+  const fail = (why: string): never => {
+    throw new Error("the kernel did not build (" + why
+      + "); --verdict needs Lean v" + LEAN_VERSION + " (elan toolchain leanprover/lean4:v" + LEAN_VERSION + "), or $BENDTT set to a built kernel");
+  };
+  const run = (bin: string, args: string[]): string => {
     const [got, text] = run_read(bin, args, { cwd: dir });
     if (got.status !== 0) {
-      throw new Error("the kernel did not build (" + bin + ": " + (got.error?.message ?? text.slice(0, 300))
-        + "); --verdict needs Lean v4.34.0 (elan toolchain leanprover/lean4:v4.34.0), or $BENDTT set to a built kernel");
+      fail(bin + ": " + (got.error?.message ?? text.slice(0, 300)));
     }
+    return text;
   };
+  const version = run(tool("lean"), ["--version"]);
+  if (version.match(/^Lean \(version ([^,\s)]+)/)?.[1] !== LEAN_VERSION) {
+    fail("lean --version: " + version.trim().slice(0, 300));
+  }
+  fs.copyFileSync(src, path.join(dir, "bendtt.lean"));
   run(tool("lean"), ["-c", "bendtt.c", "bendtt.lean"]);
   run(tool("leanc"), ["-O3", "-DNDEBUG", "bendtt.c", "-o", "bendtt"]);
   return bin;
