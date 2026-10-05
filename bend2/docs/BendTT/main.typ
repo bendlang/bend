@@ -537,7 +537,10 @@ and $star(Q_0)$. The meet $g ⊓ h$ is the least of two quantities. It
 reduces as Bend's `<&>` does: $Q_2$ is its identity and $Q_0$ absorbs
 it, on either side, even when the other side is stuck. So Bend's
 `Either<a, b, A, B>` has the kind $star(a ⊓ b)$, and it is #Da where
-both sides are.
+both sides are. Function types fit by their parts, as in Bend:
+$forall^q (x : A). B$ fits $forall^q (x : C). D$ when $C$ fits $A$ and
+$B$ fits $D$. So a `Nat -> Data` fits where a `Nat -> Type` is
+expected, and a `Type -> Nat` where a `Data -> Nat` is.
 
 == Matches and Case Trees
 
@@ -611,7 +614,9 @@ change the type of live code, and evaluation could get stuck.
 scope: "parent", caption: [Selected typing rules. $U <= T$ holds when
 $U$ and $T$ are convertible, when they are kinds $star(g)$ and
 $star(h)$ and $g$ is $Q_2$ wherever $h$ is, under every substitution,
-or when both are enumerations and each label of $U$ is in $T$. The checker decides
+when both are enumerations and each label of $U$ is in $T$, when they
+are $forall^q (x : A). B$ and $forall^q (x : C). D$ with $C <= A$ and
+$B <= D$, or through a type between them. The checker decides
 the kind case by rules: $Q_2$ is the top, $Q_0$ and $Q_1$ the bottom, a
 meet on the left needs both sides, and a meet on the right needs
 either. The rules for
@@ -827,7 +832,11 @@ confluence alone.
 $Gamma tack t : T$ and $t => u$, then $Gamma tack u : T$.]
 
 The proof is by induction on the typing derivation, with a
-substitution lemma and inversion through injectivity. It holds for
+substitution lemma and inversion through injectivity. A fit is read the
+same way: where $U <= T$ and $T$ converts to a type former, $U$
+converts to the same former, and their parts fit. So a $beta$ step
+casts the argument along the fit of the domains, and the result along
+the fit of the codomains. It holds for
 reduction anywhere, dead positions included, and it does not need the
 live check.
 
@@ -1033,7 +1042,7 @@ counter.
 = Mechanization <sec:mech>
 
 The kernel of BendTT, the statements of the theorems and their proofs
-are one Lean 4 file @demoura2021, `bendtt.lean`, of 4,106 lines. Every
+are one Lean 4 file @demoura2021, `bendtt.lean`, of 4,157 lines. Every
 proof is complete, and the file declares no axioms of its own, so the
 proofs rest only on Lean's standard axioms. The file has three parts.
 Part 1 is the kernel: terms, evaluation, conversion, the checker, the
