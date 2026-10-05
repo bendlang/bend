@@ -772,8 +772,10 @@ the theory, with three relations:
 - _Parallel reduction_ $t => u$ reduces any set of redexes in $t$, in
   live and dead positions. It includes the rules of @fig:eval with any
   terms in place of the values, and the unfolding of a name to its
-  body. _Conversion_ $a equiv b$ holds when $a$ and $b$ have a common
-  reduct.
+  body. It also steps $lambda^2 x. t$ to $lambda^1 x. t$, and never
+  back: the quantity of a lambda says how it runs, so two lambdas of one
+  liveness are convertible when their bodies are. _Conversion_
+  $a equiv b$ holds when $a$ and $b$ have a common reduct.
 - _Typing_ $Gamma tack t : T$ has the rules of @fig:typing.
 - _Evaluation_ $t |-> u$ is call-by-value evaluation of live code
   (@fig:eval). Its values are lambdas, matches, labels, #rfl, types,
