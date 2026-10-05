@@ -2774,7 +2774,6 @@ export function compile_book(book: Bend.Book): string {
   const fams = (show ?? []).flatMap((c) =>
     typeof c === "string" ? [Bend.book_fam(FL.book, c)] : []);
   file_book(["main", ...RUNTIME_ADTS, ...fams]);
-  const sc = scope_new();
   const facts = () => FL.own.size + FL.hot.size + FL.stat.size;
   let was: number;
   do {
@@ -2791,7 +2790,7 @@ export function compile_book(book: Bend.Book): string {
       emit_body(dl, fun_of(k).h!, tld.T, [], vals, null);
     }
     for (const [k] of done_defs(def_foreign)) {
-      const [rl, vals] = emit_open(sc, k);
+      const [rl, vals] = emit_open(scope_new(), k);
       FL.segs.push(rl.seg);
       emit_put(rl, null, val_new([ctr_build(rl, k, vals.flatMap((v) => v.ws))],
         BOX));
