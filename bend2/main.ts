@@ -740,9 +740,12 @@ function book_promises(book: Bend.Book): string[] {
     const t = book.tlds[k] as Bend.Def;
     return t.u === true || (t.i !== undefined && t.b !== true);
   }));
+  if (bad.size === 0) {
+    return [];
+  }
   const uses: Record<string, string[]> = Object.create(null);
-  const q = new Set(bad.size === 0 ? [] : own);
-  for (const k of q) {
+  const reach = new Set(own);
+  for (const k of reach) {
     const t = book.tlds[k];
     if (t !== undefined) {
       const rs = new Set<string>();
@@ -752,7 +755,7 @@ function book_promises(book: Bend.Book): string[] {
       term_refs(t.$ === "Def" ? t.e : undefined, rs);
       for (const r of rs) {
         (uses[r] ??= []).push(k);
-        q.add(r);
+        reach.add(r);
       }
     }
   }
