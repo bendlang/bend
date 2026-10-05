@@ -5,8 +5,7 @@ static Term native_apply_run(Env e, Term* f, IoWork* w) {
   e.mem[at + 1] = f[1];
   Term result = corpus_eval(e.mem, term_tsk(FID(Clo~apply), at));
   if (err_seen(e.mem)) err_fail("foreign closure application failed");
-  printf("%u\n", (u32)result);
-  return term_pak(CID(Unit), 0);
+  return result;
 }
 
 static void __attribute__((constructor)) native_apply_use(void) {
