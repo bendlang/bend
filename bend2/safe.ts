@@ -755,17 +755,20 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   const cv0 = s.kq.flatMap((k, l) => k === 1 && l < s.D && uses(o, l) > 1 && !data(l) ? [l] : []);
   // a default's tag and fields go together: the fields' type names the tag
   const cv1 = [...new Set(cv0.flatMap((l) => s.tags.includes(l) ? [l, l + 1] : s.tags.includes(l - 1) ? [l - 1, l] : [l]))];
-  // a variable the arms name, at a type that names one riding, rides too
-  // (at its own quantity): left out, its type names the level outside
+  // a variable the arms name (its levels: a default's binder has two), at
+  // a type that names one riding, rides too (at its own quantity): left
+  // out, its type names the levels outside
+  const named = o_vars(o);
   const cv = s.c.reduce<number[]>((vs, b, i) => {
-    if (vs.length === 0 || b?.o.$ !== "Var" || b.T === null || vs.includes(b.o.l) || !occurs(o, b.o.l)) {
+    if (vs.length === 0 || b === undefined || b.T === null) {
       return vs;
     }
-    const A = B.term_lower(b.T, s.d);
-    return s.c.some((x, j) => j < i && x?.o.$ === "Var" && vs.includes(x.o.l) && mentions(A, (k) => k === j)) ? [...vs, b.o.l] : vs;
+    const ls = [...o_vars(b.o)].filter((l) => !vs.includes(l));
+    const js = ls.some((l) => named.has(l)) ? s.c.flatMap((x, j) => j < i && x !== undefined && [...o_vars(x.o)].some((l) => vs.includes(l)) ? [j] : []) : [];
+    return js.length > 0 && mentions(B.term_lower(b.T, s.d), (k) => js.includes(k)) ? [...vs, ...ls] : vs;
   }, cv1).sort((a, b) => a - b);
   if (s.dry) {
-    return [...Array(s.D).keys()].filter((l) => occurs(o, l)).reduce<O>((f, l) => ({ $: "App", q: uses(o, l) > 0 ? 1 : 0, f, x: { $: "Var", l } }), { $: "Efq" });
+    return [...Array(s.D).keys()].filter((l) => named.has(l)).reduce<O>((f, l) => ({ $: "App", q: uses(o, l) > 0 ? 1 : 0, f, x: { $: "Var", l } }), { $: "Efq" });
   }
   if (cv.length === 0 && !s.again) {
     return o;
@@ -1383,17 +1386,28 @@ function self_arg(o: O, k: string, l: number): boolean {
     || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
-// the def names o mentions
-function o_refs(o: O, out: Set<string> = new Set()): Set<string> {
-  if (o.$ === "Ref") {
-    out.add(o.k);
+// the keys k gives o's nodes
+function o_keys<K>(o: O, k: (o: O) => K | undefined, out: Set<K> = new Set()): Set<K> {
+  const x = k(o);
+  if (x !== undefined) {
+    out.add(x);
   }
   for (const v of Object.values(o)) {
     if (is_o(v)) {
-      o_refs(v, out);
+      o_keys(v, k, out);
     }
   }
   return out;
+}
+
+// the def names o mentions
+function o_refs(o: O): Set<string> {
+  return o_keys(o, (x) => x.$ === "Ref" ? x.k : undefined);
+}
+
+// the levels o names, live or dead
+function o_vars(o: O): Set<number> {
+  return o_keys(o, (x) => x.$ === "Var" ? x.l : undefined);
 }
 
 function is_o(v: unknown): v is O {
@@ -1412,11 +1426,6 @@ function lams(ps: Array<[Q, number, ...unknown[]]>, b: O): O {
 
 function inferable(o: O): boolean {
   return o.$ === "App" ? inferable(o.f) : ["Var", "Ref", "Ann", "Typ", "All", "Enu", "Eql"].includes(o.$);
-}
-
-// whether o names level l, live or erased
-function occurs(o: O, l: number): boolean {
-  return o.$ === "Var" ? o.l === l : Object.values(o).some((v) => is_o(v) && occurs(v, l));
 }
 
 // the live uses of level l in o, as the kernel counts them
