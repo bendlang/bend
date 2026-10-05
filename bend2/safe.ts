@@ -863,8 +863,8 @@ function no_ctr(e: Safe, T: HTerm): boolean {
 
 // T's kind, Data (2) or Type (1), as the kernel infers it: a datatype's
 // declared kind, or the kind a type-valued def returns (never through
-// the def's body), Data only where its quantity is closed at &2; null
-// when neither
+// the def's body), when its quantity is closed; null when neither, or
+// when the quantity is open, which the kernel decides
 function kind(e: Safe, s: Scope, T: HTerm): Q | null {
   const [x] = open(T);
   const [h, xs] = x.$ === "ADT" ? [x, x.x] : unapply(x);
@@ -875,8 +875,8 @@ function kind(e: Safe, s: Scope, T: HTerm): Q | null {
   }
   try {
     const K = B.term_wnf(e.book, B.tele_fill(e.book, tld.T, xs, B.ctx_nil()));
-    const g = K.$ === "Typ" ? closed_val(e, s, K.g) : undefined;
-    return g === undefined ? null : g?.$ === "Qua" && g.q.$ === "Many" ? 2 : 1;
+    const g = K.$ === "Typ" ? closed_val(e, s, K.g) : null;
+    return g === null ? null : g.$ === "Qua" && g.q.$ === "Many" ? 2 : 1;
   } catch {
     return null;
   }

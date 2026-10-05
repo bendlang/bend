@@ -979,8 +979,8 @@ def Term.fits (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool × Nat
     | Typ g, Typ h => Term.qge ck cl (min m n) g h
     | Enu ks, Enu js => (ks.all js.contains, m)
     | All q A B, All p C D =>
-      let r := Term.fits ck cl (min m n) C A
-      if q == p && r.1 then Term.fits ck false (min r.2 n) B D else (false, r.2)
+      let r := if q == p then Term.fits ck cl (min m n) C A else (false, m)
+      if r.1 then Term.fits ck false (min r.2 n) B D else r
     | U, T => Term.conv ck cl (min m n) U T
 
 -- Checker
@@ -2218,8 +2218,9 @@ theorem fits_sound (hb : Sees ck bk) (h : (Term.fits ck cl n U T).1 = true) : Fi
   · exact .typ (qge_sound hb h)
   · exact .enu fun _ m => by simpa using List.all_eq_true.1 h _ m
   · dsimp only at h; split at h
-    · rename_i e; simp only [Bool.and_eq_true, beq_iff_eq] at e; obtain ⟨rfl, e⟩ := e
-      exact .all (ih _ L e) (ih _ L h)
+    · rename_i e; cases beq_iff_eq.1 e; split at h
+      · exact .all (ih _ L ‹_›) (ih _ L h)
+      · simp_all
     · simp at h
   · exact .conv (conv_sound hb h)
 
