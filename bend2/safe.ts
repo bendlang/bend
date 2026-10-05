@@ -526,7 +526,8 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
     case "Typ": {
-      return e.book.tlds["Unit"]?.b === true ? B.ADT("Unit", []) : null;
+      const tld = e.mb.tlds["Unit"];
+      return tld?.$ === "ADT" && tld.n === 0 ? B.ADT("Unit", []) : null;
     }
     case "All": {
       // the body is searched once, then each use binds level d in it
@@ -540,7 +541,7 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       probe.left -= key.length;
       const tld = e.mb.tlds[F.k];
       if (tld?.$ !== "ADT") {
-        return null;
+        return hyp();
       }
       const h = proj ? hyp() : null;
       for (const c of path.includes(key) || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
@@ -1270,11 +1271,15 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
   if (ctr === undefined) {
     oos("an unknown constructor " + B.name_key(x.k));
   }
+  const f = B.book_fam(e.book, x.k);
+  const fam = e.book.tlds[f] as ADT;
   const w = B.u32_from_term(x) ?? B.u32_from_term(x, "F32");
   if (!s.sub && w !== null) {
-    return word_ref(e, x.k, w);
+    if (fam.n !== 0) {
+      oos("a word literal of a parameterized datatype");
+    }
+    return word_ref(e, x.k, f, w);
   }
-  const fam = e.book.tlds[B.book_fam(e.book, x.k)] as ADT;
   const G = T === null ? null : B.term_wnf(e.book, T);
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, () => B.Var("_", -1));
   let F = B.tele_fill(e.book, ctr.T, ps, B.ctx_nil());
@@ -1294,14 +1299,14 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
 }
 
 // a U32 or F32 word, as a def of its own
-function word_ref(e: Safe, T: Name, n: number): O {
+function word_ref(e: Safe, T: Name, fam: Name, n: number): O {
   const key = "\tword " + T + " " + String(n);
   let k = e.names.get(key);
   if (k === undefined) {
     k = fresh(e, T + ".lit" + String(n));
     e.names.set(key, k);
     const v = term(e, { ...scope_nil(), sub: true }, B.Ctr(T, [B.word_to_term(n)]), true);
-    e.out.push([k, { $: "Ref", k: item_ref(e, B.book_fam(e.book, T), [], false) }, v, false]);
+    e.out.push([k, { $: "Ref", k: item_ref(e, fam, [], false) }, v, false]);
   }
   return { $: "Ref", k };
 }

@@ -1,7 +1,7 @@
-type In is Data:
-  Mk{}
+type Unit is Data:
+  U{}
 
-def Unit() -> In:
+type In is Data:
   Mk{}
 
 def idt(~A: Type, x: A) -> A:

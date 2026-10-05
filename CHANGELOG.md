@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- `--verdict` only uses Base's Unit as the default Type model and assigns
-  word literals their constructor family's type, not a same-named def
-  (#1329). Missing or user-defined Unit no longer crashes model lookup.
-
 ## 2.0.35 (2026-10-03)
 
 - **M1 and M2 run the GPU again** (#1154, PR #1274 by nicolas-abril): since
