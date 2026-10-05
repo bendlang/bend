@@ -198,12 +198,6 @@ export function pack(dir: string): Buffer {
     recursive: true, filter: (p) => fs.statSync(p).isDirectory()
       ? !/\/(docs|pack)$/.test(p) : /\.(ts|bend|c|js)$/.test(p) });
   fs.cpSync(dir, path.join(tmp, path.basename(dir)), { recursive: true });
-  // The HTTP regression imports the demo reader rather than a copy of it.
-  if (dir === path.join(ROOT, "tests")) {
-    const demo = "demos/io_http_fetch/main.bend";
-    fs.mkdirSync(path.dirname(path.join(tmp, demo)), { recursive: true });
-    fs.copyFileSync(path.join(ROOT, demo), path.join(tmp, demo));
-  }
   const tar = child.spawnSync("tar", ["-czf", "-", "-C", tmp, "."],
     { maxBuffer: 1 << 28 });
   fs.rmSync(tmp, { recursive: true, force: true });
