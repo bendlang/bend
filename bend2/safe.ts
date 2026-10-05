@@ -718,26 +718,28 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // inner match is then only the variables it names, once each, as after
   // its convoy, dead if only dead there), so no match is built more than twice
   const o = mat([], s.dry || s.again);
+  // the live uses of each level the arms name, 0 when named only dead
+  const us = o_uses(o);
+  const use = (l: number): number => us.get(l) ?? 0;
   // a q=1 variable used in two arms rides into them, unless it is Data:
   // then its binder copies it (a q=2 λ)
   const data = (l: number): boolean => s.c.some((b) => b?.o.$ === "Var" && b.o.l === l && b.T !== null && kind(e, s, b.T) === 2);
-  const cv0 = s.kq.flatMap((k, l) => k === 1 && l < s.D && uses(o, l) > 1 && !data(l) ? [l] : []);
+  const cv0 = s.kq.flatMap((k, l) => k === 1 && l < s.D && use(l) > 1 && !data(l) ? [l] : []);
   // a default's tag and fields go together: the fields' type names the tag
   const cv1 = [...new Set(cv0.flatMap((l) => s.tags.includes(l) ? [l, l + 1] : s.tags.includes(l - 1) ? [l - 1, l] : [l]))];
   // a variable the arms name (its levels: a default's binder has two), at
   // a type that names one riding, rides too (at its own quantity): left
   // out, its type names the levels outside
-  const named = o_vars(o);
   const cv = s.c.reduce<number[]>((vs, b, i) => {
     if (vs.length === 0 || b === undefined || b.T === null) {
       return vs;
     }
-    const ls = [...o_vars(b.o)].filter((l) => !vs.includes(l));
-    const js = ls.some((l) => named.has(l)) ? s.c.flatMap((x, j) => j < i && x !== undefined && [...o_vars(x.o)].some((l) => vs.includes(l)) ? [j] : []) : [];
+    const ls = [...o_uses(b.o).keys()].filter((l) => !vs.includes(l));
+    const js = ls.some((l) => us.has(l)) ? s.c.flatMap((x, j) => j < i && x !== undefined && [...o_uses(x.o).keys()].some((l) => vs.includes(l)) ? [j] : []) : [];
     return js.length > 0 && mentions(B.term_lower(b.T, s.d), (k) => js.includes(k)) ? [...vs, ...ls] : vs;
   }, cv1).sort((a, b) => a - b);
   if (s.dry) {
-    return [...Array(s.D).keys()].filter((l) => named.has(l)).reduce<O>((f, l) => ({ $: "App", q: uses(o, l) > 0 ? 1 : 0, f, x: { $: "Var", l } }), { $: "Efq" });
+    return [...Array(s.D).keys()].filter((l) => us.has(l)).reduce<O>((f, l) => ({ $: "App", q: use(l) > 0 ? 1 : 0, f, x: { $: "Var", l } }), { $: "Efq" });
   }
   if (cv.length === 0 && !s.again) {
     return o;
@@ -1349,28 +1351,17 @@ function self_arg(o: O, k: string, l: number): boolean {
     || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
-// the keys k gives o's nodes
-function o_keys<K>(o: O, k: (o: O) => K | undefined, out: Set<K> = new Set()): Set<K> {
-  const x = k(o);
-  if (x !== undefined) {
-    out.add(x);
+// the def names o mentions
+function o_refs(o: O, out: Set<string> = new Set()): Set<string> {
+  if (o.$ === "Ref") {
+    out.add(o.k);
   }
   for (const v of Object.values(o)) {
     if (is_o(v)) {
-      o_keys(v, k, out);
+      o_refs(v, out);
     }
   }
   return out;
-}
-
-// the def names o mentions
-function o_refs(o: O): Set<string> {
-  return o_keys(o, (x) => x.$ === "Ref" ? x.k : undefined);
-}
-
-// the levels o names, live or dead
-function o_vars(o: O): Set<number> {
-  return o_keys(o, (x) => x.$ === "Var" ? x.l : undefined);
 }
 
 function is_o(v: unknown): v is O {
@@ -1393,18 +1384,26 @@ function inferable(o: O): boolean {
 
 // the live uses of level l in o, as the kernel counts them
 function uses(o: O, l: number): number {
+  return o_uses(o).get(l) ?? 0;
+}
+
+// the live uses of each level o names, in one walk: a level named only
+// where the kernel counts no use (a type, a q=0 argument) counts 0
+function o_uses(o: O, live: boolean = true, out: Map<number, number> = new Map()): Map<number, number> {
   switch (o.$) {
-    case "Var": return o.l === l ? 1 : 0;
-    case "Ann": return uses(o.x, l);
-    case "Let": return (o.q > 0 ? uses(o.v, l) : 0) + uses(o.f, l);
-    case "Lam": return uses(o.f, l);
-    case "App": return uses(o.f, l) + (o.q > 0 ? uses(o.x, l) : 0);
-    case "Tup": return (o.q > 0 ? uses(o.a, l) : 0) + uses(o.b, l);
-    case "Prj": return uses(o.h, l);
-    case "Mat": return uses(o.h, l) + uses(o.m, l);
-    case "Rwt": return uses(o.e, l) + uses(o.f, l);
-    case "Min": return uses(o.a, l) + uses(o.b, l);
-    default: return 0;
+    case "Var": return out.set(o.l, (out.get(o.l) ?? 0) + (live ? 1 : 0));
+    case "Ann": return o_uses(o.T, false, o_uses(o.x, live, out));
+    case "Let": return o_uses(o.f, live, o_uses(o.v, live && o.q > 0, out));
+    case "All": case "Sig": return o_uses(o.B, false, o_uses(o.A, false, out));
+    case "Lam": return o_uses(o.f, live, out);
+    case "App": return o_uses(o.x, live && o.q > 0, o_uses(o.f, live, out));
+    case "Tup": return o_uses(o.b, live, o_uses(o.a, live && o.q > 0, out));
+    case "Prj": return o_uses(o.h, live, out);
+    case "Mat": return o_uses(o.m, live, o_uses(o.h, live, out));
+    case "Min": return o_uses(o.b, live, o_uses(o.a, live, out));
+    case "Eql": return o_uses(o.T, false, o_uses(o.b, false, o_uses(o.a, false, out)));
+    case "Rwt": return o_uses(o.f, live, o_uses(o.P, false, o_uses(o.e, live, out)));
+    default: return out;
   }
 }
 
