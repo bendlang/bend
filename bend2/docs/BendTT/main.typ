@@ -813,9 +813,9 @@ $t scripts(=>)^* u_2$, then $u_1 scripts(=>)^* v$ and
 $u_2 scripts(=>)^* v$ for some $v$.]
 
 We follow Takahashi @takahashi1995. The complete development $t^*$
-reduces every redex of $t$ at once. If $t => u$, then $u => t^*$, and
-confluence follows. The proof does not use types, so #Ty : #Ty plays no
-part in it.
+reduces every redex of $t$ at once, and steps every $lambda^2$ to
+$lambda^1$. If $t => u$, then $u => t^*$, and confluence follows. The
+proof does not use types, so #Ty : #Ty plays no part in it.
 
 Confluence gives the two facts about conversion that the rest of the
 proof needs. First, type formers are injective. If
@@ -842,7 +842,11 @@ the fit of the codomains. It holds for
 reduction anywhere, dead positions included, and it does not need the
 live check.
 
-Reduction of open terms does not preserve the live check. Take
+Parallel reduction does not preserve the live check. On a closed
+term, the step from $lambda^2 x. (x, x)$ to $lambda^1 x. (x, x)$ leaves
+a quantity-1 variable used twice. This is harmless, since the live
+claims are about evaluation, and $|->$ never takes that step. Reduction
+of open terms loses the live check in a second way. Take
 $(lambda^2 x. (x, x)) space y$, where $y$ is an affine variable of type
 `Nat`. It passes the live check, since it uses $y$ once. One step later
 it is $(y, y)$, which uses $y$ twice. Quantitative type theory
