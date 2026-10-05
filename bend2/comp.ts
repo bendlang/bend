@@ -874,16 +874,26 @@ function ty_holds(A: HTerm | null,
   if (got !== null || t?.$ !== "ADT") {
     return got === true;
   }
-  if (t.x.some((x) => ty_holds(x, p, seen))) {
+  const tld = FL.book.tlds[t.k];
+  const ks = tld?.$ === "ADT" ? tele_unbind(tld.T).doms : [];
+  if (t.x.some((x, i) => !ty_value(ks[i]?.[2] ?? null)
+    && ty_holds(x, p, seen))) {
     return true;
   }
-  const tld = FL.book.tlds[t.k];
   if (tld?.$ !== "ADT" || seen.has(t.k)) {
     return false;
   }
   seen.add(t.k);
   return tld.c.some((c) =>
     ctr_doms(c, t.x).some((f) => ty_holds(f, p, seen)));
+}
+
+// A parameter whose kind is surely no sort (a quantity, a datatype, an
+// equality, or a function into one) takes a value, never a type.
+function ty_value(K: HTerm | null): boolean {
+  const k = ty_wnf(K);
+  return k?.$ === "All" ? ty_value(k.B(DUMMY))
+    : ["Qnt", "Min", "ADT", "Eql"].includes(k?.$ ?? "");
 }
 
 function ty_clo(A: HTerm | null): boolean {
