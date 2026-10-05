@@ -658,7 +658,6 @@ inhabit `Empty`, but nothing dead ever counts as live evidence, and live
 recursion must terminate. `bend2/bendtt.lean` is BendTT's kernel in Lean, with
 a proof that no def it accepts has type `Empty` and that live code halts;
 `--verdict` checks a file with it. `paper/BendTT.pdf` is the paper.
-Datatype kinds also participate in the unsafe/foreign dependency check.
 
 ## Further Reading
 

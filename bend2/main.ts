@@ -729,11 +729,11 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
 }
 
 // book_promises lists the defs outside Base (laws and types too) that are
-// @unsafe or foreign, or whose type, body or constructor fields name a def
-// that relies on one: a foreign def is a promise like @unsafe is, as the
-// checker reads its type, never its code. If the book holds a promise, a
-// walk from the defs outside Base collects who names whom, then the
-// promises flood back along those edges.
+// @unsafe or foreign, or whose type, body, datatype kind, parameters or
+// constructor fields name a def that relies on one. A foreign def is a
+// promise like @unsafe is: the checker reads its type, never its code.
+// If the book holds a promise, a walk from the defs outside Base collects
+// who names whom, then the promises flood back along those edges.
 function book_promises(book: Bend.Book): string[] {
   const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
   const bad  = new Set(Object.keys(book.tlds).filter((k) => {
@@ -748,11 +748,8 @@ function book_promises(book: Bend.Book): string[] {
     if (t !== undefined && !seen.has(k)) {
       seen.add(k);
       const rs = new Set<string>();
-      term_refs(Bend.term_lower(t.T), rs);
-      if (t.$ === "ADT") {
-        for (const c of t.c) {
-          term_refs(Bend.term_lower(c.T), rs);
-        }
+      for (const c of t.$ === "ADT" ? [t, ...t.c] : [t]) {
+        term_refs(Bend.term_lower(c.T), rs);
       }
       term_refs(t.$ === "Def" ? t.e : undefined, rs);
       for (const r of rs) {
