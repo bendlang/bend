@@ -72,7 +72,6 @@ type File = {
   ids: Map<string, string>;
   taken: Set<string>;
   teles: Map<HTerm, { doms: Dom[]; ret: HTerm }>;
-  ctrs: Map<Bend.Ctr, Dom[]>;
   srcs: Map<Name, Set<Name> | null>;
   loops: Map<Name, Name[]>;
   flats: Map<Name, boolean>;
@@ -1014,16 +1013,10 @@ function ctr_adt(x: Of<"Ctr">,
     ? Bend.u32_from_term(x, adt.k) : null];
 }
 
-function ctr_tail(ctr: Bend.Ctr, xs: HTerm[] = []): Dom[] {
-  const go = (): Dom[] => {
-    const doms: Dom[] = [];
-    for (let t = Bend.tele_fill(FL.book, ctr.T, xs, Bend.ctx_nil()),
-      a: Of<"All"> | null; (a = Bend.tele_open(FL.book, t)); t = a.B(DUMMY)) {
-      doms.push([a.q, a.k, a.A]);
-    }
-    return doms.slice(doms.length - ctr.n);
-  };
-  return xs.length === 0 ? memo(FL.ctrs, ctr, go) : go();
+function ctr_tail(ctr: Bend.Ctr, xs?: HTerm[]): Dom[] {
+  const doms = (xs ? Bend.tele_unbind(FL.book, Bend.tele_fill(FL.book, ctr.T,
+    xs, Bend.ctx_nil())) : tele_unbind(ctr.T)).doms;
+  return doms.slice(doms.length - ctr.n);
 }
 
 function ctr_live(ctr: Bend.Ctr, xs?: HTerm[]): Dom[] {
@@ -1327,7 +1320,6 @@ function file_new(book: Bend.Book, js: boolean): File {
     ids: new Map(),
     taken: new Set("FID_EXIT FID_ENTER FID_T CID_T".split(" ")),
     teles: new Map(),
-    ctrs: new Map(),
     srcs: new Map(),
     loops: new Map(),
     flats: new Map(),
@@ -1418,10 +1410,11 @@ function file_book(roots: Name[]): void {
   }
 }
 
-function facts_hot(sc: Scope, B: HTerm | null, force: boolean): void {
+function facts_hot(sc: Scope, B: HTerm | null, force: boolean,
+  local = false): void {
   const w = ty_wnf(B);
   if (w?.$ === "Lam") {
-    return facts_hot(sc, w.f(DUMMY), force);
+    return facts_hot(sc, w.f(DUMMY), force, local);
   }
   if (w?.$ !== "ADT") {
     if (!force) {
@@ -1431,18 +1424,19 @@ function facts_hot(sc: Scope, B: HTerm | null, force: boolean): void {
     const fam = m && done_live(m.tld) && term_strip(Bend.term_unapply(
       m.all.reduce((b, x) => Bend.term_apply(b, x), m.tld.v!))[0]);
     if (m && fam && fam.$ === "Mat") {
-      m.all.forEach((x) => facts_hot(sc, x, true));
+      m.all.forEach((x) => facts_hot(sc, x, true, local));
       const key = "m:" + (m.t as Of<"Ref">).k;
       if (!FL.hot.has(key)) {
         FL.hot.add(key);
-        facts_hot(sc, fam, true);
+        facts_hot(sc, fam, true, local);
       }
       return;
     }
     if (w?.$ === "Mat") {
-      return term_kids(w).forEach((h) => facts_hot(sc, h, true));
+      return term_kids(w).forEach((h) => facts_hot(sc, h, true, local));
     }
-    const dom = w?.$ === "Var" && tele_unbind(FL.book.tlds[sc.def].T).doms[w.i];
+    const dom = w?.$ === "Var" && !local
+      && tele_unbind(FL.book.tlds[sc.def].T).doms[w.i];
     if (dom && dom[1] === w.k && !dom_live(dom)) {
       FL.hot.add(sc.def + "~" + w.i);
     } else if ("All Var App".includes(w?.$!)) {
@@ -1452,7 +1446,7 @@ function facts_hot(sc: Scope, B: HTerm | null, force: boolean): void {
   }
   const tk = "t:" + w.k;
   const hot = force || FL.hot.has(tk);
-  w.x.forEach((x) => facts_hot(sc, x, hot));
+  w.x.forEach((x) => facts_hot(sc, x, hot, local));
   if (!hot || FL.hot.has(tk)) {
     return;
   }
@@ -1467,7 +1461,9 @@ function facts_hot(sc: Scope, B: HTerm | null, force: boolean): void {
 }
 
 function facts_ctr(sc: Scope, c: Bend.Ctr, xs: HTerm[]): void {
-  ctr_doms(c, xs).forEach((A) => facts_hot(sc, A, true));
+  const ds = ctr_tail(c, xs);
+  const own = !ds.every(dom_live);
+  ds.filter(dom_live).forEach(([, , A]) => facts_hot(sc, A, true, own));
 }
 
 function file_push(sc: Scope, line: string): void {
