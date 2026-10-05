@@ -2323,7 +2323,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
     [p.pos, T] = [at, null];
   }
   if (T === null && q.$ === "Lone" && ts.length === 1 && !(parse_at(p, "=") && !parse_at(p, "=="))) {
-    const w = term_write(ts[0]);
+    const w = term_write(ts[0], beg);
     if (w === null || !parse_more(p, parse_col(p.str, beg))) {
       return ts[0];
     }
@@ -2350,9 +2350,9 @@ export function parse_body(p: Parse, col: number = 0): Body {
   return { $: "Local", k: ks, q, v: vs, f };
 }
 
-export function term_write(t: LTerm): LTerm | null {
+export function term_write(t: LTerm, beg: number): LTerm | null {
   const [h, xs] = term_unapply(t);
-  if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var") {
+  if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var" && xs[1].s?.beg === beg) {
     return xs[1];
   }
   return null;
@@ -2650,7 +2650,14 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       }
       case "Ctr":
       case "Lit": {
-        throw Err(book_nil(), ctx_nil(), "an undestructed scrutinee (this value is already a constructor: bind its fields directly; if an outer match destructed it, fold the pattern into the outer case)", undefined, m.s);
+        const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
+        if (char_is_head(x) && [...x].every(char_is_name)) {
+          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
+            + " (match it in the same match as the pattern that introduced it)", undefined, m.s);
+        } else {
+          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched"
+            + " (this value is already a constructor: bind its fields directly)", undefined, m.s);
+        }
       }
       default: {
         throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
