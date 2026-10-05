@@ -621,12 +621,19 @@ function graph_close<K>(set: Set<K>, edges: K[][]): Set<K> {
 // Term
 // ====
 
-// A spine calls its def directly when the live arguments meet the def's
-// parameters, else Clo~apply over the outermost live one.
+// A literal is a constant tree, except a Nat past the cap: U32.to_nat of
+// its word. A spine calls its def directly when the live arguments meet
+// the def's parameters, else Clo~apply over the outermost live one.
+
+function lit_call(s: Of<"Lit">): HTerm | null {
+  return s.k === "Nat" && s.v > Bend.NAT_LITERAL_MAX
+    ? Bend.App(Bend.Ref("U32.to_nat"), Bend.Lit("U32", s.v)) : null;
+}
 
 function term_force(t: HTerm): HTerm {
   const s = Bend.term_force(t);
-  return s.$ === "Lit" ? memo(FL.memo.lits, s, () => Bend.lit_step(s)) : s;
+  return s.$ !== "Lit" ? s
+    : memo(FL.memo.lits, s, () => lit_call(s) ?? Bend.lit_step(s));
 }
 
 function term_strip(t: HTerm): HTerm {
@@ -747,7 +754,8 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
 
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
-  return s.$ === "Lit" || s.$ === "Ctr" && (s.x.length === 0
+  return s.$ === "Lit" ? lit_call(s) === null
+    : s.$ === "Ctr" && (s.x.length === 0
       || memo(FL.memo.consts, s, () => s.x.every(term_const)));
 }
 
@@ -1002,9 +1010,8 @@ function ctr_adt(x: Of<"Ctr">,
   if (ty === null && adt.x.length > 0) {
     die("a constructor outside a datatype");
   }
-  const n = Bend.term_strip(x.x[0] ?? x);
-  return [adt, adt.k === "Nat" ? n.$ === "Lit" ? +n.v + 1 : null
-    : WORDS[adt.k] ? Bend.u32_from_term(x, adt.k as "U32") : null];
+  return [adt, adt.k === "U32" || adt.k === "F32"
+    ? Bend.u32_from_term(x, adt.k) : null];
 }
 
 function ctr_tail(ctr: Bend.Ctr, xs: HTerm[] = []): Dom[] {
@@ -2253,7 +2260,7 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   at: Lay | null): Val {
   const [adt, u] = ctr_adt(x, ty);
   if (u !== null) {
-    return val_new([`${u}ull`], WORDS[adt.k], true);
+    return val_new([`${u}ull`], W32, true);
   }
   const flds = ctr_flds(x.k, x.x);
   const word = WORDS[adt.k];
