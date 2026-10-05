@@ -526,7 +526,7 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
     case "Typ": {
-      return B.ADT("Unit", []);
+      return e.book.tlds["Unit"]?.b === true ? B.ADT("Unit", []) : null;
     }
     case "All": {
       // the body is searched once, then each use binds level d in it
@@ -538,10 +538,12 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
     case "ADT": {
       const key = model_key(F, d);
       probe.left -= key.length;
-      const tld = e.mb.tlds[F.k] as ADT;
+      const tld = e.mb.tlds[F.k];
+      if (tld?.$ !== "ADT") {
+        return null;
+      }
       const h = proj ? hyp() : null;
       for (const c of path.includes(key) || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
-        const xs: HTerm[] = [];
         let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
         let x: HTerm | null = null;
         while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, key], [], proj, probe)) !== null) {
@@ -1298,7 +1300,7 @@ function word_ref(e: Safe, T: Name, n: number): O {
     k = fresh(e, T + ".lit" + String(n));
     e.names.set(key, k);
     const v = term(e, { ...scope_nil(), sub: true }, B.Ctr(T, [B.word_to_term(n)]), true);
-    e.out.push([k, { $: "Ref", k: item_ref(e, T, [], false) }, v, false]);
+    e.out.push([k, { $: "Ref", k: item_ref(e, B.book_fam(e.book, T), [], false) }, v, false]);
   }
   return { $: "Ref", k };
 }
