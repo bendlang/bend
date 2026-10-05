@@ -423,35 +423,10 @@ function spec_val(e: Safe, s: Scope, x: HTerm): HTerm {
 
 // x's normal form, when it is closed; null when it depends on a run-time value
 function closed_val(e: Safe, s: Scope, x: HTerm): HTerm | null {
-  const v = B.term_snf(e.book, scope_vals(s, x));
-  return mentions(B.term_lower(v, s.d), (i) => i >= 0 && i < s.d) ? null : v;
-}
-
-// a term of type Quant, as its literal when closed
-function quant_term(e: Safe, s: Scope, t: HTerm, live: boolean): O {
-  return quant_lit(e, s, open(t)[0], B.Qnt()) ?? term(e, s, t, live);
-}
-
-// x with the values scope s binds put in
-function scope_vals(s: Scope, x: HTerm): HTerm {
   // bend2's annotations name a variable by its level
-  return subst(x, s.d, (o) => o.$ === "Var" && (o.i as number) >= 0 && (o.i as number) < s.d
-    ? s.c[o.i as number]?.v ?? B.Var(o.k as Name, o.i as number) : undefined);
-}
-
-// the literal a closed call or meet of type Quant computes to, by bend2's
-// evaluator: the kernel's computes the same, but without its sharing (a
-// chain of meets that each name the last twice is exponential there), and
-// never through an @unsafe def; null when x mentions a run-time value
-function quant_lit(e: Safe, s: Scope, x: HTerm, T: HTerm | null): O | null {
-  if ((x.$ !== "Ref" && x.$ !== "App" && x.$ !== "Min") || T === null || B.term_wnf(e.book, T).$ !== "Qnt") {
-    return null;
-  }
-  if (mentions(B.term_lower(x, s.d), (i) => i >= 0 && i < s.d && s.c[i]?.v === undefined)) {
-    return null;
-  }
-  const v = B.term_snf(e.book, scope_vals(s, x));
-  return v.$ === "Qua" ? { $: "Lab", k: "Q" + String(quant(v.q)) } : null;
+  const v = B.term_snf(e.book, subst(x, s.d, (o) => o.$ === "Var" && (o.i as number) >= 0 && (o.i as number) < s.d
+    ? s.c[o.i as number]?.v ?? B.Var(o.k as Name, o.i as number) : undefined));
+  return mentions(B.term_lower(v, s.d), (i) => i >= 0 && i < s.d) ? null : v;
 }
 
 // t at depth d, with each node f maps replaced, through its lowered form
@@ -911,10 +886,6 @@ function kind(e: Safe, s: Scope, T: HTerm): Q | null {
 function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
   const [x, T] = open(t);
   const s = s0.sub && x.$ !== "Ctr" && x.$ !== "Lit" ? { ...s0, sub: false } : s0;
-  const lit = quant_lit(e, s, x, T);
-  if (lit !== null) {
-    return lit;
-  }
   switch (x.$) {
     case "Var": {
       const b = s.c[x.i];
@@ -935,7 +906,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return args(e, s, x.k, tld.T, x.x, live);
     }
     case "Typ": {
-      return { $: "Typ", q: quant_term(e, s, x.g, false) };
+      return { $: "Typ", q: term(e, s, x.g, false) };
     }
     case "All": {
       const l = s.D;
@@ -983,7 +954,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return { $: "Lab", k: "Q" + String(quant(x.q)) };
     }
     case "Min": {
-      return { $: "Min", a: quant_term(e, s, x.a, live), b: quant_term(e, s, x.b, live) };
+      return { $: "Min", a: term(e, s, x.a, live), b: term(e, s, x.b, live) };
     }
     case "Hol": {
       return oos("a hole");
@@ -1232,10 +1203,6 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 // reads it, unless its binders differ from A's
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
-  const lit = quant_lit(e, s, y, A);
-  if (lit !== null) {
-    return lit;
-  }
   const tree = y.$ === "Lam" || y.$ === "Mat" || y.$ === "Efq";
   const all = all_of(e, A);
   if (!tree && all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
