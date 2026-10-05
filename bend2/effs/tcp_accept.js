@@ -1,9 +1,10 @@
 // TCP
 // ===
 
-// An accept that finds no connection (the listener is non-blocking) parks
-// until the listener is readable. The accepted socket is non-blocking for
-// life.
+// The request parks until the listener is readable, so a backlog never
+// keeps the loop from its timers; an accept that still finds no connection
+// (the listener is non-blocking) parks again. The accepted socket is
+// non-blocking for life.
 function tcp_accept(listener, k) {
   const sys = io_sys();
   const lfd = listener;
@@ -24,7 +25,8 @@ function tcp_accept(listener, k) {
     }
     return io_tup(listener, io_done(fd));
   };
-  return go();
+  io_park_on(lfd, false, k, go);
+  return undefined;
 }
 
 io_eff(CID(TCP.accept), tcp_accept);

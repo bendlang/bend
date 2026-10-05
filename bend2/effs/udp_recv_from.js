@@ -1,8 +1,9 @@
 // UDP
 // ===
 
-// A recv that finds no datagram (the socket is non-blocking) parks until
-// the socket is readable.
+// The request parks until the socket is readable, so a backlog never keeps
+// the loop from its timers; a recv that still finds no datagram (the socket
+// is non-blocking) parks again.
 function udp_recv_from(socket, max, k) {
   const sys = io_sys();
   const fd = socket;
@@ -25,7 +26,8 @@ function udp_recv_from(socket, max, k) {
     const port = (peer[2] << 8) | peer[3];
     return io_tup(socket, io_done(io_tup(host, port, io_text(b, n))));
   };
-  return go();
+  io_park_on(fd, false, k, go);
+  return undefined;
 }
 
 io_eff(CID(UDP.recv_from), udp_recv_from);

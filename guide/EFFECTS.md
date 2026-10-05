@@ -64,10 +64,14 @@ is the answer. `call` has no `Env`: it may only touch `w`.
 `io_wait_on` again. Both return `IO_PARK`, which the effect returns.
 Replace `0` with an absolute `io_tick()` deadline to also wake on time;
 with no events (`io_wait_on(w, 0, 0, deadline, more)`) it waits on time
-alone, as `sleep.c` does.
+alone, as `sleep.c` does. An effect that can meet a steady backlog (an
+accept, a datagram recv) parks before its first try, as `tcp_accept.c`
+does: one that answers at once never lets the loop poll, so the backlog
+would starve its timers.
 
-`w` is the effect's scratch space: `hand`, `made`, `word`, `size`, `data`,
-`text`, `code`. The runtime owns `w` and `f`. The effect owns `w->data`:
+`w` is the effect's scratch space: `hand`, `made`, `size`, `data`, `text`,
+`code`, and `word` until it parks (`io_wait_on` keeps its fd there). The
+runtime owns `w` and `f`. The effect owns `w->data`:
 allocate it in the run function and free it in `pack`. In `bend2/effs/`,
 `file_read.c` is the pattern for `io_work` and `tcp_recv.c` for `io_wait_on`.
 
@@ -86,7 +90,8 @@ A blocking effect takes one more argument, `k`, and parks with
 `io_park_on(fd, out, k, more)`: it returns `undefined`, and the loop calls
 `more()` when `fd` is ready; `more` answers the value, or `undefined` to
 park again. Add an absolute `performance.now()` deadline as a fifth
-argument to also wake on time. `io_sys()` is `libc` through `bun:ffi`
+argument to also wake on time. An effect that can meet a steady backlog
+parks before its first try, as on the C side. `io_sys()` is `libc` through `bun:ffi`
 (`read`, `recv`, `select`, `errno`); `tcp_accept.js` shows the full shape.
 
 ## A complete example

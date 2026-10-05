@@ -1,9 +1,10 @@
 // TCP
 // ===
 
-// An accept that finds no connection (the listener is non-blocking) parks
-// until the listener is readable. The accepted socket is non-blocking for
-// life.
+// The request parks until the listener is readable, so a backlog never
+// keeps the loop from its timers; an accept that still finds no connection
+// (the listener is non-blocking) parks again. The accepted socket is
+// non-blocking for life.
 static Term tcp_accept_more(Env e, IoWork* w) {
   int fd  = (int)w->hand;
   int got = accept(fd, NULL, NULL);
@@ -20,7 +21,7 @@ static Term tcp_accept_more(Env e, IoWork* w) {
 
 Term tcp_accept_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
-  return tcp_accept_more(e, w);
+  return io_wait_on(w, (int)w->hand, POLLIN, 0, tcp_accept_more);
 }
 
 static void __attribute__((constructor)) tcp_accept_use(void) {
