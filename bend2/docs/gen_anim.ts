@@ -64,9 +64,9 @@ function mix(a: string, b: string, f: number): string {
 
 // the frames go to ffmpeg through a concat list, which keeps every
 // duration, so a frame that holds is one frame with a long delay
-function gif(name: string, cv: { width: number; height: number;
-  toBuffer: (t: "image/png") => Buffer }, draw: (t: number) => void,
-  shots: [number, number][]): void {
+export function gif_write<T>(name: string, cv: { width: number; height: number;
+  toBuffer: (t: "image/png") => Buffer }, draw: (t: T) => void,
+  shots: [T, number][], prefix = ""): void {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), name + "-"));
   const file = (i: number): string =>
     path.join(dir, "f" + String(i).padStart(4, "0") + ".png");
@@ -88,7 +88,7 @@ function gif(name: string, cv: { width: number; height: number;
     throw new Error("ffmpeg failed on " + name);
   }
   fs.rmSync(dir, { recursive: true });
-  process.stdout.write("wrote " + out + ": " + String(shots.length)
+  process.stdout.write("wrote " + out + ": " + prefix + String(shots.length)
     + " frames, " + String(fs.statSync(out).size) + " bytes\n");
 }
 
@@ -150,7 +150,7 @@ function hero(name: string, ink: string, dim: string): void {
     run(PITCH, TITLE * 0.36, ty + TITLE * 0.89);
     run(CLAIMS, TITLE * 0.264, ty + TITLE * 1.39);
   }
-  gif(name, cv, draw, [[0, 0.55], [0.6, 0.55]]);
+  gif_write(name, cv, draw, [[0, 0.55], [0.6, 0.55]]);
 }
 
 // Parallel
@@ -360,7 +360,7 @@ function parallel(): void {
     shots.push([i / FPS, 1 / FPS]);
   }
   shots[shots.length - 1][1] = 1.8;
-  gif("parallel", cv, draw, shots);
+  gif_write("parallel", cv, draw, shots);
 }
 
 // Game
@@ -550,15 +550,17 @@ function game(act: Act): void {
     shots.push([i / FPS, 1 / FPS]);
   }
   shots.push([still, HOLD]);
-  gif(act.name, cv, draw, shots);
+  gif_write(act.name, cv, draw, shots);
 }
 
 // Main
 // ====
 
-hero("hero", "#1f2328", "#656d76");
-hero("hero_dark", "#ffffff", "#8b949e");
-parallel();
-for (const act of ACTS) {
-  game(act);
+if (import.meta.main) {
+  hero("hero", "#1f2328", "#656d76");
+  hero("hero_dark", "#ffffff", "#8b949e");
+  parallel();
+  for (const act of ACTS) {
+    game(act);
+  }
 }
