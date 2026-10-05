@@ -29,7 +29,15 @@ def two_succ(n: Nat) -> Bool:
 def main() -> Nat:
   id(~4097n)
 
-def claim() -> {id(~4097n) == 4097n : Nat}:
+# construct 2^depth successors without a large literal or Nat arithmetic
+def grow(+depth: Nat, n: Nat) -> Nat:
+  match depth:
+    case Zero{}:
+      Succ{n}
+    case Succ{p}:
+      grow(p, grow(p, n))
+
+def claim() -> {id(~4097n) == Succ{grow(12n, Zero{})} : Nat}:
   {==}
 
 def claim_two() -> {two_succ(id(~4097n)) == True{} : Bool}:
