@@ -1351,7 +1351,7 @@ function file_book(book: Bend.Book, roots: Name[], js: boolean): File {
     if (SRCS.has(d)) {
       continue;
     }
-    memo_gc();
+    memo_gc_def();
     const tld = book.tlds[d];
     SRCS.set(d, null);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
@@ -1827,13 +1827,12 @@ function memo<K, V>(m: Map<K, V>, k: K, f: (k: K) => V): V {
   return v;
 }
 
-function memo_gc(): void {
+function memo_gc_def(): void {
   [OPENS, USES, FOLDS, SPINES, CONSTS, LITS].forEach((m) => m.clear());
 }
 
-// A compilation starts with no other book's names in the caches.
-function memo_reset(): void {
-  memo_gc();
+function memo_gc_book(): void {
+  memo_gc_def();
   [TELES, SRCS, LOOPS, NODES, LAYS, LAY_IDS, FLATS, FUNS, BRWS, IDS,
     TAKEN].forEach((m) => m.clear());
   "FID_EXIT FID_ENTER FID_T CID_T".split(" ").forEach((id) => TAKEN.add(id));
@@ -2747,7 +2746,7 @@ function effect_srcs(fl: File, ext: string, miss: string): string[] {
 // sources (reqs) are hand-written, and may say it.
 
 export function compile_book(book: Bend.Book): string {
-  memo_reset();
+  memo_gc_book();
   // a pure main's descriptor names constructors of the types it prints,
   // so their datatypes are roots too
   const show = show_main(book);
@@ -2764,7 +2763,7 @@ export function compile_book(book: Bend.Book): string {
     fl.spins = [];
     fl.img = [];
     for (const [k, tld] of done_defs(fl).reverse()) {
-      memo_gc();
+      memo_gc_def();
       const [dl, vals] = emit_open({ ...fl, fresh: new Map(),
         brwl: new Map(), rest: [] }, k);
       fl.segs.push(dl.seg);
@@ -3102,7 +3101,7 @@ function js_def(fl: File, k: Name, def: Bend.Def): void {
     }
     block(fl, pc ? "for (;;) switch ($pc) {" : "for (;;) {", () =>
       loop.forEach((d, i) => {
-        memo_gc();
+        memo_gc_def();
         FUEL = FOLD_FUEL;
         const fx = { ...fl, fresh: new Map() };
         const ps = fun_of(fx, d).live.map(([, x]) => name_local(fx, x));
@@ -3187,7 +3186,7 @@ function js_host(fl: File, k: Name): string {
 // A module (for the .bend loader and -o <out>.mjs) roots and exports each
 // def a host can call.
 export function js_lib(book: Bend.Book, mod = false): string {
-  memo_reset();
+  memo_gc_book();
   const outs = !mod ? null : [...new Set(book.order)].filter((k) => {
     const t = book.tlds[k];
     return done_live(t) && !def_foreign(t) && t.b !== true && t.x === 0
@@ -3195,7 +3194,7 @@ export function js_lib(book: Bend.Book, mod = false): string {
   });
   const fl = file_book(book, outs ?? ["main"], true);
   for (const [k, def] of done_defs(fl, fun_runs)) {
-    memo_gc();
+    memo_gc_def();
     js_def(fl, k, def);
   }
   const srcs = effect_srcs(fl, ".js", "a foreign def without a .js import: ");
