@@ -28,6 +28,12 @@ test("preserves comments, literals, line endings, and final newline state", () =
   assert.equal(formatBend(source), "def main() -> String:\r\n  \"a # b\\n\"  # exact comment");
 });
 
+test("preserves escaped quotes and hashes inside literals", () => {
+  for (const literal of [String.raw`"a \" # b"`, String.raw`'a \' # b'`]) {
+    assert.equal(formatBend(literal + "# exact"), literal + "  # exact");
+  }
+});
+
 test("preserves angle spacing because Bend uses it to disambiguate syntax", () => {
   const source = "def f(x:U32)->U32:\n    y=x < 2\n    List<List<U32>>{}";
   assert.equal(formatBend(source), "def f(x: U32) -> U32:\n  y = x < 2\n  List<List<U32>>{}");
@@ -68,7 +74,31 @@ test("keeps parallel execution call suffixes glued", () => {
   assert.equal(formatBend("result = run ! (20n)"), "result = run!(20n)");
 });
 
+test("keeps unsafe declaration suffixes adjacent to names", () => {
+  assert.equal(formatBend("def value?()->U32:\n  1"), "def value?() -> U32:\n  1");
+  assert.equal(formatBend("def value? ()->U32:\n  1"), "def value?() -> U32:\n  1");
+  assert.equal(formatBend("def\n  value?()->U32:\n  1"), "def\n  value?() -> U32:\n  1");
+  assert.equal(formatBend("def # declaration\n  value? ()->U32:\n  1"), "def  # declaration\n  value?() -> U32:\n  1");
+});
+
+test("keeps unsafe suffixes on dotted declarations with inline attributes", () => {
+  assert.equal(formatBend("@unsafe def Value.get? ()->U32:\n  1"), "@unsafe def Value.get?() -> U32:\n  1");
+});
+
+test("preserves invalid gaps before unsafe declaration suffixes", () => {
+  assert.equal(formatBend("def value ?()->U32:\n  1"), "def value ?() -> U32:\n  1");
+});
+
+test("keeps prefix holes glued", () => {
+  assert.equal(formatBend("def value()->U32:\n  ?TODO\n  result=?help"), "def value() -> U32:\n  ?TODO\n  result = ?help");
+  assert.equal(formatBend("case?help:"), "case ?help:");
+});
+
 test("leaves unterminated literals unchanged", () => {
-  const source = "def main() -> String:\n  \"unfinished";
-  assert.equal(formatBend(source), source);
+  for (const literal of [
+    "\"", "'", "\"unfinished", "'unfinished", "\"unfinished\\", "'unfinished\\",
+  ]) {
+    const source = "def main() -> String:\n  " + literal;
+    assert.equal(formatBend(source), source);
+  }
 });

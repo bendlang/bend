@@ -30,7 +30,7 @@ import * as Safe from "./safe.ts";
 // Constants
 // =========
 
-const VERSION = "2.0.34";
+const VERSION = "2.0.35";
 
 // the commands, one row each: [usage, what it does]; bend guide stays last
 const USAGE = [
@@ -275,7 +275,7 @@ async function cli_file(args: string[]): Promise<void> {
     }
     return cli_bundle(file, outs[0]);
   }
-  if (publish && (outs.length !== 0 || only || checkup)) {
+  if (publish && (outs.length !== 0 || only || verdict || checkup)) {
     cli_fail("--publish takes no other option");
   }
   if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
@@ -717,7 +717,7 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
   if (bad.length !== 0) {
     cli_say(2, FAIL + "\nError: " + String(bad.length) + " def" + (bad.length === 1
       ? " relies" : "s rely") + " on unsafe or foreign code:\n"
-      + bad.map((k) => "- " + k + "\n").join(""));
+      + bad.map((k) => "- " + Bend.name_key(k) + "\n").join(""));
     return 1;
   }
   if (kernel && !Safe.safe_check(book)) {
@@ -779,6 +779,7 @@ function term_refs(tm: unknown, out: Set<string>): void {
   }
 }
 
+// cli_say writes text to fd, and drops it if the reader has left (EPIPE).
 function cli_say(fd: number, text: string): void {
   try {
     fs.writeSync(fd, text);
@@ -786,7 +787,6 @@ function cli_say(fd: number, text: string): void {
     if ((e as NodeJS.ErrnoException).code !== "EPIPE") {
       throw e;
     }
-    process.exit(0);
   }
 }
 
@@ -834,7 +834,7 @@ function book_seed(base: Bend.Book): Bend.Book {
   }
   Object.assign(book.ctrs, base.ctrs);
   for (const k of Object.keys(base.tmps)) {
-    book.tmps[k] = { ...base.tmps[k] };
+    book.tmps[k] = new Map(base.tmps[k]);
   }
   book.order.push(...base.order);
   return book;
