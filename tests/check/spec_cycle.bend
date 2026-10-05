@@ -3,7 +3,9 @@
 # around the two-way cycle, S's m through its own field. Each is read
 # before its answer is known (A before B, S inside S), which a one-pass
 # cache took as nothing specialized: --verdict saw a kind depending on a
-# run-time value, and failed in every order for S and C/D (#1179)
+# run-time value, and failed in every order for S and C/D (#1179). The
+# uses go out at closed arguments, where each cycle closes on finitely
+# many instances (S at Nat, Bool and at Bool, Nat)
 import Base
 
 def qof(n: Type) -> Quant:
@@ -23,6 +25,17 @@ type C<n: Type, p: Type> is Kind(qof(n)):
 
 type D<m: Type, r: Type> is Kind(qof(m)):
   D1{c: C<r, m>}
+
+def use_b(b: B<Nat>) -> B<Nat>:
+  b
+
+def use_s(s: S<Nat, Bool>) -> S<Bool, Nat>:
+  match s:
+    case S1{t}: t
+
+def use_c(c: C<Nat, Bool>) -> D<Bool, Nat>:
+  match c:
+    case C1{d}: d
 
 def main() -> Nat:
   7n

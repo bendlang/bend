@@ -113,7 +113,9 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 // scope, each item's specialized parameters, the groups found (kept from
 // pass to pass), each template instance's template and ~ arguments (its
 // key in book.tmps), the items going out (outermost first, and as a set),
-// and whether this pass grew a group
+// whether this pass grew a group, and for each item the one going out
+// when it was named, and the items (a bit each, from bits) it and those
+// above it are of
 type Safe = {
   book: Book;
   mb: Book;
@@ -129,6 +131,8 @@ type Safe = {
   stack: string[];
   going: Set<string>;
   grew: boolean;
+  from: Map<string, [string | undefined, bigint]>;
+  bits: Map<Name, bigint>;
 };
 
 // a model search's fuel left, its round's depth, and whether that round
@@ -192,7 +196,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups, inst, stack: [], going: new Set(), grew: false };
+    todo: [], taken: new Set(), fail: new Map(), spec: new Map(), groups, inst, stack: [], going: new Set(), grew: false, from: new Map(), bits: new Map() };
   const roots: Array<[Name, string]> = [];
   for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
     try {
@@ -293,12 +297,23 @@ function item_key(k: Name, cols: Cols): string {
 
 // the kernel name of book name k at cols: a Quant literal names itself;
 // a live name goes out now (before its caller), a dead one later. A live
-// name still going out (not its own) closes a live cycle: a group
+// name still going out (not its own) closes a live cycle: a group. A new
+// instance whose arguments hold those of an instance of k that named it
+// (through others) would name a bigger one, and so on without end
 function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
   const key = item_key(k, cols);
   const m = live && !e.seen.has(key) ? trail(e) : null;
   let n = e.names.get(key);
   if (n === undefined) {
+    const up = e.stack[e.stack.length - 1];
+    const bit = e.bits.get(k) ?? e.bits.set(k, 1n << BigInt(e.bits.size)).get(k)!;
+    for (let a = up; a !== undefined && (e.from.get(a)![1] & bit) !== 0n; a = e.from.get(a)![0]) {
+      const [xs, ys] = [key.split("\n"), a.split("\n")];
+      if (ys[0] === k && ys.every((y, j) => j === 0 || holds(JSON.parse(xs[j]), JSON.parse(y)))) {
+        oos("a specialized argument that grows at each instance of " + B.name_key(k[0] === "\t" ? k.slice(1) : k));
+      }
+    }
+    e.from.set(key, [up, (up === undefined ? 0n : e.from.get(up)![1]) | bit]);
     const tag = cols.flatMap((v) => v === null ? [] : [v.$ === "Qua" ? String(quant(v.q)) : "v"]).join("");
     n = fresh(e, name_tt(k[0] === "\t" ? k.slice(1) + ".group" : k) + (tag !== "" ? ".q" + tag : ""));
     e.names.set(key, n);
@@ -331,6 +346,19 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
     regroup(e, key);
   }
   return n;
+}
+
+// whether the lowered term t holds u: at its node, part by part, or in a
+// part (a homeomorphic embedding: of any endless sequence of terms, one
+// holds an earlier one); a number or a string literal holds a no bigger one
+function holds(t: unknown, u: unknown): boolean {
+  if (typeof t !== "object" || t === null || typeof u !== "object" || u === null) {
+    return typeof t === "number" && typeof u === "number" ? u <= t : t === u;
+  }
+  const [o, p] = [t as Record<string, unknown>, u as Record<string, unknown>];
+  const at = (f: string): boolean => o.$ === "Lit" && o.k === "String" && f === "v" ? String(p.v).length <= String(o.v).length : holds(o[f], p[f]);
+  return o.$ === p.$ && Object.keys(o).length === Object.keys(p).length && Object.keys(o).every((f) => f in p && at(f))
+    || Object.values(o).some((v) => holds(v, u));
 }
 
 function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
@@ -410,53 +438,52 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
 // whether each parameter of item k is specialized: a Quant one, a
 // template's ~ one, or one a kind in its telescope (or a constructor's)
 // depends on, through a Kind(g) or an argument at a specialized
-// parameter of another item. Depth first, as a least fixpoint: an item in
-// progress reads as nothing specialized, and an item is redone whenever an
-// answer it read grows, so a cycle's items see what each other specialize
+// parameter of another item. The least set those rules close is a
+// reachability: each item's types are walked once, for its seeds and its
+// flows (h\ni to [r, j]: r's parameter j inside an argument at h's i), and
+// the seeds spread along the flows, the same in any declaration order
 function spec_of(e: Safe, k: Name): boolean[] {
-  const todo = new Set<Name>();
-  const readers = new Map<Name, Set<Name>>();
-  const open = (h: Name): boolean[] => {
-    if (!e.spec.has(h)) {
-      e.spec.set(h, []);
-      redo(h);
-    }
-    return e.spec.get(h)!;
-  };
-  const redo = (r: Name): void => {
+  const sp = e.spec.get(k);
+  if (sp !== undefined) {
+    return sp;
+  }
+  const flows = new Map<string, Array<[Name, number]>>();
+  const seeds: Array<[Name, number]> = [];
+  const walk = new Set([k]);
+  for (const r of walk) {
     const tld = e.book.tlds[r];
-    const read = (h: Name): boolean[] => {
-      const sp = open(h);
-      readers.set(h, (readers.get(h) ?? new Set()).add(r));
-      return sp;
-    };
-    const got = new Set<number>();
-    const go = (t: unknown, q: boolean): void => {
+    const doms = B.tele_unbind(e.book, tld.T).doms.slice(0, tld.n);
+    e.spec.set(r, doms.map(() => false));
+    doms.forEach(([, , A], j) => (is_qnt(e, A) || tld.$ === "Def" && j < tld.x) && seeds.push([r, j]));
+    // at: the flows into t, or null once a kind reads it
+    const go = (t: unknown, at: string[] | null): void => {
       if (typeof t !== "object" || t === null) {
         return;
       }
       const o = t as B.LTerm;
-      if (o.$ === "Var" && q) {
-        got.add(o.i);
+      if (o.$ === "Var") {
+        (at ?? [null]).forEach((f) => (f === null ? seeds : flows.get(f) ?? flows.set(f, []).get(f)!).push([r, o.i]));
       }
       const [h, xs] = o.$ === "ADT" ? [o, o.x] : o.$ === "App" ? B.term_unapply(o) : [o, []];
-      const hs = (h.$ === "Ref" || h.$ === "ADT") && e.book.tlds[h.k] !== undefined ? read(h.k) : [];
-      xs.forEach((x, j) => go(x, q || hs[j] === true));
+      const hk = (h.$ === "Ref" || h.$ === "ADT") && e.book.tlds[h.k] !== undefined ? h.k : null;
+      // a name walked by an earlier call has its answer
+      const old = hk !== null && !walk.has(hk) ? e.spec.get(hk) : undefined;
+      if (hk !== null && old === undefined) {
+        walk.add(hk);
+      }
+      xs.forEach((x, i) => go(x, at === null || old?.[i] === true ? null : hk === null || old !== undefined ? at : [...at, hk + "\n" + i]));
       if (xs.length === 0) {
-        Object.entries(o).forEach(([f, v]) => f !== "s" && go(v, q || o.$ === "Typ"));
+        Object.entries(o).forEach(([f, v]) => f !== "s" && go(v, o.$ === "Typ" ? null : at));
       }
     };
-    [tld.T, ...(tld.$ === "ADT" ? tld.c.map((c) => c.T) : [])].forEach((T) => go(B.term_lower(T), false));
-    const sp = B.tele_unbind(e.book, tld.T).doms.slice(0, tld.n).map(([, , A], j) => got.has(j) || is_qnt(e, A) || (tld.$ === "Def" && j < tld.x));
-    if (sp.some((b, j) => b && e.spec.get(r)![j] !== true)) {
-      readers.get(r)?.forEach((x) => todo.add(x));
+    [tld.T, ...(tld.$ === "ADT" ? tld.c.map((c) => c.T) : [])].forEach((T) => go(B.term_lower(T), []));
+  }
+  for (let x = seeds.pop(); x !== undefined; x = seeds.pop()) {
+    const rs = e.spec.get(x[0])!;
+    if (rs[x[1]] === false) {
+      rs[x[1]] = true;
+      seeds.push(...flows.get(x[0] + "\n" + x[1]) ?? []);
     }
-    e.spec.set(r, sp);
-  };
-  open(k);
-  for (const r of todo) {
-    todo.delete(r);
-    redo(r);
   }
   return e.spec.get(k)!;
 }
