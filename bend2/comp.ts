@@ -3468,6 +3468,7 @@ typedef u32 __attribute__((may_alias)) u32a;
 #define CUBE_T    128
 #define CUBE      ((u64)CUBE_T * CUBE_T)
 #define CUBE_G    (1u << CUBE_LOG)
+#define CUBE_LOG_MAX 7
 #define LANES     ((u64)CUBE_T << CUBE_LOG)
 #define RING_LOG  (17 - CUBE_LOG)
 #define RING_LEN  (1ull << RING_LOG)
@@ -3512,7 +3513,7 @@ typedef u32 __attribute__((may_alias)) u32a;
 static u64*    CORPUS;
 static u64    ALC[CUBE_T + 1][3 * NCLS_ALL] __attribute__((aligned(128)));
 static u32    KEEP_WORDS;
-static u32    CUBE_LOG = 7;
+static u32    CUBE_LOG = CUBE_LOG_MAX;
 static u32    bank_lock;
 
 static u32             pool_size;
@@ -4681,7 +4682,7 @@ static Term* pool_stack(void) {
 // A wait yields a while before it sleeps, so a turn that ends (or follows)
 // within microseconds never pays a condvar wake.
 
-#define POOL_WAIT(c, cv) \
+#define POOL_WAIT(c, cv) do { \
   for (u32 s = 0; s < 128 && (c); s += 1) { \
     sched_yield(); \
   } \
@@ -4689,7 +4690,23 @@ static Term* pool_stack(void) {
   while (c) { \
     pthread_cond_wait(&cv, &pool_lock); \
   } \
-  pthread_mutex_unlock(&pool_lock);
+  pthread_mutex_unlock(&pool_lock); \
+} while (0)
+
+// pool_row, the claim word: a turn's number, whether it grows, its rows, and
+// the claims taken in it so far (a row, or on a drain a unit of a row). A
+// turn has at most CUBE_G rows and CUBE_T units a row; each of the pool's
+// threads (at most CUBE_T) takes one claim past them.
+
+#define CLAIM(turn, grow, rows) ((turn) << 24 | (grow) << 23 | (rows) << 15)
+#define CLAIM_TURN(c)  ((c) >> 24)
+#define CLAIM_GROW(c)  ((c) >> 23 & 1)
+#define CLAIM_ROWS(c)  ((c) >> 15 & 255)
+#define CLAIM_TAKEN(c) ((c) & 32767)
+
+_Static_assert((1 << CUBE_LOG_MAX) <= 255
+  && (CUBE_T << CUBE_LOG_MAX) + CUBE_T <= 32767,
+  "the claim word's rows or claims overflow their fields");
 
 static u32 pool_step(u32 rows) {
   u32 per = rows * CUBE_T / (32 * pool_size);
@@ -4700,19 +4717,19 @@ static u32 pool_rows(Env e, DEV Term* stk) {
   u32 n = 0;
   for (;;) {
     u32 c    = a32_add(&pool_row, 1);
-    u32 r    = c & 32767;
-    u32 rows = c >> 15 & 255;
-    u32 step = c >> 23 & 1 ? 1 : pool_step(rows);
+    u32 r    = CLAIM_TAKEN(c);
+    u32 rows = CLAIM_ROWS(c);
+    u32 step = CLAIM_GROW(c) ? 1 : pool_step(rows);
     if (r >= rows * step) {
       if (n != 0 && a32_sub_rel(&pool_done, n) == n) {
         pthread_mutex_lock(&pool_lock);
         pthread_cond_signal(&pool_join);
         pthread_mutex_unlock(&pool_lock);
       }
-      return c >> 24;
+      return CLAIM_TURN(c);
     }
     a32_acq(&pool_row);
-    if (c >> 23 & 1) {
+    if (CLAIM_GROW(c)) {
       row_grow(e, stk, r * CUBE_T, 1, CUBE_T);
     } else {
       u32 row = r / step * CUBE_T;
@@ -4731,7 +4748,7 @@ static void* pool_work(void* arg) {
   Term* stk  = pool_stack();
   u32   seen = 0;
   for (;;) {
-    POOL_WAIT(a32_load(&pool_row) >> 24 == seen, pool_wake)
+    POOL_WAIT(CLAIM_TURN(a32_load(&pool_row)) == seen, pool_wake);
     seen = pool_rows((Env){ CORPUS, ALC[(uintptr_t)arg] }, stk);
   }
 }
@@ -4786,11 +4803,11 @@ OUTLINE void pool_turn(bool grow, u32 rows) {
   turn += 1;
   a32_store(&pool_done, grow ? n : n * pool_step(n));
   pthread_mutex_lock(&pool_lock);
-  a32_store_rel(&pool_row, turn << 24 | grow << 23 | n << 15);
+  a32_store_rel(&pool_row, CLAIM(turn, grow, n));
   pthread_cond_broadcast(&pool_wake);
   pthread_mutex_unlock(&pool_lock);
   pool_rows((Env){ CORPUS, ALC[0] }, io_stk);
-  POOL_WAIT(a32_load_acq(&pool_done) != 0, pool_join)
+  POOL_WAIT(a32_load_acq(&pool_done) != 0, pool_join);
 }
 
 // Gpu
@@ -4965,7 +4982,8 @@ static void gpu_pass(u32 f) {
 #elif BEND_CUDA
 
 static void gpu_shape(int units) {
-  CUBE_LOG = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
+  int most = 1 << CUBE_LOG_MAX;
+  CUBE_LOG = 31 - CLZ(units < 16 ? 16 : units > most ? most : units);
 }
 
 static bool gpu_probe(void) {
