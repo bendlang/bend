@@ -741,12 +741,10 @@ function book_promises(book: Bend.Book): string[] {
     return t.u === true || (t.i !== undefined && t.b !== true);
   }));
   const uses: Record<string, string[]> = Object.create(null);
-  const seen = new Set<string>();
-  for (const q = bad.size === 0 ? [] : own.slice(); q.length > 0;) {
-    const k = q.pop() as string;
+  const q = new Set(bad.size === 0 ? [] : own);
+  for (const k of q) {
     const t = book.tlds[k];
-    if (t !== undefined && !seen.has(k)) {
-      seen.add(k);
+    if (t !== undefined) {
       const rs = new Set<string>();
       for (const c of t.$ === "ADT" ? t.c : [t]) {
         term_refs(Bend.term_lower(c.T), rs);
@@ -754,7 +752,7 @@ function book_promises(book: Bend.Book): string[] {
       term_refs(t.$ === "Def" ? t.e : undefined, rs);
       for (const r of rs) {
         (uses[r] ??= []).push(k);
-        q.push(r);
+        q.add(r);
       }
     }
   }
