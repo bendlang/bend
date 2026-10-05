@@ -63,6 +63,7 @@ type File = {
   segs: Seg[];
   spins: Seg[];
   spun: Map<string, string>;
+  marsh: Map<string, string>;
   clos: Set<string>;
   tabs: Map<string, number>;
   tails: Map<Name, Set<Name>>;
@@ -85,8 +86,8 @@ type File = {
     uses: Map<HTerm, Bend.PMap<number>>;
     folds: Map<HTerm, HTerm | null>;
     spines: Map<HTerm, Spine>;
-    consts: Map<HTerm, boolean>;
-    lits: Map<HTerm, HTerm>;
+    ground: Map<HTerm, boolean>;
+    steps: Map<HTerm, HTerm>;
   };
 };
 
@@ -632,7 +633,7 @@ function lit_call(s: Of<"Lit">): HTerm | null {
 function term_force(t: HTerm): HTerm {
   const s = Bend.term_force(t);
   return s.$ !== "Lit" ? s
-    : memo(FL.memo.lits, s, () => lit_call(s) ?? Bend.lit_step(s));
+    : memo(FL.memo.steps, s, () => lit_call(s) ?? Bend.lit_step(s));
 }
 
 function term_strip(t: HTerm): HTerm {
@@ -755,7 +756,7 @@ function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
     : s.$ === "Ctr" && (s.x.length === 0
-      || memo(FL.memo.consts, s, () => s.x.every(term_const)));
+      || memo(FL.memo.ground, s, () => s.x.every(term_const)));
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
@@ -1148,8 +1149,9 @@ function lits_cond(w: string, j: number, n: number): string {
 // it fail-stops, and a user's default arm ("_") takes only Emit and Halt.
 function mat_ctrs(x: HTerm, adt: Of<"ADT">): [Name, HTerm][] {
   const { arms, end } = mat_arms(x);
-  return adt.k === "IO.OP" && term_strip(end).$ !== "Efq"
-    ? [...arms, ["_", end], ["", Bend.Efq()]] : adt.k === "IO.OP"
+  const io = adt.k === "IO.OP";
+  return io && term_strip(end).$ !== "Efq"
+    ? [...arms, ["_", end], ["", Bend.Efq()]] : io
     || arms.length < Bend.book_adt(FL.book, adt, Bend.Emp()).c.length
     ? [...arms, ["", end]] : arms;
 }
@@ -1297,11 +1299,11 @@ export function io_run(book: Bend.Book, args: string[]): number {
 
 // A File is the book being compiled (FL): its facts, its output and its
 // caches. The emitter is the analysis: a boxed parameter starts borrowed
-// (brwl) and becomes owned (own) when owned or unlent; a lend is asked by a
-// holder or passed on from a lent root (k~i<j~q). A shared value heats its
-// type (hot); a family stuck on an open index heats its arms' types once,
-// its arguments at every instantiation. compile_book emits until a pass
-// changes no fact.
+// (its scope's brwl) and becomes owned (own) when owned or unlent; a lend is
+// asked by a holder or passed on from a lent root (k~i<j~q). A shared value
+// heats its type (hot); a family stuck on an open index heats its arms'
+// types once, its arguments at every instantiation. compile_book emits until
+// a pass changes no fact.
 
 function file_new(book: Bend.Book, js: boolean): File {
   PROBES.length = 1;
@@ -1317,6 +1319,7 @@ function file_new(book: Bend.Book, js: boolean): File {
     segs: [],
     spins: [],
     spun: new Map(),
+    marsh: new Map(),
     clos: new Set(),
     tabs: new Map(),
     tails: new Map(),
@@ -1339,8 +1342,8 @@ function file_new(book: Bend.Book, js: boolean): File {
       uses: new Map(),
       folds: new Map(),
       spines: new Map(),
-      consts: new Map(),
-      lits: new Map(),
+      ground: new Map(),
+      steps: new Map(),
     },
   };
 }
@@ -2783,8 +2786,7 @@ export function compile_book(book: Bend.Book): string {
     FL.img = [];
     for (const [k, tld] of done_defs().reverse()) {
       memo_gc();
-      const [dl, vals] = emit_open({ ...sc, fresh: new Map(),
-        brwl: new Map(), rest: [] }, k);
+      const [dl, vals] = emit_open(scope_new(), k);
       FL.segs.push(dl.seg);
       emit_body(dl, fun_of(k).h!, tld.T, [], vals, null);
     }
@@ -3151,9 +3153,9 @@ function js_marshal(A: HTerm | null, out: boolean): string {
       }(x)), a))`;
   }
   const key = (out ? "out " : "in ") + Bend.term_key(Bend.term_lower(t));
-  return memo(FL.spun, key, () => {
-    const name = "$0m" + FL.spun.size;
-    FL.spun.set(key, name);
+  return memo(FL.marsh, key, () => {
+    const name = "$0m" + FL.marsh.size;
+    FL.marsh.set(key, name);
     const cs = (FL.book.tlds[t.k] as Bend.ADT).c;
     const arms = cs.map((c) => {
       const fs = ctr_live(c, t.x).flatMap(([, n, B]) => {
@@ -3901,10 +3903,11 @@ INLINE Term term_keep(Env e, Term t, u32 k) {
   return rfc_wrap(e, t, 1 + k);
 }
 
-// A redirect cell holds its target's loc over a 24-bit count, which
-// changes by atomic adds on the low half. The loc never changes, so one
-// relaxed read of the cell (a plain one on the device), torn or not, finds
-// it; a shared node's fields never change either.
+// A redirect cell holds its target's loc over a 24-bit count, which only
+// atomic adds on the low word change: the loc bits never do. The host reads
+// the cell in one relaxed 64-bit load; the device's plain load may tear into
+// two halves, both holding the same loc. A shared node's fields never change
+// either, so ctr_take copies them before it acquires.
 INLINE u64 term_peek(DEV u64* H, Term t) {
   if (term_rfc(t)) {
     return w64_load(&H[term_loc(t)]) >> 24;
