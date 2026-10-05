@@ -766,8 +766,10 @@ function book_promises(book: Bend.Book): string[] {
 
 // term_refs adds to out the names a term refers to: every Ref and ADT
 // head, reached through the term's own shape. A checked subterm carries
-// its type as the value of a Var, and that type is walked too.
-function term_refs(t: Bend.LTerm | Bend.HTerm | Bend.Patt, out: Set<string>): void {
+// its type as the value of a Var, and that type is walked too, except
+// the bodies of its binders (All, Lam, Let), which are functions there.
+// Every tag has a case, so a new one fails to compile, not to report.
+function term_refs(t: Bend.LTerm | Bend.HTerm, out: Set<string>): void {
   switch (t.$) {
     case "Ref": {
       out.add(t.k);
@@ -780,8 +782,7 @@ function term_refs(t: Bend.LTerm | Bend.HTerm | Bend.Patt, out: Set<string>): vo
       }
       return;
     }
-    case "Ctr":
-    case "PCtr": {
+    case "Ctr": {
       for (const x of t.x) {
         term_refs(x, out);
       }
@@ -794,7 +795,6 @@ function term_refs(t: Bend.LTerm | Bend.HTerm | Bend.Patt, out: Set<string>): vo
       return;
     }
     case "Sub": {
-      term_refs(t.v, out);
       term_refs(t.f, out);
       return;
     }
@@ -856,8 +856,16 @@ function term_refs(t: Bend.LTerm | Bend.HTerm | Bend.Patt, out: Set<string>): vo
       term_refs(t.T, out);
       return;
     }
-    default: {
+    case "Qnt":
+    case "Qua":
+    case "Lit":
+    case "Efq":
+    case "Rfl":
+    case "Hol": {
       return;
+    }
+    default: {
+      return t satisfies never;
     }
   }
 }
