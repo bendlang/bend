@@ -949,11 +949,17 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return ctr_term(e, s, x, T, live);
     }
     case "Lit": {
-      if (x.k === "Nat" && x.v > NAT_MAX) {
-        // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add
+      const nat = e.book.tlds.Nat;
+      const mul = e.book.tlds["Nat.mul"];
+      const add = e.book.tlds["Nat.add"];
+      if (x.k === "Nat" && x.v > NAT_MAX && nat?.b === true && mul?.b === true && add?.b === true) {
+        // base's arithmetic keeps trusted large literals compact.
         const [q, r] = [Math.floor(x.v / NAT_MAX), x.v % NAT_MAX];
-        const mul = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
-        return term(e, s, B.App(B.App(B.Ref("Nat.add"), mul), B.Lit("Nat", r)), live);
+        const product = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
+        return term(e, s, B.App(B.App(B.Ref("Nat.add"), product), B.Lit("Nat", r)), live);
+      }
+      if (x.k === "Nat" && x.v > NAT_MAX) {
+        return nat_literal(e, s, x.v, live);
       }
       return term(e, s, B.term_higher(B.lit_step(x)), live);
     }
@@ -1244,6 +1250,32 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   return F.q.$ === G.q.$ && qsig_eq(e, F.B(x), G.B(x), d + 1);
 }
 
+// a Nat literal as unary constructors without recursively lowering its
+// predecessor, which would overflow the JS stack for large values
+function nat_literal(e: Safe, s: Scope, value: number, live: boolean): O {
+  const zero = e.book.ctrs.Zero;
+  const succ = e.book.ctrs.Succ;
+  if (zero === undefined || succ === undefined) {
+    oos("an unknown Nat constructor");
+  }
+  let out = ctr_term(e, s, B.Ctr("Zero", []), null, live);
+  const field = B.term_wnf(e.book, succ.T);
+  if (field.$ !== "All") {
+    oos("a malformed Nat successor");
+  }
+  const q = quant(field.q);
+  for (let i = 0; i < value; i += 1) {
+    out = pack_ctr("Succ", [[q, out]]);
+  }
+  return out;
+}
+
+// a constructor as a tuple of its tag and fields
+function pack_ctr(k: Name, fs: Array<[Q, O]>): O {
+  const tail = fs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), { $: "Lab", k: "()" });
+  return { $: "Tup", q: 1, a: { $: "Lab", k: name_tt(k) }, b: tail };
+}
+
 // a constructor as a tuple of its tag and fields
 function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k];
@@ -1272,9 +1304,7 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
     fs.push([q, arg_term(e, s, a, A.A, live && q > 0)]);
     F = A.B(a);
   }
-  const k = name_tt(x.k);
-  const tail = fs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), { $: "Lab", k: "()" });
-  return { $: "Tup", q: 1, a: { $: "Lab", k }, b: tail };
+  return pack_ctr(x.k, fs);
 }
 
 // a U32 or F32 word, as a def of its own
