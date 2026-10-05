@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- `--verdict` checks Lean v4.34.0 before building its kernel and keys the
-  cache by that release and the kernel source. Old source-only caches are
-  not reused; verified caches and an explicit `$BENDTT` still work (#1332).
-
 ## 2.0.35 (2026-10-03)
 
 - **M1 and M2 run the GPU again** (#1154, PR #1274 by nicolas-abril): since

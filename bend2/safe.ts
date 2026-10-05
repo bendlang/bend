@@ -1503,7 +1503,7 @@ function kernel_bin(): string {
     return text;
   };
   const version = run(tool("lean"), ["--version"]);
-  if (version.match(/^Lean \(version ([^,\s)]+)/)?.[1] !== LEAN_VERSION) {
+  if (version.match(/^Lean \(version ([^,\s)]+)/m)?.[1] !== LEAN_VERSION) {
     fail("lean --version: " + version.trim().slice(0, 300));
   }
   fs.copyFileSync(src, path.join(dir, "bendtt.lean"));
