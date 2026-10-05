@@ -34,12 +34,14 @@
 //
 // The kernel has literal quantities only: an item (a book name) goes out
 // once per tuple of closed arguments at its specialized parameters, with
-// those parameters gone. Every def goes out after the defs its live code
-// names; a name in a type may come later. A def with no body (a law, a
-// native, a foreign fill) goes out opaque at a model: the kernel checks
-// the model, then never unfolds the def. What the kernel cannot express
-// is out of scope: it goes, with every def that names it, and --verdict
-// fails.
+// those parameters gone; a def checked on its own also goes out as a
+// λ-match on its finite ones, to its instances, so the kernel checks
+// that they cover it. Every def goes out after the defs its live code
+// names; a name in a type may come later. A def with no body (a
+// law, a native, a foreign fill) goes out opaque at a model: the kernel
+// checks the model, then never unfolds the def. What the kernel cannot
+// express is out of scope: it goes, with every def that names it, and
+// --verdict fails.
 
 import * as child from "node:child_process";
 import * as crypto from "node:crypto";
@@ -84,6 +86,12 @@ type Bind = { o: O; T: HTerm | null; v?: HTerm };
 // the argument of each parameter of an item, or of each column of a
 // tree, that is specialized; null at the rest
 type Cols = Array<HTerm | null>;
+
+// a root's instances: the columns of one, or a match on a specialized
+// parameter of a finite type A, with a root for each of its values
+type Root =
+  | { $: "Cols"; cols: Cols }
+  | { $: "Mat"; A: HTerm; arms: Root[] };
 
 // an argument: its binder's quantity, the argument, the binder's type,
 // and its value when the binder is specialized
@@ -196,7 +204,7 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
   const roots: Array<[Name, string]> = [];
   for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
     try {
-      roots.push(...root_cols(e, k, book.tlds[k].T, 0).map((cols): [Name, string] => [k, item_try(e, k, cols)]));
+      roots.push([k, root_emit(e, k, root_of(e, k, book.tlds[k].T, []))]);
     } catch (x) {
       if (!(x instanceof Scope_Error)) {
         throw x;
@@ -229,27 +237,28 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
   return { text: book_show(e), oos };
 }
 
-// the columns root k checks at, from its telescope T's parameter j on:
-// a specialized parameter of a finite type (Quant, or a datatype whose
-// constructors have no fields) at each value, any other at an opaque
+// root k after the columns cs of its telescope T: a specialized
+// parameter of a finite type (Quant, or a datatype whose constructors
+// have no fields) matched, at each value; any other at an opaque
 // constant k~p of its type, which models read at its model (as bend2
 // checks a template: its body holds at every argument)
-function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
+function root_of(e: Safe, k: Name, T: HTerm, cs: Cols): Root {
   const sp = spec_of(e, k);
   const F = B.term_wnf(e.book, T);
+  const j = cs.length;
   if (j === sp.length || F.$ !== "All") {
-    return [[]];
+    return { $: "Cols", cols: cs };
   }
-  const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
+  const at = (v: HTerm | null): Root => root_of(e, k, F.B(v ?? B.Var(F.k, j)), [...cs, v]);
   if (!sp[j]) {
     return at(null);
   }
   const A = B.term_wnf(e.book, F.A);
   const adt = A.$ === "ADT" && A.x.length === 0 ? e.book.tlds[A.k] as ADT : null;
-  const vs = A.$ === "Qnt" ? [B.None(), B.Lone(), B.Many()].map((q) => B.Qua(q))
+  const vs: HTerm[] | null = A.$ === "Qnt" ? [B.None(), B.Lone(), B.Many()].map((q) => B.Qua(q))
     : adt !== null && adt.c.every((c) => B.term_wnf(e.book, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
   if (vs !== null) {
-    return vs.flatMap(at);
+    return { $: "Mat", A, arms: vs.map(at) };
   }
   if (mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
     oos("a specialized parameter whose type names a parameter");
@@ -265,6 +274,40 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
     e.mb.tlds[c] = { ...def, v: m };
   }
   return at(B.Ref(c));
+}
+
+// root k at r: at its columns, that item; else k's instances, and a def
+// that is a λ-match on each finite parameter whose arms name them, at a
+// type that is a λ-match on it too (at *1, which a *2 fits), so the
+// kernel checks that the instances cover k (at an empty type, that
+// there are none: λ{})
+function root_emit(e: Safe, k: Name, r: Root): string {
+  if (r.$ === "Cols") {
+    return item_try(e, k, r.cols);
+  }
+  const n = fresh(e, name_tt(k));
+  const efq: O = { $: "Efq" };
+  // a λ-match on A, the arm hs[i] at its i-th value (Quant's in order)
+  const mat = (A: HTerm, hs: O[]): O => {
+    if (A.$ !== "ADT") {
+      return hs.reduceRight<O>((m, h, i) => ({ $: "Mat", k: "Q" + String(i), h, m }), efq);
+    }
+    const cs = (e.book.tlds[A.k] as ADT).c;
+    return { $: "Prj", h: cs.reduceRight<O>((m, c, i) => ({ $: "Mat", k: name_tt(c.k), h: unit(hs[i]), m }), efq) };
+  };
+  const ty = (s: Scope, r: Root): O => {
+    if (r.$ === "Cols") {
+      return term(e, s, type_drop(e, e.book.tlds[k].T, r.cols), false);
+    }
+    const l = s.D;
+    const A = term(e, s, r.A, false);
+    const M = mat(r.A, r.arms.map((a) => ty(scope_hide(s), a)));
+    const K: O = { $: "All", q: 1, l: l + 1, A, B: { $: "Typ", q: 1 } };
+    return { $: "All", q: 1, l, A, B: { $: "App", q: 1, f: { $: "Ann", x: M, T: K }, x: { $: "Var", l } } };
+  };
+  const body = (r: Root): O => r.$ === "Mat" ? mat(r.A, r.arms.map(body)) : { $: "Ref", k: item_ref(e, k, r.cols, true) };
+  e.out.push([n, ty(scope_nil(), r), body(r), false]);
+  return n;
 }
 
 // item_ref, with a failure kept as the item's reason
@@ -681,7 +724,7 @@ function unapply(t: HTerm): [HTerm, HTerm[]] {
 function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   const top = fs[fs.length - 1];
   if (top !== undefined && top.n === 0) {
-    return { $: "Mat", k: "()", h: convoy_bind(e, s, top.cv, t, fs.slice(0, -1)), m: { $: "Efq" } };
+    return unit(convoy_bind(e, s, top.cv, t, fs.slice(0, -1)));
   }
   const [x, T] = open(t);
   const all = all_of(e, T);
@@ -1180,7 +1223,6 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   };
   // the selector's match: a member's arm past its tag (and a helper's (.k, ()))
   const efq: O = { $: "Efq" };
-  const unit = (h: O): O => ({ $: "Mat", k: "()", h, m: efq });
   const sel = (f: (m: Name) => O): O => ({ $: "Prj", h: g.ms.reduceRight<O>((m, k, i) => ({ $: "Mat", k: name_tt(k), m,
     h: i === 0 ? unit(f(k)) : { $: "Prj", h: { $: "Mat", k: name_tt(g.k), h: unit(f(k)), m: efq } } }), efq) });
   const l0 = s.D;
@@ -1392,6 +1434,11 @@ function is_o(v: unknown): v is O {
 // ∀s (or Σs) over b, at the binders ps
 function alls(ps: Binder[], b: O, $: "All" | "Sig" = "All"): O {
   return ps.reduceRight<O>((B, [q, l, A]) => ({ $, q, l, A, B }), b);
+}
+
+// the match that splits a Σ chain's unit, then h
+function unit(h: O): O {
+  return { $: "Mat", k: "()", h, m: { $: "Efq" } };
 }
 
 // λs over b, at the binders ps; one that uses its variable twice copies it
