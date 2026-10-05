@@ -544,6 +544,7 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       }
       const h = proj ? hyp() : null;
       for (const c of path.includes(key) || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
+        const xs: HTerm[] = [];
         let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
         let x: HTerm | null = null;
         while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, key], [], proj, probe)) !== null) {
