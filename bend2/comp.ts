@@ -5958,12 +5958,11 @@ int main(int argc, char** argv) {
       io_argv[io_argc++] = argv[i];
     }
   }
-  bool active = gpu != 0 && BANGS != 0;
-  const char* why = active ? gpu_probe() : NULL;
-  bool dev = active && why == NULL;
-  if (gpu == 1 && active && why != NULL) {
+  const char* why = gpu != 0 && BANGS != 0 ? gpu_probe() : "";
+  if (gpu == 1 && BANGS != 0 && why != NULL) {
     err_fail(why);
   }
+  bool dev = why == NULL;
   io_loop(corpus_setup(dev, thr > 0 ? thr : cpu_count(), mem));
   io_sync();
   return 0;
