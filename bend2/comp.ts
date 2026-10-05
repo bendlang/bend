@@ -1144,12 +1144,18 @@ function lits_cond(w: string, j: number, n: number): string {
   return j >= 32 ? `${w} == ${n}` : `(${w} & ${2 ** j - 1}) == ${n}`;
 }
 
-// An IO.OP match keeps its default arm: a request is none of its arms.
+// An IO.OP match keeps its default arm: a request is none of its arms, so
+// it fail-stops, and a user's default arm ("_") takes only Emit and Halt.
 function mat_ctrs(x: HTerm, adt: Of<"ADT">): [Name, HTerm][] {
   const { arms, end } = mat_arms(x);
-  return adt.k === "IO.OP"
+  return adt.k === "IO.OP" && term_strip(end).$ !== "Efq"
+    ? [...arms, ["_", end], ["", Bend.Efq()]] : adt.k === "IO.OP"
     || arms.length < Bend.book_adt(FL.book, adt, Bend.Emp()).c.length
     ? [...arms, ["", end]] : arms;
+}
+
+function mat_ops(eq: (k: Name) => string): string {
+  return ["Emit", "Halt"].map(eq).join(" || ");
 }
 
 // Fun
@@ -2669,8 +2675,9 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
       return e === 1 ? [v] : val_arm(v).slice(0, e);
     }])
     : mat_ctrs(x, adt).map(([k, h]) => {
-      if (k === "") {
-        return ["", h, () => [u]];
+      if (k === "" || k === "_") {
+        return [k && mat_ops((c) => `term_aux(${sw}) == ${cid_mac(c)}`), h,
+          () => [u]];
       }
       if (adt.k === "Array") {
         const el = lay_el(adt.x[0]);
@@ -3063,7 +3070,8 @@ function js_match(sc: Scope, x: HTerm, ty: HTerm | null, args: string[]): void {
   } else {
     const native = OPTIMIZED[adt.k];
     lv = mat_ctrs(x, adt).map(([k, h]): [string, HTerm, string[]] =>
-      k === "" ? ["", h, [s]] : native === undefined
+      k === "" || k === "_" ? [k && mat_ops((c) =>
+        `${s}.$ === "${Bend.name_key(c)}"`), h, [s]] : native === undefined
       ? [`${s}.$ === "${Bend.name_key(k)}"`, h,
         ctr_live(FL.book.ctrs[k]).map(([, f]) => `${s}["${f}"]`)]
       : [tpl(native[k].cond ?? "", [s]), h,
