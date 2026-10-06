@@ -490,9 +490,9 @@ export function Check(tm: LTerm, ty: HTerm, us: Uses): Check {
 // Diag
 // ---
 
-export function Diag(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = []): Diag {
+export function Diag(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = [], severity: Severity = "error"): Diag {
   return { $: "Diag", bok, ctx, exp, obs, spn, def, nte,
-    severity: "error", fixes };
+    severity, fixes };
 }
 
 // Char
