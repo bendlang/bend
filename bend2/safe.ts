@@ -116,8 +116,8 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 // kernel names taken, why each failed item is out of
 // scope, the groups found (kept from pass to pass), each template
 // instance's template and ~ arguments (its key in book.tmps), the items
-// going out (outermost first, and as a set), and whether this pass grew a
-// group
+// going out (outermost first, and as a set), whether this pass grew a
+// group, and the root constants by place and type
 type Safe = {
   book: Book;
   mb: Book;
@@ -132,6 +132,7 @@ type Safe = {
   stack: string[];
   going: Set<string>;
   grew: boolean;
+  consts: Map<string, Name>;
 };
 
 // a model search's fuel left, its round's depth, and whether that round
@@ -198,7 +199,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false };
+    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false, consts: new Map() };
   const roots: Array<[Name, string]> = [];
   for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
     try {
@@ -238,8 +239,8 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
 // the columns root k checks at, from its telescope T's parameter j on:
 // a specialized parameter of a finite type (Quant, or a datatype whose
 // constructors have no fields) at each value, any other at an opaque
-// constant k~p of its type, which models read at its model (as bend2
-// checks a template: its body holds at every argument)
+// constant of its type, one per place for all roots, which models read at
+// its model (as bend2 checks a template: its body holds at every argument)
 function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const sp = spec_of(e, k);
   const F = B.term_wnf(e.book, T);
@@ -260,6 +261,11 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   if (mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
     oos("a specialized parameter whose type names a parameter");
   }
+  const key = String(j) + "\n" + B.term_key(B.term_lower(F.A));
+  const kept = e.consts.get(key);
+  if (kept !== undefined) {
+    return at(B.Ref(kept));
+  }
   let c = k + "~" + F.k;
   while (e.book.tlds[c] !== undefined) {
     c += "~";
@@ -270,6 +276,7 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   if (m !== null) {
     e.mb.tlds[c] = { ...def, v: m };
   }
+  e.consts.set(key, c);
   return at(B.Ref(c));
 }
 
