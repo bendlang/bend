@@ -353,7 +353,10 @@ export type Check = { tm: LTerm; us: Uses };
 // Error
 export type Expr = HTerm | string;
 export type Severity<T extends "error" | "warning" | "information" | "hint"> = T;
-export type Err = { $: "Err"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity<"error"> };
+// Safe fixes preserve behavior; suggestions may change it; dangerous fixes may break code.
+// Edits use half-open offsets in the original source; a fix's edits apply together.
+export type Fix = { title: string; applicability: "safe" | "suggested" | "dangerous"; edits: { spn: Span; text: string }[] };
+export type Err = { $: "Err"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity<"error">; fixes: Fix[] };
 
 // Constructors
 // ============
@@ -487,9 +490,9 @@ export function Check(tm: LTerm, ty: HTerm, us: Uses): Check {
 // Err
 // ---
 
-export function Err(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string): Err {
+export function Err(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = []): Err {
   return { $: "Err", bok, ctx, exp, obs, spn, def, nte,
-    severity: "error" };
+    severity: "error", fixes };
 }
 
 // Char
