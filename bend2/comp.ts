@@ -34,6 +34,7 @@ type Seg = {
   refs: Set<string>;
   spin?: boolean;
   fork?: boolean;
+  host?: boolean;
 };
 
 type Spine = {
@@ -109,7 +110,7 @@ type Of<K> = Extract<HTerm, { $: K }>;
 
 type Row = [HTerm, number, number, number];
 
-type Intr = { C?: string | string[] | null; JS: string };
+type Intr = { C?: string | string[] | null; JS: string; host?: boolean };
 
 type Dom = [Bend.Quant, Name, HTerm];
 
@@ -225,8 +226,8 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
   },
   f32_bits: { C: "$0", JS: "f32_bits($0)" },
-  f32_show: { C: "f32_show(e, $0)", JS: "f32_show($0)" },
-  f32_read: { C: "f32_read(e, $0)", JS: "f32_read($0)" },
+  f32_show: { C: "f32_show(e, $0)", JS: "f32_show($0)", host: true },
+  f32_read: { C: "f32_read(e, $0)", JS: "f32_read($0)", host: true },
   nat_add: { C: "nat_chk(e, $0 + $1)", JS: "nat_chk($0 + $1)" },
   nat_mul: { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
   nat_double: { C: "nat_chk(e, $0 + $0)", JS: "nat_chk($0 + $0)" },
@@ -2234,6 +2235,7 @@ function emit_intr(sc: Scope, it: Intr, m: Spine, ty: HTerm | null): Val {
     val_own(sc, val_to(sc, v, fun_of(k).lays[i]))[0]);
   const lay = lay_of(ty);
   const C = it.C!;
+  sc.seg.host ||= it.host;
   const all = Array.isArray(C) || /\$(\d)[^]*\$\1/.test(C);
   const as = ws.map((w) => all || tpl_deep(w) ? emit_alias(sc, w, "a") : w);
   if (Array.isArray(C)) {
@@ -2760,9 +2762,11 @@ function effect_srcs(ext: string, miss: string): string[] {
 
 // A segment may fork if one it reaches does; Clo~apply reaches every
 // closure. The device holds what the bangs reach, and every closure when a
-// bang's parameter may hold one. One bank serves both lanes: rp pads the
-// host's twelfth slot, which keeps rax free for the tail call. WL_LOAD is a
-// ladder, as clang builds the phi cascade of a fallthrough switch in O(n^2).
+// bang's parameter may hold one; a bang that may reach a host op (F32.show
+// and F32.read print and parse through libc) runs on the host. One bank
+// serves both lanes: rp pads the host's twelfth slot, which keeps rax free
+// for the tail call. WL_LOAD is a ladder, as clang builds the phi cascade
+// of a fallthrough switch in O(n^2).
 
 export function compile_book(book: Bend.Book): string {
   FL = file_new(book, false);
@@ -2807,9 +2811,15 @@ export function compile_book(book: Bend.Book): string {
     [...s.refs].map((r) => [s.fid, r]));
   const reach = (from: string[]) => graph_close(new Set(from), edges);
   const live = reach([seg_fid("main")]);
-  const wide = [...FL.bangs].some((k) =>
-    fun_of(k).live.some(([, , A]) => ty_clo(A)));
-  const dev = reach([...[...FL.bangs].map(seg_fid), ...wide ? FL.clos : []]);
+  const host = graph_close(new Set([...FL.segs, ...FL.spins]
+    .filter((s) => s.host).map((s) => s.fid)), edges.map(([a, b]) => [b, a]));
+  const wides = new Set([...FL.bangs].filter((k) =>
+    fun_of(k).live.some(([, , A]) => ty_clo(A))));
+  const clo_host = [...FL.clos].some((c) => host.has(c));
+  const bangs = new Set([...FL.bangs].filter((k) =>
+    !host.has(seg_fid(k)) && !(wides.has(k) && clo_host)));
+  const wide = [...bangs].some((k) => wides.has(k));
+  const dev = reach([...[...bangs].map(seg_fid), ...wide ? FL.clos : []]);
   FL.segs = FL.segs.filter((s) => live.has(s.fid));
   FL.spins = FL.spins.filter((s) => live.has(s.fid));
   const desc = show === null ? [] : ["#if !DEVICE",
@@ -2848,12 +2858,12 @@ export function compile_book(book: Bend.Book): string {
   const ws = n > 6 ? [...rs.slice(0, 6), "rp", ...rs.slice(6)] : rs;
   defs.push(`CONSTV u8 FID_T[][3] = { ${entries.map((s) =>
     `{ ${s.params.length}, ${s.frame === null ? 0
-      : s.params.length - s.frame.at.length}, ${Number(FL.bangs.has(s.def))
+      : s.params.length - s.frame.at.length}, ${Number(bangs.has(s.def))
       | Number(!forky.has(s.fid)) << 1} }`).join(", ")} };`,
   `CONSTV u8 CID_T[][2] = { ${[...cids.keys()].map((k, i) =>
     `{ ${ars[i]}, ${Number(FL.hot.has(k))} }`).join(", ")} };`,
   `#define STAT_LEN ${FL.img.length}`, "",
-  `#define WL_RESW ${resw}`, `#define BANGS   ${FL.bangs.size}`, "",
+  `#define WL_RESW ${resw}`, `#define BANGS   ${bangs.size}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
   `#define WL_LOAD(A, N) \\\n  do { \\\n${rs.map((r, i) =>
     `    if ((N) <= ${i}) break; ${r} = e.mem[(A) + ${i}]; \\\n`).join("")
