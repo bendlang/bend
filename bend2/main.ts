@@ -415,16 +415,18 @@ function cc_find(gpu: boolean): string {
 
 // cli_build builds the C file at `file` into the binary `bin`. A `!` program
 // builds with the GPU lane and writes its GPU program too (on Linux only with
-// CUDA at $CUDA_HOME, else at /usr/local/cuda, its libraries in lib64 or, as
-// nix lays them, lib; else the ! runs on the cores). On macOS a program with
-// a framework (#import: a window, audio) builds as Objective-C; on Linux it
-// links the X11 and ALSA libraries it includes.
+// CUDA at the first of $CUDA_HOME, $CUDA_PATH, /usr/local/cuda and /opt/cuda
+// (Arch's) that holds nvrtc.h, its libraries in lib64 or, as nix lays them,
+// lib; else the ! runs on the cores). On macOS a program with a framework
+// (#import: a window, audio) builds as Objective-C; on Linux it links the X11
+// and ALSA libraries it includes.
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
   const mac   = process.platform === "darwin";
-  const cuda  = process.env.CUDA_HOME || "/usr/local/cuda";
-  const bangs = !/^#define BANGS\s+0$/m.test(c)
-    && (mac || fs.existsSync(cuda + "/include/nvrtc.h"));
+  const cuda  = [process.env.CUDA_HOME, process.env.CUDA_PATH,
+    "/usr/local/cuda", "/opt/cuda"]
+    .find(d => d && fs.existsSync(d + "/include/nvrtc.h")) ?? "";
+  const bangs = !/^#define BANGS\s+0$/m.test(c) && (mac || cuda !== "");
   const cc    = cc_find(bangs);
   const objc  = mac && (bangs || /^#import /m.test(c))
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
