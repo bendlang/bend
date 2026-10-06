@@ -1,8 +1,8 @@
 # a let is a Body, not a Term: an argument, a constructor field, a type
-# argument and a Kind operand each hold a term, so a let there needs the
-# parens the grammar gives a body ("(" Body ")"). the printer wrote the
-# let bare there (use2(a = n; a, 2n)), and its own output did not parse
-# back; only a body position (a def, lambda or let body) reads it bare
+# argument and a Kind operand each hold a term, so a let there takes the
+# parens the grammar gives a body ("(" Body ")"); each position below
+# parses and checks (the snf substitutes the lets, so this pins the
+# parser, not the printer)
 import Base
 
 type Box<A: Type> is Type:
