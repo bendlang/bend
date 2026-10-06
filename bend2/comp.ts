@@ -916,8 +916,6 @@ function type_adts(T: HTerm): Name[] {
   }
 }
 
-// the datatypes type_adts finds in telescope T from its j-th domain on,
-// read off its reduced domains and return type
 function tele_adts(T: HTerm, j = 0): Name[] {
   const { doms, ret } = tele_unbind(T);
   return [...doms.slice(j).flatMap(([, , A]) => type_adts(A)), ...type_adts(ret)];
@@ -1403,8 +1401,6 @@ function file_book(roots: Name[]): void {
     const deps = new Set<Name>();
     const refs = new Set<Name>();
     let flat = true;
-    // the def's own λs and body, and a call's head, are typed by a
-    // signature: its telescope, reduced once, gives their datatypes
     const { n, h } = fun_of(d);
     const sig = new Map<HTerm, number>();
     for (let t = term_force(h!), j = 0; t.$ === "Ann";) {

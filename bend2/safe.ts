@@ -153,8 +153,6 @@ const MODEL_DEPTH = 8;
 // only this compiler release may build a cached kernel
 const LEAN_VERSION = "4.34.0";
 
-// the terms bend2 never types as a function: types, quantities,
-// constructors, literals and proofs
 const NOT_FN = new Set(["Typ", "Qnt", "Qua", "Min", "All", "ADT", "Ctr", "Lit", "Eql", "Rfl"]);
 
 // Errors
