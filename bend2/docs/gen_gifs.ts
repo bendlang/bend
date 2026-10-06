@@ -25,7 +25,6 @@
 
 import { createCanvas } from "canvas";
 
-import { gif_write } from "./gen_anim.ts";
 import * as charts from "./gen_charts.ts";
 
 // Types
@@ -212,14 +211,7 @@ function frame(a: Page, b: Page, t: number, at: number, n: number): void {
 // ===
 
 // every turn is GLIDE seconds of frames at FPS; the last frame of each
-// turn is the page itself, and lasts HOLD seconds more. The frames go
-// to ffmpeg through a concat list, which keeps every duration, so each
-// hold is one frame with a long delay; one palette of 63 colours plus
-// the transparent slot, no dither. A smaller palette makes a smaller
-// file, but it drops the green of the speedups. A gif has 1-bit alpha:
-// a pixel is opaque (alpha >= 128) or clear. Because every frame keeps
-// clear pixels, ffmpeg disposes each one to the background, so no bar
-// of the page before shows through
+// turn is the page itself, and lasts HOLD seconds more
 function gif(name: string, pages: Page[]): void {
   const steps = Math.round(GLIDE * FPS);
   const shots: [[Page, Page, number, number], number][] = [];
@@ -229,7 +221,7 @@ function gif(name: string, pages: Page[]): void {
       shots.push([[prev, page, k / FPS, at], 1 / FPS + (k === steps ? HOLD : 0)]);
     }
   });
-  gif_write(name, cv, ([a, b, t, at]) => frame(a, b, t, at, pages.length),
+  charts.gif_write(name, cv, ([a, b, t, at]) => frame(a, b, t, at, pages.length),
     shots, String(pages.length) + " pages, ");
 }
 
