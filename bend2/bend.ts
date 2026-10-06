@@ -495,6 +495,13 @@ export function Diag(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def
     severity, fixes };
 }
 
+export function diag_report(diag: Diag): void {
+  if (diag.severity === "error") {
+    throw diag;
+  }
+  diag.bok.diags.push(diag);
+}
+
 // Char
 // ====
 
@@ -1499,7 +1506,8 @@ export function diag_show(diag: Diag): string {
   }
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
   const nte = diag.nte === undefined ? "" : "\n" + diag.nte;
-  return "Error:" + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte;
+  const head = diag.severity[0].toUpperCase() + diag.severity.slice(1) + ":";
+  return head + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte;
 }
 
 // Parse

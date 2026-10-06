@@ -831,6 +831,10 @@ async function book_read(file: string, base?: Bend.Book,
     }
   } catch (e) {
     throw new Check_Fail(e);
+  } finally {
+    for (const diag of book.diags) {
+      cli_say(2, Bend.diag_show(diag) + "\n");
+    }
   }
   return book;
 }
