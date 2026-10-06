@@ -360,7 +360,7 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // template prefix, filled into its type; the tree takes them. A def with
 // no body goes out opaque, at a model of its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
-  const T = B.tele_fill(e.book, tld.T, cols.filter((v): v is HTerm => v !== null), B.ctx_nil());
+  const T = B.tele_fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[], B.ctx_nil());
   const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
