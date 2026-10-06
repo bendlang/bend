@@ -80,6 +80,7 @@ type File = {
   brws: Map<Name, boolean[]>;
   nodes: Map<Name, Lay>;
   lays: Map<string, Lay>;
+  wnfs: Map<string, HTerm>;
   lay_ids: Map<Lay, number>;
   memo: {
     opens: Map<Of<"Lam"> | Of<"Let">, { ps: Of<"Var">[]; b: HTerm }>;
@@ -674,7 +675,7 @@ function term_spine(tm: HTerm): Spine {
     }
     const tld = c.$ === "Ref" ? FL.book.tlds[c.k] : undefined;
     const T = tld?.$ === "Def" ? tld.T : ty_ann(h);
-    const qs = T === null ? [] : tele_unbind(T).doms;
+    const qs = T === null || apps.length === 0 ? [] : tele_unbind(T).doms;
     const live = apps.map((_, i) => i >= qs.length || dom_live(qs[i]));
     const all = apps.map((a) => a.x);
     const args = all.filter((_, i) => live[i]);
@@ -840,7 +841,10 @@ function ty_ann(t: HTerm): HTerm | null {
 }
 
 function ty_wnf(ty: HTerm | null): HTerm | null {
-  return ty && Bend.term_wnf(FL.book, ty);
+  const h = ty && term_force(ty);
+  return h && (h.$ === "App" || h.$ === "Ref")
+    ? memo(FL.wnfs, Bend.term_key(Bend.term_lower(h)), () => Bend.term_wnf(FL.book, h))
+    : ty && Bend.term_wnf(FL.book, ty);
 }
 
 function ty_all(ty: HTerm | null): Of<"All"> {
@@ -1336,6 +1340,7 @@ function file_new(book: Bend.Book, js: boolean): File {
     brws: new Map(),
     nodes: new Map(),
     lays: new Map(),
+    wnfs: new Map(),
     lay_ids: new Map(),
     memo: {
       opens: new Map(),

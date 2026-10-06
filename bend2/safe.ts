@@ -153,6 +153,10 @@ const MODEL_DEPTH = 8;
 // only this compiler release may build a cached kernel
 const LEAN_VERSION = "4.34.0";
 
+// the terms bend2 never types as a function: types, quantities,
+// constructors, literals and proofs
+const NOT_FN = new Set(["Typ", "Qnt", "Qua", "Min", "All", "ADT", "Ctr", "Lit", "Eql", "Rfl"]);
+
 // Errors
 // ======
 
@@ -200,7 +204,9 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
     todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false };
   const roots: Array<[Name, string]> = [];
-  for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
+  const last = new Map<Name, number>();
+  book.order.forEach((k, i) => last.set(k, i));
+  for (const k of book.order.filter((k, i) => last.get(k) === i && book.tlds[k].b !== true)) {
     try {
       roots.push(...root_cols(e, k, book.tlds[k].T, 0).map((cols): [Name, string] => [k, item_try(e, k, cols)]));
     } catch (x) {
@@ -242,8 +248,8 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
 // checks a template: its body holds at every argument)
 function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const sp = spec_of(e, k);
-  const F = B.term_wnf(e.book, T);
-  if (j === sp.length || F.$ !== "All") {
+  const F = j === sp.length ? null : B.term_wnf(e.book, T);
+  if (F?.$ !== "All") {
     return [[]];
   }
   const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
@@ -662,7 +668,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     return { $: "Mat", k: "()", h: convoy_bind(e, s, top.cv, t, fs.slice(0, -1)), m: { $: "Efq" } };
   }
   const [x, T] = open(t);
-  const all = all_of(e, T);
+  const all = NOT_FN.has(x.$) ? null : all_of(e, T);
   // a specialized column takes its argument: a λ binds it (no kernel
   // binder), a match goes to the arm it takes, whose fields it binds so
   const v = top === undefined ? s.cols[0] ?? null : null;
@@ -1196,9 +1202,9 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
 // for its ~ argument, a column the tree drops
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
-  const ps = new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
+  const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
   const t0 = B.term_higher(tld.e as B.LTerm);
-  let t = tld.x === 0 ? t0 : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
+  let t = ps === null ? t0 : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
@@ -1223,8 +1229,8 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
   const tree = y.$ === "Lam" || y.$ === "Mat" || y.$ === "Efq";
-  const all = all_of(e, A);
-  if (!tree && all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
+  const all = tree || NOT_FN.has(y.$) ? null : all_of(e, A);
+  if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
     return term(e, s, eta(x, all), live);
   }
   return term(e, s, T === null && tree ? B.Ann(x, A) : x, live);
@@ -1259,7 +1265,7 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
     }
     return word_ref(e, x.k, f, w);
   }
-  const G = T === null ? null : B.term_wnf(e.book, T);
+  const G = T === null || fam.n === 0 ? null : B.term_wnf(e.book, T);
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, () => B.Var("_", -1));
   let F = B.tele_fill(e.book, ctr.T, ps, B.ctx_nil());
   const fs: Array<[Q, O]> = [];
