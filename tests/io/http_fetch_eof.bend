@@ -85,7 +85,7 @@ def fetch_done(s: Socket, chunks: List<&2, List<&2, U32>>) -> IO(String):
 
 # At the exact limit, the one-byte probe must be EOF.
 def fetch_end(
-  m: Socket & Result<&1, &1, U32 & String, List<&2, U32>>,
+  m: Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>>,
   chunks: List<&2, List<&2, U32>>
 ) -> IO(String):
   (s, r) = m
@@ -94,15 +94,15 @@ def fetch_end(
       fetch_fail(s, code, message)
     case Done{chunk}:
       match chunk:
-        case Nil{}:
+        case None{}:
           fetch_done(s, chunks)
-        case h <> t:
+        case Some{bytes}:
           fetch_fail(s, 1, "HTTP response exceeds 65536 bytes")
 
 def fetch_read(
   fuel: Nat,
   remaining: U32,
-  m: Socket & Result<&1, &1, U32 & String, List<&2, U32>>,
+  m: Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>>,
   chunks: List<&2, List<&2, U32>>
 ) -> IO(String):
   match fuel remaining:
@@ -115,14 +115,16 @@ def fetch_read(
       match r:
         case Fail{(code, message)}:
           fetch_fail(s, code, message)
-        case Done{chunk}:
+        case Done{None{}}:
+          fetch_done(s, chunks)
+        case Done{Some{chunk}}:
           match chunk:
             case Nil{}:
               fetch_done(s, chunks)
             case +h <> +t:
               +left = U32.sub(remaining, U32.from_nat(List.length(&2, U32, chunk)))
               do IO<String>:
-                next : Socket & Result<&1, &1, U32 & String, List<&2, U32>> <-
+                next : Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>> <-
                   TCP.recv_bytes(s, U32.max(U32.min(left, 8192), 1))
                 fetch_read(fuel2, left, next, chunk <> chunks)
 
@@ -133,11 +135,15 @@ def ascii(text: String) -> List<&2, U32>:
     case SCon{Chr{byte}, rest}:
       byte <> ascii(rest)
 
-def send_done(m: Socket & Result<&1, &1, U32 & String, Unit>) -> IO(Socket):
+def send_done(m: Socket & Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>) -> IO(Socket):
   (s, r) = m
-  do IO<Socket>:
-    IO.pass(Unit, r)
-    return s
+  match r:
+    case Done{u}:
+      IO.pure(Socket, s)
+    case Fail{((code, message), rest)}:
+      do IO<Socket>:
+        Socket.close(s)
+        IO.die(Socket, code, message)
 
 def serve(parts: List<&2, List<&2, U32>>, s: Socket) -> IO(Unit):
   match parts:
@@ -145,7 +151,7 @@ def serve(parts: List<&2, List<&2, U32>>, s: Socket) -> IO(Unit):
       Socket.close(s)
     case part <> rest:
       do IO<Unit>:
-        sent : Socket & Result<&1, &1, U32 & String, Unit> <- TCP.send_bytes(s, part)
+        sent : Socket & Result<&1, &1, (U32 & String) & List<&2, U32>, Unit> <- TCP.send_bytes(s, part)
         next : Socket <- send_done(sent)
         IO.sleep(30)
         serve(rest, next)
@@ -175,7 +181,7 @@ def accepted(parts: List<&2, List<&2, U32>>, client: Socket,
     server : Socket <- IO.pass(Socket, r)
     Listener.close(listener)
     IO.spawn(Unit, serve(parts, server))
-    first : Socket & Result<&1, &1, U32 & String, List<&2, U32>> <-
+    first : Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>> <-
       TCP.recv_bytes(client, 8192)
     fetch_read(65536n, 65536, first, Nil{})
 

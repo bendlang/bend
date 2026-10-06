@@ -15,9 +15,21 @@ def ping(tag):
     Unit <- IO.sleep(0)
     IO.print(tag)
 
+law sent:
+  for r : Result<&1, &1, (U32 & String) & String, Unit>
+  IO(Unit)
+
+def sent(r):
+  match r:
+    case Done{u}:
+      IO.pure(Unit, u)
+    case Fail{(error, data)}:
+      (code, message) = error
+      IO.die(Unit, code, message)
+
 law sends:
   for n : Nat
-  for m : Socket & Result<&1, &1, (U32 & String), Unit>
+  for m : Socket & Result<&1, &1, (U32 & String) & String, Unit>
   for +p : U32
   IO(Socket)
 
@@ -29,8 +41,8 @@ def sends(n, m, p):
     case 1n+k:
       (s, r) = m
       do IO<Socket>:
-        u : Unit <- IO.pass(Unit, r)
-        m2 : Socket & Result<&1, &1, (U32 & String), Unit> <-
+        u : Unit <- sent(r)
+        m2 : Socket & Result<&1, &1, (U32 & String) & String, Unit> <-
           UDP.send_to(s, "127.0.0.1", p, "x")
         sends(k, m2, p)
 

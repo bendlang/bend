@@ -772,8 +772,10 @@ the theory, with three relations:
 - _Parallel reduction_ $t => u$ reduces any set of redexes in $t$, in
   live and dead positions. It includes the rules of @fig:eval with any
   terms in place of the values, and the unfolding of a name to its
-  body. _Conversion_ $a equiv b$ holds when $a$ and $b$ have a common
-  reduct.
+  body. It also steps $lambda^2 x. t$ to $lambda^1 x. t$, and never
+  back: the quantity of a lambda says how it runs, so two lambdas of one
+  liveness are convertible when their bodies are. _Conversion_
+  $a equiv b$ holds when $a$ and $b$ have a common reduct.
 - _Typing_ $Gamma tack t : T$ has the rules of @fig:typing.
 - _Evaluation_ $t |-> u$ is call-by-value evaluation of live code
   (@fig:eval). Its values are lambdas, matches, labels, #rfl, types,
@@ -811,9 +813,9 @@ $t scripts(=>)^* u_2$, then $u_1 scripts(=>)^* v$ and
 $u_2 scripts(=>)^* v$ for some $v$.]
 
 We follow Takahashi @takahashi1995. The complete development $t^*$
-reduces every redex of $t$ at once. If $t => u$, then $u => t^*$, and
-confluence follows. The proof does not use types, so #Ty : #Ty plays no
-part in it.
+reduces every redex of $t$ at once, and steps every $lambda^2$ to
+$lambda^1$. If $t => u$, then $u => t^*$, and confluence follows. The
+proof does not use types, so #Ty : #Ty plays no part in it.
 
 Confluence gives the two facts about conversion that the rest of the
 proof needs. First, type formers are injective. If
@@ -840,7 +842,11 @@ the fit of the codomains. It holds for
 reduction anywhere, dead positions included, and it does not need the
 live check.
 
-Reduction of open terms does not preserve the live check. Take
+Parallel reduction does not preserve the live check. On a closed
+term, the step from $lambda^2 x. (x, x)$ to $lambda^1 x. (x, x)$ leaves
+a quantity-1 variable used twice. This is harmless, since the live
+claims are about evaluation, and $|->$ never takes that step. Reduction
+of open terms loses the live check in a second way. Take
 $(lambda^2 x. (x, x)) space y$, where $y$ is an affine variable of type
 `Nat`. It passes the live check, since it uses $y$ once. One step later
 it is $(y, y)$, which uses $y$ twice. Quantitative type theory
@@ -1042,7 +1048,7 @@ counter.
 = Mechanization <sec:mech>
 
 The kernel of BendTT, the statements of the theorems and their proofs
-are one Lean 4 file @demoura2021, `bendtt.lean`, of 4,158 lines. Every
+are one Lean 4 file @demoura2021, `bendtt.lean`, of about 4,000 lines. Every
 proof is complete, and the file declares no axioms of its own, so the
 proofs rest only on Lean's standard axioms. The file has three parts.
 Part 1 is the kernel: terms, evaluation, conversion, the checker, the

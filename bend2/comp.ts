@@ -317,7 +317,7 @@ const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
 } satisfies Record<Name, Native>, null);
 
 const RUNTIME_ADTS = ["Sigma", "String", "Word.Nil", "Word.Con", "IO.OP",
-  "Result", "Maybe", "Bool", "Unit"];
+  "Result", "Poll", "Maybe", "Bool", "Unit"];
 
 const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 
@@ -674,7 +674,7 @@ function term_spine(tm: HTerm): Spine {
     }
     const tld = c.$ === "Ref" ? FL.book.tlds[c.k] : undefined;
     const T = tld?.$ === "Def" ? tld.T : ty_ann(h);
-    const qs = T === null ? [] : tele_unbind(T).doms;
+    const qs = T === null || apps.length === 0 ? [] : tele_unbind(T).doms;
     const live = apps.map((_, i) => i >= qs.length || dom_live(qs[i]));
     const all = apps.map((a) => a.x);
     const args = all.filter((_, i) => live[i]);
@@ -2129,9 +2129,10 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): string[] {
   });
 }
 
-function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = []): Val[] {
+function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = [],
+  tys: HTerm[] = []): Val[] {
   return xs.map((x, i) => emit_expr({ ...sc, rest: [...xs.slice(i + 1),
-    ...sc.rest] }, x, null, ats[i] ?? null));
+    ...sc.rest] }, x, tys[i] ?? null, ats[i] ?? null));
 }
 
 function emit_put(sc: Scope, dst: Val | null, v: Val): void {
@@ -2266,9 +2267,11 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
     return val_new([`${u}ull`], W32, true);
   }
   const flds = ctr_flds(x.k, x.x);
+  const ctr = FL.book.ctrs[x.k];
+  const tys = () => ctr ? ctr_doms(ctr, adt.x) : [];
   const word = WORDS[adt.k];
   if (word !== undefined) {
-    const vs = emit_each(sc, flds);
+    const vs = emit_each(sc, flds, [], tys());
     if (vs.length === 1 && vs[0].ws.length > 1) {
       return val_new([`(${vs[0].ws.map((w, i) => `((u64)${w} << ${i})`)
         .join(" | ")})`], word);
@@ -2281,14 +2284,14 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
     return val_new([w], word, /^\d/.test(w));
   }
   if (adt.k === "Array") {
-    const vs = emit_each(sc, flds);
+    const vs = emit_each(sc, flds, [], tys());
     return val_new([x.k === "ALeaf"
       ? arr_new(sc, "0", vs[0], lay_el(adt.x[0]))
       : `blk_node(e, ${val_own(sc, vs[0])[0]}, ${val_own(sc, vs[1])[0]})`],
     BOX);
   }
   if (FL.hot.has(x.k)) {
-    facts_ctr(sc, FL.book.ctrs[x.k], adt.x);
+    facts_ctr(sc, ctr, adt.x);
   }
   const pos = at ?? lay_of(adt);
   const seen = memo(FL.consts, pos, () => new Map());
@@ -2298,7 +2301,7 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   }
   const lay = lay_box(pos) ? lay_node(x.k) : pos;
   const arms = Object.keys(lay.arms!);
-  const vs = emit_each(sc, flds, lay.arms![x.k]);
+  const vs = emit_each(sc, flds, lay.arms![x.k], tys());
   const ws = [...arms.length > 1 ? [String(arms.indexOf(x.k))] : [],
     ...vs.flatMap((f, j) => val_to(sc, f, lay.arms![x.k][j]).ws)];
   const v = val_new(lay.ks.map((_, j) => ws[j] ?? "0"), lay,
@@ -3700,6 +3703,12 @@ static void err_trap(int sig) {
 #define err_seen(H)    (DEVICE && a32_load(a32_at(H, H_ERROR_CODE)) != 0)
 #define err_spun(H, n) ((++*(n) & 4095) == 0 && err_seen(H))
 
+#if __METAL_VERSION__ >= 320
+#define err_peek(H) *(volatile DEV u32*)a32_at(H, H_ERROR_CODE)
+#else
+#define err_peek err_seen
+#endif
+
 ${NATIVE.C}
 A32_LOOP(fadd, f32_rewrap(f32_unbox(o) + f32_unbox(v)))
 
@@ -3812,7 +3821,7 @@ INLINE u64 heap_alloc(Env e, u32 cls) {
 }
 
 INLINE void heap_free(Env e, u32 cls, u64 loc) {
-  if (err_seen(e.mem)) {
+  if (err_peek(e.mem)) {
     return;
   }
   e.mem[loc]       = ALC_AT(e, cls);
@@ -4187,6 +4196,7 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
 #define ring_slot(H, r, p) ring_word(H, r, (p) & (RING_LEN - 1))
 #define ring_get(H, r)     ((DEV u32*)ring_word(H, r, RING_LEN))
 #define ring_put(H, r)     ((DEV u32*)ring_word(H, r, RING_LEN + 1))
+#define ring_held(H, r)    (ring_put(H, r) + 1)
 
 INLINE u32 ring_lap(u32 pos) {
   return ~(u32)(pos / RING_LEN) & 1;
@@ -4466,12 +4476,13 @@ INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 strid
 // Dev
 // ===
 
-// One kernel: pass 0 grows the frontier, pass 1 drains each lane's ring,
-// pass 2 packs the banks: in one group, each bank's [top, wr) slides onto
+// One kernel: pass 0 grows the frontier, pass 1 runs the c-th deal on lane
+// c, pass 2 packs the banks: in one group, each bank's [top, wr) slides onto
 // rd, CUBE_T entries a step (loads, barrier, stores: rd <= top), off the
 // host's pages. A grow pass ends when its group is full or nothing grew,
 // so a spine of forks unrolls whole. TG_HOLD words of threadgroup memory
-// hold one group per Apple core (bitonic 1.35x without).
+// hold one group per Apple core (bitonic 1.35x without). Pass 3 is pass 1
+// after a grow from under CUBE_T roots, on the lane's own ring to ring_held.
 
 #if DEVICE
 
@@ -4533,7 +4544,7 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass) {
   }
   u32  stride = grids == 1 ? CUBE_G : 1;
   u32  me     = row * CUBE_T + stride * lane;
-  u32 rg     = pass ? ring_flip(me) : me;
+  u32 rg     = pass == 1 ? ring_flip(me) : me;
   Env  e      = { H, H + ALC_OFF + me };
   DEV Term*  stk    = (DEV Term*)(H + STAK_OFF + me);
   if (lane == 0) {
@@ -4542,7 +4553,7 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass) {
     }
   }
   BAR();
-  u32 put0      = a32_load(ring_put(H, rg));
+  u32 put0      = a32_load(pass == 3 ? ring_held(H, rg) : ring_put(H, rg));
   u32 seen_has  = 0;
   u32 seen_grew = 0;
   for (;;) {
@@ -4577,6 +4588,9 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass) {
       }
       seen_grew = grew;
     }
+  }
+  if (pass == 0) {
+    a32_store(ring_held(H, rg), a32_load(ring_put(H, rg)));
   }
   dev_cut(e);
 }
@@ -4832,7 +4846,7 @@ static void gpu_run(u32 f) {
   if (f < LANES) {
     gpu_kernel(0, CUBE_G);
   }
-  gpu_kernel(1, CUBE_G);
+  gpu_kernel(f < CUBE_T ? 3 : 1, CUBE_G);
   gpu_kernel(2, 1);
 }
 
@@ -4856,8 +4870,9 @@ static void gpu_fail(NSError* err) {
   err_fail([[err localizedDescription] UTF8String]);
 }
 
-static bool gpu_probe(void) {
-  return (gpu_dev = MTLCreateSystemDefaultDevice()) != nil;
+static const char* gpu_probe(void) {
+  gpu_dev = MTLCreateSystemDefaultDevice();
+  return gpu_dev == nil ? "this binary found no usable Metal GPU" : NULL;
 }
 
 static MTLComputePipelineDescriptor* gpu_desc(void) {
@@ -4966,21 +4981,45 @@ static void gpu_shape(int units) {
   CUBE_LOG = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
 }
 
-static bool gpu_probe(void) {
-  int       managed = 0;
+#define GPU_CHECK(fn, ...) do { \
+  if ((result = fn(__VA_ARGS__)) != CUDA_SUCCESS) { why = #fn; goto fail; } \
+} while (0)
+
+static const char* gpu_probe(void) {
+  static char error[192];
+  const char* why;
+  CUresult result;
+  int managed = 0;
   CUcontext ctx;
   setenv("CUDA_DEVICE_MAX_CONNECTIONS", "1", 0);
-  if (cuInit(0) == CUDA_SUCCESS && cuDeviceGet(&gpu_dev, 0) == CUDA_SUCCESS) {
-    cuDeviceGetAttribute(&managed,
-      CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS, gpu_dev);
+  GPU_CHECK(cuInit, 0);
+  GPU_CHECK(cuDeviceGet, &gpu_dev, 0);
+  GPU_CHECK(cuDeviceGetAttribute, &managed,
+    CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS, gpu_dev);
+  if (managed == 0) {
+    return "CUDA device lacks concurrent managed access (WSL2 lacks it)";
   }
   int l2 = 1 << 23;
   cuDeviceGetAttribute(&l2, CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, gpu_dev);
   gpu_shape(l2 >> 16);
-  return managed != 0
-    && cuDevicePrimaryCtxRetain(&ctx, gpu_dev) == CUDA_SUCCESS
-    && cuCtxSetCurrent(ctx) == CUDA_SUCCESS;
+  GPU_CHECK(cuDevicePrimaryCtxRetain, &ctx, gpu_dev);
+  result = cuCtxSetCurrent(ctx);
+  if (result != CUDA_SUCCESS) {
+    cuDevicePrimaryCtxRelease(gpu_dev);
+    why = "cuCtxSetCurrent";
+    goto fail;
+  }
+  return NULL;
+fail:;
+  const char* name = NULL;
+  if (cuGetErrorName(result, &name) != CUDA_SUCCESS || name == NULL) {
+    name = "unknown CUDA error";
+  }
+  snprintf(error, sizeof error, "%s failed: %s", why, name);
+  return error;
 }
+
+#undef GPU_CHECK
 
 static u64* gpu_map(u64 bytes) {
   CUdeviceptr p = 0;
@@ -5082,7 +5121,7 @@ static void gpu_pass(u32 f) {
 
 #else
 
-#define gpu_probe() false
+#define gpu_probe() "this binary has no CUDA or Metal GPU support"
 #define gpu_make(p) true
 #define gpu_span()  0
 #define gpu_load(b)
@@ -5316,6 +5355,7 @@ typedef struct IoWork {
   u64            time;
   short          evts;
   struct IoWork* next;
+  struct IoWork* prev;
 } IoWork;
 
 typedef Term (*Effect)(Env e, Term* f, IoWork* w);
@@ -5393,16 +5433,25 @@ static void io_spawn(Term m) {
 
 // io_park stays in deadline order (time 0, none, sorts last; ties keep
 // their park order), so io_wait wakes due timers in the order they expire.
+// It links both ways, so io_park_cut drops a waiter in O(1).
 static void io_park_add(IoWork* w) {
   IoWork* p = io_park;
   if (p == NULL || p->time - 1 <= w->time - 1) {
     io_push(&io_park, w);
-    return;
+  } else {
+    while (p->next->time - 1 <= w->time - 1) {
+      p = p->next;
+    }
+    io_push(&p, w);
   }
-  while (p->next->time - 1 <= w->time - 1) {
-    p = p->next;
-  }
-  io_push(&p, w);
+  w->prev       = w->next == w ? w : w->next->prev;
+  w->next->prev = w;
+}
+
+static void io_park_cut(IoWork* w) {
+  w->prev->next = w->next;
+  w->next->prev = w->prev;
+  io_park = w->next == w ? NULL : io_park == w ? w->prev : io_park;
 }
 
 static Term io_wait_on(IoWork* w, int fd, short evts, u64 time, IoPack more) {
@@ -5544,6 +5593,11 @@ static Term io_list(Env e, const char* p, u64 n) {
 #define io_done(e, v)   io_box(e, CID(Done), v)
 #define io_res(e, w, v) ((w)->code ? io_fail(e, (w)->code, NULL) \
   : io_done(e, v))
+#define io_until(ms)    (io_tick() + (u64)(ms) * 1000000ull)
+#define io_again(w) ((w)->code == EAGAIN \
+  && ((w)->time == 0 || io_tick() < (w)->time))
+#define io_poll_end(e, w, rest, r) ((w)->code == EAGAIN \
+  ? io_box(e, CID(Wait), rest) : (w)->time ? io_box(e, CID(Ready), r) : (r))
 
 static Term io_box(Env e, u64 cid, Term v) {
   u64 l = heap_alloc(e, 0);
@@ -5551,11 +5605,12 @@ static Term io_box(Env e, u64 cid, Term v) {
   return term_ctr(cid, l);
 }
 
-static Term io_fail(Env e, u32 code, const char* text) {
+static Term io_err(Env e, u32 code, const char* text) {
   const char* s = text != NULL ? text : strerror((int)code);
-  Term t = io_tup(e, code, io_str(e, s, strlen(s)));
-  return io_box(e, CID(Fail), t);
+  return io_tup(e, code, io_str(e, s, strlen(s)));
 }
+
+#define io_fail(e, code, text) io_box(e, CID(Fail), io_err(e, code, text))
 
 static pthread_mutex_t io_gate = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t  io_bell = PTHREAD_COND_INITIALIZER;
@@ -5903,7 +5958,7 @@ int main(int argc, char** argv) {
       printf(CLI_HELP, argv[0]);
       return 0;
     } else if (strcmp(a, "--gpu-build") == 0) {
-      if (gpu_probe() && !gpu_make(gpu_path())) {
+      if (gpu_probe() == NULL && !gpu_make(gpu_path())) {
         fprintf(stderr, "bend: cannot write %s\n", gpu_path());
         return 1;
       }
@@ -5933,11 +5988,11 @@ int main(int argc, char** argv) {
       io_argv[io_argc++] = argv[i];
     }
   }
-  bool dev = gpu != 0 && BANGS != 0 && gpu_probe();
-  if (gpu == 1 && BANGS != 0 && !dev) {
-    err_fail("--gpu on, but this binary found no usable GPU (a CUDA GPU needs"
-      " concurrent managed access, which WSL2's lack)");
+  const char* why = gpu != 0 && BANGS != 0 ? gpu_probe() : "";
+  if (gpu == 1 && BANGS != 0 && why != NULL) {
+    err_fail(why);
   }
+  bool dev = why == NULL;
   io_loop(corpus_setup(dev, thr > 0 ? thr : cpu_count(), mem));
   io_sync();
   return 0;
@@ -6086,9 +6141,10 @@ function show_val(D, N, d, v, chain) {
 // Apple arm64 passes variadic fcntl flags on the stack, so io_sys
 // binds fcntl there with the flags as the ninth fixed argument. A
 // parked effect waits for fd (a write when out) or until at
-// (performance.now()), either one undefined when unused; io_wake
-// resumes k with the value of more, and undefined parks it again. The
-// waits stay in deadline order, as io_park does in C.
+// (performance.now()), either one undefined when unused; once due, io_wait
+// calls more at once, as C calls pack, and resumes k with its value, while
+// undefined parks it again. The waits stay in deadline order, as io_park
+// does in C.
 
 function io_exit(main, show) {
   try {
@@ -6164,13 +6220,25 @@ function io_strerror(code) {
   }
 }
 
-function io_fail(code) {
-  return { $: "Fail",
-    error: io_tup(code >>> 0, io_strerror(code)) };
+function io_fail(code, ...rest) {
+  const err = io_tup(code >>> 0, io_strerror(code));
+  return { $: "Fail", error: io_tup(err, ...rest) };
 }
 
 function io_done(value) {
   return { $: "Done", value };
+}
+
+function io_until(ms) {
+  return performance.now() + Number(ms);
+}
+
+function io_late(at) {
+  return at !== undefined && performance.now() >= at;
+}
+
+function io_ready(at, r) {
+  return at === undefined ? r : { $: "Ready", value: r };
 }
 
 function io_tup(...xs) {
@@ -6244,19 +6312,16 @@ function io_wait(io, block) {
     set.fill(0);
   }
   const now = performance.now();
-  io.waits = io.waits.filter((w) => {
-    const ready = w.at <= now || w.fd !== undefined
-      && set[at(w)] & 1 << (w.fd & 7);
-    if (ready) {
-      io_push(io_wake, w, false);
+  const due = (w) => w.at <= now || w.fd !== undefined
+    && set[at(w)] & 1 << (w.fd & 7);
+  const todo = io.waits;
+  io.waits = todo.filter((w) => !due(w));
+  for (const w of todo.filter(due)) {
+    const x = w.more();
+    if (x !== undefined) {
+      io_push(w.k, x, false);
     }
-    return !ready;
-  });
-}
-
-function io_wake(w) {
-  const x = w.more();
-  return x === undefined ? undefined : w.k(x);
+  }
 }
 
 function io_park_on(fd, out, k, more, at) {

@@ -116,8 +116,8 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 // kernel names taken, why each failed item is out of
 // scope, the groups found (kept from pass to pass), each template
 // instance's template and ~ arguments (its key in book.tmps), the items
-// going out (outermost first, and as a set), and whether this pass grew a
-// group
+// going out (outermost first, and as a set), whether this pass grew a
+// group, and the root constants by place and type
 type Safe = {
   book: Book;
   mb: Book;
@@ -132,6 +132,7 @@ type Safe = {
   stack: string[];
   going: Set<string>;
   grew: boolean;
+  consts: Map<string, Name>;
 };
 
 // a model search's fuel left, its round's depth, and whether that round
@@ -198,9 +199,9 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false };
+    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false, consts: new Map() };
   const roots: Array<[Name, string]> = [];
-  for (const k of [...book.order].filter((k, i) => book.order.lastIndexOf(k) === i && book.tlds[k].b !== true)) {
+  for (const k of [...new Set([...book.order].reverse())].reverse().filter((k) => book.tlds[k].b !== true)) {
     try {
       roots.push(...root_cols(e, k, book.tlds[k].T, 0).map((cols): [Name, string] => [k, item_try(e, k, cols)]));
     } catch (x) {
@@ -238,12 +239,12 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
 // the columns root k checks at, from its telescope T's parameter j on:
 // a specialized parameter of a finite type (Quant, or a datatype whose
 // constructors have no fields) at each value, any other at an opaque
-// constant k~p of its type, which models read at its model (as bend2
-// checks a template: its body holds at every argument)
+// constant of its type, one per place for all roots, which models read at
+// its model (as bend2 checks a template: its body holds at every argument)
 function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const sp = spec_of(e, k);
-  const F = B.term_wnf(e.book, T);
-  if (j === sp.length || F.$ !== "All") {
+  const F = j === sp.length ? null : B.term_wnf(e.book, T);
+  if (F?.$ !== "All") {
     return [[]];
   }
   const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
@@ -260,6 +261,11 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   if (mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
     oos("a specialized parameter whose type names a parameter");
   }
+  const key = String(j) + "\n" + B.term_key(B.term_lower(F.A));
+  const kept = e.consts.get(key);
+  if (kept !== undefined) {
+    return at(B.Ref(kept));
+  }
   let c = k + "~" + F.k;
   while (e.book.tlds[c] !== undefined) {
     c += "~";
@@ -270,6 +276,7 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   if (m !== null) {
     e.mb.tlds[c] = { ...def, v: m };
   }
+  e.consts.set(key, c);
   return at(B.Ref(c));
 }
 
@@ -555,8 +562,8 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
 // a def name, taken here
 function fresh(e: Safe, n: string): string {
   let k = n;
-  while (e.taken.has(k)) {
-    k += "_";
+  for (let i = 1; e.taken.has(k); i++) {
+    k = n + "_" + String(i);
   }
   e.taken.add(k);
   return k;
@@ -1196,9 +1203,9 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
 // for its ~ argument, a column the tree drops
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
-  const ps = new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
+  const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
   const t0 = B.term_higher(tld.e as B.LTerm);
-  let t = tld.x === 0 ? t0 : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
+  let t = ps === null ? t0 : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
@@ -1223,8 +1230,8 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
   const tree = y.$ === "Lam" || y.$ === "Mat" || y.$ === "Efq";
-  const all = all_of(e, A);
-  if (!tree && all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
+  const all = tree || y.$ === "Ctr" ? null : all_of(e, A);
+  if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
     return term(e, s, eta(x, all), live);
   }
   return term(e, s, T === null && tree ? B.Ann(x, A) : x, live);
@@ -1259,7 +1266,7 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
     }
     return word_ref(e, x.k, f, w);
   }
-  const G = T === null ? null : B.term_wnf(e.book, T);
+  const G = T === null || fam.n === 0 ? null : B.term_wnf(e.book, T);
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, () => B.Var("_", -1));
   let F = B.tele_fill(e.book, ctr.T, ps, B.ctx_nil());
   const fs: Array<[Q, O]> = [];
