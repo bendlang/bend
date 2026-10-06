@@ -3132,6 +3132,8 @@ function js_def(sc: Scope, k: Name, def: Bend.Def): void {
   file_push(sc, "");
 }
 
+// Composite converters share a work stack, so recursion under Array never
+// grows the JS call stack. Arrays stay in-place; ADT nodes are copied.
 function js_marshal(A: HTerm | null, out: boolean): string {
   const t = ty_wnf(A);
   if (t?.$ === "All") {
@@ -3152,11 +3154,23 @@ function js_marshal(A: HTerm | null, out: boolean): string {
   if (t.k === "Nat") {
     return out ? "BigInt" : "nat_host";
   }
-  if (t.k === "Array") {
-    return `((a) => (a.forEach((x, i) => a[i] = ${js_marshal(t.x[0], out)
-      }(x)), a))`;
-  }
   const key = (out ? "out " : "in ") + Bend.term_key(Bend.term_lower(t));
+  if (t.k === "Array") {
+    return memo(FL.marsh, key, () => {
+      const name = "$0m" + FL.marsh.size;
+      FL.marsh.set(key, name);
+      const f = js_marshal(t.x[0], out);
+      if (f === "") return "";
+      FL.spins.push({ ...seg_new("", BOX, ["v"]), lines: [
+        `function ${name}(v, q) {`,
+        "const own = q === undefined;", "if (own) q = [];",
+        `for (let i = v.length - 1; i >= 0; i--) if (i in v) q.push(${f}, v[i], v, i);`,
+        "if (own) while (q.length) {",
+        "const i = q.pop(), a = q.pop(), x = q.pop(), f = q.pop(); a[i] = f(x, q);",
+        "}", "return v;", "}", ""] });
+      return name;
+    });
+  }
   return memo(FL.marsh, key, () => {
     const name = "$0m" + FL.marsh.size;
     FL.marsh.set(key, name);
@@ -3166,24 +3180,26 @@ function js_marshal(A: HTerm | null, out: boolean): string {
         const f = js_marshal(B, out);
         return f === "" ? [] : [[n, f]];
       });
-      const [n] = fs.filter(([, f]) => f === name).pop() ?? [];
-      const copy = fs.filter(([m]) => m !== n).map(([m, f]) =>
-        `, ${js_key(m)}${f}(v["${m}"])`).join("");
       const tag = Bend.name_key(c.k);
-      return `case "${tag}": ` + (fs.length === 0 ? "at[key] = v; return top[0];"
-        : `at = at[key] = {...v${copy}}; ` + (n === undefined ? "return top[0];"
-        : `key = "${n}"; v = v[key]; continue;`));
+      const fields = fs.reverse().map(([n, f]) =>
+        `q.push(${f}, v["${n}"], r, "${n}");`).join(" ");
+      return `case "${tag}": { ` + (fs.length === 0
+        ? "r = v; break; }"
+        : `r = {...v}; ${fields} break; }`);
     });
     const tk = Bend.name_key(t.k);
     const tags = cs.map((c) => Bend.name_key(c.k)).join(", ");
-    FL.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v) {`,
-      "const top = [v];", "for (let at = top, key = 0;;) {", "switch (v.$) {",
+    FL.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v, q) {`,
+      "const own = q === undefined;", "if (own) q = [];", "let r;",
+      "switch (v.$) {", ...arms,
       // TODO(#1105): a tag is the key the loading book gives its constructor,
       // so it depends on the root file; make tags the same in every book
-      ...arms, `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
+      `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
         tags}); a tag names its constructor as the"
       + " loading file sees it, which a later version will make the same"
-      + " everywhere (#1105)";`, "}", "}", "}", ""] });
+      + " everywhere (#1105)";`, "}", "if (own) while (q.length) {",
+      "const i = q.pop(), a = q.pop(), x = q.pop(), f = q.pop(); a[i] = f(x, q);",
+      "}", "return r;", "}", ""] });
     return name;
   });
 }
