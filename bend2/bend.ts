@@ -352,7 +352,8 @@ export type Check = { tm: LTerm; us: Uses };
 
 // Error
 export type Expr = HTerm | string;
-export type Err  = { $: "Err"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; };
+export type Severity<T extends "error" | "warning" | "information" | "hint"> = T;
+export type Err = { $: "Err"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity<"error"> };
 
 // Constructors
 // ============
@@ -487,7 +488,8 @@ export function Check(tm: LTerm, ty: HTerm, us: Uses): Check {
 // ---
 
 export function Err(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string): Err {
-  return { $: "Err", bok, ctx, exp, obs, spn, def, nte };
+  return { $: "Err", bok, ctx, exp, obs, spn, def, nte,
+    severity: "error" };
 }
 
 // Char
