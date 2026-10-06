@@ -1009,7 +1009,8 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
 // the arguments of an item's specialized parameters pick its instance and go
 function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live: boolean): O {
   const tld = typeof k === "string" ? e.book.tlds[k] : null;
-  const sp = tld?.$ === "Def" ? tld.x : 0;
+  // a def's first x parameters, its ~ ones, are specialized
+  const nx = tld?.$ === "Def" ? tld.x : 0;
   const ps: Arg[] = [];
   let U = T;
   xs.forEach((x, j) => {
@@ -1017,7 +1018,7 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
     if (F?.$ !== "All") {
       return oos("an application past its head's known type");
     }
-    const v = j < sp ? spec_val(e, s, x) : null;
+    const v = j < nx ? spec_val(e, s, x) : null;
     ps.push([quant(F.q), x, F.A, v]);
     U = F.B(v ?? x);
   });
@@ -1163,10 +1164,10 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   // at its specialized parameters), its cols and type
   const rest = (s1: Scope, m: Name) => {
     const tld = e.book.tlds[m];
-    const sp = tld.$ === "Def" ? tld.x : 0;
+    const nx = tld.$ === "Def" ? tld.x : 0;
     const r = tele_open(e, s1, tld.T, lead, tld.n);
     const qs = B.tele_unbind(e.book, tld.T).doms.map(([q]) => quant(q));
-    return { ...r, vs: r.xs.flatMap((x, j): Array<[Q, O]> => j < sp ? [] : [[qs[j], term(e, r.s, x, false)]]), cs: r.xs.map((x, j) => j < sp ? x : null) };
+    return { ...r, vs: r.xs.flatMap((x, j): Array<[Q, O]> => j < nx ? [] : [[qs[j], term(e, r.s, x, false)]]), cs: r.xs.map((x, j) => j < nx ? x : null) };
   };
   // the selector's match: a member's arm past its tag (and a helper's (.k, ()))
   const efq: O = { $: "Efq" };
