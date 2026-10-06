@@ -81,8 +81,8 @@ type O =
   | { $: "Rwt"; e: O; l: number; P: O; f: O };
 
 // a bend2 variable: the kernel term it stands for, its bend2 type, and
-// the argument a specialized one stands for (which goes out at each use,
-// at its type, so its o is unused)
+// the term a specialized parameter or inlined let stands for (built at
+// each use's depth and mode, so its o is unused)
 type Bind = { o: O; T: HTerm | null; v?: HTerm };
 
 // the argument of each parameter of an item, or of each column of a
@@ -589,8 +589,8 @@ function scope_nil(): Scope {
   return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false };
 }
 
-// binds the next bend2 variable to o (to the argument v when
-// specialized); a kernel binder when kb
+// binds the next bend2 variable to o, or to its original term v when
+// specialized or inlined; a kernel binder when kb
 function scope_bind(s: Scope, o: O, T: HTerm | null, kb: boolean, v?: HTerm): Scope {
   const c = s.c.slice();
   c[s.d] = { o, T, v };
@@ -1298,18 +1298,22 @@ function word_ref(e: Safe, T: Name, fam: Name, n: number): O {
 }
 
 // parallel lets as nested kernel lets; a let of a variable is inlined,
-// and so is a constructor a self-call takes (the kernel reads it as the
-// column it rebuilds only in place)
+// and so is a constructor a self-call takes. Build the latter at each
+// use's depth and mode, where the kernel reads the column it rebuilds
 function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: boolean, put: Set<number> = new Set()): O {
   let s2 = s;
   const ls: Array<[Q, number, O, number]> = [];
   for (let j = 0; j < x.k.length; j++) {
     const q = quant(x.q[j]);
+    const V = open(x.v[j])[1];
+    if (put.has(j)) {
+      s2 = scope_bind(s2, { $: "Efq" }, V, false, x.v[j]);
+      continue;
+    }
     // a parallel let's value sees s's variables, below the lets before it
     const at = { ...s, D: s2.D, kq: s2.kq };
     const v = term(e, at, x.v[j], live && q > 0);
-    const V = open(x.v[j])[1];
-    if (v.$ === "Var" || put.has(j)) {
+    if (v.$ === "Var") {
       s2 = scope_bind(s2, v, V, false);
     } else {
       const l = s2.D;
