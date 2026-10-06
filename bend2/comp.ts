@@ -316,8 +316,8 @@ const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
   },
 } satisfies Record<Name, Native>, null);
 
-const RUNTIME_ADTS = ["Sigma", "String", "Word.Nil", "Word.Con", "IO.OP",
-  "Result", "Poll", "Maybe", "Bool", "Unit"];
+const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
+  "Poll", "Maybe", "Bool", "Unit"];
 
 const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 
@@ -1034,6 +1034,12 @@ function ctr_flds(k: Name, xs: HTerm[]): HTerm[] {
 }
 
 function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
+  if (FL.book.ctrs[k]) {
+    const fam = Bend.book_fam(FL.book, k);
+    if (!FL.srcs.has(fam)) {
+      FL.srcs.set(fam, null);
+    }
+  }
   const cid = cid_mac(k);
   if (lay_node(k).ks.join() === "w32" || exprs.length === 0) {
     return `term_pak(${cid}, ${exprs[0] ?? 0})`;
