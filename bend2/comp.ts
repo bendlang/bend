@@ -161,7 +161,9 @@ const WIDE = 247;
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " --gpu 8GB|a function the device does not hold|a Nat past the"
   + " largest immediate 2^48-1|*|memory fault (machine stack overflow?)|an"
-  + " array past the deepest block class 31").replaceAll("*",
+  + " array past the deepest block class 31|a value has more than 2^24-1 live"
+  + " copies: keep fewer alive at once, or build it again for some of them"
+  + " (each build counts its own copies)").replaceAll("*",
   "runtime fail-stop").split("|");
 
 // Operations
@@ -3466,6 +3468,7 @@ typedef u32 __attribute__((may_alias)) u32a;
 #define ERR_RFCS 6
 #define ERR_DEEP 7
 #define ERR_ARRS 8
+#define ERR_CNTS 9
 
 #define LINE      16
 #define PAGE_BITS 7
@@ -3898,7 +3901,7 @@ INLINE Term rfc_seal(Env e, Term t) {
 INLINE void rfc_bump(Env e, u64 r, u32 k) {
   u32 c = a32_add(a32_at(e.mem, r), k);
   if ((c & RFC_CNT) >= RFC_CNT - k) {
-    err_post(e.mem, ERR_RFCS);
+    err_post(e.mem, ERR_CNTS);
   }
 }
 
@@ -4183,7 +4186,7 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
   BLK_ALLOC(l, arr ? c : buf_wcls(c))
   for (u32 j = 0; arr && d > 0 && j < n; j += 1) {
     if (d >= 24 && !term_triv(v[j])) {
-      err_post(H, ERR_RFCS);
+      err_post(H, ERR_CNTS);
     }
     v[j] = term_keep(e, v[j], (1u << d) - 1);
   }
