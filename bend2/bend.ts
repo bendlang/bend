@@ -333,7 +333,7 @@ export type Local = { $: "Local"; k: Patt[]; q: Quant; v: LTerm[]; f: Body };
 export type Body  = Match | Local | LTerm
 
 // Parser
-export type File  = { str: string; ns: string; al: Record<Name, Name>; };
+export type File  = { str: string; ns: string; al: Record<Name, Name>; path?: string };
 export type Parse = File & { book: Book; dir: string; pos: number; stk: Array<[Name, number]>; frs: number; };
 export type Span  = { file: File; beg: number; end: number; };
 
@@ -977,7 +977,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     }
     const m   = /^import\s+(\S+)(?:\s+as\s+([A-Za-z_]\w*))?\s*(?:#.*)?$/.exec(line);
     const beg = at + lines[i].indexOf(m?.[1] ?? line);
-    const sp  = { file: { str: text, ns, al }, beg, end: beg };
+    const sp  = { file: { str: text, ns, al, path: real }, beg, end: beg };
     if (m === null || (m[2] === undefined && m[1] !== "Base")) {
       throw Err(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
     }
@@ -1010,7 +1010,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     await book_load(book, got, sub, seen, sp, top);
   }
   const n0 = book.order.length;
-  parse_book(book, dir, body.join("\n"), ns, al);
+  parse_book(book, dir, body.join("\n"), ns, al, real);
   if (real === BASE_BEND) {
     for (const k of book.order.slice(n0)) {
       book.tlds[k].b = true;
@@ -2486,8 +2486,8 @@ export function parse_def(p: Parse, u: Bool): void {
   book.order.push(k);
 }
 
-export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>): void {
-  const p: Parse = { book, dir, str: src, pos: 0, stk: [], frs: 0, ns, al };
+export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>, file?: string): void {
+  const p: Parse = { book, dir, str: src, pos: 0, stk: [], frs: 0, ns, al, path: file };
   while (true) {
     parse_skip(p);
     if (p.pos >= p.str.length) {
