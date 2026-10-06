@@ -983,7 +983,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     if (m === null || (m[2] === undefined && m[1] !== "Base")) {
       throw Err(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
     }
-    body[i] = "";
+    body[i] = " ".repeat(lines[i].length);
     if (m[2] === undefined) {
       await book_load(book, BASE_BEND, "", seen, sp);
       continue;
