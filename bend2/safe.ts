@@ -1308,12 +1308,18 @@ function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: bool
     // a parallel let's value sees s's variables, below the lets before it
     const at = { ...s, D: s2.D, kq: s2.kq };
     const v = term(e, at, x.v[j], live && q > 0);
-    const V = open(x.v[j])[1];
-    if (v.$ === "Var" || put.has(j)) {
+    const [y, V] = open(x.v[j]);
+    const from = y.$ === "Var" ? at.c[y.i]?.T : null;
+    // Keep a refined Data view: consume the affine value once, then copy it.
+    const refined = q === 2 && v.$ === "Var" && V !== null && from != null
+      && kind(e, at, from) === 1 ? B.term_wnf(e.book, V) : null;
+    const view = refined !== null && (open(refined)[0].$ === "Eql" || kind(e, at, refined) === 2);
+    if ((v.$ === "Var" && !view) || put.has(j)) {
       s2 = scope_bind(s2, v, V, false);
     } else {
       const l = s2.D;
-      const w: O = inferable(v) ? v : V === null ? oos("a let with no known type")
+      const w: O = view ? { $: "Ann", x: v, T: term(e, at, refined!, false) }
+        : inferable(v) ? v : V === null ? oos("a let with no known type")
         : { $: "Ann", x: v, T: term(e, at, V, false) };
       ls.push([q, l, w, j]);
       s2 = scope_kq(scope_bind(s2, { $: "Var", l }, V, true), l, q);
