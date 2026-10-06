@@ -2129,9 +2129,10 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): string[] {
   });
 }
 
-function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = []): Val[] {
+function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = [],
+  tys: HTerm[] = []): Val[] {
   return xs.map((x, i) => emit_expr({ ...sc, rest: [...xs.slice(i + 1),
-    ...sc.rest] }, x, null, ats[i] ?? null));
+    ...sc.rest] }, x, tys[i] ?? null, ats[i] ?? null));
 }
 
 function emit_put(sc: Scope, dst: Val | null, v: Val): void {
@@ -2298,7 +2299,9 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   }
   const lay = lay_box(pos) ? lay_node(x.k) : pos;
   const arms = Object.keys(lay.arms!);
-  const vs = emit_each(sc, flds, lay.arms![x.k]);
+  const ctr = FL.book.ctrs[x.k];
+  const vs = emit_each(sc, flds, lay.arms![x.k],
+    ctr ? ctr_doms(ctr, adt.x) : []);
   const ws = [...arms.length > 1 ? [String(arms.indexOf(x.k))] : [],
     ...vs.flatMap((f, j) => val_to(sc, f, lay.arms![x.k][j]).ws)];
   const v = val_new(lay.ks.map((_, j) => ws[j] ?? "0"), lay,
