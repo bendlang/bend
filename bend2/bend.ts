@@ -356,7 +356,100 @@ export type Severity = "error" | "warning" | "information" | "hint";
 // Safe fixes preserve behavior; suggestions may change it; dangerous fixes may break code.
 // Edits use half-open offsets in the original source; a fix's edits apply together.
 export type Fix = { title: string; applicability: "safe" | "suggested" | "dangerous"; edits: { spn: Span; text: string }[] };
-export type Diag = { $: "Diag"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
+// Stable diagnostic kinds; changing message text must not change these codes.
+export const DIAG_CODES = {
+  AmbiguousName: "bend/ambiguous-name",
+  CannotInfer: "bend/cannot-infer",
+  ComputedScrutinee: "bend/computed-scrutinee",
+  ConstructorArity: "bend/constructor-arity",
+  ConstructorPatternArity: "bend/constructor-pattern-arity",
+  ConstructorPatternBracesRequired: "bend/constructor-pattern-braces-required",
+  ConstructorScrutinee: "bend/constructor-scrutinee",
+  DatatypeArity: "bend/datatype-arity",
+  DatatypeKindRequired: "bend/datatype-kind-required",
+  DatatypeRequired: "bend/datatype-required",
+  DeadScrutineeInLiveRegion: "bend/dead-scrutinee-in-live-region",
+  DeclarationNameConflict: "bend/declaration-name-conflict",
+  DuplicateField: "bend/duplicate-field",
+  DuplicateImportAlias: "bend/duplicate-import-alias",
+  DuplicateTemplateBinder: "bend/duplicate-template-binder",
+  EmptyMatch: "bend/empty-match",
+  EquationRequired: "bend/equation-required",
+  ExpectedDeclaration: "bend/expected-declaration",
+  ExpectedName: "bend/expected-name",
+  ExpectedTerm: "bend/expected-term",
+  ExpectedToken: "bend/expected-token",
+  FamilyInstanceRequired: "bend/family-instance-required",
+  FamilyNameRequired: "bend/family-name-required",
+  FieldMatchOutOfScope: "bend/field-match-out-of-scope",
+  FileNotFound: "bend/file-not-found",
+  FloatOutOfRange: "bend/float-out-of-range",
+  ForeignTemplate: "bend/foreign-template",
+  FunctionTypeRequired: "bend/function-type-required",
+  GrowingTemplateArgument: "bend/growing-template-argument",
+  HubFileUnavailable: "bend/hub-file-unavailable",
+  ImportCycle: "bend/import-cycle",
+  InvalidCharacter: "bend/invalid-character",
+  InvalidConstructorResult: "bend/invalid-constructor-result",
+  InvalidDecoratorTarget: "bend/invalid-decorator-target",
+  InvalidEscape: "bend/invalid-escape",
+  InvalidForeignPath: "bend/invalid-foreign-path",
+  InvalidForeignReturnType: "bend/invalid-foreign-return-type",
+  InvalidImport: "bend/invalid-import",
+  InvalidImportExtension: "bend/invalid-import-extension",
+  InvalidImportPath: "bend/invalid-import-path",
+  InvalidLambdaBinder: "bend/invalid-lambda-binder",
+  InvalidMatchConstructor: "bend/invalid-match-constructor",
+  InvalidMatchOrder: "bend/invalid-match-order",
+  InvalidName: "bend/invalid-name",
+  InvalidNatLiteral: "bend/invalid-nat-literal",
+  InvalidNumericLiteral: "bend/invalid-numeric-literal",
+  InvalidOffloadTarget: "bend/invalid-offload-target",
+  InvalidPackageSpecifier: "bend/invalid-package-specifier",
+  InvalidPattern: "bend/invalid-pattern",
+  InvalidPowerOfTwoCount: "bend/invalid-power-of-two-count",
+  InvalidRewriteBinder: "bend/invalid-rewrite-binder",
+  InvalidTelescope: "bend/invalid-telescope",
+  InvalidTypeArgument: "bend/invalid-type-argument",
+  KeywordInTerm: "bend/keyword-in-term",
+  LawTemplateArity: "bend/law-template-arity",
+  LetNameRequired: "bend/let-name-required",
+  LocalScrutinee: "bend/local-scrutinee",
+  MatchInTerm: "bend/match-in-term",
+  MatchPatternArity: "bend/match-pattern-arity",
+  MisplacedTemplateBinder: "bend/misplaced-template-binder",
+  MisplacedTemplateClause: "bend/misplaced-template-clause",
+  NatOutOfRange: "bend/nat-out-of-range",
+  NonDecreasingSelfCall: "bend/non-decreasing-self-call",
+  NonExhaustiveMatch: "bend/non-exhaustive-match",
+  OpenTemplateArgument: "bend/open-template-argument",
+  OperatorNamespaceRequired: "bend/operator-namespace-required",
+  OperatorTypeRequired: "bend/operator-type-required",
+  OrphanCase: "bend/orphan-case",
+  OrphanReturn: "bend/orphan-return",
+  PackageUnavailable: "bend/package-unavailable",
+  QuantifiedDatatypeRequired: "bend/quantified-datatype-required",
+  QuantityMismatch: "bend/quantity-mismatch",
+  ReservedName: "bend/reserved-name",
+  TemplateArity: "bend/template-arity",
+  TemplateInstantiationLimit: "bend/template-instantiation-limit",
+  TypeMismatch: "bend/type-mismatch",
+  U32OutOfRange: "bend/u32-out-of-range",
+  UnboundVariable: "bend/unbound-variable",
+  UndefinedConstructor: "bend/undefined-constructor",
+  UndefinedDatatype: "bend/undefined-datatype",
+  UndefinedLaw: "bend/undefined-law",
+  UndefinedName: "bend/undefined-name",
+  UnequalReflexivityEndpoints: "bend/unequal-reflexivity-endpoints",
+  UnfilledLaw: "bend/unfilled-law",
+  UnknownDecorator: "bend/unknown-decorator",
+  UnresolvedHole: "bend/unresolved-hole",
+  UnterminatedCharacter: "bend/unterminated-character",
+  UnterminatedString: "bend/unterminated-string",
+  VariablePatternRequired: "bend/variable-pattern-required",
+} as const;
+export type DiagCode = typeof DIAG_CODES[keyof typeof DIAG_CODES];
+export type Diag = { $: "Diag"; code: DiagCode; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
 
 // Constructors
 // ============
@@ -490,8 +583,8 @@ export function Check(tm: LTerm, ty: HTerm, us: Uses): Check {
 // Diag
 // ---
 
-export function Diag(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = [], severity: Severity = "error"): Diag {
-  return { $: "Diag", bok, ctx, exp, obs, spn, def, nte,
+export function Diag(code: DiagCode, bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = [], severity: Severity = "error"): Diag {
+  return { $: "Diag", code, bok, ctx, exp, obs, spn, def, nte,
     severity, fixes };
 }
 
@@ -720,7 +813,7 @@ export function term_higher(tm: LTerm, env: Env = null): HTerm {
     case "Ref": {
       if (tm.k.lastIndexOf(".") === 0) {
         const op = tm.s === undefined ? tm.k : tm.s.file.str.slice(tm.s.beg, tm.s.end);
-        throw Diag(book_nil(), ctx_nil(), "a type for this operator (write (a " + op + " b : Nat))", undefined, tm.s, undefined,
+        throw Diag(DIAG_CODES.OperatorTypeRequired, book_nil(), ctx_nil(), "a type for this operator (write (a " + op + " b : Nat))", undefined, tm.s, undefined,
           "Note: we broke this after launch, sorry. Until 2.0.16 a bare operator meant Nat.\n"
           + "That was a bug: operators demand annotation. Wrap the expression and it'll work again.");
       }
@@ -894,7 +987,7 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    throw Diag(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
+    throw Diag(DIAG_CODES.UndefinedDatatype, book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -917,14 +1010,14 @@ async function hub_get(book: Book, sub: string, hash: string, spn?: Span): Promi
   const src = res.ok ? await res.text() : "";
   const sum = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(src))).toString("hex");
   if (!res.ok || hash.length < 32 || sum.slice(0, hash.length) !== hash || path.posix.normalize("/" + sub) !== "/" + sub) {
-    throw Diag(book, ctx_nil(), "a file at " + BEND_HUB + "/" + sub + " hashing to " + hash, undefined, spn);
+    throw Diag(DIAG_CODES.HubFileUnavailable, book, ctx_nil(), "a file at " + BEND_HUB + "/" + sub + " hashing to " + hash, undefined, spn);
   }
   return src;
 }
 
 async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   if (!NAMED.test(nv)) {
-    throw Diag(book, ctx_nil(), "a package as <name>@<version>: a-z, 0-9 and -, 1 to 64 characters, at four numbers like 1.0.0.0", "'" + nv + "'", spn);
+    throw Diag(DIAG_CODES.InvalidPackageSpecifier, book, ctx_nil(), "a package as <name>@<version>: a-z, 0-9 and -, 1 to 64 characters, at four numbers like 1.0.0.0", "'" + nv + "'", spn);
   }
   const at  = path.join(BEND_LIB, "names", nv);
   const old = fs.existsSync(at) ? fs.readFileSync(at, "utf8").trim() : "";
@@ -934,7 +1027,7 @@ async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   const res = await fetch(BEND_HUB + "/name/" + nv).catch(() => null);
   const got = res?.ok ? (await res.text()).trim() : "";
   if (!/^0x[0-9a-f]{32}$/.test(got)) {
-    throw Diag(book, ctx_nil(), "a package named " + nv + " on " + BEND_HUB
+    throw Diag(DIAG_CODES.PackageUnavailable, book, ctx_nil(), "a package named " + nv + " on " + BEND_HUB
       + (res?.status === 410 ? " (it was taken down)" : ""), undefined, spn);
   }
   fs.mkdirSync(path.dirname(at), { recursive: true });
@@ -956,7 +1049,7 @@ async function book_file(book: Book, file: string, spn?: Span): Promise<string> 
     });
   }
   if (!fs.existsSync(file)) {
-    throw Diag(book, ctx_nil(), "no such file: " + file, undefined, spn);
+    throw Diag(DIAG_CODES.FileNotFound, book, ctx_nil(), "no such file: " + file, undefined, spn);
   }
   return fs.realpathSync(file);
 }
@@ -965,7 +1058,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
   const real = await book_file(book, file, spn);
   if (seen.has(real)) {
     if (seen.get(real) === null) {
-      throw Diag(book, ctx_nil(), "an import cycle through " + file, undefined, spn);
+      throw Diag(DIAG_CODES.ImportCycle, book, ctx_nil(), "an import cycle through " + file, undefined, spn);
     }
     return book.order.length;
   }
@@ -991,7 +1084,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     const beg = at + lines[i].indexOf(m?.[1] ?? line);
     const sp  = { file: { str: text, ns, al, path: real }, beg, end: beg };
     if (m === null || (m[2] === undefined && m[1] !== "Base")) {
-      throw Diag(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
+      throw Diag(DIAG_CODES.InvalidImport, book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
     }
     body[i] = " ".repeat(lines[i].length);
     if (m[2] === undefined) {
@@ -999,12 +1092,12 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
       continue;
     }
     if (!m[1].endsWith(".bend")) {
-      throw Diag(book, ctx_nil(), "an import of a .bend file", "'" + m[1] + "'", sp);
+      throw Diag(DIAG_CODES.InvalidImportExtension, book, ctx_nil(), "an import of a .bend file", "'" + m[1] + "'", sp);
     }
     if (m[2] in al) {
-      throw Diag(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
+      throw Diag(DIAG_CODES.DuplicateImportAlias, book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
     }
-    const bad = () => Diag(book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
+    const bad = () => Diag(DIAG_CODES.InvalidImportPath, book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
     const nv  = /^([^/]*@[^/]*)\//.exec(m[1]);
     const as  = nv === null ? m[1] : await name_hash(book, nv[1], sp) + m[1].slice(nv[1].length);
     const rel = path.posix.normalize(as);
@@ -1047,7 +1140,7 @@ export function tele_open(book: Book, tel: HTerm): Extract<HTerm, { $: "All" }> 
 export function tele_head(book: Book, tel: HTerm, ctx: Ctx, def?: Name, s?: Span): Extract<HTerm, { $: "All" }> {
   const t = tele_open(book, tel);
   if (t === null) {
-    throw Diag(book, ctx, "unreachable (a telescope binds its parameters and fields)", undefined, s, def);
+    throw Diag(DIAG_CODES.InvalidTelescope, book, ctx, "unreachable (a telescope binds its parameters and fields)", undefined, s, def);
   }
   return t;
 }
@@ -1532,9 +1625,9 @@ export function parse_span(p: Parse, beg: number): Span {
   return { file: p, beg, end: p.pos };
 }
 
-export function parse_fail(p: Parse, exp: string, beg = p.pos, end = p.pos): never {
+export function parse_fail(p: Parse, code: DiagCode, exp: string, beg = p.pos, end = p.pos): never {
   const obs = beg < end ? "'" + p.str.slice(beg, end) + "'" : p.pos < p.str.length ? "'" + p.str[p.pos] + "'" : "end of input";
-  throw Diag(p.book, ctx_nil(), exp, obs, { file: p, beg, end });
+  throw Diag(code, p.book, ctx_nil(), exp, obs, { file: p, beg, end });
 }
 
 export function parse_peek(p: Parse): string {
@@ -1583,7 +1676,7 @@ export function parse_skip(p: Parse): void {
 export function parse_eat(p: Parse, s: string): void {
   parse_skip(p);
   if (!parse_take(p, s)) {
-    parse_fail(p, "'" + s + "'");
+    parse_fail(p, DIAG_CODES.ExpectedToken, "'" + s + "'");
   }
 }
 
@@ -1606,7 +1699,7 @@ export function parse_word(p: Parse, w: string): boolean {
 export function parse_lexeme(p: Parse): Name {
   parse_skip(p);
   if (!char_is_head(parse_peek(p))) {
-    parse_fail(p, "a name");
+    parse_fail(p, DIAG_CODES.ExpectedName, "a name");
   }
   const beg = p.pos;
   while (p.pos < p.str.length && char_is_name(p.str[p.pos])) {
@@ -1614,7 +1707,7 @@ export function parse_lexeme(p: Parse): Name {
   }
   const k = p.str.slice(beg, p.pos);
   if (!/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
-    parse_fail(p, "a name (words joined by dots, got '" + k + "')", beg);
+    parse_fail(p, DIAG_CODES.InvalidName, "a name (words joined by dots, got '" + k + "')", beg);
   }
   return k;
 }
@@ -1622,7 +1715,7 @@ export function parse_lexeme(p: Parse): Name {
 export function parse_name(p: Parse): Name {
   const k = parse_lexeme(p);
   if (KEYWORDS.has(k)) {
-    parse_fail(p, "a name (got the keyword '" + k + "')", p.pos - k.length);
+    parse_fail(p, DIAG_CODES.ReservedName, "a name (got the keyword '" + k + "')", p.pos - k.length);
   }
   return k;
 }
@@ -1636,13 +1729,13 @@ export function parse_char(p: Parse): U32 {
     }
     const c = ESCAPES[parse_bump(p)];
     if (c === undefined) {
-      parse_fail(p, "an escape (\\n \\t \\r \\0 \\\\ \\' \\\" \\u{1F600})");
+      parse_fail(p, DIAG_CODES.InvalidEscape, "an escape (\\n \\t \\r \\0 \\\\ \\' \\\" \\u{1F600})");
     }
     return c;
   }
   const n = p.str.codePointAt(p.pos);
   if (n === undefined) {
-    parse_fail(p, "a character");
+    parse_fail(p, DIAG_CODES.InvalidCharacter, "a character");
   }
   p.pos += n > 0xffff ? 2 : 1;
   return n;
@@ -1686,7 +1779,7 @@ export function parse_reso(p: Parse, k: Name): Name {
   if (dot !== -1 && k.slice(0, dot) in p.al) {
     q = p.al[k.slice(0, dot)] + ":" + k.slice(dot + 1);
     if (q !== k && (q in p.book.tlds || q in p.book.ctrs) && (k in p.book.tlds || k in p.book.ctrs)) {
-      parse_fail(p, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
+      parse_fail(p, DIAG_CODES.AmbiguousName, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
     }
   }
   const own = q in p.book.tlds || q in p.book.ctrs;
@@ -1717,7 +1810,7 @@ export function parse_quant(p: Parse): Quant {
 
 export function parse_bind(p: Parse, t: LTerm): PVar {
   if (t.$ !== "Var") {
-    parse_fail(p, "a lambda binder (one name: k => body)");
+    parse_fail(p, DIAG_CODES.InvalidLambdaBinder, "a lambda binder (one name: k => body)");
   }
   return { $: "PVar", k: t.k, i: parse_open(p, t.k), q: t.i < 0 ? Many() : Lone(), s: t.s };
 }
@@ -1727,17 +1820,17 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
   switch (t.$) {
     case "Var": {
       if (book_ctr(book, parse_reso(p, t.k)) !== null) {
-        throw Diag(book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
+        throw Diag(DIAG_CODES.ConstructorPatternBracesRequired, book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
       }
       return parse_bind(p, t);
     }
     case "Ctr": {
       const ctr = book_ctr(book, t.k);
       if (ctr === null) {
-        throw Diag(book, ctx_nil(), "a declared constructor (unknown: " + name_key(t.k) + ")", undefined, t.s);
+        throw Diag(DIAG_CODES.UndefinedConstructor, book, ctx_nil(), "a declared constructor (unknown: " + name_key(t.k) + ")", undefined, t.s);
       }
       if (ctr.n !== t.x.length) {
-        throw Diag(book, ctx_nil(), "a " + name_key(t.k) + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
+        throw Diag(DIAG_CODES.ConstructorPatternArity, book, ctx_nil(), "a " + name_key(t.k) + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
       }
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
     }
@@ -1745,7 +1838,7 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       return parse_patt(p, lit_step(t));
     }
     default: {
-      throw Diag(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
+      throw Diag(DIAG_CODES.InvalidPattern, book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
     }
   }
 }
@@ -1790,16 +1883,16 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       return parse_term_do_stmt(p, m, ts, parse_col(p.str, p.pos));
     }
     if (k === "match") {
-      parse_fail(p, "a term (a match heads a def body, not a term)", beg);
+      parse_fail(p, DIAG_CODES.MatchInTerm, "a term (a match heads a def body, not a term)", beg);
     }
     if (k === "case") {
-      parse_fail(p, "a match heading this case (this case is orphaned)", beg);
+      parse_fail(p, DIAG_CODES.OrphanCase, "a match heading this case (this case is orphaned)", beg);
     }
     if (k === "return") {
-      parse_fail(p, "a do-block heading this return", beg);
+      parse_fail(p, DIAG_CODES.OrphanReturn, "a do-block heading this return", beg);
     }
     if (KEYWORDS.has(k)) {
-      parse_fail(p, "a term (the keyword '" + k + "' cannot head one)", beg);
+      parse_fail(p, DIAG_CODES.KeywordInTerm, "a term (the keyword '" + k + "' cannot head one)", beg);
     }
     if (parse_take(p, "{")) {
       const xs = parse_term_args(p, "}");
@@ -1833,7 +1926,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         return Var(t.k, -1, s);
       }
       if (tld === undefined || tld.$ !== "ADT" || tld.g === 0 || tld.g < tld.n && t.$ !== "ADT") {
-        parse_fail(p, "a quantified datatype after + (+D<..> sets D's leading quantities to &2)");
+        parse_fail(p, DIAG_CODES.QuantifiedDatatypeRequired, "a quantified datatype after + (+D<..> sets D's leading quantities to &2)");
       }
       const xs = t.$ === "ADT" ? t.x : Array.from({ length: tld.n }, (): LTerm => Qua(Lone(), s));
       return ADT(k, xs.map((x, i) => i < tld.g ? Qua(Many(), s) : x), s);
@@ -1875,7 +1968,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       let e = e0;
       if (parse_take(p, "@")) {
         if (e0.$ !== "Var") {
-          parse_fail(p, "a name before @ (a rewrite binder is one name: %e@E : P)");
+          parse_fail(p, DIAG_CODES.InvalidRewriteBinder, "a name before @ (a rewrite binder is one name: %e@E : P)");
         }
         k = e0.k;
         e = parse_term(p);
@@ -1941,7 +2034,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         if (cnt) {
           const k = Math.log2(nat_from_term(n) ?? 0);
           if (!Number.isInteger(k)) {
-            throw Diag(p.book, ctx_nil(), "a power of two count (^d takes a depth)", undefined, n.s);
+            throw Diag(DIAG_CODES.InvalidPowerOfTwoCount, p.book, ctx_nil(), "a power of two count (^d takes a depth)", undefined, n.s);
           }
           d = Lit("Nat", k, n.s);
         }
@@ -1956,7 +2049,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       parse_bump(p);
       const n = parse_char(p);
       if (!parse_take(p, "'")) {
-        parse_fail(p, "a closing '");
+        parse_fail(p, DIAG_CODES.UnterminatedCharacter, "a closing '");
       }
       const spn = parse_span(p, beg);
       return Ctr("Chr", [Lit("U32", n, spn)], spn);
@@ -1966,7 +2059,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       const cs: U32[] = [];
       while (!parse_take(p, '"')) {
         if (p.pos >= p.str.length) {
-          parse_fail(p, "a closing \"");
+          parse_fail(p, DIAG_CODES.UnterminatedString, "a closing \"");
         }
         cs.push(parse_char(p));
       }
@@ -1981,7 +2074,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       return Hol(k);
     }
     default: {
-      parse_fail(p, "a term");
+      parse_fail(p, DIAG_CODES.ExpectedTerm, "a term");
     }
   }
 }
@@ -2038,7 +2131,7 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
       }
       if (parse_at(p, "!")) {
         if (out.$ !== "Ref") {
-          parse_fail(p, "a named def before ! (only f!(..) offloads)");
+          parse_fail(p, DIAG_CODES.InvalidOffloadTarget, "a named def before ! (only f!(..) offloads)");
         }
         parse_bump(p);
         out.b = true;
@@ -2050,7 +2143,7 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
       const ts: LTerm[] = [];
       for (parse_skip(p); x > 0 && parse_at(p, "~"); parse_skip(p)) {
         if (ts.length === x) {
-          parse_fail(p, "a term (" + name_key(out.k) + " takes " + String(x) + " ~)");
+          parse_fail(p, DIAG_CODES.TemplateArity, "a term (" + name_key(out.k) + " takes " + String(x) + " ~)");
         }
         parse_bump(p);
         ts.push(parse_term(p));
@@ -2111,11 +2204,11 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
     // a glued < whose first operand stops at a type operator is a type
     // argument that needs parens, since a comparison never types there
     if (op === "<" && gl && /^(->|[&|](?![&|]))/.test(p.str.slice(p.pos, p.pos + 2))) {
-      parse_fail(p, "'>' or ',' (a compound type argument takes parens: F<(A & B)>)");
+      parse_fail(p, DIAG_CODES.InvalidTypeArgument, "'>' or ',' (a compound type argument takes parens: F<(A & B)>)");
     }
     if (op === "<" && (parse_at(p, ">") || parse_at(p, ","))) {
       if (out.$ !== "Var" && out.$ !== "Ref") {
-        parse_fail(p, "a family name before <..> (a comparison here needs parens)");
+        parse_fail(p, DIAG_CODES.FamilyNameRequired, "a family name before <..> (a comparison here needs parens)");
       }
       parse_take(p, ",");
       const d = parse_reso(p, out.k);
@@ -2145,7 +2238,7 @@ export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): void {
   if (f.k.lastIndexOf(".") === 0) {
     const h = term_unapply(T)[0];
     if (h.$ !== "Var" && h.$ !== "Ref" && h.$ !== "ADT") {
-      throw Diag(p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
+      throw Diag(DIAG_CODES.OperatorNamespaceRequired, p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
     }
     f.k = parse_reso(p, h.k + f.k);
   } else if (f.k !== "Bool.and" && f.k !== "Bool.or" && f.k !== "String.append") {
@@ -2216,21 +2309,21 @@ export function parse_term_num(p: Parse): LTerm {
   if (m[2] !== undefined && m[2] !== "n") {
     const v = f32_round(m[0]);
     if (!isFinite(v)) {
-      parse_fail(p, "a float literal with a finite f32 value (got " + m[0] + ")", beg);
+      parse_fail(p, DIAG_CODES.FloatOutOfRange, "a float literal with a finite f32 value (got " + m[0] + ")", beg);
     }
     return Lit("F32", f32_to_bits(v));
   }
   if (m[2] === undefined) {
     if (char_is_name(parse_peek(p))) {
-      parse_fail(p, "a numeric literal (NUMBER is U32, NUMBER n is Nat)");
+      parse_fail(p, DIAG_CODES.InvalidNumericLiteral, "a numeric literal (NUMBER is U32, NUMBER n is Nat)");
     }
     if (n > 0xffffffff) {
-      parse_fail(p, "a u32 literal up to 4294967295 (got " + m[1] + ")", beg);
+      parse_fail(p, DIAG_CODES.U32OutOfRange, "a u32 literal up to 4294967295 (got " + m[1] + ")", beg);
     }
     return Lit("U32", n);
   }
   if (n > 0xffffffff) {
-    parse_fail(p, "a nat literal up to 4294967295n (got " + m[1] + "n)");
+    parse_fail(p, DIAG_CODES.NatOutOfRange, "a nat literal up to 4294967295n (got " + m[1] + "n)");
   }
   if (parse_take(p, "+")) {
     let out = parse_term(p);
@@ -2247,7 +2340,7 @@ export function parse_term_num(p: Parse): LTerm {
     return out;
   }
   if (char_is_name(parse_peek(p))) {
-    parse_fail(p, "a nat literal (NUMBER n)");
+    parse_fail(p, DIAG_CODES.InvalidNatLiteral, "a nat literal (NUMBER n)");
   }
   return Lit("Nat", n);
 }
@@ -2311,7 +2404,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
       const qbeg = p.pos;
       const qs = parse_terms(p);
       if (qs.length !== es.length) {
-        parse_fail(p, String(es.length) + " patterns (one per scrutinee)", qbeg, p.pos - 1);
+        parse_fail(p, DIAG_CODES.MatchPatternArity, String(es.length) + " patterns (one per scrutinee)", qbeg, p.pos - 1);
       }
       const n0 = p.stk.length;
       const pp = qs.map((q) => parse_patt(p, q));
@@ -2354,7 +2447,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
   const n0 = p.stk.length;
   const ks = ts.map((x): Patt => {
     if ((ts.length > 1 || T !== null) && x.$ !== "Var") {
-      throw Diag(p.book, ctx_nil(), "a name (a parallel or typed let binds names; destructure in its body)", undefined, x.s);
+      throw Diag(DIAG_CODES.LetNameRequired, p.book, ctx_nil(), "a name (a parallel or typed let binds names; destructure in its body)", undefined, x.s);
     }
     return parse_patt(p, x);
   });
@@ -2404,14 +2497,14 @@ export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Qua
       return tele;
     }
     if (close === ")" && parse_at(p, "~") && tk.length < tele.length) {
-      parse_fail(p, "a plain binder (only leading binders take ~)");
+      parse_fail(p, DIAG_CODES.MisplacedTemplateBinder, "a plain binder (only leading binders take ~)");
     }
     const ct  = close === ")" && parse_take(p, "~");
     const q   = ct ? None() : parse_quant(p);
     const beg = p.pos;
     const k   = parse_name(p);
     if (close === "}" && tele.some((cell) => cell[1] === k)) {
-      parse_fail(p, "a fresh field name (duplicate declaration: " + k + ")", p.pos - k.length);
+      parse_fail(p, DIAG_CODES.DuplicateField, "a fresh field name (duplicate declaration: " + k + ")", p.pos - k.length);
     }
     const s   = parse_span(p, beg);
     parse_skip(p);
@@ -2436,7 +2529,7 @@ export function parse_fresh(p: Parse, nm: Name, tab: Record<Name, unknown> = p.b
   const k = parse_qual(p, nm);
   const a = nm.includes(".") ? nm.slice(0, nm.indexOf(".")) : "";
   if (k in tab || nm in tab || a in p.al) {
-    parse_fail(p, what + " (" + (a in p.al ? a + " is an import's alias" : "duplicate declaration: " + nm) + ")", p.pos - nm.length);
+    parse_fail(p, DIAG_CODES.DeclarationNameConflict, what + " (" + (a in p.al ? a + " is an import's alias" : "duplicate declaration: " + nm) + ")", p.pos - nm.length);
   }
   return k;
 }
@@ -2452,7 +2545,7 @@ export function parse_def(p: Parse, u: Bool): void {
   parse_eat(p, "(");
   parse_skip(p);
   if (law && parse_at(p, "~")) {
-    parse_fail(p, "a name");
+    parse_fail(p, DIAG_CODES.ExpectedName, "a name");
   }
   const tk: Name[] = [];
   const tele = parse_tele(p, ")", tk);
@@ -2460,16 +2553,16 @@ export function parse_def(p: Parse, u: Bool): void {
   let def: Def;
   if (law) {
     if (tele.some((cell) => cell[3].$ !== "Qnt")) {
-      parse_fail(p, "a name");
+      parse_fail(p, DIAG_CODES.ExpectedName, "a name");
     }
     if (tele.length < law.x) {
-      parse_fail(p, "a name for each ~ clause of the law (" + String(law.x) + ")");
+      parse_fail(p, DIAG_CODES.LawTemplateArity, "a name for each ~ clause of the law (" + String(law.x) + ")");
     }
     def = law;
     def.n = tele.length;
   } else {
     if (!parse_take(p, "->")) {
-      parse_fail(p, "'->' (a def with no return type fills a law; no law named " + nm + " is in scope)");
+      parse_fail(p, DIAG_CODES.UndefinedLaw, "'->' (a def with no return type fills a law; no law named " + nm + " is in scope)");
     }
     def = book.tlds[k] = { $: "Def", n: tele.length, x: tk.length, T: term_higher(tele_bind(tele, parse_term(p))), v: null, m: p.ns };
   }
@@ -2477,7 +2570,7 @@ export function parse_def(p: Parse, u: Bool): void {
   parse_eat(p, ":");
   if (parse_at_word(p, "import")) {
     if (def.x > 0) {
-      parse_fail(p, "a body (a template is not foreign)");
+      parse_fail(p, DIAG_CODES.ForeignTemplate, "a body (a template is not foreign)");
     }
     def.i = [];
     while (parse_word(p, "import")) {
@@ -2488,7 +2581,7 @@ export function parse_def(p: Parse, u: Bool): void {
       }
       parse_eat(p, "\"");
       if (!/\.(c|js)$/.test(eff)) {
-        parse_fail(p, "a .c or .js path");
+        parse_fail(p, DIAG_CODES.InvalidForeignPath, "a .c or .js path");
       }
       def.i.push(p.dir + eff);
     }
@@ -2510,10 +2603,10 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
     parse_close(p, 0);
     if (parse_take(p, "@")) {
       if (!parse_word(p, "unsafe")) {
-        parse_fail(p, "'unsafe' (the one decorator)");
+        parse_fail(p, DIAG_CODES.UnknownDecorator, "'unsafe' (the one decorator)");
       }
       if (!parse_word(p, "def")) {
-        parse_fail(p, "'def' (@unsafe marks the def below it)");
+        parse_fail(p, DIAG_CODES.InvalidDecoratorTarget, "'def' (@unsafe marks the def below it)");
       }
       parse_def(p, true);
       continue;
@@ -2527,7 +2620,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
       parse_skip(p);
       const params = parse_take(p, "<") ? parse_tele(p, ">") : [];
       if (!parse_word(p, "is")) {
-        parse_fail(p, "'is'");
+        parse_fail(p, DIAG_CODES.ExpectedToken, "'is'");
       }
       const K = parse_term(p);
       parse_eat(p, ":");
@@ -2564,7 +2657,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
         }
         parse_skip(p);
         if (all && parse_at(p, "~") && tc < cls.length) {
-          parse_fail(p, "a plain clause (only leading clauses take ~)");
+          parse_fail(p, DIAG_CODES.MisplacedTemplateClause, "a plain clause (only leading clauses take ~)");
         }
         const ct = all && parse_take(p, "~");
         const q  = ct ? None() : all ? parse_quant(p) : Lone();
@@ -2595,7 +2688,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
       book.order.push(k);
       continue;
     }
-    parse_fail(p, "'def', 'type' or 'law'");
+    parse_fail(p, DIAG_CODES.ExpectedDeclaration, "'def', 'type' or 'law'");
   }
 }
 
@@ -2648,7 +2741,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
   if (m.e.length === 0 && m.r.length > 0) {
     return body_flatten(m.r[0].f, vars, fr);
   } else if (m.e.length === 0) {
-    throw Diag(book_nil(), ctx_nil(), "a case (this match has no row to return)", undefined, m.s);
+    throw Diag(DIAG_CODES.EmptyMatch, book_nil(), ctx_nil(), "a case (this match has no row to return)", undefined, m.s);
   } else if (vars.length === 0) {
     let e = m.e[0];
     while (e.$ === "Sub") {
@@ -2657,7 +2750,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     switch (e.$) {
       case "Var": {
         const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
-        throw Diag(book_nil(), ctx_nil(), "'" + x + "' can't be matched in this position"
+        throw Diag(DIAG_CODES.InvalidMatchOrder, book_nil(), ctx_nil(), "'" + x + "' can't be matched in this position"
           + " (it is matched after a local statement or after a match on a later binder,"
           + " it was already matched, or it is a def)", undefined, e.s);
       }
@@ -2665,15 +2758,15 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       case "Lit": {
         const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
         if (char_is_head(x) && [...x].every(char_is_name)) {
-          throw Diag(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
+          throw Diag(DIAG_CODES.FieldMatchOutOfScope, book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
             + " (match it in the same match as the pattern that introduced it)", undefined, m.s);
         } else {
-          throw Diag(book_nil(), ctx_nil(), "'" + x + "' can't be matched"
+          throw Diag(DIAG_CODES.ConstructorScrutinee, book_nil(), ctx_nil(), "'" + x + "' can't be matched"
             + " (this value is already a constructor: bind its fields directly)", undefined, m.s);
         }
       }
       default: {
-        throw Diag(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
+        throw Diag(DIAG_CODES.ComputedScrutinee, book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
       }
     }
   } else {
@@ -2686,7 +2779,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       const rs = m.r.map((row): Case => {
         const p0 = row.p[0];
         if (p0.$ !== "PVar") {
-          throw Diag(book_nil(), ctx_nil(), "a variable pattern (this column has no constructor row)", undefined, p0.s);
+          throw Diag(DIAG_CODES.VariablePatternRequired, book_nil(), ctx_nil(), "a variable pattern (this column has no constructor row)", undefined, p0.s);
         }
         return { p: row.p.slice(1), f: body_sub(row.f, p0.i, w) };
       });
@@ -2762,7 +2855,7 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       let g = body_flatten(b.f, ws, fr);
       for (const w of ws) {
         if (g.$ !== "Lam") {
-          throw Diag(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)", undefined, w.s);
+          throw Diag(DIAG_CODES.LocalScrutinee, book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)", undefined, w.s);
         }
         g = g.f;
       }
@@ -3299,7 +3392,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       }
       const ann = pmap_get(ctx, tm.i);
       if (ann === null) {
-        throw Diag(book, ctx, "a bound variable", tm, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.UnboundVariable, book, ctx, "a bound variable", tm, tm.s, lhs.def);
       } else {
         return Infer(Var(tm.k, tm.i, tm.s), ann.T, pmap_set(uses_nil(), tm.i, qt));
       }
@@ -3325,14 +3418,14 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "Ref": {
       const tld = book.tlds[tm.k];
       if (tld === undefined) {
-        throw Diag(book, ctx, "a defined name", tm, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.UndefinedName, book, ctx, "a defined name", tm, tm.s, lhs.def);
       }
       let k = tm.k;
       let x = 0;
       if (qt.$ !== "None") {
         const gen = tld.$ === "Def" && tld.x > 0 && !(book.tlds[lhs.def] as Def).x ? tld : null;
         if (tld.$ === "Def" && tld.v === null && !tld.i && (tld.b !== true && lhs.u !== true || gen !== null) && k !== lhs.def) {
-          throw Diag(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
+          throw Diag(DIAG_CODES.UnfilledLaw, book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
           k  = def_inst(book, lhs, tm, gen, sp, ctx, d);
@@ -3346,12 +3439,12 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
             ord = term_descend(lhs.qs[j], sp[j], cols[j]);
           }
           if (ord !== "LT") {
-            throw Diag(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
+            throw Diag(DIAG_CODES.NonDecreasingSelfCall, book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
           }
         }
       }
       if (tld.$ === "ADT" && tld.n > 0) {
-        throw Diag(book, ctx, "a family instance (write " + name_key(tm.k) + "<..>)", tm, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.FamilyInstanceRequired, book, ctx, "a family instance (write " + name_key(tm.k) + "<..>)", tm, tm.s, lhs.def);
       }
       return Infer(Ref(k, tm.s, tm.b), book.tlds[k].T, uses_nil(), x);
     }
@@ -3410,7 +3503,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       }
       const f_wnf = term_wnf(book, f_inf.ty);
       if (f_wnf.$ !== "All") {
-        throw Diag(book, ctx, "a function type", f_inf.ty, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.FunctionTypeRequired, book, ctx, "a function type", f_inf.ty, tm.s, lhs.def);
       }
       const x_chk = term_check(book, lhs, tm.x, quant_dem(f_wnf.q, qt), f_wnf.A, ctx, d);
       return Infer(App(f_inf.tm, x_chk.tm, tm.s), f_wnf.B(tm.x), uses_add(f_inf.us, x_chk.us));
@@ -3423,7 +3516,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "ADT": {
       const adt = book_adt(book, tm, ctx, lhs.def);
       if (tm.x.length !== adt.n) {
-        throw Diag(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.DatatypeArity, book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
       }
       const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
       return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us);
@@ -3454,9 +3547,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     default: {
       const t = tm.$ === "Lit" ? lit_step(tm) : tm;
       if (t.$ === "Ctr" && book_ctr(book, t.k) === null) {
-        throw Diag(book, ctx, "a declared constructor", tm, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.UndefinedConstructor, book, ctx, "a declared constructor", tm, tm.s, lhs.def);
       }
-      throw Diag(book, ctx, "an annotated term (cannot infer)", tm, tm.s, lhs.def);
+      throw Diag(DIAG_CODES.CannotInfer, book, ctx, "an annotated term (cannot infer)", tm, tm.s, lhs.def);
     }
   }
 }
@@ -3495,7 +3588,7 @@ export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Q
     if (u.$ === "Many") {
       obs = k + " (consumed more than once)";
     }
-    throw Diag(book, ctx, quant_show(q) + k, obs, s, def);
+    throw Diag(DIAG_CODES.QuantityMismatch, book, ctx, quant_show(q) + k, obs, s, def);
   }
   return pmap_set(us, i, None());
 }
@@ -3518,7 +3611,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Lam": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "All") {
-        throw Diag(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
+        throw Diag(DIAG_CODES.CannotInfer, book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       const x: HTerm = Var(tm.k, d);
       let f_lhs = lhs;
@@ -3573,18 +3666,18 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (t_wnf.$ !== "ADT") {
         const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
         const nte = fam === null && book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
-        throw Diag(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
+        throw Diag(DIAG_CODES.TypeMismatch, book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
       }
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
       const ctr = adt.c.find((c) => c.k === tm.k);
       if (ctr === undefined) {
         if (book_ctr(book, tm.k) === null) {
-          throw Diag(book, ctx, "a declared constructor (" + name_key(t_wnf.k) + " declares " + adt.c.map((c) => name_key(c.k)).join(", ") + ")", tm, tm.s, lhs.def);
+          throw Diag(DIAG_CODES.UndefinedConstructor, book, ctx, "a declared constructor (" + name_key(t_wnf.k) + " declares " + adt.c.map((c) => name_key(c.k)).join(", ") + ")", tm, tm.s, lhs.def);
         }
-        throw Diag(book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
+        throw Diag(DIAG_CODES.TypeMismatch, book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
       }
       if (tm.x.length !== ctr.n) {
-        throw Diag(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.ConstructorArity, book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
       }
       const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
@@ -3625,20 +3718,20 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Efq": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "All") {
-        throw Diag(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
+        throw Diag(DIAG_CODES.CannotInfer, book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (qt.$ !== "None" && t_wnf.q.$ === "None") {
-        throw Diag(book, ctx, "a live scrutinee (a - scrutinee matches only in a dead region)", undefined, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.DeadScrutineeInLiveRegion, book, ctx, "a live scrutinee (a - scrutinee matches only in a dead region)", undefined, tm.s, lhs.def);
       }
       const a_wnf = term_wnf(book, t_wnf.A);
       if (a_wnf.$ !== "ADT") {
-        throw Diag(book, ctx, "a datatype", t_wnf.A, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.DatatypeRequired, book, ctx, "a datatype", t_wnf.A, tm.s, lhs.def);
       }
       const rem = book_adt(book, a_wnf, ctx, lhs.def).c;
       switch (tm.$) {
         case "Efq": {
           if (rem.length !== 0 && !ctx_dead(book, ctx)) {
-            throw Diag(book, ctx, "cases for " + rem.map((c) => name_key(c.k)).join(", "), tm, tm.s, lhs.def);
+            throw Diag(DIAG_CODES.NonExhaustiveMatch, book, ctx, "cases for " + rem.map((c) => name_key(c.k)).join(", "), tm, tm.s, lhs.def);
           }
           return Check(tm, ty, uses_nil());
         }
@@ -3647,7 +3740,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           const t_all = t_wnf;
           const ctr   = rem.find((c) => c.k === tm.k);
           if (ctr === undefined) {
-            throw Diag(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
+            throw Diag(DIAG_CODES.InvalidMatchConstructor, book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
           function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
@@ -3678,10 +3771,10 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Rfl": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "Eql") {
-        throw Diag(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
+        throw Diag(DIAG_CODES.CannotInfer, book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (!term_compare("EQ", book, t_wnf.a, t_wnf.b, d)) {
-        throw Diag(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.UnequalReflexivityEndpoints, book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
       }
       return Check(tm, ty, uses_nil());
     }
@@ -3692,7 +3785,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (tm.k === "TODO") {
         return Check(tm, ty, uses_nil());
       }
-      throw Diag(book, ctx, ty, tm, tm.s, lhs.def);
+      throw Diag(DIAG_CODES.UnresolvedHole, book, ctx, ty, tm, tm.s, lhs.def);
     }
     // Γ ⊢ E : {a == b : A} ~ eu
     // Γ ⊢ P : @x:A -> @e:{a == x : A} -> Type    P(b, E) <= T
@@ -3705,13 +3798,13 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const e_inf = term_infer(book, lhs, tm.e, qt, ctx, d);
       const e_wnf = term_wnf(book, e_inf.ty);
       if (e_wnf.$ !== "Eql") {
-        throw Diag(book, ctx, "an equation {a == b : T}", e_inf.ty, tm.e.s ?? tm.s, lhs.def);
+        throw Diag(DIAG_CODES.EquationRequired, book, ctx, "an equation {a == b : T}", e_inf.ty, tm.e.s ?? tm.s, lhs.def);
       }
       const p_typ = All<HBody>(Lone(), "_", 0, e_wnf.T, (x: HTerm) => All<HBody>(Lone(), "e", 0, Eql(e_wnf.a, x, e_wnf.T), () => Typ(Qua(Lone())), tm.s), tm.s);
       const p_chk = term_check(book, lhs, tm.p, None(), p_typ, ctx, d);
       const b_gol = term_apply(term_apply(tm.p, e_wnf.b), tm.e);
       if (!term_compare("LE", book, b_gol, ty, d)) {
-        throw Diag(book, ctx, ty, b_gol, tm.s, lhs.def);
+        throw Diag(DIAG_CODES.TypeMismatch, book, ctx, ty, b_gol, tm.s, lhs.def);
       }
       const a_gol = term_apply(term_apply(tm.p, e_wnf.a), Rfl<HBody>(tm.s));
       const f_chk = term_check(book, lhs, tm.f, qt, a_gol, ctx, d);
@@ -3728,7 +3821,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
   if (term_compare("LE", book, x_inf.ty, ty, d)) {
     return x_inf;
   }
-  throw Diag(book, ctx, ty, x_inf.ty, tm.s, lhs.def);
+  throw Diag(DIAG_CODES.TypeMismatch, book, ctx, ty, x_inf.ty, tm.s, lhs.def);
 }
 
 export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
@@ -3739,7 +3832,7 @@ export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
     const h = tele_head(gen, T, ctx_nil(), k);
     const o = k + "~" + h.k;
     if (o in gen.tlds) {
-      throw Diag(book, ctx_nil(), "a fresh ~ binder name", h.k, h.s);
+      throw Diag(DIAG_CODES.DuplicateTemplateBinder, book, ctx_nil(), "a fresh ~ binder name", h.k, h.s);
     }
     gen.tlds[o] = { $: "Def", n: 0, x: 0, T: h.A, v: null, b: true };
     t = App(t, Ref(o));
@@ -3752,7 +3845,7 @@ export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
 export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, sp: HTerm[], ctx: Ctx, d: number): Name {
   const xs = sp.slice(0, def.x);
   if (xs.length < def.x) {
-    throw Diag(book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
+    throw Diag(DIAG_CODES.OpenTemplateArgument, book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
   }
   let T: HTerm;
   try {
@@ -3760,20 +3853,20 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
   } catch (e) {
     const v = (e as Diag)?.obs;
     if (typeof v === "object" && v.$ === "Var" && v.i >= 0 && v.i < d) {
-      throw Diag(book, ctx, "a template applied to closed ~ arguments (" + v.k + " is a variable here, not comptime: pass it at run time)", tm, tm.s, lhs.def);
+      throw Diag(DIAG_CODES.OpenTemplateArgument, book, ctx, "a template applied to closed ~ arguments (" + v.k + " is a variable here, not comptime: pass it at run time)", tm, tm.s, lhs.def);
     }
     throw e;
   }
   const key = xs.map((a) => term_key(term_lower(a))).join("\n");
   if (key.length > 32768) {
-    throw Diag(book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
+    throw Diag(DIAG_CODES.GrowingTemplateArgument, book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
   }
   const is = book.tmps[tm.k] ??= new Map();
   let o = is.get(key);
   if (o === undefined) {
     const z = (lhs.z ?? 0) + 1;
     if (z > 64) {
-      throw Diag(book, ctx, "a template that stops instantiating itself (64 levels at most)", tm, tm.s, lhs.def);
+      throw Diag(DIAG_CODES.TemplateInstantiationLimit, book, ctx, "a template that stops instantiating itself (64 levels at most)", tm, tm.s, lhs.def);
     }
     o = tm.k + "~" + String(is.size);
     is.set(key, o);
@@ -3782,7 +3875,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
     inst.e = def_check(book, o, inst, z);
     book.tlds[o] = inst;
   } else if (book.tlds[o].v === null && o !== lhs.def) {
-    throw Diag(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
+    throw Diag(DIAG_CODES.NonDecreasingSelfCall, book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
   }
   return o;
 }
@@ -3838,7 +3931,7 @@ export function book_valid(book: Book, done: number = 0): void {
           for (const [d, [q, x, A]] of doms.entries()) {
             ctx = ctx_bind(ctx, d, q, x, A);
           }
-          throw Diag(book, ctx, "a kind (type " + name_key(k) + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
+          throw Diag(DIAG_CODES.DatatypeKindRequired, book, ctx, "a kind (type " + name_key(k) + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
         }
         for (const ctr of tld.c) {
           let tel: HTerm = ctr.T;
@@ -3856,12 +3949,12 @@ export function book_valid(book: Book, done: number = 0): void {
           const exp = "a telescope tipped at " + name_key(k) + " applied to its own parameters";
           const tip = term_wnf(book, tel);
           if (tip.$ !== "ADT" || tip.k !== k || tip.x.length !== tld.n || tip.r.length !== 0) {
-            throw Diag(book, ctx, exp, tip, undefined, ctr.k);
+            throw Diag(DIAG_CODES.InvalidConstructorResult, book, ctx, exp, tip, undefined, ctr.k);
           }
           for (let d = 0; d < tld.n; d++) {
             const x = term_wnf(book, tip.x[d]);
             if (x.$ !== "Var" || x.i !== d) {
-              throw Diag(book, ctx, exp, tip, undefined, ctr.k);
+              throw Diag(DIAG_CODES.InvalidConstructorResult, book, ctx, exp, tip, undefined, ctr.k);
             }
           }
         }
@@ -3881,7 +3974,7 @@ export function book_valid(book: Book, done: number = 0): void {
         const [h] = term_unapply(tel);
         const io  = book.tlds["IO"];
         if (h.$ !== "Ref" || h.k !== "IO" || io === undefined || io.$ !== "Def" || io.b !== true) {
-          throw Diag(book, ctx_nil(), "a foreign definition returning base IO(...) directly (return type aliases are not unfolded)", k, tel.s, k);
+          throw Diag(DIAG_CODES.InvalidForeignReturnType, book, ctx_nil(), "a foreign definition returning base IO(...) directly (return type aliases are not unfolded)", k, tel.s, k);
         }
       }
       if (fin && tld.v !== null) {
