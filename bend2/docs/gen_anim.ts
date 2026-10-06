@@ -60,6 +60,11 @@ function mix(a: string, b: string, f: number): string {
   return "rgb(" + one(0) + "," + one(1) + "," + one(2) + ")";
 }
 
+function gif_report(got: { out: string; frames: number; bytes: number }): void {
+  process.stdout.write("wrote " + got.out + ": " + String(got.frames)
+    + " frames, " + String(got.bytes) + " bytes\n");
+}
+
 // Hero
 // ====
 
@@ -118,7 +123,7 @@ function hero(name: string, ink: string, dim: string): void {
     run(PITCH, TITLE * 0.36, ty + TITLE * 0.89);
     run(CLAIMS, TITLE * 0.264, ty + TITLE * 1.39);
   }
-  gif_write(name, cv, draw, [[0, 0.55], [0.6, 0.55]]);
+  gif_report(gif_write(name, cv, draw, [[0, 0.55], [0.6, 0.55]]));
 }
 
 // Parallel
@@ -328,7 +333,7 @@ function parallel(): void {
     shots.push([i / FPS, 1 / FPS]);
   }
   shots[shots.length - 1][1] = 1.8;
-  gif_write("parallel", cv, draw, shots);
+  gif_report(gif_write("parallel", cv, draw, shots));
 }
 
 // Game
@@ -518,7 +523,7 @@ function game(act: Act): void {
     shots.push([i / FPS, 1 / FPS]);
   }
   shots.push([still, HOLD]);
-  gif_write(act.name, cv, draw, shots);
+  gif_report(gif_write(act.name, cv, draw, shots));
 }
 
 // Main

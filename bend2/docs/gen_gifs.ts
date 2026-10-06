@@ -221,8 +221,11 @@ function gif(name: string, pages: Page[]): void {
       shots.push([[prev, page, k / FPS, at], 1 / FPS + (k === steps ? HOLD : 0)]);
     }
   });
-  charts.gif_write(name, cv, ([a, b, t, at]) => frame(a, b, t, at, pages.length),
-    shots, String(pages.length) + " pages, ");
+  const got = charts.gif_write(name, cv,
+    ([a, b, t, at]) => frame(a, b, t, at, pages.length), shots);
+  process.stdout.write("wrote " + got.out + ": " + String(pages.length)
+    + " pages, " + String(got.frames) + " frames, "
+    + String(got.bytes) + " bytes\n");
 }
 
 // Main

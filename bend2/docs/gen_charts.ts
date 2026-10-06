@@ -188,7 +188,7 @@ function quote_film(runs: RunRow[], checks: CheckRow[]): void {
 // duration, so a frame that holds is one frame with a long delay
 export function gif_write<T>(name: string, cv: { width: number; height: number;
   toBuffer: (t: "image/png") => Buffer }, draw: (t: T) => void,
-  shots: [T, number][], prefix = ""): void {
+  shots: [T, number][]): { out: string; frames: number; bytes: number } {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), name + "-"));
   const file = (i: number): string =>
     path.join(dir, "f" + String(i).padStart(4, "0") + ".png");
@@ -216,8 +216,7 @@ export function gif_write<T>(name: string, cv: { width: number; height: number;
     throw new Error("ffmpeg failed on " + name);
   }
   fs.rmSync(dir, { recursive: true });
-  process.stdout.write("wrote " + out + ": " + prefix + String(shots.length)
-    + " frames, " + String(fs.statSync(out).size) + " bytes\n");
+  return { out, frames: shots.length, bytes: fs.statSync(out).size };
 }
 
 // Main
