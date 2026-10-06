@@ -1538,7 +1538,7 @@ export function diag_show(diag: Diag): string {
   }
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
   const nte = diag.nte === undefined ? "" : "\n" + diag.nte;
-  const head = diag.severity[0].toUpperCase() + diag.severity.slice(1) + ":";
+  const head = diag.severity[0].toUpperCase() + diag.severity.slice(1) + " [" + diag.code + "]:";
   return head + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte;
 }
 
