@@ -840,10 +840,12 @@ function ty_ann(t: HTerm): HTerm | null {
   return v.$ === "Ann" ? v.T : null;
 }
 
+// a call-headed type reduces once per key; its binders lower past any
+// probe or level, so a bound variable never keys as a free one
 function ty_wnf(ty: HTerm | null): HTerm | null {
   const h = ty && term_force(ty);
   return h && (h.$ === "App" || h.$ === "Ref")
-    ? memo(FL.wnfs, Bend.term_key(Bend.term_lower(h)), () => Bend.term_wnf(FL.book, h))
+    ? memo(FL.wnfs, Bend.term_key(Bend.term_lower(h, 2 ** 30)), () => Bend.term_wnf(FL.book, h))
     : ty && Bend.term_wnf(FL.book, ty);
 }
 
