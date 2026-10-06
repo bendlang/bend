@@ -3155,49 +3155,42 @@ function js_marshal(A: HTerm | null, out: boolean): string {
     return out ? "BigInt" : "nat_host";
   }
   const key = (out ? "out " : "in ") + Bend.term_key(Bend.term_lower(t));
-  if (t.k === "Array") {
-    return memo(FL.marsh, key, () => {
-      const name = "$0m" + FL.marsh.size;
-      FL.marsh.set(key, name);
-      const f = js_marshal(t.x[0], out);
-      if (f === "") return "";
-      FL.spins.push({ ...seg_new("", BOX, ["v"]), lines: [
-        `function ${name}(v, q) {`,
-        "const own = q === undefined;", "if (own) q = [];",
-        `for (let i = v.length - 1; i >= 0; i--) if (i in v) q.push(${f}, v[i], v, i);`,
-        "if (own) while (q.length) {",
-        "const i = q.pop(), a = q.pop(), x = q.pop(), f = q.pop(); a[i] = f(x, q);",
-        "}", "return v;", "}", ""] });
-      return name;
-    });
-  }
   return memo(FL.marsh, key, () => {
     const name = "$0m" + FL.marsh.size;
     FL.marsh.set(key, name);
-    const cs = (FL.book.tlds[t.k] as Bend.ADT).c;
-    const arms = cs.map((c) => {
-      const fs = ctr_live(c, t.x).flatMap(([, n, B]) => {
-        const f = js_marshal(B, out);
-        return f === "" ? [] : [[n, f]];
+    const body: string[] = [];
+    if (t.k === "Array") {
+      const f = js_marshal(t.x[0], out);
+      if (f === "") return "";
+      body.push("r = v;",
+        `for (let i = v.length - 1; i >= 0; i--) if (i in v) q.push(${f}, v[i], v, i);`);
+    } else {
+      const cs = (FL.book.tlds[t.k] as Bend.ADT).c;
+      const arms = cs.map((c) => {
+        const fs = ctr_live(c, t.x).flatMap(([, n, B]) => {
+          const f = js_marshal(B, out);
+          return f === "" ? [] : [[n, f]];
+        });
+        const tag = Bend.name_key(c.k);
+        const fields = fs.reverse().map(([n, f]) =>
+          `q.push(${f}, v["${n}"], r, "${n}");`).join(" ");
+        return `case "${tag}": { ` + (fs.length === 0
+          ? "r = v; break; }"
+          : `r = {...v}; ${fields} break; }`);
       });
-      const tag = Bend.name_key(c.k);
-      const fields = fs.reverse().map(([n, f]) =>
-        `q.push(${f}, v["${n}"], r, "${n}");`).join(" ");
-      return `case "${tag}": { ` + (fs.length === 0
-        ? "r = v; break; }"
-        : `r = {...v}; ${fields} break; }`);
-    });
-    const tk = Bend.name_key(t.k);
-    const tags = cs.map((c) => Bend.name_key(c.k)).join(", ");
+      const tk = Bend.name_key(t.k);
+      const tags = cs.map((c) => Bend.name_key(c.k)).join(", ");
+      body.push("switch (v.$) {", ...arms,
+        // TODO(#1105): a tag is the key the loading book gives its constructor,
+        // so it depends on the root file; make tags the same in every book
+        `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
+          tags}); a tag names its constructor as the"
+        + " loading file sees it, which a later version will make the same"
+        + " everywhere (#1105)";`, "}");
+    }
     FL.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v, q) {`,
-      "const own = q === undefined;", "if (own) q = [];", "let r;",
-      "switch (v.$) {", ...arms,
-      // TODO(#1105): a tag is the key the loading book gives its constructor,
-      // so it depends on the root file; make tags the same in every book
-      `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
-        tags}); a tag names its constructor as the"
-      + " loading file sees it, which a later version will make the same"
-      + " everywhere (#1105)";`, "}", "if (own) while (q.length) {",
+      "const own = q === undefined;", "if (own) q = [];", "let r;", ...body,
+      "if (own) while (q.length) {",
       "const i = q.pop(), a = q.pop(), x = q.pop(), f = q.pop(); a[i] = f(x, q);",
       "}", "return r;", "}", ""] });
     return name;
