@@ -527,13 +527,6 @@ export function Diag(code: DiagCode, bok: Book, ctx: Ctx, exp: Expr, obs?: Expr,
     severity, fixes };
 }
 
-export function diag_report(diag: Diag): void {
-  if (diag.severity === "error") {
-    throw diag;
-  }
-  diag.bok.diags.push(diag);
-}
-
 // Char
 // ====
 
