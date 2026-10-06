@@ -1504,6 +1504,32 @@ export function expr_show(book: Book, x: Expr, bnd: Name[] = [], file?: File): s
   }
 }
 
+function diag_fix_show(fix: Fix): string {
+  let out = "\n\nFix: " + fix.title + " [" + fix.applicability + "]";
+  const files = new Map<File, Fix["edits"]>();
+  for (const edit of fix.edits) {
+    const edits = files.get(edit.spn.file) ?? [];
+    edits.push(edit); files.set(edit.spn.file, edits);
+  }
+  for (const [file, edits] of files) {
+    const str = edits.sort((a, b) => b.spn.beg - a.spn.beg).reduce(
+      (s, { spn, text }) => s.slice(0, spn.beg) + text + s.slice(spn.end), file.str);
+    const old = file.str.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+    const now = str.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+    let beg = 0, end = old.length, tip = now.length;
+    while (beg < end && beg < tip && old[beg] === now[beg]) ++beg;
+    while (end > beg && tip > beg && old[end - 1] === now[tip - 1]) { --end; --tip; }
+    if (beg === end && beg === tip) continue;
+    const name = file.path ?? (file.ns || "<input>");
+    const range = (end: number) => (end === beg ? beg : beg + 1) + "," + (end - beg);
+    const lines = (xs: string[], prefix: string) => xs.map(line => prefix
+      + line.replace(/\r?\n$/, "") + (line.endsWith("\n") ? "" : "\n\\ No newline at end of file"));
+    out += "\n--- " + name + "\n+++ " + name + "\n@@ -" + range(end) + " +" + range(tip) + " @@\n"
+      + lines(old.slice(beg, end), "-").concat(lines(now.slice(beg, tip), "+")).join("\n");
+  }
+  return out;
+}
+
 export function diag_show(diag: Diag): string {
   const file = diag.spn?.file;
   const bnd  = ctx_scope(diag.ctx);
@@ -1532,7 +1558,8 @@ export function diag_show(diag: Diag): string {
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
   const nte = diag.nte === undefined ? "" : "\n" + diag.nte;
   const head = diag.severity[0].toUpperCase() + diag.severity.slice(1) + " [" + diag.code + "]:";
-  return head + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte;
+  return head + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte
+    + diag.fixes.map(diag_fix_show).join("");
 }
 
 // Parse
