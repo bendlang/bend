@@ -57,17 +57,17 @@ static Term udp_send_bytes_to_more(Env e, IoWork* w) {
 
 // A value past 255 fails with EINVAL before the datagram is sent, list kept.
 static Term udp_send_bytes_to_start(Env e, Term* f, IoWork* w, u64 at) {
+  udp_send_to_at(e, f, w, at);
   for (Term s = f[3]; term_aux(s) == CID(Con);) {
     u64 l = term_peek(e.mem, s);
     if (e.mem[l] > 255) {
+      free(w->text);
       w->code = EINVAL;
-      w->time = at;
       return io_tup(e, f[0], io_poll_end(e, w, f[3], io_box(e, CID(Fail),
         io_tup(e, io_err(e, EINVAL, NULL), f[3]))));
     }
     s = e.mem[l + 1];
   }
-  udp_send_to_at(e, f, w, at);
   w->data = io_cbuf(e, f[3], &w->size, CID(Con));
   return udp_send_bytes_to_more(e, w);
 }
