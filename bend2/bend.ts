@@ -316,7 +316,7 @@ export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
 export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; };
 export type TLD  = ADT | Def;
-export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; };
+export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; diags: Diag[]; };
 
 // Context
 export type Ann = { q: Quant; k: Name; T: HTerm };
@@ -872,7 +872,7 @@ export function ctx_scope(ctx: Ctx): Name[] {
 // for a package's <name>@<version>.
 
 export function book_nil(): Book {
-  return { tlds: Object.create(null), ctrs: Object.create(null), order: [], hols: 0, tmps: Object.create(null) };
+  return { tlds: Object.create(null), ctrs: Object.create(null), order: [], hols: 0, tmps: Object.create(null), diags: [] };
 }
 
 export function book_ctr(book: Book, k: Name): Ctr | null {
