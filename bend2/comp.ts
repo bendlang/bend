@@ -840,7 +840,8 @@ function ty_ann(t: HTerm): HTerm | null {
 }
 
 function ty_wnf(ty: HTerm | null): HTerm | null {
-  return ty && Bend.term_wnf(FL.book, ty);
+  const t = ty && Bend.term_wnf(FL.book, ty);
+  return t?.$ === "Rwt" ? ty_wnf(t.f) : t;
 }
 
 function ty_all(ty: HTerm | null): Of<"All"> {
@@ -1450,6 +1451,9 @@ function facts_hot(sc: Scope, B: HTerm | null, force: boolean,
       FL.hot.add(sc.def + "~" + w.i);
     } else if ("All Var App".includes(w?.$!)) {
       FL.hot.add("*");
+    } else if (!"Typ Qnt Qua Min Eql Rfl Lit Ctr Efq Ref".split(" ")
+      .includes(w?.$ ?? "")) {
+      die(`a type the C facts cannot read (${w?.$ ?? "no type"})`);
     }
     return;
   }
