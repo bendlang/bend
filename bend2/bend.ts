@@ -354,9 +354,7 @@ export type Check = { tm: LTerm; us: Uses };
 export type Expr = HTerm | string;
 export type Severity = "error" | "warning" | "information" | "hint";
 // Safe fixes preserve behavior; suggestions may change it; dangerous fixes may break code.
-// Edits use half-open offsets in the original source; a fix's edits apply together.
 export type Fix = { title: string; applicability: "safe" | "suggested" | "dangerous"; edits: { spn: Span; text: string }[] };
-// Stable diagnostic kinds; changing message text must not change these codes.
 export const DIAG_CODES = {
   AmbiguousName: "bend/ambiguous-name", CannotInfer: "bend/cannot-infer", ComputedScrutinee: "bend/computed-scrutinee",
   ConstructorArity: "bend/constructor-arity", ConstructorPatternArity: "bend/constructor-pattern-arity", ConstructorPatternBracesRequired: "bend/constructor-pattern-braces-required",
