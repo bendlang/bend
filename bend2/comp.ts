@@ -2267,9 +2267,11 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
     return val_new([`${u}ull`], W32, true);
   }
   const flds = ctr_flds(x.k, x.x);
+  const ctr = FL.book.ctrs[x.k];
+  const tys = () => ctr ? ctr_doms(ctr, adt.x) : [];
   const word = WORDS[adt.k];
   if (word !== undefined) {
-    const vs = emit_each(sc, flds);
+    const vs = emit_each(sc, flds, [], tys());
     if (vs.length === 1 && vs[0].ws.length > 1) {
       return val_new([`(${vs[0].ws.map((w, i) => `((u64)${w} << ${i})`)
         .join(" | ")})`], word);
@@ -2282,14 +2284,14 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
     return val_new([w], word, /^\d/.test(w));
   }
   if (adt.k === "Array") {
-    const vs = emit_each(sc, flds);
+    const vs = emit_each(sc, flds, [], tys());
     return val_new([x.k === "ALeaf"
       ? arr_new(sc, "0", vs[0], lay_el(adt.x[0]))
       : `blk_node(e, ${val_own(sc, vs[0])[0]}, ${val_own(sc, vs[1])[0]})`],
     BOX);
   }
   if (FL.hot.has(x.k)) {
-    facts_ctr(sc, FL.book.ctrs[x.k], adt.x);
+    facts_ctr(sc, ctr, adt.x);
   }
   const pos = at ?? lay_of(adt);
   const seen = memo(FL.consts, pos, () => new Map());
@@ -2299,9 +2301,7 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   }
   const lay = lay_box(pos) ? lay_node(x.k) : pos;
   const arms = Object.keys(lay.arms!);
-  const ctr = FL.book.ctrs[x.k];
-  const vs = emit_each(sc, flds, lay.arms![x.k],
-    ctr ? ctr_doms(ctr, adt.x) : []);
+  const vs = emit_each(sc, flds, lay.arms![x.k], tys());
   const ws = [...arms.length > 1 ? [String(arms.indexOf(x.k))] : [],
     ...vs.flatMap((f, j) => val_to(sc, f, lay.arms![x.k][j]).ws)];
   const v = val_new(lay.ks.map((_, j) => ws[j] ?? "0"), lay,

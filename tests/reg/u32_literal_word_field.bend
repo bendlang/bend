@@ -5,8 +5,10 @@
 # Word.Con<p>, died with "a constructor outside a datatype"; the
 # evaluator and the JS backend answered. emit_ctr now gives each field
 # its domain from the constructor's telescope, filled with the datatype's
-# arguments. Three shapes: the word alone, the word in a box, and the
-# word in a pair behind a parametrized datatype, as #1100 reported it.
+# arguments. The shapes: the word alone, in a box, in a pair behind a
+# parametrized datatype (as #1100 reported it), in a field whose type
+# names an earlier field, and stored into an array by Array.new and
+# Array.set.
 import Base
 
 type Df<-T: Type> is Type:
@@ -14,6 +16,9 @@ type Df<-T: Type> is Type:
 
 type Box is Data:
   Box{w: Word(32n)}
+
+type Sized is Data:
+  Sized{n: Nat, w: Word(n)}
 
 def word_of(u: U32) -> Word(32n):
   match u:
@@ -33,15 +38,40 @@ def second(p: Df<U32> & Word(32n)) -> Word(32n):
     case (df, w):
       w
 
+def size(s: Sized) -> Nat:
+  match s:
+    case Sized{n, w}:
+      Word.to_nat(n, w)
+
+def fill(u: U32) -> Array<Word(32n)>:
+  match u:
+    case U32{w}:
+      [w : Word(32n) * 2n]
+
+def put(u: U32, xs: Array<Word(32n)>) -> Array<Word(32n)>:
+  match u:
+    case U32{w}:
+      Array.set(Word(32n), xs, 1, w)
+
+def got(p: Array<Word(32n)> & Word(32n)) -> Word(32n):
+  match p:
+    case (xs, w):
+      w
+
 def show(w: Word(32n)) -> String:
   Nat.show(Word.to_nat(32n, w))
 
 def main() -> IO(Unit):
+  xs = put(10, fill(9))
   do IO<Unit>:
     IO.print(show(word_of(5)))
     IO.print(show(unbox(Box{word_of(6)})))
     IO.print(show(second(chunk(Df{1, 2}, 7))))
+    IO.print(Nat.show(size(Sized{32n, word_of(8)})))
+    IO.print(show(got(Array.get(Word(32n), xs, 1))))
 
 #|5
 #|6
 #|7
+#|8
+#|10
