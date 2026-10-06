@@ -350,13 +350,13 @@ export type Frame =
 export type Infer = { tm: LTerm; ty: HTerm; us: Uses; x?: number };
 export type Check = { tm: LTerm; us: Uses };
 
-// Error
+// Diagnostic
 export type Expr = HTerm | string;
 export type Severity = "error" | "warning" | "information" | "hint";
 // Safe fixes preserve behavior; suggestions may change it; dangerous fixes may break code.
 // Edits use half-open offsets in the original source; a fix's edits apply together.
 export type Fix = { title: string; applicability: "safe" | "suggested" | "dangerous"; edits: { spn: Span; text: string }[] };
-export type Err = { $: "Err"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
+export type Diag = { $: "Diag"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
 
 // Constructors
 // ============
@@ -487,11 +487,11 @@ export function Check(tm: LTerm, ty: HTerm, us: Uses): Check {
   return { tm: Ann(tm, Var("_", -1, undefined, ty)), us };
 }
 
-// Err
+// Diag
 // ---
 
-export function Err(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = []): Err {
-  return { $: "Err", bok, ctx, exp, obs, spn, def, nte,
+export function Diag(bok: Book, ctx: Ctx, exp: Expr, obs?: Expr, spn?: Span, def?: Name, nte?: string, fixes: Fix[] = []): Diag {
+  return { $: "Diag", bok, ctx, exp, obs, spn, def, nte,
     severity: "error", fixes };
 }
 
@@ -713,7 +713,7 @@ export function term_higher(tm: LTerm, env: Env = null): HTerm {
     case "Ref": {
       if (tm.k.lastIndexOf(".") === 0) {
         const op = tm.s === undefined ? tm.k : tm.s.file.str.slice(tm.s.beg, tm.s.end);
-        throw Err(book_nil(), ctx_nil(), "a type for this operator (write (a " + op + " b : Nat))", undefined, tm.s, undefined,
+        throw Diag(book_nil(), ctx_nil(), "a type for this operator (write (a " + op + " b : Nat))", undefined, tm.s, undefined,
           "Note: we broke this after launch, sorry. Until 2.0.16 a bare operator meant Nat.\n"
           + "That was a bug: operators demand annotation. Wrap the expression and it'll work again.");
       }
@@ -887,7 +887,7 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    throw Err(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
+    throw Diag(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -910,14 +910,14 @@ async function hub_get(book: Book, sub: string, hash: string, spn?: Span): Promi
   const src = res.ok ? await res.text() : "";
   const sum = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(src))).toString("hex");
   if (!res.ok || hash.length < 32 || sum.slice(0, hash.length) !== hash || path.posix.normalize("/" + sub) !== "/" + sub) {
-    throw Err(book, ctx_nil(), "a file at " + BEND_HUB + "/" + sub + " hashing to " + hash, undefined, spn);
+    throw Diag(book, ctx_nil(), "a file at " + BEND_HUB + "/" + sub + " hashing to " + hash, undefined, spn);
   }
   return src;
 }
 
 async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   if (!NAMED.test(nv)) {
-    throw Err(book, ctx_nil(), "a package as <name>@<version>: a-z, 0-9 and -, 1 to 64 characters, at four numbers like 1.0.0.0", "'" + nv + "'", spn);
+    throw Diag(book, ctx_nil(), "a package as <name>@<version>: a-z, 0-9 and -, 1 to 64 characters, at four numbers like 1.0.0.0", "'" + nv + "'", spn);
   }
   const at  = path.join(BEND_LIB, "names", nv);
   const old = fs.existsSync(at) ? fs.readFileSync(at, "utf8").trim() : "";
@@ -927,7 +927,7 @@ async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   const res = await fetch(BEND_HUB + "/name/" + nv).catch(() => null);
   const got = res?.ok ? (await res.text()).trim() : "";
   if (!/^0x[0-9a-f]{32}$/.test(got)) {
-    throw Err(book, ctx_nil(), "a package named " + nv + " on " + BEND_HUB
+    throw Diag(book, ctx_nil(), "a package named " + nv + " on " + BEND_HUB
       + (res?.status === 410 ? " (it was taken down)" : ""), undefined, spn);
   }
   fs.mkdirSync(path.dirname(at), { recursive: true });
@@ -949,7 +949,7 @@ async function book_file(book: Book, file: string, spn?: Span): Promise<string> 
     });
   }
   if (!fs.existsSync(file)) {
-    throw Err(book, ctx_nil(), "no such file: " + file, undefined, spn);
+    throw Diag(book, ctx_nil(), "no such file: " + file, undefined, spn);
   }
   return fs.realpathSync(file);
 }
@@ -958,7 +958,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
   const real = await book_file(book, file, spn);
   if (seen.has(real)) {
     if (seen.get(real) === null) {
-      throw Err(book, ctx_nil(), "an import cycle through " + file, undefined, spn);
+      throw Diag(book, ctx_nil(), "an import cycle through " + file, undefined, spn);
     }
     return book.order.length;
   }
@@ -984,7 +984,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     const beg = at + lines[i].indexOf(m?.[1] ?? line);
     const sp  = { file: { str: text, ns, al, path: real }, beg, end: beg };
     if (m === null || (m[2] === undefined && m[1] !== "Base")) {
-      throw Err(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
+      throw Diag(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
     }
     body[i] = " ".repeat(lines[i].length);
     if (m[2] === undefined) {
@@ -992,12 +992,12 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
       continue;
     }
     if (!m[1].endsWith(".bend")) {
-      throw Err(book, ctx_nil(), "an import of a .bend file", "'" + m[1] + "'", sp);
+      throw Diag(book, ctx_nil(), "an import of a .bend file", "'" + m[1] + "'", sp);
     }
     if (m[2] in al) {
-      throw Err(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
+      throw Diag(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
     }
-    const bad = () => Err(book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
+    const bad = () => Diag(book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
     const nv  = /^([^/]*@[^/]*)\//.exec(m[1]);
     const as  = nv === null ? m[1] : await name_hash(book, nv[1], sp) + m[1].slice(nv[1].length);
     const rel = path.posix.normalize(as);
@@ -1040,7 +1040,7 @@ export function tele_open(book: Book, tel: HTerm): Extract<HTerm, { $: "All" }> 
 export function tele_head(book: Book, tel: HTerm, ctx: Ctx, def?: Name, s?: Span): Extract<HTerm, { $: "All" }> {
   const t = tele_open(book, tel);
   if (t === null) {
-    throw Err(book, ctx, "unreachable (a telescope binds its parameters and fields)", undefined, s, def);
+    throw Diag(book, ctx, "unreachable (a telescope binds its parameters and fields)", undefined, s, def);
   }
   return t;
 }
@@ -1472,33 +1472,33 @@ export function expr_show(book: Book, x: Expr, bnd: Name[] = [], file?: File): s
   }
 }
 
-export function err_show(err: Err): string {
-  const file = err.spn?.file;
-  const bnd  = ctx_scope(err.ctx);
-  const anns = pmap_to_array(err.ctx).sort((a, b) => a[0] - b[0]);
+export function diag_show(diag: Diag): string {
+  const file = diag.spn?.file;
+  const bnd  = ctx_scope(diag.ctx);
+  const anns = pmap_to_array(diag.ctx).sort((a, b) => a[0] - b[0]);
   const wid  = Math.max(0, ...anns.map(([, a]) => a.k.length));
-  const msg  = err.obs === undefined
-    ? "\n- message  : " + expr_show(err.bok, err.exp, bnd, file)
-    : "\n- expected : " + expr_show(err.bok, err.exp, bnd, file)
-    + "\n- observed : " + expr_show(err.bok, err.obs, bnd, file);
+  const msg  = diag.obs === undefined
+    ? "\n- message  : " + expr_show(diag.bok, diag.exp, bnd, file)
+    : "\n- expected : " + expr_show(diag.bok, diag.exp, bnd, file)
+    + "\n- observed : " + expr_show(diag.bok, diag.obs, bnd, file);
   const ctx  = anns.map(([i, a]) =>
-    "\n- " + a.k.padEnd(wid) + " : " + expr_show(err.bok, a.T, bnd.slice(0, i), file)).join("");
-  const def  = err.def === undefined ? "" : " " + name_show(file, err.def);
+    "\n- " + a.k.padEnd(wid) + " : " + expr_show(diag.bok, a.T, bnd.slice(0, i), file)).join("");
+  const def  = diag.def === undefined ? "" : " " + name_show(file, diag.def);
   let   spn  = "";
-  if (err.spn !== undefined) {
-    const lns = err.spn.file.str.split("\n");
-    const pre = err.spn.file.str.slice(0, err.spn.beg).split("\n");
+  if (diag.spn !== undefined) {
+    const lns = diag.spn.file.str.split("\n");
+    const pre = diag.spn.file.str.slice(0, diag.spn.beg).split("\n");
     const at  = pre.length;
     const beg = Math.max(1, at - 1);
     const end = Math.min(lns.length, at + 1);
     const num = String(end).length;
     const lft = pre[at - 1];
-    const car = " ".repeat(num) + " | " + lft.replace(/[^\t]/g, " ") + "^".repeat(Math.max(1, Math.min(err.spn.end - err.spn.beg, lns[at - 1].length - lft.length)));
+    const car = " ".repeat(num) + " | " + lft.replace(/[^\t]/g, " ") + "^".repeat(Math.max(1, Math.min(diag.spn.end - diag.spn.beg, lns[at - 1].length - lft.length)));
     spn = "\n" + lns.slice(beg - 1, end).map((l, j) =>
       String(beg + j).padStart(num) + (beg + j === at ? ">| " + l + "\n" + car : " | " + l)).join("\n");
   }
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
-  const nte = err.nte === undefined ? "" : "\n" + err.nte;
+  const nte = diag.nte === undefined ? "" : "\n" + diag.nte;
   return "Error:" + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte;
 }
 
@@ -1526,7 +1526,7 @@ export function parse_span(p: Parse, beg: number): Span {
 
 export function parse_fail(p: Parse, exp: string, beg = p.pos, end = p.pos): never {
   const obs = beg < end ? "'" + p.str.slice(beg, end) + "'" : p.pos < p.str.length ? "'" + p.str[p.pos] + "'" : "end of input";
-  throw Err(p.book, ctx_nil(), exp, obs, { file: p, beg, end });
+  throw Diag(p.book, ctx_nil(), exp, obs, { file: p, beg, end });
 }
 
 export function parse_peek(p: Parse): string {
@@ -1719,17 +1719,17 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
   switch (t.$) {
     case "Var": {
       if (book_ctr(book, parse_reso(p, t.k)) !== null) {
-        throw Err(book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
+        throw Diag(book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
       }
       return parse_bind(p, t);
     }
     case "Ctr": {
       const ctr = book_ctr(book, t.k);
       if (ctr === null) {
-        throw Err(book, ctx_nil(), "a declared constructor (unknown: " + name_key(t.k) + ")", undefined, t.s);
+        throw Diag(book, ctx_nil(), "a declared constructor (unknown: " + name_key(t.k) + ")", undefined, t.s);
       }
       if (ctr.n !== t.x.length) {
-        throw Err(book, ctx_nil(), "a " + name_key(t.k) + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
+        throw Diag(book, ctx_nil(), "a " + name_key(t.k) + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
       }
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
     }
@@ -1737,7 +1737,7 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       return parse_patt(p, lit_step(t));
     }
     default: {
-      throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
+      throw Diag(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
     }
   }
 }
@@ -1933,7 +1933,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         if (cnt) {
           const k = Math.log2(nat_from_term(n) ?? 0);
           if (!Number.isInteger(k)) {
-            throw Err(p.book, ctx_nil(), "a power of two count (^d takes a depth)", undefined, n.s);
+            throw Diag(p.book, ctx_nil(), "a power of two count (^d takes a depth)", undefined, n.s);
           }
           d = Lit("Nat", k, n.s);
         }
@@ -2137,7 +2137,7 @@ export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): void {
   if (f.k.lastIndexOf(".") === 0) {
     const h = term_unapply(T)[0];
     if (h.$ !== "Var" && h.$ !== "Ref" && h.$ !== "ADT") {
-      throw Err(p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
+      throw Diag(p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
     }
     f.k = parse_reso(p, h.k + f.k);
   } else if (f.k !== "Bool.and" && f.k !== "Bool.or" && f.k !== "String.append") {
@@ -2346,7 +2346,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
   const n0 = p.stk.length;
   const ks = ts.map((x): Patt => {
     if ((ts.length > 1 || T !== null) && x.$ !== "Var") {
-      throw Err(p.book, ctx_nil(), "a name (a parallel or typed let binds names; destructure in its body)", undefined, x.s);
+      throw Diag(p.book, ctx_nil(), "a name (a parallel or typed let binds names; destructure in its body)", undefined, x.s);
     }
     return parse_patt(p, x);
   });
@@ -2640,7 +2640,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
   if (m.e.length === 0 && m.r.length > 0) {
     return body_flatten(m.r[0].f, vars, fr);
   } else if (m.e.length === 0) {
-    throw Err(book_nil(), ctx_nil(), "a case (this match has no row to return)", undefined, m.s);
+    throw Diag(book_nil(), ctx_nil(), "a case (this match has no row to return)", undefined, m.s);
   } else if (vars.length === 0) {
     let e = m.e[0];
     while (e.$ === "Sub") {
@@ -2649,7 +2649,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     switch (e.$) {
       case "Var": {
         const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
-        throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched in this position"
+        throw Diag(book_nil(), ctx_nil(), "'" + x + "' can't be matched in this position"
           + " (it is matched after a local statement or after a match on a later binder,"
           + " it was already matched, or it is a def)", undefined, e.s);
       }
@@ -2657,15 +2657,15 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       case "Lit": {
         const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
         if (char_is_head(x) && [...x].every(char_is_name)) {
-          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
+          throw Diag(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
             + " (match it in the same match as the pattern that introduced it)", undefined, m.s);
         } else {
-          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched"
+          throw Diag(book_nil(), ctx_nil(), "'" + x + "' can't be matched"
             + " (this value is already a constructor: bind its fields directly)", undefined, m.s);
         }
       }
       default: {
-        throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
+        throw Diag(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
       }
     }
   } else {
@@ -2678,7 +2678,7 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       const rs = m.r.map((row): Case => {
         const p0 = row.p[0];
         if (p0.$ !== "PVar") {
-          throw Err(book_nil(), ctx_nil(), "a variable pattern (this column has no constructor row)", undefined, p0.s);
+          throw Diag(book_nil(), ctx_nil(), "a variable pattern (this column has no constructor row)", undefined, p0.s);
         }
         return { p: row.p.slice(1), f: body_sub(row.f, p0.i, w) };
       });
@@ -2754,7 +2754,7 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       let g = body_flatten(b.f, ws, fr);
       for (const w of ws) {
         if (g.$ !== "Lam") {
-          throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)", undefined, w.s);
+          throw Diag(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)", undefined, w.s);
         }
         g = g.f;
       }
@@ -3291,7 +3291,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       }
       const ann = pmap_get(ctx, tm.i);
       if (ann === null) {
-        throw Err(book, ctx, "a bound variable", tm, tm.s, lhs.def);
+        throw Diag(book, ctx, "a bound variable", tm, tm.s, lhs.def);
       } else {
         return Infer(Var(tm.k, tm.i, tm.s), ann.T, pmap_set(uses_nil(), tm.i, qt));
       }
@@ -3317,14 +3317,14 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "Ref": {
       const tld = book.tlds[tm.k];
       if (tld === undefined) {
-        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def);
+        throw Diag(book, ctx, "a defined name", tm, tm.s, lhs.def);
       }
       let k = tm.k;
       let x = 0;
       if (qt.$ !== "None") {
         const gen = tld.$ === "Def" && tld.x > 0 && !(book.tlds[lhs.def] as Def).x ? tld : null;
         if (tld.$ === "Def" && tld.v === null && !tld.i && (tld.b !== true && lhs.u !== true || gen !== null) && k !== lhs.def) {
-          throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
+          throw Diag(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
           k  = def_inst(book, lhs, tm, gen, sp, ctx, d);
@@ -3338,12 +3338,12 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
             ord = term_descend(lhs.qs[j], sp[j], cols[j]);
           }
           if (ord !== "LT") {
-            throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
+            throw Diag(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
           }
         }
       }
       if (tld.$ === "ADT" && tld.n > 0) {
-        throw Err(book, ctx, "a family instance (write " + name_key(tm.k) + "<..>)", tm, tm.s, lhs.def);
+        throw Diag(book, ctx, "a family instance (write " + name_key(tm.k) + "<..>)", tm, tm.s, lhs.def);
       }
       return Infer(Ref(k, tm.s, tm.b), book.tlds[k].T, uses_nil(), x);
     }
@@ -3402,7 +3402,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       }
       const f_wnf = term_wnf(book, f_inf.ty);
       if (f_wnf.$ !== "All") {
-        throw Err(book, ctx, "a function type", f_inf.ty, tm.s, lhs.def);
+        throw Diag(book, ctx, "a function type", f_inf.ty, tm.s, lhs.def);
       }
       const x_chk = term_check(book, lhs, tm.x, quant_dem(f_wnf.q, qt), f_wnf.A, ctx, d);
       return Infer(App(f_inf.tm, x_chk.tm, tm.s), f_wnf.B(tm.x), uses_add(f_inf.us, x_chk.us));
@@ -3415,7 +3415,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "ADT": {
       const adt = book_adt(book, tm, ctx, lhs.def);
       if (tm.x.length !== adt.n) {
-        throw Err(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
+        throw Diag(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
       }
       const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
       return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us);
@@ -3446,9 +3446,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     default: {
       const t = tm.$ === "Lit" ? lit_step(tm) : tm;
       if (t.$ === "Ctr" && book_ctr(book, t.k) === null) {
-        throw Err(book, ctx, "a declared constructor", tm, tm.s, lhs.def);
+        throw Diag(book, ctx, "a declared constructor", tm, tm.s, lhs.def);
       }
-      throw Err(book, ctx, "an annotated term (cannot infer)", tm, tm.s, lhs.def);
+      throw Diag(book, ctx, "an annotated term (cannot infer)", tm, tm.s, lhs.def);
     }
   }
 }
@@ -3474,9 +3474,9 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
   try {
     return term_check(book, lhs, T, None(), kind, ctx, d);
   } catch (e) {
-    const err = e as Err;
+    const diag = e as Diag;
     const nte = q.$ === "Many" ? "Note: +" + k + " can be used many times, so its type must be Data." : undefined;
-    throw err?.$ === "Err" && err.exp === kind ? { ...err, spn: s ?? err.spn, nte } : e;
+    throw diag?.$ === "Diag" && diag.exp === kind ? { ...diag, spn: s ?? diag.spn, nte } : e;
   }
 }
 
@@ -3487,7 +3487,7 @@ export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Q
     if (u.$ === "Many") {
       obs = k + " (consumed more than once)";
     }
-    throw Err(book, ctx, quant_show(q) + k, obs, s, def);
+    throw Diag(book, ctx, quant_show(q) + k, obs, s, def);
   }
   return pmap_set(us, i, None());
 }
@@ -3510,7 +3510,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Lam": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "All") {
-        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
+        throw Diag(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       const x: HTerm = Var(tm.k, d);
       let f_lhs = lhs;
@@ -3565,18 +3565,18 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (t_wnf.$ !== "ADT") {
         const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
         const nte = fam === null && book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
-        throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
+        throw Diag(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
       }
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
       const ctr = adt.c.find((c) => c.k === tm.k);
       if (ctr === undefined) {
         if (book_ctr(book, tm.k) === null) {
-          throw Err(book, ctx, "a declared constructor (" + name_key(t_wnf.k) + " declares " + adt.c.map((c) => name_key(c.k)).join(", ") + ")", tm, tm.s, lhs.def);
+          throw Diag(book, ctx, "a declared constructor (" + name_key(t_wnf.k) + " declares " + adt.c.map((c) => name_key(c.k)).join(", ") + ")", tm, tm.s, lhs.def);
         }
-        throw Err(book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
+        throw Diag(book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
       }
       if (tm.x.length !== ctr.n) {
-        throw Err(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
+        throw Diag(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
       }
       const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
@@ -3617,20 +3617,20 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Efq": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "All") {
-        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
+        throw Diag(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (qt.$ !== "None" && t_wnf.q.$ === "None") {
-        throw Err(book, ctx, "a live scrutinee (a - scrutinee matches only in a dead region)", undefined, tm.s, lhs.def);
+        throw Diag(book, ctx, "a live scrutinee (a - scrutinee matches only in a dead region)", undefined, tm.s, lhs.def);
       }
       const a_wnf = term_wnf(book, t_wnf.A);
       if (a_wnf.$ !== "ADT") {
-        throw Err(book, ctx, "a datatype", t_wnf.A, tm.s, lhs.def);
+        throw Diag(book, ctx, "a datatype", t_wnf.A, tm.s, lhs.def);
       }
       const rem = book_adt(book, a_wnf, ctx, lhs.def).c;
       switch (tm.$) {
         case "Efq": {
           if (rem.length !== 0 && !ctx_dead(book, ctx)) {
-            throw Err(book, ctx, "cases for " + rem.map((c) => name_key(c.k)).join(", "), tm, tm.s, lhs.def);
+            throw Diag(book, ctx, "cases for " + rem.map((c) => name_key(c.k)).join(", "), tm, tm.s, lhs.def);
           }
           return Check(tm, ty, uses_nil());
         }
@@ -3639,7 +3639,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           const t_all = t_wnf;
           const ctr   = rem.find((c) => c.k === tm.k);
           if (ctr === undefined) {
-            throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
+            throw Diag(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
           function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
@@ -3670,10 +3670,10 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Rfl": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "Eql") {
-        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
+        throw Diag(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (!term_compare("EQ", book, t_wnf.a, t_wnf.b, d)) {
-        throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
+        throw Diag(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
       }
       return Check(tm, ty, uses_nil());
     }
@@ -3684,7 +3684,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (tm.k === "TODO") {
         return Check(tm, ty, uses_nil());
       }
-      throw Err(book, ctx, ty, tm, tm.s, lhs.def);
+      throw Diag(book, ctx, ty, tm, tm.s, lhs.def);
     }
     // Γ ⊢ E : {a == b : A} ~ eu
     // Γ ⊢ P : @x:A -> @e:{a == x : A} -> Type    P(b, E) <= T
@@ -3697,13 +3697,13 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const e_inf = term_infer(book, lhs, tm.e, qt, ctx, d);
       const e_wnf = term_wnf(book, e_inf.ty);
       if (e_wnf.$ !== "Eql") {
-        throw Err(book, ctx, "an equation {a == b : T}", e_inf.ty, tm.e.s ?? tm.s, lhs.def);
+        throw Diag(book, ctx, "an equation {a == b : T}", e_inf.ty, tm.e.s ?? tm.s, lhs.def);
       }
       const p_typ = All<HBody>(Lone(), "_", 0, e_wnf.T, (x: HTerm) => All<HBody>(Lone(), "e", 0, Eql(e_wnf.a, x, e_wnf.T), () => Typ(Qua(Lone())), tm.s), tm.s);
       const p_chk = term_check(book, lhs, tm.p, None(), p_typ, ctx, d);
       const b_gol = term_apply(term_apply(tm.p, e_wnf.b), tm.e);
       if (!term_compare("LE", book, b_gol, ty, d)) {
-        throw Err(book, ctx, ty, b_gol, tm.s, lhs.def);
+        throw Diag(book, ctx, ty, b_gol, tm.s, lhs.def);
       }
       const a_gol = term_apply(term_apply(tm.p, e_wnf.a), Rfl<HBody>(tm.s));
       const f_chk = term_check(book, lhs, tm.f, qt, a_gol, ctx, d);
@@ -3720,7 +3720,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
   if (term_compare("LE", book, x_inf.ty, ty, d)) {
     return x_inf;
   }
-  throw Err(book, ctx, ty, x_inf.ty, tm.s, lhs.def);
+  throw Diag(book, ctx, ty, x_inf.ty, tm.s, lhs.def);
 }
 
 export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
@@ -3731,7 +3731,7 @@ export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
     const h = tele_head(gen, T, ctx_nil(), k);
     const o = k + "~" + h.k;
     if (o in gen.tlds) {
-      throw Err(book, ctx_nil(), "a fresh ~ binder name", h.k, h.s);
+      throw Diag(book, ctx_nil(), "a fresh ~ binder name", h.k, h.s);
     }
     gen.tlds[o] = { $: "Def", n: 0, x: 0, T: h.A, v: null, b: true };
     t = App(t, Ref(o));
@@ -3744,28 +3744,28 @@ export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
 export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, sp: HTerm[], ctx: Ctx, d: number): Name {
   const xs = sp.slice(0, def.x);
   if (xs.length < def.x) {
-    throw Err(book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
+    throw Diag(book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
   }
   let T: HTerm;
   try {
     T = tele_check(book, lhs, def.T, xs, None(), ctx_nil(), d, tm.s).tel;
   } catch (e) {
-    const v = (e as Err)?.obs;
+    const v = (e as Diag)?.obs;
     if (typeof v === "object" && v.$ === "Var" && v.i >= 0 && v.i < d) {
-      throw Err(book, ctx, "a template applied to closed ~ arguments (" + v.k + " is a variable here, not comptime: pass it at run time)", tm, tm.s, lhs.def);
+      throw Diag(book, ctx, "a template applied to closed ~ arguments (" + v.k + " is a variable here, not comptime: pass it at run time)", tm, tm.s, lhs.def);
     }
     throw e;
   }
   const key = xs.map((a) => term_key(term_lower(a))).join("\n");
   if (key.length > 32768) {
-    throw Err(book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
+    throw Diag(book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
   }
   const is = book.tmps[tm.k] ??= new Map();
   let o = is.get(key);
   if (o === undefined) {
     const z = (lhs.z ?? 0) + 1;
     if (z > 64) {
-      throw Err(book, ctx, "a template that stops instantiating itself (64 levels at most)", tm, tm.s, lhs.def);
+      throw Diag(book, ctx, "a template that stops instantiating itself (64 levels at most)", tm, tm.s, lhs.def);
     }
     o = tm.k + "~" + String(is.size);
     is.set(key, o);
@@ -3774,14 +3774,14 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
     inst.e = def_check(book, o, inst, z);
     book.tlds[o] = inst;
   } else if (book.tlds[o].v === null && o !== lhs.def) {
-    throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
+    throw Diag(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
   }
   return o;
 }
 
 // Valid
 // =====
-// book_valid throws the first Err (its first done entries are taken
+// book_valid throws the first error Diag (its first done entries are taken
 // as validated: a harness resumes past a seeded base); an order entry
 // is an event. every def declares (bodiless) up front and defines at
 // its event (a law: type checked at its law, defined at its fill), so
@@ -3830,7 +3830,7 @@ export function book_valid(book: Book, done: number = 0): void {
           for (const [d, [q, x, A]] of doms.entries()) {
             ctx = ctx_bind(ctx, d, q, x, A);
           }
-          throw Err(book, ctx, "a kind (type " + name_key(k) + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
+          throw Diag(book, ctx, "a kind (type " + name_key(k) + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
         }
         for (const ctr of tld.c) {
           let tel: HTerm = ctr.T;
@@ -3848,12 +3848,12 @@ export function book_valid(book: Book, done: number = 0): void {
           const exp = "a telescope tipped at " + name_key(k) + " applied to its own parameters";
           const tip = term_wnf(book, tel);
           if (tip.$ !== "ADT" || tip.k !== k || tip.x.length !== tld.n || tip.r.length !== 0) {
-            throw Err(book, ctx, exp, tip, undefined, ctr.k);
+            throw Diag(book, ctx, exp, tip, undefined, ctr.k);
           }
           for (let d = 0; d < tld.n; d++) {
             const x = term_wnf(book, tip.x[d]);
             if (x.$ !== "Var" || x.i !== d) {
-              throw Err(book, ctx, exp, tip, undefined, ctr.k);
+              throw Diag(book, ctx, exp, tip, undefined, ctr.k);
             }
           }
         }
@@ -3873,7 +3873,7 @@ export function book_valid(book: Book, done: number = 0): void {
         const [h] = term_unapply(tel);
         const io  = book.tlds["IO"];
         if (h.$ !== "Ref" || h.k !== "IO" || io === undefined || io.$ !== "Def" || io.b !== true) {
-          throw Err(book, ctx_nil(), "a foreign definition returning base IO(...) directly (return type aliases are not unfolded)", k, tel.s, k);
+          throw Diag(book, ctx_nil(), "a foreign definition returning base IO(...) directly (return type aliases are not unfolded)", k, tel.s, k);
         }
       }
       if (fin && tld.v !== null) {

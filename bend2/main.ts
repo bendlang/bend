@@ -876,12 +876,12 @@ function book_err(e: unknown): string {
   if (e instanceof Check_Fail) {
     return FAIL + "\n" + book_err(e.why);
   }
-  const err = e as Bend.Err;
+  const diag = e as Bend.Diag;
   if (e instanceof RangeError) {
     return "Error: the machine stack overflowed (a deep recursion, or a"
       + " literal too large to expand)";
   }
-  return err?.$ === "Err" ? Bend.err_show(err) : String(e);
+  return diag?.$ === "Diag" ? Bend.diag_show(diag) : String(e);
 }
 
 // Load
