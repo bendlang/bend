@@ -403,6 +403,21 @@ def UDP.try_send_to(sock: Socket, host: String, port: U32, data: String, ms: U32
   import "./effs/udp_send_to.c"
   import "./effs/udp_send_to.js"
 
+# The datagram's bytes as they are (0..255), one List cell each: no UTF-8
+# encoding, so a binary protocol's datagram goes out as written. A value
+# past 255 fails with EINVAL before anything is sent.
+def UDP.send_bytes_to(sock: Socket, host: String, port: U32, data: List<&2, U32>) ->
+  IO(Socket & Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>):
+  import "./effs/udp_send_to.c"
+  import "./effs/udp_send_to.js"
+
+def UDP.try_send_bytes_to(sock: Socket, host: String, port: U32, data: List<&2, U32>,
+  ms: U32) ->
+  IO(Socket & Poll<&1, &1, Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>,
+    List<&2, U32>>):
+  import "./effs/udp_send_to.c"
+  import "./effs/udp_send_to.js"
+
 # A datagram may be empty: UDP has no end, so no None{}.
 def UDP.recv_from(sock: Socket, max: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, String & U32 & String>):
@@ -411,6 +426,19 @@ def UDP.recv_from(sock: Socket, max: U32) ->
 
 def UDP.try_recv_from(sock: Socket, max: U32, ms: U32) ->
   IO(Socket & Poll<&1, &1, Result<&1, &1, U32 & String, String & U32 & String>, Unit>):
+  import "./effs/udp_recv_from.c"
+  import "./effs/udp_recv_from.js"
+
+# The datagram's bytes as they are: no UTF-8 decoding, so every byte of a
+# binary datagram survives.
+def UDP.recv_bytes_from(sock: Socket, max: U32) ->
+  IO(Socket & Result<&1, &1, U32 & String, String & U32 & List<&2, U32>>):
+  import "./effs/udp_recv_from.c"
+  import "./effs/udp_recv_from.js"
+
+def UDP.try_recv_bytes_from(sock: Socket, max: U32, ms: U32) ->
+  IO(Socket & Poll<&1, &1, Result<&1, &1, U32 & String,
+    String & U32 & List<&2, U32>>, Unit>):
   import "./effs/udp_recv_from.c"
   import "./effs/udp_recv_from.js"
 
