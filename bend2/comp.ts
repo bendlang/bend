@@ -3090,16 +3090,16 @@ function js_def(sc: Scope, k: Name, def: Bend.Def): void {
     fun_of(d).live.length))).keys()].map((i) => "$" + i)
     : live.map(([, x]) => name_local(sc, x));
   if (def.i !== undefined) {
-    const doms = [...live, tele_unbind(def.T).doms.at(-1)!];
     params.push(name_local(sc, "k"));
-    const xs = params.map((p, i) =>
-      `${js_marshal(doms[i][2], true)}(${p})`);
-    const n = JSON.stringify(Bend.name_key(k));
-    return block(sc, `function ${js_sat(k)}(${params.join(", ")}) {`, () =>
-      file_push(sc, `return { $: ${n}, args: [${xs.slice(0, -1).join(", ")
-        }], kont: ${xs.at(-1)} };`));
   }
   block(sc, `function ${js_sat(k)}(${params.join(", ")}) {`, () => {
+    if (def.i !== undefined) {
+      const doms = [...live, tele_unbind(def.T).doms.at(-1)!];
+      const xs = params.map((p, i) =>
+        `${js_marshal(doms[i][2], true)}(${p})`);
+      return file_push(sc, `return { $: ${JSON.stringify(Bend.name_key(k))
+        }, args: [${xs.slice(0, -1).join(", ")}], kont: ${xs.at(-1)} };`);
+    }
     if (loop.length === 0) {
       return js_func(sc, h!, def.T, params);
     }
