@@ -769,7 +769,7 @@ function term_uses(tm: HTerm): Bend.PMap<number> {
   return memo(FL.memo.uses, tm, () => {
     const t = term_force(tm);
     if (t.$ === "Var") {
-      return Bend.pmap_set(USE0, t.i, 1);
+      return t.i === DUMMY.i ? USE0 : Bend.pmap_set(USE0, t.i, 1);
     }
     const add = t.$ === "Mat" ? Math.max : (a: number, b: number) => a + b;
     return term_kids(t).reduce((u, x) =>
@@ -1027,7 +1027,10 @@ function ctr_flds(k: Name, xs: HTerm[]): HTerm[] {
 
 function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
   if (FL.book.ctrs[k]) {
-    FL.srcs.set(Bend.book_fam(FL.book, k), null);
+    const fam = Bend.book_fam(FL.book, k);
+    if (!FL.srcs.has(fam)) {
+      FL.srcs.set(fam, null);
+    }
   }
   const cid = cid_mac(k);
   if (lay_node(k).ks.join() === "w32" || exprs.length === 0) {
@@ -5908,10 +5911,12 @@ OUTLINE void io_loop(u64* H) {
       if (io_busy != 0) {
         io_take(e);
       }
-      u64 now = io_tick();
-      if (io_park != NULL && (now >= look || io_park->next->time - 1 < now)) {
-        look = now + 10000000;
-        io_wait(e, false);
+      if (io_park != NULL) {
+        u64 now = io_tick();
+        if (now >= look || io_park->next->time - 1 < now) {
+          look = now + 10000000;
+          io_wait(e, false);
+        }
       }
     }
     io_step(e, io_pop(&io_runs));
