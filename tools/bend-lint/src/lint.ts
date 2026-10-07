@@ -9,7 +9,7 @@ import * as url from "node:url";
 import * as util from "node:util";
 
 import type * as BendModule from "../../../bend2/bend.ts";
-import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Span } from "../../../bend2/bend.ts";
+import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
 import { BEND_TS, DriftError, MARK, PIN_FILE, current, fs, patch, path, pinned } from "./patch.ts";
 
 // Types
@@ -52,9 +52,12 @@ export type DiagInit = {
 export type SourceFile = { str: string; ns: string; al: Record<Name, Name>; path: string };
 export type Source = { path: string; ns: string; text: string; root: boolean; base: boolean; file: SourceFile };
 
-// `tm` checked (or inferred) as `ty` at depth `dep` in `ctx`, in def `def`.
-// `bok` is the book it was checked in (a template body has its own).
-export type Fact = { tm: LTerm; ty: HTerm; bok: Book; ctx: Ctx; dep: number; def: Name; spn?: Span };
+// `tm` checked (or inferred) as `ty` at depth `dep` in `ctx`, in def `def`,
+// demanded `qt` times, using the variables in `us`. `bok` is the book it was
+// checked in (a template body has its own). A template body is checked as
+// written, then again for each instance (generic~0) at the same spans;
+// `inst` marks the facts of an instance.
+export type Fact = { tm: LTerm; ty: HTerm; bok: Book; ctx: Ctx; dep: number; def: Name; qt: Quant; us: Uses; inst: boolean; spn?: Span };
 
 export type RuleContext = {
   Bend: Bend;
@@ -79,7 +82,7 @@ export type LintRule = {
 
 export type LintResult = { ok: boolean; diags: Diag[]; sources: Source[]; book: Book; facts?: Map<LTerm, Fact> };
 
-type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn?: Span) => void };
+type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void };
 type Mapper = <S extends Span | undefined>(s: S) => S;
 type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm, Fact>; failure?: Diag };
 
@@ -202,8 +205,8 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
   signal.throwIfAborted();
   const book: Hooked = Bend.book_nil();
   const seen = new Map<string, string | null>();
-  const found: Fact[] = [];
-  book.see = capture ? (bok, tm, ty, ctx, dep, def, spn) => void found.push({ tm, ty, bok, ctx, dep, def, spn }) : undefined;
+  const found: Array<Omit<Fact, "inst">> = [];
+  book.see = capture ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => void found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us }) : undefined;
   const caught = await Bend.book_load(book, file, "", seen).then(() => {
     const laws = path.join(path.dirname(file), "LAWS.bend");
     if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws) && !seen.has(fs.realpathSync(laws))) {
@@ -223,7 +226,8 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
   });
   const span = mapper(sources);
   if (caught === undefined) {
-    return { book, sources, span, facts: capture ? new Map(found.map((f) => [f.tm, { ...f, spn: span(f.spn) }])) : undefined };
+    const insts = new Set(Object.values(book.tmps).flatMap((m) => [...m.values()]));
+    return { book, sources, span, facts: capture ? new Map(found.map((f) => [f.tm, { ...f, inst: insts.has(f.def), spn: span(f.spn) }])) : undefined };
   }
   const err = isErr(caught.e) ? caught.e : undefined;
   const message = err !== undefined ? Bend.expr_show(err.bok, err.exp) : caught.e instanceof RangeError ? STACK : String(caught.e);

@@ -41,7 +41,7 @@ const PATCHES = [
     to: [
       "export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {",
       "  const inf = lint_infer(book, lhs, tm, qt, ctx, d, sp);",
-      "  (book as any).see?.(book, inf.tm, inf.ty, ctx, d, lhs.def, tm.s);",
+      "  (book as any).see?.(book, inf.tm, inf.ty, ctx, d, lhs.def, tm.s, qt, inf.us);",
       "  return inf;",
       "}",
       "function lint_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[]): Infer {",
@@ -53,7 +53,7 @@ const PATCHES = [
     to: [
       "export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {",
       "  const chk = lint_check(book, lhs, tm, qt, ty, ctx, d);",
-      "  (book as any).see?.(book, chk.tm, ty, ctx, d, lhs.def, tm.s);",
+      "  (book as any).see?.(book, chk.tm, ty, ctx, d, lhs.def, tm.s, qt, chk.us);",
       "  return chk;",
       "}",
       "function lint_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {",

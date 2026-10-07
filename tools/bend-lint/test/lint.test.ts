@@ -149,17 +149,16 @@ const neverRun: LintRule = {
 };
 
 // x : T = v, where v is a variable that already has type T. Constructors
-// and lambdas keep theirs: checking needs the expected type. A template
-// body is checked again per instance (generic~0), at the same span; the
-// first finding at a span is from the def as written, so it is kept.
+// and lambdas keep theirs: checking needs the expected type. Template
+// instances repeat the facts of the def as written, so they are skipped.
 const redundantAnnotation: LintRule = {
   id: "erasure/redundant-local-annotation",
   needsTypes: true,
-  run: (cx) => [...new Map([...cx.facts!.values()].flatMap((fact): Array<[string, Diag]> => {
+  run: (cx) => [...cx.facts!.values()].flatMap((fact): Diag[] => {
     const term = cx.Bend.term_strip(fact.tm);
     const value = cx.span(term.s);
     const v = cx.binder(fact, term);
-    if (term.$ !== "Var" || fact.spn === undefined || value === undefined || v === null || !cx.same(fact, v.T, fact.ty)) {
+    if (fact.inst || term.$ !== "Var" || fact.spn === undefined || value === undefined || v === null || !cx.same(fact, v.T, fact.ty)) {
       return [];
     }
     const prefix = fact.spn.file.str.slice(fact.spn.beg, value.beg);
@@ -168,12 +167,12 @@ const redundantAnnotation: LintRule = {
       return [];
     }
     const spn = { file: fact.spn.file, beg: fact.spn.beg + name[1].length, end: fact.spn.beg + prefix.lastIndexOf("=") };
-    return [[spn.beg + ":" + spn.end, cx.diag({
+    return [cx.diag({
       message: "Remove the redundant annotation: " + v.k + " already has type " + cx.show(fact, v.T) + ".",
       severity: "hint", spn, fact,
       fixes: [{ title: "Remove redundant local type annotation", applicability: "suggested", edits: [{ spn, text: " " }] }],
-    })]];
-  }).reverse()).values()].reverse(),
+    })];
+  }),
 };
 
 // One space after a comma and on each side of an assignment, in the file
@@ -349,6 +348,12 @@ describe("lint", () => {
       run: (cx) => {
         const generic = facts(cx, "generic").find((f) => f.tm.x?.$ === "Var" && f.tm.x.k === "x")!;
         expect(generic.bok.tlds["generic~T"]).toBeDefined();
+        expect(generic.inst).toBe(false);
+        const inst = facts(cx, "generic~0").find((f) => f.tm.x?.$ === "Var" && f.tm.x.k === "x")!;
+        expect(inst.inst).toBe(true);
+        expect(inst.spn).toEqual(generic.spn);
+        expect(["None", "Lone", "Many"]).toContain(generic.qt.$);
+        expect(generic.us.$).toBeDefined();
         const proof = facts(cx, "proof").find((f) => f.tm.x?.$ === "Rfl")!;
         expect(proof.ty.$).toBe("Eql");
         expect(proof.dep).toBe(1);

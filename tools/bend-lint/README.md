@@ -49,7 +49,9 @@ found. A finding with severity `error` stops the run.
 
 - `sources`, `root`: the files of the book as they are on disk.
 - `facts` (with `needsTypes`): for each checked term, its type, context,
-  depth, def, and span in the file on disk.
+  depth, def, quantity, uses, and span in the file on disk. A template body
+  is checked as written and again per instance (`generic~0`), at the same
+  spans; `fact.inst` marks the facts of an instance.
 - `span(s)`: a span from bend.ts (for example `term.s`), in the file on
   disk.
 - `walk`, `binder`, `show`, `same`, `diag`: helpers over bend's terms.
