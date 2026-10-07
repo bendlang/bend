@@ -100,11 +100,14 @@ type Reported = {
 type Channel = {
   input(): { sources: Array<{ path: string; text: string; root: boolean }>; facts: number };
   report(diags: Reported[]): void;
-  view(fact: number): { owner: Name; inst: boolean; kind: string; name: string; span?: Spot; inner?: Spot };
+  view(fact: number): { owner: Name; inst: boolean; kind: string; name: string; quantity: Quant["$"]; span?: Spot; inner?: Spot };
   type(fact: number): number;
   binder(fact: number): number | undefined;
   same(fact: number, a: number, b: number): boolean;
   show(fact: number, t: number): string;
+  normal(fact: number, t: number): number;
+  uses(fact: number): Array<{ name: Name; quantity: Quant["$"] }>;
+  text(span: Spot): string;
 };
 
 type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void };
@@ -434,7 +437,7 @@ export async function bendRule(file: string): Promise<LintRule> {
         view: (i) => {
           const f = pick(facts, i, "fact");
           const t = Bend.term_strip(f.tm);
-          return { owner: f.def, inst: f.inst, kind: t.$, name: t.$ === "Var" ? t.k : "", span: spot(f.spn), inner: spot(cx.span(t.s)) };
+          return { owner: f.def, inst: f.inst, kind: t.$, name: t.$ === "Var" ? t.k : "", quantity: f.qt.$, span: spot(f.spn), inner: spot(cx.span(t.s)) };
         },
         type: (i) => keep(pick(facts, i, "fact").ty),
         binder: (i) => {
@@ -444,6 +447,15 @@ export async function bendRule(file: string): Promise<LintRule> {
         },
         same: (i, a, b) => cx.same(pick(facts, i, "fact"), pick(terms, a, "term"), pick(terms, b, "term")),
         show: (i, t) => cx.show(pick(facts, i, "fact"), pick(terms, t, "term")),
+        normal: (i, t) => keep(Bend.term_snf(pick(facts, i, "fact").bok, pick(terms, t, "term"))),
+        uses: (i) => {
+          const f = pick(facts, i, "fact");
+          return Bend.pmap_to_array(f.us).flatMap(([v, q]) => q.$ === "None" ? [] : [{ name: Bend.pmap_get(f.ctx, v)?.k ?? "", quantity: q.$ }]);
+        },
+        text: (s) => {
+          const spn = span(s);
+          return spn.file.str.slice(spn.beg, spn.end);
+        },
       };
       let code: number;
       try {

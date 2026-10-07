@@ -3,6 +3,7 @@
 // String and U32 are native JS values here; other data is {$: CID(Name), ...}.
 
 const LINT_SEVERITY = { [CID(Error)]: "error", [CID(Warning)]: "warning", [CID(Information)]: "information", [CID(Hint)]: "hint" };
+const LINT_QUANTITY = { None: CID(Erased), Lone: CID(Once), Many: CID(Many) };
 const LINT_APPLICABILITY = { [CID(Safe)]: "safe", [CID(Suggested)]: "suggested", [CID(Dangerous)]: "dangerous" };
 
 function lint_host() {
@@ -67,7 +68,7 @@ function lint_report(diags) {
 function lint_view(fact) {
   const v = lint_host().view(fact.id);
   return {
-    $: CID(View), owner: v.owner, inst: v.inst, kind: v.kind, name: v.name,
+    $: CID(View), owner: v.owner, inst: v.inst, kind: v.kind, name: v.name, quantity: { $: LINT_QUANTITY[v.quantity] },
     span: lint_maybe(v.span && lint_span(v.span)), inner: lint_maybe(v.inner && lint_span(v.inner)),
   };
 }
@@ -82,3 +83,7 @@ io_eff(CID(binder), (fact) => {
 });
 io_eff(CID(same), (fact, a, b) => lint_host().same(fact.id, a.id, b.id));
 io_eff(CID(show), (fact, t) => lint_host().show(fact.id, t.id));
+io_eff(CID(normal), (fact, t) => lint_term(lint_host().normal(fact.id, t.id)));
+io_eff(CID(uses), (fact) => lint_list(lint_host().uses(fact.id).map((u) =>
+  ({ $: CID(Use), name: u.name, quantity: { $: LINT_QUANTITY[u.quantity] } }))));
+io_eff(CID(text), (span) => lint_host().text(lint_spot(span)));

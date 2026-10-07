@@ -48,12 +48,22 @@ type Fix is Data:
 type Diag is Data:
   Diag{severity: Severity, message: String, span: Maybe<&2, Span>, fixes: List<&2, Fix>}
 
+# How many times a term may be used.
+type Quantity is Data:
+  Erased{}
+  Once{}
+  Many{}
+
+type Use is Data:
+  Use{name: String, quantity: Quantity}
+
 # A fact as bend-lint sees it: the def it is in, whether that def is a
 # template instance, the kind of its term once an annotation is stripped
-# (Var, App, ...), the name a Var refers to (else ""), and the spans of the
-# checked term and of the stripped one.
+# (Var, App, ...), the name a Var refers to (else ""), how many times the
+# term is demanded, and the spans of the checked term and of the stripped
+# one.
 type View is Data:
-  View{owner: String, inst: Bool, kind: String, name: String, span: Maybe<&2, Span>, inner: Maybe<&2, Span>}
+  View{owner: String, inst: Bool, kind: String, name: String, quantity: Quantity, span: Maybe<&2, Span>, inner: Maybe<&2, Span>}
 
 def input() -> IO(Input):
   import "./lint.js"
@@ -78,6 +88,18 @@ def same(fact: Fact, a: Term, b: Term) -> IO(Bool):
   import "./lint.js"
 
 def show(fact: Fact, t: Term) -> IO(String):
+  import "./lint.js"
+
+# The normal form of a type, in the fact's scope.
+def normal(fact: Fact, t: Term) -> IO(Term):
+  import "./lint.js"
+
+# The variables the fact's term uses, each with how many times.
+def uses(fact: Fact) -> IO(List<&2, Use>):
+  import "./lint.js"
+
+# The text under a span, in the file on disk.
+def text(span: Span) -> IO(String):
   import "./lint.js"
 
 def serve(run: Input -> IO(List<&2, Diag>)) -> IO(Unit):

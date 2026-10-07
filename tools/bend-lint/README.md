@@ -72,7 +72,8 @@ A `.bend` rule imports `src/lint.bend` (by a relative path) and defines
 `Lint.serve`; `src/lint.bend` lists the contract. `run` gets the sources
 and, with `types()` true, the facts (as indexes, `Lint.Fact`); it asks about them
 through effects (`Lint.view`, `Lint.type_of`, `Lint.binder`, `Lint.same`,
-`Lint.show`) and answers a list of `Lint.Diag`. Offsets count characters.
+`Lint.show`, `Lint.normal`, `Lint.uses`, `Lint.text`) and answers a list of
+`Lint.Diag`. Offsets count characters.
 
 ```sh
 bun tools/bend-lint/src/lint.ts file.bend --rules my_rule.bend

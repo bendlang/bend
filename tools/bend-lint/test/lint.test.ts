@@ -193,8 +193,9 @@ def main() -> IO(Unit):
   Lint.serve(run)
 `;
 
-// A typed rule written in Bend: for each Var in def id, its type and
-// whether the checker finds it equal to its binder's.
+// A typed rule written in Bend: for each Var in def id, its type and normal
+// form, whether the checker finds it equal to its binder's, its text, how
+// many times it is demanded, and what it uses.
 const TYPES_BEND = String.raw`import Base
 import ../../../src/lint.bend as Lint
 
@@ -218,26 +219,59 @@ def compare(f: Lint.Fact, b: Maybe<&2, Lint.Term>, t: Lint.Term) -> IO(Bool):
     case Some{x}:
       Lint.same(f, x, t)
 
-def describe(+f: Lint.Fact, name: String, span: Maybe<&2, Lint.Span>) -> IO(Maybe<&2, Lint.Diag>):
+def quantity(q: Lint.Quantity) -> String:
+  match q:
+    case Lint.Erased{}:
+      "erased"
+    case Lint.Once{}:
+      "once"
+    case Lint.Many{}:
+      "many"
+
+def use_text(u: Lint.Use) -> String:
+  match u:
+    case Lint.Use{name, q}:
+      name ++ " " ++ quantity(q)
+
+def first_use(us: List<&2, Lint.Use>) -> String:
+  match us:
+    case Nil{}:
+      "nothing"
+    case Con{u, rest}:
+      use_text(u)
+
+def text_of(inner: Maybe<&2, Lint.Span>) -> IO(String):
+  match inner:
+    case None{}:
+      IO.pure(String, "")
+    case Some{s}:
+      Lint.text(s)
+
+def describe(+f: Lint.Fact, name: String, q: Lint.Quantity, span: Maybe<&2, Lint.Span>, inner: Maybe<&2, Lint.Span>) -> IO(Maybe<&2, Lint.Diag>):
   do IO<Maybe<&2, Lint.Diag>>:
     t : Lint.Term <- Lint.type_of(f)
     shown : String <- Lint.show(f, t)
+    t2 : Lint.Term <- Lint.type_of(f)
+    n : Lint.Term <- Lint.normal(f, t2)
+    nf : String <- Lint.show(f, n)
     u : Lint.Term <- Lint.type_of(f)
     b : Maybe<&2, Lint.Term> <- Lint.binder(f)
     same : Bool <- compare(f, b, u)
-    return Some{Lint.Diag{Lint.Hint{}, String.append(name, String.append(": ", String.append(shown, verdict(same)))), span, []}}
+    here : String <- text_of(inner)
+    us : List<&2, Lint.Use> <- Lint.uses(f)
+    return Some{Lint.Diag{Lint.Hint{}, name ++ ": " ++ shown ++ " = " ++ nf ++ verdict(same) ++ ", text " ++ here ++ ", demanded " ++ quantity(q) ++ ", uses " ++ first_use(us), span, []}}
 
-def wanted(hit: Bool, +f: Lint.Fact, name: String, span: Maybe<&2, Lint.Span>) -> IO(Maybe<&2, Lint.Diag>):
+def wanted(hit: Bool, +f: Lint.Fact, name: String, q: Lint.Quantity, span: Maybe<&2, Lint.Span>, inner: Maybe<&2, Lint.Span>) -> IO(Maybe<&2, Lint.Diag>):
   match hit:
     case True{}:
-      describe(f, name, span)
+      describe(f, name, q, span, inner)
     case False{}:
       IO.pure(Maybe<&2, Lint.Diag>, None{})
 
 def fact_diag(+f: Lint.Fact, v: Lint.View) -> IO(Maybe<&2, Lint.Diag>):
   match v:
-    case Lint.View{owner, inst, kind, name, span, inner}:
-      wanted(Bool.and(String.eq(owner, "id"), Bool.and(String.eq(kind, "Var"), Bool.not(inst))), f, name, span)
+    case Lint.View{owner, inst, kind, name, q, span, inner}:
+      wanted(Bool.and(String.eq(owner, "id"), Bool.and(String.eq(kind, "Var"), Bool.not(inst))), f, name, q, span, inner)
 
 def prepend(m: Maybe<&2, Lint.Diag>, xs: List<&2, Lint.Diag>) -> List<&2, Lint.Diag>:
   match m:
@@ -706,11 +740,8 @@ describe("rules written in Bend", () => {
     const rule = await bendRule(fixture("types_rule.bend", TYPES_BEND));
     expect(rule.needsTypes).toBe(true);
     const res = await lint(userland, [rule, rule]);
-    expect(res.diags.length).toBeGreaterThan(0);
-    for (const d of res.diags) {
-      expect(d.message).toMatch(/^x: \S.* \(same as its binder\)$/);
-      expect(d.spn?.file).toBe(root(res.sources).file);
-    }
+    expect(res.diags.map((d) => d.message)).toEqual(Array(2).fill("x: Alias = N (same as its binder), text x, demanded once, uses x once"));
+    expect(res.diags.every((d) => d.spn?.file === root(res.sources).file)).toBe(true);
   });
 });
 
