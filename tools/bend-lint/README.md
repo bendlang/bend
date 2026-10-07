@@ -4,6 +4,8 @@
 rules on it. A rule reads the source text, the checker's types, or both,
 and returns diagnostics with fixes. Bend itself does not change.
 
+New here? Start with [GUIDE.md](GUIDE.md).
+
 - `src/lint.ts`: the library and the CLI.
 - `src/patch.ts`: what bend-lint changes in `bend2/bend.ts` and
   `bend2/comp.ts` as Bun loads them, and the pin.
@@ -34,7 +36,7 @@ export const rules: LintRule[] = [{
   needsTypes: false,                // true gives the rule cx.facts
   run(cx, signal) {
     return [...cx.root.text.matchAll(/,(?=\w)/g)].map((m) => {
-      const spn = { file: cx.root.file, beg: m.index + 1, end: m.index + 1 };
+      const spn = { file: cx.root.file, beg: m.index! + 1, end: m.index! + 1 };
       return cx.diag({
         message: "Add a space after the comma.", severity: "warning", spn,
         fixes: [{ title: "Insert space", applicability: "safe", edits: [{ spn, text: " " }] }],
