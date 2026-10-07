@@ -117,4 +117,9 @@ bun tools/bend-lint/src/lint.ts --pin
 
 ```sh
 bun test tools/bend-lint
+bunx tsc -p tools/bend-lint/tsconfig.json --noEmit
 ```
+
+Bun does not check types, so run `tsc` too. It also checks the parts of
+bend2 that bend-lint imports, and today reports two errors there
+(bend.ts lines 2040 and 3771); bend-lint itself has none.

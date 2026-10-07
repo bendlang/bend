@@ -1,0 +1,4 @@
+{
+  "extends": "../../bend2/pack/tsconfig.json",
+  "include": ["src", "test"]
+}

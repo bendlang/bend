@@ -62,7 +62,7 @@ export type RuleContext = {
   root: Source;
   facts?: Map<LTerm, Fact>; // only for a rule with needsTypes
   prior: readonly Diag[];   // what earlier rules found
-  span<S extends Span | undefined>(s: S): S; // a bend.ts span, in the file on disk
+  span: Mapper; // a bend.ts span, in the file on disk
   walk(tm: LTerm): Generator<LTerm>;
   binder(fact: Fact, v: LTerm): Ann | null;
   show(fact: Fact, ty: HTerm): string;
@@ -110,7 +110,7 @@ type Channel = {
 type Comp = typeof CompModule & { RUNTIME_MAIN: string; js_sat(k: Name): string };
 
 type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void };
-type Mapper = <S extends Span | undefined>(s: S) => S;
+type Mapper = { (s: Span): Span; (s: Span | undefined): Span | undefined };
 type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm, Fact>; failure?: Diag };
 
 // Constants
@@ -190,7 +190,9 @@ function starts(text: string): number[] {
 export function mapper(sources: Source[]): Mapper {
   const own = new Set<unknown>(sources.map((s) => s.file));
   const memo = new WeakMap<object, { file: SourceFile; from: number[]; to: number[] }>();
-  return <S extends Span | undefined>(s: S): S => {
+  function map(s: Span): Span;
+  function map(s: Span | undefined): Span | undefined;
+  function map(s: Span | undefined): Span | undefined {
     if (s === undefined || own.has(s.file)) {
       return s;
     }
@@ -219,8 +221,9 @@ export function mapper(sources: Source[]): Mapper {
       }
       return to[lo] + off - from[lo];
     };
-    return { file, beg: at(s.beg), end: at(s.end) } as S;
-  };
+    return { file, beg: at(s.beg), end: at(s.end) };
+  }
+  return map;
 }
 
 function isErr(e: unknown): e is Err {
@@ -469,8 +472,10 @@ async function instrument(): Promise<{ Bend: Bend; Comp: Comp }> {
       build.onLoad({ filter: /[\\/]bend2[\\/](bend|comp)\.ts$/ }, (args) => ({ contents: patched.get(path.basename(args.path))!, loader: "ts" }));
     },
   });
-  const [B, C]: [Bend & { [MARK]?: number }, Comp & { [MARK]?: number }] = await Promise.all(
-    ["bend.ts", "comp.ts"].map((f) => import(url.pathToFileURL(path.join(BEND2, f)).href)));
+  const [B, C]: [Bend & { [MARK]?: number }, Comp & { [MARK]?: number }] = await Promise.all([
+    import(url.pathToFileURL(path.join(BEND2, "bend.ts")).href),
+    import(url.pathToFileURL(path.join(BEND2, "comp.ts")).href),
+  ]);
   if (B[MARK] !== 1 || C[MARK] !== 1) {
     throw new DriftError("bend2 was loaded before bend-lint could patch it; import bend-lint first");
   }
