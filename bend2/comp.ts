@@ -5911,13 +5911,13 @@ OUTLINE void io_loop(u64* H) {
       io_wait(e, true);
       continue;
     }
-    if ((n & 63) == 0 && io_busy != 0) {
-      io_take(e);
-    }
     // A busy loop still checks due timers, and fds periodically.
-    if ((n & 63) == 0 && io_park != NULL) {
+    if ((n & 63) == 0) {
+      if (io_busy != 0) {
+        io_take(e);
+      }
       u64 now = io_tick();
-      if (now >= look || io_park->next->time - 1 < now) {
+      if (io_park != NULL && (now >= look || io_park->next->time - 1 < now)) {
         look = now + 10000000;
         io_wait(e, false);
       }
