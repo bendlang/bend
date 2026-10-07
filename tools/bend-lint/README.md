@@ -14,9 +14,14 @@ bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.be
 ```
 
 Findings print in bend's error layout, with a severity, a code, and each fix
-as a diff. `--fix` writes the `safe` fixes. Exit codes: 0 no error, 1 an
-error (the file does not check, or a rule found an `error`), 2 bad usage or
-a tool failure.
+as a diff. `--fix` writes the `safe` fixes to the linted file only, never
+to its imports (a BendHub package under `~/.bend/lib` is never edited). Equal
+edits merge; a fix that clashes with an earlier one is skipped and counted,
+and another `--fix` run applies it. Exit codes: 0 no error, 1 an error (the
+file does not check, or a rule found an `error`), 2 bad usage or a tool
+failure. "Does not check" means bend's checker rejects it: unlike
+`bend --check-only`, bend-lint does not fail a file for relying on
+`@unsafe` or foreign code.
 
 `--json` prints only this, for other tools (ranges as in LSP: 0-based,
 UTF-16):
@@ -60,7 +65,7 @@ export const rules: LintRule[] = [{
 | `cx` | |
 |---|---|
 | `root`, `sources` | the linted file and its imports, as on disk |
-| `facts` | with `needsTypes`: per checked term, its type, scope, depth, def, quantity, uses, and span on disk |
+| `facts` | with `needsTypes`: per checked term of the linted file, its type, scope, depth, def, quantity, uses, and span on disk |
 | `prior` | the findings of earlier rules |
 | `span(s)` | a bend span (e.g. `term.s`), moved to the file on disk |
 | `walk`, `binder`, `show`, `same`, `normal`, `uses` | helpers over bend's terms |
@@ -71,10 +76,13 @@ Severities: `error` (stops the run), `warning`, `information`, `hint`. Fix
 levels: `safe` keeps behavior, `suggested` may change it, `dangerous` may
 break code.
 
-Rules run in order; none runs when the file does not check. Base's own defs
-give no facts. A template body is checked as written and again per instance
-(`generic~0`) at the same spans; `fact.inst` marks the instances. A file with
-`import Base` reuses a Base checked once per process.
+Rules run in order; none runs when the file does not check. Facts cover only
+the linted file, so none come from Base or other imports. A template body is
+checked as written and again per instance (`generic~0`) at the same spans;
+`fact.inst` marks the instances. A file with a line exactly `import Base`
+(as `bend --checkup` reads it) reuses a Base checked once per process. Every
+checked term of the file gives a fact, so a very large file costs memory: a
+rule with `needsTypes` on a 3,200-proof file holds about 1.3M facts.
 
 ## Options
 
@@ -132,7 +140,7 @@ import { applyFixes, bendRule, lint, render } from "./tools/bend-lint/src/lint.t
 
 const res = await lint("file.bend", [...rules, await bendRule("rule.bend")]);
 console.log(res.ok, res.diags.map(render));
-const fixed = applyFixes(res.sources.find((s) => s.root)!.file, res.diags);
+const { text, skipped } = applyFixes(res.sources.find((s) => s.root)!.file, res.diags);
 ```
 
 A library picks its bend with `$BEND_DIR`, set before it imports bend-lint.

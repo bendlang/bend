@@ -20,9 +20,9 @@ import type * as BendModule from "bend2/bend.ts";
 // Types
 // =====
 
-// A file's patch: exact edits, then a tail appended to the file, which may
-// export only names the file declares (`needs`).
-type Patch = { edits: Array<[string, string]>; tail: string; needs: string[] };
+// A file's patch: exact edits, a tail appended to the file, and names it
+// must declare once and export (the tail exports those it does not).
+type Patch = { edits: Array<[string, string]>; tail: string; exports: string[] };
 
 // A book whose checker reports to `see`: for each checked term, what it was
 // checked or inferred as, where, and how it was used.
@@ -54,9 +54,9 @@ const PATCHES: Record<string, Patch> = {
     tail: "import { seeInfer, seeCheck } from " + SHIM + ";\n"
       + "export const term_infer = seeInfer(unseen_term_infer);\n"
       + "export const term_check = seeCheck(unseen_term_check);\n",
-    needs: [],
+    exports: [],
   },
-  "comp.ts": { edits: [], tail: "export { RUNTIME_MAIN, js_sat };\n", needs: ["RUNTIME_MAIN", "js_sat"] },
+  "comp.ts": { edits: [], tail: "", exports: ["RUNTIME_MAIN", "js_sat"] },
 };
 
 // fs and path for bend.ts.
@@ -120,7 +120,7 @@ function arity(f: (...args: never[]) => unknown, n: number, name: string): void 
 
 // `file` is "bend.ts" or "comp.ts".
 export function patch(file: string, src: string): string {
-  const { edits, tail, needs } = PATCHES[file];
+  const { edits, tail, exports } = PATCHES[file];
   const drift = (what: string, n: number): never => {
     throw new DriftError("cannot patch bend2/" + file + ": found " + n + " of " + what
       + ", expected 1. Update PATCHES in tools/bend-lint/src/patch.ts.");
@@ -129,11 +129,12 @@ export function patch(file: string, src: string): string {
     const n = out.split(at).length - 1;
     return n === 1 ? out.replace(at, () => to) : drift(JSON.stringify(at), n);
   }, src);
-  for (const name of needs) {
+  const missing = exports.filter((name) => {
     const n = edited.match(new RegExp("^(?:export )?(?:function|const|let) " + name + "\\b", "gm"))?.length ?? 0;
-    if (n !== 1) drift("a declaration of " + name, n);
-  }
-  return edited + "\n" + tail + "export const " + MARK + " = 1;\n";
+    return n === 1 ? !new RegExp("^export (?:function|const|let) " + name + "\\b", "m").test(edited) : drift("a declaration of " + name, n);
+  });
+  return edited + "\n" + tail + (missing.length === 0 ? "" : "export { " + missing.join(", ") + " };\n")
+    + "export const " + MARK + " = 1;\n";
 }
 
 // The bend2 folder to load: `given` (from --bend), else $BEND_DIR, else

@@ -143,6 +143,9 @@ const shared = globalThis as typeof globalThis & { BEND_LINT?: Channel };
 // per process, and again only if base.bend changes.
 const BASES = new Map<string, Promise<Book>>();
 
+// Line starts per file object (see starts).
+const STARTS = new WeakMap<object, number[]>();
+
 // Binders are explicit in checked terms, so Var.v cells are not followed.
 // A new term kind is a type error here, and a DriftError when walked.
 const CHILDREN: { [K in LTerm["$"]]: (tm: Extract<LTerm, { $: K }>) => LTerm[] } = {
@@ -185,19 +188,29 @@ const USAGE = [
 // Functions
 // =========
 
+// Every sub-term, parents first, with an explicit stack: linear in the
+// size of the term, at any depth.
 export function* walk(tm: LTerm): Generator<LTerm> {
-  const children = (CHILDREN as Record<string, ((tm: LTerm) => LTerm[]) | undefined>)[tm.$];
-  if (children === undefined) {
-    throw new DriftError("unknown term kind " + tm.$ + "; update CHILDREN in tools/bend-lint/src/lint.ts");
-  }
-  yield tm;
-  for (const child of children(tm)) {
-    yield* walk(child);
+  const stack = [tm];
+  for (let t = stack.pop(); t !== undefined; t = stack.pop()) {
+    const children = (CHILDREN as Record<string, ((tm: LTerm) => LTerm[]) | undefined>)[t.$];
+    if (children === undefined) {
+      throw new DriftError("unknown term kind " + t.$ + "; update CHILDREN in tools/bend-lint/src/lint.ts");
+    }
+    yield t;
+    stack.push(...children(t).reverse());
   }
 }
 
-function starts(text: string): number[] {
-  return [0, ...[...text.matchAll(/\n/g)].map((m) => m.index! + 1)];
+// Where each line of a file starts, computed once per file object.
+function starts(file: Span["file"]): number[] {
+  const known = STARTS.get(file);
+  if (known !== undefined) {
+    return known;
+  }
+  const out = [0, ...[...file.str.matchAll(/\n/g)].map((m) => m.index! + 1)];
+  STARTS.set(file, out);
+  return out;
 }
 
 // The index of the line that holds `off`, given each line's start.
@@ -211,8 +224,9 @@ function line(starts: number[], off: number): number {
 }
 
 // bend.ts parses a copy of each file with its import lines blanked, so a
-// span moves to the file on disk by line and column. A copy that does not
-// match its file is a DriftError.
+// span moves to the file on disk by line and column. The copy's namespace,
+// folder and lines pick the file; a copy that matches no file, or two, is
+// a DriftError.
 export function mapper(sources: Source[]): Mapper {
   const own = new Set<unknown>(sources.map((s) => s.file));
   const memo = new WeakMap<object, { file: SourceFile; from: number[]; to: number[] }>();
@@ -227,7 +241,8 @@ export function mapper(sources: Source[]): Mapper {
       const lines = f.str.split("\n");
       const found = sources.filter((src) => {
         const theirs = src.text.split("\n");
-        return (f.dir === undefined || f.dir === src.path.slice(0, src.path.lastIndexOf("/") + 1))
+        return f.ns === src.ns
+          && (f.dir === undefined || f.dir === src.path.slice(0, src.path.lastIndexOf("/") + 1))
           && lines.length === theirs.length
           && lines.every((l, i) => l === theirs[i] || l.trim() === "" && /^\s*import(\s|$)/.test(theirs[i]));
       });
@@ -236,7 +251,7 @@ export function mapper(sources: Source[]): Mapper {
           + " candidates); bend.ts may mask imports another way now");
       }
       Object.assign(found[0].file.al, f.al);
-      memo.set(f, { file: found[0].file, from: starts(f.str), to: starts(found[0].text) });
+      memo.set(f, { file: found[0].file, from: starts(f), to: starts(found[0].file) });
     }
     const { file, from, to } = memo.get(f)!;
     const at = (off: number): number => {
@@ -252,18 +267,27 @@ function isErr(e: unknown): e is Err {
   return typeof e === "object" && e !== null && (e as { $?: unknown }).$ === "Err";
 }
 
-// Loads and checks a book as bend2/main.ts book_read does. A file with its
-// own `import Base` starts from a copy of the checked Base, as `bend
-// --checkup` does. Facts of Base's own defs are not recorded.
+// Loads and checks a book as bend2/main.ts book_read does; it does not give
+// main.ts's verdict on @unsafe and foreign code. A file with a line exactly
+// `import Base` starts from a copy of the checked Base, as `bend --checkup`
+// does. Facts are kept only for terms in the linted file: those from its
+// folder and namespace while checking, and those whose span maps to it.
 async function check(file: string, capture: boolean, signal: AbortSignal): Promise<Checked> {
   signal.throwIfAborted();
   const book: Hooked = Bend.book_nil();
   const seen = new Map<string, string | null>();
   const found: Array<Omit<Fact, "inst">> = [];
+  const real = fs.existsSync(file) ? fs.realpathSync(file) : "";
+  const home = real.slice(0, real.lastIndexOf("/") + 1);
   book.see = capture
-    ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => void (bok.tlds[def]?.b !== true && found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us }))
+    ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => {
+      const at = spn?.file as { dir?: string; ns?: string } | undefined;
+      if (at?.dir === home && at.ns === "") {
+        found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us });
+      }
+    }
     : undefined;
-  const seeded = fs.existsSync(file) && /^import Base\s*$/m.test(fs.readFileSync(file, "utf8"));
+  const seeded = real !== "" && /^import Base$/m.test(fs.readFileSync(real, "utf8"));
   const key = fs.readFileSync(Bend.BASE_BEND, "utf8");
   if (seeded && !BASES.has(key)) {
     const base = Bend.book_nil();
@@ -297,11 +321,23 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
   const span = mapper(sources);
   if (caught === undefined) {
     const insts = new Set(Object.values(book.tmps).flatMap((m) => [...m.values()]));
-    return { book, sources, span, facts: capture ? new Map(found.map((f) => [f.tm, { ...f, inst: insts.has(f.def), spn: span(f.spn) }])) : undefined };
+    const mine = sources.find((s) => s.root)?.file;
+    const facts = found.flatMap((f): Array<[LTerm, Fact]> => {
+      const spn = span(f.spn);
+      return spn?.file === mine ? [[f.tm, { ...f, inst: insts.has(f.def), spn }]] : [];
+    });
+    return { book, sources, span, facts: capture ? new Map(facts) : undefined };
   }
   const err = isErr(caught.e) ? caught.e : undefined;
   const message = err !== undefined ? Bend.expr_show(err.bok, err.exp) : caught.e instanceof RangeError ? STACK : String(caught.e);
-  return { book, sources, span, failure: { code: "bend/check", severity: "error", message, spn: span(err?.spn), def: err?.def, fixes: [], core: caught.e } };
+  // A file bend did not finish loading may not map; the failure still reports.
+  let spn: Span | undefined;
+  try {
+    spn = span(err?.spn);
+  } catch {
+    spn = undefined;
+  }
+  return { book, sources, span, failure: { code: "bend/check", severity: "error", message, spn, def: err?.def, fixes: [], core: caught.e } };
 }
 
 export function readConfig(file: string): Config {
@@ -356,9 +392,9 @@ function settings(rule: LintRule, config: Config): { off: boolean; severity?: Se
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[],
   { signal = new AbortController().signal, config = findConfig(file) }: LintOptions = {}): Promise<LintResult> {
-  const bad = rules.find((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
-  if (bad !== undefined) {
-    throw new TypeError("invalid rule " + JSON.stringify(bad?.id) + ": it needs an id like ns/name and a run function");
+  const bad = rules.findIndex((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
+  if (bad >= 0) {
+    throw new TypeError("invalid rule at " + bad + " (" + JSON.stringify(rules[bad]?.id) + "): it needs an id like ns/name and a run function");
   }
   const plans = rules.map((rule) => ({ rule, ...settings(rule, config) })).filter((p) => !p.off);
   const { book, sources, span, facts, failure } = await check(file, plans.some((p) => p.rule.needsTypes === true), signal);
@@ -392,6 +428,11 @@ export async function lint(file: string, rules: LintRule[],
       ...d, code: rule.id, severity: severity ?? d.severity, spn: span(d.spn),
       fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => ({ ...e, spn: span(e.spn) })) })),
     }));
+    const broken = settled.flatMap((d) => d.fixes).find((f) => f.edits.some(({ spn }, i) =>
+      spn.beg < 0 || spn.beg > spn.end || spn.end > spn.file.str.length || f.edits.some((o, j) => j !== i && clash(f.edits[i], o))));
+    if (broken !== undefined) {
+      throw new TypeError("rule " + rule.id + ": fix \"" + broken.title + "\" has an edit out of bounds, or two that clash");
+    }
     const stop = settled.findIndex((d) => d.severity === "error");
     diags = [...diags, ...(stop < 0 ? settled : settled.slice(0, stop + 1))];
     if (stop >= 0) {
@@ -401,58 +442,70 @@ export async function lint(file: string, rules: LintRule[],
   return { ok: true, diags, sources, book, facts };
 }
 
-// The text of `file` with the edits on it applied. Edits must not overlap.
-function edit(file: Span["file"], edits: Edit[]): string {
-  const mine = edits.filter((e) => e.spn.file === file).sort((a, b) => b.spn.beg - a.spn.beg);
-  const sound = mine.every(({ spn }, i) => {
-    const wall = i === 0 ? file.str.length + 1 : mine[i - 1].spn.beg;
-    return spn.beg >= 0 && spn.beg <= spn.end && spn.end <= file.str.length && spn.beg < wall && spn.end <= wall;
-  });
-  if (!sound) {
-    throw new Error("bend-lint: fixes are out of bounds or overlap");
+// Whether two edits to one file cannot both apply: their ranges overlap,
+// or they insert at the same point.
+function clash(a: Edit, b: Edit): boolean {
+  return a.spn.file === b.spn.file && (a.spn.beg < b.spn.end && b.spn.beg < a.spn.end
+    || a.spn.beg === b.spn.beg && a.spn.end === b.spn.end);
+}
+
+// `text` with edits applied; their spans are offsets into `text`, and they
+// do not clash.
+function apply(text: string, edits: Edit[]): string {
+  return [...edits].sort((a, b) => b.spn.beg - a.spn.beg || b.spn.end - a.spn.end)
+    .reduce((s, { spn, text: t }) => s.slice(0, spn.beg) + t + s.slice(spn.end), text);
+}
+
+// The text of `file` with the fixes of the given levels applied, in order.
+// An edit equal to one already taken is merged; a fix with an edit that
+// clashes with one already taken is skipped and counted.
+export function applyFixes(file: SourceFile, diags: Diag[], levels: Applicability[] = ["safe"]): { text: string; skipped: number } {
+  const kept: Edit[] = [];
+  let skipped = 0;
+  for (const fix of diags.flatMap((d) => d.fixes).filter((f) => levels.includes(f.applicability))) {
+    const fresh = fix.edits.filter((e) => e.spn.file === file
+      && !kept.some((k) => k.spn.beg === e.spn.beg && k.spn.end === e.spn.end && k.text === e.text));
+    if (fresh.some((e) => kept.some((k) => clash(k, e)))) {
+      skipped += 1;
+    } else {
+      kept.push(...fresh);
+    }
   }
-  return mine.reduce((s, { spn, text }) => s.slice(0, spn.beg) + text + s.slice(spn.end), file.str);
-}
-
-export function applyFixes(file: SourceFile, diags: Diag[], levels: Applicability[] = ["safe"]): string {
-  return edit(file, diags.flatMap((d) => d.fixes).filter((f) => levels.includes(f.applicability)).flatMap((f) => f.edits));
-}
-
-function common(a: string[], b: string[]): number {
-  const n = a.findIndex((x, i) => x !== b[i]);
-  return Math.min(n < 0 ? a.length : n, b.length);
-}
-
-// The LSP range of a span in a file on disk.
-export function position(spn: Span): { start: Position; end: Position } {
-  const ss = starts(spn.file.str);
-  const at = (off: number): Position => {
-    const i = line(ss, off);
-    return { line: i, character: off - ss[i] };
-  };
-  return { start: at(spn.beg), end: at(spn.end) };
+  return { text: apply(file.str, kept), skipped };
 }
 
 // bend's own error layout; the head names the severity and the code, and
-// each fix follows as a unified diff.
+// each fix follows as a unified diff of the lines it touches.
 export function render(d: Diag): string {
   const err = isErr(d.core) ? d.core : Bend.Err(d.bok ?? Bend.book_nil(), d.ctx ?? Bend.ctx_nil(), d.message, undefined, d.spn, d.def);
   const fixes = d.fixes.map((fix) => "\n\nFix: " + fix.title + " [" + fix.applicability + "]"
     + [...new Set(fix.edits.map((e) => e.spn.file))].map((file) => {
-      const old = file.str.match(LINE) ?? [];
-      const now = edit(file, fix.edits).match(LINE) ?? [];
-      const pre = common(old, now);
-      const suf = common(old.slice(pre).reverse(), now.slice(pre).reverse());
-      const gone = old.slice(pre, old.length - suf);
-      const came = now.slice(pre, now.length - suf);
+      const mine = fix.edits.filter((e) => e.spn.file === file);
+      const ls = starts(file);
+      const first = line(ls, Math.min(...mine.map((e) => e.spn.beg)));
+      const from = ls[first];
+      const to = ls[line(ls, Math.max(...mine.map((e) => e.spn.end))) + 1] ?? file.str.length;
+      const old = file.str.slice(from, to);
+      const gone = old.match(LINE) ?? [];
+      const came = apply(old, mine.map((e) => ({ ...e, spn: { ...e.spn, beg: e.spn.beg - from, end: e.spn.end - from } }))).match(LINE) ?? [];
       const name = (file as SourceFile).path;
-      const range = (n: number): string => (n === 0 ? pre : pre + 1) + "," + n;
+      const range = (n: number): string => (n === 0 ? first : first + 1) + "," + n;
       const show = (xs: string[], sign: string): string[] => xs.map((l) =>
         sign + l.replace(/\r?\n$/, "") + (l.endsWith("\n") ? "" : "\n\\ No newline at end of file"));
       return "\n--- " + name + "\n+++ " + name + "\n@@ -" + range(gone.length) + " +" + range(came.length) + " @@\n"
         + [...show(gone, "-"), ...show(came, "+")].join("\n");
     }).join(""));
   return Bend.err_show(err).replace(/^Error:/, HEAD[d.severity] + " [" + d.code + "]:") + fixes.join("");
+}
+
+// The LSP range of a span in a file on disk.
+export function position(spn: Span): { start: Position; end: Position } {
+  const ss = starts(spn.file);
+  const at = (off: number): Position => {
+    const i = line(ss, off);
+    return { line: i, character: off - ss[i] };
+  };
+  return { start: at(spn.beg), end: at(spn.end) };
 }
 
 // A rule written in Bend: a file built on ./lint.bend (see there). It is
@@ -571,12 +624,20 @@ export async function bendRule(file: string): Promise<LintRule> {
 // them, then checks what the wrappers record for `x` in a tiny program.
 async function instrument(given: string | undefined): Promise<{ Bend: Bend; Comp: Comp; BEND2: string }> {
   const dir = bendDir(given);
-  const patched = new Map(["bend.ts", "comp.ts"].map((f) => [f, patch(f, fs.readFileSync(path.join(dir, f), "utf8"))]));
-  const filter = new RegExp("[\\\\/]" + path.basename(dir).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\\\\/](bend|comp)\\.ts$");
+  // Bun.plugin is process-wide: match this checkout's two files by full path.
+  const patched = new Map(["bend.ts", "comp.ts"].map((f) => [path.join(dir, f), patch(f, fs.readFileSync(path.join(dir, f), "utf8"))]));
+  const exact = dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replaceAll("/", "[\\\\/]");
+  const filter = new RegExp("^" + exact + "[\\\\/](bend|comp)\\.ts$", process.platform === "win32" ? "i" : "");
   Bun.plugin({
     name: "bend-lint",
     setup: (build) => {
-      build.onLoad({ filter }, (args) => ({ contents: patched.get(path.basename(args.path))!, loader: "ts" }));
+      build.onLoad({ filter }, (args) => {
+        const contents = patched.get(fs.realpathSync(args.path));
+        if (contents === undefined) {
+          throw new DriftError("bend-lint matched " + args.path + " but did not patch it");
+        }
+        return { contents, loader: "ts" };
+      });
     },
   });
   const [B, C]: [Bend & { [MARK]?: number }, Comp & { [MARK]?: number }] = await Promise.all([
@@ -636,9 +697,8 @@ async function cli(argv: string[]): Promise<number> {
     return rules;
   }));
   const res = await lint(positionals[0], modules.flat(), { config: values.config === undefined ? undefined : readConfig(values.config) });
-  const fixed = values.fix && res.ok
-    ? res.sources.filter((s) => !s.base).map((s) => ({ s, text: applyFixes(s.file, res.diags) })).filter(({ s, text }) => text !== s.text)
-    : [];
+  const root = res.sources.find((s) => s.root);
+  const fixed = values.fix && res.ok && root !== undefined ? applyFixes(root.file, res.diags) : undefined;
   const where = (spn: Span) => ({ path: (spn.file as SourceFile).path, range: position(spn) });
   console.log(values.json
     ? JSON.stringify({
@@ -649,9 +709,12 @@ async function cli(argv: string[]): Promise<number> {
       })),
     }, null, 2)
     : [...res.diags.map(render), res.ok ? "bend-lint: " + res.diags.length + " finding(s)" : "bend-lint: FAIL"].join("\n\n"));
-  for (const { s, text } of fixed) {
-    fs.writeFileSync(s.path, text);
-    console.error("bend-lint: fixed " + s.path);
+  if (root !== undefined && fixed !== undefined && fixed.text !== root.text) {
+    fs.writeFileSync(root.path, fixed.text);
+    console.error("bend-lint: fixed " + root.path);
+  }
+  if (fixed !== undefined && fixed.skipped > 0) {
+    console.error("bend-lint: skipped " + fixed.skipped + " fix(es) that clash with earlier ones; run --fix again to apply them");
   }
   return res.ok ? 0 : 1;
 }

@@ -405,6 +405,10 @@ const echo: LintRule = {
 // Functions
 // =========
 
+function source2(p: string, ns: string): Source {
+  return { path: p, ns, text: "x\n", root: false, base: false, file: { str: "x\n", ns, al: {}, path: p } };
+}
+
 function fixture(name: string, text: string): string {
   const file = path.join(DIR, name);
   fs.writeFileSync(file, text);
@@ -634,6 +638,12 @@ describe("lint", () => {
 
   test("a bad rule, a rule that throws, and an abort reach the caller", async () => {
     await expect(lint(userland, [{ id: "bad", run: () => [] }])).rejects.toThrow(/invalid rule/);
+    await expect(lint(userland, [undefined as unknown as LintRule])).rejects.toThrow(/invalid rule at 0/);
+    const broken: LintRule = { id: "test/broken-fix", run: (cx) => {
+      const spn = { file: cx.root.file, beg: 0, end: 4 };
+      return [cx.diag({ message: "b", fixes: [{ title: "two", applicability: "safe", edits: [{ spn, text: "a" }, { spn, text: "b" }] }] })];
+    } };
+    await expect(lint(userland, [broken])).rejects.toThrow(/fix "two" has an edit out of bounds, or two that clash/);
     await expect(lint(userland, [{ id: "test/boom", run: async () => { throw new Error("rule failed"); } }])).rejects.toThrow("rule failed");
     const controller = new AbortController();
     const abort: LintRule = { id: "test/abort", run: async () => { controller.abort(); return []; } };
@@ -763,12 +773,80 @@ describe("options", () => {
   });
 });
 
+describe("review fixes", () => {
+  test("facts come only from the linted file: none from Base, with or without seeding", async () => {
+    for (const [name, head] of [["base_comment.bend", "import Base # comment"], ["base_plain.bend", "import Base"]]) {
+      const file = fixture(name, head + "\n\ntype P is Data:\n  P{n: Nat}\n\ndef main() -> Nat:\n  1n\n");
+      const where: LintRule = {
+        id: "test/where",
+        needsTypes: true,
+        run: (cx) => {
+          const facts = [...cx.facts!.values()];
+          expect(facts.length).toBeGreaterThan(0);
+          expect(facts.every((f) => f.spn?.file === cx.root.file)).toBe(true);
+          return [];
+        },
+      };
+      expect((await lint(file, [where])).ok).toBe(true);
+    }
+  });
+
+  test("identical files map by namespace, not only by text", async () => {
+    const dir = path.join(DIR, "twins");
+    fs.mkdirSync(dir, { recursive: true });
+    for (const f of ["a.bend", "b.bend"]) fs.writeFileSync(path.join(dir, f), "def one() -> Type:\n  Type\n");
+    fs.writeFileSync(path.join(dir, "m.bend"), "import ./a.bend as A\nimport ./b.bend as B\n\ndef main() -> Type:\n  A.one()\n");
+    const all: LintRule = { id: "test/all", needsTypes: true, run: (cx) => [...cx.facts!.values()].map((f) => cx.diag({ message: "f", spn: f.spn })) };
+    const res = await lint(path.join(dir, "m.bend"), [all]);
+    expect(res.ok).toBe(true);
+    expect(res.diags.length).toBeGreaterThan(0);
+    const a = source2("/p/a.bend", "a"), b = source2("/p/b.bend", "b");
+    expect(mapper([a, b])({ file: { str: "x\n", ns: "b", dir: "/p/", al: {} }, beg: 0, end: 1 } as Span).file).toBe(b.file);
+  });
+
+  test("walk is linear in a long list (it took 408 ms at 2,000 elements)", async () => {
+    const n = 2000;
+    const file = fixture("long_list.bend", "import Base\n\ndef xs() -> List<&2, U32>:\n  [" + Array.from({ length: n }, (_, i) => i).join(", ") + "]\n");
+    const res = await lint(file, []);
+    expect(res.diags.map(render)).toEqual([]);
+    const t = performance.now();
+    const count = [...walk((res.book.tlds.xs as { e: LTerm }).e)].length;
+    expect(count).toBeGreaterThan(n);
+    expect(performance.now() - t).toBeLessThan(100);
+  });
+
+  test("clashing fixes are skipped, not fatal; equal ones merge", () => {
+    const file: SourceFile = { str: "abcdef", ns: "", al: {}, path: "<fix>" };
+    const fix = (beg: number, end: number, text: string): Diag => ({ code: "t/f", severity: "hint", message: "",
+      fixes: [{ title: "f", applicability: "safe", edits: [{ spn: { file, beg, end }, text }] }] });
+    expect(applyFixes(file, [fix(1, 1, " "), fix(1, 1, " "), fix(3, 5, "X"), fix(4, 6, "Y"), fix(1, 1, "-")]))
+      .toEqual({ text: "a bcXf", skipped: 2 });
+  });
+
+  test("comp.ts that already exports js_sat still loads", () => {
+    const comp = fs.readFileSync(path.join(BEND2, "comp.ts"), "utf8").replace("\nfunction js_sat(", "\nexport function js_sat(");
+    const out = patch("comp.ts", comp);
+    expect(out).toContain("export { RUNTIME_MAIN };");
+    expect(() => new Bun.Transpiler({ loader: "ts" }).transformSync(out)).not.toThrow();
+  });
+
+  test("another checkout's bend.ts loads as its own code", () => {
+    const other = path.join(DIR, "other");
+    fs.cpSync(BEND2, path.join(other, "bend2"), { recursive: true });
+    fs.appendFileSync(path.join(other, "bend2", "bend.ts"), "\nexport const OTHER_CHECKOUT = 1;\n");
+    const script = fixture("other.ts", "import " + JSON.stringify(CLI) + ";\nconst o = await import(" + JSON.stringify(path.join(other, "bend2", "bend.ts")) + ");\n"
+      + "console.log(JSON.stringify([o.OTHER_CHECKOUT, o.BEND_LINT_PATCH ?? null]));\n");
+    const out = spawnSync(process.execPath, [script], { encoding: "utf8" });
+    expect(JSON.parse(out.stdout.trim().split("\n").at(-1)!)).toEqual([1, null]);
+  });
+});
+
 describe("rules", () => {
   test("erasure: four redundant annotations; the fix keeps every body", async () => {
     const file = fixture("erasure.bend", ERASURE);
     const res = await lint(file, [redundantAnnotation]);
     expect(res.diags.map((d) => d.def).sort()).toEqual(["alias", "dependent", "direct", "generic"]);
-    const cleaned = applyFixes(root(res.sources).file, res.diags, ["suggested"]);
+    const cleaned = applyFixes(root(res.sources).file, res.diags, ["suggested"]).text;
     expect(cleaned).toContain("f : N -> N = y => y");
     expect(cleaned).toContain("value : N = Z{}");
     const after = await lint(fixture("erasure_fixed.bend", cleaned), [redundantAnnotation]);
@@ -788,17 +866,17 @@ describe("rules", () => {
     const file: SourceFile = { str: source, ns: "", al: {}, path: "<lexical>" };
     const diags = spacingEdits(file).map((edit): Diag =>
       ({ code: spacing.id, severity: "hint", message: "", fixes: [{ title: "", applicability: "safe", edits: [edit] }] }));
-    const formatted = applyFixes(file, diags);
+    const formatted = applyFixes(file, diags).text;
     expect(formatted).toBe(source.replace(/^([abcde])=/gm, "$1 ="));
     expect(tokens(formatted).map((t) => t.text)).toEqual(tokens(source).map((t) => t.text));
-    expect(() => applyFixes(file, [diags[0], diags[0]])).toThrow(/overlap/);
+    expect(applyFixes(file, [diags[0], diags[0]])).toEqual({ text: applyFixes(file, [diags[0]]).text, skipped: 0 });
   });
 
   test("format: one rule gives editor findings and formatter edits", async () => {
     const res = await lint(fixture("format.bend", FORMAT), [spacing]);
     expect(res.facts).toBeUndefined();
     expect(res.diags.length).toBe(8);
-    const formatted = applyFixes(root(res.sources).file, res.diags);
+    const formatted = applyFixes(root(res.sources).file, res.diags).text;
     for (const line of ["def choose(x: Sample, y: Sample)", "a : Sample = SampleValue{} # preserve,this=comment",
       "b : Sample = SampleValue{}", "f : Sample -> Sample = y=>y", "f(choose(a, b))"]) {
       expect(formatted).toContain(line);
@@ -829,7 +907,7 @@ describe("rules written in Bend", () => {
     const res = await lint(userland, [rule]);
     expect(res.diags.map((d) => [d.code, d.severity])).toEqual([["style/comma-space", "warning"]]);
     expect(render(res.diags[0])).toContain("generic(~N, a)");
-    expect(applyFixes(root(res.sources).file, res.diags)).toContain("generic(~N, a)");
+    expect(applyFixes(root(res.sources).file, res.diags).text).toContain("generic(~N, a)");
   });
 
   test("a typed rule asks the checker through effects", async () => {
@@ -918,6 +996,25 @@ describe("cli", () => {
     const config = fixture("cli_config.json", JSON.stringify({ rules: { "test/echo": { tabWidth: 6, severity: "hint" } } }));
     const out = run(input, "--rules", echoes, "--config", config, "--json");
     expect(JSON.parse(out.stdout).findings.map((f: { severity: string; message: string }) => [f.severity, f.message])).toEqual([["hint", "w6"]]);
+  });
+
+  test("--fix writes only the linted file, and prints findings when fixes clash", () => {
+    const dir = path.join(DIR, "fixroot");
+    fs.mkdirSync(dir, { recursive: true });
+    const dep = path.join(dir, "dep.bend");
+    fs.writeFileSync(dep, "def one() -> Type:\n  Type\n");
+    const main = path.join(dir, "main.bend");
+    fs.writeFileSync(main, "import ./dep.bend as D\n\ndef main() -> Type:\n  D.one()\n");
+    const everywhere = module("everywhere.js", `[{ id: "test/everywhere", run: (cx) => cx.sources.filter((s) => !s.base).flatMap((s) => [0, 0, 1].map((n) => {
+      const spn = { file: s.file, beg: n, end: n };
+      return cx.diag({ message: "x", spn, fixes: [{ title: "x", applicability: "safe", edits: [{ spn, text: n === 0 ? "#" : "!" }] }] });
+    })) }]`);
+    const out = run(main, "--rules", everywhere, "--fix");
+    expect(out.status).toBe(0);
+    expect(out.stdout).toContain("Warning [test/everywhere]:");
+    expect(fs.readFileSync(dep, "utf8")).toBe("def one() -> Type:\n  Type\n");
+    expect(fs.readFileSync(main, "utf8").startsWith("#i!mport")).toBe(true);
+    expect(out.stderr).not.toContain("skipped");
   });
 
   test("--fix applies safe fixes", () => {

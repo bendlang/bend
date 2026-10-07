@@ -9,7 +9,7 @@ const LINT_APPLICABILITY = { [CID(Safe)]: "safe", [CID(Suggested)]: "suggested",
 function lint_host() {
   const host = globalThis.BEND_LINT;
   if (host === undefined) {
-    throw new Error("bend-lint: this program is a rule; run it with bun tools/bend-lint/src/lint.ts <file.bend> --rules <rule.bend>");
+    throw new Error("this program is a rule; run it with bun tools/bend-lint/src/lint.ts <file.bend> --rules <rule.bend>");
   }
   return host;
 }
