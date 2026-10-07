@@ -117,8 +117,7 @@ type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
 // scope, the groups found (kept from pass to pass), each template
 // instance's template and ~ arguments (its key in book.tmps), the items
 // going out (outermost first, and as a set), whether this pass grew a
-// group, the root constants by place and type, and each kernel term's
-// live uses, kept once counted
+// group, and the root constants by place and type
 type Safe = {
   book: Book;
   mb: Book;
@@ -134,7 +133,6 @@ type Safe = {
   going: Set<string>;
   grew: boolean;
   consts: Map<string, Name>;
-  uses: WeakMap<O, Map<number, number>>;
 };
 
 // a model search's fuel left, its round's depth, and whether that round
@@ -201,7 +199,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap() };
+    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false, consts: new Map() };
   const roots: Array<[Name, string]> = [];
   for (const k of [...new Set([...book.order].reverse())].reverse().filter((k) => book.tlds[k].b !== true)) {
     try {
@@ -390,11 +388,11 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const fs = (c: B.Ctr): O => alls(tele_open(e, s, B.tele_fill(e.book, c.T, xs, B.ctx_nil()), [], Infinity).ps, { $: "Enu", ks: ["()"] }, "Sig");
   const arms = tld.c.reduceRight<O>((m, c) => ({ $: "Mat", k: name_tt(c.k), h: fs(c), m }), { $: "Efq" });
   const Enu: O = { $: "Enu", ks: tld.c.map((c) => name_tt(c.k)) };
-  e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: G }), lams(e, ps, arms), false]);
+  e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: G }), lams(ps, arms), false]);
   const at = (k: string): O => ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k });
-  e.out.push([n, alls(ps, G), lams(e, ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: { $: "Var", l: t } } }), false]);
+  e.out.push([n, alls(ps, G), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: { $: "Var", l: t } } }), false]);
   if (tld.c.length === 0) {
-    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(e, ps, { $: "Prj", h: { $: "Efq" } }), false]);
+    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(ps, { $: "Prj", h: { $: "Efq" } }), false]);
   }
 }
 
@@ -608,7 +606,7 @@ function convoy_bind(e: Safe, s: Scope, cv: number[], t: HTerm | ((s: Scope) => 
   const l = s.D;
   const q = s.kq[cv[0]] ?? 1;
   const f = convoy_bind(e, scope_move(scope_kq(scope_hide(s), l, q), cv[0], l), cv.slice(1), t, fs);
-  return lams(e, [[q, l]], f);
+  return lams([[q, l]], f);
 }
 
 // Open
@@ -684,7 +682,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     }
     const y: HTerm = B.Var(x.k, s.d);
     const f = tree(e, s2, typed(x.f(y), all?.B(y)), fs2);
-    if (q === 1 && uses(e, f, l) > 1) {
+    if (q === 1 && uses(f, l) > 1) {
       // bend2 checks a ~ argument dead, so its λ may use a linear variable
       // twice: it matches the variable once and rebuilds it at each use,
       // unless its type reduces to Data (a match-refined view): copied
@@ -713,7 +711,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // its convoy, dead if only dead there), so no match is built more than twice
   const o = mat([], s.dry || s.again);
   // the live uses of each level the arms name, 0 when named only dead
-  const us = o_uses(e, o);
+  const us = o_uses(o);
   const use = (l: number): number => us.get(l) ?? 0;
   // a q=1 variable used in two arms rides into them, unless it is Data:
   // then its binder copies it (a q=2 λ)
@@ -728,8 +726,8 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     if (vs.length === 0 || b === undefined || b.T === null) {
       return vs;
     }
-    const ls = [...o_uses(e, b.o).keys()].filter((l) => !vs.includes(l));
-    const js = ls.some((l) => us.has(l)) ? s.c.flatMap((x, j) => j < i && x !== undefined && [...o_uses(e, x.o).keys()].some((l) => vs.includes(l)) ? [j] : []) : [];
+    const ls = [...o_uses(b.o).keys()].filter((l) => !vs.includes(l));
+    const js = ls.some((l) => us.has(l)) ? s.c.flatMap((x, j) => j < i && x !== undefined && [...o_uses(x.o).keys()].some((l) => vs.includes(l)) ? [j] : []) : [];
     return js.length > 0 && mentions(B.term_lower(b.T, s.d), (k) => js.includes(k)) ? [...vs, ...ls] : vs;
   }, cv1).sort((a, b) => a - b);
   if (s.dry) {
@@ -782,7 +780,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const s3 = scope_kq(scope_kq({ ...s2e, tags: [...s2e.tags, lt] }, lt, q), la, q);
       const y: HTerm = B.Var(f.k, s.d);
       const body = convoy_bind(e, scope_bind(s3, pair, all.A, false), cv, typed(f.f(y), all.B(y)), fs);
-      const r2: Q = uses(e, body, lt) > 1 || uses(e, body, la) > 1 ? 2 : q;
+      const r2: Q = uses(body, lt) > 1 || uses(body, la) > 1 ? 2 : q;
       return { $: "Lam", q: r2, l: lt, f: { $: "Lam", q: r2, l: la, f: body } };
     }
   }
@@ -1176,10 +1174,10 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   const ks = ls.filter(([q]) => q === 1).map(([, l]) => l);
   const body = sel((m) => convoy_bind(e, s0, ks, (s2) => {
     const r = rest(s2, m);
-    return lams(e, r.ps, arm(e, r.s, m, r.cs, r.vs));
+    return lams(r.ps, arm(e, r.s, m, r.cs, r.vs));
   }, []));
   const v = ks.reduce<O>((f, l) => ({ $: "App", q: 1, f, x: { $: "Var", l } }), { $: "App", q: 1, f: body, x: { $: "Var", l: l0 } });
-  e.out.push([n, To, lams(e, [...ls, [1, l0]], v), false]);
+  e.out.push([n, To, lams([...ls, [1, l0]], v), false]);
 }
 
 // def k's checked tree at the terms vs (its parameters left to right,
@@ -1316,7 +1314,7 @@ function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: bool
   if (more.length > 0) {
     return let_term(e, s, x, live, new Set([...put, ...more]));
   }
-  return ls.reduceRight<O>((b, [q, l, v]) => ({ $: "Let", q: q === 1 && uses(e, b, l) > 1 ? 2 : q, l, v, f: b }), f);
+  return ls.reduceRight<O>((b, [q, l, v]) => ({ $: "Let", q: q === 1 && uses(b, l) > 1 ? 2 : q, l, v, f: b }), f);
 }
 
 // a rewrite: the kernel's J, whose motive binds the endpoint at l and
@@ -1380,8 +1378,8 @@ function alls(ps: Binder[], b: O, $: "All" | "Sig" = "All"): O {
 }
 
 // λs over b, at the binders ps; one that uses its variable twice copies it
-function lams(e: Safe, ps: Array<[Q, number, ...unknown[]]>, b: O): O {
-  return ps.reduceRight<O>((f, [q, l]) => ({ $: "Lam", q: q === 1 && uses(e, f, l) > 1 ? 2 : q, l, f }), b);
+function lams(ps: Array<[Q, number, ...unknown[]]>, b: O): O {
+  return ps.reduceRight<O>((f, [q, l]) => ({ $: "Lam", q: q === 1 && uses(f, l) > 1 ? 2 : q, l, f }), b);
 }
 
 function inferable(o: O): boolean {
@@ -1389,21 +1387,23 @@ function inferable(o: O): boolean {
 }
 
 // the live uses of level l in o, as the kernel counts them
-function uses(e: Safe, o: O, l: number): number {
-  return o_uses(e, o).get(l) ?? 0;
+function uses(o: O, l: number): number {
+  return o_uses(o).get(l) ?? 0;
 }
 
+// the counts o_uses made of each term it counted on its own
+const o_counts = new WeakMap<O, Map<number, number>>();
+
 // the live uses of each level o names, in one walk: a level named only
-// where the kernel counts no use (a type, a q=0 argument) counts 0. A
-// term counted on its own keeps its counts, which a walk of a term built
-// around it reads
-function o_uses(e: Safe, o: O, live: boolean = true, out?: Map<number, number>): Map<number, number> {
-  const kept = e.uses.get(o);
+// where the kernel counts no use (a type, a q=0 argument) counts 0; a
+// term counted before adds its kept counts
+function o_uses(o: O, live: boolean = true, out?: Map<number, number>): Map<number, number> {
+  const kept = o_counts.get(o);
   if (out === undefined && kept === undefined) {
-    e.uses.set(o, o_uses(e, o, true, new Map()));
+    o_counts.set(o, o_uses(o, true, new Map()));
   }
   if (out === undefined) {
-    return e.uses.get(o) as Map<number, number>;
+    return o_counts.get(o) as Map<number, number>;
   }
   if (kept !== undefined) {
     kept.forEach((n, l) => out.set(l, (out.get(l) ?? 0) + (live ? n : 0)));
@@ -1411,17 +1411,17 @@ function o_uses(e: Safe, o: O, live: boolean = true, out?: Map<number, number>):
   }
   switch (o.$) {
     case "Var": return out.set(o.l, (out.get(o.l) ?? 0) + (live ? 1 : 0));
-    case "Ann": return o_uses(e, o.T, false, o_uses(e, o.x, live, out));
-    case "Let": return o_uses(e, o.f, live, o_uses(e, o.v, live && o.q > 0, out));
-    case "All": case "Sig": return o_uses(e, o.B, false, o_uses(e, o.A, false, out));
-    case "Lam": return o_uses(e, o.f, live, out);
-    case "App": return o_uses(e, o.x, live && o.q > 0, o_uses(e, o.f, live, out));
-    case "Tup": return o_uses(e, o.b, live, o_uses(e, o.a, live && o.q > 0, out));
-    case "Prj": return o_uses(e, o.h, live, out);
-    case "Mat": return o_uses(e, o.m, live, o_uses(e, o.h, live, out));
-    case "Min": return o_uses(e, o.b, live, o_uses(e, o.a, live, out));
-    case "Eql": return o_uses(e, o.T, false, o_uses(e, o.b, false, o_uses(e, o.a, false, out)));
-    case "Rwt": return o_uses(e, o.f, live, o_uses(e, o.P, false, o_uses(e, o.e, live, out)));
+    case "Ann": return o_uses(o.T, false, o_uses(o.x, live, out));
+    case "Let": return o_uses(o.f, live, o_uses(o.v, live && o.q > 0, out));
+    case "All": case "Sig": return o_uses(o.B, false, o_uses(o.A, false, out));
+    case "Lam": return o_uses(o.f, live, out);
+    case "App": return o_uses(o.x, live && o.q > 0, o_uses(o.f, live, out));
+    case "Tup": return o_uses(o.b, live, o_uses(o.a, live && o.q > 0, out));
+    case "Prj": return o_uses(o.h, live, out);
+    case "Mat": return o_uses(o.m, live, o_uses(o.h, live, out));
+    case "Min": return o_uses(o.b, live, o_uses(o.a, live, out));
+    case "Eql": return o_uses(o.T, false, o_uses(o.b, false, o_uses(o.a, false, out)));
+    case "Rwt": return o_uses(o.f, live, o_uses(o.P, false, o_uses(o.e, live, out)));
     default: return out;
   }
 }
