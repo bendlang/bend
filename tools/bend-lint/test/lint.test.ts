@@ -133,7 +133,9 @@ test("a rule that throws, and an abort, reach the caller", async () => {
   await expect(lint(file, [], { signal: controller.signal })).rejects.toThrow();
 });
 
-test("spans after import lines point at the right text on disk", async () => {
+// bend resolves relative imports with "/" paths, and bend does not run on
+// native Windows ("No Windows (WSL works)"), so this test does not either.
+test.skipIf(process.platform === "win32")("spans after import lines point at the right text on disk", async () => {
   const dep = path.join(dir, "dep.bend");
   const main = path.join(dir, "main.bend");
   fs.writeFileSync(dep, "type N is Data:\n  Z{}\ndef id(x: N) -> N:\n  x\n");
