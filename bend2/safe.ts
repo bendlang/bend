@@ -684,8 +684,10 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     const f = tree(e, s2, typed(x.f(y), all?.B(y)), fs2);
     if (q === 1 && uses(f, l) > 1) {
       // bend2 checks a ~ argument dead, so its λ may use a linear variable
-      // twice: it matches the variable once and rebuilds it at each use
-      if (all !== null && kind(e, s, all.A) === 1) {
+      // twice: it matches the variable once and rebuilds it at each use,
+      // unless its type reduces to Data (a match-refined view): copied
+      const A = all === null ? null : B.term_wnf(e.book, all.A);
+      if (all !== null && kind(e, s, all.A) === 1 && A!.$ !== "Eql" && kind(e, s, A!) !== 2) {
         return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
       }
       q = 2;
@@ -1288,7 +1290,7 @@ function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: bool
   const ls: Array<[Q, number, O, number]> = [];
   for (let j = 0; j < x.k.length; j++) {
     const q = quant(x.q[j]);
-    const [y, V] = open(x.v[j]);
+    const V = open(x.v[j])[1];
     if (put.has(j)) {
       s2 = scope_bind(s2, { $: "Efq" }, V, false, x.v[j]);
       continue;
@@ -1296,17 +1298,11 @@ function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: bool
     // a parallel let's value sees s's variables, below the lets before it
     const at = { ...s, D: s2.D, kq: s2.kq };
     const v = term(e, at, x.v[j], live && q > 0);
-    const from = y.$ === "Var" ? at.c[y.i]?.T : null;
-    // keep a refined Data view: consume the affine value once, then copy it
-    const refined = q === 2 && v.$ === "Var" && V !== null && from != null
-      && kind(e, at, from) === 1 ? B.term_wnf(e.book, V) : null;
-    const view = refined !== null && (open(refined)[0].$ === "Eql" || kind(e, at, refined) === 2);
-    if (v.$ === "Var" && !view) {
+    if (v.$ === "Var") {
       s2 = scope_bind(s2, v, V, false);
     } else {
       const l = s2.D;
-      const w: O = view ? { $: "Ann", x: v, T: term(e, at, refined!, false) }
-        : inferable(v) ? v : V === null ? oos("a let with no known type")
+      const w: O = inferable(v) ? v : V === null ? oos("a let with no known type")
         : { $: "Ann", x: v, T: term(e, at, V, false) };
       ls.push([q, l, w, j]);
       s2 = scope_kq(scope_bind(s2, { $: "Var", l }, V, true), l, q);

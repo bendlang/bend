@@ -37,6 +37,20 @@ def consumedOnce(rest: Spine, +b: Nat, proof: AtEnd(rest, b)) -> AtEnd(rest, b):
     case SpineEnd{}: {proof : {Nat.is_le(b, 7n) == True{} : Bool}}
     case SpineCon{x, r}: Unit{}
 
+def seen(+b: Nat, proof: {Nat.is_le(b, 7n) == True{} : Bool}) -> Nat:
+  1n
+
+# a copy a self-call takes
+def walk(n: Nat, rest: Spine, +b: Nat, proof: AtEnd(rest, b)) -> Nat:
+  match n:
+    case Zero{}: 0n
+    case Succ{p}:
+      match rest:
+        case SpineEnd{}:
+          +copy = {proof : {Nat.is_le(b, 7n) == True{} : Bool}}
+          Nat.add(walk(p, SpineEnd{}, b, copy), seen(b, copy))
+        case SpineCon{x, r}: 0n
+
 def EndValue(rest: Spine) -> Type:
   match rest:
     case SpineEnd{}: Bool
