@@ -6102,12 +6102,12 @@ function cli(argv) {
 // show_val prints a pure main's value as term_show does (see show_main);
 // chain is the bracket it continues, or 0. show_chr escapes as char_show.
 
-function show_chr(c, q) {
+function show_chr(s, q) {
+  const c = s.codePointAt(0);
   const k = { 10: "n", 9: "t", 13: "r", 0: "0", 92: "\\" }[c]
-    ?? (c === q.codePointAt(0) ? q : null);
+    ?? (s === q ? q : null);
   return k !== null ? "\\" + k : c < 32 || c === 127
-    || (c >= 0xD800 && c <= 0xDFFF) || c > 0x10FFFF
-    ? "\\u{" + c.toString(16) + "}" : String.fromCodePoint(c);
+    || (c >= 0xD800 && c <= 0xDFFF) ? "\\u{" + c.toString(16) + "}" : s;
 }
 
 function show_val(D, d, v, chain) {
@@ -6129,9 +6129,8 @@ function show_val(D, d, v, chain) {
   return D[d] === 0 ? String(v)
     : D[d] === 1 ? f32_show(v).replace(/^-?\d+(?=e|$)/, "$&.0")
     : D[d] === 2 ? v + "n"
-    : D[d] === 3 ? "'" + show_chr(v.codePointAt(0), "'") + "'"
-    : D[d] === 4 ? "\"" + [...v].map((c) =>
-      show_chr(c.codePointAt(0), "\"")).join("") + "\""
+    : D[d] === 3 ? "'" + show_chr(v, "'") + "'"
+    : D[d] === 4 ? "\"" + [...v].map((c) => show_chr(c, "\"")).join("") + "\""
     : D[d] === 5 ? "{==}"
     : "[" + v.map((x) => show_val(D, D[d + 1], x, 0)).join(", ") + "]";
 }
