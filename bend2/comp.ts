@@ -4270,14 +4270,9 @@ INLINE void task_deal(DEV u64* H, Term join, u32 base, u32 stride, TG u32* cur) 
     Term k = H[loc + i];
     if (term_tag(k) == TAG_TSK) {
       H[loc + i] = TERM_HOLE;
-      u32 to;
-      if (stride != 0) {
-        to = ring_pick(base, stride, cur);
-      } else {
-        to = ring_flip(g & (u32)(LANES - 1));
-        g += 1;
-      }
-      ring_push(H, to, k);
+      ring_push(H, stride != 0 ? ring_pick(base, stride, cur)
+        : ring_flip(g & (u32)(LANES - 1)), k);
+      g += 1;
     }
   }
 }
