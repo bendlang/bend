@@ -1549,21 +1549,19 @@ function seg_name(sc: Scope, stem: string): string {
 
 function seg_open(sc: Scope, name: string, ret: Lay, frame: Seg["frame"],
   live: [Of<"Var">, Bind][], res: Val, rest: HTerm[]): Scope {
-  const olds = live.flatMap(([, b]) => b.val.ws);
-  const news = olds.map((w) => name_local(sc, w.replace(/_\d+$/, "")));
-  const seg = seg_new(name, ret, [...news, ...res.ws],
-    [...live.flatMap(([, b]) => b.val.lay.ks), ...res.lay.ks], frame);
+  const vals = live.map(([, b]) => val_new(b.val.ws.map((w) => {
+    const nw = name_local(sc, w.replace(/_\d+$/, ""));
+    if (sc.brwl.has(w)) {
+      sc.brwl.set(nw, sc.brwl.get(w)!);
+    }
+    return nw;
+  }), b.val.lay));
+  const all = [...vals, res];
+  const seg = seg_new(name, ret, all.flatMap((v) => v.ws),
+    all.flatMap((v) => v.lay.ks), frame);
   FL.segs.push(seg);
   sc = { ...sc, seg, spares: [], uses: new Map() };
-  olds.forEach((w, i) => {
-    if (sc.brwl.has(w)) {
-      sc.brwl.set(news[i], sc.brwl.get(w)!);
-    }
-  });
-  let i = 0;
-  live.forEach(([p, b]) => bind_uses(sc, p,
-    val_new(news.slice(i, i += b.val.ws.length), b.val.lay), rest, b.A,
-    false));
+  live.forEach(([p, b], i) => bind_uses(sc, p, vals[i], rest, b.A, false));
   return sc;
 }
 
