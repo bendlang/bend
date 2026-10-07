@@ -3203,7 +3203,7 @@ export function js_lib(book: Bend.Book, mod = false): string {
   FL = file_new(book, true);
   const outs = !mod ? null : [...new Set(FL.book.order)].filter((k) => {
     const t = FL.book.tlds[k];
-    return done_live(t) && !def_foreign(t) && t.b !== true && t.x === 0
+    return done_live(t) && t.b !== true && t.x === 0
       && io_base(FL.book, t.T) === null;
   });
   file_book(outs ?? ["main"]);
@@ -3212,8 +3212,8 @@ export function js_lib(book: Bend.Book, mod = false): string {
     memo_gc();
     js_def(sc, k, def);
   }
-  const srcs = effect_srcs(".js", "a foreign def without a .js import: ");
-  const effs = srcs.map((t) => `(() => {\n${t}\n})();\n\n`).join("");
+  const effs = effect_srcs(".js", "a foreign def without a .js import: ")
+    .map((t) => `(() => {\n${t}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) =>
     `  "${Bend.name_key(k)}": run_lib(${js_host(k)}, ${
       fun_of(k).lays.length}),`).join("\n")}\n};\n`;
