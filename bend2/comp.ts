@@ -5818,11 +5818,10 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
       }
       char o = "{[("[D[a + 3]];
       if (o == '{') {
-        printf("%s{", SHOW_NAMES[D[a]]);
-      } else if (chain != o) {
-        putchar(o);
+        fputs(SHOW_NAMES[D[a]], stdout);
       }
-      if (o == '{' || chain != o) {
+      if (chain != o) {
+        putchar(o);
         zs[zn++] = "}])"[D[a + 3]];
       }
       for (u32 j = 0; j < D[a + 2]; j += 1) {
