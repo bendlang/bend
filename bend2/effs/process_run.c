@@ -220,22 +220,15 @@ static void process_call(IoWork* w) {
       p->code = ETIMEDOUT;
       break;
     }
-    struct pollfd fds[4];
-    int roles[3];
-    nfds_t count = 0;
-    for (int i = 0; i < 3; i += 1) {
-      int fd = i == 0 ? pipes[0][1] : pipes[i][0];
-      if (fd >= 0) {
-        fds[count] = (struct pollfd){fd, i == 0 ? POLLOUT : POLLIN, 0};
-        roles[count++] = i;
-      }
-    }
-    if (exitfd >= 0) {
-      fds[count++] = (struct pollfd){exitfd, POLLIN, 0};
-    }
+    struct pollfd fds[4] = {
+      {pipes[0][1], POLLOUT, 0},
+      {pipes[1][0], POLLIN, 0},
+      {pipes[2][0], POLLIN, 0},
+      {exitfd, POLLIN, 0}
+    };
     u64 left = (deadline - now + 999999ull) / 1000000ull;
     u64 most = exitfd >= 0 ? 1000000 : 50;
-    int ready = poll(fds, count, (int)(left > most ? most : left));
+    int ready = poll(fds, 4, (int)(left > most ? most : left));
     if (ready < 0) {
       if (errno == EINTR) {
         continue;
@@ -243,14 +236,13 @@ static void process_call(IoWork* w) {
       p->code = errno;
       break;
     }
-    if (exitfd >= 0 && fds[count - 1].revents != 0) {
+    if (fds[3].revents != 0) {
       continue;
     }
-    for (nfds_t k = 0; k < count && p->code == 0; k += 1) {
-      if (fds[k].revents == 0) {
+    for (int i = 0; i < 3 && p->code == 0; i += 1) {
+      if (fds[i].revents == 0) {
         continue;
       }
-      int i = roles[k];
       if (i == 0) {
         u64 remain = p->input_len - written;
         size_t size = remain < 8192 ? (size_t)remain : 8192;
@@ -351,5 +343,5 @@ Term process_run_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) process_run_use(void) {
-  io_eff(CID(Process.run), process_run_run, 0);
+  io_eff(CID(Process.run), process_run_run);
 }

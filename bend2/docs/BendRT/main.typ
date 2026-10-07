@@ -446,7 +446,11 @@ The host pool is up to 128 threads, which claim rows by one fetch-add
 and meet at one barrier per turn; it opens at a program's first fork.
 The GPU runs a grow as a dispatch of 128 groups (seeded by one group
 while $f < 128$) and a work as one thread per lane; between dispatches
-the host only reads $f$.
+the host only reads $f$. After a grow from $f < 128$, a lane drains its
+row ring, not its column, down to the put the grow left: a SIMD group
+then runs one root's cousins, and a late group leaves new deals to the
+next round. From more roots a row holds unrelated deals, and the column
+keeps a fork's kids together.
 
 == Why Nothing Contends
 

@@ -305,7 +305,7 @@ Term window_open_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_open_use(void) {
-  io_eff(CID(Window.open), window_open_run, 0);
+  io_eff(CID(Window.open), window_open_run);
 }
 
 #endif
@@ -705,7 +705,7 @@ Term window_frame_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_frame_use(void) {
-  io_eff(CID(Window.frame), window_frame_run, 0);
+  io_eff(CID(Window.frame), window_frame_run);
 }
 
 #endif
@@ -744,7 +744,7 @@ Term window_set_title_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_set_title_use(void) {
-  io_eff(CID(Window.set_title), window_set_title_run, 0);
+  io_eff(CID(Window.set_title), window_set_title_run);
 }
 
 #endif
@@ -802,7 +802,7 @@ Term window_grab_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_grab_use(void) {
-  io_eff(CID(Window.grab), window_grab_run, 0);
+  io_eff(CID(Window.grab), window_grab_run);
 }
 
 #endif
@@ -840,7 +840,7 @@ Term window_close_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_close_use(void) {
-  io_eff(CID(Window.close), window_close_run, 0);
+  io_eff(CID(Window.close), window_close_run);
 }
 
 #endif

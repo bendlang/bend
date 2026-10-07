@@ -316,7 +316,7 @@ export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
 export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; };
 export type TLD  = ADT | Def;
-export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Record<string, Name>>; };
+export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; };
 
 // Context
 export type Ann = { q: Quant; k: Name; T: HTerm };
@@ -2323,7 +2323,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
     [p.pos, T] = [at, null];
   }
   if (T === null && q.$ === "Lone" && ts.length === 1 && !(parse_at(p, "=") && !parse_at(p, "=="))) {
-    const w = term_write(ts[0]);
+    const w = term_write(ts[0], beg);
     if (w === null || !parse_more(p, parse_col(p.str, beg))) {
       return ts[0];
     }
@@ -2350,9 +2350,9 @@ export function parse_body(p: Parse, col: number = 0): Body {
   return { $: "Local", k: ks, q, v: vs, f };
 }
 
-export function term_write(t: LTerm): LTerm | null {
+export function term_write(t: LTerm, beg: number): LTerm | null {
   const [h, xs] = term_unapply(t);
-  if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var") {
+  if (h.$ === "Ref" && h.k === "Array.set" && xs.length === 4 && xs[1].$ === "Var" && xs[1].s?.beg === beg) {
     return xs[1];
   }
   return null;
@@ -2650,7 +2650,14 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       }
       case "Ctr":
       case "Lit": {
-        throw Err(book_nil(), ctx_nil(), "an undestructed scrutinee (this value is already a constructor: bind its fields directly; if an outer match destructed it, fold the pattern into the outer case)", undefined, m.s);
+        const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
+        if (char_is_head(x) && [...x].every(char_is_name)) {
+          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched here"
+            + " (match it in the same match as the pattern that introduced it)", undefined, m.s);
+        } else {
+          throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched"
+            + " (this value is already a constructor: bind its fields directly)", undefined, m.s);
+        }
       }
       default: {
         throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)", undefined, e.s ?? m.s);
@@ -3748,21 +3755,23 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
   if (key.length > 32768) {
     throw Err(book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
   }
-  const is = book.tmps[tm.k] ??= Object.create(null);
-  if (is[key] === undefined) {
+  const is = book.tmps[tm.k] ??= new Map();
+  let o = is.get(key);
+  if (o === undefined) {
     const z = (lhs.z ?? 0) + 1;
     if (z > 64) {
       throw Err(book, ctx, "a template that stops instantiating itself (64 levels at most)", tm, tm.s, lhs.def);
     }
-    const o = is[key] = tm.k + "~" + String(Object.keys(is).length);
+    o = tm.k + "~" + String(is.size);
+    is.set(key, o);
     const inst: Def = { $: "Def", n: def.n - def.x, x: 0, T, v: xs.reduce((v, a) => term_apply(v, a), def.v as HTerm), u: def.u };
     book.tlds[o] = { ...inst, v: null };
     inst.e = def_check(book, o, inst, z);
     book.tlds[o] = inst;
-  } else if (book.tlds[is[key]].v === null && is[key] !== lhs.def) {
+  } else if (book.tlds[o].v === null && o !== lhs.def) {
     throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
   }
-  return is[key];
+  return o;
 }
 
 // Valid
