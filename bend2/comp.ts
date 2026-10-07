@@ -3471,8 +3471,7 @@ typedef u32 __attribute__((may_alias)) u32a;
 #define CUBE      ((u64)CUBE_T * CUBE_T)
 #define CUBE_G    (1u << CUBE_LOG)
 #define LANES     ((u64)CUBE_T << CUBE_LOG)
-#define RING_LOG  (17 - CUBE_LOG)
-#define RING_LEN  (1ull << RING_LOG)
+#define RING_LEN  (1ull << (17 - CUBE_LOG))
 #define STAK_LEN  (1ull << 11)
 #define NCLS      8
 #define NCLS_ALL  32
