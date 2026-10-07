@@ -69,8 +69,22 @@ test("serves formatting over an LSP stdio session", async (context) => {
     newText: "def main() -> U32:\n  0",
   }]);
 
-  const shutdown = waitFor(3);
-  send(child, { jsonrpc: "2.0", id: 3, method: "shutdown" });
+  send(child, {
+    jsonrpc: "2.0", method: "textDocument/didChange",
+    params: {
+      textDocument: { uri: "file:///main.bend", version: 2 },
+      contentChanges: [{ text: "import Base\ndef f(n: Bool) -> U32:\n  match n: case True{}: 0\n           case False{}: 1\n" }],
+    },
+  });
+  const inline = waitFor(3);
+  send(child, {
+    jsonrpc: "2.0", id: 3, method: "textDocument/formatting",
+    params: { textDocument: { uri: "file:///main.bend" }, options: { tabSize: 4, insertSpaces: false } },
+  });
+  assert.deepEqual((await inline).result, []);
+
+  const shutdown = waitFor(4);
+  send(child, { jsonrpc: "2.0", id: 4, method: "shutdown" });
   assert.equal((await shutdown).result, null);
   send(child, { jsonrpc: "2.0", method: "exit" });
 });

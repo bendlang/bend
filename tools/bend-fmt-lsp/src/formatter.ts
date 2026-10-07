@@ -24,6 +24,11 @@ const BINARY = new Set(["=", "==", "!=", "->", "<-", "=>", "+", "-", "*", "/", "
 const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ":", "=", "for", "case", "~"]);
 const ANGLES = new Set(["<", ">", "<<", ">>"]);
 const KEYWORDS = new Set(["return", "match", "case", "do", "for", "exs", "where", "is", "import", "def", "type", "law"]);
+const DELIMITERS = [["(", ")"], ["[", "]"], ["{", "}"]] as const;
+const DELIMITER_PAIRS = new Map<string, string>(DELIMITERS);
+const OPENING_DELIMITERS = new Set<string>(DELIMITERS.map(([opening]) => opening));
+const CLOSING_DELIMITERS = new Set<string>(DELIMITERS.map(([, closing]) => closing));
+const SUPPORTED_DO_HEADER = ["name", "<", "name", ">", ":"] as const;
 
 function splitLine(text: string): Line {
   const indent = text.match(/^[\t ]*/)?.[0] ?? "";
@@ -106,16 +111,16 @@ function needsSpace(tokens: Token[], index: number): boolean {
   const left = tokens[index - 1];
   const right = tokens[index];
   if (!left) return false;
-  if ([")", "]", "}", ",", ";"].includes(right.text)) return false;
+  if (CLOSING_DELIMITERS.has(right.text) || [",", ";"].includes(right.text)) return false;
   if (right.text === ":") return right.gap;
-  if (["(", "[", "{"].includes(left.text)) return false;
+  if (OPENING_DELIMITERS.has(left.text)) return false;
   if (left.text === ",") return true;
-  if (right.text === "!" && (left.kind === "word" || [")", "]", "}"].includes(left.text))) return false;
+  if (right.text === "!" && (left.kind === "word" || CLOSING_DELIMITERS.has(left.text))) return false;
   if (left.text === "!" && right.text === "(") return false;
   if (right.text === "?" && left.kind === "word" && (!tokens[index + 1] || tokens[index + 1].text === "(")) return right.gap;
   if (left.text === "?" && right.text === "(" && tokens[index - 2]?.kind === "word") return false;
   if (right.text === "(" || right.text === "[") {
-    const suffix = (left.kind === "word" && !KEYWORDS.has(left.text)) || left.kind === "number" || left.kind === "literal" || [")", "]", "}", ">", ">>"].includes(left.text);
+    const suffix = (left.kind === "word" && !KEYWORDS.has(left.text)) || left.kind === "number" || left.kind === "literal" || (CLOSING_DELIMITERS.has(left.text) || [">", ">>"].includes(left.text));
     return !suffix;
   }
   if (right.text === "{" && ((left.kind === "word" && !["return", "case"].includes(left.text)) || [">", ">>", "}"].includes(left.text))) return false;
@@ -124,7 +129,7 @@ function needsSpace(tokens: Token[], index: number): boolean {
   if (left.kind === "number" && left.text.endsWith("n") && (right.text === "+" || right.text === "++")) return right.gap;
   if ((left.text === "+" || left.text === "++") && tokens[index - 2]?.kind === "number" && tokens[index - 2].text.endsWith("n")) return right.gap;
   if (unary(tokens, index - 1)) return false;
-  if (unary(tokens, index)) return !["(", "[", "{", "<"].includes(left.text);
+  if (unary(tokens, index)) return !(OPENING_DELIMITERS.has(left.text) || left.text === "<");
   const angle = keepAngleGap(left, right);
   if (angle !== null) return angle;
   if (BINARY.has(left.text) || BINARY.has(right.text)) return true;
@@ -163,6 +168,50 @@ function fingerprint(lines: Line[]): string {
   return lines.map((line, index) => line.tokens.length === 0 ? "" : depths[index] + ":" + line.tokens.map((token) => token.text).join("\u0000")).join("\n");
 }
 
+function isSupportedDoHeader(header: Token[]): boolean {
+  // Only do NAME<NAME>: with the first statement on the next line.
+  // For do IO<Unit>: the tokens are ["IO", "<", "Unit", ">", ":"].
+  // Nested types, annotations, multiline headers and inline statements
+  // need column-aware formatting before they can be supported here.
+  return header.length === SUPPORTED_DO_HEADER.length
+    && SUPPORTED_DO_HEADER.every((expected, at) => expected === "name"
+      ? header[at].kind === "word" : header[at].text === expected);
+}
+
+function unsupportedLayout(line: Line): boolean {
+  return line.tokens.some((token, index) => {
+    if (token.kind !== "word") return false;
+    // Inline case rows anchor subsequent rows to a physical column.
+    if (token.text === "case" && index > 0) return true;
+    return token.text === "do" && !isSupportedDoHeader(line.tokens.slice(index + 1));
+  });
+}
+
+function declarationRanges(lines: Line[]): number[] | null {
+  const starts = [0];
+  const closing: string[] = [];
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    // Only column-zero declaration keywords outside delimiters are boundaries.
+    // Keep preceding @unsafe attributes with their declaration.
+    if (index > 0 && line.indent === "" && closing.length === 0
+      && ["def", "type", "law", "import"].includes(line.tokens[0]?.text)) {
+      let start = index;
+      while (start > starts[starts.length - 1] && lines[start - 1].tokens.length === 0) start--;
+      const previous = lines[start - 1]?.tokens;
+      if (previous?.length === 2 && previous[0].text === "@" && previous[1].text === "unsafe") start--;
+      if (start > starts[starts.length - 1]) starts.push(start);
+    }
+    for (const token of line.tokens) {
+      if (token.kind !== "symbol") continue;
+      const expected = DELIMITER_PAIRS.get(token.text);
+      if (expected) closing.push(expected);
+      else if (CLOSING_DELIMITERS.has(token.text) && closing.pop() !== token.text) return null;
+    }
+  }
+  return closing.length === 0 ? [...starts, lines.length] : null;
+}
+
 export function formatBend(source: string, options: FormatOptions = {}): string {
   const eol = source.includes("\r\n") ? "\r\n" : "\n";
   const finalEol = source.endsWith("\n");
@@ -174,10 +223,25 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   } catch {
     return source;
   }
+  const preserved = new Set<number>();
+  if (lines.some(unsupportedLayout)) {
+    const ranges = declarationRanges(lines);
+    // Uncertain boundaries must not allow edits into an unsupported block.
+    if (!ranges || /(?<!\r)\n/.test(source) && source.includes("\r\n")) return source;
+    for (let range = 0; range < ranges.length - 1; range++) {
+      const start = ranges[range];
+      const end = ranges[range + 1];
+      if (lines.slice(start, end).some(unsupportedLayout)) {
+        // Preserve the whole declaration, including its header and columns.
+        for (let index = start; index < end; index++) preserved.add(index);
+      }
+    }
+  }
   const depths = indentDepths(lines);
   const size = Math.max(1, options.tabSize ?? 2);
   const spaces = options.insertSpaces !== false;
   const formatted = lines.map((line, index) => {
+    if (preserved.has(index)) return rawLines[index];
     if (line.code === "" && line.comment === "") return "";
     const prefix = spaces ? " ".repeat(depths[index] * size) : "\t".repeat(depths[index]);
     const code = formatTokens(line.tokens);
