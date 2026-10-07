@@ -930,7 +930,7 @@ function lay_of(A: HTerm | null): Lay {
     }
     FL.lays.set(key, BOX);
     const lay = lay_pack(tld.c.map((c) =>
-      [c.k, ctr_doms(c, t.x).map((A) => lay_of(A))]));
+      [c.k, ctr_doms(c, t.x).map(lay_of)]));
     return lay.ks.length > WIDE ? BOX : lay;
   });
 }
@@ -964,7 +964,7 @@ function lay_pack(arms: [Name, Lay[]][]): Lay {
 function lay_node(k: Name): Lay {
   return memo(FL.nodes, k, () => {
     const lay = lay_pack([[k, (FL.book.ctrs[k] ? ctr_doms(FL.book.ctrs[k])
-      : []).map((A) => lay_of(A))]]);
+      : []).map(lay_of)]]);
     while (lay.ks.length > WIDE && lay.ks.length & (lay.ks.length - 1)) {
       lay.ks.push("w32");
     }
@@ -1179,10 +1179,10 @@ function fun_of(k: Name): Fun {
     const n = tld.n + (h === null ? 0
       : Math.min(def_raise(h, tld.n), doms.length - tld.n));
     const live = doms.slice(0, n).filter(dom_live);
-    const lays = live.map(([, , A]) => lay_of(A));
     if (def_foreign(tld)) {
-      return { n, h, live, lays: [...lays.map(() => BOX), BOX], ret: BOX };
+      return { n, h, live, lays: Array(live.length + 1).fill(BOX), ret: BOX };
     }
+    const lays = live.map(([, , A]) => lay_of(A));
     const ret = lay_of(Bend.tele_fill(FL.book, tld.T,
       Array(n).fill(DUMMY), Bend.ctx_nil()));
     const wide = lays.flatMap((l) => l.ks).length > WIDE;
@@ -1589,8 +1589,7 @@ function node_fields(sc: Scope, t: string, k: Name, tail = false): Val[] {
   const node = lay_node(k);
   const n = node.ks.length;
   if (lay_packed(node)) {
-    return node.arms![k].map((lay) =>
-      val_new(lay.ks.map(() => `term_loc(${t})`), lay));
+    return val_arm(val_new(node.ks.map(() => `term_loc(${t})`), node));
   }
   const r = sc.brwl.get(t);
   const z = r === undefined && (FL.hot.has(k) || FL.stat.has(k));
@@ -1605,6 +1604,7 @@ function node_fields(sc: Scope, t: string, k: Name, tail = false): Val[] {
   }
   file_push(sc, `u64 ${sp} = ${at};`);
   const ws = emit_hold(sc, node.ks.map((_, j) => `${fb}${j}]`), "f", node.ks);
+  const spare = { words: n, name: sp, z };
   if (r !== undefined) {
     ws.forEach((w, j) => {
       if (node.ks[j] === "box") {
@@ -1612,9 +1612,9 @@ function node_fields(sc: Scope, t: string, k: Name, tail = false): Val[] {
       }
     });
   } else if (tail) {
-    sc.spares.push({ words: n, name: sp, z });
+    sc.spares.push(spare);
   } else {
-    spare_free(sc, { words: n, name: sp, z });
+    spare_free(sc, spare);
   }
   return val_arm(val_new(ws, node));
 }
