@@ -593,8 +593,8 @@ function view_of(e: string): string | undefined {
 
 function tpl_nat(u: string, f: string): Tpl {
   return ([p]) => /^\d/.test(p) ? BigInt(parseInt(p)) + 1n + u
-    : /^nat_chk\(.* \+ \d+n?\)$/.test(p)
-    ? p.replace(/\d+(?=n?\)$)/, (k) => String(+k + 1)) : tpl(f, [p]);
+    : /^nat_chk\(.* \+ \d+\)$/.test(p)
+    ? p.replace(/\d+(?=\)$)/, (k) => String(+k + 1)) : tpl(f, [p]);
 }
 
 // Probe
@@ -757,8 +757,7 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
-    : s.$ === "Ctr" && (s.x.length === 0
-      || memo(FL.memo.ground, s, () => s.x.every(term_const)));
+    : s.$ === "Ctr" && memo(FL.memo.ground, s, () => s.x.every(term_const));
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
@@ -885,7 +884,7 @@ function ty_holds(A: HTerm | null,
 
 function ty_clo(A: HTerm | null): boolean {
   return ty_holds(A, (t) => t?.$ === "ADT"
-    ? WORDS[t.k] !== undefined ? false : null
+    ? WORDS[t.k] ? false : null
     : !["Typ", "Qua", "Min", "Eql"].includes(t?.$ ?? ""));
 }
 
@@ -900,7 +899,7 @@ function type_adts(T: HTerm): Name[] {
     }
     case "ADT": {
       return [...WORDS[t.k] === undefined && t.k !== "Array"
-        ? [t.k] : [], ...t.x.flatMap((x) => type_adts(x))];
+        ? [t.k] : [], ...t.x.flatMap(type_adts)];
     }
     default: {
       return [];
