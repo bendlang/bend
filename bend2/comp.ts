@@ -2219,18 +2219,18 @@ function emit_intr(sc: Scope, it: Intr, m: Spine, ty: HTerm | null): Val {
   const k = (m.t as Of<"Ref">).k;
   const args = emit_each(sc, m.args);
   const op = op_name(k);
+  const C = it.C!;
   if ("array_get array_new array_clone".includes(op)
     && lay_el(m.all[0]).ks.includes("box")
     && !(op === "array_new" && facts_packed(m.all[2]))) {
     facts_hot(sc, m.all[0], true);
   }
-  if (it.C === null) {
+  if (C === null) {
     return arr_op(sc, op, lay_el(m.all[0]), args);
   }
   const ws = args.map((v, i) =>
     val_own(sc, val_to(sc, v, fun_of(k).lays[i]))[0]);
   const lay = lay_of(ty);
-  const C = it.C!;
   const all = Array.isArray(C) || /\$(\d)[^]*\$\1/.test(C);
   const as = ws.map((w) => all || tpl_deep(w) ? emit_alias(sc, w, "a") : w);
   if (Array.isArray(C)) {
@@ -2264,7 +2264,7 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   }
   const flds = ctr_flds(x.k, x.x);
   const ctr = FL.book.ctrs[x.k];
-  const tys = () => ctr ? ctr_doms(ctr, adt.x) : [];
+  const tys = () => ctr_doms(ctr, adt.x);
   const word = WORDS[adt.k];
   if (word !== undefined) {
     const vs = emit_each(sc, flds, [], tys());
@@ -2317,8 +2317,7 @@ function emit_fold(t: HTerm): HTerm | null {
       return s;
     }
     const m = term_spine(s);
-    const it = m.t.$ === "Ref" ? intr_of(m.t.k) : undefined;
-    if (it === undefined) {
+    if (m.t.$ !== "Ref" || intr_of(m.t.k) === undefined) {
       const b = emit_unfold(m);
       if (b === null) {
         return null;
