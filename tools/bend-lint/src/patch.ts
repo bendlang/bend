@@ -1,16 +1,21 @@
-// The two changes bend-lint makes to bend2/bend.ts as Bun loads it; the
-// file on disk never changes. One wraps term_infer and term_check so a
-// `book.see` hook records what they return. The other gives bend.ts this
-// module's fs and path: bend.ts builds paths with "/" (path.posix), so here
-// real paths use "/" and a Windows drive letter counts as a root. On POSIX
-// they behave as node's. bend.pin holds the hashes of the bend2 files
-// bend-lint was tested on: bend.ts, which it patches, and comp.ts, whose
-// io_run runs rules written in Bend.
+// What bend-lint changes in bend2 as Bun loads it; the files on disk never
+// change. In bend.ts, term_infer and term_check get wrappers so a
+// `book.see` hook records what they return, and fs and path come from this
+// module: bend.ts builds paths with "/" (path.posix), so here real paths use
+// "/" and a Windows drive letter counts as a root; on POSIX they behave as
+// node's. In comp.ts, RUNTIME_MAIN and js_sat are exported, so a rule
+// written in Bend is compiled once and run many times. bend.pin holds the
+// hashes of the files these were tested on.
 
 import * as crypto from "node:crypto";
 import * as nodeFs from "node:fs";
 import * as nodePath from "node:path";
 import * as url from "node:url";
+
+// Types
+// =====
+
+type Patch = { name: string; at: RegExp; to: string };
 
 // Constants
 // =========
@@ -25,20 +30,17 @@ const SHIM = JSON.stringify(url.pathToFileURL(nodePath.join(HERE, "patch.ts")).h
 
 export const MARK = "BEND_LINT_PATCH";
 export const PIN_FILE = nodePath.join(HERE, "..", "bend.pin");
-const PINNED = ["bend.ts", "comp.ts"];
 
-const PATCHES = [
-  {
+const PATCHES: Record<string, Patch[]> = {
+  "bend.ts": [{
     name: "the node:fs import",
     at: /^import \* as fs from "node:fs";/m,
     to: "import { fs } from " + SHIM + ";",
-  },
-  {
+  }, {
     name: "the node:path import",
     at: /^import \* as path from "node:path";/m,
     to: "import { path } from " + SHIM + ";",
-  },
-  {
+  }, {
     name: "term_infer",
     at: /^export function term_infer\(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm\[\] = \[\]\): Infer \{/m,
     to: [
@@ -49,8 +51,7 @@ const PATCHES = [
       "}",
       "function lint_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[]): Infer {",
     ].join("\n"),
-  },
-  {
+  }, {
     name: "term_check",
     at: /^export function term_check\(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number\): Check \{/m,
     to: [
@@ -61,8 +62,17 @@ const PATCHES = [
       "}",
       "function lint_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {",
     ].join("\n"),
-  },
-];
+  }],
+  "comp.ts": [{
+    name: "RUNTIME_MAIN",
+    at: /^const RUNTIME_MAIN: string = /m,
+    to: "export const RUNTIME_MAIN: string = ",
+  }, {
+    name: "js_sat",
+    at: /^function js_sat\(k: Name\): string \{/m,
+    to: "export function js_sat(k: Name): string {",
+  }],
+};
 
 // fs and path for bend.ts.
 export const fs = { ...nodeFs, realpathSync: (p: nodeFs.PathLike): string => slash(nodeFs.realpathSync(p)) };
@@ -77,7 +87,7 @@ export const path = {
 // Functions
 // =========
 
-export function slash(p: string): string {
+function slash(p: string): string {
   return p.split(nodePath.sep).join("/");
 }
 
@@ -92,11 +102,12 @@ export function relative(from: string, to: string): string {
   return nodePath.posix.relative(slash(from).replace(DRIVE, ""), slash(to).replace(DRIVE, ""));
 }
 
-export function patch(src: string): string {
-  return PATCHES.reduce((out, { name, at, to }) => {
+// `file` is "bend.ts" or "comp.ts"; each anchor must be found exactly once.
+export function patch(file: string, src: string): string {
+  return PATCHES[file].reduce((out, { name, at, to }) => {
     const n = out.match(new RegExp(at.source, "gm"))?.length ?? 0;
     if (n !== 1) {
-      throw new DriftError("cannot patch bend2/bend.ts: found " + n + " of " + name
+      throw new DriftError("cannot patch bend2/" + file + ": found " + n + " of " + name
         + ", expected 1. Update PATCHES in tools/bend-lint/src/patch.ts.");
     }
     return out.replace(at, () => to);
@@ -115,13 +126,11 @@ export function pinned(): string {
 }
 
 export function current(): string {
-  return PINNED.map((f) => f + " " + blob(nodeFs.readFileSync(path.join(BEND2, f), "utf8"))).join("\n");
+  return Object.keys(PATCHES).map((f) => f + " " + blob(nodeFs.readFileSync(path.join(BEND2, f), "utf8"))).join("\n");
 }
 
 // Side effects
 // ============
 
 export const BEND2 = fs.realpathSync(path.join(HERE, "..", "..", "..", "bend2"));
-export const BEND_TS = path.join(BEND2, "bend.ts");
-export const COMP_TS = path.join(BEND2, "comp.ts");
 

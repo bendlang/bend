@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 // bend-lint checks a Bend file with bend's checker, then runs rules over
-// its source and the checker's results. It loads bend2/bend.ts through
-// ./patch.ts. Rules are TS modules, or Bend files built on ./lint.bend. Anything in bend.ts it cannot follow stops it with a
-// DriftError. As a CLI, it exits 0 when ok, 1 when it found an error, 2
-// on bad usage or a tool failure.
+// its source and the checker's results. Rules are TS modules, or Bend files
+// built on ./lint.bend. It loads bend2 through ./patch.ts; anything there
+// it cannot follow stops it with a DriftError. As a CLI, it exits 0 when
+// ok, 1 when it found an error, 2 on bad usage or a tool failure.
 
 import * as url from "node:url";
 import * as util from "node:util";
@@ -11,19 +11,17 @@ import * as util from "node:util";
 import type * as BendModule from "../../../bend2/bend.ts";
 import type * as CompModule from "../../../bend2/comp.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
-import { BEND_TS, COMP_TS, DriftError, MARK, PIN_FILE, blob, current, fs, patch, path, pinned } from "./patch.ts";
+import { BEND2, DriftError, MARK, PIN_FILE, blob, current, fs, patch, path, pinned } from "./patch.ts";
 
 // Types
 // =====
 
 export type Bend = typeof BendModule;
-export type Comp = typeof CompModule;
 export type Severity = "error" | "warning" | "information" | "hint";
 // safe keeps behavior; suggested may change it; dangerous may break code.
 export type Applicability = "safe" | "suggested" | "dangerous";
 export type Edit = { spn: Span; text: string };
 export type Fix = { title: string; applicability: Applicability; edits: Edit[] };
-export type Position = { line: number; character: number };
 
 export type Diag = {
   code: string;
@@ -33,8 +31,6 @@ export type Diag = {
   def?: Name;
   ctx?: Ctx;
   bok?: Book;
-  obs?: string;
-  note?: string;
   fixes: Fix[];
   core?: unknown; // bend's own failure, when the check failed
 };
@@ -45,8 +41,6 @@ export type DiagInit = {
   spn?: Span;
   fact?: Fact;
   def?: Name;
-  obs?: string;
-  note?: string;
   fixes?: Fix[];
 };
 
@@ -73,6 +67,8 @@ export type RuleContext = {
   binder(fact: Fact, v: LTerm): Ann | null;
   show(fact: Fact, ty: HTerm): string;
   same(fact: Fact, a: HTerm, b: HTerm): boolean;
+  normal(fact: Fact, ty: HTerm): HTerm;
+  uses(fact: Fact): Array<{ name: Name; quantity: Quant }>;
   diag(init: DiagInit): Diag;
 };
 
@@ -109,6 +105,9 @@ type Channel = {
   uses(fact: number): Array<{ name: Name; quantity: Quant["$"] }>;
   text(span: Spot): string;
 };
+
+// comp.ts as patch.ts exports it.
+type Comp = typeof CompModule & { RUNTIME_MAIN: string; js_sat(k: Name): string };
 
 type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void };
 type Mapper = <S extends Span | undefined>(s: S) => S;
@@ -185,16 +184,6 @@ function starts(text: string): number[] {
   return [0, ...[...text.matchAll(/\n/g)].map((m) => m.index! + 1)];
 }
 
-function line(starts: number[], off: number): number {
-  let lo = 0;
-  let hi = starts.length - 1;
-  while (lo < hi) {
-    const mid = (lo + hi + 1) >> 1;
-    [lo, hi] = starts[mid] <= off ? [mid, hi] : [lo, mid - 1];
-  }
-  return lo;
-}
-
 // bend.ts parses a copy of each file with its import lines blanked, so a
 // span moves to the file on disk by line and column. A copy that does not
 // match its file is a DriftError.
@@ -223,8 +212,12 @@ export function mapper(sources: Source[]): Mapper {
     }
     const { file, from, to } = memo.get(f)!;
     const at = (off: number): number => {
-      const i = line(from, off);
-      return to[i] + off - from[i];
+      let [lo, hi] = [0, from.length - 1];
+      while (lo < hi) {
+        const mid = (lo + hi + 1) >> 1;
+        [lo, hi] = from[mid] <= off ? [mid, hi] : [lo, mid - 1];
+      }
+      return to[lo] + off - from[lo];
     };
     return { file, beg: at(s.beg), end: at(s.end) } as S;
   };
@@ -246,12 +239,12 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
     ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => void (bok.tlds[def]?.b !== true && found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us }))
     : undefined;
   const seeded = fs.existsSync(file) && /^import Base\s*$/m.test(fs.readFileSync(file, "utf8"));
-  const key = seeded ? blob(fs.readFileSync(Bend.BASE_BEND, "utf8")) : "";
+  const key = blob(fs.readFileSync(Bend.BASE_BEND, "utf8"));
   if (seeded && !BASES.has(key)) {
     const base = Bend.book_nil();
     BASES.set(key, Bend.book_load(base, Bend.BASE_BEND, "", new Map()).then(() => (Bend.book_valid(base), base)));
   }
-  const caught = await (seeded ? BASES.get(key)! : Promise.resolve(undefined)).then(async (base) => {
+  const caught = await Promise.resolve(seeded ? BASES.get(key) : undefined).then(async (base) => {
     if (base !== undefined) {
       Object.assign(book.tlds, Object.fromEntries(Object.entries(base.tlds).map(([k, tld]) => [k, { ...tld }])));
       Object.assign(book.ctrs, base.ctrs);
@@ -312,9 +305,12 @@ export async function lint(file: string, rules: LintRule[], signal = new AbortCo
       binder: (fact, v) => v.$ === "Var" ? Bend.pmap_get(fact.ctx, v.i) : null,
       show: (fact, ty) => Bend.term_show(Bend.term_lower(ty, fact.dep)),
       same: (fact, a, b) => Bend.term_compare("EQ", fact.bok, a, b, fact.dep),
+      normal: (fact, ty) => Bend.term_snf(fact.bok, ty),
+      uses: (fact) => Bend.pmap_to_array(fact.us).flatMap(([v, quantity]) =>
+        quantity.$ === "None" ? [] : [{ name: Bend.pmap_get(fact.ctx, v)?.k ?? "", quantity }]),
       diag: (d) => ({
         code: rule.id, severity: d.severity ?? "warning", message: d.message, spn: d.spn,
-        def: d.def ?? d.fact?.def, ctx: d.fact?.ctx, bok: d.fact?.bok ?? book, obs: d.obs, note: d.note, fixes: d.fixes ?? [],
+        def: d.def ?? d.fact?.def, ctx: d.fact?.ctx, bok: d.fact?.bok ?? book, fixes: d.fixes ?? [],
       }),
     }, signal);
     signal.throwIfAborted();
@@ -359,7 +355,7 @@ function common(a: string[], b: string[]): number {
 // bend's own error layout; the head names the severity and the code, and
 // each fix follows as a unified diff.
 export function render(d: Diag): string {
-  const err = isErr(d.core) ? d.core : Bend.Err(d.bok ?? Bend.book_nil(), d.ctx ?? Bend.ctx_nil(), d.message, d.obs, d.spn, d.def, d.note);
+  const err = isErr(d.core) ? d.core : Bend.Err(d.bok ?? Bend.book_nil(), d.ctx ?? Bend.ctx_nil(), d.message, undefined, d.spn, d.def);
   const fixes = d.fixes.map((fix) => "\n\nFix: " + fix.title + " [" + fix.applicability + "]"
     + [...new Set(fix.edits.map((e) => e.spn.file))].map((file) => {
       const old = file.str.match(LINE) ?? [];
@@ -378,19 +374,9 @@ export function render(d: Diag): string {
   return Bend.err_show(err).replace(/^Error:/, HEAD[d.severity] + " [" + d.code + "]:") + fixes.join("");
 }
 
-// The LSP range of a span in a file on disk (0-based, UTF-16).
-export function position(spn: Span): { start: Position; end: Position } {
-  const ss = starts(spn.file.str);
-  const at = (off: number): Position => {
-    const i = line(ss, off);
-    return { line: i, character: off - ss[i] };
-  };
-  return { start: at(spn.beg), end: at(spn.end) };
-}
-
-// A rule written in Bend: a file built on ./lint.bend (see there). Its
-// book is checked once; each run compiles it and runs its main with bend's
-// own IO runtime, while lint.js reaches bend-lint through
+// A rule written in Bend: a file built on ./lint.bend (see there). It is
+// checked and compiled once, as comp.ts io_run does; each run calls its
+// main with bend's own IO runtime, while lint.js reaches bend-lint through
 // globalThis.BEND_LINT. Offsets cross as code points.
 export async function bendRule(file: string): Promise<LintRule> {
   const { book, failure } = await check(file, false, new AbortController().signal);
@@ -406,13 +392,15 @@ export async function bendRule(file: string): Promise<LintRule> {
   if (id === undefined || !["True{}", "False{}"].includes(types) || Comp.io_type(book) === null) {
     throw new Error(file + " must define id() -> String, types() -> Bool and main() -> IO(Unit)");
   }
+  const main = new Function("require", Comp.js_lib(book) + "\n" + Comp.RUNTIME_MAIN
+    + "\nreturn (args) => { cli_args = args; return io_run(" + Comp.js_sat("main") + "); };")(import.meta.require) as (args: string[]) => number;
   return {
     id,
     needsTypes: types === "True{}",
     run: (cx) => {
-      const spot = (spn: Span | undefined): Spot | undefined => spn && {
-        path: (spn.file as SourceFile).path, beg: [...spn.file.str.slice(0, spn.beg)].length, end: [...spn.file.str.slice(0, spn.end)].length,
-      };
+      const points = (text: string, off: number): number => [...text.slice(0, off)].length;
+      const spot = (spn: Span | undefined): Spot | undefined =>
+        spn && { path: (spn.file as SourceFile).path, beg: points(spn.file.str, spn.beg), end: points(spn.file.str, spn.end) };
       const span = (s: Spot): Span => {
         const src = cx.sources.find((x) => x.path === s.path);
         if (src === undefined) {
@@ -447,11 +435,8 @@ export async function bendRule(file: string): Promise<LintRule> {
         },
         same: (i, a, b) => cx.same(pick(facts, i, "fact"), pick(terms, a, "term"), pick(terms, b, "term")),
         show: (i, t) => cx.show(pick(facts, i, "fact"), pick(terms, t, "term")),
-        normal: (i, t) => keep(Bend.term_snf(pick(facts, i, "fact").bok, pick(terms, t, "term"))),
-        uses: (i) => {
-          const f = pick(facts, i, "fact");
-          return Bend.pmap_to_array(f.us).flatMap(([v, q]) => q.$ === "None" ? [] : [{ name: Bend.pmap_get(f.ctx, v)?.k ?? "", quantity: q.$ }]);
-        },
+        normal: (i, t) => keep(cx.normal(pick(facts, i, "fact"), pick(terms, t, "term"))),
+        uses: (i) => cx.uses(pick(facts, i, "fact")).map((u) => ({ name: u.name, quantity: u.quantity.$ })),
         text: (s) => {
           const spn = span(s);
           return spn.file.str.slice(spn.beg, spn.end);
@@ -459,7 +444,7 @@ export async function bendRule(file: string): Promise<LintRule> {
       };
       let code: number;
       try {
-        code = Comp.io_run(book, [file]);
+        code = main([file]);
       } finally {
         shared.BEND_LINT = undefined;
       }
@@ -474,19 +459,20 @@ export async function bendRule(file: string): Promise<LintRule> {
   };
 }
 
-// Patches bend.ts as Bun loads it, then checks a tiny program: the type of
-// `x` in `id` must be recorded as N.
+// Patches bend.ts and comp.ts as Bun loads them, then checks a tiny
+// program: the type of `x` in `id` must be recorded as N.
 async function instrument(): Promise<{ Bend: Bend; Comp: Comp }> {
-  const patched = patch(fs.readFileSync(BEND_TS, "utf8"));
+  const patched = new Map(["bend.ts", "comp.ts"].map((f) => [f, patch(f, fs.readFileSync(path.join(BEND2, f), "utf8"))]));
   Bun.plugin({
     name: "bend-lint",
     setup: (build) => {
-      build.onLoad({ filter: /[\\/]bend2[\\/]bend\.ts$/ }, () => ({ contents: patched, loader: "ts" }));
+      build.onLoad({ filter: /[\\/]bend2[\\/](bend|comp)\.ts$/ }, (args) => ({ contents: patched.get(path.basename(args.path))!, loader: "ts" }));
     },
   });
-  const B: Bend & { [MARK]?: number } = await import(url.pathToFileURL(BEND_TS).href);
-  if (B[MARK] !== 1) {
-    throw new DriftError("bend2/bend.ts was loaded before bend-lint could patch it; import bend-lint first");
+  const [B, C]: [Bend & { [MARK]?: number }, Comp & { [MARK]?: number }] = await Promise.all(
+    ["bend.ts", "comp.ts"].map((f) => import(url.pathToFileURL(path.join(BEND2, f)).href)));
+  if (B[MARK] !== 1 || C[MARK] !== 1) {
+    throw new DriftError("bend2 was loaded before bend-lint could patch it; import bend-lint first");
   }
   const sample: Hooked = B.book_nil();
   const seen: Array<{ bok: Book; tm: LTerm; ty: HTerm; def: Name }> = [];
@@ -498,7 +484,7 @@ async function instrument(): Promise<{ Bend: Bend; Comp: Comp }> {
   if (!typed) {
     throw new DriftError("self-check failed: the patched bend.ts recorded no type for `id`; update tools/bend-lint/src/patch.ts");
   }
-  return { Bend: B, Comp: await import(url.pathToFileURL(COMP_TS).href) };
+  return { Bend: B, Comp: C };
 }
 
 async function cli(argv: string[]): Promise<number> {

@@ -5,9 +5,9 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { Book, LTerm, Span } from "../../../bend2/bend.ts";
-import { Bend, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
+import { Bend, Comp, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
-import { BEND_TS, DriftError, blob, current, patch, pinned, relative, resolve } from "../src/patch.ts";
+import { BEND2, DriftError, blob, current, patch, pinned, relative, resolve } from "../src/patch.ts";
 
 // Types
 // =====
@@ -429,10 +429,11 @@ function module(name: string, body: string): string {
 afterAll(() => fs.rmSync(DIR, { recursive: true, force: true }));
 
 describe("patch", () => {
-  const src = fs.readFileSync(BEND_TS, "utf8");
+  const src = fs.readFileSync(path.join(BEND2, "bend.ts"), "utf8");
+  const comp = fs.readFileSync(path.join(BEND2, "comp.ts"), "utf8");
 
-  test("wraps term_infer and term_check, and swaps fs and path", () => {
-    const out = patch(src);
+  test("bend.ts: wraps term_infer and term_check, and swaps fs and path", () => {
+    const out = patch("bend.ts", src);
     expect(out.match(/^export function term_infer\(/gm)?.length).toBe(1);
     expect(out).toContain("function lint_infer(");
     expect(out).toContain("function lint_check(");
@@ -440,17 +441,25 @@ describe("patch", () => {
     expect(out).toMatch(/^import \{ path \} from "file:.*patch\.ts";/m);
   });
 
+  test("comp.ts: exports RUNTIME_MAIN and js_sat", () => {
+    const out = patch("comp.ts", comp);
+    expect(out).toMatch(/^export const RUNTIME_MAIN: string = /m);
+    expect(out).toMatch(/^export function js_sat\(/m);
+  });
+
   test("fails loudly when an anchor changes or repeats", () => {
-    expect(() => patch(src.replace("term_infer(book: Book,", "term_infer(bk: Book,"))).toThrow(DriftError);
-    expect(() => patch(src.replace('import * as fs from "node:fs";', 'import fs from "node:fs";'))).toThrow(/node:fs import/);
-    expect(() => patch(src + "\n" + src.match(/^export function term_check\(.*$/m)![0] + "\n")).toThrow(/found 2 of term_check/);
+    expect(() => patch("bend.ts", src.replace("term_infer(book: Book,", "term_infer(bk: Book,"))).toThrow(DriftError);
+    expect(() => patch("bend.ts", src.replace('import * as fs from "node:fs";', 'import fs from "node:fs";'))).toThrow(/node:fs import/);
+    expect(() => patch("bend.ts", src + "\n" + src.match(/^export function term_check\(.*$/m)![0] + "\n")).toThrow(/found 2 of term_check/);
+    expect(() => patch("comp.ts", comp.replace("function js_sat(", "function js_name("))).toThrow(/comp\.ts: found 0 of js_sat/);
   });
 
-  test("the loaded bend.ts is the patched one", () => {
+  test("the loaded bend.ts and comp.ts are the patched ones", () => {
     expect((Bend as unknown as Record<string, unknown>).BEND_LINT_PATCH).toBe(1);
+    expect((Comp as unknown as Record<string, unknown>).BEND_LINT_PATCH).toBe(1);
   });
 
-  test("the pin is a git blob hash, and matches bend.ts", () => {
+  test("the pin holds git blob hashes, and matches bend2", () => {
     expect(blob("a\r\nb\n")).toBe(blob("a\nb\n"));
     expect(blob("hello\n")).toBe("ce013625030ba8dba906f756967f9e9ca394464a");
     expect(pinned()).toMatch(/^bend\.ts [0-9a-f]{40}\ncomp\.ts [0-9a-f]{40}$/);

@@ -5,8 +5,8 @@ rules on it. A rule reads the source text, the checker's types, or both,
 and returns diagnostics with fixes. Bend itself does not change.
 
 - `src/lint.ts`: the library and the CLI.
-- `src/patch.ts`: the two changes made to `bend2/bend.ts` as Bun loads it,
-  and the pin.
+- `src/patch.ts`: what bend-lint changes in `bend2/bend.ts` and
+  `bend2/comp.ts` as Bun loads them, and the pin.
 - `src/lint.bend`, `src/lint.js`: the contract for rules written in Bend,
   and its effects.
 
@@ -60,7 +60,8 @@ found. A finding with severity `error` stops the run.
   spans; `fact.inst` marks the facts of an instance.
 - `span(s)`: a span from bend.ts (for example `term.s`), in the file on
   disk.
-- `walk`, `binder`, `show`, `same`, `diag`: helpers over bend's terms.
+- `walk`, `binder`, `show`, `same`, `normal`, `uses`, `diag`: helpers over
+  bend's terms.
 - `Bend`: the bend.ts module, for anything else.
 
 Get bend.ts from `cx.Bend`. Do not import `bend2/bend.ts` in a rule.
@@ -79,23 +80,25 @@ through effects (`Lint.view`, `Lint.type_of`, `Lint.binder`, `Lint.same`,
 bun tools/bend-lint/src/lint.ts file.bend --rules my_rule.bend
 ```
 
-bend-lint checks the rule once; each run compiles it and runs its `main`
-with bend's own IO runtime (`comp.ts` `io_run`), so a rule may also use
-Base's effects. Effects run synchronously.
+bend-lint checks and compiles the rule once, as `comp.ts` `io_run` does;
+each run calls its `main` with bend's own IO runtime, so a rule may also
+use Base's effects. Effects run synchronously.
 
 ## The patch
 
 bend.ts does not expose the checker's results, and builds file paths with
-`/`. As Bun loads bend.ts, `patch.ts` changes two things; the file on disk
-does not change:
+`/`; comp.ts compiles and runs a program in one call. As Bun loads them,
+`patch.ts` changes three things; the files on disk do not change:
 
 1. `term_infer` and `term_check` get wrappers that record what they return.
    Checking gives the same results.
 2. bend.ts gets `fs` and `path` from `patch.ts`, where real paths use `/`
    and a drive letter is a root, so imports resolve on Windows too. On
    POSIX these behave as node's.
+3. comp.ts exports `RUNTIME_MAIN` and `js_sat`, so a rule written in Bend
+   is compiled once and run many times.
 
-Each change looks for one exact anchor in bend.ts. If an anchor is not
+Each change looks for one exact anchor. If an anchor is not
 found exactly once, or a self-check on a tiny program records no type,
 bend-lint stops with a `DriftError`.
 
