@@ -607,13 +607,21 @@ describe("downloading bend", () => {
   });
 
   test("bendDir downloads only when no bend is given or around it", async () => {
-    const gh = github(["v2.0.35"]);
-    const at = cache();
-    const away = { get: gh.get, cache: at, repo: DIR };
-    expect(await bendDir(undefined, { ...away, run: () => "bend 2.0.36\n" })).toBe(fs.realpathSync(path.join(at, "v2.0.36", "bend2")).replaceAll("\\", "/"));
-    expect(await bendDir(undefined, { ...away, run: () => undefined })).toBe(fs.realpathSync(path.join(at, "v2.0.35", "bend2")).replaceAll("\\", "/"));
-    await expect(bendDir(undefined, { get: offline, cache: at, repo: DIR, run: () => "bend 2.0.40\n" })).rejects.toThrow(/could not download bend v2\.0\.40 \(offline\)/);
-    expect(await bendDir(undefined, { get: offline, cache: at, run: () => "bend 2.0.40\n" })).toBe(BEND2);
+    const saved = process.env.BEND_DIR;
+    delete process.env.BEND_DIR; // a given bend would win over all below
+    try {
+      const gh = github(["v2.0.35"]);
+      const at = cache();
+      const away = { get: gh.get, cache: at, repo: DIR };
+      expect(await bendDir(undefined, { ...away, run: () => "bend 2.0.36\n" })).toBe(fs.realpathSync(path.join(at, "v2.0.36", "bend2")).replaceAll("\\", "/"));
+      expect(await bendDir(undefined, { ...away, run: () => undefined })).toBe(fs.realpathSync(path.join(at, "v2.0.35", "bend2")).replaceAll("\\", "/"));
+      await expect(bendDir(undefined, { get: offline, cache: at, repo: DIR, run: () => "bend 2.0.40\n" })).rejects.toThrow(/could not download bend v2\.0\.40 \(offline\)/);
+      expect(await bendDir(undefined, { get: offline, cache: at, repo: BEND2, run: () => "bend 2.0.40\n" })).toBe(BEND2);
+    } finally {
+      if (saved !== undefined) {
+        process.env.BEND_DIR = saved;
+      }
+    }
   });
 });
 
