@@ -92,7 +92,9 @@ A blocking effect takes one more argument, `k`, and parks with
 park again. Add an absolute `performance.now()` deadline as a fifth
 argument to also wake on time; with no fd
 (`io_park_on(undefined, false, k, more, deadline)`) it waits on time
-alone, as `sleep.js` does. An effect that can meet a steady backlog
+alone, as `sleep.js` does. In place of `fd`, a list of `[fd, out]` pairs
+waits for the first ready, as `process_run.js` does on a child's pipes.
+An effect that can meet a steady backlog
 parks before its first try, as on the C side. `io_sys()` is `libc` through `bun:ffi`
 (`read`, `recv`, `select`, `errno`); `tcp_accept.js` shows the full shape.
 

@@ -6317,13 +6317,13 @@ function io_wait(io, block) {
   const soon = io.waits[0]?.at ?? Infinity;
   const ms = !block ? 0 : soon === Infinity ? -1
     : Math.max(0, Math.ceil(soon - performance.now()));
-  const fds = io.waits.filter((w) => w.fd !== undefined);
-  const top = fds.reduce((m, w) => Math.max(m, w.fd), 0);
+  const ends = io.waits.flatMap((w) => w.ends);
+  const top = ends.reduce((m, [fd]) => Math.max(m, fd), 0);
   const len = (top >> 6 << 3) + 8;
   const set = new Uint8Array(2 * len);
-  const at = (w) => (w.out ? len : 0) + (w.fd >> 3);
-  for (const w of fds) {
-    set[at(w)] |= 1 << (w.fd & 7);
+  const at = ([fd, out]) => (out ? len : 0) + (fd >> 3);
+  for (const e of ends) {
+    set[at(e)] |= 1 << (e[0] & 7);
   }
   const tv = new BigInt64Array([BigInt(ms / 1000 | 0),
     BigInt(ms % 1000 * 1000)]);
@@ -6336,8 +6336,8 @@ function io_wait(io, block) {
     set.fill(0);
   }
   const now = performance.now();
-  const due = (w) => w.at <= now || w.fd !== undefined
-    && set[at(w)] & 1 << (w.fd & 7);
+  const due = (w) => w.at <= now
+    || w.ends.some((e) => set[at(e)] & 1 << (e[0] & 7));
   const todo = io.waits;
   io.waits = todo.filter((w) => !due(w));
   for (const w of todo.filter(due)) {
@@ -6351,7 +6351,8 @@ function io_wait(io, block) {
 function io_park_on(fd, out, k, more, at) {
   const ws = globalThis.BEND_IO.waits;
   const i = ws.findLastIndex((w) => (w.at ?? Infinity) <= (at ?? Infinity));
-  ws.splice(i + 1, 0, { fd, out, k, more, at });
+  const ends = fd === undefined ? [] : fd.map ? fd : [[fd, out]];
+  ws.splice(i + 1, 0, { ends, k, more, at });
 }
 
 function io_run(m) {
