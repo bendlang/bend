@@ -10,8 +10,11 @@
 // run, its JS run and its C run all print its `#|` lines; a test whose main
 // the compiler refuses to print (a function, a Type, an erased or dependent
 // field) is checked and interpreted only; a foreign def with no twin for a
-// lane drops that lane; any other build failure fails its lanes.
+// lane drops that lane; any other build failure fails its lanes. Meanwhile,
+// tools/bend-lint's own suite runs here, beside the cluster, as one test: it
+// patches bend.ts in memory, so it is the first to see a change it relies on.
 
+import * as child from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -195,6 +198,21 @@ async function shard_run(shard: Test[], pack: Buffer, tag: number,
   }
 }
 
+// bend-lint
+// =========
+
+// `bun test tools/bend-lint` (about 3 s): its failure, or null.
+function lint_run(): Promise<Fail | null> {
+  return new Promise((done) => {
+    const kid = child.spawn(BUN, ["test", "tools/bend-lint"], { cwd: lib.ROOT, stdio: ["ignore", "pipe", "pipe"] });
+    let out = "";
+    kid.stdout.on("data", (d: Buffer) => { out += d.toString(); });
+    kid.stderr.on("data", (d: Buffer) => { out += d.toString(); });
+    kid.on("close", (code) => done(code === 0 ? null
+      : { name: "tools/bend-lint", probe: "bun test", want: "exit 0", got: out.trim().split("\n").slice(-20).join("\n") }));
+  });
+}
+
 // Main
 // ====
 
@@ -208,8 +226,10 @@ if (import.meta.main) {
   const pack = lib.pack(TESTS);
   const shards = shard_split(tests, nodes.length);
   const fails: Fail[] = [];
+  const lint = lint_run();
   await lib.node_pool(nodes, shards.map((shard, tag) => (node: number) =>
     shard_run(shard, pack, tag, node, fails)));
+  fails.push(...[await lint].filter((f): f is Fail => f !== null));
   fails.sort((a, b) => a.name < b.name ? -1 : 1);
   if (!lib.GATE) {
     for (const f of fails) {
@@ -219,5 +239,5 @@ if (import.meta.main) {
     }
   }
   const bad = new Set(fails.map((f) => f.name));
-  lib.verdict(tests.length - bad.size, tests.length);
+  lib.verdict(tests.length + 1 - bad.size, tests.length + 1);
 }
