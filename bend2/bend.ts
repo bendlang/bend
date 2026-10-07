@@ -316,7 +316,7 @@ export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
 export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; };
 export type TLD  = ADT | Def;
-export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; diags: Diag[]; rules: LintRule[]; files?: File[]; };
+export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; diags: Diag[]; rules: LintRule[]; files?: File[]; checked?: Map<LTerm, Checked>; };
 
 // Context
 export type Ann = { q: Quant; k: Name; T: HTerm };
@@ -390,7 +390,9 @@ export const DIAG_CODES = {
 export type DiagCode = `${string}/${string}`;
 export type Diag = { $: "Diag"; code: DiagCode; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
 
-export type LintRule = { id: DiagCode; run(book: Book, signal: AbortSignal): Diag[] | Promise<Diag[]> };
+// Captured checker results; generated nodes may have no entry.
+export type Checked = { tm: LTerm; ty: HTerm; bok: Book; ctx: Ctx; dep: number; def: Name; qt: Quant; us: Uses; spn?: Span };
+export type LintRule = { id: DiagCode; needsTypes?: boolean; run(book: Book, signal: AbortSignal): Diag[] | Promise<Diag[]> };
 
 // Constructors
 // ============
@@ -934,7 +936,8 @@ export function ctx_scope(ctx: Ctx): Name[] {
 
 export function book_nil(rules: LintRule[] = []): Book {
   return { tlds: Object.create(null), ctrs: Object.create(null), order: [], hols: 0, tmps: Object.create(null), diags: [],
-    rules, files: rules.length > 0 ? [] : undefined };
+    rules, files: rules.length > 0 ? [] : undefined,
+    checked: rules.some(rule => rule.needsTypes) ? new Map() : undefined };
 }
 
 export function book_ctr(book: Book, k: Name): Ctr | null {
@@ -3371,6 +3374,12 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
 }
 
 export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {
+  const inf = infer_go(book, lhs, tm, qt, ctx, d, sp);
+  book.checked?.set(inf.tm, { tm: inf.tm, ty: inf.ty, bok: book, ctx, dep: d, def: lhs.def, qt, us: inf.us, spn: tm.s });
+  return inf;
+}
+
+function infer_go(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[]): Infer {
   switch (tm.$) {
     // Γ[x] = q A
     // where x is bound in Γ (a ~ argument checks in the empty context,
@@ -3585,6 +3594,12 @@ export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Q
 }
 
 export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {
+  const chk = check_go(book, lhs, tm, qt, ty, ctx, d);
+  book.checked?.set(chk.tm, { tm: chk.tm, ty, bok: book, ctx, dep: d, def: lhs.def, qt, us: chk.us, spn: tm.s });
+  return chk;
+}
+
+function check_go(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {
   switch (tm.$) {
     case "Var": {
       if (tm.i < 0 && tm.v !== undefined) {

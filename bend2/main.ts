@@ -850,7 +850,8 @@ class Check_Fail {
 }
 
 function book_seed(book: Bend.Book, base?: Bend.Book): number {
-  if (base === undefined || book.files !== undefined && base.files === undefined) return 0;
+  if (base === undefined || book.files !== undefined && base.files === undefined
+    || book.checked !== undefined && base.checked === undefined) return 0;
   for (const k of Object.keys(base.tlds)) {
     book.tlds[k] = { ...base.tlds[k] };
   }
@@ -860,6 +861,7 @@ function book_seed(book: Bend.Book, base?: Bend.Book): number {
   }
   book.order.push(...base.order);
   book.files?.push(...base.files ?? []);
+  if (book.checked) book.checked = new Map(base.checked);
   return base.order.length;
 }
 
