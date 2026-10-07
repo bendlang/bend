@@ -757,7 +757,8 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
-    : s.$ === "Ctr" && memo(FL.memo.ground, s, () => s.x.every(term_const));
+    : s.$ === "Ctr" && (s.x.length === 0
+      || memo(FL.memo.ground, s, () => s.x.every(term_const)));
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
