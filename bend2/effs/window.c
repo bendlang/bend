@@ -13,11 +13,12 @@
 
 // The X11 window: its own connection (so its queue holds only its
 // events), the frame's image, the events pumped since the last frame,
-// five words each (cid, a, b, c, d) as on the Mac, and whether it
-// holds the pointer.
+// five words each (cid, a, b, c, d) as on the Mac, whether it holds the
+// pointer, and the display's refresh period in ns.
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#include <dlfcn.h>
 
 typedef struct {
   Display* dpy;
@@ -28,6 +29,7 @@ typedef struct {
   u32      cap;
   u32*     evs;
   u32      grab;
+  u64      period;
 } BendWin;
 
 #endif
@@ -243,6 +245,27 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 
 #elif defined(__linux__)
 
+// The display's refresh period in ns: the rate RandR reports, through a
+// libXrandr loaded at run time (a build needs no libxrandr-dev), else
+// 60 Hz, as under a display that reports none. The library stays loaded:
+// it hooks the connection's close.
+static u64 window_period(Display* dpy) {
+  void* xrr = dlopen("libXrandr.so.2", RTLD_LAZY | RTLD_LOCAL);
+  if (xrr == NULL) {
+    return 16666667;
+  }
+  void* (*info)(Display*, Window) =
+    (void* (*)(Display*, Window))dlsym(xrr, "XRRGetScreenInfo");
+  short (*rate)(void*) = (short (*)(void*))dlsym(xrr, "XRRConfigCurrentRate");
+  void (*done)(void*) = (void (*)(void*))dlsym(xrr, "XRRFreeScreenConfigInfo");
+  void* cfg = info && rate && done ? info(dpy, DefaultRootWindow(dpy)) : NULL;
+  short hz  = cfg != NULL ? rate(cfg) : 0;
+  if (cfg != NULL) {
+    done(cfg);
+  }
+  return hz >= 24 && hz <= 1000 ? 1000000000 / (u64)hz : 16666667;
+}
+
 static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
@@ -261,6 +284,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   }
   BendWin* win = io_mem(calloc(1, sizeof *win));
   win->dpy = dpy;
+  win->period = window_period(dpy);
   win->win = XCreateSimpleWindow(dpy, RootWindow(dpy, scr), 0, 0, w, h, 0, 0,
     BlackPixel(dpy, scr));
   win->del = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
@@ -656,15 +680,15 @@ static void window_fill(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
   window_sq(e.mem, pix, w, h, image, 1u << k, 0, 0);
 }
 
-// A frame waits for the next 60 Hz tick, as the Mac's display sync.
-static void window_pace(void) {
+// A frame waits for the display's next tick, as the Mac's display sync.
+static void window_pace(u64 period) {
   static u64 due;
   u64 now = io_tick();
   if (due > now) {
     struct timespec ts = { 0, (long)(due - now) };
     nanosleep(&ts, NULL);
   }
-  due = (due > now ? due : now) + 16666667;
+  due = (due > now ? due : now) + period;
 }
 
 static void window_show(Env e, BendWin* win, Term image) {
@@ -675,7 +699,7 @@ static void window_show(Env e, BendWin* win, Term image) {
     k += 1;
   }
   window_fill(e, (u32*)win->img->data, w, h, image, k);
-  window_pace();
+  window_pace(win->period);
   XPutImage(win->dpy, win->win, DefaultGC(win->dpy, DefaultScreen(win->dpy)),
     win->img, 0, 0, 0, 0, w, h);
   XFlush(win->dpy);
