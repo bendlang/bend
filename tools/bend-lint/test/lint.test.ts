@@ -432,26 +432,26 @@ describe("patch", () => {
   const src = fs.readFileSync(path.join(BEND2, "bend.ts"), "utf8");
   const comp = fs.readFileSync(path.join(BEND2, "comp.ts"), "utf8");
 
-  test("bend.ts: wraps term_infer and term_check, and swaps fs and path", () => {
+  test("bend.ts: renames term_infer and term_check behind wrappers, and swaps fs and path", () => {
     const out = patch("bend.ts", src);
-    expect(out.match(/^export function term_infer\(/gm)?.length).toBe(1);
-    expect(out).toContain("function lint_infer(");
-    expect(out).toContain("function lint_check(");
+    expect(out).toContain("function unseen_term_infer(");
+    expect(out).toContain("function unseen_term_check(");
+    expect(out).toContain("export const term_infer = seeInfer(unseen_term_infer);");
+    expect(out).toContain("export const term_check = seeCheck(unseen_term_check);");
+    expect(out).not.toMatch(/^export function term_(infer|check)\(/m);
     expect(out).toMatch(/^import \{ fs \} from "file:.*patch\.ts";/m);
     expect(out).toMatch(/^import \{ path \} from "file:.*patch\.ts";/m);
   });
 
   test("comp.ts: exports RUNTIME_MAIN and js_sat", () => {
-    const out = patch("comp.ts", comp);
-    expect(out).toMatch(/^export const RUNTIME_MAIN: string = /m);
-    expect(out).toMatch(/^export function js_sat\(/m);
+    expect(patch("comp.ts", comp)).toContain("export { RUNTIME_MAIN, js_sat };");
   });
 
-  test("fails loudly when an anchor changes or repeats", () => {
-    expect(() => patch("bend.ts", src.replace("term_infer(book: Book,", "term_infer(bk: Book,"))).toThrow(DriftError);
-    expect(() => patch("bend.ts", src.replace('import * as fs from "node:fs";', 'import fs from "node:fs";'))).toThrow(/node:fs import/);
-    expect(() => patch("bend.ts", src + "\n" + src.match(/^export function term_check\(.*$/m)![0] + "\n")).toThrow(/found 2 of term_check/);
-    expect(() => patch("comp.ts", comp.replace("function js_sat(", "function js_name("))).toThrow(/comp\.ts: found 0 of js_sat/);
+  test("fails loudly when an edit or a needed name is missing or repeated", () => {
+    expect(() => patch("bend.ts", src.replace("export function term_infer(", "export function term_infer2("))).toThrow(DriftError);
+    expect(() => patch("bend.ts", src.replace('import * as fs from "node:fs";', 'import fs from "node:fs";'))).toThrow(/node:fs/);
+    expect(() => patch("bend.ts", src + "\nexport function term_check(\n")).toThrow(/found 2 of "export function term_check\("/);
+    expect(() => patch("comp.ts", comp.replace("function js_sat(", "function js_name("))).toThrow(/comp\.ts: found 0 of a declaration of js_sat/);
   });
 
   test("the loaded bend.ts and comp.ts are the patched ones", () => {

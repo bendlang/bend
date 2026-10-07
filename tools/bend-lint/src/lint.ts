@@ -12,6 +12,7 @@ import type * as BendModule from "../../../bend2/bend.ts";
 import type * as CompModule from "../../../bend2/comp.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
 import { DriftError, MARK, PIN_FILE, bendDir, blob, current, fs, patch, path, pinned } from "./patch.ts";
+import type { Hooked } from "./patch.ts";
 
 // Types
 // =====
@@ -112,7 +113,6 @@ type Channel = {
 // comp.ts as patch.ts exports it.
 type Comp = typeof CompModule & { RUNTIME_MAIN: string; js_sat(k: Name): string };
 
-type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void };
 type Mapper = { (s: Span): Span; (s: Span | undefined): Span | undefined };
 type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm, Fact>; failure?: Diag };
 

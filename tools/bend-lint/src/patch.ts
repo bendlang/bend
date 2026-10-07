@@ -1,21 +1,34 @@
 // What bend-lint changes in bend2 as Bun loads it; the files on disk never
-// change. In bend.ts, term_infer and term_check get wrappers so a
-// `book.see` hook records what they return, and fs and path come from this
-// module: bend.ts builds paths with "/" (path.posix), so here real paths use
-// "/" and a Windows drive letter counts as a root; on POSIX they behave as
-// node's. In comp.ts, RUNTIME_MAIN and js_sat are exported, so a rule
-// written in Bend is compiled once and run many times. bend.pin holds the
-// hashes of the files these were tested on.
+// change. In bend.ts, term_infer and term_check are renamed and replaced by
+// the wrappers below, which tell a `book.see` hook what they return; and fs
+// and path come from this module: bend.ts builds paths with "/"
+// (path.posix), so here real paths use "/" and a Windows drive letter is a
+// root; on POSIX they behave as node's. comp.ts exports RUNTIME_MAIN and
+// js_sat, so a rule written in Bend is compiled once and run many times.
+// Each text edit must match exactly once, and each name a tail exports must
+// be declared once. bend.pin holds the hashes of the files these were
+// tested on.
 
 import * as crypto from "node:crypto";
 import * as nodeFs from "node:fs";
 import * as nodePath from "node:path";
 import * as url from "node:url";
 
+import type { Book, Ctx, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
+import type * as BendModule from "../../../bend2/bend.ts";
+
 // Types
 // =====
 
-type Patch = { name: string; at: RegExp; to: string };
+// A file's patch: exact edits, then a tail appended to the file, which may
+// export only names the file declares (`needs`).
+type Patch = { edits: Array<[string, string]>; tail: string; needs: string[] };
+
+// A book whose checker reports to `see`: for each checked term, what it was
+// checked or inferred as, where, and how it was used.
+export type Hooked = Book & {
+  see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void;
+};
 
 // Constants
 // =========
@@ -31,47 +44,20 @@ const SHIM = JSON.stringify(url.pathToFileURL(nodePath.join(HERE, "patch.ts")).h
 export const MARK = "BEND_LINT_PATCH";
 export const PIN_FILE = nodePath.join(HERE, "..", "bend.pin");
 
-const PATCHES: Record<string, Patch[]> = {
-  "bend.ts": [{
-    name: "the node:fs import",
-    at: /^import \* as fs from "node:fs";/m,
-    to: "import { fs } from " + SHIM + ";",
-  }, {
-    name: "the node:path import",
-    at: /^import \* as path from "node:path";/m,
-    to: "import { path } from " + SHIM + ";",
-  }, {
-    name: "term_infer",
-    at: /^export function term_infer\(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm\[\] = \[\]\): Infer \{/m,
-    to: [
-      "export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {",
-      "  const inf = lint_infer(book, lhs, tm, qt, ctx, d, sp);",
-      "  (book as any).see?.(book, inf.tm, inf.ty, ctx, d, lhs.def, tm.s, qt, inf.us);",
-      "  return inf;",
-      "}",
-      "function lint_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[]): Infer {",
-    ].join("\n"),
-  }, {
-    name: "term_check",
-    at: /^export function term_check\(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number\): Check \{/m,
-    to: [
-      "export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {",
-      "  const chk = lint_check(book, lhs, tm, qt, ty, ctx, d);",
-      "  (book as any).see?.(book, chk.tm, ty, ctx, d, lhs.def, tm.s, qt, chk.us);",
-      "  return chk;",
-      "}",
-      "function lint_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {",
-    ].join("\n"),
-  }],
-  "comp.ts": [{
-    name: "RUNTIME_MAIN",
-    at: /^const RUNTIME_MAIN: string = /m,
-    to: "export const RUNTIME_MAIN: string = ",
-  }, {
-    name: "js_sat",
-    at: /^function js_sat\(k: Name\): string \{/m,
-    to: "export function js_sat(k: Name): string {",
-  }],
+const PATCHES: Record<string, Patch> = {
+  "bend.ts": {
+    edits: [
+      ['import * as fs from "node:fs";', "import { fs } from " + SHIM + ";"],
+      ['import * as path from "node:path";', "import { path } from " + SHIM + ";"],
+      ["export function term_infer(", "function unseen_term_infer("],
+      ["export function term_check(", "function unseen_term_check("],
+    ],
+    tail: "import { seeInfer, seeCheck } from " + SHIM + ";\n"
+      + "export const term_infer = seeInfer(unseen_term_infer);\n"
+      + "export const term_check = seeCheck(unseen_term_check);\n",
+    needs: [],
+  },
+  "comp.ts": { edits: [], tail: "export { RUNTIME_MAIN, js_sat };\n", needs: ["RUNTIME_MAIN", "js_sat"] },
 };
 
 // fs and path for bend.ts.
@@ -102,16 +88,40 @@ export function relative(from: string, to: string): string {
   return nodePath.posix.relative(slash(from).replace(DRIVE, ""), slash(to).replace(DRIVE, ""));
 }
 
-// `file` is "bend.ts" or "comp.ts"; each anchor must be found exactly once.
+// term_infer and term_check as bend.ts calls them, each also reporting to
+// book.see. tsc checks them against bend.ts's own signatures.
+export function seeInfer(f: typeof BendModule.term_infer): typeof BendModule.term_infer {
+  return (book, lhs, tm, qt, ctx, d, sp) => {
+    const r = f(book, lhs, tm, qt, ctx, d, sp);
+    (book as Hooked).see?.(book, r.tm, r.ty, ctx, d, lhs.def, tm.s, qt, r.us);
+    return r;
+  };
+}
+
+export function seeCheck(f: typeof BendModule.term_check): typeof BendModule.term_check {
+  return (book, lhs, tm, qt, ty, ctx, d) => {
+    const r = f(book, lhs, tm, qt, ty, ctx, d);
+    (book as Hooked).see?.(book, r.tm, ty, ctx, d, lhs.def, tm.s, qt, r.us);
+    return r;
+  };
+}
+
+// `file` is "bend.ts" or "comp.ts".
 export function patch(file: string, src: string): string {
-  return PATCHES[file].reduce((out, { name, at, to }) => {
-    const n = out.match(new RegExp(at.source, "gm"))?.length ?? 0;
-    if (n !== 1) {
-      throw new DriftError("cannot patch bend2/" + file + ": found " + n + " of " + name
-        + ", expected 1. Update PATCHES in tools/bend-lint/src/patch.ts.");
-    }
-    return out.replace(at, () => to);
-  }, src) + "\nexport const " + MARK + " = 1;\n";
+  const { edits, tail, needs } = PATCHES[file];
+  const drift = (what: string, n: number): never => {
+    throw new DriftError("cannot patch bend2/" + file + ": found " + n + " of " + what
+      + ", expected 1. Update PATCHES in tools/bend-lint/src/patch.ts.");
+  };
+  const edited = edits.reduce((out, [at, to]) => {
+    const n = out.split(at).length - 1;
+    return n === 1 ? out.replace(at, () => to) : drift(JSON.stringify(at), n);
+  }, src);
+  for (const name of needs) {
+    const n = edited.match(new RegExp("^(?:export )?(?:function|const|let) " + name + "\\b", "gm"))?.length ?? 0;
+    if (n !== 1) drift("a declaration of " + name, n);
+  }
+  return edited + "\n" + tail + "export const " + MARK + " = 1;\n";
 }
 
 // The git blob hash of a text, as `git rev-parse HEAD:<file>` prints it

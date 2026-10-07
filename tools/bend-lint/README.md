@@ -120,14 +120,16 @@ A library picks its bend with `$BEND_DIR`, set before it imports bend-lint.
 
 - `src/lint.ts`: the library and the CLI.
 - `src/patch.ts`: what bend-lint changes in bend2 as Bun loads it; the files
-  on disk never change. bend.ts gets recording wrappers around `term_infer`
-  and `term_check`, and an `fs` and `path` whose real paths use `/` (so
+  on disk never change. bend.ts's `term_infer` and `term_check` are renamed
+  and wrapped by typed functions in `patch.ts` that record what they
+  return, and bend.ts gets an `fs` and `path` whose real paths use `/` (so
   imports resolve on Windows; on POSIX they act as node's). comp.ts exports
   `RUNTIME_MAIN` and `js_sat`, so a Bend rule is compiled once.
 - `src/lint.bend`, `src/lint.js`: the contract for Bend rules, and its
   effects.
 
-Each change needs one exact anchor, and a self-check runs at load.
+Each text edit must match exactly once, `tsc` checks the wrappers against
+bend's own signatures, and a self-check runs at load.
 `bend.pin` holds the git blob hashes of bend.ts and comp.ts. With
 `--bend`, the bend you give must match it too. Any mismatch
 stops bend-lint with a `DriftError`, never a wrong result. To bump:
