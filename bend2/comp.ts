@@ -659,7 +659,7 @@ function let_open(ps: Of<"Var">[], vs: HTerm[], b: HTerm): Of<"Let"> {
 function let_live(t: Of<"Let">): boolean[] {
   const o = term_open(t);
   const u = term_uses(o.b);
-  return t.q.map((_, j) => term_use(u, o.ps[j]) > 0);
+  return o.ps.map((p) => term_use(u, p) > 0);
 }
 
 function term_spine(tm: HTerm): Spine {
