@@ -221,7 +221,7 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
   }
   // a def that names a def out of scope is out too
   const bad = new Map(e.fail);
-  for (let more = true; more;) {
+  for (let more = bad.size > 0; more;) {
     more = false;
     for (const [k, T, v] of e.out) {
       const r = bad.has(k) ? undefined : [...o_refs(T), ...o_refs(v)].find((r) => bad.has(r));
@@ -711,7 +711,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // its convoy, dead if only dead there), so no match is built more than twice
   const o = mat([], s.dry || s.again);
   // the live uses of each level the arms name, 0 when named only dead
-  const us = o_uses(o);
+  const us = uses_of(o);
   const use = (l: number): number => us.get(l) ?? 0;
   // a q=1 variable used in two arms rides into them, unless it is Data:
   // then its binder copies it (a q=2 λ)
@@ -1388,12 +1388,28 @@ function inferable(o: O): boolean {
 
 // the live uses of level l in o, as the kernel counts them
 function uses(o: O, l: number): number {
-  return o_uses(o).get(l) ?? 0;
+  return uses_of(o).get(l) ?? 0;
+}
+
+// o_uses of a term asked about, kept: the term is built once and a walk
+// of the term around it reaches it again
+const USES = new WeakMap<O, Map<number, number>>();
+function uses_of(o: O): Map<number, number> {
+  let m = USES.get(o);
+  if (m === undefined) {
+    USES.set(o, m = o_uses(o));
+  }
+  return m;
 }
 
 // the live uses of each level o names, in one walk: a level named only
 // where the kernel counts no use (a type, a q=0 argument) counts 0
 function o_uses(o: O, live: boolean = true, out: Map<number, number> = new Map()): Map<number, number> {
+  const m = USES.get(o);
+  if (m !== undefined) {
+    m.forEach((n, l) => out.set(l, (out.get(l) ?? 0) + (live ? n : 0)));
+    return out;
+  }
   switch (o.$) {
     case "Var": return out.set(o.l, (out.get(o.l) ?? 0) + (live ? 1 : 0));
     case "Ann": return o_uses(o.T, false, o_uses(o.x, live, out));
