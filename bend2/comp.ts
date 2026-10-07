@@ -912,11 +912,12 @@ function type_adts(T: HTerm): Name[] {
 
 // An Array, an IO.OP, a recursive datatype, and a datatype with a field
 // that re-enters it under layout (a family hid the cycle) are one box.
-// An Array cell takes the open layout of its element type (the return
-// type of its constructors), so all callers agree. lay_el refuses an
-// open element type, except equality: its sides may mention type variables,
-// since its layout does not depend on them. adt_of and js_expr call it
-// only for that check.
+// A lay without arms is W32, W64 or BOX itself. An Array cell takes
+// the open layout of its element type (the return type of its
+// constructors), so all callers agree. lay_el refuses an open element
+// type, except equality: its sides may mention type variables, since its
+// layout does not depend on them. adt_of and js_expr call it only for
+// that check.
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -982,10 +983,6 @@ function lay_c(k: Kind): string {
 
 function lay_packed(lay: Lay): boolean {
   return ["", "w32"].includes(lay.ks.join());
-}
-
-function lay_box(lay: Lay): boolean {
-  return lay.arms === null && lay.ks[0] === "box";
 }
 
 function lay_arr(lay: Lay) {
@@ -1669,8 +1666,8 @@ function val_sink(sc: Scope, v: Val): void {
 }
 
 function val_to(sc: Scope, v: Val, lay: Lay): Val {
-  return lay_eq(v.lay, lay) ? v : lay_box(lay) ? val_new([val_box(sc, v)], BOX)
-    : lay_box(v.lay) ? val_unbox(sc, v, lay)
+  return lay_eq(v.lay, lay) ? v : lay === BOX ? val_new([val_box(sc, v)], BOX)
+    : v.lay === BOX ? val_unbox(sc, v, lay)
     : val_arms(sc, lay, v.ws[0], (k) => val_arm(v, k));
 }
 
@@ -1817,7 +1814,7 @@ function bind_uses(sc: Scope, p: Of<"Var">, v: Val, rest: HTerm[], A: HTerm,
   fresh = true): void {
   const n = rest_use(rest, p);
   const lay = lay_of(A);
-  if (fresh && n > 1 && lay_box(v.lay) && !lay_box(lay) && !val_brw(sc, v)) {
+  if (fresh && n > 1 && v.lay === BOX && lay !== BOX && !val_brw(sc, v)) {
     v = val_unbox(sc, v, lay);
   }
   facts_hot(sc, A, FL.hot.has("*"));
@@ -1892,7 +1889,7 @@ function show_main(): (number | Name)[] | null {
     + " erased or dependent field)");
   const node = (T: HTerm, lay: Lay) => {
     const t = ty_wnf(T) as HTerm;
-    const box = lay_box(lay);
+    const box = lay === BOX;
     const key = Bend.term_key(Bend.term_lower(t));
     const ids = memo(lays, lay, () => new Map());
     const adt = ty_adt(t);
@@ -2303,7 +2300,7 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   if (got !== undefined) {
     return got;
   }
-  const lay = lay_box(pos) ? lay_node(x.k) : pos;
+  const lay = pos === BOX ? lay_node(x.k) : pos;
   const arms = Object.keys(lay.arms!);
   const vs = emit_each(sc, flds, lay.arms![x.k], tys());
   const ws = [...arms.length > 1 ? [String(arms.indexOf(x.k))] : [],
@@ -2523,7 +2520,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null,
       const ret = fun_of(ck.k).ret;
       const once = FL.sites.get(ck.k) === 1 && !ck.b
         && !def_foreign(FL.book.tlds[ck.k])
-        && (!lay_box(ret) || lay_box(sc.seg.ret));
+        && (ret !== BOX || sc.seg.ret === BOX);
       if (sc.seg.def !== ck.k && (flat_call(x) || (dst === null && once))) {
         return emit_fuse(sc, ck, dst, true);
       }
@@ -2698,7 +2695,7 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
               .map((w) => val_new([w], BOX));
           }];
       }
-      return lay_box(lay) ? [`term_aux(${sw}) == ${cid_mac(k)}`, h,
+      return lay === BOX ? [`term_aux(${sw}) == ${cid_mac(k)}`, h,
         (al) => node_fields(al, sw, k, true)]
         : [`${sw} == ${Object.keys(lay.arms!).indexOf(k)}`, h,
           () => val_arm(u, k)];
