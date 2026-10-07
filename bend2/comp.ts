@@ -5532,7 +5532,7 @@ static Term io_node(Env e, u64 cid, Term a, Term b) {
 }
 
 static Term io_str(Env e, const char* p, u64 n) {
-  Term s    = term_pak(CID(SNil), 0);
+  Term  s;
   Term* hole = &s;
   u64  c = 0, need = 0, lo = 0x80, hi = 0xBF;
   for (u64 i = 0; i < n || need > 0; i += 1) {
@@ -5565,7 +5565,7 @@ static Term io_str(Env e, const char* p, u64 n) {
     *hole = hole == &s ? t : io_seal(e, t, CID(SCon));
     hole = &e.mem[l + 1];
   }
-  *hole = io_seal(e, term_pak(CID(SNil), 0), CID(SCon));
+  *hole = term_pak(CID(SNil), 0);
   return s;
 }
 
