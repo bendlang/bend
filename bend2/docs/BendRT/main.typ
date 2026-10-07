@@ -158,7 +158,7 @@ def build(+d: Nat, +i: U32) -> Tree:
     case 0n:
       Leaf{i}
     case 1n+p:
-      l r = build(p, i * 2) build(p, i * 2 + 1)
+      l r = build(p, (i * 2 : U32)) build(p, (i * 2 + 1 : U32))
       Node{l, r}
 
 def sum(t: Tree) -> U32:
@@ -167,7 +167,7 @@ def sum(t: Tree) -> U32:
       x
     case Node{l, r}:
       a b = sum(l) sum(r)
-      a + b
+      (a + b : U32)
 
 def main() -> IO(Unit):
   t = build(20n, 0)
