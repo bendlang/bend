@@ -145,12 +145,14 @@ def keep(hit: Bool, +at: U32, tail: List<&2, U32>) -> List<&2, U32>:
     case False{}:
       tail
 
-def commas(s: String, +at: U32) -> List<&2, U32>:
+# A tail call: bend runs it as a loop, so a long file does not overflow the
+# stack.
+def commas(s: String, +at: U32, acc: List<&2, U32>) -> List<&2, U32>:
   match s:
     case SNil{}:
-      []
+      acc
     case SCon{+c, +rest}:
-      keep(comma_before_word(c, rest), at, commas(rest, U32.add(at, 1)))
+      commas(rest, U32.add(at, 1), keep(comma_before_word(c, rest), at, acc))
 
 def diag_at(+span: Lint.Span) -> Lint.Diag:
   Lint.Diag{Lint.Warning{}, "Add a space after the comma.", Some{span}, [Lint.Fix{"Insert space", Lint.Safe{}, [Lint.Edit{span, " "}]}]}
@@ -168,7 +170,7 @@ def diags(+path: String, ats: List<&2, U32>) -> List<&2, Lint.Diag>:
 def choose(root: Bool, +path: String, text: String, others: List<&2, Lint.Diag>) -> List<&2, Lint.Diag>:
   match root:
     case True{}:
-      diags(path, commas(text, 0))
+      diags(path, commas(text, 0, []))
     case False{}:
       others
 

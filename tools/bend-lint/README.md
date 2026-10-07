@@ -101,6 +101,8 @@ def main() -> IO(Unit):
 a fact with effects (`Lint.view`, `type_of`, `binder`, `same`, `show`,
 `normal`, `uses`, `text`) and may use Base's effects too. Offsets count
 characters. bend-lint compiles a rule once; each run then takes about 10 ms.
+A rule runs on bend's JS runtime, where only tail calls run as loops: walk
+a long text or list with a tail call, or the stack overflows.
 `COMMA_BEND` and `TYPES_BEND` in `test/lint.test.ts` are complete examples.
 
 ## From code

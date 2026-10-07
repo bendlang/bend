@@ -416,15 +416,36 @@ export async function bendRule(file: string): Promise<LintRule> {
     id,
     needsTypes: types === "True{}",
     run: (cx) => {
-      const points = (text: string, off: number): number => [...text.slice(0, off)].length;
-      const spot = (spn: Span | undefined): Spot | undefined =>
-        spn && { path: (spn.file as SourceFile).path, beg: points(spn.file.str, spn.beg), end: points(spn.file.str, spn.end) };
+      // Built once per text: the character at each UTF-16 offset (points),
+      // and the UTF-16 offset of each character (units); both end at the end.
+      const tables = new Map<string, { points: number[]; units: number[] }>();
+      const table = (text: string): { points: number[]; units: number[] } => {
+        const known = tables.get(text);
+        if (known !== undefined) {
+          return known;
+        }
+        const points: number[] = [];
+        const units: number[] = [];
+        for (const ch of text) {
+          units.push(points.length);
+          points.push(...Array<number>(ch.length).fill(units.length - 1));
+        }
+        units.push(points.length);
+        points.push(units.length - 1);
+        tables.set(text, { points, units });
+        return { points, units };
+      };
+      const spot = (spn: Span | undefined): Spot | undefined => {
+        const t = spn && table(spn.file.str);
+        return spn && t && { path: (spn.file as SourceFile).path, beg: t.points[spn.beg], end: t.points[spn.end] };
+      };
       const span = (s: Spot): Span => {
         const src = cx.sources.find((x) => x.path === s.path);
         if (src === undefined) {
           throw new Error("rule " + id + " reported a span in " + s.path + ", which is not in the book");
         }
-        const at = (n: number): number => [...src.text].slice(0, n).join("").length;
+        const { units } = table(src.text);
+        const at = (n: number): number => units[Math.min(n, units.length - 1)];
         return { file: src.file, beg: at(s.beg), end: at(s.end) };
       };
       const facts = [...cx.facts?.values() ?? []];
