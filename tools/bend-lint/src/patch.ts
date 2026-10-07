@@ -6,10 +6,10 @@
 // root; on POSIX they behave as node's. comp.ts exports RUNTIME_MAIN and
 // js_sat, so a rule written in Bend is compiled once and run many times.
 // Each text edit must match exactly once, and each name a tail exports must
-// be declared once. bend.pin holds the hashes of the files these were
-// tested on.
+// be declared once. The wrappers pass every argument through, so bend
+// computes what it would without them; what they record is checked at load
+// (see instrument in lint.ts).
 
-import * as crypto from "node:crypto";
 import * as nodeFs from "node:fs";
 import * as nodePath from "node:path";
 import * as url from "node:url";
@@ -42,7 +42,6 @@ const DRIVE = /^[A-Za-z]:(?=\/)/;
 const SHIM = JSON.stringify(url.pathToFileURL(nodePath.join(HERE, "patch.ts")).href);
 
 export const MARK = "BEND_LINT_PATCH";
-export const PIN_FILE = nodePath.join(HERE, "..", "bend.pin");
 
 const PATCHES: Record<string, Patch> = {
   "bend.ts": {
@@ -88,22 +87,35 @@ export function relative(from: string, to: string): string {
   return nodePath.posix.relative(slash(from).replace(DRIVE, ""), slash(to).replace(DRIVE, ""));
 }
 
-// term_infer and term_check as bend.ts calls them, each also reporting to
-// book.see. tsc checks them against bend.ts's own signatures.
+// term_infer and term_check as bend.ts calls them: every argument passes
+// through, and each result is also reported to book.see. tsc checks the
+// names against bend.ts's signatures; a function that no longer takes the
+// arguments read here stops loading.
 export function seeInfer(f: typeof BendModule.term_infer): typeof BendModule.term_infer {
-  return (book, lhs, tm, qt, ctx, d, sp) => {
-    const r = f(book, lhs, tm, qt, ctx, d, sp);
+  arity(f, 6, "term_infer");
+  return (...args) => {
+    const r = f(...args);
+    const [book, lhs, tm, qt, ctx, d] = args;
     (book as Hooked).see?.(book, r.tm, r.ty, ctx, d, lhs.def, tm.s, qt, r.us);
     return r;
   };
 }
 
 export function seeCheck(f: typeof BendModule.term_check): typeof BendModule.term_check {
-  return (book, lhs, tm, qt, ty, ctx, d) => {
-    const r = f(book, lhs, tm, qt, ty, ctx, d);
+  arity(f, 7, "term_check");
+  return (...args) => {
+    const r = f(...args);
+    const [book, lhs, tm, qt, ty, ctx, d] = args;
     (book as Hooked).see?.(book, r.tm, ty, ctx, d, lhs.def, tm.s, qt, r.us);
     return r;
   };
+}
+
+// f.length counts the parameters before the first default.
+function arity(f: (...args: never[]) => unknown, n: number, name: string): void {
+  if (f.length !== n) {
+    throw new DriftError(name + " takes " + f.length + " parameters, not " + n + "; update seeInfer and seeCheck in tools/bend-lint/src/patch.ts");
+  }
 }
 
 // `file` is "bend.ts" or "comp.ts".
@@ -122,21 +134,6 @@ export function patch(file: string, src: string): string {
     if (n !== 1) drift("a declaration of " + name, n);
   }
   return edited + "\n" + tail + "export const " + MARK + " = 1;\n";
-}
-
-// The git blob hash of a text, as `git rev-parse HEAD:<file>` prints it
-// (CRLF counts as LF, as git stores it).
-export function blob(text: string): string {
-  const buf = Buffer.from(text.replace(/\r\n/g, "\n"), "utf8");
-  return crypto.createHash("sha1").update("blob " + buf.length + "\0").update(buf).digest("hex");
-}
-
-export function pinned(): string {
-  return nodeFs.readFileSync(PIN_FILE, "utf8").trim();
-}
-
-export function current(bend2: string): string {
-  return Object.keys(PATCHES).map((f) => f + " " + blob(nodeFs.readFileSync(path.join(bend2, f), "utf8"))).join("\n");
 }
 
 // The bend2 folder to load: `given` (from --bend), else $BEND_DIR, else the

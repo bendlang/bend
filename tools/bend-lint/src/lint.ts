@@ -11,7 +11,7 @@ import * as util from "node:util";
 import type * as BendModule from "../../../bend2/bend.ts";
 import type * as CompModule from "../../../bend2/comp.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
-import { DriftError, MARK, PIN_FILE, bendDir, blob, current, fs, patch, path, pinned } from "./patch.ts";
+import { DriftError, MARK, bendDir, fs, patch, path } from "./patch.ts";
 import type { Hooked } from "./patch.ts";
 
 // Types
@@ -127,7 +127,7 @@ const HEAD: Record<Severity, string> = { error: "Error", warning: "Warning", inf
 
 const shared = globalThis as typeof globalThis & { BEND_LINT?: Channel };
 
-// Checked base.bend books, by the hash of base.bend: Base is checked once
+// Checked base.bend books, by the text of base.bend: Base is checked once
 // per process, and again only if base.bend changes.
 const BASES = new Map<string, Promise<Book>>();
 
@@ -162,13 +162,11 @@ const OPTIONS = {
   fix: { type: "boolean" },
   json: { type: "boolean" },
   bend: { type: "string" },
-  pin: { type: "boolean" },
   help: { type: "boolean", short: "h" },
 } as const;
 
 const USAGE = [
   "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--fix] [--json] [--bend <dir>]",
-  "       bun tools/bend-lint/src/lint.ts --pin [--bend <dir>]   (pin that bend's bend.ts and comp.ts)",
 ].join("\n");
 
 // Functions
@@ -253,7 +251,7 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
     ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => void (bok.tlds[def]?.b !== true && found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us }))
     : undefined;
   const seeded = fs.existsSync(file) && /^import Base\s*$/m.test(fs.readFileSync(file, "utf8"));
-  const key = blob(fs.readFileSync(Bend.BASE_BEND, "utf8"));
+  const key = fs.readFileSync(Bend.BASE_BEND, "utf8");
   if (seeded && !BASES.has(key)) {
     const base = Bend.book_nil();
     BASES.set(key, Bend.book_load(base, Bend.BASE_BEND, "", new Map()).then(() => (Bend.book_valid(base), base)));
@@ -296,10 +294,6 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
 // Rules run in order. A finding with severity error stops the run. A rule
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[], signal = new AbortController().signal): Promise<LintResult> {
-  if (current(BEND2) !== pinned() && process.env.BEND_LINT_UNPINNED !== "1") {
-    throw new DriftError(BEND2 + " is\n" + current(BEND2) + "\nbut bend-lint is pinned to\n" + pinned() + "\n"
-      + "To bump: BEND_LINT_UNPINNED=1 bun test tools/bend-lint, then bun tools/bend-lint/src/lint.ts --pin");
-  }
   const bad = rules.find((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
   if (bad !== undefined) {
     throw new TypeError("invalid rule " + JSON.stringify(bad?.id) + ": it needs an id like ns/name and a run function");
@@ -484,8 +478,7 @@ export async function bendRule(file: string): Promise<LintRule> {
 }
 
 // Finds bend2 (see bendDir), patches bend.ts and comp.ts as Bun loads
-// them, then checks a tiny program: the type of `x` in `id` must be
-// recorded as N.
+// them, then checks what the wrappers record for `x` in a tiny program.
 async function instrument(given: string | undefined): Promise<{ Bend: Bend; Comp: Comp; BEND2: string }> {
   const dir = bendDir(given);
   const patched = new Map(["bend.ts", "comp.ts"].map((f) => [f, patch(f, fs.readFileSync(path.join(dir, f), "utf8"))]));
@@ -504,14 +497,31 @@ async function instrument(given: string | undefined): Promise<{ Bend: Bend; Comp
     throw new DriftError("bend2 was loaded before bend-lint could patch it; import bend-lint first");
   }
   const sample: Hooked = B.book_nil();
-  const seen: Array<{ bok: Book; tm: LTerm; ty: HTerm; def: Name }> = [];
-  sample.see = (bok, tm, ty, _ctx, _dep, def) => void seen.push({ bok, tm, ty, def });
+  const seen: Fact[] = [];
+  sample.see = (bok, tm, ty, ctx, dep, def, spn, qt, us) => void seen.push({ tm, ty, bok, ctx, dep, def, spn, qt, us, inst: false });
   B.parse_book(sample, "/", SAMPLE, "", {});
   B.book_valid(sample);
-  const typed = seen.some((t) => t.def === "id" && B.term_strip(t.tm).$ === "Var"
-    && (B.term_wnf(t.bok, t.ty) as { k?: string }).k === "N");
-  if (!typed) {
-    throw new DriftError("self-check failed: the patched bend.ts recorded no type for `id`; update tools/bend-lint/src/patch.ts");
+  const xs = seen.filter((f) => f.def === "id" && B.term_strip(f.tm).$ === "Var");
+  const kind = (f: Fact, t: HTerm) => (B.term_wnf(f.bok, t) as { k?: string }).k;
+  const tagged = (x: unknown, tags: string[]) => tags.includes((x as { $?: string } | null)?.$ ?? "");
+  const wrong = xs.length < 2 ? ["facts (one from each wrapper)"] : xs.flatMap((x) => {
+    if (typeof x.dep !== "number" || !tagged(x.ctx, ["Emp", "Bin"]) || !tagged(x.us, ["Emp", "Bin"]) || !tagged(x.qt, ["None", "Lone", "Many"])) {
+      return ["kinds of values"];
+    }
+    const v = B.term_strip(x.tm) as Extract<LTerm, { $: "Var" }>;
+    const bound = B.pmap_get(x.ctx, v.i);
+    return ([
+      ["type", kind(x, x.ty) === "N"],
+      ["depth", x.dep === 1],
+      ["scope", bound?.k === "x" && kind(x, bound.T) === "N"],
+      ["quantity", x.qt.$ === "Lone"],
+      ["uses", B.pmap_get(x.us, v.i)?.$ === "Lone"],
+      ["span", x.spn !== undefined && x.spn.file.str.slice(x.spn.beg, x.spn.end) === "x"],
+    ] as const).flatMap(([what, ok]) => ok ? [] : [what]);
+  });
+  if (wrong.length > 0) {
+    throw new DriftError("self-check failed: the patched bend.ts recorded the wrong " + [...new Set(wrong)].join(", ")
+      + " for `x` in `def id(x: N) -> N: x`; update tools/bend-lint/src/patch.ts");
   }
   return { Bend: B, Comp: C, BEND2: dir };
 }
@@ -520,11 +530,6 @@ async function cli(argv: string[]): Promise<number> {
   const { values, positionals } = util.parseArgs({ args: argv, options: OPTIONS, allowPositionals: true });
   if (values.help) {
     console.log(USAGE);
-    return 0;
-  }
-  if (values.pin) {
-    fs.writeFileSync(PIN_FILE, current(BEND2) + "\n");
-    console.log("bend-lint: pinned\n" + pinned());
     return 0;
   }
   if (positionals.length !== 1) {

@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import type { Book, LTerm, Span } from "../../../bend2/bend.ts";
 import { BEND2, Bend, Comp, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
-import { DriftError, bendDir, blob, current, patch, pinned, relative, resolve } from "../src/patch.ts";
+import { DriftError, bendDir, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
 
 // Types
 // =====
@@ -459,11 +459,14 @@ describe("patch", () => {
     expect((Comp as unknown as Record<string, unknown>).BEND_LINT_PATCH).toBe(1);
   });
 
-  test("the pin holds git blob hashes, and matches bend2", () => {
-    expect(blob("a\r\nb\n")).toBe(blob("a\nb\n"));
-    expect(blob("hello\n")).toBe("ce013625030ba8dba906f756967f9e9ca394464a");
-    expect(pinned()).toMatch(/^bend\.ts [0-9a-f]{40}\ncomp\.ts [0-9a-f]{40}$/);
-    if (process.env.BEND_LINT_UNPINNED !== "1") expect(current(BEND2)).toBe(pinned());
+  test("the wrappers pass every argument through, and need the expected arity", () => {
+    const got: unknown[][] = [];
+    const fake = ((...args: unknown[]) => (got.push(args), { tm: null, us: null })) as unknown as typeof Bend.term_check;
+    Object.defineProperty(fake, "length", { value: 7 });
+    (seeCheck(fake) as unknown as (...a: unknown[]) => unknown)({}, { def: "d" }, {}, 1, 2, 3, 4, "extra");
+    expect(got).toEqual([[{}, { def: "d" }, {}, 1, 2, 3, 4, "extra"]]);
+    Object.defineProperty(fake, "length", { value: 5 });
+    expect(() => seeInfer(fake as unknown as typeof Bend.term_infer)).toThrow(/term_infer takes 5 parameters, not 6/);
   });
 
   test("bend2 is found from a checkout, its bend2 folder, or the repo; a wrong dir fails", () => {

@@ -128,16 +128,14 @@ A library picks its bend with `$BEND_DIR`, set before it imports bend-lint.
 - `src/lint.bend`, `src/lint.js`: the contract for Bend rules, and its
   effects.
 
-Each text edit must match exactly once, `tsc` checks the wrappers against
-bend's own signatures, and a self-check runs at load.
-`bend.pin` holds the git blob hashes of bend.ts and comp.ts. With
-`--bend`, the bend you give must match it too. Any mismatch
-stops bend-lint with a `DriftError`, never a wrong result. To bump:
-
-```sh
-BEND_LINT_UNPINNED=1 bun test tools/bend-lint
-bun tools/bend-lint/src/lint.ts --pin    # [--bend <dir>]
-```
+bend-lint is not pinned to a bend version; it checks what it depends on
+instead. Each text edit must match exactly once, and comp.ts must declare
+what it exports. The wrappers pass every argument through, so bend computes
+what it would without them; `tsc` checks them against bend's signatures,
+and at load they must take the expected number of arguments. A self-check
+then checks every field recorded for `x` in `def id(x: N) -> N: x`. Any
+mismatch stops bend-lint with a `DriftError`, never a wrong result. The
+tests catch subtler changes.
 
 ## Test
 
