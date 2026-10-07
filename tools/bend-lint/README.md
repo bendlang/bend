@@ -13,14 +13,16 @@ separately at [github.com/MattCozendey/bend-lint](https://github.com/MattCozende
 From the repo root:
 
 ```sh
-bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--config bend-lint.json] [--fix] [--json] [--bend <dir>]
+bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--config bend-lint.json] [--fix | --fix-suggested | --fix-dangerously] [--json] [--bend <dir>]
 ```
 
 Findings print in bend's error layout, with a severity, a code, and each fix
 as a diff. `--fix` writes the `safe` fixes to the linted file only, never
 to its imports (a BendHub package under `~/.bend/lib` is never edited). Equal
 edits merge; a fix that clashes with an earlier one is skipped and counted,
-and another `--fix` run applies it. Exit codes: 0 no error, 1 an error (the
+and another run applies it. `--fix-suggested` also writes the `suggested`
+fixes, which may change behavior; `--fix-dangerously` writes every fix, even
+one that may break code. Exit codes: 0 no error, 1 an error (the
 file does not check, or a rule found an `error`), 2 bad usage or a tool
 failure. "Does not check" means bend's checker rejects it: unlike
 `bend --check-only`, bend-lint does not fail a file for relying on
@@ -135,6 +137,24 @@ characters. bend-lint compiles a rule once; each run then takes about 10 ms.
 A rule runs on bend's JS runtime, where only tail calls run as loops: walk
 a long text or list with a tail call, or the stack overflows.
 `COMMA_BEND` and `TYPES_BEND` in `test/lint.test.ts` are complete examples.
+
+## Rules shipped here
+
+`rules/` holds ready rules, one per file. None runs unless you pass it with
+`--rules`, and `bend-lint.json` can turn one `"off"`:
+
+| File | Rule | What | Fix |
+| --- | --- | --- | --- |
+| `trailing_whitespace.ts` | `style/trailing-whitespace` | spaces or tabs at the end of a line | safe: delete them |
+| `line_length.bend` | `style/line-length` | a line longer than `max` characters (default 100) | none |
+
+```sh
+bun tools/bend-lint/src/lint.ts file.bend --rules tools/bend-lint/rules/trailing_whitespace.ts --rules tools/bend-lint/rules/line_length.bend
+```
+
+To add a rule, add one file: a `.ts` file that exports `rules`, or a `.bend`
+file as above. Helpers used by more than one rule go in `rules/shared.ts`
+or `rules/shared.bend`.
 
 ## From code
 

@@ -87,6 +87,7 @@ allow(/^tools\/bend-fmt-lsp\/src\/test\/[a-z_]+\.test\.ts$/);
 allow(/^tools\/bend-lint\/(README\.md|package\.json|tsconfig\.json)$/);
 allow(/^tools\/bend-lint\/src\/(lint\.ts|patch\.ts|lint\.bend|lint\.js)$/);
 allow("tools/bend-lint/test/lint.test.ts");
+allow(/^tools\/bend-lint\/rules\/[a-z_]+\.(ts|bend)$/);
 
 // Gate
 // ====

@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import type { Book, LTerm, Span } from "bend2/bend.ts";
 import { BEND2, Bend, Comp, applyFixes, bendRule, findConfig, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
+import { rules as trailing } from "../rules/trailing_whitespace.ts";
 import { DriftError, bendDir, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
 
 // Types
@@ -118,6 +119,11 @@ const DRIFT = [
 const TMP = fileURLToPath(new URL("./.tmp", import.meta.url));
 const DIR = (fs.mkdirSync(TMP, { recursive: true }), fs.mkdtempSync(path.join(TMP, "run-")));
 const CLI = fileURLToPath(new URL("../src/lint.ts", import.meta.url));
+const LINE_LENGTH = fileURLToPath(new URL("../rules/line_length.bend", import.meta.url));
+
+// A file for the rules in rules/: trailing spaces and tabs, CRLF, and
+// lines of 100, 101 and 103 characters (the last two end in a \r).
+const STYLE = "import Base\n\ndef main() -> U32:  \r\n  1\t\n#" + "x".repeat(99) + "\n#" + "y".repeat(100) + "\r\n#" + "z".repeat(102) + "\r\n";
 
 // The comma-space rule, written in Bend: source text only.
 const COMMA_BEND = String.raw`import Base
@@ -919,6 +925,30 @@ describe("rules written in Bend", () => {
   });
 });
 
+describe("the rules in rules/", () => {
+  test("style/trailing-whitespace finds spaces and tabs, and its fix keeps the line breaks", async () => {
+    const res = await lint(fixture("trailing.bend", STYLE), trailing);
+    const found = res.diags.map((d) => d.spn!.file.str.slice(d.spn!.beg, d.spn!.end));
+    expect([res.ok, found]).toEqual([true, ["  ", "\t"]]);
+    expect(res.diags.every((d) => d.code === "style/trailing-whitespace" && d.fixes[0].applicability === "safe")).toBe(true);
+    expect(applyFixes(root(res.sources).file, res.diags).text).toBe(STYLE.replace("U32:  \r\n", "U32:\r\n").replace("1\t", "1"));
+  });
+
+  test("style/line-length finds lines past max, without the \\r, and covers the overflow", async () => {
+    const file = fixture("long.bend", STYLE);
+    const res = await lint(file, [await bendRule(LINE_LENGTH)]);
+    const over = (d: Diag) => d.spn!.file.str.slice(d.spn!.beg, d.spn!.end);
+    expect(res.diags.map((d) => [d.code, d.severity, d.message, over(d)])).toEqual([
+      ["style/line-length", "warning", "Keep the line to 100 characters; it has 101.", "y"],
+      ["style/line-length", "warning", "Keep the line to 100 characters; it has 103.", "zzz"],
+    ]);
+    const narrow = await lint(file, [await bendRule(LINE_LENGTH)], { config: { rules: { "style/line-length": { max: 18 } } } });
+    expect(narrow.diags.map(over)).toEqual(["  ", "x".repeat(82), "y".repeat(83), "z".repeat(85)]);
+    const off = await lint(file, [await bendRule(LINE_LENGTH)], { config: { rules: { "style/line-length": "off" } } });
+    expect(off.diags).toEqual([]);
+  });
+});
+
 describe("cli", () => {
   const input = fixture("cli.bend", USERLAND);
   const first = module("first.js", `[{ id: "cli/first", needsTypes: true, run(cx) {
@@ -1015,6 +1045,19 @@ describe("cli", () => {
     expect(fs.readFileSync(dep, "utf8")).toBe("def one() -> Type:\n  Type\n");
     expect(fs.readFileSync(main, "utf8").startsWith("#i!mport")).toBe(true);
     expect(out.stderr).not.toContain("skipped");
+  });
+
+  test("--fix-suggested and --fix-dangerously apply wider levels", () => {
+    const levels = module("levels.js", `[{ id: "test/levels", run: (cx) => ["safe", "suggested", "dangerous"].map((applicability, n) => {
+      const spn = { file: cx.root.file, beg: n, end: n };
+      return cx.diag({ message: applicability, spn, fixes: [{ title: applicability, applicability, edits: [{ spn, text: String(n) }] }] });
+    }) }]`);
+    const fixed = (flag: string) => {
+      const target = fixture("levels" + flag + ".bend", "#abc\n");
+      expect(run(target, "--rules", levels, flag).status).toBe(0);
+      return fs.readFileSync(target, "utf8");
+    };
+    expect(["--fix", "--fix-suggested", "--fix-dangerously"].map(fixed)).toEqual(["0#abc\n", "0#1abc\n", "0#1a2bc\n"]);
   });
 
   test("--fix applies safe fixes", () => {

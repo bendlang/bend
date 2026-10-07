@@ -11,5 +11,5 @@
     "typeRoots": ["./node_modules/@types", "../../bend2/pack/node_modules/@types"],
     "paths": { "bend2/*": ["../../bend2/*"] }
   },
-  "include": ["src", "test"]
+  "include": ["src", "test", "rules"]
 }

@@ -175,6 +175,8 @@ const CHILDREN: { [K in LTerm["$"]]: (tm: Extract<LTerm, { $: K }>) => LTerm[] }
 const OPTIONS = {
   rules: { type: "string", multiple: true },
   fix: { type: "boolean" },
+  "fix-suggested": { type: "boolean" },
+  "fix-dangerously": { type: "boolean" },
   json: { type: "boolean" },
   config: { type: "string" },
   bend: { type: "string" },
@@ -182,8 +184,15 @@ const OPTIONS = {
 } as const;
 
 const USAGE = [
-  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--config <bend-lint.json>] [--fix] [--json] [--bend <dir>]",
+  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--config <bend-lint.json>] [--fix | --fix-suggested | --fix-dangerously] [--json] [--bend <dir>]",
 ].join("\n");
+
+// The fix levels each flag applies; the widest flag given wins.
+const FIXES: ReadonlyArray<readonly ["fix" | "fix-suggested" | "fix-dangerously", Applicability[]]> = [
+  ["fix-dangerously", ["safe", "suggested", "dangerous"]],
+  ["fix-suggested", ["safe", "suggested"]],
+  ["fix", ["safe"]],
+];
 
 // Functions
 // =========
@@ -698,7 +707,8 @@ async function cli(argv: string[]): Promise<number> {
   }));
   const res = await lint(positionals[0], modules.flat(), { config: values.config === undefined ? undefined : readConfig(values.config) });
   const root = res.sources.find((s) => s.root);
-  const fixed = values.fix && res.ok && root !== undefined ? applyFixes(root.file, res.diags) : undefined;
+  const levels = FIXES.find(([flag]) => values[flag])?.[1];
+  const fixed = levels !== undefined && res.ok && root !== undefined ? applyFixes(root.file, res.diags, levels) : undefined;
   const where = (spn: Span) => ({ path: (spn.file as SourceFile).path, range: position(spn) });
   console.log(values.json
     ? JSON.stringify({
@@ -714,7 +724,7 @@ async function cli(argv: string[]): Promise<number> {
     console.error("bend-lint: fixed " + root.path);
   }
   if (fixed !== undefined && fixed.skipped > 0) {
-    console.error("bend-lint: skipped " + fixed.skipped + " fix(es) that clash with earlier ones; run --fix again to apply them");
+    console.error("bend-lint: skipped " + fixed.skipped + " fix(es) that clash with earlier ones; run the fix again to apply them");
   }
   return res.ok ? 0 : 1;
 }
