@@ -7,10 +7,10 @@
 #   def main() -> IO(Unit):
 #     Lint.serve(run)
 #
-# A rule with facts reads them one at a time with next_fact. Offsets
-# count characters (code points) from the start of a file. The
-# rule's options come from bend-lint.json; read them with option_number,
-# option_flag and option_text, each with a default.
+# A rule with facts reads them one at a time, with fold_facts or
+# next_fact. Offsets count characters (code points) from the start of a
+# file. The rule's options come from bend-lint.json; read them with
+# option_number, option_flag and option_text, each with a default.
 import Base
 
 # A checked term, and a type: indexes into bend-lint's tables for one run.
@@ -100,6 +100,7 @@ def report(diags: List<&2, Diag>) -> IO(Unit):
 def next_fact() -> IO(Maybe<&2, Fact>):
   import "./lint.js"
 
+# One step of fold_facts: stop at None{}, else run step and go on.
 def fold_next(~A: Type, ~step: A -> @+f: Fact -> IO(A), m: Maybe<&2, Fact>, acc: A, again: A -> IO(A)) -> IO(A):
   match m:
     case None{}:

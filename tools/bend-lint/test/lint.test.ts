@@ -1063,6 +1063,8 @@ describe("cli", () => {
     expect(run(input, "--rules", fixture("no_id.bend", "import Base\n\ndef main() -> IO(Unit):\n  IO.print(\"x\")\n")).stderr)
       .toMatch(/must define id\(\) -> String/);
     expect(run(input, "--rules", fixture("broken_rule.bend", "def broken(\n")).stderr).toMatch(/does not check/);
+    expect(run(input, "--rules", fixture("no_facts.bend", COMMA_BEND.replace("def facts() -> Lint.Want:\n  Lint.NoFacts{}\n", ""))).stderr)
+      .toMatch(/must define id\(\) -> String, facts\(\) -> Lint.Want/);
   });
 
   test("a rule written in Bend runs from the CLI", () => {

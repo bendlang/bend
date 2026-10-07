@@ -308,7 +308,8 @@ async function check(file: string, filters: FactFilter[], signal: AbortSignal): 
     ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => {
       const at = spn?.file as { dir?: string; ns?: string } | undefined;
       const near = at?.dir === home && at.ns === "" ? filters : far;
-      if (near.some((f) => open(f) || matches(f, shape(tm).kind, def, shape(tm).name))) {
+      const { kind, name } = near.length > 0 ? shape(tm) : { kind: "", name: "" };
+      if (near.some((f) => matches(f, kind, def, name))) {
         found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us });
       }
     }
@@ -372,11 +373,6 @@ function shape(tm: LTerm): { kind: string; name: Name } {
   return { kind: t.$, name: t.$ === "Var" || t.$ === "Ref" ? t.k : "" };
 }
 
-// Whether a filter matches every fact in its scope.
-function open(f: FactFilter): boolean {
-  return [f.kinds, f.defs, f.names].every((xs) => xs === undefined || xs.length === 0);
-}
-
 // Whether a fact passes a filter, its scope aside.
 function matches(f: FactFilter, kind: string, def: Name, name: Name): boolean {
   const all = (xs: string[] | undefined, x: string): boolean => xs === undefined || xs.length === 0 || xs.includes(x);
@@ -435,16 +431,17 @@ function settings(rule: LintRule, config: Config): { off: boolean; severity?: Se
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[],
   { signal = new AbortController().signal, config = findConfig(file) }: LintOptions = {}): Promise<LintResult> {
-  const names = (xs: unknown): boolean => xs === undefined || Array.isArray(xs) && xs.every((x) => typeof x === "string");
+  const strings = (xs: unknown): boolean => xs === undefined || Array.isArray(xs) && xs.every((x) => typeof x === "string");
   const bad = rules.findIndex((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function"
     || !(r.facts === undefined || r.facts === true || typeof r.facts === "object" && r.facts !== null
-      && (r.facts.scope === undefined || SCOPES.includes(r.facts.scope)) && names(r.facts.kinds) && names(r.facts.defs) && names(r.facts.names)));
+      && (r.facts.scope === undefined || SCOPES.includes(r.facts.scope)) && strings(r.facts.kinds) && strings(r.facts.defs) && strings(r.facts.names)));
   if (bad >= 0) {
     throw new TypeError("invalid rule at " + bad + " (" + JSON.stringify(rules[bad]?.id)
       + "): it needs an id like ns/name, a run function, and facts, if given, true or a FactFilter");
   }
   const plans = rules.map((rule) => ({ rule, ...settings(rule, config), want: rule.facts === true ? {} : rule.facts }))
     .filter((p) => !p.off);
+  const program = plans.some((p) => p.want?.scope === "program");
   const { book, sources, span, facts, failure } = await check(file, plans.flatMap((p) => p.want === undefined ? [] : [p.want]), signal);
   if (failure !== undefined) {
     return { ok: false, diags: [failure], sources, book };
@@ -455,9 +452,9 @@ export async function lint(file: string, rules: LintRule[],
     signal.throwIfAborted();
     const out = await rule.run({
       Bend, book, sources, root, span, walk, options,
-      // A filter that matches all, with the scope every kept fact has, gets the map as is.
+      // A filter that matches all, in the scope of every kept fact, gets the map as is.
       facts: want === undefined || facts === undefined ? undefined
-        : open(want) && (want.scope === "program" || !plans.some((p) => p.want?.scope === "program")) ? facts
+        : [want.kinds, want.defs, want.names].every((xs) => !xs?.length) && (want.scope === "program" || !program) ? facts
           : new Map([...facts].filter(([tm, f]) => (want.scope === "program" || f.spn?.file === root.file)
             && matches(want, shape(tm).kind, f.def, shape(tm).name))),
       prior: diags,
