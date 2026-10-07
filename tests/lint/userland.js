@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -223,6 +224,61 @@ async function checkAPI() {
   }
 }
 
+function checkCLI(dir) {
+  const cli = fileURLToPath(new URL("../../bend2/main.ts", import.meta.url));
+  const bend = new URL("../../bend2/bend.ts", import.meta.url).href;
+  const input = path.join(dir, "cli.bend");
+  fs.writeFileSync(input, "import Base\n" + fs.readFileSync(file, "utf8"));
+  const first = path.join(dir, "first.js");
+  const second = path.join(dir, "second.ts");
+  const invalid = path.join(dir, "invalid.js");
+  const error = path.join(dir, "error.js");
+  fs.writeFileSync(first, `import * as Bend from ${JSON.stringify(bend)};
+export default [{ id: "cli/first", needsTypes: true, async run(book) {
+  if (!book.checked?.size || !book.files?.length) throw new Error("Missing metadata");
+  return [Bend.Diag("cli/first", book, Bend.ctx_nil(), "First rule", undefined,
+    undefined, undefined, undefined, [], "warning")];
+} }];`);
+  fs.writeFileSync(second, `import * as Bend from ${JSON.stringify(bend)};
+export default [{ id: "cli/second", run(book) {
+  if (book.diags[0]?.code !== "cli/first") throw new Error("Wrong rule order");
+  return [Bend.Diag("cli/second", book, Bend.ctx_nil(), "Second rule", undefined,
+    undefined, undefined, undefined, [], "hint")];
+} }];`);
+  fs.writeFileSync(error, `import * as Bend from ${JSON.stringify(bend)};
+export default [{ id: "cli/error", run(book) {
+  return [Bend.Diag("cli/error", book, Bend.ctx_nil(), "Blocked by rule")];
+} }];`);
+  const run = (...args) => spawnSync(process.execPath, [cli, input, ...args], {
+    encoding: "utf8", env: { ...process.env, BEND_NO_TELEMETRY: "1" },
+  });
+  const checked = run("--check-only", "--lint", first, "--lint", second);
+  assert.equal(checked.status, 0, checked.stderr);
+  assert.match(checked.stdout, /ALL PROOFS CHECK/);
+  assert.match(checked.stderr, /Warning \[cli\/first\]:[\s\S]*Hint \[cli\/second\]:/);
+  const executed = run("--lint", first);
+  assert.equal(executed.status, 0, executed.stderr);
+  assert.equal(executed.stdout.trim(), "S{Z{}}");
+  const blocked = run("--lint", error);
+  assert.equal(blocked.status, 1);
+  assert.equal(blocked.stdout, "");
+  assert.match(blocked.stderr, /Error \[cli\/error\]:/);
+  assert.equal(run("--lint").status, 1);
+  assert.equal(run("--lint", "--check-only").status, 1);
+  assert.equal(run("--lint", path.join(dir, "missing.js")).status, 1);
+  fs.writeFileSync(invalid, "export default {};");
+  assert.match(run("--lint", invalid).stderr, /must default-export an array/);
+  fs.writeFileSync(invalid, 'export default [{ id: "bad", run() { return []; } }];');
+  assert.match(run("--lint", invalid).stderr, /invalid diagnostic rule/);
+  const built = path.join(dir, "built.js");
+  const emitted = run("--lint", first, "-o", built);
+  assert.equal(emitted.status, 0, emitted.stderr);
+  assert.ok(fs.existsSync(built));
+  const source = fs.readFileSync(first, "utf8");
+  assert.equal(run("--lint", first, "-o", first).status, 1);
+  assert.equal(fs.readFileSync(first, "utf8"), source);
+}
+
 if (import.meta.main) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-lint-"));
   try {
@@ -234,7 +290,8 @@ if (import.meta.main) {
     await checkIsolation();
     await checkSeeds(dir);
     await checkAPI();
-    console.log("PASS userland diagnostics: source edits, types, scopes, imports, isolation, seeds, async, cancellation");
+    checkCLI(dir);
+    console.log("PASS userland diagnostics: source edits, types, scopes, imports, isolation, seeds, async, cancellation, CLI");
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

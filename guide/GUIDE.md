@@ -565,6 +565,8 @@ with Audio `libasound2-dev`. `bend guide` prints this text, `bend base` prints
 the Base library (`bend base Map` prints one name and everything under it), and
 `bend --help` lists the other commands.
 
+`--lint rules.ts` adds custom diagnostics.
+
 ## Syntax Reference
 
 Every form of the language, grouped by where it appears. Operators, literals

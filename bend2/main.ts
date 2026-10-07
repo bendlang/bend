@@ -37,6 +37,7 @@ const USAGE = [
   ["bend <file.bend> [args]", "check the file, then run main with args"],
   ["bend <file.bend> -o <out>", "build a binary, or C, JS, .mjs or BendTT by extension"],
   ["bend <file.bend> --check-only", "check the file and its imports; run nothing"],
+  ["bend <file.bend> --lint <rules.js>", "check with extra diagnostic rules; repeat for more modules"],
   ["bend <file.bend> --verdict", "check it, then recheck it with the proven kernel"],
   ["bend <file.bend> --publish [<name>@<version>]", "publish the file and its imports; a name needs login"],
   ["bend link <name>@<version> 0x<hash>", "name a package already on the hub"],
@@ -232,6 +233,7 @@ function ver_newer(ver: string): boolean {
 // cli_file checks, runs, builds, publishes or bundles a file
 async function cli_file(args: string[]): Promise<void> {
   const outs: string[] = [];
+  const lints: string[] = [];
   const argv: string[] = [];
   let file: string | undefined;
   let only = false;
@@ -249,6 +251,12 @@ async function cli_file(args: string[]): Promise<void> {
       verdict = true;
     } else if (a === "--checkup") {
       checkup = true;
+    } else if (a === "--lint") {
+      i += 1;
+      if (args[i] === undefined || args[i].startsWith("-")) {
+        cli_fail("--lint needs a rules module");
+      }
+      lints.push(args[i]);
     } else if (a === "--publish") {
       publish = true;
       if (args[i + 1]?.includes("@")) {
@@ -274,7 +282,7 @@ async function cli_file(args: string[]): Promise<void> {
     process.exit(1);
   }
   if (file.endsWith(".html")) {
-    if (outs.length !== 1 || only || checkup || publish) {
+    if (outs.length !== 1 || only || checkup || publish || lints.length !== 0) {
       cli_fail("a page bundles with -o <dir>");
     }
     return cli_bundle(file, outs[0]);
@@ -293,14 +301,15 @@ async function cli_file(args: string[]): Promise<void> {
       + " import alone");
   }
   try {
+    const rules = await cli_rules(lints);
     if (publish) {
-      return await cli_publish(file, named);
+      return await cli_publish(file, named, rules);
     }
     if (checkup) {
-      return await cli_checkup(file);
+      return await cli_checkup(file, rules);
     }
     const seen = new Map<string, string | null>();
-    const book = await book_read(file, undefined, seen);
+    const book = await book_read(file, undefined, seen, undefined, rules);
     if (only || verdict) {
       process.exitCode = cli_verdict(book, verdict);
       return;
@@ -309,7 +318,7 @@ async function cli_file(args: string[]): Promise<void> {
       process.exitCode = book_run(book, [file, ...argv]);
       return;
     }
-    const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
+    const ins = new Set([...seen.keys(), ...lints.map(path_real), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
     for (const out of outs) {
       const at = path_real(out);
@@ -324,10 +333,35 @@ async function cli_file(args: string[]): Promise<void> {
   }
 }
 
+async function cli_rules(files: string[]): Promise<Bend.LintRule[]> {
+  const rules: Bend.LintRule[] = [];
+  for (const file of files) {
+    const { default: loaded } = await import(url.pathToFileURL(path.resolve(file)).href);
+    if (!Array.isArray(loaded)) {
+      throw new Error(file + " must default-export an array of diagnostic rules");
+    }
+    for (const rule of loaded) {
+      if (!cli_rule_valid(rule)) {
+        throw new Error(file + " has an invalid diagnostic rule (needs a namespaced id and run function)");
+      }
+      rules.push(rule);
+    }
+  }
+  return rules;
+}
+
+function cli_rule_valid(rule: unknown): rule is Bend.LintRule {
+  if (rule === null || typeof rule !== "object") return false;
+  const r = rule as Bend.LintRule;
+  return typeof r.id === "string" && /^[^/\s]+\/[^/\s]+$/.test(r.id)
+    && typeof r.run === "function"
+    && (r.needsTypes === undefined || typeof r.needsTypes === "boolean");
+}
+
 // cli_checkup checks and runs each import of the file alone (Base read
 // once, seeded into every module that imports it); one that fails fails it.
-async function cli_checkup(file: string): Promise<void> {
-  const base = await book_read(BASE);
+async function cli_checkup(file: string, rules: Bend.LintRule[] = []): Promise<void> {
+  const base = await book_read(BASE, undefined, undefined, undefined, rules);
   let bad = false;
   for (const raw of fs.readFileSync(file, "utf8").split("\n")) {
     const m = /^import\s+(\S+)\s+as\s+[A-Za-z_][A-Za-z0-9_]*\s*$/
@@ -341,7 +375,7 @@ async function cli_checkup(file: string): Promise<void> {
     let code = 1;
     try {
       const own = /^import Base$/m.test(fs.readFileSync(at, "utf8"));
-      code = book_run(await book_read(at, own ? base : undefined), [at]);
+      code = book_run(await book_read(at, own ? base : undefined, undefined, undefined, rules), [at]);
     } catch (e) {
       cli_say(2, book_err(e) + "\n");
     }
@@ -496,9 +530,9 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
 // First it prints the terms and the license the hub will show.
-async function cli_publish(file: string, named?: string): Promise<void> {
+async function cli_publish(file: string, named?: string, rules: Bend.LintRule[] = []): Promise<void> {
   const seen = new Map<string, string | null>();
-  const book = await book_read(file, undefined, seen);
+  const book = await book_read(file, undefined, seen, undefined, rules);
   const files = pkg_files(file, book, seen);
   const entry = Object.keys(files)[0];
   const name  = path.basename(entry, ".bend");
