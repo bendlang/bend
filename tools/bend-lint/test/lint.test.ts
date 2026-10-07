@@ -15,6 +15,7 @@ import { DriftError, bendDir, patch, relative, resolve, seeCheck, seeInfer } fro
 
 type Loose = Fact & { tm: { x?: { $: string; k?: string; i?: number } } };
 type Token = { text: string; beg: number; end: number };
+type Seen = { kind: string; def: string; name: string; path: string };
 
 // Constants
 // =========
@@ -132,8 +133,8 @@ import ../../../src/lint.bend as Lint
 def id() -> String:
   "style/comma-space"
 
-def types() -> Bool:
-  False{}
+def facts() -> Lint.Want:
+  Lint.NoFacts{}
 
 def is_word(+c: Char) -> Bool:
   Bool.or(Char.is_alpha(c), Bool.or(Char.is_digit(c), Char.is_eq(c, '_')))
@@ -195,7 +196,7 @@ def all(srcs: List<&2, Lint.Source>) -> List<&2, Lint.Diag>:
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   match input:
-    case Lint.Input{sources, facts, options}:
+    case Lint.Input{sources, options}:
       IO.pure(List<&2, Lint.Diag>, all(sources))
 
 def main() -> IO(Unit):
@@ -211,8 +212,8 @@ import ../../../src/lint.bend as Lint
 def id() -> String:
   "test/types"
 
-def types() -> Bool:
-  True{}
+def facts() -> Lint.Want:
+  Lint.Want{Lint.File{}, ["Var"], ["id"], []}
 
 def verdict(same: Bool) -> String:
   match same:
@@ -289,21 +290,14 @@ def prepend(m: Maybe<&2, Lint.Diag>, xs: List<&2, Lint.Diag>) -> List<&2, Lint.D
     case Some{d}:
       d <> xs
 
-def each(facts: List<&2, Lint.Fact>) -> IO(List<&2, Lint.Diag>):
-  match facts:
-    case Nil{}:
-      IO.pure(List<&2, Lint.Diag>, [])
-    case Con{+f, rest}:
-      do IO<List<&2, Lint.Diag>>:
-        v : Lint.View <- Lint.view(f)
-        here : Maybe<&2, Lint.Diag> <- fact_diag(f, v)
-        later : List<&2, Lint.Diag> <- each(rest)
-        return prepend(here, later)
+def step(found: List<&2, Lint.Diag>, +f: Lint.Fact) -> IO(List<&2, Lint.Diag>):
+  do IO<List<&2, Lint.Diag>>:
+    v : Lint.View <- Lint.view(f)
+    here : Maybe<&2, Lint.Diag> <- fact_diag(f, v)
+    return prepend(here, found)
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
-  match input:
-    case Lint.Input{sources, facts, options}:
-      each(facts)
+  Lint.fold_facts(~List<&2, Lint.Diag>, ~step, [])
 
 def main() -> IO(Unit):
   Lint.serve(run)
@@ -322,7 +316,7 @@ const commaSpace: LintRule = {
 
 const identity: LintRule = {
   id: "example/identity",
-  needsTypes: true,
+  facts: true,
   run: async (cx, signal) => {
     await Promise.resolve();
     signal.throwIfAborted();
@@ -337,7 +331,7 @@ const identity: LintRule = {
 
 const neverRun: LintRule = {
   id: "test/never-run",
-  needsTypes: true,
+  facts: true,
   run: () => { throw new Error("this rule must not run"); },
 };
 
@@ -346,7 +340,7 @@ const neverRun: LintRule = {
 // instances repeat the facts of the def as written, so they are skipped.
 const redundantAnnotation: LintRule = {
   id: "erasure/redundant-local-annotation",
-  needsTypes: true,
+  facts: true,
   run: (cx) => [...cx.facts!.values()].flatMap((fact): Diag[] => {
     const term = cx.Bend.term_strip(fact.tm);
     const value = cx.span(term.s);
@@ -386,16 +380,39 @@ import ../../../src/lint.bend as Lint
 def id() -> String:
   "test/options"
 
-def types() -> Bool:
-  False{}
+def facts() -> Lint.Want:
+  Lint.NoFacts{}
 
 def summary(+opts: List<&2, Lint.Option>) -> String:
   U32.show(Lint.option_number(opts, "width", 2)) ++ " " ++ Bool.show(Lint.option_flag(opts, "wrap", False{})) ++ " " ++ Lint.option_text(opts, "name", "none")
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   match input:
-    case Lint.Input{sources, facts, +options}:
+    case Lint.Input{sources, +options}:
       IO.pure(List<&2, Lint.Diag>, [Lint.Diag{Lint.Hint{}, summary(options), None{}, []}])
+
+def main() -> IO(Unit):
+  Lint.serve(run)
+`;
+
+// A Bend rule that counts the facts it pulls, from the linted file and its
+// imports: the Vars.
+const COUNT_BEND = String.raw`import Base
+import ../../../src/lint.bend as Lint
+
+def id() -> String:
+  "test/count"
+
+def facts() -> Lint.Want:
+  Lint.Want{Lint.Program{}, ["Var"], [], []}
+
+def add(n: U32, +f: Lint.Fact) -> IO(U32):
+  IO.pure(U32, U32.add(n, 1))
+
+def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
+  do IO<List<&2, Lint.Diag>>:
+    n : U32 <- Lint.fold_facts(~U32, ~add, 0)
+    return [Lint.Diag{Lint.Hint{}, U32.show(n), None{}, []}]
 
 def main() -> IO(Unit):
   Lint.serve(run)
@@ -455,6 +472,16 @@ function spacingEdits(file: SourceFile): Edit[] {
     ...((token.text === "=" || token.text === ",") && !["}", ")", "]"].includes(stream[i + 1]?.text ?? "}")
       ? gap(token, stream[i + 1]) : []),
   ]);
+}
+
+// The facts a rule with this filter gets: kind, def, name and file.
+async function seen(file: string, want: LintRule["facts"]): Promise<Seen[]> {
+  let got: Fact[] = [];
+  await lint(file, [{ id: "test/seen", facts: want, run: (cx) => (got = [...cx.facts!.values()], []) }]);
+  return got.map((f) => {
+    const t = Bend.term_strip(f.tm);
+    return { kind: t.$, def: f.def, name: t.$ === "Var" || t.$ === "Ref" ? t.k : "", path: (f.spn!.file as SourceFile).path };
+  });
 }
 
 function run(...args: string[]) {
@@ -579,7 +606,7 @@ describe("lint", () => {
     expect(render(res.diags[1])).toContain("Context:");
   });
 
-  test("only rules with needsTypes get facts", async () => {
+  test("only rules with facts get facts", async () => {
     const look: LintRule = { id: "test/look", run: (cx) => { expect(cx.facts).toBeUndefined(); return []; } };
     expect((await lint(userland, [look, identity])).ok).toBe(true);
     expect((await lint(userland, [commaSpace])).facts).toBeUndefined();
@@ -588,7 +615,7 @@ describe("lint", () => {
   test("facts cover templates, proofs, matches and fields", async () => {
     const probe: LintRule = {
       id: "test/probe",
-      needsTypes: true,
+      facts: true,
       run: (cx) => {
         const generic = facts(cx, "generic").find((f) => f.tm.x?.$ === "Var" && f.tm.x.k === "x")!;
         expect(generic.bok.tlds["generic~T"]).toBeDefined();
@@ -662,7 +689,7 @@ describe("lint", () => {
     const main = fixture("main.bend", "import ./dep.bend as D\n\ndef main() -> D.N:\n  D.id(D.Z{})\n");
     const look: LintRule = {
       id: "test/imports",
-      needsTypes: true,
+      facts: true,
       run: (cx) => {
         expect(cx.root.path).toEndWith("/main.bend");
         expect(cx.sources.find((s) => s.path.endsWith("/dep.bend"))!.ns).toBe("dep");
@@ -683,7 +710,7 @@ describe("lint", () => {
     const withBase = fixture("with_base.bend", "import Base\n\ndef main() -> Nat:\n  1n\n");
     const probe: LintRule = {
       id: "test/base",
-      needsTypes: true,
+      facts: true,
       run: (cx) => {
         expect(cx.root.path).toEndWith("/with_base.bend");
         expect(cx.sources.some((s) => s.base)).toBe(true);
@@ -718,7 +745,7 @@ describe("lint", () => {
     const server = Bun.serve({ port: 0, fetch: async (req) => new Response("advice for " + (await req.json()).type) });
     const remote: LintRule = {
       id: "test/api",
-      needsTypes: true,
+      facts: true,
       run: async (cx, signal) => {
         const fact = cx.facts!.get((cx.book.tlds.id as { e: LTerm }).e)!;
         const type = cx.Bend.term_wnf(fact.bok, fact.ty) as { A: typeof fact.ty };
@@ -785,7 +812,7 @@ describe("review fixes", () => {
       const file = fixture(name, head + "\n\ntype P is Data:\n  P{n: Nat}\n\ndef main() -> Nat:\n  1n\n");
       const where: LintRule = {
         id: "test/where",
-        needsTypes: true,
+        facts: true,
         run: (cx) => {
           const facts = [...cx.facts!.values()];
           expect(facts.length).toBeGreaterThan(0);
@@ -802,7 +829,7 @@ describe("review fixes", () => {
     fs.mkdirSync(dir, { recursive: true });
     for (const f of ["a.bend", "b.bend"]) fs.writeFileSync(path.join(dir, f), "def one() -> Type:\n  Type\n");
     fs.writeFileSync(path.join(dir, "m.bend"), "import ./a.bend as A\nimport ./b.bend as B\n\ndef main() -> Type:\n  A.one()\n");
-    const all: LintRule = { id: "test/all", needsTypes: true, run: (cx) => [...cx.facts!.values()].map((f) => cx.diag({ message: "f", spn: f.spn })) };
+    const all: LintRule = { id: "test/all", facts: true, run: (cx) => [...cx.facts!.values()].map((f) => cx.diag({ message: "f", spn: f.spn })) };
     const res = await lint(path.join(dir, "m.bend"), [all]);
     expect(res.ok).toBe(true);
     expect(res.diags.length).toBeGreaterThan(0);
@@ -909,7 +936,7 @@ describe("rules written in Bend", () => {
 
   test("a source rule finds the comma, with a fix on the file on disk", async () => {
     const rule = await bendRule(fixture("comma_rule.bend", COMMA_BEND));
-    expect([rule.id, rule.needsTypes]).toEqual(["style/comma-space", false]);
+    expect([rule.id, rule.facts]).toEqual(["style/comma-space", undefined]);
     const res = await lint(userland, [rule]);
     expect(res.diags.map((d) => [d.code, d.severity])).toEqual([["style/comma-space", "warning"]]);
     expect(render(res.diags[0])).toContain("generic(~N, a)");
@@ -918,10 +945,64 @@ describe("rules written in Bend", () => {
 
   test("a typed rule asks the checker through effects", async () => {
     const rule = await bendRule(fixture("types_rule.bend", TYPES_BEND));
-    expect(rule.needsTypes).toBe(true);
+    expect(rule.facts).toEqual({ scope: "file", kinds: ["Var"], defs: ["id"], names: [] });
     const res = await lint(userland, [rule, rule]);
     expect(res.diags.map((d) => d.message)).toEqual(Array(2).fill("x: Alias = N (same as its binder), text x, demanded once, uses x once"));
     expect(res.diags.every((d) => d.spn?.file === root(res.sources).file)).toBe(true);
+  });
+});
+
+describe("fact filters", () => {
+  const userland = fixture("filter_userland.bend", USERLAND);
+
+  test("kinds, defs and names narrow the facts; an empty or absent list matches all", async () => {
+    const all = await seen(userland, true);
+    const only = async (want: LintRule["facts"], keep: (f: Seen) => boolean) => {
+      const got = await seen(userland, want);
+      expect(got.length).toBeGreaterThan(0);
+      expect(got).toEqual(all.filter(keep));
+    };
+    await only({ kinds: ["Var"] }, (f) => f.kind === "Var");
+    await only({ defs: ["generic"] }, (f) => f.def === "generic" || f.def.startsWith("generic~"));
+    await only({ kinds: ["Ref"], names: ["id"] }, (f) => f.kind === "Ref" && f.name === "id");
+    await only({ kinds: [], defs: [], names: [] }, () => true);
+    expect(all.some((f) => f.def.startsWith("generic~"))).toBe(true);
+  });
+
+  test("each rule gets its own facts; bend-lint keeps only what some rule asked for", async () => {
+    const got: Record<string, string[]> = {};
+    const rule = (id: string, kinds: string[]): LintRule => ({ id, facts: { kinds }, run: (cx) => (got[id] = [...cx.facts!.values()].map((f) => Bend.term_strip(f.tm).$), []) });
+    const res = await lint(userland, [rule("test/vars", ["Var"]), rule("test/refs", ["Ref"])]);
+    expect(new Set(got["test/vars"])).toEqual(new Set(["Var"]));
+    expect(new Set(got["test/refs"])).toEqual(new Set(["Ref"]));
+    expect(res.facts!.size).toBe(got["test/vars"].length + got["test/refs"].length);
+    expect(res.facts!.size).toBeLessThan((await lint(userland, [rule("test/all", [])])).facts!.size);
+  });
+
+  test("scope program adds the imports' facts, never Base's", async () => {
+    const dir = path.join(DIR, "program");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "dep.bend"), "import Base\n\ndef one(x: Nat) -> Nat:\n  x\n");
+    for (const head of ["import Base", "import Base # comment"]) {
+      const main = path.join(dir, "main.bend");
+      fs.writeFileSync(main, head + "\nimport ./dep.bend as D\n\ndef main() -> Nat:\n  D.one(1n)\n");
+      const where = async (scope: "file" | "program") => new Set((await seen(main, { scope })).map((f) => path.basename(f.path)));
+      expect(await where("file")).toEqual(new Set(["main.bend"]));
+      expect(await where("program")).toEqual(new Set(["main.bend", "dep.bend"]));
+    }
+  });
+
+  test("a bad filter is an invalid rule", async () => {
+    for (const facts of [{ scope: "all" }, { kinds: "Var" }, { names: [1] }, 3]) {
+      await expect(lint(userland, [{ id: "test/bad", facts, run: () => [] } as unknown as LintRule])).rejects.toThrow(/invalid rule at 0/);
+    }
+  });
+
+  test("a Bend rule pulls its facts one at a time, any number of them", async () => {
+    const rule = await bendRule(fixture("count_rule.bend", COUNT_BEND));
+    expect(rule.facts).toEqual({ scope: "program", kinds: ["Var"], defs: [], names: [] });
+    const many = fixture("many_vars.bend", "import Base\n\n" + Array.from({ length: 5000 }, (_, i) => "def f" + i + "(x: U32) -> U32:\n  x\n").join("\n"));
+    expect((await lint(many, [rule])).diags.map((d) => d.message)).toEqual(["5000"]);
   });
 });
 
@@ -951,7 +1032,7 @@ describe("the rules in rules/", () => {
 
 describe("cli", () => {
   const input = fixture("cli.bend", USERLAND);
-  const first = module("first.js", `[{ id: "cli/first", needsTypes: true, run(cx) {
+  const first = module("first.js", `[{ id: "cli/first", facts: true, run(cx) {
     if (!cx.facts?.size || !cx.sources.length) throw new Error("missing metadata");
     return [cx.diag({ message: "First rule", severity: "warning" })];
   } }]`);

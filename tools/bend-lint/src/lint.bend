@@ -2,12 +2,13 @@
 # imports this file and defines:
 #
 #   def id() -> String:          # namespace/name, the code of its findings
-#   def types() -> Bool:         # True{} to get the checker's facts
+#   def facts() -> Lint.Want:    # Lint.NoFacts{}, or the facts it needs
 #   def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
 #   def main() -> IO(Unit):
 #     Lint.serve(run)
 #
-# Offsets count characters (code points) from the start of a file. The
+# A rule with facts reads them one at a time with next_fact. Offsets
+# count characters (code points) from the start of a file. The
 # rule's options come from bend-lint.json; read them with option_number,
 # option_flag and option_text, each with a default.
 import Base
@@ -33,7 +34,20 @@ type Option is Data:
   Option{key: String, value: Value}
 
 type Input is Data:
-  Input{sources: List<&2, Source>, facts: List<&2, Fact>, options: List<&2, Option>}
+  Input{sources: List<&2, Source>, options: List<&2, Option>}
+
+# File: facts of the linted file. Program: of its imports too, never Base.
+type Scope is Data:
+  File{}
+  Program{}
+
+# The facts a rule needs. A fact must match each list; an empty list
+# matches all. kinds: the term's kind, annotations stripped (Var, Ref, App,
+# ...). defs: the def whose body holds the term (a template's instances
+# count as the template). names: the name a Var or Ref points to.
+type Want is Data:
+  NoFacts{}
+  Want{scope: Scope, kinds: List<&2, String>, defs: List<&2, String>, names: List<&2, String>}
 
 type Span is Data:
   Span{path: String, beg: U32, end: U32}
@@ -70,9 +84,9 @@ type Use is Data:
 
 # A fact as bend-lint sees it: the def it is in, whether that def is a
 # template instance, the kind of its term once an annotation is stripped
-# (Var, App, ...), the name a Var refers to (else ""), how many times the
-# term is demanded, and the spans of the checked term and of the stripped
-# one.
+# (Var, App, ...), the name a Var or Ref points to (else ""), how many
+# times the term is demanded, and the spans of the checked term and of the
+# stripped one.
 type View is Data:
   View{owner: String, inst: Bool, kind: String, name: String, quantity: Quantity, span: Maybe<&2, Span>, inner: Maybe<&2, Span>}
 
@@ -81,6 +95,26 @@ def input() -> IO(Input):
 
 def report(diags: List<&2, Diag>) -> IO(Unit):
   import "./lint.js"
+
+# The next fact the rule asked for, or None{} when none are left.
+def next_fact() -> IO(Maybe<&2, Fact>):
+  import "./lint.js"
+
+def fold_next(~A: Type, ~step: A -> @+f: Fact -> IO(A), m: Maybe<&2, Fact>, acc: A, again: A -> IO(A)) -> IO(A):
+  match m:
+    case None{}:
+      IO.pure(A, acc)
+    case Some{f}:
+      IO.bind(A, A, step(acc, f), again)
+
+# Runs step on each fact the rule asked for, in order, from acc; step is
+# a def, given as ~name, that takes its fact as +f. Facts come one at a
+# time, so a big file does not build one big list.
+@unsafe
+def fold_facts(~A: Type, ~step: A -> @+f: Fact -> IO(A), acc: A) -> IO(A):
+  do IO<A>:
+    m : Maybe<&2, Fact> <- next_fact()
+    fold_next(~A, ~step, m, acc, a => fold_facts(~A, ~step, a))
 
 def view(fact: Fact) -> IO(View):
   import "./lint.js"

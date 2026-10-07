@@ -43,8 +43,8 @@ its `bend2` folder. Inside the bend repo, its own bend is the default.
 ## Rules in TypeScript
 
 A rule module exports `rules`. A rule has an `id` (`namespace/name`, also
-the code of its findings), an optional `needsTypes`, and a `run` that may be
-`async`:
+the code of its findings), an optional `facts` (see [Facts](#facts)), and a
+`run` that may be `async`:
 
 ```ts
 import type { LintRule } from "./tools/bend-lint/src/lint.ts";
@@ -60,9 +60,9 @@ export const rules: LintRule[] = [{
   }),
 }, {
   id: "demo/var-types",
-  needsTypes: true,
+  facts: { kinds: ["Var"] },
   run: (cx) => [...cx.facts!.values()]
-    .filter((f) => !f.inst && f.spn?.file === cx.root.file && cx.Bend.term_strip(f.tm).$ === "Var")
+    .filter((f) => !f.inst)
     .map((f) => cx.diag({ message: "type: " + cx.show(f, f.ty), severity: "hint", spn: f.spn, fact: f })),
 }];
 ```
@@ -70,7 +70,7 @@ export const rules: LintRule[] = [{
 | `cx` | |
 |---|---|
 | `root`, `sources` | the linted file and its imports, as on disk |
-| `facts` | with `needsTypes`: per checked term of the linted file, its type, scope, depth, def, quantity, uses, and span on disk |
+| `facts` | the facts the rule asked for: per checked term, its type, scope, depth, def, quantity, uses, and span on disk |
 | `prior` | the findings of earlier rules |
 | `span(s)` | a bend span (e.g. `term.s`), moved to the file on disk |
 | `walk`, `binder`, `show`, `same`, `normal`, `uses` | helpers over bend's terms |
@@ -81,13 +81,31 @@ Severities: `error` (stops the run), `warning`, `information`, `hint`. Fix
 levels: `safe` keeps behavior, `suggested` may change it, `dangerous` may
 break code.
 
-Rules run in order; none runs when the file does not check. Facts cover only
-the linted file, so none come from Base or other imports. A template body is
+Rules run in order; none runs when the file does not check. A file with a
+line exactly `import Base` (as `bend --checkup` reads it) reuses a Base
+checked once per process.
+
+## Facts
+
+A fact is what the checker found for one term. A rule gets facts only if it
+asks with `facts`: `true` for all of the linted file's, or a filter. A fact
+must match each list given; an absent or empty list matches all:
+
+```ts
+facts: {
+  scope: "file",     // "file" (default): the linted file; "program": its imports too, never Base
+  kinds: ["Var"],    // the term's kind, annotations stripped: Var, Ref, App, Lam, Lit, ...
+  defs: ["main"],    // the def whose body holds the term; a template's instances count as it
+  names: ["foo"],    // the name a Var or Ref points to
+}
+```
+
+bend-lint keeps a fact only if some rule asks for it, and drops the rest as
+the checker gives them, so a narrow filter costs little. Each rule gets only
+its own. On a 3,200-proof file (1.27M facts) peak memory was 0.77 GB with no
+facts, 2.6 GB with all, 1.5 GB with `kinds: ["Var"]`. A template body is
 checked as written and again per instance (`generic~0`) at the same spans;
-`fact.inst` marks the instances. A file with a line exactly `import Base`
-(as `bend --checkup` reads it) reuses a Base checked once per process. Every
-checked term of the file gives a fact, so a very large file costs memory: a
-rule with `needsTypes` on a 3,200-proof file holds about 1.3M facts.
+`fact.inst` marks the instances.
 
 ## Options
 
@@ -118,8 +136,8 @@ import ../tools/bend-lint/src/lint.bend as Lint
 def id() -> String:
   "demo/nothing"
 
-def types() -> Bool:           # True{} to get facts
-  False{}
+def facts() -> Lint.Want:      # Lint.NoFacts{}, or Lint.Want{scope, kinds, defs, names}
+  Lint.NoFacts{}
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   IO.pure(List<&2, Lint.Diag>, [])
@@ -128,15 +146,29 @@ def main() -> IO(Unit):
   Lint.serve(run)
 ```
 
-`input` holds the sources, the rule's options and, with `types()`, the
-facts. Read an option with `Lint.option_number`, `option_flag` or
+`input` holds the sources and the rule's options. A rule that wants facts
+returns a filter, as in [Facts](#facts), with empty lists for "all":
+`Lint.Want{Lint.File{}, ["Var"], [], []}`. It then reads them one at a time,
+so a big file never becomes one big list:
+
+```python
+def step(found: List<&2, Lint.Diag>, +f: Lint.Fact) -> IO(List<&2, Lint.Diag>):
+  ...
+
+def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
+  Lint.fold_facts(~List<&2, Lint.Diag>, ~step, [])
+```
+
+`fold_facts` takes `step` as a template (`~step`), and `step` takes its fact
+as `+f`. Read an option with `Lint.option_number`, `option_flag` or
 `option_text`, each with a default; numbers are whole (U32). A rule asks about
 a fact with effects (`Lint.view`, `type_of`, `binder`, `same`, `show`,
 `normal`, `uses`, `text`) and may use Base's effects too. Offsets count
 characters. bend-lint compiles a rule once; each run then takes about 10 ms.
 A rule runs on bend's JS runtime, where only tail calls run as loops: walk
 a long text or list with a tail call, or the stack overflows.
-`COMMA_BEND` and `TYPES_BEND` in `test/lint.test.ts` are complete examples.
+`COMMA_BEND`, `TYPES_BEND` and `COUNT_BEND` in `test/lint.test.ts` are
+complete examples.
 
 ## Rules shipped here
 

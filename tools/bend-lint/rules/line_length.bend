@@ -7,8 +7,8 @@ import ./shared.bend as Shared
 def id() -> String:
   "style/line-length"
 
-def types() -> Bool:
-  False{}
+def facts() -> Lint.Want:
+  Lint.NoFacts{}
 
 def diag(path: String, +max: U32, +beg: U32, +len: U32) -> Lint.Diag:
   Lint.Diag{Lint.Warning{}, "Keep the line to " ++ U32.show(max) ++ " characters; it has " ++ U32.show(len) ++ ".", Some{Lint.Span{path, U32.add(beg, max), U32.add(beg, len)}}, []}
@@ -38,7 +38,7 @@ def check(+max: U32, src: Maybe<&2, Lint.Source>) -> List<&2, Lint.Diag>:
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   match input:
-    case Lint.Input{sources, facts, options}:
+    case Lint.Input{sources, options}:
       IO.pure(List<&2, Lint.Diag>, check(Lint.option_number(options, "max", 100), Shared.root(sources)))
 
 def main() -> IO(Unit):

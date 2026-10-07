@@ -56,13 +56,23 @@ export type Source = { path: string; ns: string; text: string; root: boolean; ba
 // `inst` marks the facts of an instance.
 export type Fact = { tm: LTerm; ty: HTerm; bok: Book; ctx: Ctx; dep: number; def: Name; qt: Quant; us: Uses; inst: boolean; spn?: Span };
 
+// The checker's facts a rule gets. A fact must match each list given; an
+// absent or empty list matches all. In defs, a template's instances
+// (generic~0) count as the template.
+export type FactFilter = {
+  scope?: "file" | "program"; // file (the default): the linted file; program: its imports too, never Base
+  kinds?: string[];           // the term's kind, annotations stripped: Var, Ref, App, ...
+  defs?: Name[];              // the def whose body holds the term
+  names?: Name[];             // the name a Var or Ref points to
+};
+
 export type RuleContext = {
   Bend: Bend;
   book: Book;
   sources: Source[];
   root: Source;
   options: Options;         // the rule's defaults, with the config's values
-  facts?: Map<LTerm, Fact>; // only for a rule with needsTypes
+  facts?: Map<LTerm, Fact>; // only for a rule with facts, and only those it asked for
   prior: readonly Diag[];   // what earlier rules found
   span: Mapper; // a bend.ts span, in the file on disk
   walk(tm: LTerm): Generator<LTerm>;
@@ -85,7 +95,7 @@ export type LintOptions = { signal?: AbortSignal; config?: Config };
 
 export type LintRule = {
   id: string; // namespace/name; the code of its findings
-  needsTypes?: boolean;
+  facts?: true | FactFilter; // the checker's facts it needs; true: all of the linted file's
   options?: Options; // defaults; without them (a Bend rule), any option is passed as given
   run(cx: RuleContext, signal: AbortSignal): Diag[] | Promise<Diag[]>;
 };
@@ -109,7 +119,8 @@ type Reported = {
 // What lint.js asks of bend-lint while a Bend rule runs. Facts and types
 // cross as indexes into the run's tables.
 type Channel = {
-  input(): { sources: Array<{ path: string; text: string; root: boolean }>; facts: number; options: Options };
+  input(): { sources: Array<{ path: string; text: string; root: boolean }>; options: Options };
+  next(): number | undefined;
   report(diags: Reported[]): void;
   view(fact: number): { owner: Name; inst: boolean; kind: string; name: string; quantity: Quant["$"]; span?: Spot; inner?: Spot };
   type(fact: number): number;
@@ -131,6 +142,7 @@ type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm,
 // =========
 
 const RULE_ID = /^[^/\s]+\/[^/\s]+$/;
+const SCOPES = ["file", "program"];
 const CONFIG = "bend-lint.json";
 const LINE = /[^\n]*\n|[^\n]+$/g;
 const STACK = "the machine stack overflowed (a deep recursion, or a literal too large to expand)";
@@ -279,19 +291,24 @@ function isErr(e: unknown): e is Err {
 // Loads and checks a book as bend2/main.ts book_read does; it does not give
 // main.ts's verdict on @unsafe and foreign code. A file with a line exactly
 // `import Base` starts from a copy of the checked Base, as `bend --checkup`
-// does. Facts are kept only for terms in the linted file: those from its
-// folder and namespace while checking, and those whose span maps to it.
-async function check(file: string, capture: boolean, signal: AbortSignal): Promise<Checked> {
+// does. A fact is kept as the checker gives it only if a filter wants it;
+// with scope file, only if it is from the linted file's folder and
+// namespace. After the check, only facts whose span maps to the linted file
+// (or, with scope program, to any file but Base) stay.
+async function check(file: string, filters: FactFilter[], signal: AbortSignal): Promise<Checked> {
   signal.throwIfAborted();
   const book: Hooked = Bend.book_nil();
   const seen = new Map<string, string | null>();
   const found: Array<Omit<Fact, "inst">> = [];
   const real = fs.existsSync(file) ? fs.realpathSync(file) : "";
   const home = real.slice(0, real.lastIndexOf("/") + 1);
-  book.see = capture
+  const far = filters.filter((f) => f.scope === "program");
+  const program = far.length > 0;
+  book.see = filters.length > 0
     ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => {
       const at = spn?.file as { dir?: string; ns?: string } | undefined;
-      if (at?.dir === home && at.ns === "") {
+      const near = at?.dir === home && at.ns === "" ? filters : far;
+      if (near.some((f) => open(f) || matches(f, shape(tm).kind, def, shape(tm).name))) {
         found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us });
       }
     }
@@ -330,12 +347,12 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
   const span = mapper(sources);
   if (caught === undefined) {
     const insts = new Set(Object.values(book.tmps).flatMap((m) => [...m.values()]));
-    const mine = sources.find((s) => s.root)?.file;
+    const own = new Set<unknown>(sources.filter((s) => program ? !s.base : s.root).map((s) => s.file));
     const facts = found.flatMap((f): Array<[LTerm, Fact]> => {
       const spn = span(f.spn);
-      return spn?.file === mine ? [[f.tm, { ...f, inst: insts.has(f.def), spn }]] : [];
+      return spn !== undefined && own.has(spn.file) ? [[f.tm, { ...f, inst: insts.has(f.def), spn }]] : [];
     });
-    return { book, sources, span, facts: capture ? new Map(facts) : undefined };
+    return { book, sources, span, facts: filters.length > 0 ? new Map(facts) : undefined };
   }
   const err = isErr(caught.e) ? caught.e : undefined;
   const message = err !== undefined ? Bend.expr_show(err.bok, err.exp) : caught.e instanceof RangeError ? STACK : String(caught.e);
@@ -347,6 +364,23 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
     spn = undefined;
   }
   return { book, sources, span, failure: { code: "bend/check", severity: "error", message, spn, def: err?.def, fixes: [], core: caught.e } };
+}
+
+// A term's kind, annotations stripped, and the name a Var or Ref points to.
+function shape(tm: LTerm): { kind: string; name: Name } {
+  const t = Bend.term_strip(tm);
+  return { kind: t.$, name: t.$ === "Var" || t.$ === "Ref" ? t.k : "" };
+}
+
+// Whether a filter matches every fact in its scope.
+function open(f: FactFilter): boolean {
+  return [f.kinds, f.defs, f.names].every((xs) => xs === undefined || xs.length === 0);
+}
+
+// Whether a fact passes a filter, its scope aside.
+function matches(f: FactFilter, kind: string, def: Name, name: Name): boolean {
+  const all = (xs: string[] | undefined, x: string): boolean => xs === undefined || xs.length === 0 || xs.includes(x);
+  return all(f.kinds, kind) && (all(f.defs, def) || all(f.defs, def.replace(/~\d+$/, ""))) && all(f.names, name);
 }
 
 export function readConfig(file: string): Config {
@@ -401,22 +435,31 @@ function settings(rule: LintRule, config: Config): { off: boolean; severity?: Se
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[],
   { signal = new AbortController().signal, config = findConfig(file) }: LintOptions = {}): Promise<LintResult> {
-  const bad = rules.findIndex((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
+  const names = (xs: unknown): boolean => xs === undefined || Array.isArray(xs) && xs.every((x) => typeof x === "string");
+  const bad = rules.findIndex((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function"
+    || !(r.facts === undefined || r.facts === true || typeof r.facts === "object" && r.facts !== null
+      && (r.facts.scope === undefined || SCOPES.includes(r.facts.scope)) && names(r.facts.kinds) && names(r.facts.defs) && names(r.facts.names)));
   if (bad >= 0) {
-    throw new TypeError("invalid rule at " + bad + " (" + JSON.stringify(rules[bad]?.id) + "): it needs an id like ns/name and a run function");
+    throw new TypeError("invalid rule at " + bad + " (" + JSON.stringify(rules[bad]?.id)
+      + "): it needs an id like ns/name, a run function, and facts, if given, true or a FactFilter");
   }
-  const plans = rules.map((rule) => ({ rule, ...settings(rule, config) })).filter((p) => !p.off);
-  const { book, sources, span, facts, failure } = await check(file, plans.some((p) => p.rule.needsTypes === true), signal);
+  const plans = rules.map((rule) => ({ rule, ...settings(rule, config), want: rule.facts === true ? {} : rule.facts }))
+    .filter((p) => !p.off);
+  const { book, sources, span, facts, failure } = await check(file, plans.flatMap((p) => p.want === undefined ? [] : [p.want]), signal);
   if (failure !== undefined) {
     return { ok: false, diags: [failure], sources, book };
   }
   const root = sources.find((s) => s.root)!;
   let diags: Diag[] = [];
-  for (const { rule, severity, options } of plans) {
+  for (const { rule, severity, options, want } of plans) {
     signal.throwIfAborted();
     const out = await rule.run({
       Bend, book, sources, root, span, walk, options,
-      facts: rule.needsTypes === true ? facts : undefined,
+      // A filter that matches all, with the scope every kept fact has, gets the map as is.
+      facts: want === undefined || facts === undefined ? undefined
+        : open(want) && (want.scope === "program" || !plans.some((p) => p.want?.scope === "program")) ? facts
+          : new Map([...facts].filter(([tm, f]) => (want.scope === "program" || f.spn?.file === root.file)
+            && matches(want, shape(tm).kind, f.def, shape(tm).name))),
       prior: diags,
       binder: (fact, v) => v.$ === "Var" ? Bend.pmap_get(fact.ctx, v.i) : null,
       show: (fact, ty) => Bend.term_show(Bend.term_lower(ty, fact.dep)),
@@ -522,24 +565,47 @@ export function position(spn: Span): { start: Position; end: Position } {
 // main with bend's own IO runtime, while lint.js reaches bend-lint through
 // globalThis.BEND_LINT. Offsets cross as code points.
 export async function bendRule(file: string): Promise<LintRule> {
-  const { book, failure } = await check(file, false, new AbortController().signal);
+  const { book, failure } = await check(file, [], new AbortController().signal);
   if (failure !== undefined) {
     throw new Error(file + " does not check:\n" + render(failure));
   }
-  const value = (k: Name): string => {
+  const value = (k: Name): LTerm | undefined => {
     const tld = book.tlds[k];
-    return tld?.$ === "Def" && tld.n === 0 && tld.v !== null ? Bend.term_show(Bend.term_lower(Bend.term_snf(book, tld.v))) : "";
+    return tld?.$ === "Def" && tld.n === 0 && tld.v !== null ? Bend.term_lower(Bend.term_snf(book, tld.v)) : undefined;
   };
-  const id = value("id").match(/^"([^"\\]*)"$/)?.[1];
-  const types = value("types");
-  if (id === undefined || !["True{}", "False{}"].includes(types) || Comp.io_type(book) === null) {
-    throw new Error(file + " must define id() -> String, types() -> Bool and main() -> IO(Unit)");
+  const shown = value("id");
+  const id = shown === undefined ? undefined : Bend.term_show(shown).match(/^"([^"\\]*)"$/)?.[1];
+  // facts(), checked: NoFacts{} gives null, Want{...} a filter; else undefined.
+  const args = (t: LTerm | undefined, ctr: string): LTerm[] | undefined =>
+    t?.$ === "Ctr" && (t.k === ctr || t.k.endsWith(":" + ctr)) ? t.x : undefined;
+  const texts = (t: LTerm | undefined): string[] | undefined => {
+    const out: string[] = [];
+    for (let at = t; ; at = args(at, "Con")?.[1]) {
+      const [head] = args(at, "Con") ?? [];
+      if (args(at, "Nil") !== undefined) {
+        return out;
+      }
+      if (head?.$ !== "Lit" || typeof head.v !== "string") {
+        return undefined;
+      }
+      out.push(head.v);
+    }
+  };
+  const asked = value("facts");
+  const [scope, kinds, defs, names] = args(asked, "Want") ?? [];
+  const want = args(asked, "NoFacts") !== undefined ? null : {
+    scope: args(scope, "File") !== undefined ? "file" as const : args(scope, "Program") !== undefined ? "program" as const : undefined,
+    kinds: texts(kinds), defs: texts(defs), names: texts(names),
+  };
+  if (id === undefined || Comp.io_type(book) === null
+    || want !== null && [want.scope, want.kinds, want.defs, want.names].includes(undefined)) {
+    throw new Error(file + " must define id() -> String, facts() -> Lint.Want and main() -> IO(Unit)");
   }
   const main = new Function("require", Comp.js_lib(book) + "\n" + Comp.RUNTIME_MAIN
     + "\nreturn (args) => { cli_args = args; return io_run(" + Comp.js_sat("main") + "); };")(import.meta.require) as (args: string[]) => number;
   return {
     id,
-    needsTypes: types === "True{}",
+    ...(want === null ? {} : { facts: want as FactFilter }),
     run: (cx) => {
       // Built once per text: the character at each UTF-16 offset (points),
       // and the UTF-16 offset of each character (units); both end at the end.
@@ -574,6 +640,7 @@ export async function bendRule(file: string): Promise<LintRule> {
         return { file: src.file, beg: at(s.beg), end: at(s.end) };
       };
       const facts = [...cx.facts?.values() ?? []];
+      let given = 0; // facts handed to the rule so far
       const terms: HTerm[] = [];
       const pick = <T>(xs: T[], i: number, what: string): T => {
         if (xs[i] === undefined) {
@@ -589,13 +656,14 @@ export async function bendRule(file: string): Promise<LintRule> {
           if (odd !== undefined) {
             throw new Error("rule " + id + ": option " + odd[0] + " must be a whole number from 0 to 4294967295 (a U32)");
           }
-          return { sources: cx.sources.map((s) => ({ path: s.path, text: s.text, root: s.root })), facts: facts.length, options: cx.options };
+          return { sources: cx.sources.map((s) => ({ path: s.path, text: s.text, root: s.root })), options: cx.options };
         },
+        next: () => given < facts.length ? given++ : undefined,
         report: (diags) => void found.push(diags),
         view: (i) => {
           const f = pick(facts, i, "fact");
           const t = Bend.term_strip(f.tm);
-          return { owner: f.def, inst: f.inst, kind: t.$, name: t.$ === "Var" ? t.k : "", quantity: f.qt.$, span: spot(f.spn), inner: spot(cx.span(t.s)) };
+          return { owner: f.def, inst: f.inst, ...shape(f.tm), quantity: f.qt.$, span: spot(f.spn), inner: spot(cx.span(t.s)) };
         },
         type: (i) => keep(pick(facts, i, "fact").ty),
         binder: (i) => {

@@ -48,11 +48,10 @@ function lint_term(id) {
 }
 
 function lint_input() {
-  const { sources, facts, options } = lint_host().input();
+  const { sources, options } = lint_host().input();
   return {
     $: CID(Input),
     sources: lint_list(sources.map((s) => ({ $: CID(Source), path: s.path, text: s.text, root: s.root }))),
-    facts: lint_list(Array.from({ length: facts }, (_, id) => ({ $: CID(Fact), id }))),
     options: lint_list(Object.entries(options).map(([key, v]) => ({ $: CID(Option), key, value: lint_value(v) }))),
   };
 }
@@ -81,6 +80,10 @@ function lint_view(fact) {
 
 io_eff(CID(input), lint_input);
 io_eff(CID(report), lint_report);
+io_eff(CID(next_fact), () => {
+  const id = lint_host().next();
+  return lint_maybe(id === undefined ? undefined : { $: CID(Fact), id });
+});
 io_eff(CID(view), lint_view);
 io_eff(CID(type_of), (fact) => lint_term(lint_host().type(fact.id)));
 io_eff(CID(binder), (fact) => {
