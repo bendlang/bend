@@ -1385,16 +1385,13 @@ function file_book(roots: Name[]): void {
         + " names both a constructor and a foreign def: name one apart");
     }
   }
-  const queue = roots.slice();
-  for (const d of queue) {
-    if (FL.srcs.has(d)) {
-      continue;
-    }
+  const add = (k: Name) => memo(FL.srcs, k, () => null);
+  roots.forEach(add);
+  for (const d of FL.srcs.keys()) {
     memo_gc();
     const tld = FL.book.tlds[d];
-    FL.srcs.set(d, null);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
-      queue.push(...type_adts(x.T));
+      type_adts(x.T).forEach(add);
     }
     if (!done_live(tld)) {
       continue;
@@ -1404,7 +1401,7 @@ function file_book(roots: Name[]): void {
     let flat = true;
     term_any(fun_of(d).h!, (s, tail) => {
       if (s.$ === "Ann") {
-        queue.push(...type_adts(s.T));
+        type_adts(s.T).forEach(add);
       }
       if (s.$ === "Ref") {
         if (s.b) {
@@ -1424,7 +1421,7 @@ function file_book(roots: Name[]): void {
       return false;
     });
     FL.srcs.set(d, flat ? deps : null);
-    queue.push(...refs);
+    refs.forEach(add);
   }
 }
 
