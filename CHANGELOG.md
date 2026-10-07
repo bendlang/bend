@@ -3,6 +3,59 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## 2.0.36 (2026-10-07)
+
+- **HOC's proving agent is now named BendAI**: `bend login` logs in to
+  BendAI at bend-lang.com/bendai and writes its key to
+  `~/.bend/bendai.json`; a key an older bend wrote moves there at the next
+  `--publish <name>@…`, so it keeps working. The publish notice links
+  https://bend-lang.com/bendai/terms#s18, and the installer's card ends
+  "You're now a Bend developer." The old addresses redirect.
+- **Every channel and socket wait has a `try_` twin** with a limit in ms
+  that answers `Poll` (PR #1259 by nicolas-abril), and UDP gets the byte
+  twins TCP and File already have: `send_bytes_to`, `recv_bytes_from` and
+  their `try_` twins (PR #1359 by kbrianps).
+- **BendTT's kinds are quantity terms**, with meets, Σ at any kind and
+  subsumption under ∀, and `--verdict` emits a generic def once (PR #1203
+  by nicolas-abril); a λ+ converts as a λ (#1189, PR #1224 by
+  nicolas-abril).
+- **Faster checks**: a name lookup is one map read, not a scan of the book
+  (PR #1372); types never read, or already reduced, are not reduced again
+  (PR #1362); roots share their `~` constants, so a template goes to the
+  kernel once (PR #1358 by chelokot); n instances of a def take O(n log n)
+  characters of names, not O(n²) (PR #1350 by chelokot); a graph closure
+  is linear in the graph (PR #1298 by moorbrook).
+- **Fixes**:
+  - A value past 2^24-1 live copies fail-stops with its own message, and
+    WONTFIX names the cap (PR #1366 by nicolas-abril).
+  - A type under a rewrite stuck on an open proof is read as its body, and
+    a type the C facts can't read is a compile error (#1273, PR #1276 by
+    nicolas-abril).
+  - A constructor's fields compile with their declared types, so a Word
+    folded out of a U32 literal emits (#1100, PR #1361 by nicolas-abril);
+    datatypes of boxed constructors are registered (PR #1351 by
+    vicmcorrea); spare nodes stay apart across sum arms (PR #1279 by
+    jasisz); C emits right when a native effect calls back into Bend (PR
+    #1286 by mizchi).
+  - The work pass after a grow runs each lane's own ring (#925, PR #1132),
+    and on MSL 3.2+ `heap_free` reads the error flag with a coherent
+    volatile load (#1143, PR #1299 by nicolas-abril).
+  - `--verdict` checks what bend checks for a match carrying a later
+    variable (#1292, PR #1293 by aaaxn), respects Unit provenance and word
+    constructor families (PR #1338 by oxura), verifies the Lean version and
+    drops unversioned kernel caches (PR #1339 by oxura), and cleans up its
+    temporary input when the kernel build fails (PR #1327 by Osraka).
+  - Unsafe dependencies are tracked in datatype kinds (#1205, PR #1220 by
+    oxura).
+  - A nested match on a split value is refused with its name and where to
+    match it (#1125, PR #1290 by nicolas-abril); only a statement
+    `a[i] <- v` is the write let, so `Array.set(..);` in an inline match
+    keeps the next row (#1126, PR #1289 by nicolas-abril).
+  - `F32.read` skips leading whitespace (PR #1335 by vicmcorrea); the
+    formatter keeps unsafe declaration suffixes (PR #1296 by vicmcorrea).
+  - A CUDA probe failure names its stage and the Driver API error (PR
+    #1341 by oxura).
+
 ## 2.0.35 (2026-10-03)
 
 - **M1 and M2 run the GPU again** (#1154, PR #1274 by nicolas-abril): since
@@ -235,7 +288,7 @@ latest one; the GitHub release carries the same notes.
   (#1018): the executable was a Bun program built with Bun's defaults, so a
   project it checked could preload its own code before bend's (and print a
   forged `All terms check.`), or set `BEND_HUB`, `BEND_ORIGIN` or `BEND_LIB`
-  for you: your Bender key went to its server on `--publish <name>@…` and
+  for you: your BendAI key went to its server on `--publish <name>@…` and
   `bend link`, `bend update` ran its script, and its own copies of hub
   packages, named ones included, were checked in place of the real ones. The
   release is now built with that loading off (`package.json` and
@@ -246,7 +299,7 @@ latest one; the GitHub release carries the same notes.
   named exactly `LICENSE` beside a published file, at the same path, and the
   hash covers it. A package without one is MIT-0 under BendHub's terms, and
   the publish warns so. Every publish first prints, on stderr, that the hub is
-  public and permanent under https://bend-lang.com/bender/terms#s18, and the
+  public and permanent under https://bend-lang.com/bendai/terms#s18, and the
   license the hub will show: the `SPDX-License-Identifier` of the shallowest
   `LICENSE`, else `see <path>`. A directory named `license` in any case is
   refused before mining, since it clashes with a `LICENSE` on a disk that
@@ -274,7 +327,7 @@ latest one; the GitHub release carries the same notes.
   <file> --publish <name>@<version>` publishes and names in one run, after
   the hub confirms the name is yours or free and the version goes up; `bend
   link <name>@<version> 0x<hash>` names a package already published; `bend
-  login` logs in to Bender for both. A name is a-z, 0-9 and -, 12 to 64
+  login` logs in to BendAI for both. A name is a-z, 0-9 and -, 12 to 64
   characters; a version is four numbers like 1.0.0.0. The first:
   `import bend-tensors@0.0.0.1/bend_tensors.bend as T`.
 - **The effects guide calls `io_node` and `io_wait_on` as the runtime

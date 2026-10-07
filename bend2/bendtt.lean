@@ -104,11 +104,17 @@ structure Def where
   o : Bool
   deriving Inhabited
 
--- a Book lists defs; a def's index orders its live calls
-abbrev Book := List Def
+-- each def at its index, from n on (a def's first copy wins)
+def Book.table : Nat → List Def → Std.HashMap String (Nat × Def)
+  | _, [] => {}
+  | n, d :: ds => (Book.table (n + 1) ds).insert d.k (n, d)
 
--- a Lib maps a name to its def: the checker's fast Book.get
-abbrev Lib := Std.HashMap String Def
+-- a Book lists defs, and a def's index orders its live calls; lib is
+-- their table, so a lookup is one map read
+structure Book where
+  defs : List Def
+  lib  : Std.HashMap String (Nat × Def)
+  ok   : lib = Book.table 0 defs
 
 -- a Ctx lists, innermost first, each variable's type and let value
 abbrev Ctx := List (Term × Option Term)
@@ -141,7 +147,7 @@ structure Guard where
   tags : List Tag
   hits : List ((Nat × List Bool) × String)
 
-abbrev Parse := StateT (List Char) (Except String)
+abbrev Parse := ReaderT ByteArray (StateT Nat (Except String))
 
 -- Constants
 -- =========
@@ -459,14 +465,16 @@ def Env.sub : Env → Nat → Term
 -- ====
 
 def Book.get (bk : Book) (k : String) : Option Def :=
-  bk.find? (·.k == k)
+  (bk.lib[k]?).map (·.2)
 
 def Book.index (bk : Book) (k : String) : Option Nat :=
-  bk.findIdx? (·.k == k)
+  (bk.lib[k]?).map (·.1)
 
--- (a def's first copy wins, as in Book.get)
-def Lib.of (bk : Book) : Lib :=
-  bk.foldr (fun d l => l.insert d.k d) {}
+def Book.length (bk : Book) : Nat :=
+  bk.defs.length
+
+def Book.of (ds : List Def) : Book :=
+  ⟨ds, Book.table 0 ds, rfl⟩
 
 -- Ctx
 -- ===
@@ -569,33 +577,54 @@ def Term.show : Term → Nat → String
 -- Parser
 -- ======
 
-def Parse.fail (e : String) : Parse α := do
-  let s ← get
-  let s := String.ofList (s.take 30)
-  throw ("parse error: expected " ++ e ++ " at '" ++ s ++ "'")
+-- the parser reads the text's UTF-8 bytes at a position; a name, a space
+-- and every mark but ∀, Σ and λ is one ASCII byte
 
-partial def Parse.skip : Parse Unit := do
-  match ← get with
-  | '#' :: s =>
-    set (s.dropWhile (· != '\n'))
-    Parse.skip
-  | c :: s =>
-    if c.isWhitespace then
-      set s
-      Parse.skip
-  | [] => pure ()
+-- the byte after the char at i
+def Parse.next (b : ByteArray) (i : Nat) : Nat :=
+  [1, 2, 3].foldl (fun j _ => if j < b.size && b[j]! &&& 0xC0 == 0x80 then j + 1 else j) (i + 1)
+
+def Parse.fail (e : String) : Parse α := do
+  let b ← read
+  let i ← get
+  let j := (List.range 30).foldl (fun j _ => if j < b.size then Parse.next b j else j) i
+  throw ("parse error: expected " ++ e ++ " at '" ++ (String.fromUTF8? (b.extract i j)).getD "" ++ "'")
+
+-- the first byte at or after i that is not a space or in a comment
+partial def Parse.gap (b : ByteArray) (i : Nat) : Nat :=
+  if i < b.size then
+    let c := Char.ofUInt8 b[i]!
+    if c == '#' then Parse.gap b (eol b i)
+    else if c.isWhitespace then Parse.gap b (i + 1)
+    else i
+  else i
+where eol (b : ByteArray) (i : Nat) : Nat :=
+  if i < b.size && b[i]! != 10 then eol b (i + 1) else i
+
+def Parse.skip : Parse Unit := do
+  let b ← read
+  modify (Parse.gap b)
 
 def Parse.peek : Parse Char := do
   Parse.skip
-  match ← get with
-  | c :: _ => pure c
-  | []     => pure ' '
+  let b ← read
+  let i ← get
+  pure (if i < b.size then Char.ofUInt8 b[i]! else ' ')
+
+-- whether the text at i starts with w
+partial def Parse.at (b : ByteArray) (i : Nat) (w : String) (j : Nat := 0) : Bool :=
+  if h : j < w.utf8ByteSize then
+    i + j < b.size && b[i + j]! == w.getUTF8Byte ⟨j⟩ h && Parse.at b i w (j + 1)
+  else true
+
+-- whether w comes next, without taking it
+def Parse.sees (w : String) : Parse Bool := do
+  Parse.skip
+  pure (Parse.at (← read) (← get) w)
 
 def Parse.take (w : String) : Parse Bool := do
-  Parse.skip
-  let s ← get
-  if w.toList.isPrefixOf s then
-    set (s.drop w.length)
+  if ← Parse.sees w then
+    modify (· + w.utf8ByteSize)
     pure true
   else
     pure false
@@ -608,14 +637,19 @@ def Parse.eat (w : String) : Parse Unit := do
 def Char.is_name (c : Char) : Bool :=
   c.isAlphanum || c == '_' || c == '.'
 
+-- the end of the name at i
+partial def Parse.span (b : ByteArray) (i : Nat) : Nat :=
+  if i < b.size && (Char.ofUInt8 b[i]!).is_name then Parse.span b (i + 1) else i
+
 def Parse.name : Parse String := do
   Parse.skip
-  let s ← get
-  let k := s.takeWhile Char.is_name
-  if k.isEmpty then
+  let b ← read
+  let i ← get
+  let j := Parse.span b i
+  if j == i then
     Parse.fail "a name"
-  set (s.drop k.length)
-  pure (String.ofList k)
+  set j
+  pure ((String.fromUTF8? (b.extract i j)).getD "")
 
 -- a label name: a name, or ()
 def Parse.label : Parse String := do
@@ -640,13 +674,18 @@ def Quan.parse : Parse Quan := do
 mutual
 
 partial def Term.parse (vs : List String) : Parse Term := do
-  match ← Parse.peek with
+  let c ← Parse.peek
+  if c.toNat ≥ 128 then
+    if ← Parse.sees "∀" then
+      return ← Term.parse_bind vs "∀"
+    if ← Parse.sees "Σ" then
+      return ← Term.parse_bind vs "Σ"
+    if ← Parse.sees "λ" then
+      return ← Term.parse_lam vs
+  match c with
   | '{' => Term.parse_brace vs
   | '*' => Term.parse_typ vs
   | '!' => Term.parse_let vs
-  | '∀' => Term.parse_bind vs "∀"
-  | 'Σ' => Term.parse_bind vs "Σ"
-  | 'λ' => Term.parse_lam vs
   | '(' => Term.parse_paren vs
   | '<' => Term.parse_enum []
   | '.' => Lab <$> Parse.key
@@ -798,9 +837,9 @@ partial def Term.parse_rwt (vs : List String) : Parse Term := do
 
 end
 
-partial def Book.parse_defs : Parse Book := do
+partial def Book.parse_defs : Parse (List Def) := do
   Parse.skip
-  if (← getThe (List Char)).isEmpty then
+  if (← getThe Nat) ≥ (← readThe ByteArray).size then
     return []
   let k ← Parse.name
   let o := k == "opaque" && (← Parse.peek) != ':'
@@ -813,7 +852,7 @@ partial def Book.parse_defs : Parse Book := do
   return ⟨k, T, v, o⟩ :: ds
 
 def Book.parse (s : String) : Res Book :=
-  Book.parse_defs.run' s.toList
+  ((Book.parse_defs.run s.toUTF8).run' 0).map Book.of
 
 -- Evaluator
 -- =========
@@ -830,7 +869,7 @@ def Book.parse (s : String) : Res Book :=
 
 mutual
 
-def Term.wnf (ck : Lib) (cl : Bool) : Nat → Term → List Arg → Term × Nat
+def Term.wnf (ck : Book) (cl : Bool) : Nat → Term → List Arg → Term × Nat
   | 0, t, xs => (Term.spine t xs, 0)
   | n + 1, Ann x _, xs => Term.wnf ck cl n x xs
   | n + 1, Let q v f, xs =>
@@ -846,7 +885,7 @@ def Term.wnf (ck : Lib) (cl : Bool) : Nat → Term → List Arg → Term × Nat
     let (b, m) := Term.wnf ck cl (min m n) b []
     (Term.spine (Term.qmin a b) xs, m)
   | n + 1, Ref k, xs =>
-    match ck[k]? with
+    match ck.get k with
     | some ⟨_, _, v, false⟩ =>
       match Term.run ck cl n v [] xs with
       | (some t, m) => Term.wnf ck cl (min m n) t []
@@ -861,7 +900,7 @@ def Term.wnf (ck : Lib) (cl : Bool) : Nat → Term → List Arg → Term × Nat
 
 -- walks a def's case tree on a spine, binding its variables in the
 -- environment e: some leaf when the walk leaves the tree
-def Term.run (ck : Lib) (cl : Bool) : Nat → Term → Env → List Arg → Option Term × Nat
+def Term.run (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Option Term × Nat
   | 0, _, _, _ => (none, 0)
   | n + 1, App q f (Var v), e, xs =>
     if Term.takes (Term.unspine f []).1 then
@@ -882,7 +921,7 @@ def Term.run (ck : Lib) (cl : Bool) : Nat → Term → Env → List Arg → Opti
         (some t, m)
 
 -- fires a λ or a λ-match on its next argument; a λ binds it in e
-def Term.fire (ck : Lib) (cl : Bool) : Nat → Term → Env → List Arg → Option Step × Nat
+def Term.fire (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Option Step × Nat
   | n + 1, Lam q f, e, (_, x) :: xs =>
     let (x, m) := Term.val ck cl n q x
     (some (f, x :: e, xs), m)
@@ -903,7 +942,7 @@ def Term.fire (ck : Lib) (cl : Bool) : Nat → Term → Env → List Arg → Opt
   | n, _, _, _ => (none, n)
 
 -- a value bound at q: on a closed term, a q=2 one goes to normal form
-def Term.val (ck : Lib) : Bool → Nat → Quan → Term → Term × Nat
+def Term.val (ck : Book) : Bool → Nat → Quan → Term → Term × Nat
   | true, n + 1, Q2, t =>
     match Term.wnf ck true n t [] with
     | (Tup q a b, m) =>
@@ -915,7 +954,7 @@ def Term.val (ck : Lib) : Bool → Nat → Quan → Term → Term × Nat
 
 end
 
-def Ctx.wnf (ck : Lib) (c : Ctx) (t : Term) : Term :=
+def Ctx.wnf (ck : Book) (c : Ctx) (t : Term) : Term :=
   (Term.wnf ck c.isEmpty FUEL (Ctx.zeta c t) []).1
 
 -- Equality
@@ -940,7 +979,7 @@ def Term.parts : Term → Term → Option (List (Term × Term))
 -- a and b convert, lazily: they are equal, or their weak heads match
 -- and each pair of parts converts, in turn. Returns the fuel left:
 -- 0 when it ran out. A binder's parts may be open.
-def Term.conv (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool × Nat
+def Term.conv (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
   | 0, _, _ => (false, 0)
   | n + 1, a, b =>
     if a = b then
@@ -958,7 +997,7 @@ def Term.conv (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool × Nat
 -- g is at least h, in the quantity order: .Q2 is the top, .Q0 and .Q1
 -- the bottom, a meet on the left needs both sides, on the right either;
 -- and the fuel left, as conv gives it
-def Term.qge (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool × Nat
+def Term.qge (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
   | 0, _, _ => (false, 0)
   | n + 1, g, h =>
     let (g, m) := Term.wnf ck cl n g []
@@ -976,7 +1015,7 @@ def Term.qge (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool × Nat
 -- U fits T: they convert, or both are kinds and U's quantity is at least
 -- T's, or U is an enum with fewer labels, or both are ∀s at one quantity,
 -- T's domain fitting U's and U's codomain T's; and the fuel left
-def Term.fits (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool × Nat
+def Term.fits (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
   | 0, _, _ => (false, 0)
   | n + 1, U, T =>
     let (U, m) := Term.wnf ck cl n U []
@@ -1006,7 +1045,7 @@ def Ctx.need (c : Ctx) (r : Bool × Nat) (x : String) (o : Term) : Res Unit :=
   | (_, 0)    => throw "out of fuel"
   | _         => Ctx.fail c x o
 
-def Ctx.fit (ck : Lib) (c : Ctx) (U T : Term) : Res Unit :=
+def Ctx.fit (ck : Book) (c : Ctx) (U T : Term) : Res Unit :=
   let U := Ctx.zeta c U
   let T := Ctx.zeta c T
   Ctx.need c (Term.fits ck c.isEmpty FUEL U T) (Term.show T c.length) U
@@ -1028,14 +1067,14 @@ mutual
 -- Γ ⊢ a, b : <Q0, Q1, Q2>
 -- ---------------------------- min
 -- Γ ⊢ (a <&> b) : <Q0, Q1, Q2>
-def Term.infer (ck : Lib) : Nat → Ctx → Term → Res Term
+def Term.infer (ck : Book) : Nat → Ctx → Term → Res Term
   | 0, _, _ => throw "out of fuel"
   | _ + 1, c, Var i =>
     match c[i]? with
     | some (A, _) => pure (Term.ren (· + (i + 1)) A)
     | none        => throw "unbound variable"
   | _ + 1, _, Ref k =>
-    match ck[k]? with
+    match ck.get k with
     | some d => pure d.T
     | none   => throw ("unknown def: " ++ k)
   | n + 1, c, Ann x T => do
@@ -1111,7 +1150,7 @@ def Term.infer (ck : Lib) : Nat → Ctx → Term → Res Term
 -- Γ ⊢ x : U   U ≤ T
 -- ----------------- any
 -- Γ ⊢ x : T
-def Term.check (ck : Lib) : Nat → Ctx → Term → Term → Res Unit
+def Term.check (ck : Book) : Nat → Ctx → Term → Term → Res Unit
   | 0, _, _, _ => throw "out of fuel"
   | n + 1, c, Let q v f, T => do
     let V := Ctx.wnf ck c (← Term.infer ck n c v)
@@ -1360,7 +1399,7 @@ def Term.tree (g : Guard) (ps : List Tag) : Term → Bool
 -- Validator
 -- =========
 
-def Def.check (bk : Book) (ls : Lib × Lib) (i : Nat) (d : Def) : Res Unit := do
+def Def.check (bk : Book) (ls : Book × Book) (i : Nat) (d : Def) : Res Unit := do
   let ck := if d.o then ls.2 else ls.1
   Res.need (Book.index bk d.k == some i) "a fresh name"
   Term.check ck FUEL [] d.T T1
@@ -1370,14 +1409,14 @@ def Def.check (bk : Book) (ls : Lib × Lib) (i : Nat) (d : Def) : Res Unit := do
   Res.need (Term.tree g [] d.v) "affine live code, calls that descend"
 
 -- ls holds bk, and bk with every def transparent
-def Book.check_from (bk : Book) (ls : Lib × Lib) : Nat → List Def → Res Unit
+def Book.check_from (bk : Book) (ls : Book × Book) : Nat → List Def → Res Unit
   | _, [] => pure ()
   | i, d :: ds => do
     (Def.check bk ls i d).mapError (fun e => "In " ++ d.k ++ ":\n" ++ e)
     Book.check_from bk ls (i + 1) ds
 
 def Book.check (bk : Book) : Res Unit :=
-  Book.check_from bk (Lib.of bk, Lib.of (bk.map ({ · with o := false }))) 0 bk
+  Book.check_from bk (bk, Book.of (bk.defs.map ({ · with o := false }))) 0 bk.defs
 
 -- Main
 -- ====
@@ -2000,8 +2039,8 @@ theorem env_inst : Term.sub (Env.sub (x :: e)) f =
 
 -- the checker's book ck holds bk's defs, up to their opaque flags, and
 -- their bodies are closed
-def Sees (ck : Lib) (bk : Book) : Prop :=
-  ∀ k d, ck[k]? = some d → ∃ o, Book.get bk k = some { d with o } ∧ Term.Closed d.v
+def Sees (ck : Book) (bk : Book) : Prop :=
+  ∀ k d, Book.get ck k = some d → ∃ o, Book.get bk k = some { d with o } ∧ Term.Closed d.v
 
 -- one strong induction on fuel for wnf, run, fire and val
 theorem wnf_pars (hb : Sees ck bk) :
@@ -2349,8 +2388,23 @@ theorem chk (hcl : Sees ck bk) (n : Nat) : ∀ c t T, Ctx.ok bk c →
       · simpa only [inst_sub, sub_succ] using fit_sound hcl h.2.1
       · simpa only [inst_sub, Term.sub] using C _ _ h.2.2
 
-theorem lib_get : (Lib.of bk)[k]? = Book.get bk k := by
-  induction bk <;> simp_all [Lib.of, Book.get, Std.HashMap.getElem?_insert, List.find?_cons]; split <;> split <;> simp_all
+theorem table_at : ((Book.table n ds)[k]?).map (·.1) = (ds.findIdx? (·.k == k)).map (· + n) ∧
+    ((Book.table n ds)[k]?).map (·.2) = ds.find? (·.k == k) := by
+  induction ds generalizing n with
+  | nil => simp [Book.table]
+  | cons d ds ih =>
+    have := @ih (n + 1)
+    by_cases h : d.k = k <;> simp_all [Book.table, Std.HashMap.getElem?_insert, List.findIdx?_cons,
+      Option.map_map, Function.comp_def, Nat.add_assoc, Nat.add_comm 1]
+
+theorem get_find : Book.get bk k = bk.defs.find? (·.k == k) := by
+  simpa [Book.get, bk.ok] using (table_at (n := 0)).2
+
+theorem index_find : Book.index bk k = bk.defs.findIdx? (·.k == k) := by
+  simpa [Book.index, bk.ok] using (table_at (n := 0)).1
+
+theorem index_lt (h : Book.index bk k = some j) : j < bk.length := by
+  rw [index_find] at h; exact (List.findIdx?_eq_some_iff_findIdx_eq.1 h).1
 
 theorem check_from_ok : ∀ ds i, Book.check_from bk ls i ds = .ok () →
     ∀ d ∈ ds, ∃ i, Def.check bk ls i d = .ok ()
@@ -2366,11 +2420,12 @@ theorem book_check : Claim.sound := by
   -- a def checks against bk, or bk with no opaque flag
   have get k d (e : Book.get bk k = some d) : ∃ i, Book.index bk k = some i ∧ Term.Closed d.v ∧
       (Book.Closed bk → Typed bk [] d.T T1 ∧ Typed bk [] d.v d.T) ∧ Term.tree ⟨bk, i, [], [], []⟩ [] d.v = true := by
+    rw [get_find] at e
     obtain ⟨i, h⟩ := check_from_ok _ 0 h d (List.mem_of_find?_eq_some e)
     obtain rfl : d.k = k := by simpa using List.find?_some e
     simp [Def.check] at h
     refine ⟨i, h.1, ren_closed h.2.2.2.1, fun hcl => ⟨K _ _ _ ?_ h.2.1, K _ _ _ ?_ h.2.2.1⟩, h.2.2.2.2⟩ <;> intro k d e <;>
-      split at e <;> rw [lib_get] at e <;> (try (simp [Book.get, List.find?_map] at e; obtain ⟨d, e, rfl⟩ := e)) <;>
+      split at e <;> (try (rw [get_find] at e; simp [Book.of, List.find?_map, Function.comp_def] at e; obtain ⟨d, e, rfl⟩ := e; rw [← get_find] at e)) <;>
       exact ⟨d.o, e, hcl k d e⟩
   have hcl : Book.Closed bk := fun k d e => have ⟨_, _, c, _⟩ := get k d e; c
   refine ⟨fun k d e => ?_, hcl, fun k i d ei e => ?_⟩ <;> obtain ⟨j, ej, c, w, t⟩ := get k d e
@@ -3131,7 +3186,7 @@ theorem called_ok : Term.called g u = true → RefOK g.book u := by
 
 theorem ok_called (hi : g.self = g.book.length) (h : RefOK g.book u) : Term.called g u = true := by
   simp only [Term.called]; split
-  next k _ e => obtain ⟨j, hj⟩ := Option.isSome_iff_exists.1 (h k (by rw [e])); simp [hj, hi, (List.findIdx?_eq_some_iff_findIdx_eq.1 hj).1]
+  next k _ e => obtain ⟨j, hj⟩ := Option.isSome_iff_exists.1 (h k (by rw [e])); simp [hj, hi, index_lt hj]
   next => rfl
 
 theorem live_call (h : Term.live g true t = true) (e : Term.unspine t [] = (Ref k, ys)) :
@@ -3500,7 +3555,8 @@ theorem hcl {F : Frame} (ho : F.ok) (h : Term.live (F.g ts) true t = true) (ht :
   obtain ⟨j, hj, hlt | ⟨rfl, hdesc⟩⟩ := live_call h e
   · left; simpa [Frame.L, Term.label, hj, ho.1]
   obtain rfl : k = F.k := by
-    have ⟨_, a, _⟩ := List.findIdx?_eq_some_iff_getElem.1 hj; have ⟨_, b, _⟩ := List.findIdx?_eq_some_iff_getElem.1 ho.1
+    have h1 := hj; have h2 := ho.1; rw [index_find] at h1 h2
+    have ⟨_, a, _⟩ := List.findIdx?_eq_some_iff_getElem.1 h1; have ⟨_, b, _⟩ := List.findIdx?_eq_some_iff_getElem.1 h2
     simp_all
   refine .inr ⟨rfl, ?_⟩
   simp only [Frame.L, Term.label, ho.2.1, Option.map_some, Option.getD_some]
@@ -3833,7 +3889,7 @@ theorem consistent : Claim.consistent := by
   have ⟨i, hi⟩ := index_of_get get
   suffices ∀ t, Acc (fun u t => Eval bk t u) t → ¬ Typed bk [] t (Enu []) from
     this _ (halts bk _ lv (fun _ => rfl) (by
-      simp [Term.Live, Term.live, Term.called, Term.unspine, hi, (List.findIdx?_eq_some_iff_findIdx_eq.1 hi).1]))
+      simp [Term.Live, Term.live, Term.called, Term.unspine, hi, index_lt hi]))
       (.conv (.ref get) (.conv (conv_sub (σ := Var) hc)))
   intro t a ht; induction a; rename_i t _ ih
   exact (progress bk t _ wt lv ht).elim (empty bk t wt · ht) fun ⟨u, e⟩ => ih u e (pars_sr wt ht (eval_pars lv.1 e))

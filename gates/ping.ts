@@ -61,7 +61,7 @@ const SAID   = "Once a day, bend asks bend-lang.com";
 const MOVED  = "Bend's installer changed";
 const PATHS  = "/usr/bin:/bin";
 const TERMS  = "Publishing to BendHub: public and permanent, under"
-  + " https://bend-lang.com/bender/terms#s18\n";
+  + " https://bend-lang.com/bendai/terms#s18\n";
 
 // what the Caddy stand-in saw: "<method> <path> <user-agent>"
 const seen: string[] = [];
@@ -236,7 +236,7 @@ try {
   check("no shell rc is written", !fs.readdirSync(HOME).some((f) =>
     f !== ".bend"));
   check("the card names the version, the PATH line and the daily check",
-    plain(ins.out).includes("Bend \u2588  " + ver) && ins.out.includes("code bender")
+    plain(ins.out).includes("Bend \u2588  " + ver) && ins.out.includes("Bend developer")
     && ins.out.includes("export PATH=\"")
     && ins.out.includes(SAID));
   const again = await install({ PATH: path.dirname(BIN) + ":" + PATHS });
@@ -365,7 +365,7 @@ try {
     + " warns: " + none.err, none.code === 0
     && none.out.startsWith(pkg_hash(bare) + "\n")
     && none.err.includes(TERMS + "License: MIT-0, the default (no LICENSE"
-    + " file): https://bend-lang.com/bender/terms#s18.4\nwarning: no file is"
+    + " file): https://bend-lang.com/bendai/terms#s18.4\nwarning: no file is"
     + " named exactly LICENSE"));
   const bom  = { "lic_bom.bend": use("two.bend"), "two.bend": two,
     "LICENSE": "SPDX-License-Identifier: MIT\n" };

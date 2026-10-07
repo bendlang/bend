@@ -532,7 +532,7 @@ its author gave it on the hub, with `bend main.bend --publish
 <name>@<version>` after `bend login`.
 
 A publish is public and permanent, under BendHub's terms
-(https://bend-lang.com/bender/terms#s18). Put a `LICENSE` file
+(https://bend-lang.com/bendai/terms#s18). Put a `LICENSE` file
 next to your entry file, ideally opening with a line like
 `SPDX-License-Identifier: MIT`; `--publish` takes every file named exactly
 `LICENSE` beside a published file, and a package without one is MIT-0. You are

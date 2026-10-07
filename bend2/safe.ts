@@ -81,8 +81,8 @@ type O =
   | { $: "Rwt"; e: O; l: number; P: O; f: O };
 
 // a bend2 variable: the kernel term it stands for, its bend2 type, and
-// the argument a specialized one stands for (which goes out at each use,
-// at its type, so its o is unused)
+// the term a specialized parameter or inlined let stands for (built at
+// each use's depth and mode, so its o is unused)
 type Bind = { o: O; T: HTerm | null; v?: HTerm };
 
 // the argument of each parameter of an item, or of each column of a
@@ -242,13 +242,13 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { 
 // constant of its type, one per place for all roots, which models read at
 // its model (as bend2 checks a template: its body holds at every argument)
 function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
-  const sp = spec_of(e, k);
-  const F = j === sp.length ? null : B.term_wnf(e.book, T);
+  const tld = e.book.tlds[k];
+  const F = j === tld.n ? null : B.term_wnf(e.book, T);
   if (F?.$ !== "All") {
     return [[]];
   }
   const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
-  if (!sp[j]) {
+  if (tld.$ !== "Def" || j >= tld.x) {
     return at(null);
   }
   const A = B.term_wnf(e.book, F.A);
@@ -363,11 +363,11 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
   def_emit(e, k, cols, n, tld);
 }
 
-// a def at its specialized arguments: the type drops those binders, and
-// the tree takes them; a def with no body goes out opaque, at a model of
-// its type
+// a def at its specialized arguments: non-null cols are the leading
+// template prefix, filled into its type; the tree takes them. A def with
+// no body goes out opaque, at a model of its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
-  const T = type_drop(e, tld.T, cols);
+  const T = B.tele_fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[], B.ctx_nil());
   const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
@@ -420,12 +420,6 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
 // Specialize
 // ----------
 
-// whether each parameter of item k is specialized: a template's ~ one
-function spec_of(e: Safe, k: Name): boolean[] {
-  const tld = e.book.tlds[k];
-  return Array.from({ length: tld.n }, (_, j) => tld.$ === "Def" && j < tld.x);
-}
-
 // a specialized argument: closed, in normal form
 function spec_val(e: Safe, s: Scope, x: HTerm): HTerm {
   return closed_val(e, s, x) ?? oos("a template argument that depends on a run-time value");
@@ -452,21 +446,6 @@ function subst(t: HTerm, d: number, f: (o: Record<string, unknown>) => HTerm | u
       : Array.isArray(u) ? u.map(go) : Object.fromEntries(Object.entries(o).map(([k, x]) => [k, k === "s" ? x : go(x)]));
   };
   return B.term_higher(go(B.term_lower(t, d)) as B.LTerm);
-}
-
-// the telescope T with the parameters cols specializes fixed and gone
-function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
-  if (!cols.some((v) => v !== null)) {
-    return T;
-  }
-  const F = B.term_wnf(e.book, T);
-  if (F.$ !== "All") {
-    return T;
-  }
-  if (cols[0] !== null) {
-    return type_drop(e, F.B(cols[0]), cols.slice(1));
-  }
-  return B.All(F.q, F.k, F.i, F.A, (x: HTerm) => type_drop(e, F.B(x), cols.slice(1)));
 }
 
 // Model
@@ -589,8 +568,8 @@ function scope_nil(): Scope {
   return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false };
 }
 
-// binds the next bend2 variable to o (to the argument v when
-// specialized); a kernel binder when kb
+// binds the next bend2 variable to o, or to its original term v when
+// specialized or inlined; a kernel binder when kb
 function scope_bind(s: Scope, o: O, T: HTerm | null, kb: boolean, v?: HTerm): Scope {
   const c = s.c.slice();
   c[s.d] = { o, T, v };
@@ -1014,7 +993,9 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
 // the item named k (or the term k) applied to xs along its telescope T:
 // the arguments of an item's specialized parameters pick its instance and go
 function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live: boolean): O {
-  const sp = typeof k === "string" ? spec_of(e, k) : [];
+  const tld = typeof k === "string" ? e.book.tlds[k] : null;
+  // a def's first x parameters, its ~ ones, are specialized
+  const nx = tld?.$ === "Def" ? tld.x : 0;
   const ps: Arg[] = [];
   let U = T;
   xs.forEach((x, j) => {
@@ -1022,7 +1003,7 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
     if (F?.$ !== "All") {
       return oos("an application past its head's known type");
     }
-    const v = sp[j] === true ? spec_val(e, s, x) : null;
+    const v = j < nx ? spec_val(e, s, x) : null;
     ps.push([quant(F.q), x, F.A, v]);
     U = F.B(v ?? x);
   });
@@ -1105,8 +1086,9 @@ function group_new(e: Safe, k: Name, hs: Name[]): Group | null {
     }
     return j;
   }));
-  const doms = B.tele_unbind(e.book, e.book.tlds[k].T).doms.slice(0, lead);
-  if (hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && spec_of(e, k)[j] !== true)) {
+  const tld = e.book.tlds[k];
+  const doms = B.tele_unbind(e.book, tld.T).doms.slice(0, lead);
+  if (hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && (tld.$ !== "Def" || j >= tld.x))) {
     return null;
   }
   return { k, ms: [k, ...hs], qs: doms.map(([q]) => quant(q)) };
@@ -1166,10 +1148,11 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   // member m past the lead, from scope s1 on: its binders, its terms (but
   // at its specialized parameters), its cols and type
   const rest = (s1: Scope, m: Name) => {
-    const sp = spec_of(e, m);
-    const r = tele_open(e, s1, e.book.tlds[m].T, lead, sp.length);
-    const qs = B.tele_unbind(e.book, e.book.tlds[m].T).doms.map(([q]) => quant(q));
-    return { ...r, vs: r.xs.flatMap((x, j): Array<[Q, O]> => sp[j] ? [] : [[qs[j], term(e, r.s, x, false)]]), cs: r.xs.map((x, j) => sp[j] ? x : null) };
+    const tld = e.book.tlds[m];
+    const nx = tld.$ === "Def" ? tld.x : 0;
+    const r = tele_open(e, s1, tld.T, lead, tld.n);
+    const qs = B.tele_unbind(e.book, tld.T).doms.map(([q]) => quant(q));
+    return { ...r, vs: r.xs.flatMap((x, j): Array<[Q, O]> => j < nx ? [] : [[qs[j], term(e, r.s, x, false)]]), cs: r.xs.map((x, j) => j < nx ? x : null) };
   };
   // the selector's match: a member's arm past its tag (and a helper's (.k, ()))
   const efq: O = { $: "Efq" };
@@ -1298,23 +1281,27 @@ function word_ref(e: Safe, T: Name, fam: Name, n: number): O {
 }
 
 // parallel lets as nested kernel lets; a let of a variable is inlined,
-// and so is a constructor a self-call takes (the kernel reads it as the
-// column it rebuilds only in place)
+// and so is a constructor a self-call takes. Build the latter at each
+// use's depth and mode, where the kernel reads the column it rebuilds
 function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: boolean, put: Set<number> = new Set()): O {
   let s2 = s;
   const ls: Array<[Q, number, O, number]> = [];
   for (let j = 0; j < x.k.length; j++) {
     const q = quant(x.q[j]);
+    const [y, V] = open(x.v[j]);
+    if (put.has(j)) {
+      s2 = scope_bind(s2, { $: "Efq" }, V, false, x.v[j]);
+      continue;
+    }
     // a parallel let's value sees s's variables, below the lets before it
     const at = { ...s, D: s2.D, kq: s2.kq };
     const v = term(e, at, x.v[j], live && q > 0);
-    const [y, V] = open(x.v[j]);
     const from = y.$ === "Var" ? at.c[y.i]?.T : null;
     // keep a refined Data view: consume the affine value once, then copy it
     const refined = q === 2 && v.$ === "Var" && V !== null && from != null
       && kind(e, at, from) === 1 ? B.term_wnf(e.book, V) : null;
     const view = refined !== null && (open(refined)[0].$ === "Eql" || kind(e, at, refined) === 2);
-    if ((v.$ === "Var" && !view) || put.has(j)) {
+    if (v.$ === "Var" && !view) {
       s2 = scope_bind(s2, v, V, false);
     } else {
       const l = s2.D;
