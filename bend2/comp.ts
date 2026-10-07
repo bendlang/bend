@@ -4313,7 +4313,7 @@ ${spins}
 #undef  WL_AGAIN
 #define WL_SPIN
 #define WL_SPUN
-#define WL_AGAIN(F) __attribute__((musttail)) return WL_##F(WL_ALL)
+#define WL_AGAIN    WL_JMP
 
 typedef Term (PRESERVE(preserve_none) *WlFn)(WL_SIG);
 #define WL_X(F) WL_FN WL_##F(WL_SIG);
