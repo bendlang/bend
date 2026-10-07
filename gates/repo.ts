@@ -84,7 +84,7 @@ allow(/^tests\/[a-z]+\/[a-z0-9_]+\.(c|js)$/);
 allow(/^tools\/bend-fmt-lsp\/(\.gitignore|README\.md|package\.json|package-lock\.json|tsconfig\.json)$/);
 allow(/^tools\/bend-fmt-lsp\/src\/(formatter|server)\.ts$/);
 allow(/^tools\/bend-fmt-lsp\/src\/test\/[a-z_]+\.test\.ts$/);
-allow(/^tools\/bend-lint\/(README\.md|GUIDE\.md|package\.json|tsconfig\.json|bend\.pin)$/);
+allow(/^tools\/bend-lint\/(README\.md|package\.json|tsconfig\.json|bend\.pin)$/);
 allow(/^tools\/bend-lint\/src\/(lint\.ts|patch\.ts|lint\.bend|lint\.js)$/);
 allow("tools/bend-lint/test/lint.test.ts");
 
