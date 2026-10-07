@@ -2875,10 +2875,9 @@ export function compile_book(book: Bend.Book): string {
   const spins = [`CONSTV u64 STAT_IMG[] = { ${FL.img.join(", ") || 0} };`,
     ...FL.spins.map((s) => s.lines.join("\n"))].join("\n\n");
   const segs = FL.segs.map((seg) => {
-    const out = [`  WL_CASE(${seg.fid})`, "  {",
-      ...seg_take(seg).map((l) => "    " + l),
-      "    WL_OPEN", ...seg.spin ? ["    WL_SPIN"] : [],
-      ...seg_text(seg.lines, 2), ...seg.spin ? ["    WL_SPUN"] : [], "  }}"];
+    const out = [`  WL_CASE(${seg.fid})`, "  {", ...seg_text([...seg_take(seg),
+      "WL_OPEN", ...seg.spin ? ["WL_SPIN", ...seg.lines, "WL_SPUN"]
+        : seg.lines], 2), "  }}"];
     return (dev.has(seg.fid) ? out : ["#if !DEVICE", ...out, "#endif"])
       .join("\n");
   }).join("\n\n");
