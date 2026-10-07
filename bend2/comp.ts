@@ -4848,18 +4848,6 @@ static void gpu_run(u32 f) {
 
 #endif
 
-#if BEND_CUDA
-
-static u64 gpu_hash(void) {
-  u64 key = 14695981039346656037ull ^ CUBE_LOG;
-  for (const char* p = BEND_SRC; *p != 0; p += 1) {
-    key = (key ^ (u8)*p) * 1099511628211ull;
-  }
-  return key;
-}
-
-#endif
-
 #if BEND_METAL
 
 static void gpu_fail(NSError* err) {
@@ -4973,8 +4961,12 @@ static void gpu_pass(u32 f) {
 
 #elif BEND_CUDA
 
-static void gpu_shape(int units) {
-  CUBE_LOG = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
+static u64 gpu_hash(void) {
+  u64 key = 14695981039346656037ull ^ CUBE_LOG;
+  for (const char* p = BEND_SRC; *p != 0; p += 1) {
+    key = (key ^ (u8)*p) * 1099511628211ull;
+  }
+  return key;
 }
 
 #define GPU_CHECK(fn, ...) do { \
@@ -4997,7 +4989,8 @@ static const char* gpu_probe(void) {
   }
   int l2 = 1 << 23;
   cuDeviceGetAttribute(&l2, CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, gpu_dev);
-  gpu_shape(l2 >> 16);
+  int units = l2 >> 16;
+  CUBE_LOG  = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
   GPU_CHECK(cuDevicePrimaryCtxRetain, &ctx, gpu_dev);
   result = cuCtxSetCurrent(ctx);
   if (result != CUDA_SUCCESS) {
