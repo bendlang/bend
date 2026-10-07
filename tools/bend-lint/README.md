@@ -42,6 +42,10 @@ export const rules: LintRule[] = [{
 }];
 ```
 
+A file with its own `import Base` starts from a copy of Base, checked once
+per process (again only if base.bend changes), and facts of Base's own defs
+are not recorded.
+
 Rules run in order, one at a time; `cx.prior` holds what earlier rules
 found. A finding with severity `error` stops the run.
 

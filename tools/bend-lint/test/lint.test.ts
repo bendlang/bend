@@ -429,6 +429,26 @@ describe("lint", () => {
     expect(res.sources.length).toBe(2);
   });
 
+  test("Base is reused, its facts are left out, and it stays out of files that do not import it", async () => {
+    const withBase = fixture("with_base.bend", "import Base\n\ndef main() -> Nat:\n  1n\n");
+    const probe: LintRule = {
+      id: "test/base",
+      needsTypes: true,
+      run: (cx) => {
+        expect(cx.root.path).toEndWith("/with_base.bend");
+        expect(cx.sources.some((s) => s.base)).toBe(true);
+        expect([...cx.facts!.values()].some((f) => f.def === "main")).toBe(true);
+        expect([...cx.facts!.values()].every((f) => cx.book.tlds[f.def]?.b !== true)).toBe(true);
+        return [];
+      },
+    };
+    const first = await lint(withBase, [probe]);
+    const second = await lint(withBase, [probe]);
+    expect([first.ok, second.ok]).toEqual([true, true]);
+    expect(second.book.order).toEqual(first.book.order);
+    expect((await lint(fixture("without_base.bend", "def main() -> Nat:\n  1n\n"), [])).ok).toBe(false);
+  });
+
   test("lints in flight keep their own rules and facts", async () => {
     const gate = Promise.withResolvers<void>();
     const entered = Promise.withResolvers<void>();

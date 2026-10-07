@@ -10,7 +10,7 @@ import * as util from "node:util";
 
 import type * as BendModule from "../../../bend2/bend.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
-import { BEND_TS, DriftError, MARK, PIN_FILE, current, fs, patch, path, pinned } from "./patch.ts";
+import { BEND_TS, DriftError, MARK, PIN_FILE, blob, current, fs, patch, path, pinned } from "./patch.ts";
 
 // Types
 // =====
@@ -94,6 +94,10 @@ const LINE = /[^\n]*\n|[^\n]+$/g;
 const STACK = "the machine stack overflowed (a deep recursion, or a literal too large to expand)";
 const SAMPLE = "type N is Data:\n  Z{}\n\ndef id(x: N) -> N:\n  x\n";
 const HEAD: Record<Severity, string> = { error: "Error", warning: "Warning", information: "Information", hint: "Hint" };
+
+// Checked base.bend books, by the hash of base.bend: Base is checked once
+// per process, and again only if base.bend changes.
+const BASES = new Map<string, Promise<Book>>();
 
 // Binders are explicit in checked terms, so Var.v cells are not followed.
 // A new term kind is a type error here, and a DriftError when walked.
@@ -200,25 +204,43 @@ function isErr(e: unknown): e is Err {
   return typeof e === "object" && e !== null && (e as { $?: unknown }).$ === "Err";
 }
 
-// Loads and checks a book as bend2/main.ts book_read does.
+// Loads and checks a book as bend2/main.ts book_read does. A file with its
+// own `import Base` starts from a copy of the checked Base, as `bend
+// --checkup` does. Facts of Base's own defs are not recorded.
 async function check(file: string, capture: boolean, signal: AbortSignal): Promise<Checked> {
   signal.throwIfAborted();
   const book: Hooked = Bend.book_nil();
   const seen = new Map<string, string | null>();
   const found: Array<Omit<Fact, "inst">> = [];
-  book.see = capture ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => void found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us }) : undefined;
-  const caught = await Bend.book_load(book, file, "", seen).then(() => {
+  book.see = capture
+    ? (bok, tm, ty, ctx, dep, def, spn, qt, us) => void (bok.tlds[def]?.b !== true && found.push({ tm, ty, bok, ctx, dep, def, spn, qt, us }))
+    : undefined;
+  const seeded = fs.existsSync(file) && /^import Base\s*$/m.test(fs.readFileSync(file, "utf8"));
+  const key = seeded ? blob(fs.readFileSync(Bend.BASE_BEND, "utf8")) : "";
+  if (seeded && !BASES.has(key)) {
+    const base = Bend.book_nil();
+    BASES.set(key, Bend.book_load(base, Bend.BASE_BEND, "", new Map()).then(() => (Bend.book_valid(base), base)));
+  }
+  const caught = await (seeded ? BASES.get(key)! : Promise.resolve(undefined)).then(async (base) => {
+    if (base !== undefined) {
+      Object.assign(book.tlds, Object.fromEntries(Object.entries(base.tlds).map(([k, tld]) => [k, { ...tld }])));
+      Object.assign(book.ctrs, base.ctrs);
+      Object.assign(book.tmps, Object.fromEntries(Object.entries(base.tmps).map(([k, m]) => [k, new Map(m)])));
+      book.order.push(...base.order);
+      seen.set(Bend.BASE_BEND, "");
+    }
+    await Bend.book_load(book, file, "", seen);
     const laws = path.join(path.dirname(file), "LAWS.bend");
     if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws) && !seen.has(fs.realpathSync(laws))) {
       throw "PROOF.bend must import ./LAWS.bend";
     }
-    Bend.book_valid(book, 0);
+    Bend.book_valid(book, base?.order.length ?? 0);
     if (book.hols > 0) {
       throw book.hols + " TODO" + (book.hols === 1 ? "" : "s") + " found.\nThe code is incomplete, and not a valid proof yet.";
     }
   }).then(() => undefined, (e: unknown) => ({ e }));
   signal.throwIfAborted();
-  const root = seen.keys().next().value;
+  const root = [...seen.keys()].find((real) => real !== Bend.BASE_BEND || !seeded);
   const sources = [...seen.keys()].filter((real) => fs.existsSync(real)).map((real): Source => {
     const text = fs.readFileSync(real, "utf8");
     const ns = seen.get(real) ?? "";
