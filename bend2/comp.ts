@@ -2917,18 +2917,18 @@ function js_call(sc: Scope, k: Name, args: HTerm[], tail: boolean): string {
   if (tld.$ === "ADT") {
     return "null";
   }
-  const intr = intr_of(k, true)?.JS ?? null;
-  if (intr === null && !fun_runs(tld)) {
+  const intr = intr_of(k, true);
+  if (intr !== undefined) {
+    return tpl(intr.JS, exprs.map((e) => ATOM.test(e) || STRLIT.test(e) ? e
+      : emit_hold(sc, [e], "x")[0]));
+  }
+  if (!fun_runs(tld)) {
     die("a live call into the law " + Bend.name_key(k));
   }
   const v = def_foreign(tld) && exprs.length === fun_of(k).lays.length - 1
     ? name_local(sc, "x") : "";
   if (v) {
     exprs.push(v);
-  }
-  if (intr !== null) {
-    return tpl(intr, exprs.map((e) => ATOM.test(e) || STRLIT.test(e) ? e
-      : emit_hold(sc, [e], "x")[0]));
   }
   const call = `${js_sat(k)}(${exprs.join(", ")})`;
   return v ? `(${v}) => ${call}`
@@ -2962,8 +2962,7 @@ function js_expr(sc: Scope, tm: HTerm, ty0: HTerm | null): string {
         return js_expr(sc, y, ty);
       }
       const k = (m.t as Of<"Ref">).k;
-      const it = intr_of(k, true);
-      if (it?.C === null) {
+      if (intr_of(k)?.C === null) {
         lay_el(m.all[0]);
       }
       return js_call(sc, k, m.args, false);
