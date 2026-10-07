@@ -8,7 +8,7 @@ import type { Book, LTerm, Span } from "bend2/bend.ts";
 import { BEND2, Bend, Comp, applyFixes, bendRule, findConfig, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
 import { rules as trailing } from "../rules/trailing_whitespace.ts";
-import { DriftError, bendDir, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
+import { DriftError, bendDir, fetchBend, installedTag, latestTag, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
 
 // Types
 // =====
@@ -484,6 +484,20 @@ async function seen(file: string, want: LintRule["facts"]): Promise<Seen[]> {
   });
 }
 
+// A GitHub that lists `tags` and serves this checkout's bend2 at any
+// release; it records the URLs it is asked for.
+function github(tags: string[]): { get: (url: string) => Promise<Response>; asked: string[] } {
+  const asked: string[] = [];
+  const get = async (url: string): Promise<Response> => {
+    asked.push(url);
+    const file = url.match(/^https:\/\/raw\.githubusercontent\.com\/bendlang\/bend\/v[\d.]+\/bend2\/(.+)$/)?.[1];
+    return url.includes("/info/refs")
+      ? new Response(["0000 HEAD\0caps", ...tags.flatMap((t) => ["0000 refs/tags/" + t, "0000 refs/tags/" + t + "^{}"]), "0000 refs/heads/main"].join("\n") + "\n")
+      : file !== undefined && fs.existsSync(path.join(BEND2, file)) ? new Response(fs.readFileSync(path.join(BEND2, file), "utf8")) : new Response("", { status: 404 });
+  };
+  return { get, asked };
+}
+
 function run(...args: string[]) {
   return spawnSync(process.execPath, [CLI, ...args], { encoding: "utf8" });
 }
@@ -538,10 +552,10 @@ describe("patch", () => {
     expect(() => seeInfer(fake as unknown as typeof Bend.term_infer)).toThrow(/term_infer takes 5 parameters, not 6/);
   });
 
-  test("bend2 is found from a checkout, its bend2 folder, or the repo; a wrong dir fails", () => {
+  test("bend2 is found from a checkout, its bend2 folder, or the repo; a wrong dir fails", async () => {
     const repo = path.dirname(BEND2);
-    expect([bendDir(repo), bendDir(BEND2), bendDir(undefined)]).toEqual([BEND2, BEND2, BEND2]);
-    expect(() => bendDir(DIR)).toThrow(/no bend2 at/);
+    expect([await bendDir(repo), await bendDir(BEND2), await bendDir(undefined)]).toEqual([BEND2, BEND2, BEND2]);
+    await expect(bendDir(DIR)).rejects.toThrow(/no bend2 at/);
   });
 
   test("paths: a drive letter is a root; POSIX paths are unchanged", () => {
@@ -551,6 +565,55 @@ describe("patch", () => {
     expect(resolve("/home/x", "y.bend")).toBe("/home/x/y.bend");
     expect(relative("C:/Users/m/", "C:/Users/m/sub/d.bend")).toBe("sub/d.bend");
     expect(relative("/a/b", "/a/c/d.bend")).toBe("../c/d.bend");
+  });
+});
+
+describe("downloading bend", () => {
+  const cache = () => fs.mkdtempSync(path.join(DIR, "cache-"));
+  const offline = () => Promise.reject(new Error("offline"));
+
+  test("the installed bend's version comes first; else the newest release, asked once a day", async () => {
+    expect([installedTag(() => "bend 2.0.36\n"), installedTag(() => undefined), installedTag(() => "nope")]).toEqual(["v2.0.36", undefined, undefined]);
+    const gh = github(["v2.0.9", "v2.0.36", "v2.0.10", "nightly"]);
+    const at = cache();
+    expect([await latestTag(at, gh.get), await latestTag(at, gh.get)]).toEqual(["v2.0.36", "v2.0.36"]);
+    expect(gh.asked.length).toBe(1);
+    fs.writeFileSync(path.join(at, "latest.json"), "{ damaged");
+    expect(await latestTag(at, gh.get)).toBe("v2.0.36");
+    expect(installedTag(() => "bend 2.0.36\nA newer bend is out.\n")).toBe("v2.0.36");
+  });
+
+  test("offline, the newest release in the cache is used", async () => {
+    const at = cache();
+    ["v2.0.3", "v2.0.12", "latest-ish"].forEach((d) => fs.mkdirSync(path.join(at, d)));
+    expect(await latestTag(at, offline)).toBe("v2.0.12");
+    await expect(latestTag(cache(), offline)).rejects.toThrow(/cannot list bend's releases \(offline\)/);
+  });
+
+  test("a release downloads once and whole, and bend-lint runs on it", async () => {
+    const gh = github([]);
+    const at = cache();
+    const dir = await fetchBend("v2.0.36", at, gh.get);
+    const effs = fs.readdirSync(path.join(BEND2, "effs"));
+    expect(fs.readFileSync(path.join(dir, "bend.ts"), "utf8")).toBe(fs.readFileSync(path.join(BEND2, "bend.ts"), "utf8"));
+    expect(fs.readdirSync(path.join(dir, "effs")).sort()).toEqual(effs.sort());
+    expect(gh.asked.length).toBe(3 + effs.length);
+    expect(await fetchBend("v2.0.36", at, gh.get)).toBe(dir);
+    expect(gh.asked.length).toBe(3 + effs.length);
+    expect(fs.readdirSync(path.join(at, "v2.0.36"))).toEqual(["bend2"]);
+    const out = spawnSync(process.execPath, [CLI, fixture("downloaded.bend", USERLAND)], { encoding: "utf8", env: { ...process.env, BEND_DIR: dir } });
+    expect([out.status, out.stderr]).toEqual([0, ""]);
+    await expect(fetchBend("../x", at, gh.get)).rejects.toThrow(/not a bend release/);
+  });
+
+  test("bendDir downloads only when no bend is given or around it", async () => {
+    const gh = github(["v2.0.35"]);
+    const at = cache();
+    const away = { get: gh.get, cache: at, repo: DIR };
+    expect(await bendDir(undefined, { ...away, run: () => "bend 2.0.36\n" })).toBe(fs.realpathSync(path.join(at, "v2.0.36", "bend2")));
+    expect(await bendDir(undefined, { ...away, run: () => undefined })).toBe(fs.realpathSync(path.join(at, "v2.0.35", "bend2")));
+    await expect(bendDir(undefined, { get: offline, cache: at, repo: DIR, run: () => "bend 2.0.40\n" })).rejects.toThrow(/could not download bend v2\.0\.40 \(offline\)/);
+    expect(await bendDir(undefined, { get: offline, cache: at, run: () => "bend 2.0.40\n" })).toBe(BEND2);
   });
 });
 

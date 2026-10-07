@@ -39,6 +39,8 @@ UTF-16):
 
 `--bend <dir>` (or `$BEND_DIR`) picks the bend to load: a bend checkout, or
 its `bend2` folder. Inside the bend repo, its own bend is the default.
+Elsewhere, bend-lint downloads bend's source (see
+[Outside the bend repo](#outside-the-bend-repo)).
 
 ## Rules in TypeScript
 
@@ -224,9 +226,16 @@ tests catch subtler changes.
 
 ## Outside the bend repo
 
-bend-lint needs a bend checkout, because it loads bend's source. Give it
-with `--bend <dir>` or `$BEND_DIR`; with neither, it stops with a clear
-error. For `tsc`, run `bun install` (for `@types/bun`) and point the
+bend-lint loads bend's source, not the `bend` program. With no `--bend`
+or `$BEND_DIR`, and no bend repo around it, it downloads the source of one
+bend release from GitHub: the version of the `bend` on your PATH (`bend
+version`), else the newest release (asked once a day). It takes only
+`bend2/bend.ts`, `comp.ts`, `base.bend` and the `effs/` files Base imports
+(about 0.6 MB), and keeps them in `~/.cache/bend-lint/<version>/`
+(`$XDG_CACHE_HOME`, or `%LOCALAPPDATA%` on Windows). Later runs use the
+cache, with no network; offline, it uses the newest release cached. If a
+release changes what `src/patch.ts` edits, bend-lint stops with a
+DriftError, as it does for a checkout. For `tsc`, run `bun install` (for `@types/bun`) and point the
 `bend2/*` path in `tsconfig.json` at that checkout's `bend2/`. The drift
 tests read the checkout's own `tests/`.
 

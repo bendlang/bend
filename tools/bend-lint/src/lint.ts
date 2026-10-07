@@ -697,7 +697,7 @@ export async function bendRule(file: string): Promise<LintRule> {
 // Finds bend2 (see bendDir), patches bend.ts and comp.ts as Bun loads
 // them, then checks what the wrappers record for `x` in a tiny program.
 async function instrument(given: string | undefined): Promise<{ Bend: Bend; Comp: Comp; BEND2: string }> {
-  const dir = bendDir(given);
+  const dir = await bendDir(given);
   // Bun.plugin is process-wide: match this checkout's two files by full path.
   const patched = new Map(["bend.ts", "comp.ts"].map((f) => [path.join(dir, f), patch(f, fs.readFileSync(path.join(dir, f), "utf8"))]));
   const exact = dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replaceAll("/", "[\\\\/]");
