@@ -5,8 +5,9 @@
 // the call waits on the child's pipes and on a descriptor that turns readable
 // once it exits (a pidfd on Linux, a kqueue on macOS; without one, it looks
 // every 50ms), so other computations run meanwhile. Once the direct child is
-// reaped it takes one more chunk per pipe: a descendant holding a pipe open
-// does not extend the wait.
+// reaped it reads at most a pipe's capacity more from each, what it could
+// hold at the exit: a descendant holding a pipe open does not extend the
+// wait. A macOS pipe holds 64KB; a Linux one says (F_GETPIPE_SZ).
 
 // The libc beyond io_sys. On Linux, as on the C lane, it needs glibc 2.34
 // or newer for addclosefrom_np.
@@ -247,8 +248,14 @@ function process_run(program, args, input, maxOutput, timeoutMs, k) {
     const got = ps.waitpid(p.child, sys.ptr(p.status), 1);
     if (got === p.child) {
       p.child = -1;
-      process_read(sys, p, 1, p.buf.length);
-      process_read(sys, p, 2, p.buf.length);
+      for (let i = 1; i < 3 && p.code === 0; i += 1) {
+        const fd = p.pipes[i][0];
+        const room = fd < 0 || sys.mac ? 65536 : sys.fcntl(fd, 1032, 0);
+        if (room < 0) {
+          p.code = sys.errno();
+        }
+        process_read(sys, p, i, room);
+      }
       return process_end(sys, ps, p);
     }
     if (got < 0 && sys.errno() !== 4) {
