@@ -3930,11 +3930,12 @@ INLINE u32 blk_cls(Term t) {
   return (u32)term_aux(t) & 31;
 }
 
-#define buf_wcls(c) ((c) == 0 ? 0 : (c) - 1)
+INLINE u32 blk_wcls(bool arr, u32 c) {
+  return arr ? c : c == 0 ? 0 : c - 1;
+}
 
 INLINE u32 blk_span(Term t) {
-  u32 c = blk_cls(t);
-  return term_tag(t) == TAG_ARR ? c : buf_wcls(c);
+  return blk_wcls(term_tag(t) == TAG_ARR, blk_cls(t));
 }
 
 FAR void term_drop(Env e, Term t) {
@@ -4156,7 +4157,7 @@ INLINE Term blk_half(Env e, Term a, u32 hi) {
     return a;
   }
   c -= 1;
-  u32 cw = arr ? c : buf_wcls(c);
+  u32 cw = blk_wcls(arr, c);
   u64 src = blk_loc(H, a);
   BLK_ALLOC(n, cw)
   if (!arr && c == 0) {
@@ -4177,7 +4178,7 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
     d = 0;
   }
   u32 c = (u32)d + lgs;
-  BLK_ALLOC(l, arr ? c : buf_wcls(c))
+  BLK_ALLOC(l, blk_wcls(arr, c))
   for (u32 j = 0; arr && d > 0 && j < n; j += 1) {
     if (d >= 24 && !term_triv(v[j])) {
       err_post(H, ERR_CNTS);
