@@ -1310,7 +1310,7 @@ function let_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Let" }>, live: bool
     const v = term(e, at, x.v[j], live && q > 0);
     const [y, V] = open(x.v[j]);
     const from = y.$ === "Var" ? at.c[y.i]?.T : null;
-    // Keep a refined Data view: consume the affine value once, then copy it.
+    // keep a refined Data view: consume the affine value once, then copy it
     const refined = q === 2 && v.$ === "Var" && V !== null && from != null
       && kind(e, at, from) === 1 ? B.term_wnf(e.book, V) : null;
     const view = refined !== null && (open(refined)[0].$ === "Eql" || kind(e, at, refined) === 2);
