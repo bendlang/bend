@@ -316,7 +316,7 @@ export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
 export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; };
 export type TLD  = ADT | Def;
-export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; diags: Diag[]; };
+export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; diags: Diag[]; rules: LintRule[]; files?: File[]; };
 
 // Context
 export type Ann = { q: Quant; k: Name; T: HTerm };
@@ -389,6 +389,8 @@ export const DIAG_CODES = {
 } as const satisfies Record<string, DiagCode>;
 export type DiagCode = `${string}/${string}`;
 export type Diag = { $: "Diag"; code: DiagCode; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
+
+export type LintRule = { id: DiagCode; run(book: Book, signal: AbortSignal): Diag[] | Promise<Diag[]> };
 
 // Constructors
 // ============
@@ -930,8 +932,9 @@ export function ctx_scope(ctx: Ctx): Name[] {
 // or bend2/ beside bin/ in the compiled bend. NAMED is the hub's rule
 // for a package's <name>@<version>.
 
-export function book_nil(): Book {
-  return { tlds: Object.create(null), ctrs: Object.create(null), order: [], hols: 0, tmps: Object.create(null), diags: [] };
+export function book_nil(rules: LintRule[] = []): Book {
+  return { tlds: Object.create(null), ctrs: Object.create(null), order: [], hols: 0, tmps: Object.create(null), diags: [],
+    rules, files: rules.length > 0 ? [] : undefined };
 }
 
 export function book_ctr(book: Book, k: Name): Ctr | null {
@@ -1029,6 +1032,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
   const body  = lines.slice();
   const al    : Record<Name, Name> = Object.create(null);
   const source: File = { str: text, ns, al, path: real };
+  book.files?.push(source);
   const hub   = (s: string): boolean => /^0x[0-9a-f]+\//.test(s);
   const ok    = (s: string, lib: boolean): boolean => hub(s) === lib
     && /^(\/|(\.\.\/)*)([A-Za-z_][\w-]*\/)*[A-Za-z_][\w-]*$/.test(s.replace(/^0x[0-9a-f]+\//, ""));
@@ -3970,6 +3974,20 @@ export function book_valid(book: Book, done: number = 0): void {
     }
     if (fin) {
       book.tlds[k] = tld;
+    }
+  }
+}
+
+// Rules are trusted and sequential.
+export async function book_diagnose(book: Book, signal: AbortSignal): Promise<void> {
+  for (const rule of book.rules) {
+    signal.throwIfAborted();
+    const diags = await rule.run(book, signal);
+    signal.throwIfAborted();
+    for (const finding of diags) {
+      const diag = { ...finding, code: rule.id };
+      if (diag.severity === "error") throw diag;
+      book.diags.push(diag);
     }
   }
 }

@@ -811,24 +811,29 @@ function cli_fail(msg: string): never {
 // Book
 // ====
 
-async function book_read(file: string, base?: Bend.Book,
-  seen = new Map<string, string | null>()): Promise<Bend.Book> {
-  const book = base === undefined ? Bend.book_nil() : book_seed(base);
-  if (base !== undefined) {
+export async function book_read(file: string, base?: Bend.Book,
+  seen = new Map<string, string | null>(), signal = new AbortController().signal,
+  rules: Bend.LintRule[] = []): Promise<Bend.Book> {
+  const book = Bend.book_nil(rules);
+  const done = book_seed(book, base);
+  if (done > 0) {
     seen.set(BASE, "");
   }
   try {
+    signal.throwIfAborted();
     await Bend.book_load(book, file, "", seen);
+    signal.throwIfAborted();
     const laws = path.join(path.dirname(file), "LAWS.bend");
     if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws)
       && !seen.has(fs.realpathSync(laws))) {
       throw "Error: PROOF.bend must import ./LAWS.bend";
     }
-    Bend.book_valid(book, base?.order.length ?? 0);
+    Bend.book_valid(book, done);
     if (book.hols > 0) {
       throw "Error: " + String(book.hols) + " TODO" + (book.hols === 1 ? "" : "s")
         + " found.\nThe code is incomplete, and not a valid proof yet.";
     }
+    await Bend.book_diagnose(book, signal);
   } catch (e) {
     throw new Check_Fail(e);
   } finally {
@@ -844,8 +849,8 @@ class Check_Fail {
   constructor(readonly why: unknown) {}
 }
 
-function book_seed(base: Bend.Book): Bend.Book {
-  const book = Bend.book_nil();
+function book_seed(book: Bend.Book, base?: Bend.Book): number {
+  if (base === undefined || book.files !== undefined && base.files === undefined) return 0;
   for (const k of Object.keys(base.tlds)) {
     book.tlds[k] = { ...base.tlds[k] };
   }
@@ -854,7 +859,8 @@ function book_seed(base: Bend.Book): Bend.Book {
     book.tmps[k] = new Map(base.tmps[k]);
   }
   book.order.push(...base.order);
-  return book;
+  book.files?.push(...base.files ?? []);
+  return base.order.length;
 }
 
 function book_main(book: Bend.Book): Bend.Def | null {
