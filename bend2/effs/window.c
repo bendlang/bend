@@ -247,10 +247,13 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 
 // The display's refresh period in ns: the rate RandR reports, through a
 // libXrandr loaded at run time (a build needs no libxrandr-dev), else
-// 60 Hz, as under a display that reports none. The library stays loaded:
-// it hooks the connection's close.
+// 60 Hz, as under a display that reports none or has no RandR (asked
+// first: libXrandr faults on a server without it). The library stays
+// loaded: it hooks the connection's close.
 static u64 window_period(Display* dpy) {
-  void* xrr = dlopen("libXrandr.so.2", RTLD_LAZY | RTLD_LOCAL);
+  int op, ev, er;
+  void* xrr = XQueryExtension(dpy, "RANDR", &op, &ev, &er)
+    ? dlopen("libXrandr.so.2", RTLD_LAZY | RTLD_LOCAL) : NULL;
   if (xrr == NULL) {
     return 16666667;
   }

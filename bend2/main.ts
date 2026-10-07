@@ -422,7 +422,8 @@ function cc_find(gpu: boolean): string {
 // CUDA at $CUDA_HOME, else at /usr/local/cuda, its libraries in lib64 or, as
 // nix lays them, lib; else the ! runs on the cores). On macOS a program with
 // a framework (#import: a window, audio) builds as Objective-C; on Linux it
-// links the X11 and ALSA libraries it includes.
+// links the X11 and ALSA libraries it includes, and libdl with X11 (a window
+// loads libXrandr at run time; before glibc 2.34, dlopen lives in libdl).
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
   const mac   = process.platform === "darwin";
@@ -432,8 +433,8 @@ function cli_build(bin: string, file: string): void {
   const cc    = cc_find(bangs);
   const objc  = mac && (bangs || /^#import /m.test(c))
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
-  const libs  = [["X11", "X11"], ["alsa", "asound"]].flatMap(([h, l]) =>
-    !mac && c.includes("#include <" + h + "/") ? ["-l" + l] : []);
+  const libs  = [["X11", "X11", "dl"], ["alsa", "asound"]].flatMap(([h, ...ls]) =>
+    !mac && c.includes("#include <" + h + "/") ? ls.map((l) => "-l" + l) : []);
   const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];
   const gpu = mac ? ["-DBEND_METAL=1", ...cpu]
