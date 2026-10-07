@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // bend-lint checks a Bend file with bend's checker, then runs rules over
 // its source and the checker's results. It loads bend2/bend.ts through
-// ./patch.ts. Anything in bend.ts it cannot follow stops it with a
+// ./patch.ts. Rules are TS modules, or Bend files built on ./lint.bend. Anything in bend.ts it cannot follow stops it with a
 // DriftError. As a CLI, it exits 0 when ok, 1 when it found an error, 2
 // on bad usage or a tool failure.
 
@@ -9,13 +9,15 @@ import * as url from "node:url";
 import * as util from "node:util";
 
 import type * as BendModule from "../../../bend2/bend.ts";
+import type * as CompModule from "../../../bend2/comp.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
-import { BEND_TS, DriftError, MARK, PIN_FILE, blob, current, fs, patch, path, pinned } from "./patch.ts";
+import { BEND_TS, COMP_TS, DriftError, MARK, PIN_FILE, blob, current, fs, patch, path, pinned } from "./patch.ts";
 
 // Types
 // =====
 
 export type Bend = typeof BendModule;
+export type Comp = typeof CompModule;
 export type Severity = "error" | "warning" | "information" | "hint";
 // safe keeps behavior; suggested may change it; dangerous may break code.
 export type Applicability = "safe" | "suggested" | "dangerous";
@@ -82,6 +84,29 @@ export type LintRule = {
 
 export type LintResult = { ok: boolean; diags: Diag[]; sources: Source[]; book: Book; facts?: Map<LTerm, Fact> };
 
+// A span as lint.bend has it: a file's path and two code-point offsets.
+type Spot = { path: string; beg: number; end: number };
+
+// What a Bend rule reports, as lint.js reads it.
+type Reported = {
+  severity: Severity;
+  message: string;
+  span?: Spot;
+  fixes: Array<{ title: string; applicability: Applicability; edits: Array<{ span: Spot; text: string }> }>;
+};
+
+// What lint.js asks of bend-lint while a Bend rule runs. Facts and types
+// cross as indexes into the run's tables.
+type Channel = {
+  input(): { sources: Array<{ path: string; text: string; root: boolean }>; facts: number };
+  report(diags: Reported[]): void;
+  view(fact: number): { owner: Name; inst: boolean; kind: string; name: string; span?: Spot; inner?: Spot };
+  type(fact: number): number;
+  binder(fact: number): number | undefined;
+  same(fact: number, a: number, b: number): boolean;
+  show(fact: number, t: number): string;
+};
+
 type Hooked = Book & { see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void };
 type Mapper = <S extends Span | undefined>(s: S) => S;
 type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm, Fact>; failure?: Diag };
@@ -94,6 +119,8 @@ const LINE = /[^\n]*\n|[^\n]+$/g;
 const STACK = "the machine stack overflowed (a deep recursion, or a literal too large to expand)";
 const SAMPLE = "type N is Data:\n  Z{}\n\ndef id(x: N) -> N:\n  x\n";
 const HEAD: Record<Severity, string> = { error: "Error", warning: "Warning", information: "Information", hint: "Hint" };
+
+const shared = globalThis as typeof globalThis & { BEND_LINT?: Channel };
 
 // Checked base.bend books, by the hash of base.bend: Base is checked once
 // per process, and again only if base.bend changes.
@@ -133,8 +160,8 @@ const OPTIONS = {
 } as const;
 
 const USAGE = [
-  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <module>]... [--fix]",
-  "       bun tools/bend-lint/src/lint.ts --pin   (pin the current bend2/bend.ts)",
+  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--fix]",
+  "       bun tools/bend-lint/src/lint.ts --pin   (pin the current bend2/bend.ts and comp.ts)",
 ].join("\n");
 
 // Functions
@@ -260,7 +287,7 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[], signal = new AbortController().signal): Promise<LintResult> {
   if (current() !== pinned() && process.env.BEND_LINT_UNPINNED !== "1") {
-    throw new DriftError("bend2/bend.ts is " + current() + ", but bend-lint is pinned to " + pinned() + ".\n"
+    throw new DriftError("bend2 is\n" + current() + "\nbut bend-lint is pinned to\n" + pinned() + "\n"
       + "To bump: BEND_LINT_UNPINNED=1 bun test tools/bend-lint, then bun tools/bend-lint/src/lint.ts --pin");
   }
   const bad = rules.find((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
@@ -358,9 +385,86 @@ export function position(spn: Span): { start: Position; end: Position } {
   return { start: at(spn.beg), end: at(spn.end) };
 }
 
+// A rule written in Bend: a file built on ./lint.bend (see there). Its
+// book is checked once; each run compiles it and runs its main with bend's
+// own IO runtime, while lint.js reaches bend-lint through
+// globalThis.BEND_LINT. Offsets cross as code points.
+export async function bendRule(file: string): Promise<LintRule> {
+  const { book, failure } = await check(file, false, new AbortController().signal);
+  if (failure !== undefined) {
+    throw new Error(file + " does not check:\n" + render(failure));
+  }
+  const value = (k: Name): string => {
+    const tld = book.tlds[k];
+    return tld?.$ === "Def" && tld.n === 0 && tld.v !== null ? Bend.term_show(Bend.term_lower(Bend.term_snf(book, tld.v))) : "";
+  };
+  const id = value("id").match(/^"([^"\\]*)"$/)?.[1];
+  const types = value("types");
+  if (id === undefined || !["True{}", "False{}"].includes(types) || Comp.io_type(book) === null) {
+    throw new Error(file + " must define id() -> String, types() -> Bool and main() -> IO(Unit)");
+  }
+  return {
+    id,
+    needsTypes: types === "True{}",
+    run: (cx) => {
+      const spot = (spn: Span | undefined): Spot | undefined => spn && {
+        path: (spn.file as SourceFile).path, beg: [...spn.file.str.slice(0, spn.beg)].length, end: [...spn.file.str.slice(0, spn.end)].length,
+      };
+      const span = (s: Spot): Span => {
+        const src = cx.sources.find((x) => x.path === s.path);
+        if (src === undefined) {
+          throw new Error("rule " + id + " reported a span in " + s.path + ", which is not in the book");
+        }
+        const at = (n: number): number => [...src.text].slice(0, n).join("").length;
+        return { file: src.file, beg: at(s.beg), end: at(s.end) };
+      };
+      const facts = [...cx.facts?.values() ?? []];
+      const terms: HTerm[] = [];
+      const pick = <T>(xs: T[], i: number, what: string): T => {
+        if (xs[i] === undefined) {
+          throw new Error("rule " + id + " asked about " + what + " " + i + ", which it was not given");
+        }
+        return xs[i];
+      };
+      const keep = (t: HTerm): number => terms.push(t) - 1;
+      const found: Reported[][] = [];
+      shared.BEND_LINT = {
+        input: () => ({ sources: cx.sources.map((s) => ({ path: s.path, text: s.text, root: s.root })), facts: facts.length }),
+        report: (diags) => void found.push(diags),
+        view: (i) => {
+          const f = pick(facts, i, "fact");
+          const t = Bend.term_strip(f.tm);
+          return { owner: f.def, inst: f.inst, kind: t.$, name: t.$ === "Var" ? t.k : "", span: spot(f.spn), inner: spot(cx.span(t.s)) };
+        },
+        type: (i) => keep(pick(facts, i, "fact").ty),
+        binder: (i) => {
+          const f = pick(facts, i, "fact");
+          const ann = cx.binder(f, Bend.term_strip(f.tm));
+          return ann === null ? undefined : keep(ann.T);
+        },
+        same: (i, a, b) => cx.same(pick(facts, i, "fact"), pick(terms, a, "term"), pick(terms, b, "term")),
+        show: (i, t) => cx.show(pick(facts, i, "fact"), pick(terms, t, "term")),
+      };
+      let code: number;
+      try {
+        code = Comp.io_run(book, [file]);
+      } finally {
+        shared.BEND_LINT = undefined;
+      }
+      if (code !== 0 || found.length !== 1) {
+        throw new Error("rule " + id + " exited with " + code + " after " + found.length + " reports; it must report once");
+      }
+      return found[0].map((d) => cx.diag({
+        message: d.message, severity: d.severity, spn: d.span && span(d.span),
+        fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => ({ spn: span(e.span), text: e.text })) })),
+      }));
+    },
+  };
+}
+
 // Patches bend.ts as Bun loads it, then checks a tiny program: the type of
 // `x` in `id` must be recorded as N.
-async function instrument(): Promise<Bend> {
+async function instrument(): Promise<{ Bend: Bend; Comp: Comp }> {
   const patched = patch(fs.readFileSync(BEND_TS, "utf8"));
   Bun.plugin({
     name: "bend-lint",
@@ -382,7 +486,7 @@ async function instrument(): Promise<Bend> {
   if (!typed) {
     throw new DriftError("self-check failed: the patched bend.ts recorded no type for `id`; update tools/bend-lint/src/patch.ts");
   }
-  return B;
+  return { Bend: B, Comp: await import(url.pathToFileURL(COMP_TS).href) };
 }
 
 async function cli(argv: string[]): Promise<number> {
@@ -393,7 +497,7 @@ async function cli(argv: string[]): Promise<number> {
   }
   if (values.pin) {
     fs.writeFileSync(PIN_FILE, current() + "\n");
-    console.log("bend-lint: pinned bend2/bend.ts " + pinned());
+    console.log("bend-lint: pinned\n" + pinned());
     return 0;
   }
   if (positionals.length !== 1) {
@@ -401,7 +505,7 @@ async function cli(argv: string[]): Promise<number> {
   }
   const modules = await Promise.all((values.rules ?? []).map(async (file): Promise<LintRule[]> => {
     if (file.endsWith(".bend")) {
-      throw new Error(file + ": rules written in Bend are not supported yet");
+      return [await bendRule(file)];
     }
     const { rules } = await import(url.pathToFileURL(path.resolve(file)).href);
     if (!Array.isArray(rules)) {
@@ -432,7 +536,7 @@ function fail(e: unknown): never {
 // Side effects
 // ============
 
-export const Bend: Bend = await instrument().catch((e: unknown) => import.meta.main ? fail(e) : Promise.reject(e));
+export const { Bend, Comp }: { Bend: Bend; Comp: Comp } = await instrument().catch((e: unknown) => import.meta.main ? fail(e) : Promise.reject(e));
 
 if (import.meta.main) {
   process.exit(await cli(process.argv.slice(2)).catch(fail));

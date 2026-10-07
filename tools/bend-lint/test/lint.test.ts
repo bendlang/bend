@@ -1,12 +1,11 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import * as fs from "node:fs";
-import * as os from "node:os";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { Book, LTerm, Span } from "../../../bend2/bend.ts";
-import { Bend, applyFixes, lint, mapper, render, walk } from "../src/lint.ts";
+import { Bend, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
 import { BEND_TS, DriftError, blob, current, patch, pinned, relative, resolve } from "../src/patch.ts";
 
@@ -113,8 +112,159 @@ const DRIFT = [
   "import/base_prelude", "import/string_literal", "import/alias_shadow", "import/duplicate_name",
 ];
 
-const DIR = fs.mkdtempSync(path.join(os.tmpdir(), "bend-lint-"));
+// Inside the repo, so a Bend rule here can import ../../../src/lint.bend;
+// .tmp/ is ignored by git.
+const TMP = fileURLToPath(new URL("./.tmp", import.meta.url));
+const DIR = (fs.mkdirSync(TMP, { recursive: true }), fs.mkdtempSync(path.join(TMP, "run-")));
 const CLI = fileURLToPath(new URL("../src/lint.ts", import.meta.url));
+
+// The comma-space rule, written in Bend: source text only.
+const COMMA_BEND = String.raw`import Base
+import ../../../src/lint.bend as Lint
+
+def id() -> String:
+  "style/comma-space"
+
+def types() -> Bool:
+  False{}
+
+def is_word(+c: Char) -> Bool:
+  Bool.or(Char.is_alpha(c), Bool.or(Char.is_digit(c), Char.is_eq(c, '_')))
+
+def comma_before_word(+c: Char, rest: String) -> Bool:
+  match rest:
+    case SNil{}:
+      False{}
+    case SCon{n, t}:
+      Bool.and(Char.is_eq(c, ','), is_word(n))
+
+def keep(hit: Bool, +at: U32, tail: List<&2, U32>) -> List<&2, U32>:
+  match hit:
+    case True{}:
+      U32.add(at, 1) <> tail
+    case False{}:
+      tail
+
+def commas(s: String, +at: U32) -> List<&2, U32>:
+  match s:
+    case SNil{}:
+      []
+    case SCon{+c, +rest}:
+      keep(comma_before_word(c, rest), at, commas(rest, U32.add(at, 1)))
+
+def diag_at(+span: Lint.Span) -> Lint.Diag:
+  Lint.Diag{Lint.Warning{}, "Add a space after the comma.", Some{span}, [Lint.Fix{"Insert space", Lint.Safe{}, [Lint.Edit{span, " "}]}]}
+
+def diag(path: String, +at: U32) -> Lint.Diag:
+  diag_at(Lint.Span{path, at, at})
+
+def diags(+path: String, ats: List<&2, U32>) -> List<&2, Lint.Diag>:
+  match ats:
+    case Nil{}:
+      []
+    case Con{+at, rest}:
+      diag(path, at) <> diags(path, rest)
+
+def choose(root: Bool, +path: String, text: String, others: List<&2, Lint.Diag>) -> List<&2, Lint.Diag>:
+  match root:
+    case True{}:
+      diags(path, commas(text, 0))
+    case False{}:
+      others
+
+def pick(s: Lint.Source, others: List<&2, Lint.Diag>) -> List<&2, Lint.Diag>:
+  match s:
+    case Lint.Source{+path, text, root}:
+      choose(root, path, text, others)
+
+def all(srcs: List<&2, Lint.Source>) -> List<&2, Lint.Diag>:
+  match srcs:
+    case Nil{}:
+      []
+    case Con{s, rest}:
+      pick(s, all(rest))
+
+def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
+  match input:
+    case Lint.Input{sources, facts}:
+      IO.pure(List<&2, Lint.Diag>, all(sources))
+
+def main() -> IO(Unit):
+  Lint.serve(run)
+`;
+
+// A typed rule written in Bend: for each Var in def id, its type and
+// whether the checker finds it equal to its binder's.
+const TYPES_BEND = String.raw`import Base
+import ../../../src/lint.bend as Lint
+
+def id() -> String:
+  "test/types"
+
+def types() -> Bool:
+  True{}
+
+def verdict(same: Bool) -> String:
+  match same:
+    case True{}:
+      " (same as its binder)"
+    case False{}:
+      " (unlike its binder)"
+
+def compare(f: Lint.Fact, b: Maybe<&2, Lint.Term>, t: Lint.Term) -> IO(Bool):
+  match b:
+    case None{}:
+      IO.pure(Bool, False{})
+    case Some{x}:
+      Lint.same(f, x, t)
+
+def describe(+f: Lint.Fact, name: String, span: Maybe<&2, Lint.Span>) -> IO(Maybe<&2, Lint.Diag>):
+  do IO<Maybe<&2, Lint.Diag>>:
+    t : Lint.Term <- Lint.type_of(f)
+    shown : String <- Lint.show(f, t)
+    u : Lint.Term <- Lint.type_of(f)
+    b : Maybe<&2, Lint.Term> <- Lint.binder(f)
+    same : Bool <- compare(f, b, u)
+    return Some{Lint.Diag{Lint.Hint{}, String.append(name, String.append(": ", String.append(shown, verdict(same)))), span, []}}
+
+def wanted(hit: Bool, +f: Lint.Fact, name: String, span: Maybe<&2, Lint.Span>) -> IO(Maybe<&2, Lint.Diag>):
+  match hit:
+    case True{}:
+      describe(f, name, span)
+    case False{}:
+      IO.pure(Maybe<&2, Lint.Diag>, None{})
+
+def fact_diag(+f: Lint.Fact, v: Lint.View) -> IO(Maybe<&2, Lint.Diag>):
+  match v:
+    case Lint.View{owner, inst, kind, name, span, inner}:
+      wanted(Bool.and(String.eq(owner, "id"), Bool.and(String.eq(kind, "Var"), Bool.not(inst))), f, name, span)
+
+def prepend(m: Maybe<&2, Lint.Diag>, xs: List<&2, Lint.Diag>) -> List<&2, Lint.Diag>:
+  match m:
+    case None{}:
+      xs
+    case Some{d}:
+      d <> xs
+
+def each(facts: List<&2, Lint.Fact>) -> IO(List<&2, Lint.Diag>):
+  match facts:
+    case Nil{}:
+      IO.pure(List<&2, Lint.Diag>, [])
+    case Con{+f, rest}:
+      do IO<List<&2, Lint.Diag>>:
+        v : Lint.View <- Lint.view(f)
+        here : Maybe<&2, Lint.Diag> <- fact_diag(f, v)
+        later : List<&2, Lint.Diag> <- each(rest)
+        return prepend(here, later)
+
+def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
+  match input:
+    case Lint.Input{sources, facts}:
+      each(facts)
+
+def main() -> IO(Unit):
+  Lint.serve(run)
+`;
 
 const commaSpace: LintRule = {
   id: "style/comma-space",
@@ -269,7 +419,7 @@ describe("patch", () => {
   test("the pin is a git blob hash, and matches bend.ts", () => {
     expect(blob("a\r\nb\n")).toBe(blob("a\nb\n"));
     expect(blob("hello\n")).toBe("ce013625030ba8dba906f756967f9e9ca394464a");
-    expect(pinned()).toMatch(/^[0-9a-f]{40}$/);
+    expect(pinned()).toMatch(/^bend\.ts [0-9a-f]{40}\ncomp\.ts [0-9a-f]{40}$/);
     if (process.env.BEND_LINT_UNPINNED !== "1") expect(current()).toBe(pinned());
   });
 
@@ -540,6 +690,30 @@ describe("drift: the copy of book_read agrees with the repo tests", () => {
   }
 });
 
+describe("rules written in Bend", () => {
+  const userland = fixture("bend_userland.bend", USERLAND);
+
+  test("a source rule finds the comma, with a fix on the file on disk", async () => {
+    const rule = await bendRule(fixture("comma_rule.bend", COMMA_BEND));
+    expect([rule.id, rule.needsTypes]).toEqual(["style/comma-space", false]);
+    const res = await lint(userland, [rule]);
+    expect(res.diags.map((d) => [d.code, d.severity])).toEqual([["style/comma-space", "warning"]]);
+    expect(render(res.diags[0])).toContain("generic(~N, a)");
+    expect(applyFixes(root(res.sources).file, res.diags)).toContain("generic(~N, a)");
+  });
+
+  test("a typed rule asks the checker through effects", async () => {
+    const rule = await bendRule(fixture("types_rule.bend", TYPES_BEND));
+    expect(rule.needsTypes).toBe(true);
+    const res = await lint(userland, [rule, rule]);
+    expect(res.diags.length).toBeGreaterThan(0);
+    for (const d of res.diags) {
+      expect(d.message).toMatch(/^x: \S.* \(same as its binder\)$/);
+      expect(d.spn?.file).toBe(root(res.sources).file);
+    }
+  });
+});
+
 describe("cli", () => {
   const input = fixture("cli.bend", USERLAND);
   const first = module("first.js", `[{ id: "cli/first", needsTypes: true, run(cx) {
@@ -570,7 +744,15 @@ describe("cli", () => {
     expect(run(input, "--rules", path.join(DIR, "missing.js")).status).toBe(2);
     expect(run(input, "--rules", module("object.js", "{}")).stderr).toMatch(/must export `rules`/);
     expect(run(input, "--rules", module("bad.js", `[{ id: "bad", run() { return []; } }]`)).stderr).toMatch(/invalid rule/);
-    expect(run(input, "--rules", fixture("rule.bend", "")).stderr).toMatch(/not supported yet/);
+    expect(run(input, "--rules", fixture("no_id.bend", "import Base\n\ndef main() -> IO(Unit):\n  IO.print(\"x\")\n")).stderr)
+      .toMatch(/must define id\(\) -> String/);
+    expect(run(input, "--rules", fixture("broken_rule.bend", "def broken(\n")).stderr).toMatch(/does not check/);
+  });
+
+  test("a rule written in Bend runs from the CLI", () => {
+    const out = run(input, "--rules", fixture("cli_comma_rule.bend", COMMA_BEND));
+    expect(out.status).toBe(0);
+    expect(out.stdout).toContain("Warning [style/comma-space]:");
   });
 
   test("--fix applies safe fixes", () => {

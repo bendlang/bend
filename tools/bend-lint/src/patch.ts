@@ -3,7 +3,9 @@
 // `book.see` hook records what they return. The other gives bend.ts this
 // module's fs and path: bend.ts builds paths with "/" (path.posix), so here
 // real paths use "/" and a Windows drive letter counts as a root. On POSIX
-// they behave as node's. bend.pin holds the bend.ts these were tested on.
+// they behave as node's. bend.pin holds the hashes of the bend2 files
+// bend-lint was tested on: bend.ts, which it patches, and comp.ts, whose
+// io_run runs rules written in Bend.
 
 import * as crypto from "node:crypto";
 import * as nodeFs from "node:fs";
@@ -23,6 +25,7 @@ const SHIM = JSON.stringify(url.pathToFileURL(nodePath.join(HERE, "patch.ts")).h
 
 export const MARK = "BEND_LINT_PATCH";
 export const PIN_FILE = nodePath.join(HERE, "..", "bend.pin");
+const PINNED = ["bend.ts", "comp.ts"];
 
 const PATCHES = [
   {
@@ -112,11 +115,13 @@ export function pinned(): string {
 }
 
 export function current(): string {
-  return blob(nodeFs.readFileSync(BEND_TS, "utf8"));
+  return PINNED.map((f) => f + " " + blob(nodeFs.readFileSync(path.join(BEND2, f), "utf8"))).join("\n");
 }
 
 // Side effects
 // ============
 
-export const BEND_TS = fs.realpathSync(path.join(HERE, "..", "..", "..", "bend2", "bend.ts"));
+export const BEND2 = fs.realpathSync(path.join(HERE, "..", "..", "..", "bend2"));
+export const BEND_TS = path.join(BEND2, "bend.ts");
+export const COMP_TS = path.join(BEND2, "comp.ts");
 

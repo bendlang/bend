@@ -7,6 +7,8 @@ and returns diagnostics with fixes. Bend itself does not change.
 - `src/lint.ts`: the library and the CLI.
 - `src/patch.ts`: the two changes made to `bend2/bend.ts` as Bun loads it,
   and the pin.
+- `src/lint.bend`, `src/lint.js`: the contract for rules written in Bend,
+  and its effects.
 
 ## Run
 
@@ -63,6 +65,23 @@ found. A finding with severity `error` stops the run.
 
 Get bend.ts from `cx.Bend`. Do not import `bend2/bend.ts` in a rule.
 
+## Rules written in Bend
+
+A `.bend` rule imports `src/lint.bend` (by a relative path) and defines
+`id()`, `types()`, `run(input)` and a `main` that hands `run` to
+`Lint.serve`; `src/lint.bend` lists the contract. `run` gets the sources
+and, with `types()` true, the facts (as indexes, `Lint.Fact`); it asks about them
+through effects (`Lint.view`, `Lint.type_of`, `Lint.binder`, `Lint.same`,
+`Lint.show`) and answers a list of `Lint.Diag`. Offsets count characters.
+
+```sh
+bun tools/bend-lint/src/lint.ts file.bend --rules my_rule.bend
+```
+
+bend-lint checks the rule once; each run compiles it and runs its `main`
+with bend's own IO runtime (`comp.ts` `io_run`), so a rule may also use
+Base's effects. Effects run synchronously.
+
 ## The patch
 
 bend.ts does not expose the checker's results, and builds file paths with
@@ -81,9 +100,9 @@ bend-lint stops with a `DriftError`.
 
 ## The pin
 
-`bend.pin` holds the git blob hash of the `bend2/bend.ts` this tool was
-tested with (`git rev-parse HEAD:bend2/bend.ts`). If bend.ts differs,
-bend-lint stops. To bump:
+`bend.pin` holds the git blob hashes of the `bend2/bend.ts` and
+`bend2/comp.ts` this tool was tested with (`git rev-parse HEAD:<file>`).
+If either differs, bend-lint stops. To bump:
 
 ```sh
 BEND_LINT_UNPINNED=1 bun test tools/bend-lint
