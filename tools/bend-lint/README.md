@@ -5,6 +5,9 @@ on it. A rule reads the source text, the checker's result for each term
 (type, scope, uses), or both, and returns findings with fixes. Bend itself
 does not change. It needs Bun 1.2 or newer.
 
+Tools will eventually live in their own repos, so bend-lint is maintained
+separately at [github.com/MattCozendey/bend-lint](https://github.com/MattCozendey/bend-lint).
+
 ## Run
 
 From the repo root:
