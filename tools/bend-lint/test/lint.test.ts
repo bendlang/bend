@@ -4,7 +4,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type { Book, LTerm, Span } from "../../../bend2/bend.ts";
+import type { Book, LTerm, Span } from "bend2/bend.ts";
 import { BEND2, Bend, Comp, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
 import { DriftError, bendDir, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
@@ -105,7 +105,8 @@ def main() -> Sample:
   f(choose(a,b))
 `;
 
-// Repo tests whose first expected line says if the check passes.
+// Tests in the bend checkout (bend2/../tests) whose first expected line
+// says if the check passes.
 const DRIFT = [
   "check/alpha_equivalence", "check/assert_plain_fill", "check/dependent_telescope", "check/beta_ann_body",
   "check/ctor_arity", "check/forward_reference", "check/hole_todo", "check/typed_let_mismatch",
@@ -734,10 +735,10 @@ describe("rules", () => {
   });
 });
 
-describe("drift: the copy of book_read agrees with the repo tests", () => {
+describe("drift: the copy of book_read agrees with bend's own tests", () => {
   for (const name of DRIFT) {
-    test(name, async () => {
-      const file = fileURLToPath(new URL("../../../tests/" + name + ".bend", import.meta.url));
+    const file = path.join(BEND2, "..", "tests", name + ".bend");
+    test.skipIf(!fs.existsSync(file))(name, async () => {
       const first = fs.readFileSync(file, "utf8").match(/^#\|(.*)$/m)![1].trim();
       expect((await lint(file, [])).ok).toBe(first !== "SOME PROOFS FAIL");
     });

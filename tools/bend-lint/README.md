@@ -28,7 +28,7 @@ UTF-16):
 ```
 
 `--bend <dir>` (or `$BEND_DIR`) picks the bend to load: a bend checkout, or
-its `bend2` folder. The default is this repo's.
+its `bend2` folder. Inside the bend repo, its own bend is the default.
 
 ## Rules in TypeScript
 
@@ -138,6 +138,14 @@ and at load they must take the expected number of arguments. A self-check
 then checks every field recorded for `x` in `def id(x: N) -> N: x`. Any
 mismatch stops bend-lint with a `DriftError`, never a wrong result. The
 tests catch subtler changes.
+
+## Outside the bend repo
+
+bend-lint needs a bend checkout, because it loads bend's source. Give it
+with `--bend <dir>` or `$BEND_DIR`; with neither, it stops with a clear
+error. For `tsc`, run `bun install` (for `@types/bun`) and point the
+`bend2/*` path in `tsconfig.json` at that checkout's `bend2/`. The drift
+tests read the checkout's own `tests/`.
 
 ## Test
 

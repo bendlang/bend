@@ -14,8 +14,8 @@ import * as nodeFs from "node:fs";
 import * as nodePath from "node:path";
 import * as url from "node:url";
 
-import type { Book, Ctx, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
-import type * as BendModule from "../../../bend2/bend.ts";
+import type { Book, Ctx, HTerm, LTerm, Name, Quant, Span, Uses } from "bend2/bend.ts";
+import type * as BendModule from "bend2/bend.ts";
 
 // Types
 // =====
@@ -136,13 +136,16 @@ export function patch(file: string, src: string): string {
   return edited + "\n" + tail + "export const " + MARK + " = 1;\n";
 }
 
-// The bend2 folder to load: `given` (from --bend), else $BEND_DIR, else the
-// one in this repo. A bend checkout works too, for its bend2 folder.
+// The bend2 folder to load: `given` (from --bend), else $BEND_DIR, else
+// the bend repo around tools/bend-lint, if there is one. A bend checkout
+// works too, for its bend2 folder.
 export function bendDir(given: string | undefined): string {
   const dir = path.resolve(given ?? process.env.BEND_DIR ?? path.join(HERE, "..", "..", "..", "bend2"));
   const found = [path.join(dir, "bend2"), dir].find((d) => nodeFs.existsSync(path.join(d, "bend.ts")));
   if (found === undefined) {
-    throw new Error("no bend2 at " + dir + " (it needs bend.ts); give a bend checkout with --bend <dir> or BEND_DIR");
+    throw new Error((given ?? process.env.BEND_DIR) === undefined
+      ? "no bend found: give a bend checkout with --bend <dir> or BEND_DIR"
+      : "no bend2 at " + dir + " (it needs bend.ts); give a bend checkout with --bend <dir> or BEND_DIR");
   }
   return fs.realpathSync(found);
 }

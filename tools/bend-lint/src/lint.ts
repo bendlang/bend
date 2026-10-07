@@ -8,9 +8,9 @@
 import * as url from "node:url";
 import * as util from "node:util";
 
-import type * as BendModule from "../../../bend2/bend.ts";
-import type * as CompModule from "../../../bend2/comp.ts";
-import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
+import type * as BendModule from "bend2/bend.ts";
+import type * as CompModule from "bend2/comp.ts";
+import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "bend2/bend.ts";
 import { DriftError, MARK, bendDir, fs, patch, path } from "./patch.ts";
 import type { Hooked } from "./patch.ts";
 

@@ -12,6 +12,9 @@
     "test": "bun test",
     "typecheck": "tsc -p tsconfig.json"
   },
+  "devDependencies": {
+    "@types/bun": "^1.2.0"
+  },
   "engines": {
     "bun": ">=1.2"
   },
