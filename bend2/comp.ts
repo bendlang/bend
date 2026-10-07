@@ -5202,19 +5202,16 @@ static void cube_run(u64* H, bool gpu) {
 static u64 corpus_size;
 
 static void* corpus_map(u64 size) {
-  u64   hint = 1ull << 45;
-  void* p    = pool_try((void*)hint, size);
-  while (p != (void*)hint && hint > size) {
+  for (u64 hint = 1ull << 45; hint > size; hint /= 2) {
+    void* p = pool_try((void*)hint, size);
+    if (p == (void*)hint) {
+      return p;
+    }
     if (p != MAP_FAILED) {
       munmap(p, size);
     }
-    hint /= 2;
-    p     = pool_try((void*)hint, size);
   }
-  if (p == MAP_FAILED) {
-    err_fail("reservation failed");
-  }
-  return p;
+  return pool_mmap(size);
 }
 
 static void corpus_lay(u64* H, u64 size) {
