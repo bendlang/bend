@@ -6,7 +6,9 @@ and returns diagnostics with fixes. Bend itself does not change.
 
 ## Run
 
-Bun 1.2 or newer is required. From the repo root:
+Bun 1.2 or newer is required, on Linux, macOS or WSL (bend resolves
+imports with `/` paths, so native Windows cannot load relative imports).
+From the repo root:
 
 ```sh
 bun tools/bend-lint/src/cli.ts file.bend --rules my_rules.ts [--rules more.js] [--fix]

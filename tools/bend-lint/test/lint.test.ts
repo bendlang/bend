@@ -159,6 +159,7 @@ test("spans after import lines point at the right text on disk", async () => {
     },
   };
   const res = await lint(main, [look]);
+  expect(res.diags.map(render)).toEqual([]);
   expect(res.ok).toBe(true);
   expect(res.sources.length).toBe(2);
 });
