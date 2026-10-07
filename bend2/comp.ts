@@ -2533,7 +2533,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null,
 
 function emit_fork(sc: Scope, x: Of<"Let">, ers: HTerm[]): void {
   const o = term_open(x);
-  const calls = x.v.map((v) => term_spine(v));
+  const calls = x.v.map(term_spine);
   const fork = calls.length > 1;
   const name = seg_name(sc, "j");
   let hold: Of<"Var">[] = [];
@@ -2569,8 +2569,7 @@ function emit_fork(sc: Scope, x: Of<"Let">, ers: HTerm[]): void {
   let depth = 0;
   calls.forEach((c, i) => {
     const cargs = emit_args({ ...sc, rest: [chain[i]] }, c);
-    const vs = i === 0 ? [...sc.uses]
-      : [[o.ps[i - 1], sc.uses.get(o.ps[i - 1])!] as [Of<"Var">, Bind]];
+    const vs = [...sc.uses].filter(([p]) => i === 0 || p === o.ps[i - 1]);
     const kn = seg_name(sc, "k");
     spare_flush(sc);
     const ws = vs.flatMap(([p, b]) =>
