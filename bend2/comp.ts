@@ -5373,8 +5373,7 @@ typedef struct IoWork {
 
 typedef Term (*Effect)(Env e, Term* f, IoWork* w);
 
-// Keep constructor registration from becoming initialized binary data.
-Effect volatile io_eff_rows[1 << 16];
+Effect io_eff_rows[sizeof CID_T / sizeof *CID_T];
 static u32    io_live;
 
 static u64 io_tick(void) {
@@ -5892,12 +5891,11 @@ static void io_step(Env e, IoWork* a) {
       io_errs(e, fs[1]);
       exit((int)(u32)fs[0]);
     }
-    Effect run = io_eff_rows[c];
-    if (run == NULL) {
+    if (io_eff_rows[c] == NULL) {
       err_fail("an alien request");
     }
     a->cont = fs[n - 1];
-    Term x  = run(e, fs, a);
+    Term x  = io_eff_rows[c](e, fs, a);
     if (x == IO_PARK) {
       return;
     }
