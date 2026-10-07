@@ -5,9 +5,9 @@
   "private": true,
   "type": "module",
   "bin": {
-    "bend-lint": "src/cli.ts"
+    "bend-lint": "src/lint.ts"
   },
-  "exports": "./src/index.ts",
+  "exports": "./src/lint.ts",
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc -p tsconfig.json"
