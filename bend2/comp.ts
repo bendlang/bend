@@ -768,20 +768,12 @@ function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
 function term_uses(tm: HTerm): Bend.PMap<number> {
   return memo(FL.memo.uses, tm, () => {
     const t = term_force(tm);
-    switch (t.$) {
-      case "Var": {
-        const p = probe_of(t);
-        return p === DUMMY ? USE0 : Bend.pmap_set(USE0, p.i, 1);
-      }
-      case "Mat": {
-        return Bend.pmap_union(term_uses(t.h),
-          term_uses(t.m), Math.max);
-      }
-      default: {
-        return term_kids(t).reduce((u, x) =>
-          Bend.pmap_union(u, term_uses(x), (a, b) => a + b), USE0);
-      }
+    if (t.$ === "Var") {
+      return Bend.pmap_set(USE0, t.i, 1);
     }
+    const add = t.$ === "Mat" ? Math.max : (a: number, b: number) => a + b;
+    return term_kids(t).reduce((u, x) =>
+      Bend.pmap_union(u, term_uses(x), add), USE0);
   });
 }
 
