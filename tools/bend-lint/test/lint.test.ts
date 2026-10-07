@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { Book, LTerm, Span } from "bend2/bend.ts";
-import { BEND2, Bend, Comp, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
+import { BEND2, Bend, Comp, applyFixes, bendRule, findConfig, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
 import { DriftError, bendDir, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
 
@@ -189,7 +189,7 @@ def all(srcs: List<&2, Lint.Source>) -> List<&2, Lint.Diag>:
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   match input:
-    case Lint.Input{sources, facts}:
+    case Lint.Input{sources, facts, options}:
       IO.pure(List<&2, Lint.Diag>, all(sources))
 
 def main() -> IO(Unit):
@@ -296,7 +296,7 @@ def each(facts: List<&2, Lint.Fact>) -> IO(List<&2, Lint.Diag>):
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   match input:
-    case Lint.Input{sources, facts}:
+    case Lint.Input{sources, facts, options}:
       each(facts)
 
 def main() -> IO(Unit):
@@ -371,6 +371,35 @@ const spacing: LintRule = {
     severity: "hint", spn: edit.spn,
     fixes: [{ title: "Normalize spacing", applicability: "safe", edits: [edit] }],
   })),
+};
+
+// A Bend rule that reports its options, read with defaults.
+const OPTIONS_BEND = String.raw`import Base
+import ../../../src/lint.bend as Lint
+
+def id() -> String:
+  "test/options"
+
+def types() -> Bool:
+  False{}
+
+def summary(+opts: List<&2, Lint.Option>) -> String:
+  U32.show(Lint.option_number(opts, "width", 2)) ++ " " ++ Bool.show(Lint.option_flag(opts, "wrap", False{})) ++ " " ++ Lint.option_text(opts, "name", "none")
+
+def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
+  match input:
+    case Lint.Input{sources, facts, +options}:
+      IO.pure(List<&2, Lint.Diag>, [Lint.Diag{Lint.Hint{}, summary(options), None{}, []}])
+
+def main() -> IO(Unit):
+  Lint.serve(run)
+`;
+
+// A rule that reports its options.
+const echo: LintRule = {
+  id: "test/echo",
+  options: { tabWidth: 2, breakLines: false },
+  run: (cx) => [cx.diag({ message: JSON.stringify(cx.options), severity: "hint" })],
 };
 
 // Functions
@@ -608,8 +637,8 @@ describe("lint", () => {
     await expect(lint(userland, [{ id: "test/boom", run: async () => { throw new Error("rule failed"); } }])).rejects.toThrow("rule failed");
     const controller = new AbortController();
     const abort: LintRule = { id: "test/abort", run: async () => { controller.abort(); return []; } };
-    await expect(lint(userland, [abort, neverRun], controller.signal)).rejects.toThrow();
-    await expect(lint(userland, [], controller.signal)).rejects.toThrow();
+    await expect(lint(userland, [abort, neverRun], { signal: controller.signal })).rejects.toThrow();
+    await expect(lint(userland, [], { signal: controller.signal })).rejects.toThrow();
   });
 
   test("spans after import lines point at the right text on disk", async () => {
@@ -685,6 +714,52 @@ describe("lint", () => {
     const next: LintRule = { id: "test/after-api", run: (cx) => { expect(cx.prior[0].message).toBe("advice for N"); return []; } };
     const res = await lint(userland, [remote, next]).finally(() => server.stop(true));
     expect(res.ok).toBe(true);
+  });
+});
+
+describe("options", () => {
+  const userland = fixture("options_userland.bend", USERLAND);
+  const messages = async (config?: object, file = userland) =>
+    (await lint(file, [echo], { config })).diags.map((d) => [d.severity, d.message]);
+
+  test("a rule gets its defaults, with the config's values", async () => {
+    expect(await messages({})).toEqual([["hint", '{"tabWidth":2,"breakLines":false}']]);
+    expect(await messages({ rules: { "test/echo": { tabWidth: 4 } } })).toEqual([["hint", '{"tabWidth":4,"breakLines":false}']]);
+  });
+
+  test("the config turns a rule off, or sets its severity", async () => {
+    expect(await messages({ rules: { "test/echo": "off" } })).toEqual([]);
+    expect(await messages({ rules: { "test/echo": { severity: "warning", breakLines: true } } }))
+      .toEqual([["warning", '{"tabWidth":2,"breakLines":true}']]);
+  });
+
+  test("a wrong config fails loudly", async () => {
+    await expect(messages({ rules: { "test/echo": { tabSize: 4 } } })).rejects.toThrow(/test\/echo has no option tabSize/);
+    await expect(messages({ rules: { "test/echo": { tabWidth: "4" } } })).rejects.toThrow(/tabWidth must be a number/);
+    await expect(messages({ rules: { "test/echo": { severity: "loud" } } })).rejects.toThrow(/severity must be one of/);
+    await expect(messages({ rules: { "test/echo": 4 } })).rejects.toThrow(/must be "off" or an object/);
+  });
+
+  test("bend-lint.json is found in the file's folder or above it", async () => {
+    const top = path.join(DIR, "project");
+    fs.mkdirSync(path.join(top, "deep", "er"), { recursive: true });
+    fs.writeFileSync(path.join(top, "bend-lint.json"), JSON.stringify({ rules: { "test/echo": { tabWidth: 8 } } }));
+    const file = path.join(top, "deep", "er", "file.bend");
+    fs.writeFileSync(file, USERLAND);
+    expect(findConfig(file)).toEqual({ rules: { "test/echo": { tabWidth: 8 } } });
+    expect(await messages(undefined, file)).toEqual([["hint", '{"tabWidth":8,"breakLines":false}']]);
+    expect(await messages({}, file)).toEqual([["hint", '{"tabWidth":2,"breakLines":false}']]);
+  });
+
+  test("a Bend rule reads its options with defaults", async () => {
+    const rule = await bendRule(fixture("options_rule.bend", OPTIONS_BEND));
+    const said = async (config: object) => (await lint(userland, [rule], { config })).diags.map((d) => d.message);
+    const [plain] = await said({});
+    expect(plain).toMatch(/^2 \S+ none$/);
+    const [given] = await said({ rules: { "test/options": { width: 4, wrap: true, name: "x" } } });
+    expect(given).toMatch(/^4 \S+ x$/);
+    expect(given.split(" ")[1]).not.toBe(plain.split(" ")[1]);
+    await expect(said({ rules: { "test/options": { width: 1.5 } } })).rejects.toThrow(/whole number/);
   });
 });
 
@@ -836,6 +911,13 @@ describe("cli", () => {
     const env = spawnSync(process.execPath, [CLI, input], { encoding: "utf8", env: { ...process.env, BEND_DIR: BEND2 } });
     expect(env.status).toBe(0);
     expect(run(input, "--bend", DIR)).toMatchObject({ status: 2, stderr: expect.stringContaining("no bend2 at") });
+  });
+
+  test("--config gives the config", () => {
+    const echoes = module("echo.js", `[{ id: "test/echo", options: { tabWidth: 2 }, run: (cx) => [cx.diag({ message: "w" + cx.options.tabWidth })] }]`);
+    const config = fixture("cli_config.json", JSON.stringify({ rules: { "test/echo": { tabWidth: 6, severity: "hint" } } }));
+    const out = run(input, "--rules", echoes, "--config", config, "--json");
+    expect(JSON.parse(out.stdout).findings.map((f: { severity: string; message: string }) => [f.severity, f.message])).toEqual([["hint", "w6"]]);
   });
 
   test("--fix applies safe fixes", () => {

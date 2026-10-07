@@ -10,7 +10,7 @@ does not change. It needs Bun 1.2 or newer.
 From the repo root:
 
 ```sh
-bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--fix] [--json] [--bend <dir>]
+bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--config bend-lint.json] [--fix] [--json] [--bend <dir>]
 ```
 
 Findings print in bend's error layout, with a severity, a code, and each fix
@@ -76,6 +76,24 @@ give no facts. A template body is checked as written and again per instance
 (`generic~0`) at the same spans; `fact.inst` marks the instances. A file with
 `import Base` reuses a Base checked once per process.
 
+## Options
+
+A rule may declare options with their defaults (`options: { tabWidth: 2,
+breakLines: false }`) and read them from `cx.options`. A `bend-lint.json` in
+the file's folder or above it (or the one `--config` gives) sets them, and
+can also turn a rule off or change its severity:
+
+```json
+{ "rules": {
+  "format/indent": { "tabWidth": 4, "breakLines": true },
+  "style/comma-space": "off",
+  "demo/var-types": { "severity": "hint" }
+} }
+```
+
+An unknown option, or a value whose type differs from its default, stops
+bend-lint with an error. From code: `lint(file, rules, { config })`.
+
 ## Rules in Bend
 
 A `.bend` rule imports `src/lint.bend`, which lists the contract:
@@ -97,7 +115,9 @@ def main() -> IO(Unit):
   Lint.serve(run)
 ```
 
-`input` holds the sources and, with `types()`, the facts. A rule asks about
+`input` holds the sources, the rule's options and, with `types()`, the
+facts. Read an option with `Lint.option_number`, `option_flag` or
+`option_text`, each with a default; numbers are whole (U32). A rule asks about
 a fact with effects (`Lint.view`, `type_of`, `binder`, `same`, `show`,
 `normal`, `uses`, `text`) and may use Base's effects too. Offsets count
 characters. bend-lint compiles a rule once; each run then takes about 10 ms.

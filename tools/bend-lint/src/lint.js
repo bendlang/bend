@@ -38,16 +38,22 @@ function lint_spot(s) {
   return { path: s.path, beg: s.beg, end: s.end };
 }
 
+function lint_value(v) {
+  return typeof v === "number" ? { $: CID(Num), value: v }
+    : typeof v === "boolean" ? { $: CID(Flag), value: v } : { $: CID(Text), value: v };
+}
+
 function lint_term(id) {
   return { $: CID(Term), id };
 }
 
 function lint_input() {
-  const { sources, facts } = lint_host().input();
+  const { sources, facts, options } = lint_host().input();
   return {
     $: CID(Input),
     sources: lint_list(sources.map((s) => ({ $: CID(Source), path: s.path, text: s.text, root: s.root }))),
     facts: lint_list(Array.from({ length: facts }, (_, id) => ({ $: CID(Fact), id }))),
+    options: lint_list(Object.entries(options).map(([key, v]) => ({ $: CID(Option), key, value: lint_value(v) }))),
   };
 }
 

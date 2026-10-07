@@ -61,6 +61,7 @@ export type RuleContext = {
   book: Book;
   sources: Source[];
   root: Source;
+  options: Options;         // the rule's defaults, with the config's values
   facts?: Map<LTerm, Fact>; // only for a rule with needsTypes
   prior: readonly Diag[];   // what earlier rules found
   span: Mapper; // a bend.ts span, in the file on disk
@@ -73,9 +74,19 @@ export type RuleContext = {
   diag(init: DiagInit): Diag;
 };
 
+// A rule option's value. A default's type is its option's type.
+export type OptionValue = number | boolean | string;
+export type Options = Record<string, OptionValue>;
+
+// bend-lint.json: per rule id, "off", or a severity and option values.
+export type Config = { rules?: Record<string, "off" | ({ severity?: Severity } & Options)> };
+
+export type LintOptions = { signal?: AbortSignal; config?: Config };
+
 export type LintRule = {
   id: string; // namespace/name; the code of its findings
   needsTypes?: boolean;
+  options?: Options; // defaults; without them (a Bend rule), any option is passed as given
   run(cx: RuleContext, signal: AbortSignal): Diag[] | Promise<Diag[]>;
 };
 
@@ -98,7 +109,7 @@ type Reported = {
 // What lint.js asks of bend-lint while a Bend rule runs. Facts and types
 // cross as indexes into the run's tables.
 type Channel = {
-  input(): { sources: Array<{ path: string; text: string; root: boolean }>; facts: number };
+  input(): { sources: Array<{ path: string; text: string; root: boolean }>; facts: number; options: Options };
   report(diags: Reported[]): void;
   view(fact: number): { owner: Name; inst: boolean; kind: string; name: string; quantity: Quant["$"]; span?: Spot; inner?: Spot };
   type(fact: number): number;
@@ -120,6 +131,7 @@ type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm,
 // =========
 
 const RULE_ID = /^[^/\s]+\/[^/\s]+$/;
+const CONFIG = "bend-lint.json";
 const LINE = /[^\n]*\n|[^\n]+$/g;
 const STACK = "the machine stack overflowed (a deep recursion, or a literal too large to expand)";
 const SAMPLE = "type N is Data:\n  Z{}\n\ndef id(x: N) -> N:\n  x\n";
@@ -161,12 +173,13 @@ const OPTIONS = {
   rules: { type: "string", multiple: true },
   fix: { type: "boolean" },
   json: { type: "boolean" },
+  config: { type: "string" },
   bend: { type: "string" },
   help: { type: "boolean", short: "h" },
 } as const;
 
 const USAGE = [
-  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--fix] [--json] [--bend <dir>]",
+  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--config <bend-lint.json>] [--fix] [--json] [--bend <dir>]",
 ].join("\n");
 
 // Functions
@@ -291,23 +304,73 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
   return { book, sources, span, failure: { code: "bend/check", severity: "error", message, spn: span(err?.spn), def: err?.def, fixes: [], core: caught.e } };
 }
 
-// Rules run in order. A finding with severity error stops the run. A rule
+export function readConfig(file: string): Config {
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch (e) {
+    throw new Error(file + ": " + (e instanceof Error ? e.message : String(e)));
+  }
+}
+
+// The bend-lint.json in the file's folder, or the nearest one above it.
+export function findConfig(file: string): Config {
+  for (let dir = path.dirname(path.resolve(file)); ; dir = path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, CONFIG))) {
+      return readConfig(path.join(dir, CONFIG));
+    }
+    if (path.dirname(dir) === dir) {
+      return {};
+    }
+  }
+}
+
+// What the config says for a rule: off, a severity, and its options (the
+// defaults, with the given values, which must be known and of their type).
+function settings(rule: LintRule, config: Config): { off: boolean; severity?: Severity; options: Options } {
+  const given = config.rules?.[rule.id];
+  const where = CONFIG + ": " + rule.id;
+  if (given === undefined || given === "off") {
+    return { off: given === "off", options: { ...rule.options } };
+  }
+  if (typeof given !== "object" || given === null) {
+    throw new Error(where + " must be \"off\" or an object");
+  }
+  const { severity, ...options } = given;
+  if (severity !== undefined && !Object.hasOwn(HEAD, severity)) {
+    throw new Error(where + ": severity must be one of " + Object.keys(HEAD).join(", "));
+  }
+  for (const [key, value] of Object.entries(options)) {
+    const want = rule.options === undefined ? typeof value : typeof rule.options[key];
+    if (rule.options !== undefined && !Object.hasOwn(rule.options, key)) {
+      throw new Error(where + " has no option " + key);
+    }
+    if (typeof value !== want || !["number", "boolean", "string"].includes(want)) {
+      throw new Error(where + ": " + key + " must be a " + (rule.options === undefined ? "number, boolean or string" : want));
+    }
+  }
+  return { off: false, severity, options: { ...rule.options, ...options } };
+}
+
+// Rules run in order; the config may turn one off, set its severity, and
+// give its options. A finding with severity error stops the run. A rule
 // that throws, and an abort, reach the caller.
-export async function lint(file: string, rules: LintRule[], signal = new AbortController().signal): Promise<LintResult> {
+export async function lint(file: string, rules: LintRule[],
+  { signal = new AbortController().signal, config = findConfig(file) }: LintOptions = {}): Promise<LintResult> {
   const bad = rules.find((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
   if (bad !== undefined) {
     throw new TypeError("invalid rule " + JSON.stringify(bad?.id) + ": it needs an id like ns/name and a run function");
   }
-  const { book, sources, span, facts, failure } = await check(file, rules.some((r) => r.needsTypes === true), signal);
+  const plans = rules.map((rule) => ({ rule, ...settings(rule, config) })).filter((p) => !p.off);
+  const { book, sources, span, facts, failure } = await check(file, plans.some((p) => p.rule.needsTypes === true), signal);
   if (failure !== undefined) {
     return { ok: false, diags: [failure], sources, book };
   }
   const root = sources.find((s) => s.root)!;
   let diags: Diag[] = [];
-  for (const rule of rules) {
+  for (const { rule, severity, options } of plans) {
     signal.throwIfAborted();
     const out = await rule.run({
-      Bend, book, sources, root, span, walk,
+      Bend, book, sources, root, span, walk, options,
       facts: rule.needsTypes === true ? facts : undefined,
       prior: diags,
       binder: (fact, v) => v.$ === "Var" ? Bend.pmap_get(fact.ctx, v.i) : null,
@@ -326,7 +389,7 @@ export async function lint(file: string, rules: LintRule[], signal = new AbortCo
       throw new TypeError("rule " + rule.id + " must return an array of diagnostics");
     }
     const settled = out.map((d): Diag => ({
-      ...d, code: rule.id, spn: span(d.spn),
+      ...d, code: rule.id, severity: severity ?? d.severity, spn: span(d.spn),
       fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => ({ ...e, spn: span(e.spn) })) })),
     }));
     const stop = settled.findIndex((d) => d.severity === "error");
@@ -459,7 +522,13 @@ export async function bendRule(file: string): Promise<LintRule> {
       const keep = (t: HTerm): number => terms.push(t) - 1;
       const found: Reported[][] = [];
       shared.BEND_LINT = {
-        input: () => ({ sources: cx.sources.map((s) => ({ path: s.path, text: s.text, root: s.root })), facts: facts.length }),
+        input: () => {
+          const odd = Object.entries(cx.options).find(([, v]) => typeof v === "number" && !(Number.isInteger(v) && v >= 0 && v <= 0xffffffff));
+          if (odd !== undefined) {
+            throw new Error("rule " + id + ": option " + odd[0] + " must be a whole number from 0 to 4294967295 (a U32)");
+          }
+          return { sources: cx.sources.map((s) => ({ path: s.path, text: s.text, root: s.root })), facts: facts.length, options: cx.options };
+        },
         report: (diags) => void found.push(diags),
         view: (i) => {
           const f = pick(facts, i, "fact");
@@ -566,7 +635,7 @@ async function cli(argv: string[]): Promise<number> {
     }
     return rules;
   }));
-  const res = await lint(positionals[0], modules.flat());
+  const res = await lint(positionals[0], modules.flat(), { config: values.config === undefined ? undefined : readConfig(values.config) });
   const fixed = values.fix && res.ok
     ? res.sources.filter((s) => !s.base).map((s) => ({ s, text: applyFixes(s.file, res.diags) })).filter(({ s, text }) => text !== s.text)
     : [];
