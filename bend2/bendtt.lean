@@ -147,7 +147,7 @@ structure Guard where
   tags : List Tag
   hits : List ((Nat × List Bool) × String)
 
-abbrev Parse := StateT (List Char) (Except String)
+abbrev Parse := ReaderT ByteArray (StateT Nat (Except String))
 
 -- Constants
 -- =========
@@ -577,33 +577,54 @@ def Term.show : Term → Nat → String
 -- Parser
 -- ======
 
-def Parse.fail (e : String) : Parse α := do
-  let s ← get
-  let s := String.ofList (s.take 30)
-  throw ("parse error: expected " ++ e ++ " at '" ++ s ++ "'")
+-- the parser reads the text's UTF-8 bytes at a position; a name, a space
+-- and every mark but ∀, Σ and λ is one ASCII byte
 
-partial def Parse.skip : Parse Unit := do
-  match ← get with
-  | '#' :: s =>
-    set (s.dropWhile (· != '\n'))
-    Parse.skip
-  | c :: s =>
-    if c.isWhitespace then
-      set s
-      Parse.skip
-  | [] => pure ()
+-- the byte after the char at i
+def Parse.next (b : ByteArray) (i : Nat) : Nat :=
+  [1, 2, 3].foldl (fun j _ => if j < b.size && b[j]! &&& 0xC0 == 0x80 then j + 1 else j) (i + 1)
+
+def Parse.fail (e : String) : Parse α := do
+  let b ← read
+  let i ← get
+  let j := (List.range 30).foldl (fun j _ => if j < b.size then Parse.next b j else j) i
+  throw ("parse error: expected " ++ e ++ " at '" ++ (String.fromUTF8? (b.extract i j)).getD "" ++ "'")
+
+-- the first byte at or after i that is not a space or in a comment
+partial def Parse.gap (b : ByteArray) (i : Nat) : Nat :=
+  if i < b.size then
+    let c := Char.ofUInt8 b[i]!
+    if c == '#' then Parse.gap b (eol b i)
+    else if c.isWhitespace then Parse.gap b (i + 1)
+    else i
+  else i
+where eol (b : ByteArray) (i : Nat) : Nat :=
+  if i < b.size && b[i]! != 10 then eol b (i + 1) else i
+
+def Parse.skip : Parse Unit := do
+  let b ← read
+  modify (Parse.gap b)
 
 def Parse.peek : Parse Char := do
   Parse.skip
-  match ← get with
-  | c :: _ => pure c
-  | []     => pure ' '
+  let b ← read
+  let i ← get
+  pure (if i < b.size then Char.ofUInt8 b[i]! else ' ')
+
+-- whether the text at i starts with w
+partial def Parse.at (b : ByteArray) (i : Nat) (w : String) (j : Nat := 0) : Bool :=
+  if h : j < w.utf8ByteSize then
+    i + j < b.size && b[i + j]! == w.getUTF8Byte ⟨j⟩ h && Parse.at b i w (j + 1)
+  else true
+
+-- whether w comes next, without taking it
+def Parse.sees (w : String) : Parse Bool := do
+  Parse.skip
+  pure (Parse.at (← read) (← get) w)
 
 def Parse.take (w : String) : Parse Bool := do
-  Parse.skip
-  let s ← get
-  if w.toList.isPrefixOf s then
-    set (s.drop w.length)
+  if ← Parse.sees w then
+    modify (· + w.utf8ByteSize)
     pure true
   else
     pure false
@@ -616,14 +637,19 @@ def Parse.eat (w : String) : Parse Unit := do
 def Char.is_name (c : Char) : Bool :=
   c.isAlphanum || c == '_' || c == '.'
 
+-- the end of the name at i
+partial def Parse.span (b : ByteArray) (i : Nat) : Nat :=
+  if i < b.size && (Char.ofUInt8 b[i]!).is_name then Parse.span b (i + 1) else i
+
 def Parse.name : Parse String := do
   Parse.skip
-  let s ← get
-  let k := s.takeWhile Char.is_name
-  if k.isEmpty then
+  let b ← read
+  let i ← get
+  let j := Parse.span b i
+  if j == i then
     Parse.fail "a name"
-  set (s.drop k.length)
-  pure (String.ofList k)
+  set j
+  pure ((String.fromUTF8? (b.extract i j)).getD "")
 
 -- a label name: a name, or ()
 def Parse.label : Parse String := do
@@ -648,13 +674,18 @@ def Quan.parse : Parse Quan := do
 mutual
 
 partial def Term.parse (vs : List String) : Parse Term := do
-  match ← Parse.peek with
+  let c ← Parse.peek
+  if c.toNat ≥ 128 then
+    if ← Parse.sees "∀" then
+      return ← Term.parse_bind vs "∀"
+    if ← Parse.sees "Σ" then
+      return ← Term.parse_bind vs "Σ"
+    if ← Parse.sees "λ" then
+      return ← Term.parse_lam vs
+  match c with
   | '{' => Term.parse_brace vs
   | '*' => Term.parse_typ vs
   | '!' => Term.parse_let vs
-  | '∀' => Term.parse_bind vs "∀"
-  | 'Σ' => Term.parse_bind vs "Σ"
-  | 'λ' => Term.parse_lam vs
   | '(' => Term.parse_paren vs
   | '<' => Term.parse_enum []
   | '.' => Lab <$> Parse.key
@@ -808,7 +839,7 @@ end
 
 partial def Book.parse_defs : Parse (List Def) := do
   Parse.skip
-  if (← getThe (List Char)).isEmpty then
+  if (← getThe Nat) ≥ (← readThe ByteArray).size then
     return []
   let k ← Parse.name
   let o := k == "opaque" && (← Parse.peek) != ':'
@@ -821,7 +852,7 @@ partial def Book.parse_defs : Parse (List Def) := do
   return ⟨k, T, v, o⟩ :: ds
 
 def Book.parse (s : String) : Res Book :=
-  (Book.parse_defs.run' s.toList).map Book.of
+  ((Book.parse_defs.run s.toUTF8).run' 0).map Book.of
 
 -- Evaluator
 -- =========
