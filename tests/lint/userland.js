@@ -26,11 +26,18 @@ async function checkImports(dir) {
   assert.equal(plain.tlds.main.v.s.file.str, mainFile.str);
 }
 
+function checkRuleResults() {
+  const book = Bend.book_nil();
+  const diag = Bend.Diag("test/stamp", book, Bend.ctx_nil(), "stamped");
+  assert.equal(diag.code, "test/stamp");
+}
+
 if (import.meta.main) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-lint-"));
   try {
     await checkImports(dir);
-    console.log("PASS userland diagnostics: original source spans");
+    await checkRuleResults();
+    console.log("PASS userland diagnostics: source spans, external codes");
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

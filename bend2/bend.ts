@@ -386,8 +386,8 @@ export const DIAG_CODES = {
   UndefinedName: "bend/undefined-name", UnequalReflexivityEndpoints: "bend/unequal-reflexivity-endpoints", UnfilledLaw: "bend/unfilled-law",
   UnknownDecorator: "bend/unknown-decorator", UnresolvedHole: "bend/unresolved-hole", UnterminatedCharacter: "bend/unterminated-character",
   UnterminatedString: "bend/unterminated-string", VariablePatternRequired: "bend/variable-pattern-required",
-} as const;
-export type DiagCode = typeof DIAG_CODES[keyof typeof DIAG_CODES];
+} as const satisfies Record<string, DiagCode>;
+export type DiagCode = `${string}/${string}`;
 export type Diag = { $: "Diag"; code: DiagCode; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?: Name; spn?: Span; nte?: string; severity: Severity; fixes: Fix[] };
 
 // Constructors
