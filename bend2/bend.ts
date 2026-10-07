@@ -865,6 +865,33 @@ export function term_lower(term: HTerm, d: number = 0): LTerm {
   }
 }
 
+// Checked LTerm trees have explicit binders. Do not follow Var.v cells.
+export function term_children(tm: LTerm): LTerm[] {
+  switch (tm.$) {
+    case "Let": return [...tm.v, tm.f];
+    case "Lam": return [tm.f];
+    case "Sub": return [tm.f];
+    case "App": return [tm.f, tm.x];
+    case "Ctr": return tm.x;
+    case "ADT": return tm.x;
+    case "Mat": return [tm.h, tm.m];
+    case "Rwt": return [tm.e, tm.p, tm.f];
+    case "Typ": return [tm.g];
+    case "Min": return [tm.a, tm.b];
+    case "All": return [tm.A, tm.B];
+    case "Eql": return [tm.a, tm.b, tm.T];
+    case "Ann": return [tm.x, tm.T];
+    default: return [];
+  }
+}
+
+export function* term_walk(tm: LTerm): Generator<LTerm> {
+  yield tm;
+  for (const child of term_children(tm)) {
+    yield* term_walk(child);
+  }
+}
+
 // Ctx
 // ===
 
