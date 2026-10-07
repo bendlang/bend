@@ -5748,11 +5748,10 @@ static void show_chr(u64 c, char q) {
 }
 
 static void show_f32(u32 x) {
-  char  buf[40];
-  int   n  = f32_text(buf, f32_unbox(x));
-  char* ep = memchr(buf, 'e', n);
-  int   m  = ep == NULL ? n : (int)(ep - buf);
+  char buf[40];
+  int  n = f32_text(buf, f32_unbox(x));
   buf[n] = 0;
+  int  m = (int)strcspn(buf, "e");
   if (strpbrk(buf, ".ni") == NULL) {
     printf("%.*s.0%s", m, buf, buf + m);
   } else {
