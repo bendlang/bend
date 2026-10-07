@@ -5942,7 +5942,7 @@ int main(int argc, char** argv) {
   io_argc = 1;
   for (int i = 1; i < argc; i += 1) {
     const char* a = argv[i];
-    const char* v = i + 1 < argc ? argv[i + 1] : NULL;
+    const char* v = i + 1 < argc ? argv[i + 1] : "";
     if (strcmp(a, "--") == 0) {
       while (i + 1 < argc) {
         io_argv[io_argc++] = argv[++i];
@@ -5957,20 +5957,20 @@ int main(int argc, char** argv) {
       }
       return 0;
     } else if (strcmp(a, "--threads") == 0) {
-      char* end = NULL;
-      thr = v != NULL ? strtol(v, &end, 10) : 0;
+      char* end;
+      thr = strtol(v, &end, 10);
       if (thr < 1 || *end != '\0') {
         err_fail("expected a thread count of 1 or more after --threads");
       }
       i += 1;
     } else if (strcmp(a, "--gpu") == 0) {
-      char*  end = NULL;
-      double n   = v != NULL ? strtod(v, &end) : 0;
-      u64    mul = end == NULL ? 0 : strcmp(end, "GB") == 0 ? 1ull << 30
+      char*  end;
+      double n   = strtod(v, &end);
+      u64    mul = strcmp(end, "GB") == 0 ? 1ull << 30
         : strcmp(end, "MB") == 0 ? 1ull << 20 : 0;
-      if (v != NULL && strcmp(v, "off") == 0) {
+      if (strcmp(v, "off") == 0) {
         gpu = 0;
-      } else if (v != NULL && (strcmp(v, "on") == 0 || (mul != 0 && n > 0))) {
+      } else if (strcmp(v, "on") == 0 || (mul != 0 && n > 0)) {
         gpu = 1;
         mem = (u64)(n * (double)mul);
       } else {
