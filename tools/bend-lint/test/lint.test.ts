@@ -5,9 +5,9 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { Book, LTerm, Span } from "../../../bend2/bend.ts";
-import { Bend, Comp, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
+import { BEND2, Bend, Comp, applyFixes, bendRule, lint, mapper, render, walk } from "../src/lint.ts";
 import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
-import { BEND2, DriftError, blob, current, patch, pinned, relative, resolve } from "../src/patch.ts";
+import { DriftError, bendDir, blob, current, patch, pinned, relative, resolve } from "../src/patch.ts";
 
 // Types
 // =====
@@ -463,7 +463,13 @@ describe("patch", () => {
     expect(blob("a\r\nb\n")).toBe(blob("a\nb\n"));
     expect(blob("hello\n")).toBe("ce013625030ba8dba906f756967f9e9ca394464a");
     expect(pinned()).toMatch(/^bend\.ts [0-9a-f]{40}\ncomp\.ts [0-9a-f]{40}$/);
-    if (process.env.BEND_LINT_UNPINNED !== "1") expect(current()).toBe(pinned());
+    if (process.env.BEND_LINT_UNPINNED !== "1") expect(current(BEND2)).toBe(pinned());
+  });
+
+  test("bend2 is found from a checkout, its bend2 folder, or the repo; a wrong dir fails", () => {
+    const repo = path.dirname(BEND2);
+    expect([bendDir(repo), bendDir(BEND2), bendDir(undefined)]).toEqual([BEND2, BEND2, BEND2]);
+    expect(() => bendDir(DIR)).toThrow(/no bend2 at/);
   });
 
   test("paths: a drive letter is a root; POSIX paths are unchanged", () => {
@@ -793,6 +799,37 @@ describe("cli", () => {
     const out = run(input, "--rules", fixture("cli_comma_rule.bend", COMMA_BEND));
     expect(out.status).toBe(0);
     expect(out.stdout).toContain("Warning [style/comma-space]:");
+  });
+
+  test("--json prints findings with LSP ranges, and nothing else", () => {
+    const comma = module("json_comma.js", `[{ id: "style/comma-space", run: (cx) =>
+      [...cx.root.text.matchAll(/,(?=\\w)/g)].map((m) => {
+        const spn = { file: cx.root.file, beg: m.index + 1, end: m.index + 1 };
+        return cx.diag({ message: "space", severity: "hint", spn,
+          fixes: [{ title: "Insert space", applicability: "safe", edits: [{ spn, text: " " }] }] });
+      }) }]`);
+    const out = run(input, "--rules", comma, "--json");
+    expect(out.status).toBe(0);
+    const json = JSON.parse(out.stdout);
+    const at = { line: 25, character: 13 };
+    expect(json).toEqual({
+      ok: true,
+      findings: [{
+        code: "style/comma-space", severity: "hint", message: "space", path: fs.realpathSync(input).replaceAll("\\", "/"),
+        range: { start: at, end: at },
+        fixes: [{ title: "Insert space", applicability: "safe", edits: [{ path: fs.realpathSync(input).replaceAll("\\", "/"), range: { start: at, end: at }, text: " " }] }],
+      }],
+    });
+    expect(USERLAND.split("\n")[at.line].slice(0, at.character)).toBe("  generic(~N,");
+    const bad = JSON.parse(run(fixture("json_bad.bend", "def broken(\n"), "--json").stdout);
+    expect([bad.ok, bad.findings[0].code]).toEqual([false, "bend/check"]);
+  });
+
+  test("--bend and BEND_DIR choose the bend to load; a wrong one exits 2", () => {
+    expect(run(input, "--bend", path.dirname(BEND2)).status).toBe(0);
+    const env = spawnSync(process.execPath, [CLI, input], { encoding: "utf8", env: { ...process.env, BEND_DIR: BEND2 } });
+    expect(env.status).toBe(0);
+    expect(run(input, "--bend", DIR)).toMatchObject({ status: 2, stderr: expect.stringContaining("no bend2 at") });
   });
 
   test("--fix applies safe fixes", () => {

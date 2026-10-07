@@ -10,13 +10,25 @@ does not change. It needs Bun 1.2 or newer.
 From the repo root:
 
 ```sh
-bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--fix]
+bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--fix] [--json] [--bend <dir>]
 ```
 
 Findings print in bend's error layout, with a severity, a code, and each fix
 as a diff. `--fix` writes the `safe` fixes. Exit codes: 0 no error, 1 an
 error (the file does not check, or a rule found an `error`), 2 bad usage or
 a tool failure.
+
+`--json` prints only this, for other tools (ranges as in LSP: 0-based,
+UTF-16):
+
+```json
+{ "ok": true, "findings": [{ "code": "style/comma-space", "severity": "warning", "message": "...",
+  "def": "main", "path": "/abs/file.bend", "range": { "start": { "line": 25, "character": 13 }, "end": {...} },
+  "fixes": [{ "title": "...", "applicability": "safe", "edits": [{ "path": "...", "range": {...}, "text": " " }] }] }] }
+```
+
+`--bend <dir>` (or `$BEND_DIR`) picks the bend to load: a bend checkout, or
+its `bend2` folder. The default is this repo's.
 
 ## Rules in TypeScript
 
@@ -101,6 +113,9 @@ console.log(res.ok, res.diags.map(render));
 const fixed = applyFixes(res.sources.find((s) => s.root)!.file, res.diags);
 ```
 
+A library picks its bend with `$BEND_DIR`, set before it imports bend-lint.
+`position(span)` gives the LSP range of a span.
+
 ## How it works
 
 - `src/lint.ts`: the library and the CLI.
@@ -113,12 +128,13 @@ const fixed = applyFixes(res.sources.find((s) => s.root)!.file, res.diags);
   effects.
 
 Each change needs one exact anchor, and a self-check runs at load.
-`bend.pin` holds the git blob hashes of bend.ts and comp.ts. Any mismatch
+`bend.pin` holds the git blob hashes of bend.ts and comp.ts. With
+`--bend`, the bend you give must match it too. Any mismatch
 stops bend-lint with a `DriftError`, never a wrong result. To bump:
 
 ```sh
 BEND_LINT_UNPINNED=1 bun test tools/bend-lint
-bun tools/bend-lint/src/lint.ts --pin
+bun tools/bend-lint/src/lint.ts --pin    # [--bend <dir>]
 ```
 
 ## Test

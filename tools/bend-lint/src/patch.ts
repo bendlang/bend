@@ -125,11 +125,17 @@ export function pinned(): string {
   return nodeFs.readFileSync(PIN_FILE, "utf8").trim();
 }
 
-export function current(): string {
-  return Object.keys(PATCHES).map((f) => f + " " + blob(nodeFs.readFileSync(path.join(BEND2, f), "utf8"))).join("\n");
+export function current(bend2: string): string {
+  return Object.keys(PATCHES).map((f) => f + " " + blob(nodeFs.readFileSync(path.join(bend2, f), "utf8"))).join("\n");
 }
 
-// Side effects
-// ============
-
-export const BEND2 = fs.realpathSync(path.join(HERE, "..", "..", "..", "bend2"));
+// The bend2 folder to load: `given` (from --bend), else $BEND_DIR, else the
+// one in this repo. A bend checkout works too, for its bend2 folder.
+export function bendDir(given: string | undefined): string {
+  const dir = path.resolve(given ?? process.env.BEND_DIR ?? path.join(HERE, "..", "..", "..", "bend2"));
+  const found = [path.join(dir, "bend2"), dir].find((d) => nodeFs.existsSync(path.join(d, "bend.ts")));
+  if (found === undefined) {
+    throw new Error("no bend2 at " + dir + " (it needs bend.ts); give a bend checkout with --bend <dir> or BEND_DIR");
+  }
+  return fs.realpathSync(found);
+}

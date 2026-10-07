@@ -11,7 +11,7 @@ import * as util from "node:util";
 import type * as BendModule from "../../../bend2/bend.ts";
 import type * as CompModule from "../../../bend2/comp.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "../../../bend2/bend.ts";
-import { BEND2, DriftError, MARK, PIN_FILE, blob, current, fs, patch, path, pinned } from "./patch.ts";
+import { DriftError, MARK, PIN_FILE, bendDir, blob, current, fs, patch, path, pinned } from "./patch.ts";
 
 // Types
 // =====
@@ -79,6 +79,9 @@ export type LintRule = {
 };
 
 export type LintResult = { ok: boolean; diags: Diag[]; sources: Source[]; book: Book; facts?: Map<LTerm, Fact> };
+
+// An LSP position: 0-based line and character, in UTF-16 units.
+export type Position = { line: number; character: number };
 
 // A span as lint.bend has it: a file's path and two code-point offsets.
 type Spot = { path: string; beg: number; end: number };
@@ -157,13 +160,15 @@ const CHILDREN: { [K in LTerm["$"]]: (tm: Extract<LTerm, { $: K }>) => LTerm[] }
 const OPTIONS = {
   rules: { type: "string", multiple: true },
   fix: { type: "boolean" },
+  json: { type: "boolean" },
+  bend: { type: "string" },
   pin: { type: "boolean" },
   help: { type: "boolean", short: "h" },
 } as const;
 
 const USAGE = [
-  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--fix]",
-  "       bun tools/bend-lint/src/lint.ts --pin   (pin the current bend2/bend.ts and comp.ts)",
+  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--fix] [--json] [--bend <dir>]",
+  "       bun tools/bend-lint/src/lint.ts --pin [--bend <dir>]   (pin that bend's bend.ts and comp.ts)",
 ].join("\n");
 
 // Functions
@@ -182,6 +187,16 @@ export function* walk(tm: LTerm): Generator<LTerm> {
 
 function starts(text: string): number[] {
   return [0, ...[...text.matchAll(/\n/g)].map((m) => m.index! + 1)];
+}
+
+// The index of the line that holds `off`, given each line's start.
+function line(starts: number[], off: number): number {
+  let [lo, hi] = [0, starts.length - 1];
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    [lo, hi] = starts[mid] <= off ? [mid, hi] : [lo, mid - 1];
+  }
+  return lo;
 }
 
 // bend.ts parses a copy of each file with its import lines blanked, so a
@@ -214,12 +229,8 @@ export function mapper(sources: Source[]): Mapper {
     }
     const { file, from, to } = memo.get(f)!;
     const at = (off: number): number => {
-      let [lo, hi] = [0, from.length - 1];
-      while (lo < hi) {
-        const mid = (lo + hi + 1) >> 1;
-        [lo, hi] = from[mid] <= off ? [mid, hi] : [lo, mid - 1];
-      }
-      return to[lo] + off - from[lo];
+      const i = line(from, off);
+      return to[i] + off - from[i];
     };
     return { file, beg: at(s.beg), end: at(s.end) };
   }
@@ -285,8 +296,8 @@ async function check(file: string, capture: boolean, signal: AbortSignal): Promi
 // Rules run in order. A finding with severity error stops the run. A rule
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[], signal = new AbortController().signal): Promise<LintResult> {
-  if (current() !== pinned() && process.env.BEND_LINT_UNPINNED !== "1") {
-    throw new DriftError("bend2 is\n" + current() + "\nbut bend-lint is pinned to\n" + pinned() + "\n"
+  if (current(BEND2) !== pinned() && process.env.BEND_LINT_UNPINNED !== "1") {
+    throw new DriftError(BEND2 + " is\n" + current(BEND2) + "\nbut bend-lint is pinned to\n" + pinned() + "\n"
       + "To bump: BEND_LINT_UNPINNED=1 bun test tools/bend-lint, then bun tools/bend-lint/src/lint.ts --pin");
   }
   const bad = rules.find((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function");
@@ -353,6 +364,16 @@ export function applyFixes(file: SourceFile, diags: Diag[], levels: Applicabilit
 function common(a: string[], b: string[]): number {
   const n = a.findIndex((x, i) => x !== b[i]);
   return Math.min(n < 0 ? a.length : n, b.length);
+}
+
+// The LSP range of a span in a file on disk.
+export function position(spn: Span): { start: Position; end: Position } {
+  const ss = starts(spn.file.str);
+  const at = (off: number): Position => {
+    const i = line(ss, off);
+    return { line: i, character: off - ss[i] };
+  };
+  return { start: at(spn.beg), end: at(spn.end) };
 }
 
 // bend's own error layout; the head names the severity and the code, and
@@ -462,19 +483,22 @@ export async function bendRule(file: string): Promise<LintRule> {
   };
 }
 
-// Patches bend.ts and comp.ts as Bun loads them, then checks a tiny
-// program: the type of `x` in `id` must be recorded as N.
-async function instrument(): Promise<{ Bend: Bend; Comp: Comp }> {
-  const patched = new Map(["bend.ts", "comp.ts"].map((f) => [f, patch(f, fs.readFileSync(path.join(BEND2, f), "utf8"))]));
+// Finds bend2 (see bendDir), patches bend.ts and comp.ts as Bun loads
+// them, then checks a tiny program: the type of `x` in `id` must be
+// recorded as N.
+async function instrument(given: string | undefined): Promise<{ Bend: Bend; Comp: Comp; BEND2: string }> {
+  const dir = bendDir(given);
+  const patched = new Map(["bend.ts", "comp.ts"].map((f) => [f, patch(f, fs.readFileSync(path.join(dir, f), "utf8"))]));
+  const filter = new RegExp("[\\\\/]" + path.basename(dir).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\\\\/](bend|comp)\\.ts$");
   Bun.plugin({
     name: "bend-lint",
     setup: (build) => {
-      build.onLoad({ filter: /[\\/]bend2[\\/](bend|comp)\.ts$/ }, (args) => ({ contents: patched.get(path.basename(args.path))!, loader: "ts" }));
+      build.onLoad({ filter }, (args) => ({ contents: patched.get(path.basename(args.path))!, loader: "ts" }));
     },
   });
   const [B, C]: [Bend & { [MARK]?: number }, Comp & { [MARK]?: number }] = await Promise.all([
-    import(url.pathToFileURL(path.join(BEND2, "bend.ts")).href),
-    import(url.pathToFileURL(path.join(BEND2, "comp.ts")).href),
+    import(url.pathToFileURL(path.join(dir, "bend.ts")).href),
+    import(url.pathToFileURL(path.join(dir, "comp.ts")).href),
   ]);
   if (B[MARK] !== 1 || C[MARK] !== 1) {
     throw new DriftError("bend2 was loaded before bend-lint could patch it; import bend-lint first");
@@ -489,7 +513,7 @@ async function instrument(): Promise<{ Bend: Bend; Comp: Comp }> {
   if (!typed) {
     throw new DriftError("self-check failed: the patched bend.ts recorded no type for `id`; update tools/bend-lint/src/patch.ts");
   }
-  return { Bend: B, Comp: C };
+  return { Bend: B, Comp: C, BEND2: dir };
 }
 
 async function cli(argv: string[]): Promise<number> {
@@ -499,7 +523,7 @@ async function cli(argv: string[]): Promise<number> {
     return 0;
   }
   if (values.pin) {
-    fs.writeFileSync(PIN_FILE, current() + "\n");
+    fs.writeFileSync(PIN_FILE, current(BEND2) + "\n");
     console.log("bend-lint: pinned\n" + pinned());
     return 0;
   }
@@ -520,14 +544,20 @@ async function cli(argv: string[]): Promise<number> {
   const fixed = values.fix && res.ok
     ? res.sources.filter((s) => !s.base).map((s) => ({ s, text: applyFixes(s.file, res.diags) })).filter(({ s, text }) => text !== s.text)
     : [];
-  for (const d of res.diags) {
-    console.log(render(d) + "\n");
-  }
+  const where = (spn: Span) => ({ path: (spn.file as SourceFile).path, range: position(spn) });
+  console.log(values.json
+    ? JSON.stringify({
+      ok: res.ok,
+      findings: res.diags.map((d) => ({
+        code: d.code, severity: d.severity, message: d.message, def: d.def, ...(d.spn && where(d.spn)),
+        fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => ({ ...where(e.spn), text: e.text })) })),
+      })),
+    }, null, 2)
+    : [...res.diags.map(render), res.ok ? "bend-lint: " + res.diags.length + " finding(s)" : "bend-lint: FAIL"].join("\n\n"));
   for (const { s, text } of fixed) {
     fs.writeFileSync(s.path, text);
     console.error("bend-lint: fixed " + s.path);
   }
-  console.log(res.ok ? "bend-lint: " + res.diags.length + " finding(s)" : "bend-lint: FAIL");
   return res.ok ? 0 : 1;
 }
 
@@ -539,7 +569,11 @@ function fail(e: unknown): never {
 // Side effects
 // ============
 
-export const { Bend, Comp }: { Bend: Bend; Comp: Comp } = await instrument().catch((e: unknown) => import.meta.main ? fail(e) : Promise.reject(e));
+// The CLI's --bend is read here, before bend loads; a library uses $BEND_DIR.
+const given = import.meta.main ? util.parseArgs({ args: process.argv.slice(2), options: OPTIONS, allowPositionals: true, strict: false }).values.bend : undefined;
+
+export const { Bend, Comp, BEND2 }: { Bend: Bend; Comp: Comp; BEND2: string } =
+  await instrument(typeof given === "string" ? given : undefined).catch((e: unknown) => import.meta.main ? fail(e) : Promise.reject(e));
 
 if (import.meta.main) {
   process.exit(await cli(process.argv.slice(2)).catch(fail));
