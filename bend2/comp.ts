@@ -1953,7 +1953,7 @@ function show_main(): (number | Name)[] | null {
 // ===
 
 // A statement in normal form is a fork, a cut, a let of a
-// value, or a tail. An over-application cuts its call prefix;
+// value, or a tail. A live over-application cuts its call prefix;
 // a variable applied to erased arguments is the variable.
 
 function anf(t: HTerm, ty: HTerm | null = null): HTerm {
@@ -1996,11 +1996,12 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
           if (f.$ !== "App") {
             return f;
           }
-          if (m.t.$ === "Var" && !m.args.includes(f.x)) {
+          const on = m.args.includes(f.x);
+          if (m.t.$ === "Var" && !on) {
             return spine(f.f);
           }
-          const g = cut(spine(f.f), ty_ann(f.f));
-          const x = m.args.includes(f.x) ? go(f.x, false, null) : f.x;
+          const g = on ? cut(spine(f.f), ty_ann(f.f)) : spine(f.f);
+          const x = on ? go(f.x, false, null) : f.x;
           return g === f.f && x === f.x ? f : Bend.App(g, x, f.s);
         };
         const r = spine(s);
