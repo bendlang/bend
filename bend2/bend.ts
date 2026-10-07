@@ -334,7 +334,7 @@ export type Body  = Match | Local | LTerm
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; path?: string };
-export type Parse = File & { book: Book; dir: string; pos: number; stk: Array<[Name, number]>; frs: number; };
+export type Parse = File & { book: Book; dir: string; pos: number; stk: Array<[Name, number]>; frs: number; source: File; };
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
@@ -1001,6 +1001,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
   const lines = text.split("\n");
   const body  = lines.slice();
   const al    : Record<Name, Name> = Object.create(null);
+  const source: File = { str: text, ns, al, path: real };
   const hub   = (s: string): boolean => /^0x[0-9a-f]+\//.test(s);
   const ok    = (s: string, lib: boolean): boolean => hub(s) === lib
     && /^(\/|(\.\.\/)*)([A-Za-z_][\w-]*\/)*[A-Za-z_][\w-]*$/.test(s.replace(/^0x[0-9a-f]+\//, ""));
@@ -1014,7 +1015,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     }
     const m   = /^import\s+(\S+)(?:\s+as\s+([A-Za-z_]\w*))?\s*(?:#.*)?$/.exec(line);
     const beg = at + lines[i].indexOf(m?.[1] ?? line);
-    const sp  = { file: { str: text, ns, al, path: real }, beg, end: beg };
+    const sp  = { file: source, beg, end: beg };
     if (m === null || (m[2] === undefined && m[1] !== "Base")) {
       throw Diag(DIAG_CODES.InvalidImport, book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
     }
@@ -1047,7 +1048,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     await book_load(book, got, sub, seen, sp, top);
   }
   const n0 = book.order.length;
-  parse_book(book, dir, body.join("\n"), ns, al, real);
+  parse_book(book, dir, body.join("\n"), ns, al, real, source);
   if (real === BASE_BEND) {
     for (const k of book.order.slice(n0)) {
       book.tlds[k].b = true;
@@ -1581,12 +1582,12 @@ export function parse_col(src: string, pos: number): number {
 }
 
 export function parse_span(p: Parse, beg: number): Span {
-  return { file: p, beg, end: p.pos };
+  return { file: p.source, beg, end: p.pos };
 }
 
 export function parse_fail(p: Parse, code: DiagCode, exp: string, beg = p.pos, end = p.pos): never {
   const obs = beg < end ? "'" + p.str.slice(beg, end) + "'" : p.pos < p.str.length ? "'" + p.str[p.pos] + "'" : "end of input";
-  throw Diag(code, p.book, ctx_nil(), exp, obs, { file: p, beg, end });
+  throw Diag(code, p.book, ctx_nil(), exp, obs, { file: p.source, beg, end });
 }
 
 export function parse_peek(p: Parse): string {
@@ -2551,8 +2552,8 @@ export function parse_def(p: Parse, u: Bool): void {
   book.order.push(k);
 }
 
-export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>, file?: string): void {
-  const p: Parse = { book, dir, str: src, pos: 0, stk: [], frs: 0, ns, al, path: file };
+export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>, file?: string, source: File = { str: src, ns, al, path: file }): void {
+  const p: Parse = { book, dir, str: src, pos: 0, stk: [], frs: 0, ns, al, path: file, source };
   while (true) {
     parse_skip(p);
     if (p.pos >= p.str.length) {
