@@ -3231,9 +3231,8 @@ export function js_book(book: Bend.Book): string {
   const lib = js_lib(book);
   const show = show_main();
   return `${lib}\n${RUNTIME_MAIN}\ncli(process.argv.slice(1));\nio_exit(${
-    js_sat("main")}, ${JSON.stringify(show && [show.map((c) =>
-      typeof c === "string" ? 0 : c), show.flatMap((c) =>
-      typeof c === "string" ? [Bend.name_key(c)] : [])])});`;
+    js_sat("main")}, ${JSON.stringify(show && show.map((c) =>
+      typeof c === "string" ? Bend.name_key(c) : c))});`;
 }
 
 // RuntimeC
@@ -6111,19 +6110,19 @@ function show_chr(c, q) {
     ? "\\u{" + c.toString(16) + "}" : String.fromCodePoint(c);
 }
 
-function show_val(D, N, d, v, chain) {
+function show_val(D, d, v, chain) {
   if (D[d] === 7) {
     const fs = Object.values(typeof v === "boolean"
       ? { $: v ? "True" : "False" } : v);
     let a = d + 3;
-    for (; N[D[a]] !== fs[0]; a += 4 + 2 * D[a + 2]) {}
+    for (; D[a + 1] !== fs[0]; a += 4 + 2 * D[a + 2]) {}
     const o = "{[("[D[a + 3]];
     let s = o === "{" ? fs[0] + "{" : chain === o ? "" : o;
     for (const [j, f] of fs.slice(1).entries()) {
       if (o === "[" ? j === 0 && chain === o : j > 0) {
         s += ", ";
       }
-      s += show_val(D, N, D[a + 5 + 2 * j], f, j === 1 && o !== "{" ? o : 0);
+      s += show_val(D, D[a + 5 + 2 * j], f, j === 1 && o !== "{" ? o : 0);
     }
     return o === "{" || chain !== o ? s + "}])"[D[a + 3]] : s;
   }
@@ -6134,7 +6133,7 @@ function show_val(D, N, d, v, chain) {
     : D[d] === 4 ? "\"" + [...v].map((c) =>
       show_chr(c.codePointAt(0), "\"")).join("") + "\""
     : D[d] === 5 ? "{==}"
-    : "[" + v.map((x) => show_val(D, N, D[d + 1], x, 0)).join(", ") + "]";
+    : "[" + v.map((x) => show_val(D, D[d + 1], x, 0)).join(", ") + "]";
 }
 
 // Io
@@ -6151,7 +6150,7 @@ function show_val(D, N, d, v, chain) {
 function io_exit(main, show) {
   try {
     if (show !== null) {
-      io_out(1, io_bytes(show_val(...show, 0, run_loop(main()), 0) + "\n"));
+      io_out(1, io_bytes(show_val(show, 0, run_loop(main()), 0) + "\n"));
       process.exit(0);
     }
     process.exit(io_run(main));
