@@ -5,24 +5,19 @@
 // the call waits on the child's pipes and on a descriptor that turns readable
 // once it exits (a pidfd on Linux, a kqueue on macOS; without one, it looks
 // every 50ms), so other computations run meanwhile. Once the direct child is
-// reaped it drains only the bytes already buffered: a descendant holding a
-// pipe open does not extend the wait.
+// reaped it takes one more chunk per pipe: a descendant holding a pipe open
+// does not extend the wait.
 
-// The libc beyond io_sys. ioctl is variadic, so Apple arm64 takes its
-// pointer as the ninth argument, as io_sys does fcntl's flags. glibc before
-// 2.34 has no addclosefrom_np: there the child also inherits the
-// descriptors that are not close-on-exec.
+// The libc beyond io_sys. On Linux, as on the C lane, it needs glibc 2.34
+// or newer for addclosefrom_np.
 function process_sys() {
   if (globalThis.BEND_PROCESS === undefined) {
     const mac = io_sys().mac;
-    const vari = mac && process.arch === "arm64";
     const fn = (args, returns = "i32") => ({ args, returns });
-    const lib = (fns) => require("bun:ffi")
-      .dlopen(mac ? "libSystem.dylib" : "libc.so.6", fns).symbols;
-    const ps = lib({
+    globalThis.BEND_PROCESS = require("bun:ffi").dlopen(mac
+      ? "libSystem.dylib" : "libc.so.6", {
       pipe: fn(["ptr"]),
       write: fn(["i32", "ptr", "u64"], "i64"),
-      ioctl: fn(["i32", "u64", ...Array(vari ? 6 : 0).fill("i32"), "ptr"]),
       waitpid: fn(["i32", "ptr", "i32"]),
       kill: fn(["i32", "i32"]),
       posix_spawnp: fn(Array(6).fill("ptr")),
@@ -35,18 +30,9 @@ function process_sys() {
       posix_spawnattr_destroy: fn(["ptr"]),
       ...mac ? { kqueue: fn([]),
         kevent: fn(["i32", "ptr", "i32", "ptr", "i32", "ptr"]) }
-        : { syscall: fn(["i64", "i32", "i32"], "i64") },
-    });
-    const fionread = (fd, n) => vari
-      ? ps.ioctl(fd, 0x4004667f, 0, 0, 0, 0, 0, 0, n)
-      : ps.ioctl(fd, mac ? 0x4004667f : 0x541b, n);
-    let closefrom = null;
-    try {
-      closefrom = mac ? null : lib({ posix_spawn_file_actions_addclosefrom_np:
-        fn(["ptr", "i32"]) }).posix_spawn_file_actions_addclosefrom_np;
-    } catch (_) {
-    }
-    globalThis.BEND_PROCESS = { ...ps, fionread, closefrom };
+        : { syscall: fn(["i64", "i32", "i32"], "i64"),
+          posix_spawn_file_actions_addclosefrom_np: fn(["ptr", "i32"]) },
+    }).symbols;
   }
   return globalThis.BEND_PROCESS;
 }
@@ -106,8 +92,8 @@ function process_spawn(sys, ps, p, argv) {
     code = ps.posix_spawn_file_actions_adddup2(sys.ptr(acts),
       p.pipes[i][i === 0 ? 0 : 1], i);
   }
-  if (code === 0 && ps.closefrom !== null) {
-    code = ps.closefrom(sys.ptr(acts), 3);
+  if (code === 0 && !sys.mac) {
+    code = ps.posix_spawn_file_actions_addclosefrom_np(sys.ptr(acts), 3);
   }
   const pid = new Int32Array(1);
   if (code === 0 && (code = ps.posix_spawnattr_init(sys.ptr(attr))) === 0) {
@@ -257,19 +243,12 @@ function process_run(program, args, input, maxOutput, timeoutMs, k) {
   }
   p.exit = process_exitfd(sys, ps, p.child);
   const deadline = io_until(timeoutMs);
-  const avail = new Int32Array(1);
   const go = () => {
     const got = ps.waitpid(p.child, sys.ptr(p.status), 1);
     if (got === p.child) {
       p.child = -1;
-      for (let i = 1; i < 3 && p.code === 0; i += 1) {
-        const fd = p.pipes[i][0];
-        avail[0] = 0;
-        if (fd >= 0 && ps.fionread(fd, sys.ptr(avail)) !== 0) {
-          p.code = sys.errno();
-        }
-        process_read(sys, p, i, avail[0]);
-      }
+      process_read(sys, p, 1, p.buf.length);
+      process_read(sys, p, 2, p.buf.length);
       return process_end(sys, ps, p);
     }
     if (got < 0 && sys.errno() !== 4) {
@@ -283,7 +262,7 @@ function process_run(program, args, input, maxOutput, timeoutMs, k) {
       return process_end(sys, ps, p);
     }
     // A chunk per pipe, then waitpid again: a descendant that keeps writing
-    // must not keep this from seeing the child exit.
+    // must not keep this from seeing the child exit, nor from answering.
     process_feed(sys, ps, p);
     process_read(sys, p, 1, p.buf.length);
     process_read(sys, p, 2, p.buf.length);

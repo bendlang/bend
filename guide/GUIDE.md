@@ -388,9 +388,9 @@ zero. Both limits must be positive; failure to start, a timeout, or stdout
 and stderr exceeding `max_output` bytes together answer `Fail`. The call
 waits for the direct child and drains ready output; a descendant holding an
 inherited pipe open does not extend the wait. Timeouts do not kill descendants.
-Other computations run while the child does, on either lane. On Linux,
-native builds need glibc 2.34 or newer to close inherited descriptors. It
-does not sandbox the child: callers must whether a command is trusted before
+Other computations run while the child does, on either lane. On Linux, it
+needs glibc 2.34 or newer to close inherited descriptors. It does not
+sandbox the child: callers must whether a command is trusted before
 executing it.
 
 A Bend program is a set of computations interleaved by one event loop, as in
