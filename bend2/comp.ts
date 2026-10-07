@@ -3066,11 +3066,10 @@ function js_match(sc: Scope, x: HTerm, ty: HTerm | null, args: string[]): void {
       ? [wd(j)] : [wd(j) + "[\"head\"]", wd(j + 1)].slice(0, e)]);
   } else {
     const native = OPTIMIZED[adt.k];
+    const is = (c: Name) => `${s}.$ === "${Bend.name_key(c)}"`;
     lv = mat_ctrs(x, adt).map(([k, h]): [string, HTerm, string[]] =>
-      k === "" || k === "_" ? [k && mat_ops((c) =>
-        `${s}.$ === "${Bend.name_key(c)}"`), h, [s]] : native === undefined
-      ? [`${s}.$ === "${Bend.name_key(k)}"`, h,
-        ctr_live(FL.book.ctrs[k]).map(([, f]) => `${s}["${f}"]`)]
+      k === "" || k === "_" ? [k && mat_ops(is), h, [s]] : native === undefined
+      ? [is(k), h, ctr_live(FL.book.ctrs[k]).map(([, f]) => `${s}["${f}"]`)]
       : [tpl(native[k].cond ?? "", [s]), h,
         (native[k].elim ?? []).map((e) => tpl(e, [s]))]);
   }
