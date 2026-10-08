@@ -289,6 +289,15 @@ try {
   check("guide, base and a program run through the executable",
     guide.out.startsWith("# Bend") && base.out.startsWith("type Map")
     && sum5.code === 0 && sum5.out === "5n\n");
+  fs.writeFileSync(path.join(TMP, "page.html"),
+    "<script type=\"module\" src=\"./page.ts\"></script>\n");
+  fs.writeFileSync(path.join(TMP, "page.ts"), "import \"./none.ts\";\n");
+  const page = await bend([path.join(TMP, "page.html"), "-o",
+    path.join(TMP, "dist")]);
+  check("a page that fails to bundle names the import and where, and exits 1"
+    + " with no crash banner: " + page.err, page.code === 1
+    && page.err.includes("Could not resolve: \"./none.ts\"")
+    && page.err.includes("page.ts:1:") && !page.err.includes("Bun v"));
   const bad_file = path.join(TMP, "bad.bend");
   const sum_file = path.join(TMP, "sum.bend");
   const unsafe_file = path.join(TMP, "unsafe.bend");
