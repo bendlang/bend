@@ -71,7 +71,9 @@ newest cached release.
 spacing, comments, blank lines between declarations, wrapping and the final
 newline. Options: `tabWidth` (default 2) and `wrapAtWidth` (default 100). Both
 must be positive integers, or `"never"` for `wrapAtWidth`. The width is a target;
-long literals and comments can run past it. Its fix is `safe`.
+long literals and comments can run past it. `endOfLine` is `"lf"` (default),
+`"crlf"` or `"preserve"`; preserve uses the first line ending, or LF if there
+is none. Line endings inside literals stay as written. Its fix is `safe`.
 
 Declaration order and literals stay as written. The only comment change is a
 space added after `#` when it's missing. Before offering a fix it parses

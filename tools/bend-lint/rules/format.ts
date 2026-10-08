@@ -4,11 +4,12 @@
 // Run: bun src/lint.ts file.bend --rules rules/format.ts --fix
 // Config: { "rules": { "format/layout": { "tabWidth": 2, "wrapAtWidth": 100 } } }
 // Both numbers are positive integers; "never" disables optional wrapping.
+// endOfLine: "lf" (default), "crlf", or "preserve" (first ending, LF fallback).
 import * as path from "node:path";
 import type { Options, RuleContext, LintRule } from "../src/lint.ts";
 import type { Book, HTerm } from "bend2/bend.ts";
 
-export type FormatOptions = { tabWidth: number; wrapAtWidth: number | "never" };
+export type FormatOptions = { tabWidth: number; wrapAtWidth: number | "never"; endOfLine?: "lf" | "crlf" | "preserve" };
 type Token = { text: string; beg: number; end: number; col: number; kind: "code" | "literal" | "comment" | "newline" };
 type Node = Token | { open: Token; close: Token; children: Node[] };
 type Doc = string | { kind: "line"; flat: string; hard?: boolean; offset?: number }
@@ -17,15 +18,18 @@ type Frame = { doc: Doc; indent: number; flat: boolean };
 const DELIMITERS = new Map([["(", ")"], ["[", "]"], ["{", "}"], ["<", ">"]]);
 
 export function formatOptions(options: Options): FormatOptions {
-  const { tabWidth = 2, wrapAtWidth = 100 } = options;
-  const unknown = Object.keys(options).find((k) => k !== "tabWidth" && k !== "wrapAtWidth");
+  const { tabWidth = 2, wrapAtWidth = 100, endOfLine = "lf" } = options;
+  const unknown = Object.keys(options).find((k) => k !== "tabWidth" && k !== "wrapAtWidth" && k !== "endOfLine");
   if (unknown) throw new Error("format/layout has no option " + unknown);
   const positive = (v: unknown): v is number => typeof v === "number" && Number.isSafeInteger(v) && v > 0;
   if (!positive(tabWidth)) throw new Error("format/layout: tabWidth must be a positive integer");
   if (wrapAtWidth !== "never" && !positive(wrapAtWidth)) {
     throw new Error('format/layout: wrapAtWidth must be "never" or a positive integer');
   }
-  return { tabWidth, wrapAtWidth };
+  if (endOfLine !== "lf" && endOfLine !== "crlf" && endOfLine !== "preserve") {
+    throw new Error('format/layout: endOfLine must be "lf", "crlf" or "preserve"');
+  }
+  return { tabWidth, wrapAtWidth, endOfLine };
 }
 
 // Preserve literals and comment text verbatim. In particular, a quote or #
@@ -202,7 +206,7 @@ function commentText(text: string): string {
 // A small document printer: a group is entirely flat if it fits; otherwise
 // its list separators break together. Nesting is relative, never alignment
 // under a function name. The width is a target, not a license to split atoms.
-function print(doc: Doc, width: number, indent: number): string {
+function print(doc: Doc, width: number, indent: number, newline: string): string {
   const stack: Frame[] = [{ doc, indent, flat: false }];
   let out = " ".repeat(indent), col = indent;
   const fits = (remaining: number, pending: Frame[]): boolean => {
@@ -229,7 +233,7 @@ function print(doc: Doc, width: number, indent: number): string {
       if (!d.hard && (f.flat || width === Infinity)) { out += d.flat; col += d.flat.length; }
       else {
         col = f.indent + (d.offset ?? 0);
-        out = out.trimEnd() + "\n" + " ".repeat(col);
+        out = out.trimEnd() + newline + " ".repeat(col);
       }
     } else if (d.kind === "nest") stack.push({ doc: d.doc, indent: f.indent + d.amount!, flat: f.flat });
     else stack.push({ doc: d.doc, indent: f.indent,
@@ -239,6 +243,8 @@ function print(doc: Doc, width: number, indent: number): string {
 }
 
 export function format(source: string, opts: FormatOptions): string {
+  const newline = opts.endOfLine === "preserve" ? /\r?\n/.exec(source)?.[0] ?? "\n"
+    : opts.endOfLine === "crlf" ? "\r\n" : "\n";
   const nodes = tree(tokens(source));
   const records: Node[][] = [[]];
   for (let i = 0; i < nodes.length; i++) {
@@ -282,12 +288,12 @@ export function format(source: string, opts: FormatOptions): string {
           nest([hard(), sequence(record.slice(colon + 1), source, opts, col)], opts.tabWidth)];
       } else doc = sequence(record, source, opts, col);
     }
-    rows.push(print(doc, opts.wrapAtWidth === "never" ? Infinity : opts.wrapAtWidth, indent));
+    rows.push(print(doc, opts.wrapAtWidth === "never" ? Infinity : opts.wrapAtWidth, indent, newline));
     previous = record.map((n) => first(n).text).join("");
     previousComment = comment;
     blank = false;
   }
-  return rows.join("\n").trimEnd() + "\n";
+  return rows.join(newline).trimEnd() + newline;
 }
 
 // Reparse both versions with the same imported declarations. No typecheck,

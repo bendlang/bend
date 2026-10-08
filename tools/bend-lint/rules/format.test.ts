@@ -6,16 +6,17 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { Bend, lint, applyFixes, walk, render } from "../src/lint.ts";
 import { format, formatOptions, rules, sameProgram } from "./format.ts";
+import type { FormatOptions } from "./format.ts";
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-format-"));
 afterAll(() => fs.rmSync(dir, { recursive: true, force: true }));
-const opts = { tabWidth: 2, wrapAtWidth: 100 } as const;
+const opts = { tabWidth: 2, wrapAtWidth: 100, endOfLine: "lf" } as const;
 const fixture = (text: string, name = "main.bend") => {
   const file = path.join(dir, name);
   fs.writeFileSync(file, text);
   return file;
 };
-async function fixed(text: string, options = opts as { tabWidth: number; wrapAtWidth: number | "never" }) {
+async function fixed(text: string, options: FormatOptions = opts) {
   const result = await lint(fixture(text), rules, { config: { rules: { "format/layout": options } } });
   if (!result.ok) throw new Error(result.diags.map(render).join("\n"));
   expect(result.ok).toBe(true);
@@ -46,12 +47,45 @@ describe("format/layout", () => {
       expect(() => formatOptions({ wrapAtWidth: bad })).toThrow('"never" or a positive integer');
     }
     expect(() => formatOptions({ wrapAtWidth: "always" })).toThrow();
+    for (const endOfLine of ["lf", "crlf", "preserve"] as const) {
+      expect(formatOptions({ endOfLine })).toEqual({ ...opts, endOfLine });
+    }
+    for (const endOfLine of ["auto", "LF", "", 1, true]) {
+      expect(() => formatOptions({ endOfLine })).toThrow("endOfLine must be");
+    }
     expect(() => formatOptions({ breakLines: true })).toThrow("no option breakLines");
   });
 
   test("one sweep formats spacing, indentation, gaps, CRLF and final newline", async () => {
     const output = await fixed('import   Base\r\n\r\n\r\ntype N is Data:\r\n    Z{}  \r\n    S{p:N}\r\ndef id(x:N)->N:\r\n\tx  \r\ndef main()->N: id(S{Z{}})');
     expect(output).toBe("import Base\n\ntype N is Data:\n  Z{}\n  S{p: N}\n\ndef id(x: N) -> N:\n  x\n\ndef main() -> N:\n  id(S{Z{}})\n");
+  });
+
+  test("CRLF applies to declarations, wrapping, comments and the final newline", async () => {
+    const source = "import Base\n#header\ndef f(first: U32, second: U32) -> U32: first\ndef main() -> U32: f(123456789, 234567890)";
+    const options = { ...opts, wrapAtWidth: 20 };
+    const lf = await fixed(source, options);
+    expect(await fixed(source, { ...options, endOfLine: "crlf" })).toBe(lf.replaceAll("\n", "\r\n"));
+  });
+
+  test("preserve uses the first ending in mixed files and falls back to LF", async () => {
+    const options = { ...opts, endOfLine: "preserve" } as const;
+    const source = "import Base\ndef main() -> U32: 1\n";
+    const lf = await fixed(source);
+    expect(await fixed(source.replace("\n", "\r\n"), options)).toBe(lf.replaceAll("\n", "\r\n"));
+    expect(await fixed(source.replace(/\n$/, "\r\n"), options)).toBe(lf);
+    expect(await fixed("def main() -> Type: Type", options)).toBe("def main() -> Type:\n  Type\n");
+  });
+
+  test("line ending options preserve literal contents", () => {
+    const source = 'def main() -> String:\n  "first\r\nsecond\nthird"\n';
+    for (const endOfLine of ["lf", "crlf", "preserve"] as const) {
+      const options = { ...opts, endOfLine };
+      const newline = endOfLine === "crlf" ? "\r\n" : "\n";
+      const output = format(source, options);
+      expect(output).toBe('def main() -> String:' + newline + '  "first\r\nsecond\nthird"' + newline);
+      expect(format(output, options)).toBe(output);
+    }
   });
 
   test("wrapped lists use one item per line and relative indentation", async () => {
