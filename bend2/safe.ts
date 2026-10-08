@@ -950,9 +950,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     }
     case "Lit": {
       if (x.k === "Nat" && x.v > NAT_MAX && e.book.tlds.Nat?.b === true) {
-        // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add,
-        // which a base Nat means are base's too (a file's own Nat, as a
-        // build refuses, is its constructor chain however long)
+        // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add
         const [q, r] = [Math.floor(x.v / NAT_MAX), x.v % NAT_MAX];
         const mul = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
         return term(e, s, B.App(B.App(B.Ref("Nat.add"), mul), B.Lit("Nat", r)), live);
@@ -1249,27 +1247,18 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   return F.q.$ === G.q.$ && qsig_eq(e, F.B(x), G.B(x), d + 1);
 }
 
-// a Nat literal as its constructor chain, built in a loop: lowering
-// each predecessor through term would recurse once per unit
-function nat_literal(e: Safe, value: number): O {
-  const zero = e.book.ctrs.Zero;
-  const succ = e.book.ctrs.Succ;
-  if (zero === undefined || succ === undefined) {
-    oos("an unknown Nat constructor");
-  }
+function nat_literal(e: Safe, n: number): O {
   let out = pack_ctr("Zero", []);
-  const field = B.term_wnf(e.book, succ.T);
-  if (field.$ !== "All") {
-    oos("a malformed Nat successor");
-  }
-  const q = quant(field.q);
-  for (let i = 0; i < value; i += 1) {
-    out = pack_ctr("Succ", [[q, out]]);
+  if (n > 0) {
+    const F = B.term_wnf(e.book, e.book.ctrs.Succ.T);
+    const q = F.$ === "All" ? quant(F.q) : oos("a malformed Nat successor");
+    for (let i = 0; i < n; i += 1) {
+      out = pack_ctr("Succ", [[q, out]]);
+    }
   }
   return out;
 }
 
-// a constructor as a tuple of its tag and fields
 function pack_ctr(k: Name, fs: Array<[Q, O]>): O {
   const tail = fs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), { $: "Lab", k: "()" });
   return { $: "Tup", q: 1, a: { $: "Lab", k: name_tt(k) }, b: tail };
