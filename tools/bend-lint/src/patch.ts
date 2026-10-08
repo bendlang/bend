@@ -79,8 +79,17 @@ const PATCHES: Record<string, Patch> = {
   "comp.ts": { edits: [], tail: "", exports: ["RUNTIME_MAIN", "js_sat"] },
 };
 
+// Text an editor holds unsaved, by real path, set by lint() for one run.
+// bend.ts reads it in place of the file on disk.
+export const unsaved = new Map<string, string>();
+
 // fs and path for bend.ts.
-export const fs = { ...nodeFs, realpathSync: (p: nodeFs.PathLike): string => slash(nodeFs.realpathSync(p)) };
+export const fs = {
+  ...nodeFs,
+  realpathSync: (p: nodeFs.PathLike): string => slash(nodeFs.realpathSync(p)),
+  readFileSync: ((p: nodeFs.PathOrFileDescriptor, ...rest: unknown[]) =>
+    held(p) ?? (nodeFs.readFileSync as (...a: unknown[]) => unknown)(p, ...rest)) as typeof nodeFs.readFileSync,
+};
 
 export const path = {
   ...nodePath,
@@ -91,6 +100,10 @@ export const path = {
 
 // Functions
 // =========
+
+function held(p: nodeFs.PathOrFileDescriptor): string | undefined {
+  return typeof p === "string" && unsaved.size > 0 && nodeFs.existsSync(p) ? unsaved.get(slash(nodeFs.realpathSync(p))) : undefined;
+}
 
 function slash(p: string): string {
   return p.split(nodePath.sep).join("/");

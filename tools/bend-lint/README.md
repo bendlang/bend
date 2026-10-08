@@ -296,8 +296,10 @@ if (result.ok) {
 
 Set `BEND_DIR` before importing bend-lint to pick a Bend checkout. Import
 bend-lint before you load Bend yourself, so the patching happens first. `lint`
-takes `{ config, signal }` as a third argument. Without `config` it looks next to
-the file. `position(span)` gives an LSP range.
+takes `{ config, signal, unsaved }` as a third argument. Without `config` it looks
+next to the file. `unsaved` maps file paths to editor text that isn't saved yet.
+Bend and the rules read that text instead of the file, for that run only. A run
+with `unsaved` can't overlap another run. `position(span)` gives an LSP range.
 
 `findConfig(file)` checks the file's directory, then each parent, for
 `bend-lint.json`, `.js` or `.ts`. Closest directory wins, then JSON, JS, TS.

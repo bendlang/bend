@@ -706,6 +706,22 @@ describe("lint", () => {
     await expect(lint(userland, [], { signal: controller.signal })).rejects.toThrow();
   });
 
+  test("unsaved text is what bend and the rules see, for that run only", async () => {
+    const saved = "import Base\ndef main() -> U32:\n  1\n";
+    const edited = "import Base\ndef main() -> U32:\n  2\n";
+    const file = fixture("unsaved.bend", saved);
+    const seen: LintRule = { id: "test/seen", run: (cx) => [cx.diag({ message: cx.root.text, severity: "hint" })] };
+    const text = async (unsaved?: Map<string, string>): Promise<string> => (await lint(file, [seen], { unsaved })).diags[0].message;
+    expect(await text(new Map([[file, edited]]))).toBe(edited);
+    expect(await text()).toBe(saved);
+    const broken = await lint(file, [seen], { unsaved: new Map([[file, "import Base\ndef main() -> U32:\n  nope\n"]]) });
+    expect([broken.ok, broken.diags[0].code]).toEqual([false, "bend/check"]);
+    const first = text(new Map([[file, edited]]));
+    await expect(text(new Map([[file, edited]]))).rejects.toThrow(/unsaved text/);
+    expect(await first).toBe(edited);
+    expect(await text()).toBe(saved);
+  });
+
   test("spans after import lines point at the right text on disk", async () => {
     fixture("dep.bend", "type N is Data:\n  Z{}\ndef id(x: N) -> N:\n  x\n");
     const main = fixture("main.bend", "import ./dep.bend as D\n\ndef main() -> D.N:\n  D.id(D.Z{})\n");

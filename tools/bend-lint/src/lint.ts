@@ -11,7 +11,7 @@ import * as util from "node:util";
 import type * as BendModule from "bend2/bend.ts";
 import type * as CompModule from "bend2/comp.ts";
 import type { Ann, Book, Ctx, Err, HTerm, LTerm, Name, Quant, Span, Uses } from "bend2/bend.ts";
-import { DriftError, MARK, bendDir, fs, patch, path } from "./patch.ts";
+import { DriftError, MARK, bendDir, fs, patch, path, unsaved } from "./patch.ts";
 import type { Hooked } from "./patch.ts";
 
 // Types
@@ -91,7 +91,9 @@ export type Options = Record<string, OptionValue>;
 // Config: per rule id, "off", or a severity and option values.
 export type Config = { rules?: Record<string, "off" | ({ severity?: Severity } & Options)> };
 
-export type LintOptions = { signal?: AbortSignal; config?: Config };
+// `unsaved` maps file paths to text an editor holds but has not saved. bend
+// and the rules read it in place of the file, for that run only.
+export type LintOptions = { signal?: AbortSignal; config?: Config; unsaved?: ReadonlyMap<string, string> };
 
 export type LintRule = {
   id: string; // namespace/name; the code of its findings
@@ -438,11 +440,33 @@ function settings(rule: LintRule, config: Config): { off: boolean; severity?: Se
   return { off: false, severity, options: { ...rule.options, ...options } };
 }
 
+// Runs `load` with the unsaved text in place of the files on disk. It is
+// global to bend's loader, so a run with unsaved text cannot overlap another
+// run, and it is cleared at the end.
+async function holding<T>(text: ReadonlyMap<string, string> | undefined, load: () => Promise<T>): Promise<T> {
+  if (text === undefined || text.size === 0) {
+    return load();
+  }
+  if (unsaved.size > 0) {
+    throw new Error("another run is checking unsaved text; wait for it to end");
+  }
+  for (const [file, str] of text) {
+    if (fs.existsSync(file)) {
+      unsaved.set(fs.realpathSync(file), str);
+    }
+  }
+  try {
+    return await load();
+  } finally {
+    unsaved.clear();
+  }
+}
+
 // Rules run in order; the config may turn one off, set its severity, and
 // give its options. A finding with severity error stops the run. A rule
 // that throws, and an abort, reach the caller.
 export async function lint(file: string, rules: LintRule[],
-  { signal = new AbortController().signal, config = findConfig(file) }: LintOptions = {}): Promise<LintResult> {
+  { signal = new AbortController().signal, config = findConfig(file), unsaved: held }: LintOptions = {}): Promise<LintResult> {
   const strings = (xs: unknown): boolean => xs === undefined || Array.isArray(xs) && xs.every((x) => typeof x === "string");
   const bad = rules.findIndex((r) => !RULE_ID.test(String(r?.id)) || typeof r?.run !== "function"
     || !(r.facts === undefined || r.facts === true || typeof r.facts === "object" && r.facts !== null
@@ -454,7 +478,7 @@ export async function lint(file: string, rules: LintRule[],
   const plans = rules.map((rule) => ({ rule, ...settings(rule, config), want: rule.facts === true ? {} : rule.facts }))
     .filter((p) => !p.off);
   const program = plans.some((p) => p.want?.scope === "program");
-  const { book, sources, span, facts, failure } = await check(file, plans.flatMap((p) => p.want === undefined ? [] : [p.want]), signal);
+  const { book, sources, span, facts, failure } = await holding(held, () => check(file, plans.flatMap((p) => p.want === undefined ? [] : [p.want]), signal));
   if (failure !== undefined) {
     return { ok: false, diags: [failure], sources, book };
   }
