@@ -15,11 +15,15 @@
 // read 59.7-73.6 ms from one run after its builds). tm times each run and
 // gives its RSS (the space): one posix_spawn and wait4, where the perl
 // clocks around /usr/bin/time -l cost 6 ms of that cell. A cell passes at
-// 1.15x or under; --pin runs every
-// cell three times and writes the medians as the new pins (a space in
-// tenths of a megabyte, so a 2.5 MB program is not graded against "2M"),
-// refusing to write while any cell is unmeasured; --gate prints only the
-// verdict.
+// 1.15x or under; --pin runs the
+// gate PIN_RUNS times, PIN_REST seconds apart, each run dispatched and
+// measured as a graded one, prints every run's times, and writes each
+// cell's median as its pin, a space in tenths of a
+// megabyte (so a 2.5 MB program is not graded against "2M"), refusing to
+// write while any cell is unmeasured. Three copies of each cell in one
+// run share that run's moment: mandelbrot's PAR-GPU pinned at 0.060 s,
+// then read 0.060-0.070 s at the commit it was pinned at. --gate prints
+// only the verdict.
 
 import * as child from "node:child_process";
 import * as fs from "node:fs";
@@ -82,6 +86,10 @@ const MARK = "@@B4";
 const CLOCK = "perl -MTime::HiRes=time -e 'print time'";
 
 const SHORT = 2;
+
+const PIN_RUNS = 5;
+
+const PIN_REST = 2;
 
 // tm FILE CMD ARGS... runs CMD and writes its exit status, wall seconds and
 // maximum RSS in bytes to FILE.
@@ -336,41 +344,61 @@ async function chk_run(c: Chk, node: number): Promise<void> {
 if (import.meta.main) {
   const benches = fs.readdirSync(RUNTIME).filter((f) => !f.startsWith("_"))
     .sort();
-  const reps = PIN ? 3 : 1;
-  let cells: Cell[] = benches.flatMap((bench) => MODES.flatMap((_, mode) =>
-    Array.from({ length: reps }, () => ({ bench, mode, secs: null,
-      mem: null, comp: null, out: "", note: "" }))));
-  const chks: Chk[] = fs.readdirSync(CHECKER).filter((f) => !f.startsWith("_"))
-    .sort().map((bench) => ({ bench, secs: null, note: "" }));
+  const fresh = (): Cell[] => benches.flatMap((bench) => MODES.map((_, mode) =>
+    ({ bench, mode, secs: null, mem: null, comp: null, out: "", note: "" })));
+  const chk_fresh = (): Chk[] => fs.readdirSync(CHECKER)
+    .filter((f) => !f.startsWith("_")).sort()
+    .map((bench) => ({ bench, secs: null, note: "" }));
+  let cells = fresh();
+  let chks = chk_fresh();
+  const all: Cell[] = [];
+  const chk_all: Chk[] = [];
   const [pins, cpins] = PIN
     ? [new Map<string, Pin>(), new Map<string, number>()]
     : pin_read();
   const notes = (): string[] => [...cells, ...chks].map((c) => c.note)
     .filter((n) => n !== "");
   const draw = (): void => view_draw(cells, chks, pins, cpins, notes());
-  draw();
   const nodes = await lib.node_lock();
   const pack = lib.pack(RUNTIME);
-  await lib.node_pool(nodes, [...cells.map((c) => async (node: number) => {
-    await cell_run(c, node, pack);
+  for (let run = 0; run < (PIN ? PIN_RUNS : 1); run += 1) {
+    if (run > 0) {
+      await Bun.sleep(PIN_REST * 1000);
+      cells = fresh();
+      chks = chk_fresh();
+    }
     draw();
-  }), ...chks.map((c) => async (node: number) => {
-    await chk_run(c, node);
-    draw();
-  })]);
+    await lib.node_pool(nodes, [...cells.map((c) => async (node: number) => {
+      await cell_run(c, node, pack);
+      draw();
+    }), ...chks.map((c) => async (node: number) => {
+      await chk_run(c, node);
+      draw();
+    })]);
+    all.push(...cells);
+    chk_all.push(...chks);
+  }
   if (PIN) {
+    console.log(benches.flatMap((bench) => MODES.map((m, mode) => bench + " "
+      + m + ": " + all.filter((c) => c.bench === bench && c.mode === mode)
+      .map((c) => c.secs?.toFixed(3) ?? "-").join(" "))).join("\n"));
     const mid = (xs: (number | null)[]): number | null => {
       const ys = xs.filter((x) => x !== null).sort((x, y) => x - y);
       return ys.length === xs.length ? ys[Math.floor(ys.length / 2)] : null;
     };
     cells = benches.flatMap((bench) => MODES.map((_, mode) => {
-      const cs = cells.filter((c) => c.bench === bench && c.mode === mode);
+      const cs = all.filter((c) => c.bench === bench && c.mode === mode);
       return { bench, mode, secs: mid(cs.map((c) => c.secs)),
         mem: mid(cs.map((c) => c.mem)), comp: mid(cs.map((c) => c.comp)),
         out: cs[0].out, note: cs.map((c) => c.note).find((n) => n !== "")
           ?? (cs.every((c) => c.out === cs[0].out) ? "" : bench + " "
           + MODES[mode] + ": the runs printed different outputs") };
     }));
+    chks = chks.map(({ bench }) => {
+      const cs = chk_all.filter((c) => c.bench === bench);
+      return { bench, secs: mid(cs.map((c) => c.secs)),
+        note: cs.map((c) => c.note).find((n) => n !== "") ?? "" };
+    });
     if (notes().length > 0) {
       console.log(notes().join("\n"));
       lib.verdict(0, 1);
