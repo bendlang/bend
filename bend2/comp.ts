@@ -926,10 +926,12 @@ function type_adts(T: HTerm): Name[] {
 // that re-enters it under layout (a family hid the cycle) are one box.
 // A lay without arms is W32, W64 or BOX itself. An Array cell takes
 // the open layout of its element type (the return type of its
-// constructors), so all callers agree. lay_el refuses an open element
-// type, except equality and functions: their layouts do not depend on
-// the types of their sides or arguments. adt_of and js_expr call it only
-// for that check.
+// constructors), so all callers agree. lay_el refuses only an open
+// element type: a type variable, or an application or match stuck on
+// one. Any other type that is not a datatype is one box whatever its
+// parts mention; a function is a box even when its arguments are erased,
+// since every store converts through lay_of. adt_of and js_expr call it
+// only for that check.
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -950,11 +952,11 @@ function lay_of(A: HTerm | null): Lay {
 
 function lay_el(A: HTerm | null): Lay {
   const t = ty_wnf(A);
-  if (t?.$ === "Eql" || t?.$ === "All") {
-    return lay_of(A);
-  }
-  if (t?.$ !== "ADT") {
+  if (t === null || ["Var", "App", "Mat", "Hol"].includes(t.$)) {
     die("an open Array element type");
+  }
+  if (t.$ !== "ADT") {
+    return BOX;
   }
   const tld = FL.book.tlds[t.k];
   return lay_of(tld?.$ === "ADT" && tld.c[0]

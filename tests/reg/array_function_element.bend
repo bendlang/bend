@@ -25,12 +25,46 @@ def joinStrings(a: Array<(String -> String)>, +s: String) -> String:
     case ALeaf{f}: f(s)
     case ANode{xs, ys}: joinStrings(xs, s) ++ joinStrings(ys, s)
 
+# A generic domain: the element layout does not depend on T.
+def applyAll(-T: Data, a: Array<(T -> U32)>, +x: T) -> U32:
+  match a:
+    case ALeaf{f}: f(x)
+    case ANode{xs, ys}: (applyAll(T, xs, x) + applyAll(T, ys, x) : U32)
+
+def bit(b: Bool) -> U32:
+  match b:
+    case True{}: 1
+    case False{}: 0
+
+# An erased argument: the cell still holds one boxed function.
+def sumErased(a: Array<(@-m: Nat -> U32)>) -> U32:
+  match a:
+    case ALeaf{f}: f(3n)
+    case ANode{xs, ys}: (sumErased(xs) + sumErased(ys) : U32)
+
+# Array.new needs Data, so a function array is built leaf by leaf; both
+# halves of each ANode have the same depth.
+def build(+d: Nat, +i: U32) -> Array<(U32 -> U32)>:
+  match d:
+    case 0n:
+      ALeaf{x => (x + i : U32)}
+    case 1n+p:
+      ANode{build(p, (i * 2 : U32)), build(p, (i * 2 + 1 : U32))}
+
 def main() -> IO(Unit):
   do IO<Unit>:
     IO.print(U32.show(sumA(ANode{mkA(41), mkA(6)})))
     IO.print(U32.show(replace(ANode{ALeaf{x => (x * 2 : U32)}, ALeaf{x => (x * 3 : U32)}})))
     IO.print(joinStrings(ANode{strings("a"), strings("b")}, "!"))
+    IO.print(U32.show(applyAll(U32, ANode{ALeaf{x => (x + 1 : U32)}, ALeaf{x => (x * 2 : U32)}}, 5)))
+    IO.print(U32.show(applyAll(Bool, ANode{ALeaf{b => bit(b)}, ALeaf{b => (bit(b) + 20 : U32)}}, True{})))
+    IO.print(U32.show(sumErased(ANode{ALeaf{m => 4}, ALeaf{m => 5}})))
+    IO.print(U32.show(sumA(Array.set(U32 -> U32, build(2n, 0), 3, x => (x * 10 : U32)))))
 
 #|49
 #|19
 #|a!b!
+#|16
+#|22
+#|9
+#|16
