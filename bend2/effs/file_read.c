@@ -73,3 +73,44 @@ static void __attribute__((constructor)) file_read_at_use(void) {
 }
 
 #endif
+
+#ifdef CID(File.read_into)
+
+// The bytes land in the array's own words: a U32 array keeps its slots
+// packed little-endian, two a word, so slot i is byte 4i of its block. A
+// forked handle reaches the same cells, as Array.set's write does.
+static void file_read_into_call(IoWork* w) {
+  int     fd  = (int)w->hand;
+  u64     got = 0;
+  ssize_t n   = 1;
+  while (got < w->word && n > 0) {
+    n = pread(fd, w->data + got, w->word - got, (off_t)w->made + (off_t)got);
+    got += io_sys_end(w, n);
+  }
+  w->size = got;
+}
+
+static Term file_read_into_pack(Env e, IoWork* w) {
+  Term r = io_res(e, w, w->size);
+  return io_tup(e, io_hand(w->hand), io_tup(e, w->item, r));
+}
+
+Term file_read_into_run(Env e, Term* f, IoWork* w) {
+  Term a    = f[3];
+  u64  at   = (u32)f[4];
+  u64  n    = term_tag(a) == TAG_BUF ? 1ull << blk_cls(a) : 0;
+  u64  room = at < n ? (n - at) * 4 : 0;
+  w->hand = (intptr_t)io_hand_v(f[0]);
+  w->made = (intptr_t)(u32)f[1];
+  w->word = (u32)f[2] < room ? (u32)f[2] : (u32)room;
+  w->item = a;
+  w->code = 0;
+  w->data = (char*)&e.mem[blk_loc(e.mem, a)] + at * 4;
+  return io_work(w, file_read_into_call, file_read_into_pack);
+}
+
+static void __attribute__((constructor)) file_read_into_use(void) {
+  io_eff(CID(File.read_into), file_read_into_run);
+}
+
+#endif

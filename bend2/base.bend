@@ -301,6 +301,14 @@ def File.read_at(file: File, offset: U32, max: U32) ->
   import "./effs/file_read.c"
   import "./effs/file_read.js"
 
+# Reads up to max bytes at offset straight into a's U32 slots from at on,
+# little-endian, four bytes a slot, with no List between: the count read,
+# or the error. It stops at a's end; a stays a's size and owner.
+def File.read_into(file: File, offset: U32, max: U32, a: Array<U32>, at: U32) ->
+  IO(File & (Array<U32> & Result<&1, &1, U32 & String, U32>)):
+  import "./effs/file_read.c"
+  import "./effs/file_read.js"
+
 def File.size(file: File) ->
   IO(File & Result<&1, &1, U32 & String, U32>):
   import "./effs/file_size.c"
