@@ -949,17 +949,16 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return ctr_term(e, s, x, T, live);
     }
     case "Lit": {
-      const nat = e.book.tlds.Nat;
-      const mul = e.book.tlds["Nat.mul"];
-      const add = e.book.tlds["Nat.add"];
-      if (x.k === "Nat" && x.v > NAT_MAX && nat?.b === true && mul?.b === true && add?.b === true) {
-        // base's arithmetic keeps trusted large literals compact.
-        const [q, r] = [Math.floor(x.v / NAT_MAX), x.v % NAT_MAX];
-        const product = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
-        return term(e, s, B.App(B.App(B.Ref("Nat.add"), product), B.Lit("Nat", r)), live);
+      if (x.k === "Nat" && e.book.tlds.Nat?.b !== true) {
+        // a file's own Nat (as a build refuses) is just its constructors
+        return nat_literal(e, x.v);
       }
       if (x.k === "Nat" && x.v > NAT_MAX) {
-        return nat_literal(e, x.v);
+        // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add,
+        // which a base Nat means are base's too
+        const [q, r] = [Math.floor(x.v / NAT_MAX), x.v % NAT_MAX];
+        const mul = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
+        return term(e, s, B.App(B.App(B.Ref("Nat.add"), mul), B.Lit("Nat", r)), live);
       }
       return term(e, s, B.term_higher(B.lit_step(x)), live);
     }
