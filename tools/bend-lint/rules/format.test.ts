@@ -24,6 +24,7 @@ async function fixed(text: string, options: FormatOptions = opts) {
   if (!result.ok) throw new Error(result.diags.map(render).join("\n"));
   expect(result.ok).toBe(true);
   expect(result.diags.every((d) => d.fixes.length === 1)).toBe(true);
+  expect(result.diags.every((d) => d.fixes[0].applicability === "safe")).toBe(true);
   const source = result.sources.find((s) => s.root)!;
   const output = applyFixes(source, result.diags).text;
   expect(format(output, options)).toBe(output);
@@ -229,6 +230,37 @@ def main() -> String:
   test("imports and imported law fills survive the parser guard", async () => {
     fixture("import Base\nlaw same:\n  for x: U32\n  {x == x : U32}\n", "LAWS.bend");
     await fixed("import Base\nimport ./LAWS.bend as Laws\ndef Laws.same(x):\n  {==}\n", opts);
+  });
+
+  for (const [name, comment] of [
+    ["foreign#probe.js", " #outside"],
+    ["foreign  as  probe.js", ""],
+    [String.raw`foreign\\#probe.js`, " #outside"],
+  ]) {
+    test(`preserves the foreign import path ${name}`, async () => {
+      fixture("io_eff(CID(read), (n) => n);\n", name);
+      const literal = `"./${name}"`;
+      const source =
+        `import Base\nlaw read:\n  U32 -> IO(U32)\ndef read(n):\n    import   ${literal}${comment}\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    n : U32 <- read(7)\n    IO.print(U32.show(n))\n`;
+      const expected =
+        `import Base\n\nlaw read:\n  U32 -> IO(U32)\n\ndef read(n):\n  import ${literal}${comment ? "  # outside" : ""}\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    n: U32 <- read(7)\n    IO.print(U32.show(n))\n`;
+      for (const endOfLine of ["lf", "crlf"] as const) {
+        const newline = endOfLine === "crlf" ? "\r\n" : "\n";
+        expect(await fixed(source.replaceAll("\n", newline), { ...opts, endOfLine })).toBe(
+          expected.replaceAll("\n", newline),
+        );
+      }
+    });
+  }
+
+  test("normalizes module aliases without changing path segments named as", async () => {
+    fs.mkdirSync(path.join(dir, "as"));
+    fixture("import Base\ndef value() -> U32:\n  7\n", "as/as-module.bend");
+    expect(
+      await fixed("import Base\nimport   ./as/as-module.bend   as   as #outside\ndef main() -> U32: as.value()\n"),
+    ).toBe(
+      "import Base\nimport ./as/as-module.bend as as  # outside\n\ndef main() -> U32:\n  as.value()\n",
+    );
   });
 
   test("the guard rejects a changed value or scope", async () => {
