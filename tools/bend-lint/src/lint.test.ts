@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Book, LTerm, Span as BendSpan } from "bend2/bend.ts";
 import type * as BendModule from "bend2/bend.ts";
 import { BEND2, applyFixes, bendRule, findConfig, lint, readConfig, render } from "./lint.ts";
-import type { Diag, Fact, LintRule, Node, RuleContext, Source } from "./lint.ts";
+import type { Diag, Edit, Fact, LintRule, Node, RuleContext, Source } from "./lint.ts";
 import {
   DRIFT,
   bendDir,
@@ -805,6 +805,10 @@ describe("downloading bend", () => {
     const at = cache();
     ["v2.0.3", "v2.0.12", "latest-ish"].forEach((d) => fs.mkdirSync(path.join(at, d)));
     expect(await latestTag(at, offline)).toBe("v2.0.12");
+    expect(fs.existsSync(path.join(at, "latest.json"))).toBe(false);
+    const gh = github(["v2.0.40"]);
+    expect(await latestTag(at, gh.get)).toBe("v2.0.40");
+    expect(gh.asked.length).toBe(1);
     await expect(latestTag(cache(), offline)).rejects.toThrow(
       /cannot list bend's releases \(offline\)/,
     );
@@ -1554,7 +1558,27 @@ describe("review fixes", () => {
         fix(4, 6, "Y"),
         fix(1, 1, "-"),
       ]),
-    ).toEqual({ text: "a bcXf", skipped: 2 });
+    ).toEqual({ text: "a bcXf", skipped: 2, elsewhere: 0 });
+  });
+
+  test("a fix that also edits another file is skipped whole", () => {
+    const file: Source = { path: "<fix>", text: "abc", root: true, base: false };
+    const other: Source = { path: "<other>", text: "xyz", root: false, base: false };
+    const fix = (edits: Edit[]): Diag => ({
+      code: "t/f",
+      severity: "hint",
+      message: "",
+      fixes: [{ title: "f", applicability: "safe", edits }],
+    });
+    expect(
+      applyFixes(file, [
+        fix([
+          { span: { file, beg: 0, end: 1 }, text: "A" },
+          { span: { file: other, beg: 0, end: 1 }, text: "X" },
+        ]),
+        fix([{ span: { file, beg: 2, end: 3 }, text: "C" }]),
+      ]),
+    ).toEqual({ text: "abC", skipped: 0, elsewhere: 1 });
   });
 
   test("comp.ts that already exports js_sat still loads", () => {
@@ -1926,6 +1950,21 @@ describe("cli", () => {
     expect(fs.readFileSync(dep, "utf8")).toBe("def one() -> Type:\n  Type\n");
     expect(fs.readFileSync(main, "utf8").startsWith("#i!mport")).toBe(true);
     expect(out.stderr).not.toContain("skipped");
+  });
+
+  test("--fix applies fixes even when a finding is an error", () => {
+    const target = fixture("fix_error.bend", "#abc\n");
+    const strict = module(
+      "strict.js",
+      `[{ id: "test/strict", run: (cx) => {
+      const span = { file: cx.root, beg: 0, end: 0 };
+      return [cx.diag({ message: "e", severity: "error", span, fixes: [{ title: "e", applicability: "safe", edits: [{ span, text: "!" }] }] })];
+    } }]`,
+    );
+    const out = run(target, "--rules", strict, "--fix");
+    expect(out.status).toBe(1);
+    expect(out.stdout).toContain("bend-lint: FAIL");
+    expect(fs.readFileSync(target, "utf8")).toBe("!#abc\n");
   });
 
   test("--fix-suggested and --fix-dangerously apply wider levels", () => {

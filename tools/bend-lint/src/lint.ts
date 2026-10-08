@@ -456,18 +456,27 @@ function apply(text: string, edits: Edit[]): string {
 
 // The text of `file` with the fixes of the given levels applied, in order.
 // An edit equal to one already taken is merged; a fix with an edit that
-// clashes with one already taken is skipped and counted.
+// clashes with one already taken is skipped and counted. A fix for other
+// files is left out; one that edits `file` and another file is skipped
+// whole, never half applied, and counted apart.
 export function applyFixes(
   file: Source,
   diags: Diag[],
   levels: Applicability[] = ["safe"],
-): { text: string; skipped: number } {
+): { text: string; skipped: number; elsewhere: number } {
   const kept: Edit[] = [];
   let skipped = 0;
+  let elsewhere = 0;
   for (const fix of diags.flatMap((d) => d.fixes).filter((f) => levels.includes(f.applicability))) {
+    if (fix.edits.every((e) => e.span.file !== file)) {
+      continue;
+    }
+    if (fix.edits.some((e) => e.span.file !== file)) {
+      elsewhere += 1;
+      continue;
+    }
     const fresh = fix.edits.filter(
       (e) =>
-        e.span.file === file &&
         !kept.some(
           (k) => k.span.beg === e.span.beg && k.span.end === e.span.end && k.text === e.text,
         ),
@@ -478,7 +487,7 @@ export function applyFixes(
       kept.push(...fresh);
     }
   }
-  return { text: apply(file.text, kept), skipped };
+  return { text: apply(file.text, kept), skipped, elsewhere };
 }
 
 // bend's own error layout; the head names the severity and the code, and
@@ -732,9 +741,7 @@ async function cli(argv: string[]): Promise<number> {
   const root = res.sources.find((s) => s.root);
   const levels = FIXES.find(([flag]) => values[flag])?.[1];
   const fixed =
-    levels !== undefined && res.ok && root !== undefined
-      ? applyFixes(root, res.diags, levels)
-      : undefined;
+    levels !== undefined && root !== undefined ? applyFixes(root, res.diags, levels) : undefined;
   const where = (span: Span) => ({ path: span.file.path, range: position(span) });
   console.log(
     values.json
@@ -770,6 +777,14 @@ async function cli(argv: string[]): Promise<number> {
       "bend-lint: skipped " +
         fixed.skipped +
         " fix(es) that clash with earlier ones; run the fix again to apply them",
+    );
+  }
+  if (fixed !== undefined && fixed.elsewhere > 0) {
+    console.error(
+      "bend-lint: skipped " +
+        fixed.elsewhere +
+        " fix(es) that also edit other files; --fix writes only " +
+        root!.path,
     );
   }
   return res.ok ? 0 : 1;

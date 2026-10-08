@@ -42,8 +42,9 @@ Every fix is marked `safe`, `suggested` or `dangerous`:
 - `--fix-suggested` adds the suggested ones, which might.
 - `--fix-dangerously` applies everything. Expect breakage sometimes.
 
-Fixes go into the file you passed in, and only if the run had no errors. When
-two fixes overlap, the later one is skipped. Run it again to get it.
+Fixes go into the file you passed in, even if the run had errors. A fix that
+also edits another file is skipped. When two fixes overlap, the later one is
+skipped. Run it again to get it.
 
 Exit code is 0 if there were no errors (warnings don't count), 1 for a checker
 or rule error, and 2 for bad arguments or a crash.

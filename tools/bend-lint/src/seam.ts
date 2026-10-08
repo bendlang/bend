@@ -170,9 +170,15 @@ export const hook: { see?: (report: Report) => void } = {};
 // bend.ts reads it in place of the file on disk.
 export const unsaved = new Map<string, string>();
 
-// Checked base.bend books, by the text of base.bend: Base is checked once
-// per process, and again only if base.bend changes.
-const BASES = new Map<string, Promise<Book>>();
+// The text bend.ts read in the check running now, by real path. Sources
+// take their text from it, so a save during the check cannot set them
+// apart from what bend parsed.
+let reads: Map<string, string> | undefined;
+
+// The checked base.bend book, with the text of base.bend it was checked
+// from: Base is checked once per process, and again only if base.bend
+// changes. Only the latest is kept.
+let BASE: { key: string; book: Promise<Book> } | undefined;
 
 // The check running now, or done; the next check waits for it.
 let queue: Promise<unknown> = Promise.resolve();
@@ -239,12 +245,14 @@ export const relative = (from: string, to: string): string =>
 export const fs = {
   ...nodeFs,
   realpathSync: (p: nodeFs.PathLike): string => slash(nodeFs.realpathSync(p)),
-  readFileSync: ((p: nodeFs.PathOrFileDescriptor, ...rest: unknown[]) =>
-    held(p) ??
-    (nodeFs.readFileSync as (...a: unknown[]) => unknown)(
-      p,
-      ...rest,
-    )) as typeof nodeFs.readFileSync,
+  readFileSync: ((p: nodeFs.PathOrFileDescriptor, ...rest: unknown[]) => {
+    const out =
+      held(p) ?? (nodeFs.readFileSync as (...a: unknown[]) => unknown)(p, ...rest);
+    if (reads !== undefined && typeof p === "string" && typeof out === "string") {
+      reads.set(slash(nodeFs.realpathSync(p)), out);
+    }
+    return out;
+  }) as typeof nodeFs.readFileSync,
 };
 
 export const path = {
@@ -366,18 +374,22 @@ export const latestTag = async (cache: string = CACHE, get: Get = download): Pro
       .map((t) => t.slice(1).split(".").map(Number))
       .sort((a, b) => b[0] - a[0] || b[1] - a[1] || b[2] - a[2])
       .map((v) => "v" + v.join("."))[0];
-  const listed = await get(GIT)
+  const got = await get(GIT)
     .then((res) => text(res, ""))
     .then(
-      (refs) => newest([...refs.matchAll(/refs\/tags\/(v[\d.]+)$/gm)].map((m) => m[1])),
-      (e: unknown) => {
-        const cached = newest(nodeFs.existsSync(cache) ? nodeFs.readdirSync(cache) : []);
-        return (
-          cached ??
-          Promise.reject(new Error(`cannot list bend's releases (${message(e)}); ${GIVE}`))
-        );
-      },
+      (refs) => ({ refs }),
+      (e: unknown) => ({ e }),
     );
+  if ("e" in got) {
+    // Offline: the newest cached release, left out of the note, so the
+    // next run asks again.
+    const cached = newest(nodeFs.existsSync(cache) ? nodeFs.readdirSync(cache) : []);
+    if (cached === undefined) {
+      throw new Error(`cannot list bend's releases (${message(got.e)}); ${GIVE}`);
+    }
+    return cached;
+  }
+  const listed = newest([...got.refs.matchAll(/refs\/tags\/(v[\d.]+)$/gm)].map((m) => m[1]));
   if (listed === undefined) {
     throw new Error(`bend has no release tags; ${GIVE}`);
   }
@@ -512,13 +524,24 @@ export const line = (starts: number[], off: number): number => {
 export const mapper = (files: File[]): Mapper => {
   const own = new Set<unknown>(files);
   const memo = new WeakMap<object, { file: File; from: number[]; to: number[] }>();
+  // Each file's lines, split once.
+  const split = new Map<File, string[]>();
+  const linesOf = (file: File): string[] => {
+    const known = split.get(file) ?? file.str.split("\n");
+    split.set(file, known);
+    return known;
+  };
   const find = (f: BendSpan["file"] & { dir?: string }) => {
     const lines = f.str.split("\n");
     const found = files.filter((file) => {
-      const theirs = file.str.split("\n");
+      if (
+        f.ns !== file.ns ||
+        (f.dir !== undefined && f.dir !== file.path.slice(0, file.path.lastIndexOf("/") + 1))
+      ) {
+        return false;
+      }
+      const theirs = linesOf(file);
       return (
-        f.ns === file.ns &&
-        (f.dir === undefined || f.dir === file.path.slice(0, file.path.lastIndexOf("/") + 1)) &&
         lines.length === theirs.length &&
         lines.every(
           (l, i) => l === theirs[i] || (l.trim() === "" && /^\s*import(\s|$)/.test(theirs[i])),
@@ -624,10 +647,12 @@ const checked = async (
   const home = real.slice(0, real.lastIndexOf("/") + 1);
   const far = filters.filter((f) => f.scope === "program");
   const program = far.length > 0;
+  const texts = new Map<string, string>();
+  reads = texts;
   const seeded = real !== "" && /^import Base$/m.test(fs.readFileSync(real, "utf8"));
   const key = fs.readFileSync(Bend.BASE_BEND, "utf8");
-  if (seeded && !BASES.has(key)) {
-    BASES.set(key, Main.book_read(Bend.BASE_BEND));
+  if (seeded && BASE?.key !== key) {
+    BASE = { key, book: Main.book_read(Bend.BASE_BEND) };
   }
   const see = (report: Report): void => {
     const at = report.spn?.file as { dir?: string; ns?: string } | undefined;
@@ -638,7 +663,7 @@ const checked = async (
       found.push(report);
     }
   };
-  const read = await Promise.resolve(seeded ? BASES.get(key) : undefined)
+  const read = await Promise.resolve(seeded ? BASE?.book : undefined)
     .then((base) => {
       hook.see = filters.length > 0 ? see : undefined;
       return Main.book_read(file, base, seen);
@@ -647,12 +672,13 @@ const checked = async (
       (book) => ({ book }),
       (e: unknown) => ({ e: e instanceof Main.Check_Fail ? e.why : e }),
     );
+  reads = undefined;
   signal.throwIfAborted();
   const root = [...seen.keys()].find((real) => real !== Bend.BASE_BEND || !seeded);
   const sources = [...seen.keys()]
-    .filter((real) => fs.existsSync(real))
+    .filter((real) => texts.has(real) || fs.existsSync(real))
     .map((real): Source => {
-      const text = fs.readFileSync(real, "utf8");
+      const text = texts.get(real) ?? fs.readFileSync(real, "utf8");
       const source = { path: real, text, root: real === root, base: real === Bend.BASE_BEND };
       const file = { str: text, ns: seen.get(real) ?? "", al: {}, path: real };
       FILES.set(source, file);
@@ -722,6 +748,7 @@ export const check = (
       return await checked(m, file, filters, signal);
     } finally {
       hook.see = undefined;
+      reads = undefined;
       unsaved.clear();
     }
   });
