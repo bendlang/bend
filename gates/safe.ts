@@ -63,9 +63,6 @@ await node_pool(live, shards.map((fs_) => async (node: number) => {
   try {
     gots.push(...JSON.parse(got.out));
   } catch {
-    if (got.code === 255) {
-      throw new Error("node", { cause: got.err });
-    }
     for (const f of fs_) {
       gots.push({ f, code: -1, ms: 0, timeout: false,
         out: "shard failed on " + node + ": " + got.err });
