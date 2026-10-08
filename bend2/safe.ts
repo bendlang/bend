@@ -12,7 +12,9 @@
 // converts functions up to η; the kernel does not, and unfolds a def
 // only when applied. So a term of a function type goes out η-long: an
 // equation bend2 closes by η has λs on both sides, which the kernel
-// compares under the binder.
+// compares under the binder. Recursive function types can have no finite
+// η-long form: a synthetic η argument stops at a type already expanded
+// on its own path, and the kernel checks the remaining term as usual.
 //
 // A datatype D<ps> with constructors cs is two defs: D.arms(ps, t)
 // switches on the tag t and gives the Σ chain of that constructor's
@@ -83,7 +85,7 @@ type O =
 // a bend2 variable: the kernel term it stands for, its bend2 type, and
 // the term a specialized parameter or inlined let stands for (built at
 // each use's depth and mode, so its o is unused)
-type Bind = { o: O; T: HTerm | null; v?: HTerm };
+type Bind = { o: O; T: HTerm | null; v?: HTerm; eta?: string[] };
 
 // the argument of each parameter of an item, or of each column of a
 // tree, that is specialized; null at the rest
@@ -135,6 +137,7 @@ type Safe = {
   grew: boolean;
   consts: Map<string, Name>;
   uses: WeakMap<O, Map<number, number>>;
+  eta: WeakMap<HTerm, string[]>;
 };
 
 // a model search's fuel left, its round's depth, and whether that round
@@ -201,7 +204,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap() };
+    todo: [], taken: new Set(), fail: new Map(), groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap(), eta: new WeakMap() };
   const roots: Array<[Name, string]> = [];
   for (const k of [...new Set([...book.order].reverse())].reverse().filter((k) => book.tlds[k].b !== true)) {
     try {
@@ -572,9 +575,12 @@ function scope_nil(): Scope {
 
 // binds the next bend2 variable to o, or to its original term v when
 // specialized or inlined; a kernel binder when kb
-function scope_bind(s: Scope, o: O, T: HTerm | null, kb: boolean, v?: HTerm): Scope {
+function scope_bind(s: Scope, o: O, T: HTerm | null, kb: boolean, v?: HTerm, eta?: string[]): Scope {
   const c = s.c.slice();
   c[s.d] = { o, T, v };
+  if (eta !== undefined) {
+    c[s.d].eta = eta;
+  }
   return { ...s, c, d: s.d + 1, D: s.D + (kb ? 1 : 0) };
 }
 
@@ -667,7 +673,10 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // equation bend2 closes by η must be a λ
   if (x.$ !== "Lam" && x.$ !== "Mat" && x.$ !== "Efq") {
     if (all !== null) {
-      return tree(e, s, eta(t, all), fs);
+      const long = eta_long(e, s, t, T!, all);
+      if (long !== null) {
+        return tree(e, s, long, fs);
+      }
     }
     return top === undefined ? term(e, s, t, true) : oos("a match arm with no known type");
   }
@@ -678,7 +687,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   if (x.$ === "Lam") {
     const l = s.D;
     let q = all === null ? 1 : quant(all.q);
-    let s2 = scope_kq(scope_bind(s1, { $: "Var", l }, all?.A ?? null, true), l, q);
+    let s2 = scope_kq(scope_bind(s1, { $: "Var", l }, all?.A ?? null, true, undefined, e.eta.get(x)), l, q);
     if (q > 0 && all !== null && no_ctr(e, all.A)) {
       s2 = { ...s2, empty: [...s2.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: { $: "Var", l } }] };
     }
@@ -850,6 +859,21 @@ function all_of(e: Safe, T: HTerm | null): Extract<HTerm, { $: "All" }> | null {
 // λy => t(y), at t's type ∀y:A -> B
 function eta(t: HTerm, all: Extract<HTerm, { $: "All" }>): HTerm {
   return B.Ann(B.Lam(all.k, 0, (y: HTerm) => B.Ann(B.App(t, y), all.B(y))), all);
+}
+
+// Only a variable introduced by eta carries that expansion's type path.
+// Original arguments start their own path; repeating a type on a synthetic
+// argument stops its infinite eta-long form, not an unrelated finite term.
+function eta_long(e: Safe, s: Scope, t: HTerm, T: HTerm, all: Extract<HTerm, { $: "All" }>): HTerm | null {
+  const [x] = open(t);
+  const path = x.$ === "Var" ? s.c[x.i]?.eta : undefined;
+  const key = B.term_key(B.term_lower(T));
+  if (path?.includes(key)) {
+    return null;
+  }
+  const long = eta(t, all);
+  e.eta.set(open(long)[0], [...path ?? [], key]);
+  return long;
 }
 
 // whether a lowered term mentions a variable at a level p holds for
@@ -1219,7 +1243,10 @@ function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const tree = y.$ === "Lam" || y.$ === "Mat" || y.$ === "Efq";
   const all = tree || y.$ === "Ctr" ? null : all_of(e, A);
   if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
-    return term(e, s, eta(x, all), live);
+    const long = eta_long(e, s, x, A, all);
+    if (long !== null) {
+      return term(e, s, long, live);
+    }
   }
   return term(e, s, T === null && tree ? B.Ann(x, A) : x, live);
 }

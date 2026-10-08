@@ -1018,15 +1018,18 @@ def Term.qge (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
 def Term.fits (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
   | 0, _, _ => (false, 0)
   | n + 1, U, T =>
-    let (U, m) := Term.wnf ck cl n U []
-    let (T, m) := Term.wnf ck cl (min m n) T []
-    match U, T with
-    | Typ g, Typ h => Term.qge ck cl (min m n) g h
-    | Enu ks, Enu js => (ks.all js.contains, m)
-    | All q A B, All p C D =>
-      let r := if q == p then Term.fits ck cl (min m n) C A else (false, m)
-      if r.1 then Term.fits ck false (min r.2 n) B D else r
-    | U, T => Term.conv ck cl (min m n) U T
+    if U = T then
+      (true, n)
+    else
+      let (U, m) := Term.wnf ck cl n U []
+      let (T, m) := Term.wnf ck cl (min m n) T []
+      match U, T with
+      | Typ g, Typ h => Term.qge ck cl (min m n) g h
+      | Enu ks, Enu js => (ks.all js.contains, m)
+      | All q A B, All p C D =>
+        let r := if q == p then Term.fits ck cl (min m n) C A else (false, m)
+        if r.1 then Term.fits ck false (min r.2 n) B D else r
+      | U, T => Term.conv ck cl (min m n) U T
 
 -- Checker
 -- =======
@@ -2214,16 +2217,23 @@ theorem qge_sound (hb : Sees ck bk) : (Term.qge ck cl n g h).1 = true →
 theorem fits_sound (hb : Sees ck bk) (h : (Term.fits ck cl n U T).1 = true) : Fits bk U T := by
   induction n using Nat.strongRecOn generalizing cl U T; rename_i n ih
   unfold Term.fits at h; split at h; simp at h; rename_i n
+  by_cases eq : U = T
+  · subst T; exact .conv crefl
+  simp (config := { zeta := false }) only [ite_eq_right eq] at h
   have L {a} : min a n < n + 1 := by omega
-  split at h; rename_i e1; split at h; rename_i e2
-  refine .trans (.conv ⟨_, wnf_nil hb e1, .refl⟩) (.trans ?_ (.conv ⟨_, .refl, wnf_nil hb e2⟩))
-  split at h
-  · exact .typ (qge_sound hb h)
-  · exact .enu fun _ m => by simpa using List.all_eq_true.1 h _ m
-  · dsimp only at h; split at h
-    · rename_i e; cases beq_iff_eq.1 e; split at h; exact .all (ih _ L ‹_›) (ih _ L h); simp_all
-    · simp at h
-  · exact .conv (conv_sound hb h)
+  cases e1 : Term.wnf ck cl n U [] with
+  | mk U' m =>
+    cases e2 : Term.wnf ck cl (min m n) T [] with
+    | mk T' l =>
+      simp only [e1, e2] at h
+      refine .trans (.conv ⟨_, wnf_nil hb e1, .refl⟩) (.trans ?_ (.conv ⟨_, .refl, wnf_nil hb e2⟩))
+      split at h
+      · exact .typ (qge_sound hb h)
+      · exact .enu fun _ m => by simpa using List.all_eq_true.1 h _ m
+      · split at h
+        · rename_i e; cases beq_iff_eq.1 e; split at h; exact .all (ih _ L ‹_›) (ih _ L h); simp_all
+        · simp at h
+      · exact .conv (conv_sound hb h)
 
 -- a substitution from Γ into Δ that keeps types
 def SubstOk (bk : Book) (Δ : List Term) (σ : Subst) (Γ : List Term) : Prop :=
