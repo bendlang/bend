@@ -393,10 +393,12 @@ blocks while the child runs. On Linux, native builds need glibc 2.34 or newer
 to close inherited descriptors. It does not sandbox the child: callers must
 whether a command is trusted before executing it.
 
-IO computations take turns on one event loop, as in Node.js. Waiting on a socket,
-sleep or channel lets others run. `IO.fork` starts one and returns its result channel;
-`IO.join` waits for it. Forks do not overlap pure CPU work automatically;
-split that work with [parallel lets](#parallelism). Underneath are `IO.spawn`, `Chan.new`,
+A Bend program is a set of computations interleaved by one event loop, as in
+Node.js: each runs its pure code up to its next effect (its own parallel calls
+use every core, but two computations never run at the same time), and one that
+waits on a socket, a sleep or a channel steps aside for the others. `IO.fork`
+starts a computation and returns the channel its result will arrive on;
+`IO.join` waits for it. Underneath are `IO.spawn`, `Chan.new`,
 `Chan.send`, `Chan.recv` and `Chan.close`. `IO.within(A, ms, act)` races `act`
 against a deadline and answers `None{}` if the deadline wins; the loser is not
 cancelled. The program ends when every computation is done, or reports a
