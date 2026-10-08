@@ -328,6 +328,10 @@ static Term window_node(Env e, const u32* ev) {
   return term_ctr(ev[0], l);
 }
 
+static u32 window_depth(u32 n) {
+  return n > 1 ? 32 - CLZ(n - 1) : 0;
+}
+
 static Term window_list(Env e, const u32* p, u64 n) {
   Term list = term_pak(CID(Nil), 0);
   for (u64 i = n; i > 0; i -= 1) {
@@ -452,7 +456,7 @@ static void window_show(Env e, CAMetalLayer* layer, Term image) {
   id<MTLBuffer> buf = window_corpus(e, dev);
   WinArgs args = { image, layer.drawableSize.width, layer.drawableSize.height,
     0 };
-  args.k = cls_fit(args.w > args.h ? args.w : args.h);
+  args.k = window_depth(args.w > args.h ? args.w : args.h);
   __block bool done = false;
   id<MTLCommandBuffer> cb = [window_que commandBuffer];
   // nextDrawable blocks until the display frees one: on a helper thread
@@ -668,7 +672,7 @@ static void window_pace(void) {
 static void window_show(Env e, BendWin* win, Term image) {
   u32 w = win->img->width;
   u32 h = win->img->height;
-  u32 k = cls_fit(w > h ? w : h);
+  u32 k = window_depth(w > h ? w : h);
   window_fill(e, (u32*)win->img->data, w, h, image, k);
   window_pace();
   XPutImage(win->dpy, win->win, DefaultGC(win->dpy, DefaultScreen(win->dpy)),
