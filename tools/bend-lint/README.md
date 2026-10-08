@@ -300,8 +300,9 @@ Set `BEND_DIR` before importing bend-lint to pick a Bend checkout. Import
 bend-lint before you load Bend yourself, so the patching happens first. `lint`
 takes `{ config, signal, unsaved }` as a third argument. Without `config` it looks
 next to the file. `unsaved` maps file paths to editor text that isn't saved yet.
-Bend and the rules read that text instead of the file, for that run only. A run
-with `unsaved` can't overlap another run. `position(span)` gives an LSP range.
+Bend and the rules read that text instead of the file, for that run only. Runs
+at the same time wait for each other's check, one at a time; rules still run
+side by side. `position(span)` gives an LSP range.
 
 `findConfig(file)` checks the file's directory, then each parent, for
 `bend-lint.json`, `.js` or `.ts`. Closest directory wins, then JSON, JS, TS.
@@ -353,14 +354,21 @@ was before the fixes.
 ### Patching
 
 Bun patches Bend's modules while they load. `term_infer` and `term_check` are
-renamed and wrapped to record what they return. The wrappers pass every argument
-on. The `fs` and `path` adapters turn real paths into `/` paths so imports
-resolve on Windows. `comp.ts` also exports `RUNTIME_MAIN` and `js_sat`, which
-compiling Bend rules needs.
+renamed and wrapped to record what they return to `hook.see` in patch.ts. The
+wrappers pass every argument on. The hook is global, so checks run one at a
+time. The `fs` and `path` adapters, in `bend.ts` and `main.ts`, turn real paths
+into `/` paths so imports resolve on Windows. `comp.ts` also exports
+`RUNTIME_MAIN` and `js_sat`, which compiling Bend rules needs. `main.ts` exports
+`book_read`, `book_err` and `Check_Fail`: a file is read and checked by the same
+code as `bend <file>`, never a copy of it. Imported, `main.ts` also registers
+Bend's loader for `import "x.bend"`.
 
 If a file has a line that's exactly `import Base` (what `bend --checkup` reads),
 it reuses one Base, checked once per process. Base facts are left out of rule
 requests.
+
+A failed check is one `bend/check` finding. Its message is Bend's, without the
+location: expected and observed, with the names in scope, and Bend's note.
 
 ### Staying compatible
 

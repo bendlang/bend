@@ -453,6 +453,7 @@ afterAll(() => fs.rmSync(DIR, { recursive: true, force: true }));
 describe("patch", () => {
   const src = fs.readFileSync(path.join(BEND2, "bend.ts"), "utf8");
   const comp = fs.readFileSync(path.join(BEND2, "comp.ts"), "utf8");
+  const main = fs.readFileSync(path.join(BEND2, "main.ts"), "utf8");
 
   test("bend.ts: renames term_infer and term_check behind wrappers, and swaps fs and path", () => {
     const out = patch("bend.ts", src);
@@ -469,6 +470,14 @@ describe("patch", () => {
     expect(patch("comp.ts", comp)).toContain("export { RUNTIME_MAIN, js_sat };");
   });
 
+  test("main.ts: exports how bend reads a book and words a failure, with the same fs and path", () => {
+    const out = patch("main.ts", main);
+    expect(out).toContain("export { book_read, book_err, Check_Fail };");
+    expect(out).toMatch(/^import \{ fs \} from "file:.*patch\.ts";/m);
+    expect(out).toMatch(/^import \{ path \} from "file:.*patch\.ts";/m);
+    expect(() => patch("main.ts", main.replace("async function book_read(", "async function book_load_file("))).toThrow(/main\.ts: found 0 of a declaration of book_read/);
+  });
+
   test("fails loudly when an edit or a needed name is missing or repeated", () => {
     expect(() => patch("bend.ts", src.replace("export function term_infer(", "export function term_infer2("))).toThrow(DriftError);
     expect(() => patch("bend.ts", src.replace('import * as fs from "node:fs";', 'import fs from "node:fs";'))).toThrow(/node:fs/);
@@ -479,6 +488,14 @@ describe("patch", () => {
   test("the loaded bend.ts and comp.ts are the patched ones", () => {
     expect((Bend as unknown as Record<string, unknown>).BEND_LINT_PATCH).toBe(1);
     expect((Comp as unknown as Record<string, unknown>).BEND_LINT_PATCH).toBe(1);
+  });
+
+  test("a check is bend's own: a PROOF.bend that skips ./LAWS.bend fails as bend says", async () => {
+    const dir = path.join(DIR, "proof");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "LAWS.bend"), "def one() -> Type:\n  Type\n");
+    const res = await lint(fixture("proof/PROOF.bend", "def two() -> Type:\n  Type\n"), []);
+    expect([res.ok, res.diags[0].message]).toEqual([false, "PROOF.bend must import ./LAWS.bend"]);
   });
 
   test("the wrappers pass every argument through, and need the expected arity", () => {
@@ -535,10 +552,15 @@ describe("downloading bend", () => {
     const dir = await fetchBend("v2.0.36", at, gh.get);
     const effs = fs.readdirSync(path.join(BEND2, "effs"));
     expect(fs.readFileSync(path.join(dir, "bend.ts"), "utf8")).toBe(fs.readFileSync(path.join(BEND2, "bend.ts"), "utf8"));
+    expect(fs.readFileSync(path.join(dir, "main.ts"), "utf8")).toBe(fs.readFileSync(path.join(BEND2, "main.ts"), "utf8"));
     expect(fs.readdirSync(path.join(dir, "effs")).sort()).toEqual(effs.sort());
-    expect(gh.asked.length).toBe(3 + effs.length);
+    expect(gh.asked.length).toBe(5 + effs.length);
     expect(await fetchBend("v2.0.36", at, gh.get)).toBe(dir);
-    expect(gh.asked.length).toBe(3 + effs.length);
+    expect(gh.asked.length).toBe(5 + effs.length);
+    fs.rmSync(path.join(dir, "main.ts")); // a cache from before main.ts was patched
+    expect(await fetchBend("v2.0.36", at, gh.get)).toBe(dir);
+    expect(gh.asked.length).toBe(2 * (5 + effs.length));
+    expect(fs.existsSync(path.join(dir, "main.ts"))).toBe(true);
     expect(fs.readdirSync(path.join(at, "v2.0.36"))).toEqual(["bend2"]);
     const out = spawnSync(process.execPath, [CLI, fixture("downloaded.bend", USERLAND)], { encoding: "utf8", env: { ...process.env, BEND_DIR: dir } });
     expect([out.status, out.stderr]).toEqual([0, ""]);
@@ -678,7 +700,11 @@ describe("lint", () => {
     expect(render(parse.diags[0])).toStartWith("Error [bend/check]:");
     expect((await lint(fixture("name.bend", "type N is Data:\n  Z{}\ndef broken() -> N:\n  missing\n"), [neverRun])).ok).toBe(false);
     const todo = await lint(fixture("todo.bend", "type N is Data:\n  Z{}\ndef broken() -> N:\n  ?TODO\n"), [neverRun]);
-    expect(todo.diags[0].message).toContain("1 TODO found");
+    expect(todo.diags[0].message).toStartWith("1 TODO found");
+    // The message is bend's, its location aside: expected and observed, with the names in scope.
+    const types = "type N is Data:\n  Z{}\n\ntype M is Data:\n  W{}\n\n";
+    expect((await lint(fixture("mismatch.bend", types + "def bad(x: N) -> M:\n  x\n"), [neverRun])).diags[0].message).toBe("expected: M\nobserved: N");
+    expect((await lint(fixture("bound.bend", types + "def bad(A: Type, x: N) -> A:\n  x\n"), [neverRun])).diags[0].message).toBe("expected: A\nobserved: N");
     expect((await lint(path.join(DIR, "missing.bend"), [neverRun])).ok).toBe(false);
   });
 
@@ -716,9 +742,9 @@ describe("lint", () => {
     expect(await text()).toBe(saved);
     const broken = await lint(file, [seen], { unsaved: new Map([[file, "import Base\ndef main() -> U32:\n  nope\n"]]) });
     expect([broken.ok, broken.diags[0].code]).toEqual([false, "bend/check"]);
-    const first = text(new Map([[file, edited]]));
-    await expect(text(new Map([[file, edited]]))).rejects.toThrow(/unsaved text/);
-    expect(await first).toBe(edited);
+    // Runs at the same time wait for each other's check, and each sees its own text.
+    const other = "import Base\ndef main() -> U32:\n  3\n";
+    expect(await Promise.all([text(new Map([[file, edited]])), text(), text(new Map([[file, other]]))])).toEqual([edited, saved, other]);
     expect(await text()).toBe(saved);
   });
 
@@ -926,6 +952,13 @@ describe("review fixes", () => {
       };
       expect((await lint(file, [where])).ok).toBe(true);
     }
+  });
+
+  test("checks at the same time keep their facts apart", async () => {
+    const files = ["one", "two"].map((name) => fixture("apart_" + name + ".bend", "type N is Data:\n  Z{}\n\ndef " + name + "(x: N) -> N:\n  x\n"));
+    const where: LintRule = { id: "test/where", facts: true, run: (cx) => [cx.diag({ message: [...new Set([...cx.facts!.values()].map((f) => f.def))].join(), severity: "hint" })] };
+    const got = await Promise.all([...files, ...files].map(async (file) => (await lint(file, [where])).diags[0].message));
+    expect(got).toEqual(["N,one", "N,two", "N,one", "N,two"]);
   });
 
   test("identical files map by namespace, not only by text", async () => {

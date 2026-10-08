@@ -1,10 +1,13 @@
 // What bend-lint changes in bend2 as Bun loads it; the files on disk never
 // change. In bend.ts, term_infer and term_check are renamed and replaced by
-// the wrappers below, which tell a `book.see` hook what they return; and fs
-// and path come from this module: bend.ts builds paths with "/"
-// (path.posix), so here real paths use "/" and a Windows drive letter is a
-// root; on POSIX they behave as node's. comp.ts exports RUNTIME_MAIN and
-// js_sat, so a rule written in Bend is compiled once and run many times.
+// the wrappers below, which tell `hook.see` what they return; and fs and
+// path come from this module, in bend.ts and main.ts: bend.ts builds paths
+// with "/" (path.posix), so here real paths use "/" and a Windows drive
+// letter is a root; on POSIX they behave as node's. comp.ts exports
+// RUNTIME_MAIN and js_sat, so a rule written in Bend is compiled once and
+// run many times. main.ts exports how `bend` reads a book (book_read) and
+// words a failure (book_err, Check_Fail), so bend-lint checks a file
+// exactly as bend does.
 // Each text edit must match exactly once, and each name a tail exports must
 // be declared once. The wrappers pass every argument through, so bend
 // computes what it would without them; what they record is checked at load
@@ -25,11 +28,9 @@ import type * as BendModule from "bend2/bend.ts";
 // must declare once and export (the tail exports those it does not).
 type Patch = { edits: Array<[string, string]>; tail: string; exports: string[] };
 
-// A book whose checker reports to `see`: for each checked term, what it was
-// checked or inferred as, where, and how it was used.
-export type Hooked = Book & {
-  see?: (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void;
-};
+// What the checker reports for each checked term: what it was checked or
+// inferred as, where, and how it was used.
+export type See = (bok: Book, tm: LTerm, ty: HTerm, ctx: Ctx, dep: number, def: Name, spn: Span | undefined, qt: Quant, us: Uses) => void;
 
 // An HTTP GET.
 export type Get = (url: string) => Promise<Response>;
@@ -63,11 +64,15 @@ const CACHE = nodePath.join(process.env.XDG_CACHE_HOME
   ?? (process.platform === "win32" ? process.env.LOCALAPPDATA ?? nodePath.join(os.homedir(), "AppData", "Local") : nodePath.join(os.homedir(), ".cache")),
   "bend-lint");
 
+const SHIMMED: Array<[string, string]> = [
+  ['import * as fs from "node:fs";', "import { fs } from " + SHIM + ";"],
+  ['import * as path from "node:path";', "import { path } from " + SHIM + ";"],
+];
+
 const PATCHES: Record<string, Patch> = {
   "bend.ts": {
     edits: [
-      ['import * as fs from "node:fs";', "import { fs } from " + SHIM + ";"],
-      ['import * as path from "node:path";', "import { path } from " + SHIM + ";"],
+      ...SHIMMED,
       ["export function term_infer(", "function unseen_term_infer("],
       ["export function term_check(", "function unseen_term_check("],
     ],
@@ -77,10 +82,17 @@ const PATCHES: Record<string, Patch> = {
     exports: [],
   },
   "comp.ts": { edits: [], tail: "", exports: ["RUNTIME_MAIN", "js_sat"] },
+  "main.ts": { edits: SHIMMED, tail: "", exports: ["book_read", "book_err", "Check_Fail"] },
 };
 
-// Text an editor holds unsaved, by real path, set by lint() for one run.
-// bend.ts reads it in place of the file on disk.
+// The bend2 files bend-lint patches and imports.
+export const PATCHED = Object.keys(PATCHES);
+
+// Where the wrappers report, set by lint.ts for one check at a time.
+export const hook: { see?: See } = {};
+
+// Text an editor holds unsaved, by real path, set by lint.ts for one check
+// at a time. bend.ts reads it in place of the file on disk.
 export const unsaved = new Map<string, string>();
 
 // fs and path for bend.ts.
@@ -121,7 +133,7 @@ export function relative(from: string, to: string): string {
 }
 
 // term_infer and term_check as bend.ts calls them: every argument passes
-// through, and each result is also reported to book.see. tsc checks the
+// through, and each result is also reported to hook.see. tsc checks the
 // names against bend.ts's signatures; a function that no longer takes the
 // arguments read here stops loading.
 export function seeInfer(f: typeof BendModule.term_infer): typeof BendModule.term_infer {
@@ -129,7 +141,7 @@ export function seeInfer(f: typeof BendModule.term_infer): typeof BendModule.ter
   return (...args) => {
     const r = f(...args);
     const [book, lhs, tm, qt, ctx, d] = args;
-    (book as Hooked).see?.(book, r.tm, r.ty, ctx, d, lhs.def, tm.s, qt, r.us);
+    hook.see?.(book, r.tm, r.ty, ctx, d, lhs.def, tm.s, qt, r.us);
     return r;
   };
 }
@@ -139,7 +151,7 @@ export function seeCheck(f: typeof BendModule.term_check): typeof BendModule.ter
   return (...args) => {
     const r = f(...args);
     const [book, lhs, tm, qt, ty, ctx, d] = args;
-    (book as Hooked).see?.(book, r.tm, ty, ctx, d, lhs.def, tm.s, qt, r.us);
+    hook.see?.(book, r.tm, ty, ctx, d, lhs.def, tm.s, qt, r.us);
     return r;
   };
 }
@@ -151,7 +163,7 @@ function arity(f: (...args: never[]) => unknown, n: number, name: string): void 
   }
 }
 
-// `file` is "bend.ts" or "comp.ts".
+// `file` is one of PATCHED.
 export function patch(file: string, src: string): string {
   const { edits, tail, exports } = PATCHES[file];
   const drift = (what: string, n: number): never => {
@@ -163,8 +175,8 @@ export function patch(file: string, src: string): string {
     return n === 1 ? out.replace(at, () => to) : drift(JSON.stringify(at), n);
   }, src);
   const missing = exports.filter((name) => {
-    const n = edited.match(new RegExp("^(?:export )?(?:function|const|let) " + name + "\\b", "gm"))?.length ?? 0;
-    return n === 1 ? !new RegExp("^export (?:function|const|let) " + name + "\\b", "m").test(edited) : drift("a declaration of " + name, n);
+    const n = edited.match(new RegExp("^(?:export )?(?:async function|function|class|const|let) " + name + "\\b", "gm"))?.length ?? 0;
+    return n === 1 ? !new RegExp("^export (?:async function|function|class|const|let) " + name + "\\b", "m").test(edited) : drift("a declaration of " + name, n);
   });
   return edited + "\n" + tail + (missing.length === 0 ? "" : "export { " + missing.join(", ") + " };\n")
     + "export const " + MARK + " = 1;\n";
@@ -248,15 +260,18 @@ export async function latestTag(cache: string = CACHE, get: Get = download): Pro
   return listed;
 }
 
-// bend2 at a release: bend.ts, comp.ts, base.bend, and the effs/ files
-// base.bend imports, kept in <cache>/<tag>/bend2. A download goes to a
-// temporary folder first, so the cache never holds a partial one.
+// bend2 at a release: the PATCHED files, safe.ts (main.ts imports it),
+// base.bend, and the effs/ files base.bend imports, kept in
+// <cache>/<tag>/bend2. A download goes to a temporary folder first, so the
+// cache never holds a partial one; a cached folder without main.ts (from an
+// older bend-lint) is downloaded again.
 export async function fetchBend(tag: string, cache: string = CACHE, get: Get = download): Promise<string> {
   if (!RELEASE.test(tag)) {
     throw new Error("not a bend release: " + tag);
   }
   const dir = nodePath.join(cache, tag, "bend2");
-  if (nodeFs.existsSync(dir)) {
+  const whole = (): boolean => [...PATCHED, "safe.ts", "base.bend"].every((f) => nodeFs.existsSync(nodePath.join(dir, f)));
+  if (whole()) {
     return dir;
   }
   const text = (file: string): Promise<[string, string]> => get(RAW + tag + "/bend2/" + file)
@@ -268,7 +283,7 @@ export async function fetchBend(tag: string, cache: string = CACHE, get: Get = d
   if (odd !== undefined) {
     throw new Error("base.bend imports " + odd + ", which is not a plain file in effs/");
   }
-  const files = [base, ...await Promise.all(["bend.ts", "comp.ts", ...effs].map(text))];
+  const files = [base, ...await Promise.all([...PATCHED, "safe.ts", ...effs].map(text))];
   nodeFs.mkdirSync(nodePath.join(cache, tag), { recursive: true });
   const part = nodeFs.mkdtempSync(nodePath.join(cache, tag, ".part-"));
   files.forEach(([file, body]) => {
@@ -276,10 +291,11 @@ export async function fetchBend(tag: string, cache: string = CACHE, get: Get = d
     nodeFs.writeFileSync(nodePath.join(part, file), body);
   });
   try {
+    nodeFs.rmSync(dir, { recursive: true, force: true });
     nodeFs.renameSync(part, dir);
   } catch (e) {
     nodeFs.rmSync(part, { recursive: true, force: true });
-    if (!nodeFs.existsSync(dir)) {
+    if (!whole()) {
       throw e;
     }
   }
