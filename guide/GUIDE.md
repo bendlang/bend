@@ -308,8 +308,8 @@ on which humans can state precise specs for AI's to implement. That is, instead
 of writing a natural language prompt such as "implement a function that sorts a
 list", users can write precise laws like "implement a function F such that, for
 every list of numbers, `F(list)` returns the same numbers in ascending order".
-Models are then guaranteed to respond with bug-free code, since Bend will demand
-that they provide an actual proof.
+Bend requires proofs of these declared laws, within the proof and execution
+limits above.
 
 > We envision that "law-driven development" will eventually become the way humans
 > use AI to write and maintain large codebases, as it is the perfect middle point
