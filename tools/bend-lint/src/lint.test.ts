@@ -698,6 +698,9 @@ describe("patch", () => {
     expect(() => patch("comp.ts", comp.replace("function js_sat(", "function js_name("))).toThrow(
       /comp\.ts: found 0 of a declaration of js_sat/,
     );
+    expect(() =>
+      patch("comp.ts", comp.replace("function io_run(m) {", "function run(m) {")),
+    ).toThrow(/comp\.ts: found 0 of "function io_run\(m\) \{"/);
   });
 
   test("main.ts must give book_read, book_err and Check_Fail as bend-lint calls them", () => {

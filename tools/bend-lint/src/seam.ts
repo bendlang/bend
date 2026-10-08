@@ -30,9 +30,10 @@ import type {
 // Types
 // =====
 
-// A file's patch: exact edits, a tail appended to the file, and names it
-// must declare once and export (the tail exports those it does not).
-type Patch = { edits: Array<[string, string]>; tail: string; exports: string[] };
+// A file's patch: exact edits, text it must hold once unchanged (needs), a
+// tail appended to the file, and names it must declare once and export (the
+// tail exports those it does not).
+type Patch = { edits: Array<[string, string]>; needs?: string[]; tail: string; exports: string[] };
 
 export type Get = (url: string) => Promise<Response>;
 
@@ -150,7 +151,12 @@ const PATCHES: Record<string, Patch> = {
     tail: `import { seeInfer, seeCheck } from ${SHIM};\nexport const term_infer = seeInfer(unseen_term_infer);\nexport const term_check = seeCheck(unseen_term_check);\n`,
     exports: [],
   },
-  "comp.ts": { edits: [], tail: "", exports: ["RUNTIME_MAIN", "js_sat"] },
+  "comp.ts": {
+    edits: [],
+    needs: ["let cli_args = [];", "function io_run(m) {"],
+    tail: "",
+    exports: ["RUNTIME_MAIN", "js_sat"],
+  },
   "main.ts": { edits: SHIMMED, tail: "", exports: ["book_read", "book_err", "Check_Fail"] },
 };
 
@@ -287,16 +293,19 @@ export const seeCheck = (f: typeof BendModule.term_check): typeof BendModule.ter
 
 // `file` is one of PATCHED.
 export const patch = (file: string, src: string): string => {
-  const { edits, tail, exports } = PATCHES[file];
+  const { edits, needs = [], tail, exports } = PATCHES[file];
   const mismatch = (what: string, n: number): never => {
     throw drift(
       `cannot patch bend2/${file}: found ${n} of ${what}, expected 1. Update PATCHES in tools/bend-lint/src/seam.ts.`,
     );
   };
-  const edited = edits.reduce((out, [at, to]) => {
-    const n = out.split(at).length - 1;
-    return n === 1 ? out.replace(at, () => to) : mismatch(JSON.stringify(at), n);
-  }, src);
+  const edited = [...edits, ...needs.map((t): [string, string] => [t, t])].reduce(
+    (out, [at, to]) => {
+      const n = out.split(at).length - 1;
+      return n === 1 ? out.replace(at, () => to) : mismatch(JSON.stringify(at), n);
+    },
+    src,
+  );
   const declared = (name: string, exported: string): RegExp =>
     new RegExp(`^${exported}(?:async function|function|class|const|let) ${name}\\b`, "gm");
   const missing = exports.filter((name) => {

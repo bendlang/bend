@@ -399,8 +399,9 @@ location: expected and observed, with the names in scope, and Bend's note.
 We don't pin a Bend version. Instead, on load, for checkouts and downloads
 alike:
 
-- every source edit has to match exactly once, and the compiler exports we need
-  have to be declared
+- every source edit has to match exactly once, the compiler exports we need
+  have to be declared, and the runtime names a Bend rule's run calls
+  (`cli_args`, `io_run`) have to be there once
 - wrapper signatures are checked against Bend's at type-check time, and argument
   counts at runtime
 - `book_read`, `book_err` and `Check_Fail` from `main.ts` must take the
