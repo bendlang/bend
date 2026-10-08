@@ -949,16 +949,16 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return ctr_term(e, s, x, T, live);
     }
     case "Lit": {
-      if (x.k === "Nat" && x.v > NAT_MAX) {
+      if (x.k === "Nat" && x.v > NAT_MAX && e.book.tlds.Nat?.b === true) {
         // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add,
-        // which a base Nat means are base's too; a file's own Nat (as a
-        // build refuses) is its constructor chain
-        if (e.book.tlds.Nat?.b !== true) {
-          return nat_literal(e, x.v);
-        }
+        // which a base Nat means are base's too (a file's own Nat, as a
+        // build refuses, is its constructor chain however long)
         const [q, r] = [Math.floor(x.v / NAT_MAX), x.v % NAT_MAX];
         const mul = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
         return term(e, s, B.App(B.App(B.Ref("Nat.add"), mul), B.Lit("Nat", r)), live);
+      }
+      if (x.k === "Nat") {
+        return nat_literal(e, x.v);
       }
       return term(e, s, B.term_higher(B.lit_step(x)), live);
     }
@@ -1249,8 +1249,8 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   return F.q.$ === G.q.$ && qsig_eq(e, F.B(x), G.B(x), d + 1);
 }
 
-// a Nat literal as unary constructors without recursively lowering its
-// predecessor, which would overflow the JS stack for large values
+// a Nat literal as its constructor chain, built in a loop: lowering
+// each predecessor through term would recurse once per unit
 function nat_literal(e: Safe, value: number): O {
   const zero = e.book.ctrs.Zero;
   const succ = e.book.ctrs.Succ;
