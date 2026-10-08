@@ -532,9 +532,7 @@ export function render(d: Diag): string {
         })
         .join(""),
   );
-  return (
-    layout(loaded, d).replace(/^Error:/, HEAD[d.severity] + " [" + d.code + "]:") + fixes.join("")
-  );
+  return layout(loaded, d, HEAD[d.severity] + " [" + d.code + "]:") + fixes.join("");
 }
 
 // The LSP range of a span in a file on disk.
@@ -548,15 +546,14 @@ export function position(span: Span): { start: Position; end: Position } {
 }
 
 // A rule written in Bend: a file built on ./lint.bend (see there). It is
-// checked and compiled once, as comp.ts io_run does; each run calls its
-// main with bend's own IO runtime, while effects.js reaches bend-lint through
-// globalThis.BEND_LINT. Offsets cross as code points.
+// checked and compiled once; each run calls its main, while effects.js
+// reaches bend-lint through globalThis.BEND_LINT. Offsets cross as code points.
 export async function bendRule(file: string): Promise<LintRule> {
-  const { book, failure } = await check(loaded, file, [], new AbortController().signal);
-  if (failure !== undefined) {
-    throw new Error(file + " does not check:\n" + render(failure));
+  const checked = await check(loaded, file, [], new AbortController().signal);
+  if (checked.failure !== undefined) {
+    throw new Error(file + " does not check:\n" + render(checked.failure));
   }
-  const { id, want, main } = compile(loaded, book, file);
+  const { id, want, main } = compile(loaded, checked, file);
   return {
     id,
     ...(want === null ? {} : { facts: want }),

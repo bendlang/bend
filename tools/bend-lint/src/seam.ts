@@ -883,8 +883,9 @@ export const operations = (m: Loaded, run: Checked): Operations => {
   };
 };
 
-// bend's own error layout for a finding: its message, context and location.
-export const layout = (m: Loaded, d: Diag): string => {
+// bend's own error layout for a finding, under `head`: its message,
+// context and location.
+export const layout = (m: Loaded, d: Diag, head: string): string => {
   const r = d.fact && raw(d.fact);
   return m.Bend.err_show(
     isErr(d.core)
@@ -897,12 +898,12 @@ export const layout = (m: Loaded, d: Diag): string => {
           fromSpan(d.span),
           d.def,
         ),
-  );
+  ).replace(/^Error:/, head);
 };
 
 // A Bend rule's id(), facts() and main(), compiled as comp.ts io_run does.
 // facts(), checked: NoFacts{} gives null, Want{...} a filter.
-export const compile = (m: Loaded, book: Book, file: string): Compiled => {
+export const compile = (m: Loaded, { book }: Checked, file: string): Compiled => {
   const { Bend, Comp } = m;
   const value = (k: Name): LTerm | undefined => {
     const tld = book.tlds[k];
