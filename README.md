@@ -5,7 +5,7 @@ but we still need an ambiguity-free language to communicate our intents to the
 AIs building the world around us. Bend is that language.
 
 With **laws**, intents can be more precise than natural language. With
-**proofs**, we can mechanically verify the AI implemented our prompts correctly.
+**proofs**, we can check formalized intents within [documented limits](#limitations).
 And with a **fast compiler**, we can run that code at peak compute.
 
 That's Bend - and nothing else.
@@ -45,9 +45,13 @@ PROBLEM: How can you **trust** AI code, without reading it?
 SOLUTION: By forcing your AI to write a **correctness proof**.
 
 Bend introduces `LAWS.bend`, a file where you declare rules that your app must
-not break. Bend's compiler then **guarantees** that these laws always hold, by
-demanding **mathematical proof** whenever your code is edited. For example,
-consider a game with one law: *winning is impossible*. Here's how it plays out:
+not break. The compiler demands **mathematical proofs** whenever code is edited.
+The guarantee concerns checked terms: `--verdict` checks the translation with
+the **proven kernel**. The source checker and translation are unproved, and
+execution can differ from proved results on a backend with documented limits.
+See [Limitations](#limitations), [WONTFIX](WONTFIX.txt), and the
+[paper's proof scope](bend2/docs/BendTT/main.typ#L1080-L1089).
+For example, consider a game with one law: *winning is impossible*.
 
 <p align="center"><b>Law</b>: winning is <b>impossible</b><br><img src="media/game_law.gif" width="480" alt="The player walks up and bumps the wall of the flag's room"><br><i>So far, it works!</i></p>
 
@@ -57,11 +61,10 @@ consider a game with one law: *winning is impossible*. Here's how it plays out:
 
 <p align="center"><b>With LAWS.bend:</b><br><img src="media/game_law_kept.gif" width="480" alt="A wall on the far edge stops the player"><br><i>Laws intact. AI mistake: <b>blocked</b>!</i></p>
 
-Without `LAWS.bend`, a bug was merged. With it, the AI had to retry, until no
-bugs were left! In this case, it added a wall, but it could have moved the flag,
-made the room kill you, or whatever. The only thing it can't do is commit a bug,
-because it is **mathematically impossible** to break laws in `LAWS.bend`. The
-compiler *enforces* it.
+Without `LAWS.bend`, a bug was merged. With it, the AI retried until the declared
+law checked. In this case, it added a wall, but it could have moved the flag,
+made the room kill you, or whatever. The compiler blocks changes whose law
+checks fail, within the proof and execution limits above.
 
 Using `LAWS.bend` is simple.
 
@@ -244,7 +247,7 @@ def add_zero(x):
 - The compiler is young and has blind spots (unusually slow programs). Report.
 - We don't have as many benchmarks as we'd like yet, especially for the checker.
 - The compiler (not kernel) is 99% AI-written and not yet fully audited.
-- The checker has no proof and may have bugs; `--verdict` uses a proven kernel.
+- Source checking and translation are unproved; `--verdict` checks translated terms.
 - A binary needs clang 14+; ! needs 19+, Metal or CUDA 12.
 - No Windows (WSL works); on Linux, Window and Audio need X11 and ALSA headers.
 - A hub package is a hash, unless its author names and versions it after `bend login`.

@@ -25,7 +25,7 @@ const cost = s => (s = s.replace(/[*+~#%/]/g, "").trim()) ? s.split(/\s+/)
 const co = "co", punch = "punch", quick = "quick", left = "left", red = "red", green = "green";
 const TAG = new Set([co, punch, quick, left, red, green]);
 const BEATS = [
-  ["say", "Imagine a programming language", "where AIs couldn't write bugs?"],
+  ["say", "Imagine a programming language", "where AIs must *prove declared laws*?"],
   ["say", "#Introducing...", quick],
   ["title"],
   ["say", "First, let's talk about *speed*."],
@@ -40,7 +40,11 @@ const BEATS = [
           "*The whole language* compiles to *kernels*!"],
   ["say", "Bend is fast on a single CPU core.", "And scales to massive GPU clusters."],
   ["say", "How about *vibe-coding*?"],
-  ["say", "In Bend,", "you can *stop models*", "from *making mistakes*", "by demanding *proofs*."],
+  ["say", "In Bend,", "you can require *proofs*", "of your *declared laws*."],
+  ["say", "*--verdict* checks translated terms", "with the *proven kernel*.", "",
+          "The source checker and translation", "are *not proved*."],
+  ["say", "Execution can differ from proved results.", "See *README Limitations*, *WONTFIX*,",
+          "and the *BendTT paper's proof scope*."],
   ["say", "#How?"],
   ["reveal", "LAWS|.|bend", 64],
   ["say", "A new file that lists *invariants*", "that models are *forced* to follow."],
@@ -55,14 +59,12 @@ const BEATS = [
   ["say", "Oops! The new feature *introduced a bug*.", "Nothing stopped the AI from *breaking the laws*.", red],
   ["say", "With *LAWS.bend*:"],
   ["block"],
-  ["say", "The AI placed a wall!", "The new feature landed with *no bugs*.", green],
+  ["say", "The AI placed a wall!", "The *declared law* held in this example.", green],
   ["say", "But *why*?"],
-  ["say", "Because the rules in *LAWS.bend* are enforced",
-          "by a *proof checking* algorithm - as in Lean!", "",
-          "If the AI makes any *mistake*,", "Bend forces it to *try again*.", "",
-          "It is *mathematically impossible* to merge a bug!"],
+  ["say", "Because *LAWS.bend* requires *proofs*", "of the laws you declare.", "",
+          "A failed check forces the AI", "to *try again*."],
   ["say", "*LAWS.bend* == *AGENTS.md*", "except backed by *proof*"],
-  ["say", "With *LAWS.bend*,", "%\"make no mistakes\"", "becomes +enforceable+.", punch],
+  ["say", "With *LAWS.bend*,", "%\"keep the flag unreachable\"", "becomes a *proof obligation*.", punch],
   ["say", "And that's Bend:", "a language *fast* like C", "that *scales* like CUDA",
           "that *proves* like Lean", "where vibe-coding *works*."],
   ["end"],
@@ -738,7 +740,7 @@ S.reveal = (u, dur, b) => {
 // the landing page's hero: Bend, a purple block cursor blinking after it,
 // the pitch, its bold words in ink and the rest dim, and the three claims
 // the pitch lands in three parts, each read before the next appears
-const PITCH = ["a *fast* language", " that *blocks AI mistakes*", " via *proof*"], PAT = [0.6, 1.9, 3.2];
+const PITCH = ["a *fast* language", " that *checks declared laws*", " via *proof*"], PAT = [0.6, 1.9, 3.2];
 S.title = (u, dur) => {
   font(72, true); const w = cx.measureText("Bend").width, cw = 36, x = W/2 - (w + 8 + cw)/2;
   T("Bend", x, 340, 72, INK, "left", true);
@@ -757,7 +759,7 @@ S.title = (u, dur) => {
 S.end = (u, dur) => {
   T("Bend", W/2, 290, 64, PURPLE, "center", true);
   cx.globalAlpha = ease((u - 0.6)/0.5);
-  T("fast  ·  parallel  ·  no mistakes", W/2, 360, 24, GREEN, "center");
+  T("fast  ·  parallel  ·  declared laws", W/2, 360, 24, GREEN, "center");
   cx.globalAlpha = ease((u - 1.8)/0.5);
   T("Python syntax · C speed · CPU and GPU · proofs", W/2, 430, 19, DIM, "center");
   T("bend-lang.com", W/2, 480, 22, PURPLE, "center");

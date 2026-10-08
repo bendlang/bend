@@ -1,10 +1,10 @@
 # Bend
 
-Bend is a new programming language that combines Lean-like formal proofs with
-C-like speeds and CUDA-like parallelism. It gives humans an ambiguity-free
-language to communicate their intents to AIs, a compiler capable of mechanically
-checking that the AI implemented these intents to unquestionable mathematical
-correctness, and a compiler that runs that code fast on CPUs and GPUs.
+Bend combines Lean-like proofs with C-like speeds and CUDA-like parallelism.
+`--verdict` checks translated terms with the proven kernel; the source checker
+and translation are unproved. Execution can differ from proved results; see
+[Limitations](../README.md#limitations), [WONTFIX](../WONTFIX.txt), and the
+[proof scope](../paper/BendTT.pdf#page=8).
 
 ## Hello, World!
 
