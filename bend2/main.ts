@@ -273,26 +273,26 @@ async function cli_file(args: string[]): Promise<void> {
     cli_say(1, HELP);
     process.exit(1);
   }
-  if (file.endsWith(".html")) {
-    if (outs.length !== 1 || only || checkup || publish) {
-      cli_fail("a page bundles with -o <dir>");
-    }
-    return cli_bundle(file, outs[0]);
-  }
-  if (publish && (outs.length !== 0 || only || verdict || checkup)) {
-    cli_fail("--publish takes no other option");
-  }
-  if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
-    cli_fail((verdict ? "--verdict" : "--check-only") + " takes no other option");
-  }
-  if (argv.length !== 0 && (outs.length !== 0 || only || checkup || publish)) {
-    cli_fail("arguments go to a run: bend <file.bend> [args]");
-  }
-  if (checkup && outs.length !== 0) {
-    cli_fail("--checkup takes no -o: a binary holds one main, so build each"
-      + " import alone");
-  }
   try {
+    if (file.endsWith(".html")) {
+      if (outs.length !== 1 || only || checkup || publish) {
+        cli_fail("a page bundles with -o <dir>");
+      }
+      return await cli_bundle(file, outs[0]);
+    }
+    if (publish && (outs.length !== 0 || only || verdict || checkup)) {
+      cli_fail("--publish takes no other option");
+    }
+    if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
+      cli_fail((verdict ? "--verdict" : "--check-only") + " takes no other option");
+    }
+    if (argv.length !== 0 && (outs.length !== 0 || only || checkup || publish)) {
+      cli_fail("arguments go to a run: bend <file.bend> [args]");
+    }
+    if (checkup && outs.length !== 0) {
+      cli_fail("--checkup takes no -o: a binary holds one main, so build each"
+        + " import alone");
+    }
     if (publish) {
       return await cli_publish(file, named);
     }
@@ -878,6 +878,9 @@ function book_run(book: Bend.Book, argv: string[]): number {
 function book_err(e: unknown): string {
   if (e instanceof Check_Fail) {
     return FAIL + "\n" + book_err(e.why);
+  }
+  if (e instanceof AggregateError) {
+    return "Error: " + e.message + "\n" + e.errors.map(book_err).join("\n");
   }
   const err = e as Bend.Err;
   if (e instanceof RangeError) {
