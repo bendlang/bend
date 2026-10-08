@@ -86,7 +86,6 @@ type File = {
     uses: Map<HTerm, Bend.PMap<number>>;
     folds: Map<HTerm, HTerm | null>;
     spines: Map<HTerm, Spine>;
-    ground: Map<HTerm, boolean>;
     steps: Map<HTerm, HTerm>;
   };
 };
@@ -758,7 +757,7 @@ function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
     : s.$ === "Ctr" && (s.x.length === 0
-      || memo(FL.memo.ground, s, () => s.x.every(term_const)));
+      || s.x.every(term_const));
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
@@ -1355,7 +1354,6 @@ function file_new(book: Bend.Book, js: boolean): File {
       uses: new Map(),
       folds: new Map(),
       spines: new Map(),
-      ground: new Map(),
       steps: new Map(),
     },
   };
