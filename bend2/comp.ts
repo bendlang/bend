@@ -121,7 +121,8 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // CLO_APPLY and IO_EMIT are the runtime's own segments, named with a ~
 // so that no file declares them. FOLD_FUEL caps the nodes that unfolds
 // add to a segment, so a literal-bounded loop does not unroll into its
-// caller. WIDE is the widest flat layout or segment; a node past
+// caller. A spin of SPIN_FAR characters of C is a call on the device
+// (DFAR). WIDE is the widest flat layout or segment; a node past
 // it pads to its size class and keeps 240 plus log2 of it in CID_T. An
 // argument nested past TPL_DEEP brackets goes to a local (clang allows 256).
 
@@ -139,6 +140,8 @@ const VIEW = /^(?:u32_to_word\((\w+|f32_bits\(\w+\))\)|(\w+)\.codePointAt\(0\))$
 const TAB_BAD = /\b(?!(?:fround|imul)\()\w+\(/;
 
 const FOLD_FUEL = 8192;
+
+const SPIN_FAR = 8192;
 
 const TPL_DEEP = 32;
 
@@ -2198,15 +2201,16 @@ function emit_native(sc: Scope, k: Name, ers: HTerm[]): string {
     const dst = val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret);
     emit_body(sl, fun_of(k).h!, FL.book.tlds[k].T, ers, vals, dst);
     FUEL = fuel;
-    FL.spins.push({ ...seg, lines: [`${seg.spin ? "LOOP" : "INLINE"} Term ${
-      name}(Env e, THR Term* o${
-      seg.ks.map((k, i) => `, ${lay_c(k)} r${i}${arr_q(k)
-        ? `, u64 q${i}` : ""}`).join("")}) {`,
-    ...seg_text(["u32 wpoll = 0;", ...seg.ks.flatMap((k, i) =>
+    const body = [...seg_text(["u32 wpoll = 0;", ...seg.ks.flatMap((k, i) =>
       arr_q(k) ? [`Term h${i} = r${i};`] : []),
     ...seg_take(seg), "WL_SPIN"], 1),
     ...seg_text(seg.lines, 2), "  break;", "  }",
-    "  return 1;", "}"] });
+    "  return 1;", "}"];
+    const far = body.reduce((n, l) => n + l.length + 1, 0) >= SPIN_FAR;
+    FL.spins.push({ ...seg, lines: [`${far ? "DFAR" : "INLINE"} Term ${
+      name}(Env e, THR Term* o${
+      seg.ks.map((k, i) => `, ${lay_c(k)} r${i}${arr_q(k)
+        ? `, u64 q${i}` : ""}`).join("")}) {`, ...body] });
     return name;
   }));
 }
@@ -3354,14 +3358,16 @@ using namespace metal;
 #endif
 #define FAR static __attribute__((noinline))
 
-// A spin that loops pays its call once for all its turns. On the device it
-// is a call: inlined, it grows the one kernel Metal compiles (raytrace: 220
-// -> 116 ms of Metal back end, 9% faster on the GPU). On the host clang
+// A long spin is a call on the device, which inlines every spin into the
+// one kernel it compiles, once per caller: a 14 KB native at eight call
+// sites took Metal's back end from 56 to 369 ms, and hvm5 under a bang 32
+// s against 2.6. Shorter ones gain from inlining (histogram's 5 KB spins
+// lose 23% on the GPU as calls; lexer's 1 KB loop 3%). On the host clang
 // decides (a forced call cost raytrace 31% on PAR-CPU).
 #if DEVICE
-#define LOOP    FAR
+#define DFAR    FAR
 #else
-#define LOOP    INLINE
+#define DFAR    INLINE
 #endif
 
 #if DEVICE
