@@ -1,6 +1,6 @@
 # Helpers for the rules in this folder that are written in Bend.
 import Base
-import ../src/lint.bend as Lint
+import ../src/bend/lint.bend as Lint
 
 def root_or(root: Bool, s: Lint.Source, later: Maybe<&2, Lint.Source>) -> Maybe<&2, Lint.Source>:
   match root:

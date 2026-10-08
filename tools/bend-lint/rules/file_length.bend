@@ -1,7 +1,7 @@
 # style/file-length: warn when a source file exceeds maxLines (default 500).
 # Formatting cannot shorten a file's logical contents; no fix is offered.
 import Base
-import ../src/lint.bend as Lint
+import ../src/bend/lint.bend as Lint
 import ./shared.bend as Shared
 
 def id() -> String:

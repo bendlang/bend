@@ -249,12 +249,12 @@ to check them itself.
 
 ### Bend
 
-A `.bend` rule imports [src/lint.bend](src/lint.bend). Here's one that reports
+A `.bend` rule imports [src/bend/lint.bend](src/bend/lint.bend). Here's one that reports
 nothing, saved under `rules/`:
 
 ```python
 import Base
-import ../src/lint.bend as Lint
+import ../src/bend/lint.bend as Lint
 
 def id() -> String:
   "demo/nothing"
@@ -406,7 +406,7 @@ alike:
   counts at runtime
 - `book_read`, `book_err` and `Check_Fail` from `main.ts` must take the
   arguments bend-lint gives them
-- a self-check runs `src/sample.bend` through the check and the rule
+- a self-check runs `src/bend/sample.bend` through the check and the rule
   operations: `x` in `def id(x: N) -> N: x` must have the right type, binder,
   quantity, uses and span, and each wrapper must report the terms only it sees
 

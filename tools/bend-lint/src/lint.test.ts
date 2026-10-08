@@ -118,7 +118,7 @@ const BEND_TESTS = [
   "import/duplicate_name",
 ];
 
-// Inside the repo, so a Bend rule here can import ../../lint.bend;
+// Inside the repo, so a Bend rule here can import ../../bend/lint.bend;
 // .tmp/ is ignored by git.
 const TMP = fileURLToPath(new URL("./.tmp", import.meta.url));
 const DIR = (fs.mkdirSync(TMP, { recursive: true }), fs.mkdtempSync(path.join(TMP, "run-")));
@@ -126,7 +126,7 @@ const CLI = fileURLToPath(new URL("./lint.ts", import.meta.url));
 
 // The comma-space rule, written in Bend: source text only.
 const COMMA_BEND = String.raw`import Base
-import ../../lint.bend as Lint
+import ../../bend/lint.bend as Lint
 
 def id() -> String:
   "style/comma-space"
@@ -205,7 +205,7 @@ def main() -> IO(Unit):
 // form, whether the checker finds it equal to its binder's, its text, how
 // many times it is demanded, and what it uses.
 const TYPES_BEND = String.raw`import Base
-import ../../lint.bend as Lint
+import ../../bend/lint.bend as Lint
 
 def id() -> String:
   "test/types"
@@ -409,7 +409,7 @@ const redundantAnnotation: LintRule = {
 
 // A Bend rule that reports its options, read with defaults.
 const OPTIONS_BEND = String.raw`import Base
-import ../../lint.bend as Lint
+import ../../bend/lint.bend as Lint
 
 def id() -> String:
   "test/options"
@@ -432,7 +432,7 @@ def main() -> IO(Unit):
 // A Bend rule that counts the facts it pulls, from the linted file and its
 // imports: the Vars.
 const COUNT_BEND = String.raw`import Base
-import ../../lint.bend as Lint
+import ../../bend/lint.bend as Lint
 
 def id() -> String:
   "test/count"
@@ -456,7 +456,7 @@ def main() -> IO(Unit):
 // first child, a Var fact's node, its first child and its fact back, and
 // a def that does not exist.
 const TREE_BEND = String.raw`import Base
-import ../../lint.bend as Lint
+import ../../bend/lint.bend as Lint
 
 def id() -> String:
   "test/tree"

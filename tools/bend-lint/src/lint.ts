@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // bend-lint checks a Bend file with bend's checker, then runs rules over
 // its source and the checker's results. Rules are TS modules, or Bend files
-// built on ./lint.bend. It reaches bend2 only through ./seam.ts; anything
+// built on ./bend/lint.bend. It reaches bend2 only through ./seam.ts; anything
 // there it cannot follow stops it with a drift error. The types below are
 // bend-lint's own, so a rule does not depend on bend2's internals. As a
 // CLI, it exits 0 when ok, 1 when it found an error, 2 on bad usage or a
@@ -545,7 +545,7 @@ export function position(span: Span): { start: Position; end: Position } {
   return { start: at(span.beg), end: at(span.end) };
 }
 
-// A rule written in Bend: a file built on ./lint.bend (see there). It is
+// A rule written in Bend: a file built on ./bend/lint.bend (see there). It is
 // checked and compiled once; each run calls its main, while effects.js
 // reaches bend-lint through globalThis.BEND_LINT. Offsets cross as code points.
 export async function bendRule(file: string): Promise<LintRule> {
