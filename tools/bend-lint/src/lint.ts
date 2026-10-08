@@ -88,7 +88,7 @@ export type RuleContext = {
 export type OptionValue = number | boolean | string;
 export type Options = Record<string, OptionValue>;
 
-// bend-lint.json: per rule id, "off", or a severity and option values.
+// Config: per rule id, "off", or a severity and option values.
 export type Config = { rules?: Record<string, "off" | ({ severity?: Severity } & Options)> };
 
 export type LintOptions = { signal?: AbortSignal; config?: Config };
@@ -108,7 +108,7 @@ export type Position = { line: number; character: number };
 // A span as lint.bend has it: a file's path and two code-point offsets.
 type Spot = { path: string; beg: number; end: number };
 
-// What a Bend rule reports, as lint.js reads it.
+// What a Bend rule reports, as effects.js reads it.
 type Reported = {
   severity: Severity;
   message: string;
@@ -116,7 +116,7 @@ type Reported = {
   fixes: Array<{ title: string; applicability: Applicability; edits: Array<{ span: Spot; text: string }> }>;
 };
 
-// What lint.js asks of bend-lint while a Bend rule runs. Facts and types
+// What effects.js asks of bend-lint while a Bend rule runs. Facts and types
 // cross as indexes into the run's tables.
 type Channel = {
   input(): { sources: Array<{ path: string; text: string; root: boolean }>; options: Options };
@@ -143,7 +143,7 @@ type Checked = { book: Book; sources: Source[]; span: Mapper; facts?: Map<LTerm,
 
 const RULE_ID = /^[^/\s]+\/[^/\s]+$/;
 const SCOPES = ["file", "program"];
-const CONFIG = "bend-lint.json";
+const CONFIG_FILES = ["bend-lint.json", "bend-lint.js", "bend-lint.ts"];
 const LINE = /[^\n]*\n|[^\n]+$/g;
 const STACK = "the machine stack overflowed (a deep recursion, or a literal too large to expand)";
 const SAMPLE = "type N is Data:\n  Z{}\n\ndef id(x: N) -> N:\n  x\n";
@@ -195,9 +195,7 @@ const OPTIONS = {
   help: { type: "boolean", short: "h" },
 } as const;
 
-const USAGE = [
-  "usage: bun tools/bend-lint/src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--config <bend-lint.json>] [--fix | --fix-suggested | --fix-dangerously] [--json] [--bend <dir>]",
-].join("\n");
+const USAGE = "usage: bun src/lint.ts <file.bend> [--rules <rules.ts|rule.bend>]... [--config <config.json|config.js|config.ts>] [--fix | --fix-suggested | --fix-dangerously] [--json] [--bend <dir>]";
 
 // The fix levels each flag applies; the widest flag given wins.
 const FIXES: ReadonlyArray<readonly ["fix" | "fix-suggested" | "fix-dangerously", Applicability[]]> = [
@@ -219,7 +217,10 @@ export function* walk(tm: LTerm): Generator<LTerm> {
       throw new DriftError("unknown term kind " + t.$ + "; update CHILDREN in tools/bend-lint/src/lint.ts");
     }
     yield t;
-    stack.push(...children(t).reverse());
+    const next = children(t);
+    for (let i = next.length - 1; i >= 0; i--) {
+      stack.push(next[i]);
+    }
   }
 }
 
@@ -381,17 +382,28 @@ function matches(f: FactFilter, kind: string, def: Name, name: Name): boolean {
 
 export function readConfig(file: string): Config {
   try {
+    if ([".js", ".ts"].includes(path.extname(file))) {
+      const module = import.meta.require(url.pathToFileURL(path.resolve(file)).href);
+      if (!Object.hasOwn(module, "config")) {
+        throw new Error("must export a named `config` object");
+      }
+      if (typeof module.config !== "object" || module.config === null || Array.isArray(module.config)) {
+        throw new Error("`config` must be an object");
+      }
+      return module.config;
+    }
     return JSON.parse(fs.readFileSync(file, "utf8"));
   } catch (e) {
     throw new Error(file + ": " + (e instanceof Error ? e.message : String(e)));
   }
 }
 
-// The bend-lint.json in the file's folder, or the nearest one above it.
+// The nearest config; JSON, JS, then TS within each directory.
 export function findConfig(file: string): Config {
   for (let dir = path.dirname(path.resolve(file)); ; dir = path.dirname(dir)) {
-    if (fs.existsSync(path.join(dir, CONFIG))) {
-      return readConfig(path.join(dir, CONFIG));
+    const config = CONFIG_FILES.map((name) => path.join(dir, name)).find((candidate) => fs.existsSync(candidate));
+    if (config !== undefined) {
+      return readConfig(config);
     }
     if (path.dirname(dir) === dir) {
       return {};
@@ -403,7 +415,7 @@ export function findConfig(file: string): Config {
 // defaults, with the given values, which must be known and of their type).
 function settings(rule: LintRule, config: Config): { off: boolean; severity?: Severity; options: Options } {
   const given = config.rules?.[rule.id];
-  const where = CONFIG + ": " + rule.id;
+  const where = "bend-lint config: " + rule.id;
   if (given === undefined || given === "off") {
     return { off: given === "off", options: { ...rule.options } };
   }
@@ -455,8 +467,11 @@ export async function lint(file: string, rules: LintRule[],
       // A filter that matches all, in the scope of every kept fact, gets the map as is.
       facts: want === undefined || facts === undefined ? undefined
         : [want.kinds, want.defs, want.names].every((xs) => !xs?.length) && (want.scope === "program" || !program) ? facts
-          : new Map([...facts].filter(([tm, f]) => (want.scope === "program" || f.spn?.file === root.file)
-            && matches(want, shape(tm).kind, f.def, shape(tm).name))),
+          : new Map([...facts].filter(([tm, f]) => {
+            if (want.scope !== "program" && f.spn?.file !== root.file) return false;
+            const { kind, name } = shape(tm);
+            return matches(want, kind, f.def, name);
+          })),
       prior: diags,
       binder: (fact, v) => v.$ === "Var" ? Bend.pmap_get(fact.ctx, v.i) : null,
       show: (fact, ty) => Bend.term_show(Bend.term_lower(ty, fact.dep)),
@@ -478,7 +493,7 @@ export async function lint(file: string, rules: LintRule[],
       fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => ({ ...e, spn: span(e.spn) })) })),
     }));
     const broken = settled.flatMap((d) => d.fixes).find((f) => f.edits.some(({ spn }, i) =>
-      spn.beg < 0 || spn.beg > spn.end || spn.end > spn.file.str.length || f.edits.some((o, j) => j !== i && clash(f.edits[i], o))));
+      !validRange(spn.beg, spn.end, spn.file.str.length) || f.edits.some((o, j) => j !== i && clash(f.edits[i], o))));
     if (broken !== undefined) {
       throw new TypeError("rule " + rule.id + ": fix \"" + broken.title + "\" has an edit out of bounds, or two that clash");
     }
@@ -489,6 +504,10 @@ export async function lint(file: string, rules: LintRule[],
     }
   }
   return { ok: true, diags, sources, book, facts };
+}
+
+function validRange(beg: number, end: number, length: number): boolean {
+  return Number.isInteger(beg) && Number.isInteger(end) && beg >= 0 && beg <= end && end <= length;
 }
 
 // Whether two edits to one file cannot both apply: their ranges overlap,
@@ -559,7 +578,7 @@ export function position(spn: Span): { start: Position; end: Position } {
 
 // A rule written in Bend: a file built on ./lint.bend (see there). It is
 // checked and compiled once, as comp.ts io_run does; each run calls its
-// main with bend's own IO runtime, while lint.js reaches bend-lint through
+// main with bend's own IO runtime, while effects.js reaches bend-lint through
 // globalThis.BEND_LINT. Offsets cross as code points.
 export async function bendRule(file: string): Promise<LintRule> {
   const { book, failure } = await check(file, [], new AbortController().signal);
@@ -688,7 +707,13 @@ export async function bendRule(file: string): Promise<LintRule> {
       }
       return found[0].map((d) => cx.diag({
         message: d.message, severity: d.severity, spn: d.span && span(d.span),
-        fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => ({ spn: span(e.span), text: e.text })) })),
+        fixes: d.fixes.map((f) => ({ ...f, edits: f.edits.map((e) => {
+          const spn = span(e.span);
+          if (!validRange(e.span.beg, e.span.end, table(spn.file.str).units.length - 1)) {
+            throw new TypeError("rule " + id + ": fix \"" + f.title + "\" has an edit out of bounds");
+          }
+          return { spn, text: e.text };
+        }) })),
       }));
     },
   };

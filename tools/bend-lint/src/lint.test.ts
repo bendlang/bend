@@ -5,16 +5,14 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { Book, LTerm, Span } from "bend2/bend.ts";
-import { BEND2, Bend, Comp, applyFixes, bendRule, findConfig, lint, mapper, render, walk } from "../src/lint.ts";
-import type { Diag, Edit, Fact, LintRule, RuleContext, Source, SourceFile } from "../src/lint.ts";
-import { rules as trailing } from "../rules/trailing_whitespace.ts";
-import { DriftError, bendDir, fetchBend, installedTag, latestTag, patch, relative, resolve, seeCheck, seeInfer } from "../src/patch.ts";
+import { BEND2, Bend, Comp, applyFixes, bendRule, findConfig, lint, mapper, readConfig, render, walk } from "./lint.ts";
+import type { Diag, Fact, LintRule, RuleContext, Source, SourceFile } from "./lint.ts";
+import { DriftError, bendDir, fetchBend, installedTag, latestTag, patch, relative, resolve, seeCheck, seeInfer } from "./patch.ts";
 
 // Types
 // =====
 
 type Loose = Fact & { tm: { x?: { $: string; k?: string; i?: number } } };
-type Token = { text: string; beg: number; end: number };
 type Seen = { kind: string; def: string; name: string; path: string };
 
 // Constants
@@ -83,30 +81,6 @@ def main() -> N:
   direct(alias(generic(~N, required_lambda(required_constructor()))))
 `;
 
-const FORMAT = String.raw`import Base
-
-type Sample is Data:
-  SampleValue{}
-
-def choose(x: Sample,y: Sample) -> Sample:
-  x
-
-def text() -> String:
-  "a,b=c # still text; escaped quote: \"x,y=z\""
-
-def marker() -> Char:
-  '='
-
-def proof(-x: Sample) -> {x==x : Sample}:
-  {==}
-
-def main() -> Sample:
-  a : Sample=SampleValue{} # preserve,this=comment
-  b : Sample  =SampleValue{}
-  f : Sample -> Sample=y=>y
-  f(choose(a,b))
-`;
-
 // Tests in the bend checkout (bend2/../tests) whose first expected line
 // says if the check passes.
 const DRIFT = [
@@ -115,20 +89,15 @@ const DRIFT = [
   "import/base_prelude", "import/string_literal", "import/alias_shadow", "import/duplicate_name",
 ];
 
-// Inside the repo, so a Bend rule here can import ../../../src/lint.bend;
+// Inside the repo, so a Bend rule here can import ../../lint.bend;
 // .tmp/ is ignored by git.
 const TMP = fileURLToPath(new URL("./.tmp", import.meta.url));
 const DIR = (fs.mkdirSync(TMP, { recursive: true }), fs.mkdtempSync(path.join(TMP, "run-")));
-const CLI = fileURLToPath(new URL("../src/lint.ts", import.meta.url));
-const LINE_LENGTH = fileURLToPath(new URL("../rules/line_length.bend", import.meta.url));
-
-// A file for the rules in rules/: trailing spaces and tabs, CRLF, and
-// lines of 100, 101 and 103 characters (the last two end in a \r).
-const STYLE = "import Base\n\ndef main() -> U32:  \r\n  1\t\n#" + "x".repeat(99) + "\n#" + "y".repeat(100) + "\r\n#" + "z".repeat(102) + "\r\n";
+const CLI = fileURLToPath(new URL("./lint.ts", import.meta.url));
 
 // The comma-space rule, written in Bend: source text only.
 const COMMA_BEND = String.raw`import Base
-import ../../../src/lint.bend as Lint
+import ../../lint.bend as Lint
 
 def id() -> String:
   "style/comma-space"
@@ -207,7 +176,7 @@ def main() -> IO(Unit):
 // form, whether the checker finds it equal to its binder's, its text, how
 // many times it is demanded, and what it uses.
 const TYPES_BEND = String.raw`import Base
-import ../../../src/lint.bend as Lint
+import ../../lint.bend as Lint
 
 def id() -> String:
   "test/types"
@@ -362,20 +331,9 @@ const redundantAnnotation: LintRule = {
   }),
 };
 
-// One space after a comma and on each side of an assignment, in the file
-// linted. Quoted literals, comments and compound operators stay whole.
-const spacing: LintRule = {
-  id: "format/spacing",
-  run: (cx) => spacingEdits(cx.root.file).map((edit) => cx.diag({
-    message: "Use one space after a comma and on each side of an assignment.",
-    severity: "hint", spn: edit.spn,
-    fixes: [{ title: "Normalize spacing", applicability: "safe", edits: [edit] }],
-  })),
-};
-
 // A Bend rule that reports its options, read with defaults.
 const OPTIONS_BEND = String.raw`import Base
-import ../../../src/lint.bend as Lint
+import ../../lint.bend as Lint
 
 def id() -> String:
   "test/options"
@@ -398,7 +356,7 @@ def main() -> IO(Unit):
 // A Bend rule that counts the facts it pulls, from the linted file and its
 // imports: the Vars.
 const COUNT_BEND = String.raw`import Base
-import ../../../src/lint.bend as Lint
+import ../../lint.bend as Lint
 
 def id() -> String:
   "test/count"
@@ -453,25 +411,6 @@ function bodies(book: Book): Record<string, string> {
 
 function root(sources: Source[]): Source {
   return sources.find((s) => s.root)!;
-}
-
-function tokens(source: string): Token[] {
-  const pattern = /#[^\r\n]*|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|==|=>|!=|<=|>=|[^\s]/g;
-  return [...source.matchAll(pattern)].map((m) => ({ text: m[0], beg: m.index!, end: m.index! + m[0].length }));
-}
-
-function spacingEdits(file: SourceFile): Edit[] {
-  const stream = tokens(file.str);
-  const gap = (left?: Token, right?: Token): Edit[] => {
-    const between = left === undefined || right === undefined ? "#" : file.str.slice(left.end, right.beg);
-    return right?.text.startsWith("#") || !/^[ \t]*$/.test(between) || between === " "
-      ? [] : [{ spn: { file, beg: left!.end, end: right!.beg }, text: " " }];
-  };
-  return stream.flatMap((token, i) => [
-    ...(token.text === "=" ? gap(stream[i - 1], token) : []),
-    ...((token.text === "=" || token.text === ",") && !["}", ")", "]"].includes(stream[i + 1]?.text ?? "}")
-      ? gap(token, stream[i + 1]) : []),
-  ]);
 }
 
 // The facts a rule with this filter gets: kind, def, name and file.
@@ -720,6 +659,18 @@ describe("lint", () => {
     expect(() => walk({ $: "Nope" } as unknown as LTerm).next()).toThrow(DriftError);
   });
 
+  test("walk preserves constructor and type argument order across traversals", () => {
+    const children: LTerm[] = [{ $: "Ref", k: "first" }, { $: "Ref", k: "second" }];
+    for (const $ of ["Ctr", "ADT"] as const) {
+      const term = { $, k: "Pair", x: children } as LTerm;
+      const original = [...children];
+      expect([...walk(term)]).toEqual([term, ...original]);
+      expect(children).toEqual(original);
+      expect([...walk(term)]).toEqual([term, ...original]);
+      expect(children).toEqual(original);
+    }
+  });
+
   test("a failed check is one bend/check error, and no rule runs", async () => {
     const parse = await lint(fixture("parse.bend", "type N is Data:\n  Z{}\ndef broken(\n"), [neverRun]);
     expect(parse.ok).toBe(false);
@@ -775,6 +726,17 @@ describe("lint", () => {
     const res = await lint(main, [look]);
     expect(res.diags.map(render)).toEqual([]);
     expect(res.sources.length).toBe(2);
+  });
+
+  test("fix offsets must be integers within the source file", async () => {
+    for (const [beg, end] of [[NaN, 0], [0, NaN], [Infinity, Infinity], [0.5, 1], [0, 0.5], [-1, 0], [2, 1], [0, 1000000]]) {
+      const rule: LintRule = { id: "test/bad-offset", run: (cx) => [cx.diag({
+        message: "bad offset", fixes: [{ title: "bad offset", applicability: "safe",
+          edits: [{ spn: { file: cx.root.file, beg, end }, text: "X" }] }],
+      })] };
+      await expect(lint(userland, [rule])).rejects.toThrow("out of bounds");
+    }
+    expect(fs.readFileSync(userland, "utf8")).toBe(USERLAND);
   });
 
   test("Base is reused, its facts are left out, and it stays out of files that do not import it", async () => {
@@ -863,6 +825,61 @@ describe("options", () => {
     expect(findConfig(file)).toEqual({ rules: { "test/echo": { tabWidth: 8 } } });
     expect(await messages(undefined, file)).toEqual([["hint", '{"tabWidth":8,"breakLines":false}']]);
     expect(await messages({}, file)).toEqual([["hint", '{"tabWidth":2,"breakLines":false}']]);
+  });
+
+  for (const extension of ["js", "ts"]) {
+    test(`bend-lint.${extension} loads a named config export and relative imports`, async () => {
+      const top = path.join(DIR, "config_" + extension);
+      fs.mkdirSync(path.join(top, "nested"), { recursive: true });
+      fs.writeFileSync(path.join(top, "width.ts"), "export const width: number = 8;");
+      fs.writeFileSync(path.join(top, "bend-lint." + extension),
+        'import { width } from "./width.ts"; export const config = { rules: { "test/echo": { tabWidth: width, severity: "warning" } } };');
+      const file = path.join(top, "nested", "file.bend");
+      fs.writeFileSync(file, USERLAND);
+      expect(findConfig(file)).toEqual({ rules: { "test/echo": { tabWidth: 8, severity: "warning" } } });
+      expect(await messages(undefined, file)).toEqual([["warning", '{"tabWidth":8,"breakLines":false}']]);
+      expect(await messages({}, file)).toEqual([["hint", '{"tabWidth":2,"breakLines":false}']]);
+    });
+  }
+
+  test("nearest config wins; JSON precedes JS, then TS in the same directory", () => {
+    const configs = [
+      ["bend-lint.ts", 'export const config = { rules: { "test/echo": { tabWidth: 6 } } };', { tabWidth: 6 }],
+      ["bend-lint.js", 'export const config = { rules: { "test/echo": { tabWidth: 8 } } };', { tabWidth: 8 }],
+      ["bend-lint.json", '{"rules":{"test/echo":"off"}}', "off"],
+    ] as const;
+    for (let count = 1; count <= configs.length; count++) {
+      const top = path.join(DIR, "config_precedence_" + count);
+      const child = path.join(top, "child");
+      fs.mkdirSync(child, { recursive: true });
+      fs.writeFileSync(path.join(top, "bend-lint.json"), '{"rules":{"test/echo":{"tabWidth":4}}}');
+      for (const [name, text] of configs.slice(0, count)) {
+        fs.writeFileSync(path.join(child, name), text);
+      }
+      expect(findConfig(path.join(child, "file.bend"))).toEqual({ rules: { "test/echo": configs[count - 1][2] } });
+    }
+  });
+
+  test("module configs require a named object export and preserve load errors", () => {
+    for (const extension of ["js", "ts"]) {
+      for (const [name, text, error] of [
+        ["default", "export default {};", /must export a named `config` object/],
+        ["missing", "export const rules = {};", /must export a named `config` object/],
+        ["null", "export const config = null;", /`config` must be an object/],
+        ["array", "export const config = [];", /`config` must be an object/],
+        ["function", "export const config = () => ({});", /`config` must be an object/],
+        ["throws", 'throw new Error("config exploded");', /config exploded/],
+      ] as const) {
+        const file = fixture(`config_${name}.${extension}`, text);
+        expect(() => readConfig(file)).toThrow(error);
+        expect(() => readConfig(file)).toThrow(file);
+      }
+    }
+  });
+
+  test("module configs use the same rule option validation as JSON", async () => {
+    const file = fixture("invalid_options.ts", 'export const config = { rules: { "test/echo": { tabWidth: "4" } } };');
+    await expect(messages(readConfig(file))).rejects.toThrow(/tabWidth must be a number/);
   });
 
   test("a Bend rule reads its options with defaults", async () => {
@@ -963,33 +980,6 @@ describe("rules", () => {
     expect(fs.readFileSync(file, "utf8")).toBe(ERASURE);
   });
 
-  test("format: strings, characters, comments, operators and CRLF stay whole", () => {
-    const source = String.raw`a= "x,y=z#text\"still,string" # comment,a=b` + "\r\n"
-      + String.raw`b= '='` + "\r\n" + "c= ','\r\nd= '#'\r\n" + String.raw`e= '\''` + "\r\n"
-      + "f(a,\r\n  b)\r\nx==y\r\nx=>y\r\nx!=y\r\nx<=y\r\nx>=y\r\nf(a,)\r\n";
-    const file: SourceFile = { str: source, ns: "", al: {}, path: "<lexical>" };
-    const diags = spacingEdits(file).map((edit): Diag =>
-      ({ code: spacing.id, severity: "hint", message: "", fixes: [{ title: "", applicability: "safe", edits: [edit] }] }));
-    const formatted = applyFixes(file, diags).text;
-    expect(formatted).toBe(source.replace(/^([abcde])=/gm, "$1 ="));
-    expect(tokens(formatted).map((t) => t.text)).toEqual(tokens(source).map((t) => t.text));
-    expect(applyFixes(file, [diags[0], diags[0]])).toEqual({ text: applyFixes(file, [diags[0]]).text, skipped: 0 });
-  });
-
-  test("format: one rule gives editor findings and formatter edits", async () => {
-    const res = await lint(fixture("format.bend", FORMAT), [spacing]);
-    expect(res.facts).toBeUndefined();
-    expect(res.diags.length).toBe(8);
-    const formatted = applyFixes(root(res.sources).file, res.diags).text;
-    for (const line of ["def choose(x: Sample, y: Sample)", "a : Sample = SampleValue{} # preserve,this=comment",
-      "b : Sample = SampleValue{}", "f : Sample -> Sample = y=>y", "f(choose(a, b))"]) {
-      expect(formatted).toContain(line);
-    }
-    expect(tokens(formatted).map((t) => t.text)).toEqual(tokens(FORMAT).map((t) => t.text));
-    const after = await lint(fixture("format_fixed.bend", formatted), [spacing]);
-    expect(after.diags).toEqual([]);
-    expect(bodies(after.book)).toEqual(bodies(res.book));
-  });
 });
 
 describe("drift: the copy of book_read agrees with bend's own tests", () => {
@@ -1020,6 +1010,22 @@ describe("rules written in Bend", () => {
     const res = await lint(userland, [rule, rule]);
     expect(res.diags.map((d) => d.message)).toEqual(Array(2).fill("x: Alias = N (same as its binder), text x, demanded once, uses x once"));
     expect(res.diags.every((d) => d.spn?.file === root(res.sources).file)).toBe(true);
+  });
+
+  test("Bend fixes reject out-of-bounds code-point offsets instead of clamping them", async () => {
+    for (const source of [USERLAND, "# 😀\n" + USERLAND]) {
+      const end = [...source].length + 1;
+      const code = COMMA_BEND.replace("Lint.Span{path, at, at}", "Lint.Span{path, at, " + end + "}");
+      const rule = await bendRule(fixture("bad_offset_rule.bend", code));
+      const file = fixture("bad_offset_input.bend", source);
+      await expect(lint(file, [rule])).rejects.toThrow('fix "Insert space" has an edit out of bounds');
+      expect(fs.readFileSync(file, "utf8")).toBe(source);
+      const diagnosticOnly = code.replace('[Lint.Fix{"Insert space", Lint.Safe{}, [Lint.Edit{span, " "}]}]', "[]");
+      const diagnosticRule = await bendRule(fixture("clamped_diagnostic_rule.bend", diagnosticOnly));
+      const result = await lint(file, [diagnosticRule]);
+      expect(result.ok).toBe(true);
+      expect(result.diags[0].spn!.end).toBe(source.length);
+    }
   });
 });
 
@@ -1074,30 +1080,6 @@ describe("fact filters", () => {
     expect(rule.facts).toEqual({ scope: "program", kinds: ["Var"], defs: [], names: [] });
     const many = fixture("many_vars.bend", "import Base\n\n" + Array.from({ length: 5000 }, (_, i) => "def f" + i + "(x: U32) -> U32:\n  x\n").join("\n"));
     expect((await lint(many, [rule])).diags.map((d) => d.message)).toEqual(["5000"]);
-  });
-});
-
-describe("the rules in rules/", () => {
-  test("style/trailing-whitespace finds spaces and tabs, and its fix keeps the line breaks", async () => {
-    const res = await lint(fixture("trailing.bend", STYLE), trailing);
-    const found = res.diags.map((d) => d.spn!.file.str.slice(d.spn!.beg, d.spn!.end));
-    expect([res.ok, found]).toEqual([true, ["  ", "\t"]]);
-    expect(res.diags.every((d) => d.code === "style/trailing-whitespace" && d.fixes[0].applicability === "safe")).toBe(true);
-    expect(applyFixes(root(res.sources).file, res.diags).text).toBe(STYLE.replace("U32:  \r\n", "U32:\r\n").replace("1\t", "1"));
-  });
-
-  test("style/line-length finds lines past max, without the \\r, and covers the overflow", async () => {
-    const file = fixture("long.bend", STYLE);
-    const res = await lint(file, [await bendRule(LINE_LENGTH)]);
-    const over = (d: Diag) => d.spn!.file.str.slice(d.spn!.beg, d.spn!.end);
-    expect(res.diags.map((d) => [d.code, d.severity, d.message, over(d)])).toEqual([
-      ["style/line-length", "warning", "Keep the line to 100 characters; it has 101.", "y"],
-      ["style/line-length", "warning", "Keep the line to 100 characters; it has 103.", "zzz"],
-    ]);
-    const narrow = await lint(file, [await bendRule(LINE_LENGTH)], { config: { rules: { "style/line-length": { max: 18 } } } });
-    expect(narrow.diags.map(over)).toEqual(["  ", "x".repeat(82), "y".repeat(83), "z".repeat(85)]);
-    const off = await lint(file, [await bendRule(LINE_LENGTH)], { config: { rules: { "style/line-length": "off" } } });
-    expect(off.diags).toEqual([]);
   });
 });
 
@@ -1175,11 +1157,17 @@ describe("cli", () => {
     expect(run(input, "--bend", DIR)).toMatchObject({ status: 2, stderr: expect.stringContaining("no bend2 at") });
   });
 
-  test("--config gives the config", () => {
+  test("--config selects JSON, JS or TS explicitly", () => {
     const echoes = module("echo.js", `[{ id: "test/echo", options: { tabWidth: 2 }, run: (cx) => [cx.diag({ message: "w" + cx.options.tabWidth })] }]`);
-    const config = fixture("cli_config.json", JSON.stringify({ rules: { "test/echo": { tabWidth: 6, severity: "hint" } } }));
-    const out = run(input, "--rules", echoes, "--config", config, "--json");
-    expect(JSON.parse(out.stdout).findings.map((f: { severity: string; message: string }) => [f.severity, f.message])).toEqual([["hint", "w6"]]);
+    const settings = JSON.stringify({ rules: { "test/echo": { tabWidth: 6, severity: "hint" } } });
+    for (const extension of ["json", "js", "ts"]) {
+      const config = fixture("cli_config." + extension, extension === "json" ? settings : "export const config = " + settings + ";");
+      const out = run(input, "--rules", echoes, "--config", config, "--json");
+      expect(out.status).toBe(0);
+      expect(JSON.parse(out.stdout).findings.map((f: { severity: string; message: string }) => [f.severity, f.message])).toEqual([["hint", "w6"]]);
+    }
+    const invalid = fixture("cli_default_config.ts", "export default {};");
+    expect(run(input, "--config", invalid)).toMatchObject({ status: 2, stderr: expect.stringContaining("must export a named `config` object") });
   });
 
   test("--fix writes only the linted file, and prints findings when fixes clash", () => {

@@ -1,144 +1,239 @@
 # bend-lint
 
-bend-lint checks a Bend 2 file with bend's own checker, then runs your rules
-on it. A rule reads the source text, the checker's result for each term
-(type, scope, uses), or both, and returns findings with fixes. Bend itself
-does not change. It needs Bun 1.2 or newer.
+A linter and formatter for Bend 2.
 
-Tools will eventually live in their own repos, so bend-lint is maintained
-separately at [github.com/MattCozendey/bend-lint](https://github.com/MattCozendey/bend-lint).
+It runs your file through Bend's type checker first. If that passes, it runs
+whatever rules you loaded. Rules are TypeScript or Bend files, and they can see
+the source text, the types, variable scope and how often each variable is used.
+A rule can also suggest a fix.
 
-## Run
+bend-lint is also maintained at
+[github.com/MattCozendey/bend-lint](https://github.com/MattCozendey/bend-lint).
 
-From the repo root:
+## Setup
+
+You need Bun 1.2 or newer. Run everything from the repo root. Type checking
+needs `bun install` in `tools/bend-lint` first.
+
+## Running it
 
 ```sh
-bun tools/bend-lint/src/lint.ts file.bend [--rules rules.ts]... [--rules rule.bend]... [--config bend-lint.json] [--fix | --fix-suggested | --fix-dangerously] [--json] [--bend <dir>]
+bun tools/bend-lint/src/lint.ts file.bend --rules tools/bend-lint/rules/format.ts
 ```
 
-Findings print in bend's error layout, with a severity, a code, and each fix
-as a diff. `--fix` writes the `safe` fixes to the linted file only, never
-to its imports (a BendHub package under `~/.bend/lib` is never edited). Equal
-edits merge; a fix that clashes with an earlier one is skipped and counted,
-and another run applies it. `--fix-suggested` also writes the `suggested`
-fixes, which may change behavior; `--fix-dangerously` writes every fix, even
-one that may break code. Exit codes: 0 no error, 1 an error (the
-file does not check, or a rule found an `error`), 2 bad usage or a tool
-failure. "Does not check" means bend's checker rejects it: unlike
-`bend --check-only`, bend-lint does not fail a file for relying on
-`@unsafe` or foreign code.
+Nothing runs by default. You have to pass `--rules`, and you can pass it more
+than once:
 
-`--json` prints only this, for other tools (ranges as in LSP: 0-based,
-UTF-16):
+```sh
+bun tools/bend-lint/src/lint.ts file.bend --rules tools/bend-lint/rules/format.ts --rules tools/bend-lint/rules/file_length.bend
+```
+
+Add `--fix` to write the fixes back to the file.
+
+```
+bun tools/bend-lint/src/lint.ts <file.bend> [--rules <file>]... [--config <file>]
+                [--fix | --fix-suggested | --fix-dangerously]
+                [--json] [--bend <dir>]
+```
+
+Every fix is marked `safe`, `suggested` or `dangerous`:
+
+- `--fix` applies the safe ones. They shouldn't change what the program does.
+- `--fix-suggested` adds the suggested ones, which might.
+- `--fix-dangerously` applies everything. Expect breakage sometimes.
+
+Fixes go into the file you passed in, and only if the run had no errors. When
+two fixes overlap, the later one is skipped. Run it again to get it.
+
+Exit code is 0 if there were no errors (warnings don't count), 1 for a checker
+or rule error, and 2 for bad arguments or a crash.
+
+`--json` prints the findings as JSON. The format is in
+[JSON output](#json-output).
+
+## Where Bend comes from
+
+bend-lint loads Bend's TypeScript source and patches it in memory. To find that
+source it tries, in order:
+
+1. `--bend <dir>` or `$BEND_DIR`. A Bend checkout or its `bend2` folder both work.
+2. The Bend checkout around it. This is the case in `tools/bend-lint`.
+3. A release downloaded from GitHub. It matches `bend version` if Bend is on
+   your PATH, otherwise it takes the latest.
+
+Downloads are cached in `~/.cache/bend-lint/`. `XDG_CACHE_HOME` moves that, and
+on Windows it's under `LOCALAPPDATA`. With no network it falls back to the
+newest cached release.
+
+## Rules included
+
+`format/layout` (`tools/bend-lint/rules/format.ts`) is the formatter. It fixes indentation,
+spacing, comments, blank lines between declarations, wrapping and the final
+newline. Options: `tabWidth` (default 2) and `wrapAtWidth` (default 100). Both
+must be positive integers, or `"never"` for `wrapAtWidth`. The width is a target;
+long literals and comments can run past it. Its fix is `safe`.
+
+Declaration order and literals stay as written. The only comment change is a
+space added after `#` when it's missing. Before offering a fix it parses
+its own output and compares that to the original program. If they differ you
+get a warning and no fix.
+
+`style/file-length` (`tools/bend-lint/rules/file_length.bend`) warns when the file has more than
+`maxLines` lines (default 500). Imports don't count. No fix.
+
+## Config
+
+Put a `bend-lint.json`, `bend-lint.js` or `bend-lint.ts` next to the file you're
+linting or in any parent folder, or point at one with `--config`. The closest
+folder wins. Inside a folder, JSON beats JS beats TS. Only one file is read.
 
 ```json
-{ "ok": true, "findings": [{ "code": "style/comma-space", "severity": "warning", "message": "...",
-  "def": "main", "path": "/abs/file.bend", "range": { "start": { "line": 25, "character": 13 }, "end": {...} },
-  "fixes": [{ "title": "...", "applicability": "safe", "edits": [{ "path": "...", "range": {...}, "text": " " }] }] }] }
-```
-
-`--bend <dir>` (or `$BEND_DIR`) picks the bend to load: a bend checkout, or
-its `bend2` folder. Inside the bend repo, its own bend is the default.
-Elsewhere, bend-lint downloads bend's source (see
-[Outside the bend repo](#outside-the-bend-repo)).
-
-## Rules in TypeScript
-
-A rule module exports `rules`. A rule has an `id` (`namespace/name`, also
-the code of its findings), an optional `facts` (see [Facts](#facts)), and a
-`run` that may be `async`:
-
-```ts
-import type { LintRule } from "./tools/bend-lint/src/lint.ts";
-
-export const rules: LintRule[] = [{
-  id: "style/comma-space",
-  run: (cx) => [...cx.root.text.matchAll(/,(?=\w)/g)].map((m) => {
-    const spn = { file: cx.root.file, beg: m.index! + 1, end: m.index! + 1 };
-    return cx.diag({
-      message: "Add a space after the comma.", severity: "warning", spn,
-      fixes: [{ title: "Insert space", applicability: "safe", edits: [{ spn, text: " " }] }],
-    });
-  }),
-}, {
-  id: "demo/var-types",
-  facts: { kinds: ["Var"] },
-  run: (cx) => [...cx.facts!.values()]
-    .filter((f) => !f.inst)
-    .map((f) => cx.diag({ message: "type: " + cx.show(f, f.ty), severity: "hint", spn: f.spn, fact: f })),
-}];
-```
-
-| `cx` | |
-|---|---|
-| `root`, `sources` | the linted file and its imports, as on disk |
-| `facts` | the facts the rule asked for: per checked term, its type, scope, depth, def, quantity, uses, and span on disk |
-| `prior` | the findings of earlier rules |
-| `span(s)` | a bend span (e.g. `term.s`), moved to the file on disk |
-| `walk`, `binder`, `show`, `same`, `normal`, `uses` | helpers over bend's terms |
-| `diag({...})` | a finding; the default severity is `warning` |
-| `Bend` | the bend module; use it, do not import `bend2/bend.ts` |
-
-Severities: `error` (stops the run), `warning`, `information`, `hint`. Fix
-levels: `safe` keeps behavior, `suggested` may change it, `dangerous` may
-break code.
-
-Rules run in order; none runs when the file does not check. A file with a
-line exactly `import Base` (as `bend --checkup` reads it) reuses a Base
-checked once per process.
-
-## Facts
-
-A fact is what the checker found for one term. A rule gets facts only if it
-asks with `facts`: `true` for all of the linted file's, or a filter. A fact
-must match each list given; an absent or empty list matches all:
-
-```ts
-facts: {
-  scope: "file",     // "file" (default): the linted file; "program": its imports too, never Base
-  kinds: ["Var"],    // the term's kind, annotations stripped: Var, Ref, App, Lam, Lit, ...
-  defs: ["main"],    // the def whose body holds the term; a template's instances count as it
-  names: ["foo"],    // the name a Var or Ref points to
+{
+  "rules": {
+    "format/layout": { "tabWidth": 2, "wrapAtWidth": 100 },
+    "style/file-length": { "maxLines": 400, "severity": "warning" }
+  }
 }
 ```
 
-bend-lint keeps a fact only if some rule asks for it, and drops the rest as
-the checker gives them, so a narrow filter costs little. Each rule gets only
-its own. On a 3,200-proof file (1.27M facts) peak memory was 0.77 GB with no
-facts, 2.6 GB with all, 1.5 GB with `kinds: ["Var"]`. A template body is
-checked as written and again per instance (`generic~0`) at the same spans;
-`fact.inst` marks the instances.
+JS and TS configs export the same thing as a named `config`.
 
-## Options
-
-A rule may declare options with their defaults (`options: { tabWidth: 2,
-breakLines: false }`) and read them from `cx.options`. A `bend-lint.json` in
-the file's folder or above it (or the one `--config` gives) sets them, and
-can also turn a rule off or change its severity:
-
-```json
-{ "rules": {
-  "format/indent": { "tabWidth": 4, "breakLines": true },
-  "style/comma-space": "off",
-  "demo/var-types": { "severity": "hint" }
-} }
+```ts
+export const config = {
+  rules: {
+    "style/file-length": { maxLines: 400 },
+  },
+};
 ```
 
-An unknown option, or a value whose type differs from its default, stops
-bend-lint with an error. From code: `lint(file, rules, { config })`.
+Rules still come from `--rules`; config sets their options and severity.
+`"off"` turns a rule off. Severities are `error`, `warning`, `information` and `hint`, and an
+`error` stops the rules after it.
 
-## Rules in Bend
+If a rule declares defaults for its options, unknown keys and wrong types are
+rejected. Otherwise the rule checks its own options.
 
-A `.bend` rule imports `src/lint.bend`, which lists the contract:
+## What you get back
+
+If Bend's checker rejects the file you get a `bend/check` error and no rules
+run.
+
+## Writing a rule
+
+A rule is a TypeScript or Bend file. Save one under `rules/`, or anywhere, and load it with `--rules`.
+
+### TypeScript rules
+
+A module exports `rules: LintRule[]`. A rule has an `id` (`namespace/name`, it
+becomes the finding's `code`) and `run(cx, signal)`, which returns diagnostics
+and can be async. It can also have `facts` and `options`. If `run` throws or the
+signal aborts, the error goes to whoever called the library.
+
+Build findings with `cx.diag()`. Severity defaults to `warning`. Rules run in
+order and see earlier findings in `cx.prior`. The first `error` ends the run:
+the rest of that rule's findings and every later rule are dropped.
+
+What's on `cx`:
+
+- `root`, `sources`: the linted file and its imports, text as on disk
+- `book`: the checked Bend program
+- `options`: defaults merged with config
+- `facts`: just the facts this rule asked for
+- `prior`: findings from earlier rules
+- `span(s)`: Bend span to a file on disk
+- `walk(tm)`: walk Bend terms
+- `binder(fact, v)`: find a variable's binder
+- `show`, `same`, `normal`: print, compare and normalize types in a fact's scope
+- `uses(fact)`: used variables with their quantities
+- `diag(init)`: make a diagnostic with this rule's ID
+- `Bend`: the loaded Bend module. Use it instead of importing `bend2/bend.ts`
+
+The exported types in [src/lint.ts](src/lint.ts) are the full contract.
+
+#### Fixes
+
+A fix is a title, an applicability (`safe`, `suggested`, `dangerous`) and edits.
+An edit swaps a span for text. A zero-length span inserts. Offsets are integer
+UTF-16 units inside the source, and edits in one fix can't overlap.
+
+```ts
+const spn = { file: cx.root.file, beg: 0, end: 1 };
+return [cx.diag({
+  message: "Replace the first character with a space.",
+  spn,
+  fixes: [{
+    title: "Replace character",
+    applicability: "suggested",
+    edits: [{ spn, text: " " }],
+  }],
+})];
+```
+
+(Needs a nonempty file.)
+
+#### Facts
+
+A fact is one checked term with its type (`ty`), scope (`ctx`), depth (`dep`),
+enclosing definition (`def`), demanded quantity (`qt`), variable uses (`us`),
+book (`bok`) and source span (`spn`, when there is one). The term itself is `tm`.
+
+Ask for them with `facts: true` (everything in the linted file) or a filter:
+
+```ts
+facts: {
+  scope: "file",   // default. "program" adds imports, not Base
+  kinds: ["Var"],  // term kind without annotations: Var, Ref, App, ...
+  defs: ["main"],  // enclosing definition, instances count as their template
+  names: ["foo"],  // name used by a Var or Ref
+}
+```
+
+All the lists you give must match. Leave one out or empty and it matches
+everything. Keep filters narrow, since memory goes up with the number of facts.
+
+Template bodies get checked as written and again per instance (`generic~0`),
+sometimes at the same span. `fact.inst` marks instances. Skip them to avoid
+double reports:
+
+```ts
+import type { LintRule } from "../src/lint.ts";
+
+export const rules: LintRule[] = [{
+  id: "demo/var-types",
+  facts: { kinds: ["Var"] },
+  run: (cx) => [...cx.facts!.values()]
+    .filter((fact) => !fact.inst)
+    .map((fact) => cx.diag({
+      message: "type: " + cx.show(fact, fact.ty),
+      severity: "hint",
+      spn: fact.spn,
+      fact,
+    })),
+}];
+```
+
+(Saved under `rules/`.)
+
+#### Options
+
+`options: { tabWidth: 2, breakLines: false }` sets defaults. They also set which
+keys are allowed and their types (`number`, `boolean`, `string`). Unknown keys
+and wrong types are errors. A rule with no defaults gets the raw options and has
+to check them itself.
+
+### Bend
+
+A `.bend` rule imports [src/lint.bend](src/lint.bend). Here's one that reports
+nothing, saved under `rules/`:
 
 ```python
 import Base
-import ../tools/bend-lint/src/lint.bend as Lint
+import ../src/lint.bend as Lint
 
 def id() -> String:
   "demo/nothing"
 
-def facts() -> Lint.Want:      # Lint.NoFacts{}, or Lint.Want{scope, kinds, defs, names}
+def facts() -> Lint.Want:
   Lint.NoFacts{}
 
 def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
@@ -148,10 +243,11 @@ def main() -> IO(Unit):
   Lint.serve(run)
 ```
 
-`input` holds the sources and the rule's options. A rule that wants facts
-returns a filter, as in [Facts](#facts), with empty lists for "all":
-`Lint.Want{Lint.File{}, ["Var"], [], []}`. It then reads them one at a time,
-so a big file never becomes one big list:
+`input` has the sources and options. To get facts, return a filter from
+`facts()`, e.g. `Lint.Want{Lint.File{}, ["Var"], [], []}`. Empty lists match
+everything, and `Lint.Program{}` adds imports (not Base).
+
+Read facts one by one with `next_fact`, or fold:
 
 ```python
 def step(found: List<&2, Lint.Diag>, +f: Lint.Fact) -> IO(List<&2, Lint.Diag>):
@@ -161,91 +257,129 @@ def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
   Lint.fold_facts(~List<&2, Lint.Diag>, ~step, [])
 ```
 
-`fold_facts` takes `step` as a template (`~step`), and `step` takes its fact
-as `+f`. Read an option with `Lint.option_number`, `option_flag` or
-`option_text`, each with a default; numbers are whole (U32). A rule asks about
-a fact with effects (`Lint.view`, `type_of`, `binder`, `same`, `show`,
-`normal`, `uses`, `text`) and may use Base's effects too. Offsets count
-characters. bend-lint compiles a rule once; each run then takes about 10 ms.
-A rule runs on bend's JS runtime, where only tail calls run as loops: walk
-a long text or list with a tail call, or the stack overflows.
-`COMMA_BEND`, `TYPES_BEND` and `COUNT_BEND` in `test/lint.test.ts` are
-complete examples.
+`step` goes in as a template (`~step`) and takes the fact as `+f`. Effects:
+`view`, `type_of`, `binder`, `same`, `show`, `normal`, `uses`, `text`, plus
+Base's. Options come from `Lint.option_number`, `option_flag` and `option_text`,
+each with a default. Numbers are whole, 0 to 4294967295 (U32).
 
-## Rules shipped here
+Spans count Unicode code points here. TypeScript counts UTF-16 units.
 
-`rules/` holds ready rules, one per file. None runs unless you pass it with
-`--rules`, and `bend-lint.json` can turn one `"off"`:
+The rule is compiled once and runs on Bend's JavaScript runtime. Use tail
+recursion over long text or lists to stay inside the stack. Streaming facts
+saves building a list of all of them.
 
-| File | Rule | What | Fix |
-| --- | --- | --- | --- |
-| `trailing_whitespace.ts` | `style/trailing-whitespace` | spaces or tabs at the end of a line | safe: delete them |
-| `line_length.bend` | `style/line-length` | a line longer than `max` characters (default 100) | none |
+For examples see [file_length.bend](rules/file_length.bend) and
+[shared.bend](rules/shared.bend). `COMMA_BEND`, `TYPES_BEND` and `COUNT_BEND` in
+[src/lint.test.ts](src/lint.test.ts) cover fixes and facts.
 
-```sh
-bun tools/bend-lint/src/lint.ts file.bend --rules tools/bend-lint/rules/trailing_whitespace.ts --rules tools/bend-lint/rules/line_length.bend
-```
+### As a library
 
-To add a rule, add one file: a `.ts` file that exports `rules`, or a `.bend`
-file as above. Helpers used by more than one rule go in `rules/shared.ts`
-or `rules/shared.bend`.
-
-## From code
+From a file in `tools/bend-lint`:
 
 ```ts
-import { applyFixes, bendRule, lint, render } from "./tools/bend-lint/src/lint.ts";
+import { applyFixes, bendRule, lint, render } from "./src/lint.ts";
+import { rules } from "./rules/format.ts";
 
-const res = await lint("file.bend", [...rules, await bendRule("rule.bend")]);
-console.log(res.ok, res.diags.map(render));
-const { text, skipped } = applyFixes(res.sources.find((s) => s.root)!.file, res.diags);
+const result = await lint("example.bend", [
+  ...rules,
+  await bendRule("rules/file_length.bend"),
+]);
+console.log(result.ok, result.diags.map(render));
+
+if (result.ok) {
+  const root = result.sources.find((source) => source.root)!;
+  const { text, skipped } = applyFixes(root.file, result.diags);
+  // text is the edited source; saving it is up to you
+  console.log(text, skipped);
+}
 ```
 
-A library picks its bend with `$BEND_DIR`, set before it imports bend-lint.
-`position(span)` gives the LSP range of a span.
+Set `BEND_DIR` before importing bend-lint to pick a Bend checkout. Import
+bend-lint before you load Bend yourself, so the patching happens first. `lint`
+takes `{ config, signal }` as a third argument. Without `config` it looks next to
+the file. `position(span)` gives an LSP range.
+
+`findConfig(file)` checks the file's directory, then each parent, for
+`bend-lint.json`, `.js` or `.ts`. Closest directory wins, then JSON, JS, TS.
+`readConfig(file)` loads a path you give it. Both are synchronous. JS and TS
+configs export a named `config` object and go through Bun's loader, cache
+included. They can import relative files. Rule settings and option validation
+are the same for all three formats.
+
+### JSON output
+
+`--json` prints one JSON object on stdout. Status and failure messages can still
+show up on stderr. A finding with a fix:
+
+```json
+{
+  "ok": true,
+  "findings": [{
+    "code": "style/example",
+    "severity": "warning",
+    "message": "Replace this character.",
+    "def": "main",
+    "path": "/abs/example.bend",
+    "range": {
+      "start": { "line": 2, "character": 0 },
+      "end": { "line": 2, "character": 1 }
+    },
+    "fixes": [{
+      "title": "Replace character",
+      "applicability": "suggested",
+      "edits": [{
+        "path": "/abs/example.bend",
+        "range": {
+          "start": { "line": 2, "character": 0 },
+          "end": { "line": 2, "character": 1 }
+        },
+        "text": " "
+      }]
+    }]
+  }]
+}
+```
+
+`def`, `path` and `range` are left out when there's nothing to put. Lines start
+at 0, characters are UTF-16. With a fix flag, findings describe the source as it
+was before the fixes.
 
 ## How it works
 
-- `src/lint.ts`: the library and the CLI.
-- `src/patch.ts`: what bend-lint changes in bend2 as Bun loads it; the files
-  on disk never change. bend.ts's `term_infer` and `term_check` are renamed
-  and wrapped by typed functions in `patch.ts` that record what they
-  return, and bend.ts gets an `fs` and `path` whose real paths use `/` (so
-  imports resolve on Windows; on POSIX they act as node's). comp.ts exports
-  `RUNTIME_MAIN` and `js_sat`, so a Bend rule is compiled once.
-- `src/lint.bend`, `src/lint.js`: the contract for Bend rules, and its
-  effects.
+### Patching
 
-bend-lint is not pinned to a bend version; it checks what it depends on
-instead. Each text edit must match exactly once, and comp.ts must declare
-what it exports. The wrappers pass every argument through, so bend computes
-what it would without them; `tsc` checks them against bend's signatures,
-and at load they must take the expected number of arguments. A self-check
-then checks every field recorded for `x` in `def id(x: N) -> N: x`. Any
-mismatch stops bend-lint with a `DriftError`, never a wrong result. The
-tests catch subtler changes.
+Bun patches Bend's modules while they load. `term_infer` and `term_check` are
+renamed and wrapped to record what they return. The wrappers pass every argument
+on. The `fs` and `path` adapters turn real paths into `/` paths so imports
+resolve on Windows. `comp.ts` also exports `RUNTIME_MAIN` and `js_sat`, which
+compiling Bend rules needs.
 
-## Outside the bend repo
+If a file has a line that's exactly `import Base` (what `bend --checkup` reads),
+it reuses one Base, checked once per process. Base facts are left out of rule
+requests.
 
-bend-lint loads bend's source, not the `bend` program. With no `--bend`
-or `$BEND_DIR`, and no bend repo around it, it downloads the source of one
-bend release from GitHub: the version of the `bend` on your PATH (`bend
-version`), else the newest release (asked once a day). It takes only
-`bend2/bend.ts`, `comp.ts`, `base.bend` and the `effs/` files Base imports
-(about 0.6 MB), and keeps them in `~/.cache/bend-lint/<version>/`
-(`$XDG_CACHE_HOME`, or `%LOCALAPPDATA%` on Windows). Later runs use the
-cache, with no network; offline, it uses the newest release cached. If a
-release changes what `src/patch.ts` edits, bend-lint stops with a
-DriftError, as it does for a checkout. For `tsc`, run `bun install` (for `@types/bun`) and point the
-`bend2/*` path in `tsconfig.json` at that checkout's `bend2/`. The drift
-tests read the checkout's own `tests/`.
+### Staying compatible
 
-## Test
+We don't pin a Bend version. Instead, on load, for checkouts and downloads
+alike:
+
+- every source edit has to match exactly once, and the compiler exports we need
+  have to be declared
+- wrapper signatures are checked against Bend's at type-check time, and argument
+  counts at runtime
+- a self-check looks at the type, depth, scope, quantity, uses and span recorded
+  for `x` in `def id(x: N) -> N: x`
+
+Any mismatch throws `DriftError` and loading stops. The tests add more, including
+drift against the chosen checkout's own tests.
+
+## Tests
 
 ```sh
 bun test tools/bend-lint
 bunx tsc -p tools/bend-lint/tsconfig.json --noEmit
 ```
 
-Bun does not check types, so run `tsc` too. It reports two errors in
-bend2/bend.ts (lines 2040 and 3771), which are on main too; bend-lint has
-none.
+Bun doesn't type check, so run `tsc` as well (`bun install` in `tools/bend-lint` provides `@types/bun`).
+`tsc` reports two errors in `bend2/bend.ts` (lines 2040 and 3771), which are in
+Bend itself.

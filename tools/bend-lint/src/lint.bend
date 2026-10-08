@@ -91,14 +91,14 @@ type View is Data:
   View{owner: String, inst: Bool, kind: String, name: String, quantity: Quantity, span: Maybe<&2, Span>, inner: Maybe<&2, Span>}
 
 def input() -> IO(Input):
-  import "./lint.js"
+  import "./effects.js"
 
 def report(diags: List<&2, Diag>) -> IO(Unit):
-  import "./lint.js"
+  import "./effects.js"
 
 # The next fact the rule asked for, or None{} when none are left.
 def next_fact() -> IO(Maybe<&2, Fact>):
-  import "./lint.js"
+  import "./effects.js"
 
 # One step of fold_facts: stop at None{}, else run step and go on.
 def fold_next(~A: Type, ~step: A -> @+f: Fact -> IO(A), m: Maybe<&2, Fact>, acc: A, again: A -> IO(A)) -> IO(A):
@@ -118,35 +118,35 @@ def fold_facts(~A: Type, ~step: A -> @+f: Fact -> IO(A), acc: A) -> IO(A):
     fold_next(~A, ~step, m, acc, a => fold_facts(~A, ~step, a))
 
 def view(fact: Fact) -> IO(View):
-  import "./lint.js"
+  import "./effects.js"
 
 # The type the fact's term was checked against, or inferred.
 def type_of(fact: Fact) -> IO(Term):
-  import "./lint.js"
+  import "./effects.js"
 
 # The type of the binder a Var fact refers to.
 def binder(fact: Fact) -> IO(Maybe<&2, Term>):
-  import "./lint.js"
+  import "./effects.js"
 
 # Whether two types are equal, as the checker compares them in the fact's
 # scope.
 def same(fact: Fact, a: Term, b: Term) -> IO(Bool):
-  import "./lint.js"
+  import "./effects.js"
 
 def show(fact: Fact, t: Term) -> IO(String):
-  import "./lint.js"
+  import "./effects.js"
 
 # The normal form of a type, in the fact's scope.
 def normal(fact: Fact, t: Term) -> IO(Term):
-  import "./lint.js"
+  import "./effects.js"
 
 # The variables the fact's term uses, each with how many times.
 def uses(fact: Fact) -> IO(List<&2, Use>):
-  import "./lint.js"
+  import "./effects.js"
 
 # The text under a span, in the file on disk.
 def text(span: Span) -> IO(String):
-  import "./lint.js"
+  import "./effects.js"
 
 def pick(hit: Bool, v: Value, later: Maybe<&2, Value>) -> Maybe<&2, Value>:
   match hit:
