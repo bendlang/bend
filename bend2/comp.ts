@@ -163,7 +163,7 @@ const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " largest immediate 2^48-1|*|memory fault (machine stack overflow?)|an"
   + " array past the deepest block class 31|a value has more than 2^24-1 live"
   + " copies: keep fewer alive at once, or build it again for some of them"
-  + " (each build counts its own copies)").replaceAll("*",
+  + " (each build counts its own copies)|a Char outside the Unicode scalar range").replaceAll("*",
   "runtime fail-stop").split("|");
 
 // Operations
@@ -380,6 +380,19 @@ INLINE u64 nat_mul(Env e, u64 a, u64 b) {
   return nat_chk(e, b != 0 && a > NAT_IMM / b ? NAT_IMM + 1 : a * b);
 }
 
+INLINE u64 char_new(Env e, u32 code) {
+  if (code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) {
+#if DEVICE
+    err_post(e.mem, ERR_CHRS);
+#else
+    char msg[64];
+    snprintf(msg, sizeof(msg), "%u is not a Unicode scalar value", code);
+    err_fail(msg);
+#endif
+  }
+  return code;
+}
+
 #if DEVICE
 
 #define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
@@ -518,6 +531,27 @@ function char_new(code) {
     throw "bend: " + code + " is not a Unicode scalar value";
   }
   return String.fromCodePoint(code);
+}
+
+function string_host(s) {
+  if (typeof s !== "string") throw "bend: expected a String";
+  for (let i = 0; i < s.length; i++) {
+    const code = s.codePointAt(i);
+    if (code >= 0xD800 && code <= 0xDFFF) {
+      throw "bend: " + code + " is not a Unicode scalar value";
+    }
+    if (code > 0xFFFF) i++;
+  }
+  return s;
+}
+
+function char_host(s) {
+  string_host(s);
+  const code = s.codePointAt(0);
+  if (code === undefined || s.length !== (code > 0xFFFF ? 2 : 1)) {
+    throw "bend: expected one Unicode scalar Char";
+  }
+  return s;
 }
 `.slice(1),
 };
@@ -754,11 +788,17 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
     === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
 }
 
+function char_const(t: Of<"Ctr">): boolean {
+  const n = Bend.u32_from_term(t.x[0]);
+  return n !== null && n <= 0x10FFFF && (n < 0xD800 || n > 0xDFFF);
+}
+
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
     : s.$ === "Ctr" && (s.x.length === 0
-      || memo(FL.memo.ground, s, () => s.x.every(term_const)));
+      || memo(FL.memo.ground, s, () =>
+        (s.k !== "Chr" || char_const(s)) && s.x.every(term_const)));
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
@@ -2301,6 +2341,9 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   const lay = pos === BOX ? lay_node(x.k) : pos;
   const arms = Object.keys(lay.arms!);
   const vs = emit_each(sc, flds, lay.arms![x.k], tys());
+  if (adt.k === "Char" && !char_const(x)) {
+    vs[0] = val_new([`char_new(e, ${vs[0].ws[0]})`], W32);
+  }
   const ws = [...arms.length > 1 ? [String(arms.indexOf(x.k))] : [],
     ...vs.flatMap((f, j) => val_to(sc, f, lay.arms![x.k][j]).ws)];
   const v = val_new(lay.ks.map((_, j) => ws[j] ?? "0"), lay,
@@ -3127,7 +3170,7 @@ function js_def(sc: Scope, k: Name, def: Bend.Def): void {
 
 // A part with a converter of its own waits on one work stack, so no depth
 // grows the JS call stack; a Nat or function part converts on the spot.
-// Arrays stay in-place; ADT nodes are copied.
+// Arrays stay in-place; ADT nodes are copied; IO operations stay opaque.
 function js_marshal(A: HTerm | null, out: boolean): string {
   const t = ty_wnf(A);
   if (t?.$ === "All") {
@@ -3139,14 +3182,19 @@ function js_marshal(A: HTerm | null, out: boolean): string {
     return x + y === "" ? y : `((f) => (x) => ${y}(f(${x}(x))))`;
   }
   const seen = new Set<Name>();
-  const nat = (u: HTerm | null): boolean | null => u?.$ === "All"
-    ? [u.A, u.B(DUMMY)].some((v) => ty_holds(v, nat, seen))
-    : u?.$ !== "ADT" ? false : WORDS[u.k] ? u.k === "Nat" : null;
-  if (t?.$ !== "ADT" || !ty_holds(t, nat, seen)) {
+  const boundary = (u: HTerm | null): boolean | null => u?.$ === "All"
+    ? [u.A, u.B(DUMMY)].some((v) => ty_holds(v, boundary, seen))
+    : u?.$ !== "ADT" || u.k === "IO.OP" ? false
+    : u.k === "Nat" || u.k === "Char" || u.k === "String" ? true
+    : WORDS[u.k] ? false : null;
+  if (t?.$ !== "ADT" || !ty_holds(t, boundary, seen)) {
     return "";
   }
   if (t.k === "Nat") {
     return out ? "BigInt" : "nat_host";
+  }
+  if (t.k === "Char" || t.k === "String") {
+    return t.k === "Char" ? "char_host" : "string_host";
   }
   const key = (out ? "out " : "in ") + Bend.term_key(Bend.term_lower(t));
   return memo(FL.marsh, key, () => {
@@ -3466,6 +3514,7 @@ typedef u32 __attribute__((may_alias)) u32a;
 #define ERR_DEEP 7
 #define ERR_ARRS 8
 #define ERR_CNTS 9
+#define ERR_CHRS 10
 
 #define LINE      16
 #define PAGE_BITS 7
