@@ -1,6 +1,6 @@
-// why the kernel's live check fails on a .bendtt def: a port of
-// bendtt.lean's Term.tree / Term.live (affinity, call order, descent)
-// that names the failing binder or call. A diagnosis, not a verdict.
+// Approximate diagnostics for a .bendtt def's affinity, call order and descent.
+// Unlike the kernel's Term.pos / Term.tree this does not track split paths or
+// reconstruct matched constructors. Only the kernel supplies a verdict.
 //   bun gates/safe_diag.ts <file.bendtt> [def]
 import * as fs from "node:fs";
 
@@ -61,7 +61,11 @@ function term(vs: string[]): T {
   }
   if (c === "<") { eat("<"); while (!take(">")) { label(); take(","); } return { $: "Enu" }; }
   if (c === ".") { eat("."); return { $: "Lab", k: name() }; }
-  if (c === "%") { eat("%"); const e = term(vs); eat(":"); const n = name(); eat("=>"); const P = term([n, ...vs]); eat(";"); return { $: "Rwt", e, P, f: term(vs) }; }
+  if (c === "%") {
+    eat("%"); const e = term(vs); eat(":"); const n = name(); eat(",");
+    const h = name(); eat("=>"); const P = term([h, n, ...vs]); eat(";");
+    return { $: "Rwt", e, P, f: term(vs) };
+  }
   const k = name();
   const i = vs.indexOf(k);
   return i >= 0 ? { $: "Var", i } : { $: "Ref", k };
@@ -171,5 +175,7 @@ const ks = defs.map(([k]) => k);
 for (const [i, [k, v]] of defs.entries()) {
   if (process.argv[3] !== undefined && process.argv[3] !== k) continue;
   why.length = 0;
-  if (!tree({ ks, i, cs: [], ts: [], ns: [] }, [], v)) console.log(k + ": " + [...new Set(why)].join("; "));
+  if (!tree({ ks, i, cs: [], ts: [], ns: [] }, [], v)) {
+    console.log(k + ": approximate diagnostic (not a kernel verdict): " + [...new Set(why)].join("; "));
+  }
 }
