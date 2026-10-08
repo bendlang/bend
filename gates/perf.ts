@@ -81,7 +81,7 @@ const MARK = "@@B4";
 
 const CLOCK = "perl -MTime::HiRes=time -e 'print time'";
 
-const SHORT = 1;
+const SHORT = 2;
 
 // tm FILE CMD ARGS... runs CMD and writes its exit status, wall seconds and
 // maximum RSS in bytes to FILE.
@@ -103,6 +103,9 @@ int main(int argc, char** argv) {
   }
   clock_gettime(CLOCK_MONOTONIC, &b);
   FILE* f = fopen(argv[1], "w");
+  if (f == NULL) {
+    return 127;
+  }
   fprintf(f, "%d %.6f %ld\\n", WIFEXITED(st) ? WEXITSTATUS(st)
     : 128 + WTERMSIG(st), (double)(b.tv_sec - a.tv_sec)
     + (b.tv_nsec - a.tv_nsec) / 1e9, (long)ru.ru_maxrss);
@@ -264,8 +267,10 @@ function cell_script(c: Cell): string {
     + ` if [ $b = 0 ]; then cat > tm.c <<'TM'\n${TM}\nTM\n ${CC} tm.c -o tm`
     + ` && ./tm warm.txt ${run} > /dev/null 2>&1; n=1; awk '$2 < ${SHORT}`
     + ` { exit 1 }' warm.txt || n=3; i=0; while [ $i -lt $n ]; do`
-    + ` i=$((i+1)); ./tm ran.txt ${run} > out.txt 2> err.txt;`
-    + ` echo "${MARK} ran $(cat ran.txt)"; done; cat out.txt;`
+    + ` i=$((i+1)); rm -f ran.txt; ./tm ran.txt ${run} > out.txt 2> err.txt;`
+    + ` echo "${MARK} ran $(cat ran.txt 2> /dev/null || echo 127 0 0)";`
+    + ` grep -q '^0 ' ran.txt 2> /dev/null || break;`
+    + ` done; cat out.txt;`
     + ` echo "${MARK} err"; cat err.txt; fi; cd; rm -rf $d`;
 }
 

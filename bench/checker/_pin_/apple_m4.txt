@@ -1,4 +1,4 @@
-# 2026-10-08 386b7fc1 bun gates/perf.ts --pin, each cell timed by tm, the median of three runs under 1 s
+# 2026-10-08 386b7fc1 bun gates/perf.ts --pin (the checker keeps the perl clock and the best of three runs)
 | bench         | CHECKER  |
 |---------------|----------|
 | compute_1600  |   0.558s |
