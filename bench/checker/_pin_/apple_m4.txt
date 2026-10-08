@@ -1,8 +1,8 @@
-# 2026-09-09 26de367b bun gates/perf.ts --pin
+# 2026-10-08 386b7fc1 bun gates/perf.ts --pin, each cell timed by tm, the median of three runs under 1 s
 | bench         | CHECKER  |
 |---------------|----------|
-| compute_1600  |   0.541s |
-| defs_12800    |   0.302s |
-| generics_3200 |   0.353s |
-| proofs_3200   |   0.811s |
-| trees_400     |   0.579s |
+| compute_1600  |   0.558s |
+| defs_12800    |   0.318s |
+| generics_3200 |   0.368s |
+| proofs_3200   |   0.819s |
+| trees_400     |   0.600s |

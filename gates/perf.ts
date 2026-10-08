@@ -10,9 +10,11 @@
 // -O3 of bend -o: no -lm, no -fmodules, no -fno-slp-vectorize, so the
 // gate grades the binary bend builds) and runs it with the flags the
 // pins were measured with (PAR on the power of two under the core
-// count, GPU over the bench's span), one warm run and one timed
-// by a microsecond clock around /usr/bin/time -l, whose own 10 ms tick
-// cannot grade a 50 ms GPU cell (its RSS is the space). A cell passes at
+// count, GPU over the bench's span), one warm run and one timed, or three
+// and their median when the warm run took under SHORT (a 60 ms GPU cell
+// read 59.7-73.6 ms from one run after its builds). tm times each run and
+// gives its RSS (the space): one posix_spawn and wait4, where the perl
+// clocks around /usr/bin/time -l cost 6 ms of that cell. A cell passes at
 // 1.15x or under; --pin runs every
 // cell three times and writes the medians as the new pins (a space in
 // tenths of a megabyte, so a 2.5 MB program is not graded against "2M"),
@@ -78,6 +80,34 @@ const SLACK = 1.15;
 const MARK = "@@B4";
 
 const CLOCK = "perl -MTime::HiRes=time -e 'print time'";
+
+const SHORT = 1;
+
+// tm FILE CMD ARGS... runs CMD and writes its exit status, wall seconds and
+// maximum RSS in bytes to FILE.
+const TM = `#include <spawn.h>
+#include <stdio.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
+#include <time.h>
+extern char** environ;
+int main(int argc, char** argv) {
+  struct timespec a, b;
+  struct rusage ru;
+  pid_t pid;
+  int st = 0;
+  clock_gettime(CLOCK_MONOTONIC, &a);
+  if (argc < 3 || posix_spawn(&pid, argv[2], NULL, NULL, argv + 2, environ)
+    || wait4(pid, &st, 0, &ru) < 0) {
+    return 127;
+  }
+  clock_gettime(CLOCK_MONOTONIC, &b);
+  FILE* f = fopen(argv[1], "w");
+  fprintf(f, "%d %.6f %ld\\n", WIFEXITED(st) ? WEXITSTATUS(st)
+    : 128 + WTERMSIG(st), (double)(b.tv_sec - a.tv_sec)
+    + (b.tv_nsec - a.tv_nsec) / 1e9, (long)ru.ru_maxrss);
+  return fclose(f);
+}`;
 
 const VIEW: string[] = [];
 
@@ -231,15 +261,17 @@ function cell_script(c: Cell): string {
     + ` t1=$(${CLOCK}); [ $b = 0 ] && { ${lib.BUN} bend2/main.ts ${src}`
     + ` -o main.c >> build.txt 2>&1 && ${BUILD[c.mode]} -o cell >> build.txt`
     + ` 2>&1; b=$?; }; echo "${MARK} built $b $t0 $t1"; cat build.txt;`
-    + ` if [ $b = 0 ]; then ${run} > /dev/null 2>&1; t2=$(${CLOCK});`
-    + ` /usr/bin/time -l ${run} > out.txt 2> time.txt; r=$?; t3=$(${CLOCK});`
-    + ` echo "${MARK} ran $r $t2 $t3"; cat out.txt; echo "${MARK} time";`
-    + ` cat time.txt; fi; cd; rm -rf $d`;
+    + ` if [ $b = 0 ]; then cat > tm.c <<'TM'\n${TM}\nTM\n ${CC} tm.c -o tm`
+    + ` && ./tm warm.txt ${run} > /dev/null 2>&1; n=1; awk '$2 < ${SHORT}`
+    + ` { exit 1 }' warm.txt || n=3; i=0; while [ $i -lt $n ]; do`
+    + ` i=$((i+1)); ./tm ran.txt ${run} > out.txt 2> err.txt;`
+    + ` echo "${MARK} ran $(cat ran.txt)"; done; cat out.txt;`
+    + ` echo "${MARK} err"; cat err.txt; fi; cd; rm -rf $d`;
 }
 
 function cell_note(out: string): string {
-  const line = out.trim().split("\n").filter((l) => !l.startsWith(MARK)
-    && !/ real | maximum resident|^\s*\d+\s+\w/.test(l)).pop() ?? "";
+  const line = out.trim().split("\n").filter((l) => !l.startsWith(MARK))
+    .pop() ?? "";
   return line.slice(0, 100);
 }
 
@@ -248,28 +280,25 @@ async function cell_run(c: Cell, node: number, pack: Buffer): Promise<void> {
   const built = new RegExp("^" + MARK + " built (\\d+) ([\\d.]+) ([\\d.]+)$",
     "m")
     .exec(got.out);
-  const ran = new RegExp("^" + MARK + " ran (\\d+) ([\\d.]+) ([\\d.]+)$", "m")
-    .exec(got.out);
+  const runs = [...got.out.matchAll(new RegExp("^" + MARK
+    + " ran (\\d+) ([\\d.]+) (\\d+)$", "gm"))]
+    .sort((x, y) => Number(x[2]) - Number(y[2]));
+  const ran = runs.find((r) => r[1] !== "0") ?? runs[runs.length >> 1];
   if (built === null) {
     throw new Error("node", { cause: got.err });
   }
   c.comp = Number(built[3]) - Number(built[2]);
-  if (built[1] !== "0" || ran === null || ran[1] !== "0") {
+  if (built[1] !== "0" || ran === undefined || ran[1] !== "0") {
     c.note = c.bench + " " + MODES[c.mode] + ": " + (built[1] !== "0"
       ? "build: " : "exit " + String(ran?.[1] ?? "?") + ": ")
       + cell_note(got.out);
     return;
   }
-  const tail = got.out.split(new RegExp("^" + MARK + " ran .*\n", "m"))[1];
-  const [body, time] = (tail ?? "").split(MARK + " time\n");
-  const rss = /(\d+)\s+maximum resident set size/.exec(time ?? "");
-  c.out = body.split("\n").map((l) => l.trim()).filter((l) => l !== "")
-    .pop() ?? "";
-  c.secs = Number(ran[3]) - Number(ran[2]);
-  c.mem = rss === null ? null : Number(rss[1]) / (1 << 20);
-  if (c.mem === null) {
-    c.note = c.bench + " " + MODES[c.mode] + ": unreadable time output";
-  }
+  const tail = got.out.split(new RegExp("^" + MARK + " ran .*\n", "m")).pop();
+  c.out = (tail ?? "").split(MARK + " err\n")[0].split("\n")
+    .map((l) => l.trim()).filter((l) => l !== "").pop() ?? "";
+  c.secs = Number(ran[2]);
+  c.mem = Number(ran[3]) / (1 << 20);
 }
 
 // Chk
