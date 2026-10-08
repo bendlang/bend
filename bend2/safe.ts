@@ -955,9 +955,6 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
         const mul = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
         return term(e, s, B.App(B.App(B.Ref("Nat.add"), mul), B.Lit("Nat", r)), live);
       }
-      if (x.k === "Nat") {
-        return nat_literal(e, x.v);
-      }
       return term(e, s, B.term_higher(B.lit_step(x)), live);
     }
     case "Eql": {
@@ -1247,23 +1244,6 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   return F.q.$ === G.q.$ && qsig_eq(e, F.B(x), G.B(x), d + 1);
 }
 
-function nat_literal(e: Safe, n: number): O {
-  let out = pack_ctr("Zero", []);
-  if (n > 0) {
-    const F = B.term_wnf(e.book, e.book.ctrs.Succ.T);
-    const q = F.$ === "All" ? quant(F.q) : oos("a malformed Nat successor");
-    for (let i = 0; i < n; i += 1) {
-      out = pack_ctr("Succ", [[q, out]]);
-    }
-  }
-  return out;
-}
-
-function pack_ctr(k: Name, fs: Array<[Q, O]>): O {
-  const tail = fs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), { $: "Lab", k: "()" });
-  return { $: "Tup", q: 1, a: { $: "Lab", k: name_tt(k) }, b: tail };
-}
-
 // a constructor as a tuple of its tag and fields
 function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k];
@@ -1292,7 +1272,9 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
     fs.push([q, arg_term(e, s, a, A.A, live && q > 0)]);
     F = A.B(a);
   }
-  return pack_ctr(x.k, fs);
+  const k = name_tt(x.k);
+  const tail = fs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), { $: "Lab", k: "()" });
+  return { $: "Tup", q: 1, a: { $: "Lab", k }, b: tail };
 }
 
 // a U32 or F32 word, as a def of its own
