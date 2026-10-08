@@ -226,8 +226,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
   },
   f32_bits: { C: "$0", JS: "f32_bits($0)" },
-  f32_show: { C: "f32_show(e, $0)", JS: "f32_show($0)" },
-  f32_read: { C: "f32_read(e, $0)", JS: "f32_read($0)" },
+  ...tpl_ops("f32_", "show read", "f32_$o(e, $0)", "f32_$o($0)"),
   nat_add: { C: "nat_chk(e, $0 + $1)", JS: "nat_chk($0 + $1)" },
   nat_mul: { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
   nat_double: { C: "nat_chk(e, $0 + $0)", JS: "nat_chk($0 + $0)" },
@@ -2903,8 +2902,6 @@ export function compile_book(book: Bend.Book): string {
 // JS
 // --
 
-// A def's JS name is its key between $s: each . a $, and any other
-// non-word char a $ and its three-digit code, so no two keys share one.
 // Each effect source runs once in a closure of its own and registers
 // its effects with io_eff(CID(k), run), as a C source does. A
 // def on a tail cycle is one loop over the cycle's bodies ($pc picks
@@ -2914,8 +2911,7 @@ export function compile_book(book: Bend.Book): string {
 // may return one: a marker per call resolves once every def is out.
 
 function js_sat(k: Name): string {
-  return `$${k.replace(/\W/g, (c) => c === "." ? "$"
-    : "$" + String(c.charCodeAt(0)).padStart(3, "0"))}$`;
+  return name_id("$", k);
 }
 
 function js_call(sc: Scope, k: Name, args: HTerm[], tail: boolean): string {
@@ -3007,11 +3003,19 @@ function js_expr(sc: Scope, tm: HTerm, ty0: HTerm | null): string {
         return js_expr(sc, (x as Of<"Lam">).f(Bend.Var("null", 0)),
           ty_all(ty).B(DUMMY));
       }
+      const old = new Map(sc.fresh);
       const arg = name_local(sc, "x");
       const cl = { ...sc, seg: seg_new("", BOX, []) };
+      const name = "$0c" + FL.spins.push(cl.seg);
       js_func(cl, x, ty, [arg]);
-      return `run_clo((${arg}) => {\n${seg_text(cl.seg.lines, 1)
-        .join("\n")}\n})`;
+      const ps = new Set<string>();
+      for (const [w, b, n] of cl.seg.lines.join().matchAll(
+        /"(?:\\.|[^"])*"|\x01[^\x02]*\x02|(?<![\w$])_(\w*)_(\d+)\b/g)) {
+        if (+n < (old.get(b) ?? 0)) ps.add(w);
+      }
+      cl.seg.lines = [`function ${name}(${[...ps]}) { return (${arg}) => {`,
+        ...cl.seg.lines, "}}"];
+      return `run_clo(${name}(${[...ps]}))`;
     }
     default: {
       return "null";
@@ -6046,13 +6050,12 @@ function array_rmw(a, i, f) {
 // ===
 
 function run_tail(f, x) {
-  return {$: "$JMP", f: f.j?.f === f ? f.j : f, x};
+  return {$: "$JMP", f: f.j ?? f, x};
 }
 
 function run_clo(j) {
   const f = (x) => run_loop(j(x));
   f.j = j;
-  j.f = f;
   return f;
 }
 
