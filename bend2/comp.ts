@@ -888,12 +888,11 @@ function ty_holds(A: HTerm | null,
     ctr_doms(c, t.x).some((f) => ty_holds(f, p, seen)));
 }
 
-// A parameter whose kind is surely no sort (a quantity, a datatype, an
-// equality, or a function into one) takes a value, never a type.
 function ty_value(K: HTerm | null): boolean {
   const k = ty_wnf(K);
-  return k?.$ === "All" ? ty_value(k.B(DUMMY))
-    : ["Qnt", "Min", "ADT", "Eql"].includes(k?.$ ?? "");
+  return k?.$ === "All" ? ty_value(k.B(DUMMY)) : !ty_holds(k, (t) =>
+    t?.$ === "ADT" ? WORDS[t.k] ? false : null
+    : !["Qnt", "Eql"].includes(t?.$ ?? ""));
 }
 
 function ty_clo(A: HTerm | null): boolean {
