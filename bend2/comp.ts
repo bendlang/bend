@@ -916,9 +916,9 @@ function type_adts(T: HTerm): Name[] {
 // A lay without arms is W32, W64 or BOX itself. An Array cell takes
 // the open layout of its element type (the return type of its
 // constructors), so all callers agree. lay_el refuses an open element
-// type, except equality: its sides may mention type variables, since its
-// layout does not depend on them. adt_of and js_expr call it only for
-// that check.
+// type, except equality and functions: their layouts do not depend on
+// the types of their sides or arguments. adt_of and js_expr call it only
+// for that check.
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -939,7 +939,7 @@ function lay_of(A: HTerm | null): Lay {
 
 function lay_el(A: HTerm | null): Lay {
   const t = ty_wnf(A);
-  if (t?.$ === "Eql") {
+  if (t?.$ === "Eql" || t?.$ === "All") {
     return lay_of(A);
   }
   if (t?.$ !== "ADT") {
