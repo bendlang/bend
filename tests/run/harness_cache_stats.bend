@@ -1,7 +1,6 @@
-# bend3's harness-cache adversary, stats side: --stats bypassed the
-# cache and measured a fresh check. bend has no --stats; the cache
-# half that still speaks is pinned -- the rendered page and the value
-# repeat byte-identically around each other off one in-process book
+# gates/test.ts compares repeated C/JS emissions and actual values with
+# fresh baselines, before and after normalization. The retained compiler
+# probe count must match the fresh baseline too, even if bytes agree.
 import Base
 
 law flip:

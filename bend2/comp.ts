@@ -529,6 +529,11 @@ const PROBES: Of<"Var">[] = [];
 
 const DUMMY = probe("~");
 
+// Deterministic retained-state observable for the in-process compiler gate.
+export function retained_probes(): number {
+  return PROBES.length;
+}
+
 let FUEL = 0;
 
 // The book being compiled and all that is memoized about it.
