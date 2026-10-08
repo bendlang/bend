@@ -400,11 +400,12 @@ export function format(source: string, opts: FormatOptions): string {
     if (head.text === "import") {
       // Paths and aliases use their own grammar; do not treat / or - as operators.
       const text = source.slice(head.beg, last(record[record.length - 1]).end).trimEnd();
-      const at = text.indexOf("#");
-      doc = (at < 0 ? text : text.slice(0, at))
-        .trim()
-        .replace(/^import\s+/, "import ")
-        .replace(/\s+as\s+/, " as ");
+      const comment = record.find((n) => first(n).kind === "comment");
+      const at = comment ? first(comment).beg - head.beg : -1;
+      doc = (at < 0 ? text : text.slice(0, at)).trim().replace(/^import\s+/, "import ");
+      if (record[1] === undefined || first(record[1]).kind !== "literal") {
+        doc = doc.replace(/\s+as\s+/, " as ");
+      }
       if (at >= 0) doc = [doc, "  ", commentText(text.slice(at))];
     } else {
       // Canonicalize an inline declaration body into the indented body form.
