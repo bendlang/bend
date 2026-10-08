@@ -2,14 +2,25 @@
 // globalThis.BEND_LINT before it runs a rule, and removes it after. Bool,
 // String and U32 are native JS values here; other data is {$: CID(Name), ...}.
 
-const LINT_SEVERITY = { [CID(Error)]: "error", [CID(Warning)]: "warning", [CID(Information)]: "information", [CID(Hint)]: "hint" };
-const LINT_QUANTITY = { None: CID(Erased), Lone: CID(Once), Many: CID(Many) };
-const LINT_APPLICABILITY = { [CID(Safe)]: "safe", [CID(Suggested)]: "suggested", [CID(Dangerous)]: "dangerous" };
+const LINT_SEVERITY = {
+  [CID(Error)]: "error",
+  [CID(Warning)]: "warning",
+  [CID(Information)]: "information",
+  [CID(Hint)]: "hint",
+};
+const LINT_QUANTITY = { erased: CID(Erased), once: CID(Once), many: CID(Many) };
+const LINT_APPLICABILITY = {
+  [CID(Safe)]: "safe",
+  [CID(Suggested)]: "suggested",
+  [CID(Dangerous)]: "dangerous",
+};
 
 function lint_host() {
   const host = globalThis.BEND_LINT;
   if (host === undefined) {
-    throw new Error("this program is a rule; run it with bun tools/bend-lint/src/lint.ts <file.bend> --rules <rule.bend>");
+    throw new Error(
+      "this program is a rule; run it with bun tools/bend-lint/src/lint.ts <file.bend> --rules <rule.bend>",
+    );
   }
   return host;
 }
@@ -39,8 +50,11 @@ function lint_spot(s) {
 }
 
 function lint_value(v) {
-  return typeof v === "number" ? { $: CID(Num), value: v }
-    : typeof v === "boolean" ? { $: CID(Flag), value: v } : { $: CID(Text), value: v };
+  return typeof v === "number"
+    ? { $: CID(Num), value: v }
+    : typeof v === "boolean"
+      ? { $: CID(Flag), value: v }
+      : { $: CID(Text), value: v };
 }
 
 function lint_term(id) {
@@ -51,30 +65,42 @@ function lint_input() {
   const { sources, options } = lint_host().input();
   return {
     $: CID(Input),
-    sources: lint_list(sources.map((s) => ({ $: CID(Source), path: s.path, text: s.text, root: s.root }))),
-    options: lint_list(Object.entries(options).map(([key, v]) => ({ $: CID(Option), key, value: lint_value(v) }))),
+    sources: lint_list(
+      sources.map((s) => ({ $: CID(Source), path: s.path, text: s.text, root: s.root })),
+    ),
+    options: lint_list(
+      Object.entries(options).map(([key, v]) => ({ $: CID(Option), key, value: lint_value(v) })),
+    ),
   };
 }
 
 function lint_report(diags) {
-  lint_host().report(lint_unlist(diags).map((d) => ({
-    severity: LINT_SEVERITY[d.severity.$],
-    message: d.message,
-    span: d.span.$ === CID(Some) ? lint_spot(d.span.value) : undefined,
-    fixes: lint_unlist(d.fixes).map((f) => ({
-      title: f.title,
-      applicability: LINT_APPLICABILITY[f.applicability.$],
-      edits: lint_unlist(f.edits).map((e) => ({ span: lint_spot(e.span), text: e.text })),
+  lint_host().report(
+    lint_unlist(diags).map((d) => ({
+      severity: LINT_SEVERITY[d.severity.$],
+      message: d.message,
+      span: d.span.$ === CID(Some) ? lint_spot(d.span.value) : undefined,
+      fixes: lint_unlist(d.fixes).map((f) => ({
+        title: f.title,
+        applicability: LINT_APPLICABILITY[f.applicability.$],
+        edits: lint_unlist(f.edits).map((e) => ({ span: lint_spot(e.span), text: e.text })),
+      })),
     })),
-  })));
+  );
   return { $: CID(Unit) };
 }
 
 function lint_view(fact) {
   const v = lint_host().view(fact.id);
   return {
-    $: CID(View), owner: v.owner, inst: v.inst, kind: v.kind, name: v.name, quantity: { $: LINT_QUANTITY[v.quantity] },
-    span: lint_maybe(v.span && lint_span(v.span)), inner: lint_maybe(v.inner && lint_span(v.inner)),
+    $: CID(View),
+    owner: v.owner,
+    inst: v.inst,
+    kind: v.kind,
+    name: v.name,
+    quantity: { $: LINT_QUANTITY[v.quantity] },
+    span: lint_maybe(v.span && lint_span(v.span)),
+    inner: lint_maybe(v.inner && lint_span(v.inner)),
   };
 }
 
@@ -93,6 +119,11 @@ io_eff(CID(binder), (fact) => {
 io_eff(CID(same), (fact, a, b) => lint_host().same(fact.id, a.id, b.id));
 io_eff(CID(show), (fact, t) => lint_host().show(fact.id, t.id));
 io_eff(CID(normal), (fact, t) => lint_term(lint_host().normal(fact.id, t.id)));
-io_eff(CID(uses), (fact) => lint_list(lint_host().uses(fact.id).map((u) =>
-  ({ $: CID(Use), name: u.name, quantity: { $: LINT_QUANTITY[u.quantity] } }))));
+io_eff(CID(uses), (fact) =>
+  lint_list(
+    lint_host()
+      .uses(fact.id)
+      .map((u) => ({ $: CID(Use), name: u.name, quantity: { $: LINT_QUANTITY[u.quantity] } })),
+  ),
+);
 io_eff(CID(text), (span) => lint_host().text(lint_spot(span)));

@@ -138,35 +138,39 @@ the rest of that rule's findings and every later rule are dropped.
 What's on `cx`:
 
 - `root`, `sources`: the linted file and its imports, text as on disk
-- `book`: the checked Bend program
 - `options`: defaults merged with config
 - `facts`: just the facts this rule asked for
 - `prior`: findings from earlier rules
-- `span(s)`: Bend span to a file on disk
-- `walk(tm)`: walk Bend terms
-- `binder(fact, v)`: find a variable's binder
+- `view(fact)`: what the fact's term is (see Facts)
+- `type(fact)`: the type the term was checked as
+- `binder(fact)`: the declared type of the variable a `Var` uses
 - `show`, `same`, `normal`: print, compare and normalize types in a fact's scope
 - `uses(fact)`: used variables with their quantities
+- `sameDeclarations(text)`: whether `text` declares what the linted file
+  declares, compared as parsed, not checked
 - `diag(init)`: make a diagnostic with this rule's ID
-- `Bend`: the loaded Bend module. Use it instead of importing `bend2/bend.ts`
+- `unstable`: Bend's own objects (`Bend`, the checked `book`, `raw(fact)`).
+  Code that uses them breaks when Bend changes; nothing else on `cx` does.
 
-The exported types in [src/lint.ts](src/lint.ts) are the full contract.
+The exported types in [src/lint.ts](src/lint.ts) are the full contract. They
+are bend-lint's own: facts and types are handles, and only `cx` reads them.
 
 #### Fixes
 
 A fix is a title, an applicability (`safe`, `suggested`, `dangerous`) and edits.
-An edit swaps a span for text. A zero-length span inserts. Offsets are integer
-UTF-16 units inside the source, and edits in one fix can't overlap.
+An edit swaps a span for text. A span is a source from `cx.sources` and two
+offsets. A zero-length span inserts. Offsets are integer UTF-16 units inside the
+source, and edits in one fix can't overlap.
 
 ```ts
-const spn = { file: cx.root.file, beg: 0, end: 1 };
+const span = { file: cx.root, beg: 0, end: 1 };
 return [cx.diag({
   message: "Replace the first character with a space.",
-  spn,
+  span,
   fixes: [{
     title: "Replace character",
     applicability: "suggested",
-    edits: [{ spn, text: " " }],
+    edits: [{ span, text: " " }],
   }],
 })];
 ```
@@ -175,9 +179,12 @@ return [cx.diag({
 
 #### Facts
 
-A fact is one checked term with its type (`ty`), scope (`ctx`), depth (`dep`),
-enclosing definition (`def`), demanded quantity (`qt`), variable uses (`us`),
-book (`bok`) and source span (`spn`, when there is one). The term itself is `tm`.
+A fact is one checked term. `cx.view(fact)` gives its kind (annotations
+stripped: `Var`, `Ref`, `App`, ...), the name a `Var` or `Ref` points to, its
+enclosing definition (`owner`), how many times it is demanded (`quantity`:
+`erased`, `once` or `many`), and its source span (`span`, and `inner` without
+the annotations), when there is one. Its type and its scope are reached through
+the other `cx` operations.
 
 Ask for them with `facts: true` (everything in the linted file) or a filter:
 
@@ -194,8 +201,8 @@ All the lists you give must match. Leave one out or empty and it matches
 everything. Keep filters narrow, since memory goes up with the number of facts.
 
 Template bodies get checked as written and again per instance (`generic~0`),
-sometimes at the same span. `fact.inst` marks instances. Skip them to avoid
-double reports:
+sometimes at the same span. `view(fact).inst` marks instances. Skip them to
+avoid double reports:
 
 ```ts
 import type { LintRule } from "../src/lint.ts";
@@ -203,12 +210,12 @@ import type { LintRule } from "../src/lint.ts";
 export const rules: LintRule[] = [{
   id: "demo/var-types",
   facts: { kinds: ["Var"] },
-  run: (cx) => [...cx.facts!.values()]
-    .filter((fact) => !fact.inst)
+  run: (cx) => cx.facts!
+    .filter((fact) => !cx.view(fact).inst)
     .map((fact) => cx.diag({
-      message: "type: " + cx.show(fact, fact.ty),
+      message: "type: " + cx.show(fact, cx.type(fact)),
       severity: "hint",
-      spn: fact.spn,
+      span: cx.view(fact).span,
       fact,
     })),
 }];
@@ -290,7 +297,7 @@ console.log(result.ok, result.diags.map(render));
 
 if (result.ok) {
   const root = result.sources.find((source) => source.root)!;
-  const { text, skipped } = applyFixes(root.file, result.diags);
+  const { text, skipped } = applyFixes(root, result.diags);
   // text is the edited source; saving it is up to you
   console.log(text, skipped);
 }
@@ -354,7 +361,7 @@ was before the fixes.
 ### Patching
 
 Bun patches Bend's modules while they load. `term_infer` and `term_check` are
-renamed and wrapped to record what they return to `hook.see` in patch.ts. The
+renamed and wrapped to record what they return to `hook.see` in seam.ts. The
 wrappers pass every argument on. The hook is global, so checks run one at a
 time. The `fs` and `path` adapters, in `bend.ts` and `main.ts`, turn real paths
 into `/` paths so imports resolve on Windows. `comp.ts` also exports
@@ -379,8 +386,11 @@ alike:
   have to be declared
 - wrapper signatures are checked against Bend's at type-check time, and argument
   counts at runtime
-- a self-check looks at the type, depth, scope, quantity, uses and span recorded
-  for `x` in `def id(x: N) -> N: x`
+- `book_read`, `book_err` and `Check_Fail` from `main.ts` must take the
+  arguments bend-lint gives them
+- a self-check reads `src/sample.bend` with `book_read`, and looks at the type,
+  depth, scope, quantity, uses and span recorded for `x` in
+  `def id(x: N) -> N: x`; a missing file must fail with a `Check_Fail`
 
 Any mismatch throws `DriftError` and loading stops. The tests add more, including
 drift against the chosen checkout's own tests.
