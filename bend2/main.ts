@@ -482,12 +482,47 @@ function cli_base(what?: string): void {
 }
 
 async function cli_bundle(page: string, dir: string): Promise<void> {
+  // Virtual files live beside each page so its module imports resolve there.
+  const scripts = new Map<string, string[]>();
+  let tag: string | undefined;
+  const inline: BunPlugin = {
+    name: "bend inline modules",
+    setup(build) {
+      build.onResolve({ filter: /\.bend-inline-/ }, (a) => {
+        const id = path.resolve(a.resolveDir, a.path);
+        if (scripts.has(id)) return { path: id, namespace: "bend-inline" };
+      });
+      build.onLoad({ filter: /.*/, namespace: "bend-inline" }, (a) => ({
+        contents: scripts.get(a.path)!.join(""),
+        loader: "js",
+      }));
+      build.onLoad({ filter: /\.html$/ }, async (a) => {
+        let code: string[] | null = null;
+        const html = await new HTMLRewriter().on("script", {
+          element(el) {
+            code = null;
+            if (el.getAttribute("type")?.toLowerCase() !== "module"
+              || el.getAttribute("src") !== null) return;
+            const name = `.${path.basename(a.path)}.bend-inline-${tag ??= crypto.randomUUID()}-${scripts.size}.js`;
+            code = [];
+            scripts.set(path.join(path.dirname(a.path), name), code);
+            el.setAttribute("src", "./" + name);
+            el.setInnerContent("");
+          },
+          text(text) {
+            code?.push(text.text);
+          },
+        }).transform(new Response(Bun.file(a.path))).text();
+        return { contents: html, loader: "html" };
+      });
+    },
+  };
   const out = await Bun.build({
     entrypoints: [page],
     outdir: dir,
     target: "browser",
     minify: true,
-    plugins: [PLUGIN],
+    plugins: [inline, PLUGIN],
   });
   for (const a of out.outputs) {
     cli_say(1, a.path + " (" + (a.size / 1024).toFixed(1) + "kb)\n");
