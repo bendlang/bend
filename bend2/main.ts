@@ -373,10 +373,10 @@ function cli_emit(book: Bend.Book, out: string): void {
     }
   } else {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-"));
-    const c   = path.join(dir, path.basename(out) + ".c");
-    fs.writeFileSync(c, Comp.compile_book(book));
-    Bun.gc(true);
     try {
+      const c = path.join(dir, path.basename(out) + ".c");
+      fs.writeFileSync(c, Comp.compile_book(book));
+      Bun.gc(true);
       cli_build(out, c);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
