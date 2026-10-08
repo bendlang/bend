@@ -7,9 +7,9 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Book, LTerm, Span as BendSpan } from "bend2/bend.ts";
 import type * as BendModule from "bend2/bend.ts";
 import { BEND2, applyFixes, bendRule, findConfig, lint, readConfig, render } from "./lint.ts";
-import type { Diag, Fact, LintRule, RuleContext, Source } from "./lint.ts";
+import type { Diag, Fact, LintRule, Node, RuleContext, Source } from "./lint.ts";
 import {
-  DriftError,
+  DRIFT,
   bendDir,
   fetchBend,
   guardMain,
@@ -103,7 +103,7 @@ def main() -> N:
 
 // Tests in the bend checkout (bend2/../tests) whose first expected line
 // says if the check passes.
-const DRIFT = [
+const BEND_TESTS = [
   "check/alpha_equivalence",
   "check/assert_plain_fill",
   "check/dependent_telescope",
@@ -452,6 +452,87 @@ def main() -> IO(Unit):
   Lint.serve(run)
 `;
 
+// A Bend rule that reads the term view: the root of id's body and its
+// first child, a Var fact's node, its first child and its fact back, and
+// a def that does not exist.
+const TREE_BEND = String.raw`import Base
+import ../../lint.bend as Lint
+
+def id() -> String:
+  "test/tree"
+
+def facts() -> Lint.Want:
+  Lint.Want{Lint.File{}, ["Var"], ["id"], []}
+
+def kind_of(s: Lint.Shape) -> String:
+  match s:
+    case Lint.Shape{kind, name, span, children}:
+      kind
+
+def first(s: Lint.Shape) -> Maybe<&2, Lint.Node>:
+  match s:
+    case Lint.Shape{kind, name, span, children}:
+      match children:
+        case Nil{}:
+          None{}
+        case Con{c, rest}:
+          Some{c}
+
+def child_kind(m: Maybe<&2, Lint.Node>) -> IO(String):
+  match m:
+    case None{}:
+      IO.pure(String, "nothing")
+    case Some{n}:
+      do IO<String>:
+        +s : Lint.Shape <- Lint.shape(n)
+        return kind_of(s)
+
+def top(m: Maybe<&2, Lint.Node>) -> IO(String):
+  match m:
+    case None{}:
+      IO.pure(String, "no body")
+    case Some{n}:
+      do IO<String>:
+        +s : Lint.Shape <- Lint.shape(n)
+        c : String <- child_kind(first(s))
+        return kind_of(s) ++ " > " ++ c
+
+def found(m: Maybe<&2, Lint.Fact>) -> String:
+  match m:
+    case None{}:
+      "lost"
+    case Some{f}:
+      "found"
+
+def about(+f: Lint.Fact) -> IO(String):
+  do IO<String>:
+    +n : Lint.Node <- Lint.node(f)
+    +s : Lint.Shape <- Lint.shape(n)
+    g : Maybe<&2, Lint.Fact> <- Lint.fact(n)
+    c : String <- child_kind(first(s))
+    return kind_of(s) ++ " > " ++ c ++ " " ++ found(g)
+
+def back(m: Maybe<&2, Lint.Fact>) -> IO(String):
+  match m:
+    case None{}:
+      IO.pure(String, "no fact")
+    case Some{f}:
+      about(f)
+
+def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
+  do IO<List<&2, Lint.Diag>>:
+    b : Maybe<&2, Lint.Node> <- Lint.body("id")
+    t : String <- top(b)
+    m : Maybe<&2, Lint.Fact> <- Lint.next_fact()
+    k : String <- back(m)
+    none : Maybe<&2, Lint.Node> <- Lint.body("nope")
+    t2 : String <- top(none)
+    return [Lint.Diag{Lint.Hint{}, t ++ "; " ++ k ++ "; " ++ t2, None{}, []}]
+
+def main() -> IO(Unit):
+  Lint.serve(run)
+`;
+
 // A rule that reports its options.
 const echo: LintRule = {
   id: "test/echo",
@@ -461,6 +542,16 @@ const echo: LintRule = {
 
 // Functions
 // =========
+
+// Whether `f` throws a drift error.
+function drifts(f: () => unknown): boolean {
+  try {
+    f();
+  } catch (e) {
+    return (e as { [DRIFT]?: boolean })[DRIFT] === true;
+  }
+  return false;
+}
 
 function file2(p: string, ns: string): { str: string; ns: string; al: {}; path: string } {
   return { str: "x\n", ns, al: {}, path: p };
@@ -472,13 +563,15 @@ function fixture(name: string, text: string): string {
   return file;
 }
 
-// The facts of a def's checked body, in walk order.
+// Every node under `node`, parents first.
+function nodes(cx: RuleContext, node: Node): Node[] {
+  return [node, ...cx.shape(node).children.flatMap((child) => nodes(cx, child))];
+}
+
+// The facts of a def's checked body, parents first.
 function facts(cx: RuleContext, name: string): Fact[] {
-  const tld = cx.unstable.book.tlds[name];
-  const byTerm = new Map((cx.facts ?? []).map((f) => [cx.unstable.raw(f).tm, f]));
-  return tld.$ !== "Def" || tld.e === undefined
-    ? []
-    : [...walk(tld.e)].flatMap((tm) => byTerm.get(tm) ?? []);
+  const body = cx.body(name);
+  return body === undefined ? [] : nodes(cx, body).flatMap((n) => cx.fact(n) ?? []);
 }
 
 // A fact as bend2 gives it.
@@ -588,9 +681,14 @@ describe("patch", () => {
   });
 
   test("fails loudly when an edit or a needed name is missing or repeated", () => {
-    expect(() =>
-      patch("bend.ts", src.replace("export function term_infer(", "export function term_infer2(")),
-    ).toThrow(DriftError);
+    expect(
+      drifts(() =>
+        patch(
+          "bend.ts",
+          src.replace("export function term_infer(", "export function term_infer2("),
+        ),
+      ),
+    ).toBe(true);
     expect(() =>
       patch("bend.ts", src.replace('import * as fs from "node:fs";', 'import fs from "node:fs";')),
     ).toThrow(/node:fs/);
@@ -618,7 +716,7 @@ describe("patch", () => {
     expect(() => guardMain({ ...good, Check_Fail: function () {} } as never)).toThrow(
       /main\.ts no longer has new Check_Fail\(why\)\.why/,
     );
-    expect(() => guardMain({ ...good, Check_Fail: function () {} } as never)).toThrow(DriftError);
+    expect(drifts(() => guardMain({ ...good, Check_Fail: function () {} } as never))).toBe(true);
   });
 
   test("the loaded bend.ts and comp.ts are the patched ones", () => {
@@ -804,12 +902,14 @@ describe("spans", () => {
     const map = mapper([src]);
     const spn = { file: src, beg: 2, end: 3 };
     expect(map(spn)).toBe(spn);
-    expect(() =>
-      map({ file: { str: "\ndef g() -> N:\n  x\n", ns: "", al: {} }, beg: 0, end: 0 }),
-    ).toThrow(DriftError);
-    expect(() =>
-      map({ file: { str: "def f() -> N:\n  x\n", ns: "", al: {} }, beg: 0, end: 0 }),
-    ).toThrow(DriftError);
+    expect(
+      drifts(() =>
+        map({ file: { str: "\ndef g() -> N:\n  x\n", ns: "", al: {} }, beg: 0, end: 0 }),
+      ),
+    ).toBe(true);
+    expect(
+      drifts(() => map({ file: { str: "def f() -> N:\n  x\n", ns: "", al: {} }, beg: 0, end: 0 })),
+    ).toBe(true);
   });
 
   test("the directory picks between equal files", () => {
@@ -847,6 +947,39 @@ describe("lint", () => {
     expect((await lint(userland, [commaSpace])).facts).toBeUndefined();
   });
 
+  test("the term view: bodies, nodes, shapes, and a node's fact only if the rule asked for it", async () => {
+    const tree: LintRule = {
+      id: "test/tree",
+      facts: { kinds: ["Var"], defs: ["id"] },
+      run: (cx) => {
+        const all = nodes(cx, cx.body("id")!);
+        const x = cx.facts!.find((f) => cx.view(f).name === "x" && !cx.view(f).inst)!;
+        expect(all).toContain(cx.node(x));
+        expect(cx.fact(cx.node(x))).toBe(x);
+        expect(cx.shape(cx.node(x)).kind).toBe("Ann");
+        expect(cx.shape(cx.shape(cx.node(x)).children[0])).toMatchObject({
+          kind: "Var",
+          name: "x",
+        });
+        const theirs = all.map((n) => cx.fact(n)).filter((f) => f !== undefined);
+        expect(theirs.length).toBeGreaterThan(0);
+        expect(theirs.every((f) => cx.view(f).kind === "Var")).toBe(true);
+        expect(cx.body("nope")).toBeUndefined();
+        return [];
+      },
+    };
+    const every: LintRule = {
+      id: "test/every",
+      facts: true,
+      run: (cx) => {
+        const kept = nodes(cx, cx.body("id")!).flatMap((n) => cx.fact(n) ?? []);
+        expect(kept.some((f) => cx.view(f).kind !== "Var")).toBe(true);
+        return [];
+      },
+    };
+    expect((await lint(userland, [tree, every])).ok).toBe(true);
+  });
+
   test("facts cover templates, proofs, matches and fields", async () => {
     const probe: LintRule = {
       id: "test/probe",
@@ -868,10 +1001,16 @@ describe("lint", () => {
         const proof = named("proof", "Rfl");
         expect(loose(cx, proof).ty.$).toBe("Eql");
         expect(loose(cx, proof).dep).toBe(1);
-        const kept = new Set<unknown>(cx.facts!.map((f) => loose(cx, f).tm));
-        const peel = [...walk((cx.unstable.book.tlds.peel as { e: LTerm }).e)];
-        expect(peel.some((tm) => tm.$ === "Mat")).toBe(true);
-        expect(peel.some((tm) => tm.$ === "Ann" && tm.x.$ === "Efq" && !kept.has(tm))).toBe(true);
+        const peel = nodes(cx, cx.body("peel")!).map((n) => ({ n, ...cx.shape(n) }));
+        expect(peel.some((s) => s.kind === "Mat")).toBe(true);
+        expect(
+          peel.some(
+            (s) =>
+              s.kind === "Ann" &&
+              cx.shape(s.children[0]).kind === "Efq" &&
+              cx.fact(s.n) === undefined,
+          ),
+        ).toBe(true);
         const field = loose(cx, named("peel", "Var", "p"));
         expect(cx.unstable.Bend.pmap_get(field.ctx, field.tm.x!.i!)!.k).toBe("p");
         return [];
@@ -891,7 +1030,7 @@ describe("lint", () => {
     );
     for (const k of ["Mat", "Lam", "App", "Var", "Ctr"])
       expect(kinds.has(k as LTerm["$"])).toBe(true);
-    expect(() => walk({ $: "Nope" } as unknown as LTerm).next()).toThrow(DriftError);
+    expect(drifts(() => walk({ $: "Nope" } as unknown as LTerm).next())).toBe(true);
   });
 
   test("walk preserves constructor and type argument order across traversals", () => {
@@ -1144,11 +1283,7 @@ describe("lint", () => {
       id: "test/api",
       facts: true,
       run: async (cx, signal) => {
-        const body = (cx.unstable.book.tlds.id as { e: LTerm }).e;
-        const fact = loose(
-          cx,
-          cx.facts!.find((f) => loose(cx, f).tm === body)!,
-        );
+        const fact = loose(cx, cx.fact(cx.body("id")!)!);
         const type = cx.unstable.Bend.term_wnf(fact.bok, fact.ty) as { A: typeof fact.ty };
         const arg = cx.unstable.Bend.term_wnf(fact.bok, type.A) as { k?: string };
         const res = await fetch(server.url, {
@@ -1472,7 +1607,7 @@ describe("rules", () => {
 });
 
 describe("drift: bend-lint agrees with bend's own tests", () => {
-  for (const name of DRIFT) {
+  for (const name of BEND_TESTS) {
     const file = path.join(BEND2, "..", "tests", name + ".bend");
     test.skipIf(!fs.existsSync(file))(name, async () => {
       const first = fs
@@ -1504,6 +1639,12 @@ describe("rules written in Bend", () => {
       Array(2).fill("x: Alias = N (same as its binder), text x, demanded once, uses x once"),
     );
     expect(res.diags.every((d) => d.span?.file === root(res.sources))).toBe(true);
+  });
+
+  test("a rule reads the term view through effects", async () => {
+    const rule = await bendRule(fixture("tree_rule.bend", TREE_BEND));
+    const res = await lint(userland, [rule]);
+    expect(res.diags.map((d) => d.message)).toEqual(["Ann > Lam; Ann > Var found; no body"]);
   });
 
   test("Bend fixes reject out-of-bounds code-point offsets instead of clamping them", async () => {

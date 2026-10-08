@@ -61,6 +61,14 @@ function lint_term(id) {
   return { $: CID(Term), id };
 }
 
+function lint_node(id) {
+  return { $: CID(Node), id };
+}
+
+function lint_fact(id) {
+  return lint_maybe(id === undefined ? undefined : { $: CID(Fact), id });
+}
+
 function lint_input() {
   const { sources, options } = lint_host().input();
   return {
@@ -106,10 +114,7 @@ function lint_view(fact) {
 
 io_eff(CID(input), lint_input);
 io_eff(CID(report), lint_report);
-io_eff(CID(next_fact), () => {
-  const id = lint_host().next();
-  return lint_maybe(id === undefined ? undefined : { $: CID(Fact), id });
-});
+io_eff(CID(next_fact), () => lint_fact(lint_host().next()));
 io_eff(CID(view), lint_view);
 io_eff(CID(type_of), (fact) => lint_term(lint_host().type(fact.id)));
 io_eff(CID(binder), (fact) => {
@@ -127,3 +132,19 @@ io_eff(CID(uses), (fact) =>
   ),
 );
 io_eff(CID(text), (span) => lint_host().text(lint_spot(span)));
+io_eff(CID(body), (name) => {
+  const id = lint_host().body(name);
+  return lint_maybe(id === undefined ? undefined : lint_node(id));
+});
+io_eff(CID(node), (fact) => lint_node(lint_host().node(fact.id)));
+io_eff(CID(shape), (n) => {
+  const s = lint_host().shape(n.id);
+  return {
+    $: CID(Shape),
+    kind: s.kind,
+    name: s.name,
+    span: lint_maybe(s.span && lint_span(s.span)),
+    children: lint_list(s.children.map(lint_node)),
+  };
+});
+io_eff(CID(fact), (n) => lint_fact(lint_host().fact(n.id)));

@@ -17,8 +17,10 @@ import type {
   Diag,
   Fact,
   FactFilter,
+  Node,
   Quantity,
   RuleContext,
+  Shape,
   Source,
   Span,
   Type,
@@ -66,7 +68,7 @@ type Mapper = (s: BendSpan | undefined) => BendSpan | undefined;
 // A fact as the checker gives it: `tm` checked (or inferred) as `ty` at
 // depth `dep` in `ctx`, in def `def`, demanded `qt` times, using the
 // variables in `us`, in book `bok` (a template body has its own). `inst`
-// marks an instance's fact; `map` moves the run's spans to the files on disk.
+// marks an instance's fact.
 export type Raw = {
   tm: LTerm;
   ty: HTerm;
@@ -78,11 +80,10 @@ export type Raw = {
   us: Uses;
   inst: boolean;
   spn?: BendSpan;
-  map: Mapper;
 };
 
 // What the wrappers report for each checked term.
-type Report = Omit<Raw, "inst" | "map">;
+type Report = Omit<Raw, "inst">;
 
 // bend2's own objects, for code that accepts to break when bend2 changes.
 export type Unstable = { Bend: typeof BendModule; book: Book; raw: (fact: Fact) => Raw };
@@ -93,7 +94,13 @@ export type Operations = Omit<
   "sources" | "root" | "options" | "facts" | "prior" | "diag"
 >;
 
-export type Checked = { book: Book; sources: Source[]; facts?: Fact[]; failure?: Diag };
+export type Checked = {
+  book: Book;
+  sources: Source[];
+  map: Mapper;
+  facts?: Fact[];
+  failure?: Diag;
+};
 
 // A rule written in Bend, checked and compiled: what its id(), facts() and
 // main() give.
@@ -102,15 +109,8 @@ type Compiled = { id: string; want: FactFilter | null; main: (args: string[]) =>
 // Constants
 // =========
 
-export const DriftError: new (message?: string, options?: ErrorOptions) => Error = function (
-  message?: string,
-  options?: ErrorOptions,
-): Error {
-  return Object.setPrototypeOf(
-    Object.assign(new Error(message, options), { name: "DriftError" }),
-    new.target!.prototype,
-  );
-} as ErrorConstructor;
+// Marks an error as drift: bend2 changed in a way bend-lint does not follow.
+export const DRIFT = Symbol("DriftError");
 
 const HERE = url.fileURLToPath(new URL(".", import.meta.url));
 const DRIVE = /^[A-Za-z]:(?=\/)/;
@@ -180,7 +180,7 @@ const SOURCES = new WeakMap<object, Source>();
 const QUANTITY: Record<Quant["$"], Quantity> = { None: "erased", Lone: "once", Many: "many" };
 
 // Binders are explicit in checked terms, so Var.v cells are not followed.
-// A new term kind is a type error here, and a DriftError when walked.
+// A new term kind is a type error here, and a drift error when walked.
 const CHILDREN: { [K in LTerm["$"]]: (tm: Extract<LTerm, { $: K }>) => LTerm[] } = {
   Let: (tm) => [...tm.v, tm.f],
   Lam: (tm) => [tm.f],
@@ -255,7 +255,7 @@ export const path = {
 // f.length counts the parameters before the first default.
 const arity = (f: (...args: never[]) => unknown, n: number, name: string): void => {
   if (f.length !== n) {
-    throw new DriftError(
+    throw drift(
       `${name} takes ${f.length} parameters, not ${n}; update seeInfer and seeCheck in tools/bend-lint/src/seam.ts`,
     );
   }
@@ -288,24 +288,29 @@ export const seeCheck = (f: typeof BendModule.term_check): typeof BendModule.ter
 // `file` is one of PATCHED.
 export const patch = (file: string, src: string): string => {
   const { edits, tail, exports } = PATCHES[file];
-  const drift = (what: string, n: number): never => {
-    throw new DriftError(
+  const mismatch = (what: string, n: number): never => {
+    throw drift(
       `cannot patch bend2/${file}: found ${n} of ${what}, expected 1. Update PATCHES in tools/bend-lint/src/seam.ts.`,
     );
   };
   const edited = edits.reduce((out, [at, to]) => {
     const n = out.split(at).length - 1;
-    return n === 1 ? out.replace(at, () => to) : drift(JSON.stringify(at), n);
+    return n === 1 ? out.replace(at, () => to) : mismatch(JSON.stringify(at), n);
   }, src);
   const declared = (name: string, exported: string): RegExp =>
     new RegExp(`^${exported}(?:async function|function|class|const|let) ${name}\\b`, "gm");
   const missing = exports.filter((name) => {
     const n = edited.match(declared(name, "(?:export )?"))?.length ?? 0;
-    return n === 1 ? !declared(name, "export ").test(edited) : drift("a declaration of " + name, n);
+    return n === 1
+      ? !declared(name, "export ").test(edited)
+      : mismatch("a declaration of " + name, n);
   });
   const named = missing.length === 0 ? "" : `export { ${missing.join(", ")} };\n`;
   return `${edited}\n${tail}${named}export const ${MARK} = 1;\n`;
 };
+
+export const drift = (message: string): Error =>
+  Object.assign(new Error(message), { name: "DriftError", [DRIFT]: true });
 
 const message = (e: unknown): string => (e instanceof Error ? e.message : String(e));
 
@@ -453,19 +458,22 @@ export const bendDir = async (
 export function* walk(tm: LTerm): Generator<LTerm> {
   const stack = [tm];
   for (let t = stack.pop(); t !== undefined; t = stack.pop()) {
-    const children = (CHILDREN as Record<string, ((tm: LTerm) => LTerm[]) | undefined>)[t.$];
-    if (children === undefined) {
-      throw new DriftError(
-        `unknown term kind ${t.$}; update CHILDREN in tools/bend-lint/src/seam.ts`,
-      );
-    }
-    yield t;
     const next = children(t);
+    yield t;
     for (let i = next.length - 1; i >= 0; i--) {
       stack.push(next[i]);
     }
   }
 }
+
+// A term's sub-terms, in bend's order.
+const children = (t: LTerm): LTerm[] => {
+  const of = (CHILDREN as Record<string, ((tm: LTerm) => LTerm[]) | undefined>)[t.$];
+  if (of === undefined) {
+    throw drift(`unknown term kind ${t.$}; update CHILDREN in tools/bend-lint/src/seam.ts`);
+  }
+  return of(t);
+};
 
 // Where each line of `text` starts, computed once per owner of the text.
 export const starts = (owner: object, text: string): number[] => {
@@ -491,7 +499,7 @@ export const line = (starts: number[], off: number): number => {
 // bend.ts parses a copy of each file with its import lines blanked, so a
 // span moves to the file on disk by line and column. The copy's namespace,
 // folder and lines pick the file; a copy that matches no file, or two, is
-// a DriftError.
+// a drift error.
 export const mapper = (files: File[]): Mapper => {
   const own = new Set<unknown>(files);
   const memo = new WeakMap<object, { file: File; from: number[]; to: number[] }>();
@@ -509,7 +517,7 @@ export const mapper = (files: File[]): Mapper => {
       );
     });
     if (found.length !== 1) {
-      throw new DriftError(
+      throw drift(
         `cannot map a bend.ts span to a file on disk (${found.length} candidates); bend.ts may mask imports another way now`,
       );
     }
@@ -545,23 +553,25 @@ const raw = (fact: Fact): Raw => fact as unknown as Raw;
 const handle = (r: Raw): Fact => r as unknown as Fact;
 const term = (t: Type): HTerm => t as unknown as HTerm;
 const typed = (t: HTerm): Type => t as unknown as Type;
+const tree = (n: Node): LTerm => n as unknown as LTerm;
+const node = (t: LTerm): Node => t as unknown as Node;
 
-// Throws a DriftError that names each check that failed.
+// Throws a drift error that names each check that failed.
 const demand = (checks: Array<[string, boolean]>, say: (wrong: string) => string): void => {
   const wrong = checks.flatMap(([what, ok]) => (ok ? [] : [what]));
   if (wrong.length > 0) {
-    throw new DriftError(say(wrong.join(", ")));
+    throw drift(say(wrong.join(", ")));
   }
 };
 
 const isErr = (e: unknown): e is Err =>
   typeof e === "object" && e !== null && (e as { $?: unknown }).$ === "Err";
 
-// A term's kind, annotations stripped, and the name a Var or Ref points to.
-const shape = (m: Loaded, tm: LTerm): { kind: string; name: Name } => {
-  const t = m.Bend.term_strip(tm);
-  return { kind: t.$, name: t.$ === "Var" || t.$ === "Ref" ? t.k : "" };
-};
+// A term's kind, and the name a Var or Ref points to.
+const kindOf = (t: LTerm): { kind: string; name: Name } => ({
+  kind: t.$,
+  name: t.$ === "Var" || t.$ === "Ref" ? t.k : "",
+});
 
 // Whether a fact passes a filter, its scope aside.
 const matches = (f: FactFilter, kind: string, def: Name, name: Name): boolean => {
@@ -613,7 +623,8 @@ const checked = async (
   const see = (report: Report): void => {
     const at = report.spn?.file as { dir?: string; ns?: string } | undefined;
     const near = at?.dir === home && at.ns === "" ? filters : far;
-    const { kind, name } = near.length > 0 ? shape(m, report.tm) : { kind: "", name: "" };
+    const { kind, name } =
+      near.length > 0 ? kindOf(Bend.term_strip(report.tm)) : { kind: "", name: "" };
     if (near.some((f) => matches(f, kind, report.def, name))) {
       found.push(report);
     }
@@ -649,10 +660,15 @@ const checked = async (
     const facts = found.flatMap((f): Array<[LTerm, Fact]> => {
       const spn = map(f.spn);
       return spn !== undefined && own.has(spn.file)
-        ? [[f.tm, handle({ ...f, inst: insts.has(f.def), spn, map })]]
+        ? [[f.tm, handle({ ...f, inst: insts.has(f.def), spn })]]
         : [];
     });
-    return { book, sources, facts: filters.length > 0 ? [...new Map(facts).values()] : undefined };
+    return {
+      book,
+      sources,
+      map,
+      facts: filters.length > 0 ? [...new Map(facts).values()] : undefined,
+    };
   }
   const err = isErr(read.e) ? read.e : undefined;
   let span: Span | undefined;
@@ -664,6 +680,7 @@ const checked = async (
   return {
     book: Bend.book_nil(),
     sources,
+    map,
     failure: {
       code: "bend/check",
       severity: "error",
@@ -717,7 +734,7 @@ export const select = (
     ? facts
     : facts.filter((fact) => {
         const r = raw(fact);
-        const { kind, name } = shape(m, r.tm);
+        const { kind, name } = kindOf(m.Bend.term_strip(r.tm));
         return (
           (want.scope === "program" || r.spn?.file === root) && matches(want, kind, r.def, name)
         );
@@ -810,16 +827,17 @@ const sameDeclarations = (m: Loaded, { book, sources }: Checked, text: string): 
 // What a rule asks bend2, over one check's book and facts.
 export const operations = (m: Loaded, run: Checked): Operations => {
   const { Bend } = m;
+  let byTerm: Map<LTerm, Fact> | undefined;
   return {
     view: (fact): View => {
       const r = raw(fact);
       return {
         owner: r.def,
         inst: r.inst,
-        ...shape(m, r.tm),
+        ...kindOf(Bend.term_strip(r.tm)),
         quantity: QUANTITY[r.qt.$],
         span: toSpan(r.spn),
-        inner: toSpan(r.map(Bend.term_strip(r.tm).s)),
+        inner: toSpan(run.map(Bend.term_strip(r.tm).s)),
       };
     },
     type: (fact) => typed(raw(fact).ty),
@@ -839,6 +857,19 @@ export const operations = (m: Loaded, run: Checked): Operations => {
       );
     },
     sameDeclarations: (text) => sameDeclarations(m, run, text),
+    body: (name) => {
+      const tld = run.book.tlds[name];
+      return tld?.$ === "Def" && tld.e !== undefined ? node(tld.e) : undefined;
+    },
+    node: (fact) => node(raw(fact).tm),
+    shape: (n): Shape => {
+      const t = tree(n);
+      return { ...kindOf(t), span: toSpan(run.map(t.s)), children: children(t).map(node) };
+    },
+    fact: (n) => {
+      byTerm ??= new Map((run.facts ?? []).map((f) => [raw(f).tm, f]));
+      return byTerm.get(tree(n));
+    },
     unstable: { Bend, book: run.book, raw },
   };
 };
@@ -912,8 +943,8 @@ export const compile = (m: Loaded, book: Book, file: string): Compiled => {
   return { id, want: want as FactFilter | null, main };
 };
 
-// What main.ts must give, as bend-lint calls it; a mismatch is a
-// DriftError.
+// What main.ts must give, as bend-lint calls it; a mismatch is a drift
+// error.
 export const guardMain = (Main: Main): void =>
   demand(
     [
@@ -972,7 +1003,7 @@ export const load = async (given: string | undefined): Promise<Loaded> => {
       build.onLoad({ filter }, (args) => {
         const contents = patched.get(fs.realpathSync(args.path));
         if (contents === undefined) {
-          throw new DriftError(`bend-lint matched ${args.path} but did not patch it`);
+          throw drift(`bend-lint matched ${args.path} but did not patch it`);
         }
         return { contents, loader: "ts" };
       });
@@ -982,9 +1013,7 @@ export const load = async (given: string | undefined): Promise<Loaded> => {
     PATCHED.map((f) => import(url.pathToFileURL(path.join(dir, f)).href)),
   );
   if (modules.some((module) => module[MARK] !== 1)) {
-    throw new DriftError(
-      "bend2 was loaded before bend-lint could patch it; import bend-lint first",
-    );
+    throw drift("bend2 was loaded before bend-lint could patch it; import bend-lint first");
   }
   const [B, C, M] = modules as [typeof BendModule, Comp, Main];
   guardMain(M);
@@ -992,8 +1021,3 @@ export const load = async (given: string | undefined): Promise<Loaded> => {
   await selfCheck(loaded);
   return loaded;
 };
-
-// Side effects
-// ============
-
-Object.setPrototypeOf(DriftError.prototype, Error.prototype);

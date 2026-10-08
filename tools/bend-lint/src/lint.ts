@@ -2,7 +2,7 @@
 // bend-lint checks a Bend file with bend's checker, then runs rules over
 // its source and the checker's results. Rules are TS modules, or Bend files
 // built on ./lint.bend. It reaches bend2 only through ./seam.ts; anything
-// there it cannot follow stops it with a DriftError. The types below are
+// there it cannot follow stops it with a drift error. The types below are
 // bend-lint's own, so a rule does not depend on bend2's internals. As a
 // CLI, it exits 0 when ok, 1 when it found an error, 2 on bad usage or a
 // tool failure.
@@ -42,10 +42,15 @@ export type Fix = { title: string; applicability: Applicability; edits: Edit[] }
 
 declare const OPAQUE: unique symbol;
 
-// A checked term, and a type, as handles: what they hold is bend2's, and a
-// rule reaches it only through the RuleContext.
+// A checked term, a type, and a node of a checked body, as handles: what
+// they hold is bend2's, and a rule reaches it only through the RuleContext.
 export type Fact = { readonly [OPAQUE]: "fact" };
 export type Type = { readonly [OPAQUE]: "type" };
+export type Node = { readonly [OPAQUE]: "node" };
+
+// A node: its kind, annotations kept (Ann, Var, App, ...), the name a Var
+// or Ref points to (else ""), its span, and its children, in bend's order.
+export type Shape = { kind: string; name: string; span?: Span; children: Node[] };
 
 // How many times a term is demanded, or a variable is used.
 export type Quantity = "erased" | "once" | "many";
@@ -112,6 +117,10 @@ export type RuleContext = {
   normal(fact: Fact, type: Type): Type;
   uses(fact: Fact): Array<{ name: string; quantity: Quantity }>;
   sameDeclarations(text: string): boolean; // whether `text` declares what the linted file declares
+  body(name: string): Node | undefined; // a def's checked body
+  node(fact: Fact): Node; // the node a fact is about
+  shape(node: Node): Shape;
+  fact(node: Node): Fact | undefined; // the node's fact, if this rule asked for it
   diag(init: DiagInit): Diag;
   unstable: Unstable;
 };
@@ -178,6 +187,10 @@ type Channel = {
   normal(fact: number, t: number): number;
   uses(fact: number): Array<{ name: string; quantity: Quantity }>;
   text(span: Spot): string;
+  body(name: string): number | undefined;
+  node(fact: number): number;
+  shape(node: number): Omit<Shape, "span" | "children"> & { span?: Spot; children: number[] };
+  fact(node: number): number | undefined;
 };
 
 // Constants
@@ -357,13 +370,19 @@ export async function lint(
   let diags: Diag[] = [];
   for (const { rule, severity, options, want } of plans) {
     signal.throwIfAborted();
+    const mine = want === undefined ? undefined : select(loaded, checked, want, program);
+    const asked = new Set(mine);
     const out = await rule.run(
       {
         ...ops,
         sources,
         root,
         options,
-        facts: want === undefined ? undefined : select(loaded, checked, want, program),
+        facts: mine,
+        fact: (node) => {
+          const fact = ops.fact(node);
+          return fact !== undefined && asked.has(fact) ? fact : undefined;
+        },
         prior: diags,
         diag: (d) => ({
           code: rule.id,
@@ -579,6 +598,8 @@ export async function bendRule(file: string): Promise<LintRule> {
       const facts = cx.facts ?? [];
       let given = 0;
       const types: Type[] = [];
+      const nodes: Node[] = [];
+      const index = new Map(facts.map((f, i) => [f, i]));
       const pick = <T>(xs: T[], i: number, what: string): T => {
         if (xs[i] === undefined) {
           throw new Error(
@@ -588,6 +609,7 @@ export async function bendRule(file: string): Promise<LintRule> {
         return xs[i];
       };
       const keep = (t: Type): number => types.push(t) - 1;
+      const hold = (n: Node): number => nodes.push(n) - 1;
       const found: Reported[][] = [];
       shared.BEND_LINT = {
         input: () => {
@@ -627,6 +649,19 @@ export async function bendRule(file: string): Promise<LintRule> {
         text: (s) => {
           const { file, beg, end } = span(s);
           return file.text.slice(beg, end);
+        },
+        body: (name) => {
+          const n = cx.body(name);
+          return n === undefined ? undefined : hold(n);
+        },
+        node: (i) => hold(cx.node(pick(facts, i, "fact"))),
+        shape: (i) => {
+          const { span, children, ...rest } = cx.shape(pick(nodes, i, "node"));
+          return { ...rest, span: spot(span), children: children.map(hold) };
+        },
+        fact: (i) => {
+          const f = cx.fact(pick(nodes, i, "node"));
+          return f === undefined ? undefined : index.get(f);
         },
       };
       let code: number;

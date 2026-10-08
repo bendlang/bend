@@ -13,13 +13,16 @@
 # option_number, option_flag and option_text, each with a default.
 import Base
 
-# A checked term, and a type: indexes into bend-lint's tables for one run.
-# Only the effects below read them.
+# A checked term, a type, and a node of a checked body: indexes into
+# bend-lint's tables for one run. Only the effects below read them.
 type Fact is Data:
   Fact{id: U32}
 
 type Term is Data:
   Term{id: U32}
+
+type Node is Data:
+  Node{id: U32}
 
 type Source is Data:
   Source{path: String, text: String, root: Bool}
@@ -90,6 +93,11 @@ type Use is Data:
 type View is Data:
   View{owner: String, inst: Bool, kind: String, name: String, quantity: Quantity, span: Maybe<&2, Span>, inner: Maybe<&2, Span>}
 
+# A node: its kind, annotations kept (Ann, Var, App, ...), the name a Var
+# or Ref points to (else ""), its span, and its children, in bend's order.
+type Shape is Data:
+  Shape{kind: String, name: String, span: Maybe<&2, Span>, children: List<&2, Node>}
+
 def input() -> IO(Input):
   import "./effects.js"
 
@@ -146,6 +154,21 @@ def uses(fact: Fact) -> IO(List<&2, Use>):
 
 # The text under a span, in the file on disk.
 def text(span: Span) -> IO(String):
+  import "./effects.js"
+
+# A def's checked body, if it has one.
+def body(name: String) -> IO(Maybe<&2, Node>):
+  import "./effects.js"
+
+# The node a fact is about.
+def node(fact: Fact) -> IO(Node):
+  import "./effects.js"
+
+def shape(n: Node) -> IO(Shape):
+  import "./effects.js"
+
+# The node's fact, if the rule asked for it.
+def fact(n: Node) -> IO(Maybe<&2, Fact>):
   import "./effects.js"
 
 def pick(hit: Bool, v: Value, later: Maybe<&2, Value>) -> Maybe<&2, Value>:

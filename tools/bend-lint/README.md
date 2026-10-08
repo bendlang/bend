@@ -148,12 +148,15 @@ What's on `cx`:
 - `uses(fact)`: used variables with their quantities
 - `sameDeclarations(text)`: whether `text` declares what the linted file
   declares, compared as parsed, not checked
+- `body(name)`, `node(fact)`, `shape(node)`, `fact(node)`: the term view (see
+  Nodes)
 - `diag(init)`: make a diagnostic with this rule's ID
 - `unstable`: Bend's own objects (`Bend`, the checked `book`, `raw(fact)`).
   Code that uses them breaks when Bend changes; nothing else on `cx` does.
 
 The exported types in [src/lint.ts](src/lint.ts) are the full contract. They
-are bend-lint's own: facts and types are handles, and only `cx` reads them.
+are bend-lint's own: facts, types and nodes are handles, and only `cx` reads
+them.
 
 #### Fixes
 
@@ -223,6 +226,20 @@ export const rules: LintRule[] = [{
 
 (Saved under `rules/`.)
 
+#### Nodes
+
+A node is one term of a def's checked body. `cx.body(name)` gives the root,
+`cx.shape(node)` its kind (annotations kept: `Ann`, `Var`, `App`, ...), the name
+a `Var` or `Ref` points to, its span and its children, in Bend's order.
+`cx.node(fact)` is the node a fact is about, and `cx.fact(node)` is the node's
+fact, if this rule asked for it. Kinds and child order are Bend's, so a rule
+that reads them may need changes when Bend's terms change; facts alone do not.
+
+```ts
+const nodes = (node: Node): Node[] => [node, ...cx.shape(node).children.flatMap(nodes)];
+const matches = nodes(cx.body("main")!).filter((n) => cx.shape(n).kind === "Mat");
+```
+
 #### Options
 
 `options: { tabWidth: 2, breakLines: false }` sets defaults. They also set which
@@ -267,8 +284,8 @@ def run(input: Lint.Input) -> IO(List<&2, Lint.Diag>):
 ```
 
 `step` goes in as a template (`~step`) and takes the fact as `+f`. Effects:
-`view`, `type_of`, `binder`, `same`, `show`, `normal`, `uses`, `text`, plus
-Base's. Options come from `Lint.option_number`, `option_flag` and `option_text`,
+`view`, `type_of`, `binder`, `same`, `show`, `normal`, `uses`, `text`, and the
+term view `body`, `node`, `shape` and `fact`, plus Base's. Options come from `Lint.option_number`, `option_flag` and `option_text`,
 each with a default. Numbers are whole, 0 to 4294967295 (U32).
 
 Spans count Unicode code points here. TypeScript counts UTF-16 units.
@@ -388,11 +405,12 @@ alike:
   counts at runtime
 - `book_read`, `book_err` and `Check_Fail` from `main.ts` must take the
   arguments bend-lint gives them
-- a self-check reads `src/sample.bend` with `book_read`, and looks at the type,
-  depth, scope, quantity, uses and span recorded for `x` in
-  `def id(x: N) -> N: x`; a missing file must fail with a `Check_Fail`
+- a self-check runs `src/sample.bend` through the check and the rule
+  operations: `x` in `def id(x: N) -> N: x` must have the right type, binder,
+  quantity, uses and span, and each wrapper must report the terms only it sees
 
-Any mismatch throws `DriftError` and loading stops. The tests add more, including
+Any mismatch throws a drift error (`name` is `DriftError`, and `e[DRIFT]` is
+true, with `DRIFT` from `src/seam.ts`) and loading stops. The tests add more, including
 drift against the chosen checkout's own tests.
 
 ## Tests
