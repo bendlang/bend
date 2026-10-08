@@ -1,3 +1,9 @@
+// bend-ids 1
+// CID :File.read BEND_CID_File_read
+// CID :File.read_line BEND_CID_File_read_line
+// CID :File.read_bytes BEND_CID_File_read_bytes
+// CID :File.read_at BEND_CID_File_read_at
+// bend-ids end
 // File
 // ====
 
@@ -47,7 +53,7 @@ function file_read_at(file, offset, max) {
   return file_read_with(file, max, offset, io_list);
 }
 
-io_eff(CID(File.read), file_read);
-io_eff(CID(File.read_line), file_read_line);
-io_eff(CID(File.read_bytes), file_read_bytes);
-io_eff(CID(File.read_at), file_read_at);
+io_eff(BEND_CID_File_read, file_read);
+io_eff(BEND_CID_File_read_line, file_read_line);
+io_eff(BEND_CID_File_read_bytes, file_read_bytes);
+io_eff(BEND_CID_File_read_at, file_read_at);
