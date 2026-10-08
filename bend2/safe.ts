@@ -949,13 +949,13 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return ctr_term(e, s, x, T, live);
     }
     case "Lit": {
-      if (x.k === "Nat" && e.book.tlds.Nat?.b !== true) {
-        // a file's own Nat (as a build refuses) is just its constructors
-        return nat_literal(e, x.v);
-      }
       if (x.k === "Nat" && x.v > NAT_MAX) {
         // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add,
-        // which a base Nat means are base's too
+        // which a base Nat means are base's too; a file's own Nat (as a
+        // build refuses) is its constructor chain
+        if (e.book.tlds.Nat?.b !== true) {
+          return nat_literal(e, x.v);
+        }
         const [q, r] = [Math.floor(x.v / NAT_MAX), x.v % NAT_MAX];
         const mul = B.App(B.App(B.Ref("Nat.mul"), B.Lit("Nat", q)), B.Lit("Nat", NAT_MAX));
         return term(e, s, B.App(B.App(B.Ref("Nat.add"), mul), B.Lit("Nat", r)), live);
