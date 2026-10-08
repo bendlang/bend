@@ -1036,12 +1036,15 @@ function ctr_flds(k: Name, xs: HTerm[]): HTerm[] {
   return xs.filter((_, j) => !ds[j] || dom_live(ds[j]));
 }
 
+function src_add(k: Name): void {
+  if (!FL.srcs.has(k)) {
+    FL.srcs.set(k, null);
+  }
+}
+
 function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
   if (FL.book.ctrs[k]) {
-    const fam = Bend.book_fam(FL.book, k);
-    if (!FL.srcs.has(fam)) {
-      FL.srcs.set(fam, null);
-    }
+    src_add(Bend.book_fam(FL.book, k));
   }
   const cid = cid_mac(k);
   if (lay_node(k).ks.join() === "w32" || exprs.length === 0) {
@@ -1385,13 +1388,12 @@ function file_book(roots: Name[]): void {
         + " names both a constructor and a foreign def: name one apart");
     }
   }
-  const add = (k: Name) => memo(FL.srcs, k, () => null);
-  roots.forEach(add);
+  roots.forEach(src_add);
   for (const d of FL.srcs.keys()) {
     memo_gc();
     const tld = FL.book.tlds[d];
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
-      type_adts(x.T).forEach(add);
+      type_adts(x.T).forEach(src_add);
     }
     if (!done_live(tld)) {
       continue;
@@ -1401,7 +1403,7 @@ function file_book(roots: Name[]): void {
     let flat = true;
     term_any(fun_of(d).h!, (s, tail) => {
       if (s.$ === "Ann") {
-        type_adts(s.T).forEach(add);
+        type_adts(s.T).forEach(src_add);
       }
       if (s.$ === "Ref") {
         if (s.b) {
@@ -1421,7 +1423,7 @@ function file_book(roots: Name[]): void {
       return false;
     });
     FL.srcs.set(d, flat ? deps : null);
-    refs.forEach(add);
+    refs.forEach(src_add);
   }
 }
 
