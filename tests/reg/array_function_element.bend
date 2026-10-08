@@ -31,6 +31,14 @@ def applyAll(-T: Data, a: Array<(T -> U32)>, +x: T) -> U32:
     case ALeaf{f}: f(x)
     case ANode{xs, ys}: (applyAll(T, xs, x) + applyAll(T, ys, x) : U32)
 
+# Array.swap and Array.set under a generic domain.
+def swapSet.got(-T: Data, r: Array<(T -> U32)> & (T -> U32), +x: T) -> U32:
+  (b, old) = r
+  (old(x) + applyAll(T, Array.set(T -> U32, b, 1, y => 30), x) : U32)
+
+def swapSet(-T: Data, a: Array<(T -> U32)>, +x: T) -> U32:
+  swapSet.got(T, Array.swap(T -> U32, a, 0, y => 7), x)
+
 def bit(b: Bool) -> U32:
   match b:
     case True{}: 1
@@ -58,6 +66,7 @@ def main() -> IO(Unit):
     IO.print(joinStrings(ANode{strings("a"), strings("b")}, "!"))
     IO.print(U32.show(applyAll(U32, ANode{ALeaf{x => (x + 1 : U32)}, ALeaf{x => (x * 2 : U32)}}, 5)))
     IO.print(U32.show(applyAll(Bool, ANode{ALeaf{b => bit(b)}, ALeaf{b => (bit(b) + 20 : U32)}}, True{})))
+    IO.print(U32.show(swapSet(U32, ANode{ALeaf{x => (x + 1 : U32)}, ALeaf{x => (x * 2 : U32)}}, 5)))
     IO.print(U32.show(sumErased(ANode{ALeaf{m => 4}, ALeaf{m => 5}})))
     IO.print(U32.show(sumA(Array.set(U32 -> U32, build(2n, 0), 3, x => (x * 10 : U32)))))
 
@@ -66,5 +75,6 @@ def main() -> IO(Unit):
 #|a!b!
 #|16
 #|22
+#|43
 #|9
 #|16
