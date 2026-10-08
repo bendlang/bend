@@ -212,13 +212,14 @@ export async function compiler_purity(): Promise<Fail[]> {
     if (book.hols !== 0) throw new Error(file + ": incomplete book");
     return book;
   };
-  const emit = (book: Bend.Book, lane: "c" | "js") => {
+  type Emission = { text: string; probes: number };
+  const emit = (book: Bend.Book, lane: "c" | "js"): Emission => {
     const text = lane === "c" ? Comp.compile_book(book) : Comp.js_book(book);
     return { text, probes: Comp.retained_probes() };
   };
   try {
-    const baselines = [];
-    const books = [];
+    const baselines: { c: Emission; js: Emission }[] = [];
+    const books: Bend.Book[] = [];
     for (const file of files) {
       const fresh = await load(file);
       baselines.push({ c: emit(fresh, "c"), js: emit(fresh, "js") });
