@@ -3,11 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- **Split clocks**: `IO.clock(Wall{})` and `IO.clock(Mono{})` return seconds
-  and normalized nanoseconds; `IO.now()` remains monotonic milliseconds.
-
 ## 2.0.36 (2026-10-07)
 
 - **HOC's proving agent is now named BendAI**: `bend login` logs in to
