@@ -5215,14 +5215,18 @@ static void cube_run(u64* H, bool gpu) {
 
 static u64 corpus_size;
 
+static bool corpus_at(void* at, u64 size) {
+  void* p = pool_try(at, size);
+  if (p != MAP_FAILED && p != at) {
+    munmap(p, size);
+  }
+  return p == at;
+}
+
 static void* corpus_map(u64 size) {
   for (u64 hint = 1ull << 45; hint > size; hint /= 2) {
-    void* p = pool_try((void*)hint, size);
-    if (p == (void*)hint) {
-      return p;
-    }
-    if (p != MAP_FAILED) {
-      munmap(p, size);
+    if (corpus_at((void*)hint, size)) {
+      return (void*)hint;
     }
   }
   return pool_mmap(size);
@@ -5250,15 +5254,10 @@ static bool corpus_grow(u64* H, u64 need) {
   bool ok = true;
   LOCK(bank_lock);
   while (ok && need > a32_load(a32_at(H, H_CAP))) {
-    u64   more = corpus_size;
-    char* at   = (char*)H + more;
-    void* got  = io_gpu || more >= 1ull << 43 ? MAP_FAILED
-      : pool_try(at, more);
-    ok = got == at;
+    u64 more = corpus_size;
+    ok = !io_gpu && more < 1ull << 43 && corpus_at((char*)H + more, more);
     if (ok) {
       corpus_lay(H, more * 2);
-    } else if (got != MAP_FAILED) {
-      munmap(got, more);
     }
   }
   UNLOCK(bank_lock);
