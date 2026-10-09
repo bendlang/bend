@@ -864,14 +864,16 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
 }
 
 function ty_holds(A: HTerm | null,
-  p: (t: HTerm | null) => boolean | null, seen = new Set<Name>()): boolean {
+  p: (t: HTerm | null) => boolean, seen = new Set<Name>()): boolean {
   const t = ty_wnf(A);
   if (t?.$ === "Lam") {
     return ty_holds(t.f(DUMMY), p, seen);
   }
-  const got = p(t);
-  if (got !== null || t?.$ !== "ADT") {
-    return got === true;
+  if (p(t)) {
+    return true;
+  }
+  if (t?.$ !== "ADT" || WORDS[t.k]) {
+    return false;
   }
   const tld = FL.book.tlds[t.k];
   const ks = tld?.$ === "ADT" ? tele_unbind(tld.T).doms : [];
@@ -890,14 +892,12 @@ function ty_holds(A: HTerm | null,
 function ty_value(K: HTerm | null): boolean {
   const k = ty_wnf(K);
   return k?.$ === "All" ? ty_value(k.B(DUMMY)) : !ty_holds(k, (t) =>
-    t?.$ === "ADT" ? WORDS[t.k] ? false : null
-    : !["Qnt", "Eql"].includes(t?.$ ?? ""));
+    !["ADT", "Qnt", "Eql"].includes(t?.$ ?? ""));
 }
 
 function ty_clo(A: HTerm | null): boolean {
-  return ty_holds(A, (t) => t?.$ === "ADT"
-    ? WORDS[t.k] ? false : null
-    : !["Typ", "Qua", "Min", "Eql"].includes(t?.$ ?? ""));
+  return ty_holds(A, (t) =>
+    !["ADT", "Typ", "Qua", "Min", "Eql"].includes(t?.$ ?? ""));
 }
 
 function type_adts(T: HTerm): Name[] {
@@ -933,9 +933,6 @@ function type_adts(T: HTerm): Name[] {
 // box even when its arguments are erased. adt_of and js_expr call it
 // only for that check.
 
-// The type formers besides ADT: function, equality, Type, Quant.
-const FORMERS: ReadonlySet<string> = new Set(["All", "Eql", "Typ", "Qnt"]);
-
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
   return t === null ? BOX : WORDS[t.k] ?? memo(FL.lays,
@@ -943,7 +940,7 @@ function lay_of(A: HTerm | null): Lay {
     const tld = FL.book.tlds[t.k];
     if (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
       || tld.c.some((c) => ctr_doms(c).some((F) => ty_holds(F,
-        (u) => u?.$ !== "ADT" || WORDS[u.k] ? false : u.k === t.k || null)))) {
+        (u) => u?.$ === "ADT" && u.k === t.k)))) {
       return BOX;
     }
     FL.lays.set(key, BOX);
@@ -956,7 +953,7 @@ function lay_of(A: HTerm | null): Lay {
 function lay_el(A: HTerm | null): Lay {
   const t = ty_wnf(A);
   if (t?.$ !== "ADT") {
-    if (!t || !FORMERS.has(t.$)) {
+    if (!["All", "Eql", "Typ", "Qnt"].includes(t?.$ ?? "")) {
       die("an open Array element type");
     }
     return lay_of(A);
@@ -2837,20 +2834,31 @@ export function compile_book(book: Bend.Book): string {
     "#endif"];
   const entries = [...FL.segs, seg_new(IO_EMIT, BOX, [""]),
     seg_new(CLO_APPLY, BOX, ["", ""])];
-  const cids = new Map<Name, number>();
+  const cids = new Map<Name, number[]>();
+  const cid = (k: Name, n: number, tail = 255) => cids.set(k, n > WIDE
+    ? [240 + Math.log2(n), Number(FL.hot.has(k)), 255]
+    : [n, Number(FL.hot.has(k)), tail]);
   for (const k of FL.srcs.keys()) {
     for (const c of (FL.book.tlds[k] as Bend.ADT).c ?? []) {
-      cids.set(c.k, lay_node(c.k).ks.length);
+      let at = 0;
+      let tail = 255;
+      for (const F of ctr_doms(c)) {
+        if (ty_holds(F, (u) => u?.$ === "ADT" && u.k === k)) {
+          tail = at;
+        }
+        at += lay_of(F).ks.length;
+      }
+      cid(c.k, lay_node(c.k).ks.length, tail);
     }
   }
   for (const [k] of done_defs(def_foreign)) {
-    cids.set(k, fun_of(k).lays.length);
+    cid(k, fun_of(k).lays.length);
   }
   const forky = graph_close(new Set(FL.segs.filter((s) => s.fork)
     .map((s) => s.fid)), [...FL.segs, { fid: seg_fid(CLO_APPLY),
     refs: FL.clos }].flatMap((s) => [...s.refs].map((r) => [r, s.fid])));
-  const ars = [...cids.values()].map((n) => n > WIDE ? 240 + Math.log2(n) : n);
-  if (entries.some((s) => s.params.length > WIDE) || ars.some((n) => n > 255)) {
+  if (entries.some((s) => s.params.length > WIDE)
+    || [...cids.values()].some(([n]) => n > 255)) {
     die("an arity over " + WIDE);
   }
   const defs = [[...cids.keys()].map(cid_mac),
@@ -2866,8 +2874,8 @@ export function compile_book(book: Bend.Book): string {
     `{ ${s.params.length}, ${s.frame === null ? 0
       : s.params.length - s.frame.at.length}, ${Number(FL.bangs.has(s.def))
       | Number(!forky.has(s.fid)) << 1} }`).join(", ")} };`,
-  `CONSTV u8 CID_T[][2] = { ${[...cids.keys()].map((k, i) =>
-    `{ ${ars[i]}, ${Number(FL.hot.has(k))} }`).join(", ")} };`,
+  `CONSTV u8 CID_T[][3] = { ${[...cids.values()].map((r) =>
+    `{ ${r.join(", ")} }`).join(", ")} };`,
   `#define STAT_LEN ${FL.img.length}`, "",
   `#define WL_RESW ${resw}`, `#define BANGS   ${FL.bangs.size}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
@@ -3155,9 +3163,9 @@ function js_marshal(A: HTerm | null, out: boolean): string {
     return x + y === "" ? y : `((f) => (x) => ${y}(f(${x}(x))))`;
   }
   const seen = new Set<Name>();
-  const nat = (u: HTerm | null): boolean | null => u?.$ === "All"
+  const nat = (u: HTerm | null): boolean => u?.$ === "All"
     ? [u.A, u.B(DUMMY)].some((v) => ty_holds(v, nat, seen))
-    : u?.$ !== "ADT" ? false : WORDS[u.k] ? u.k === "Nat" : null;
+    : u?.$ === "ADT" && u.k === "Nat";
   if (t?.$ !== "ADT" || !ty_holds(t, nat, seen)) {
     return "";
   }
@@ -3997,6 +4005,12 @@ FAR void term_drop(Env e, Term t) {
         u32 cls = tag == TAG_ARR ? 64 | blk_cls(t)
           : n > ${WIDE} ? 64 | (n - 240)
           : cls_fit(tag == TAG_TSK ? n + 2 : n);
+        u32 s = tag == TAG_CTR ? CID_T[aux][2] : n;
+        if (s + 1 < n) {
+          Term f = H[loc + s];
+          H[loc + s] = H[loc + n - 1];
+          H[loc + n - 1] = f;
+        }
         c0 = H[loc];
         H[loc] = cur;
         cur = loc | ((u64)n << 48) | ((u64)cls << 56);
@@ -4019,22 +4033,21 @@ FAR void term_drop(Env e, Term t) {
           j = (u32)H[loc + 1];
         }
       }
-      if (j < n) {
-        Term c = j == 0 ? c0 : H[loc + j];
+      Term c = j >= n ? 0 : j == 0 ? c0 : H[loc + j];
+      if (j + 1 >= n) {
+        cur = H[loc];
+        heap_free(e, cls, loc);
+      } else {
         if (arr && j > 0) {
           H[loc + 1] = j + 1;
         }
         if (!arr || i < 2) {
           cur += 1ull << 40;
         }
-        if (!term_triv(c)) {
-          t = c;
-          break;
-        }
-      } else {
-        u64 up = H[loc];
-        heap_free(e, cls, loc);
-        cur = up;
+      }
+      if (!term_triv(c)) {
+        t = c;
+        break;
       }
     }
   }
@@ -4280,9 +4293,9 @@ INLINE Term task_deliver(DEV u64* H, Term cont, u32 idx, THR Term* v, u32 n) {
     a32_store_rel(a32_at(H, H_ROOT_DONE), n + 1);
     return 0;
   }
-  u64 tl = task_tail(cont);
-  if (a32_sub_rel(a32_at(H, tl + 1), 1) == 1) {
-    a32_acq(a32_at(H, tl + 1));
+  DEV u32* c = a32_at(H, task_tail(cont) + 1);
+  if (a32_sub_rel(c, 1) == 1) {
+    a32_acq(c);
     return cont;
   }
   return 0;
@@ -4940,15 +4953,12 @@ static void gpu_load(u64 bytes) {
   gpu_buf = [gpu_dev newBufferWithBytesNoCopy:CORPUS length:bytes
     options:MTLResourceStorageModeShared
       | MTLResourceHazardTrackingModeUntracked deallocator:nil];
-  u64 most = [gpu_dev maxBufferLength];
-  if (!gpu_buf && bytes > most) {
+  if (!gpu_buf) {
+    u64  most = [gpu_dev maxBufferLength];
     char msg[96];
     snprintf(msg, sizeof msg, "--gpu %lluMB is over the device's %lluMB",
       (unsigned long long)(bytes >> 20), (unsigned long long)(most >> 20));
-    err_fail(msg);
-  }
-  if (!gpu_buf) {
-    err_fail("the GPU span is more than the device has");
+    err_fail(bytes > most ? msg : "the GPU span is more than the device has");
   }
   @autoreleasepool {
     gpu_que = [gpu_dev newCommandQueue];
@@ -5278,8 +5288,8 @@ static bool corpus_grow(u64* H, u64 need) {
 static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
-  u64 dflt   = gpu ? gpu_span() : 1ull << 33;
-  u64 size   = (gpu && bytes != 0 ? bytes : dflt) & ~16383ull;
+  u64 size   = (!gpu ? 1ull << 33 : bytes != 0 ? bytes : gpu_span())
+    & ~16383ull;
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   u64* H     = CORPUS;
 #if BEND_CUDA
@@ -6009,8 +6019,7 @@ int main(int argc, char** argv) {
   if (gpu == 1 && BANGS != 0 && why != NULL) {
     err_fail(why);
   }
-  bool dev = why == NULL;
-  io_loop(corpus_setup(dev, thr > 0 ? thr : cpu_count(), mem));
+  io_loop(corpus_setup(why == NULL, thr > 0 ? thr : cpu_count(), mem));
   io_sync();
   return 0;
 }
