@@ -1,5 +1,5 @@
-# Inline page modules share their imports and produce repeatable bundles.
-# Syntax diagnostics retain the original HTML page's line coordinates.
+# An inline module script in a page is bundled with its .bend imports, and
+# an error in it points at the page's own line (#1400).
 import Base
 
 def Bundle.inline() -> IO(U32):

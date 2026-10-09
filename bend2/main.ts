@@ -481,74 +481,53 @@ function cli_base(what?: string): void {
   cli_say(1, want.join("\n\n") + "\n");
 }
 
+// cli_bundle builds a page. Bun skips inline module scripts (#1400), so the
+// inline plugin moves each to a virtual file beside its page, padded so an
+// error points at the page's own line and column.
 async function cli_bundle(page: string, dir: string): Promise<void> {
-  // Virtual modules resolve imports beside their page, without disk files.
-  type Script = { page: string; number: number; code: string[] };
-  const scripts = new Map<string, Script>();
+  const code = new Map<string, string>();
   const inline: BunPlugin = {
-    name: "bend inline modules",
+    name: "bend inline",
     setup(build) {
-      build.onResolve({ filter: /\.bend-inline-/ }, (a) => {
+      build.onResolve({ filter: /\.bend-inline-\d+\.js$/ }, (a) => {
         const id = path.resolve(a.resolveDir, a.path);
-        if (scripts.has(id)) {
-          return { path: id, namespace: "bend-inline" };
-        }
+        return code.has(id) ? { path: id, namespace: "inline" } : undefined;
       });
-      build.onLoad({ filter: /.*/, namespace: "bend-inline" }, (a) => ({
-        contents: scripts.get(a.path)!.code.join(""),
-        loader: "js",
-      }));
+      build.onLoad({ filter: /.*/, namespace: "inline" }, (a) =>
+        ({ contents: code.get(a.path)!, loader: "js" }));
       build.onLoad({ filter: /\.html$/ }, async (a) => {
-        const source = await Bun.file(a.path).text();
-        let marker = "<!--bend-inline-position-->";
-        while (source.includes(marker)) {
-          marker += ".";
-        }
-        const names: string[] = [];
-        let code: string[] | null = null;
-        // Insert markers without changing the original markup: their offsets,
-        // less earlier markers, locate script bodies even in multiline tags.
-        const marked = await new HTMLRewriter().on("script", {
+        const src = await Bun.file(a.path).text();
+        const mods: { id: string; text: string }[] = [];
+        let mod: { id: string; text: string } | null = null;
+        const html = new HTMLRewriter().on("script", {
           element(el) {
-            code = null;
-            if (el.getAttribute("type")?.trim().toLowerCase() !== "module"
-              || el.getAttribute("src") !== null) {
-              return;
+            const type = el.getAttribute("type")?.trim().toLowerCase();
+            mod = null;
+            if (type === "module" && !el.hasAttribute("src")) {
+              const name = "." + path.basename(a.path) + ".bend-inline-"
+                + mods.length + ".js";
+              mod = { id: path.join(path.dirname(a.path), name), text: "" };
+              mods.push(mod);
+              el.setAttribute("src", "./" + name);
             }
-            const name = "." + path.basename(a.path)
-              + ".bend-inline-" + String(names.length) + ".js";
-            names.push(name);
-            code = [];
-            scripts.set(path.join(path.dirname(a.path), name),
-              { page: a.path, number: names.length, code });
-            el.prepend(marker, { html: true });
           },
-          text(text) {
-            code?.push(text.text);
+          text(t) {
+            if (mod) {
+              mod.text += t.text;
+              t.remove();
+            }
           },
-        }).transform(new Response(source)).text();
-        let from = 0;
-        let removed = 0;
-        for (const name of names) {
-          const at = marked.indexOf(marker, from);
-          const prefix = source.slice(0, at - removed);
-          scripts.get(path.join(path.dirname(a.path), name))!.code
-            .unshift(prefix.replace(/[^\r\n]/g, " "));
-          from = at + marker.length;
-          removed += marker.length;
+        }).transform(src);
+        let end = 0;
+        let line = 0;
+        for (const m of mods) {
+          const at = src.indexOf(m.text, end);
+          line += src.slice(end, at).split("\n").length - 1;
+          const col = at - src.lastIndexOf("\n", at - 1) - 1;
+          code.set(m.id, "\n".repeat(line) + " ".repeat(col) + m.text);
+          line += m.text.split("\n").length - 1;
+          end = at + m.text.length;
         }
-        let index = 0;
-        const html = await new HTMLRewriter().on("script", {
-          element(el) {
-            if (el.getAttribute("type")?.trim().toLowerCase() !== "module"
-              || el.getAttribute("src") !== null) {
-              return;
-            }
-            el.setAttribute("type", "module");
-            el.setAttribute("src", "./" + names[index++]);
-            el.setInnerContent("");
-          },
-        }).transform(new Response(source)).text();
         return { contents: html, loader: "html" };
       });
     },
@@ -565,15 +544,7 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
       cli_say(1, a.path + " (" + (a.size / 1024).toFixed(1) + "kb)\n");
     }
   } catch (e) {
-    let why = book_err(e);
-    for (const [id, script] of scripts) {
-      if (why.includes(id)) {
-        why = why.replaceAll(id, script.page);
-        why += "\nInline module " + String(script.number)
-          + " in " + script.page + ".";
-      }
-    }
-    throw why;
+    throw book_err(e).replace(/\.([^/\\]+)\.bend-inline-\d+\.js/g, "$1");
   }
 }
 
