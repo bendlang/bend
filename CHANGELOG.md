@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- Native erasure releases a node before dropping its last owned child.
-  Repeated allocation and erasure of wrapped lists no longer slow down
-  progressively (#1307).
-
 ## 2.0.36 (2026-10-07)
 
 - **HOC's proving agent is now named BendAI**: `bend login` logs in to
