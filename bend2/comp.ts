@@ -1185,8 +1185,8 @@ function mat_ops(eq: (k: Name) => string): string {
 // def it calls have no fork, no bang call and only tail self-calls.
 // loop_of gives a def's tail cycle (Tarjan over its tail callees).
 
-function fun_of(k: Name): Fun {
-  return memo(FL.funs, k, () => {
+function fun_of(k: Name, ers: HTerm[] = []): Fun {
+  return memo(FL.funs, lay_key(k, ers), () => {
     const tld = FL.book.tlds[k];
     if (tld?.$ !== "Def") {
       return { n: 0, h: null, live: [], lays: [BOX, BOX], ret: BOX };
@@ -1199,13 +1199,38 @@ function fun_of(k: Name): Fun {
     if (def_foreign(tld)) {
       return { n, h, live, lays: Array(live.length + 1).fill(BOX), ret: BOX };
     }
-    const lays = live.map(([, , A]) => lay_of(A));
+    let j = 0;
+    let T = tld.T;
+    const xs = doms.slice(0, n).map((d) => dom_live(d) ? null : ers[j++]);
+    const lays = xs.flatMap((x, i) => {
+      const all = ty_all(T);
+      T = all.B(x ?? Bend.Var(doms[i][1], i));
+      return x === null ? [lay_of(all.A)] : [];
+    });
     const ret = lay_of(Bend.tele_fill(FL.book, tld.T,
-      Array(n).fill(DUMMY), Bend.ctx_nil()));
+      xs.map((x) => x ?? DUMMY), Bend.ctx_nil()));
+    if (ers.length > 0 && ret === fun_of(k).ret) {
+      return fun_of(k);
+    }
     const wide = lays.flatMap((l) => l.ks).length > WIDE;
     return { n, h, live, lays: lays.map((l) => wide && l.ks.length > 1 ? BOX
       : l), ret: ret.ks.length === 0 ? BOX : ret };
   });
+}
+
+// A flat def's spin is one per layout of its erased arguments; one whose
+// result changes with them takes them too: a record stays in words
+// (#1195), where one that stores it in a node keeps it boxed.
+function lay_key(k: Name, ers: HTerm[]): string {
+  return [k, ...ers.map((e) => memo(FL.lay_ids, lay_of(e),
+    () => FL.lay_ids.size))].join("|");
+}
+
+function fun_at(ck: Spine): [Fun, HTerm[]] {
+  const doms = tele_unbind(FL.book.tlds[ck.k!].T).doms;
+  const ers = ck.all.filter((_, i) => i < fun_of(ck.k!).n
+    && !dom_live(doms[i]));
+  return [fun_of(ck.k!, ers), ers];
 }
 
 function brw_of(k: Name): boolean[] {
@@ -2102,7 +2127,8 @@ function emit_jump(sc: Scope, args: string[], k: Name, bang?: boolean): void {
   file_push(sc, `WL_AGAIN(${sc.seg.fid});`);
 }
 
-function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): string[] {
+function emit_args(sc: Scope, ck: Spine, jump = false, fork = false,
+  lays = fun_of(ck.k!).lays): string[] {
   const k = ck.k!;
   const brw = brw_of(k);
   ck.all.forEach((a, q) => {
@@ -2112,7 +2138,6 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): string[] {
   });
   const xs = ck.xs.map(term_strip);
   const vars = xs.filter((x) => x.$ === "Var");
-  const lays = fun_of(k).lays;
   const vs = ck.xs.map((a, i) => xs[i].$ === "Var" ? null
     : emit_expr({ ...sc, rest: [...xs.slice(i + 1).filter((x) =>
       x.$ !== "Var"), ...vars, ...sc.rest] }, a, null, lays[i]));
@@ -2163,11 +2188,9 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
 function emit_fuse(sc: Scope, ck: Spine, dst: Val | null, tail = false): void {
   const k = ck.k!;
   const T = FL.book.tlds[k].T;
-  const doms = tele_unbind(T).doms;
-  const { n, h, lays, ret } = fun_of(k);
-  const ers = ck.all.filter((_, i) => i < n && !dom_live(doms[i]));
+  const [{ h, lays, ret }, ers] = fun_at(ck);
   const flat = flat_of(k);
-  const ws = emit_args(sc, ck, tail && !flat);
+  const ws = emit_args(sc, ck, tail && !flat, false, lays);
   if (!flat) {
     return emit_body({ ...sc, def: k }, h!, T, ers,
       lays.map((lay) => val_new(ws.splice(0, lay.ks.length), lay)), dst);
@@ -2188,9 +2211,9 @@ function emit_fuse(sc: Scope, ck: Spine, dst: Val | null, tail = false): void {
 }
 
 // A foreign def's last parameter, past its live ones, is its continuation k.
-function emit_open(sc: Scope, k: Name): [Scope, Val[]] {
+function emit_open(sc: Scope, k: Name, ers: HTerm[] = []): [Scope, Val[]] {
   FUEL = FOLD_FUEL;
-  const { live, lays, ret } = fun_of(k);
+  const { live, lays, ret } = fun_of(k, ers);
   const vals = lays.map((l, i) =>
     val_new(l.ks.map(() => name_local(sc, live[i]?.[1] ?? "k")), l));
   brw_of(k).forEach((b, i) => vals[i].ws.forEach((w, j) => {
@@ -2204,13 +2227,12 @@ function emit_open(sc: Scope, k: Name): [Scope, Val[]] {
 }
 
 function emit_native(sc: Scope, k: Name, ers: HTerm[]): string {
-  const key = [k, ...ers.map((e) => memo(FL.lay_ids, lay_of(e),
-    () => FL.lay_ids.size))].join("|");
+  const key = lay_key(k, ers);
   return seg_ref(sc, memo(FL.spun, key, () => {
     const name = `spin_${FL.spun.size}`;
     FL.spun.set(key, name);
     const fuel = FUEL;
-    const [sl, vals] = emit_open(sc, k);
+    const [sl, vals] = emit_open(sc, k, ers);
     const seg = sl.seg;
     seg.fid = name;
     const dst = val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret);
@@ -2425,7 +2447,7 @@ function emit_expr(sc: Scope, tm: HTerm, ty0: HTerm | null,
       }
       const m = term_spine(x);
       if (flat_call(x)) {
-        const dst = emit_dst(sc, fun_of(m.k!).ret);
+        const dst = emit_dst(sc, fun_at(m)[0].ret);
         emit_fuse(sc, m, dst);
         return dst;
       }
@@ -2502,7 +2524,8 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null,
       }
       const o = term_open(x);
       bind_uses(sc, o.ps[0], val_hold(sc, val_to(sc, args[0],
-        lay_of(all.A)), x.k), [o.b], all.A);
+        ty_wnf(all.A)?.$ === "Var" ? args[0].lay : lay_of(all.A)), x.k),
+        [o.b], all.A);
       return emit_body(sc, o.b, all.B(DUMMY), ers, args.slice(1), dst);
     }
     case "Mat":
