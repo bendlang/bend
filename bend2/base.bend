@@ -2480,6 +2480,116 @@ def Array.get.at(-T: Data, i: U32, an: Array<T> & U32) -> Array<T> & T:
 def Array.get(-T: Data, a: Array<T>, +i: U32) -> Array<T> & T:
   Array.get.at(T, i, Array.size(T, a))
 
+# Array.q4mv(w, x, y, r, n, cols, rows) is the MLX affine 4-bit product
+# (bits 4, group 64) of rows r .. r+n of w, a matrix of `rows` rows of `cols`
+# weights (cols a multiple of 128): the codes (rows * cols/8 words, weight
+# 8k+m of a row in bits 4m..4m+3 of its word k), then the bfloat16 scales
+# (rows * cols/128 words, group g in the low half when g is even), then the
+# biases laid out as the scales. x holds the cols activations, then at
+# cols + g the sum of group g. Each row is summed in index order (a word's
+# eight products onto the group's sum, then sum * scale and the group's
+# x-sum * bias onto the row), rounded to bfloat16 (nearest even, a NaN to
+# sign | 0x7fff) and written to y at the row's index. The compiler lowers
+# it to a flat loop; the defs below are its meaning.
+
+def Array.q4mv.f32(+u: U32) -> F32:
+  match u:
+    case U32{+w}:
+      F32{w}
+
+def Array.q4mv.bits(+x: F32) -> U32:
+  match x:
+    case F32{+w}:
+      U32{w}
+
+def Array.q4mv.half(even: Bool, +u: U32) -> F32:
+  match even:
+    case True{}:
+      Array.q4mv.f32(((u .&. 65535 : U32) << 16n : U32))
+    case False{}:
+      Array.q4mv.f32((u .&. 4294901760 : U32))
+
+def Array.q4mv.narrow(nan: Bool, +u: U32) -> U32:
+  match nan:
+    case True{}:
+      (((u >> 16n) .&. 32768) .|. 32767 : U32)
+    case False{}:
+      ((u + 32767 + ((u >> 16n) .&. 1)) >> 16n : U32)
+
+def Array.q4mv.round(+x: F32) -> F32:
+  +u = Array.q4mv.bits(x)
+  Array.q4mv.f32((Array.q4mv.narrow(U32.is_gt((u .&. 2147483647 : U32), 2139095040), u) << 16n : U32))
+
+def Array.q4mv.mac(g: Array<F32> & F32, +c: U32, +s: F32) -> Array<F32> & F32:
+  (x, +a) = g
+  (x, (s + U32.to_f32((c .&. 15 : U32)) * a : F32))
+
+def Array.q4mv.dot(n: Nat, +c: U32, r: Array<F32> & F32, +j: U32) -> Array<F32> & F32:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      (x, +s) = r
+      Array.q4mv.dot(p, (c >> 4n : U32), Array.q4mv.mac(Array.get(F32, x, j), c, s), (j + 1 : U32))
+
+def Array.q4mv.wfin(w: Array<U32>, r: Array<F32> & F32) -> (Array<U32> & Array<F32>) & F32:
+  (x, +s) = r
+  ((w, x), s)
+
+def Array.q4mv.wstep(g: Array<U32> & U32, r: Array<F32> & F32, +j: U32) -> (Array<U32> & Array<F32>) & F32:
+  (w, +c) = g
+  Array.q4mv.wfin(w, Array.q4mv.dot(8n, c, r, j))
+
+def Array.q4mv.words(n: Nat, q: (Array<U32> & Array<F32>) & F32, +i: U32, +j: U32) -> (Array<U32> & Array<F32>) & F32:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      ((w, x), +s) = q
+      Array.q4mv.words(p, Array.q4mv.wstep(Array.get(U32, w, i), (x, s), j), (i + 1 : U32), (j + 8 : U32))
+
+def Array.q4mv.gb(g: Array<U32> & U32, x: Array<F32>, +sw: U32, +qx: F32, +xs: F32, +acc: F32, +even: Bool) -> (Array<U32> & Array<F32>) & F32:
+  (w, +bw) = g
+  +sc = Array.q4mv.half(even, sw)
+  ((w, x), (acc + sc * qx + Array.q4mv.half(even, bw) * xs : F32))
+
+def Array.q4mv.gs(g: Array<U32> & U32, h: Array<F32> & F32, +qx: F32, +acc: F32, +even: Bool, +bat: U32) -> (Array<U32> & Array<F32>) & F32:
+  (w, +sw) = g
+  (x, +xs) = h
+  Array.q4mv.gb(Array.get(U32, w, bat), x, sw, qx, xs, acc, even)
+
+def Array.q4mv.gfin(q: (Array<U32> & Array<F32>) & F32, +at: U32, +d: U32, +xg: U32, +acc: F32, +even: Bool) -> (Array<U32> & Array<F32>) & F32:
+  ((w, x), +qx) = q
+  Array.q4mv.gs(Array.get(U32, w, at), Array.get(F32, x, xg), qx, acc, even, (at + d : U32))
+
+def Array.q4mv.groups(n: Nat, q: (Array<U32> & Array<F32>) & F32, +i: U32, +g: U32, +sa: U32, +d: U32, +cols: U32) -> (Array<U32> & Array<F32>) & F32:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      (wx, +acc) = q
+      +at = (sa + (g >> 1n) : U32)
+      Array.q4mv.groups(p, Array.q4mv.gfin(Array.q4mv.words(8n, (wx, 0.0), i, (g * 64 : U32)), at, d, (cols + g : U32), acc,
+        U32.is_zero((g .&. 1 : U32))), (i + 8 : U32), (g + 1 : U32), sa, d, cols)
+
+def Array.q4mv.put(q: (Array<U32> & Array<F32>) & F32, y: Array<F32>, +i: U32) -> (Array<U32> & Array<F32>) & Array<F32>:
+  (wx, +acc) = q
+  (wx, Array.set(F32, y, i, Array.q4mv.round(acc)))
+
+def Array.q4mv.rows(n: Nat, q: (Array<U32> & Array<F32>) & Array<F32>, +i: U32, +cols: U32, +cw: U32, +s0: U32, +sw: U32, +d: U32) -> (Array<U32> & Array<F32>) & Array<F32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      (wx, y) = q
+      Array.q4mv.rows(p, Array.q4mv.put(Array.q4mv.groups(U32.to_nat((cols >> 6n : U32)), (wx, 0.0), (i * cw : U32), 0,
+        (s0 + i * sw : U32), d, cols), y, i), (i + 1 : U32), cols, cw, s0, sw, d)
+
+def Array.q4mv(w: Array<U32>, x: Array<F32>, y: Array<F32>, +r: U32, +n: U32, +cols: U32, +rows: U32) -> (Array<U32> & Array<F32>) & Array<F32>:
+  +cw = (cols >> 3n : U32)
+  +sw = (cols >> 7n : U32)
+  Array.q4mv.rows(U32.to_nat(n), ((w, x), y), r, cols, cw, (rows * cw : U32), sw, (rows * sw : U32))
+
 def Array.to_list.go(~T: Type, a: Array<T>, acc: List<T>) -> List<T>:
   match a:
     case ALeaf{x}:
