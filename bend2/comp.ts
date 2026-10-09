@@ -811,7 +811,7 @@ function intr_of(k: Name, js = false): Intr | undefined {
   const tld = FL.book.tlds[k];
   const it = tld?.$ === "Def" && tld.i === undefined && tld.b
     ? OPERATIONS[op_name(k)] : undefined;
-  return it && (js ? it.JS !== undefined : it.C !== undefined) ? it : undefined;
+  return it && (js ? it.JS : it.C) !== undefined ? it : undefined;
 }
 
 function op_name(k: Name): string {
@@ -1414,7 +1414,7 @@ function file_book(roots: Name[]): void {
         if (s.b) {
           FL.bangs.add(s.k);
         }
-        if (intr_of(s.k) === undefined) {
+        if (intr_of(s.k, FL.js) === undefined) {
           refs.add(s.k);
           FL.sites.set(s.k, (FL.sites.get(s.k) ?? 0) + 1);
         }
@@ -3568,8 +3568,6 @@ static id<MTLCommandQueue>         gpu_que;
 static id<MTLComputePipelineState> gpu_pso;
 static id<MTLBuffer>               gpu_buf;
 static id<MTLComputeCommandEncoder> gpu_enc;
-static id<MTLLibrary>               gpu_lib;
-static id<MTLComputePipelineState> gpu_q4pso;
 #elif BEND_CUDA
 static CUdevice   gpu_dev;
 static CUmodule   gpu_lib;
@@ -4224,117 +4222,43 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
   return term_blk(arr, c, l);
 }
 
-// Array.q4mv: rows r .. r+n of an MLX affine q4g64 matrix against x, each
-// row summed in base.bend's order and narrowed to bfloat16 into y.
+// Array.q4mv sums eight rows side by side, each its own chain of adds in
+// base.bend's order: a vector lane holds a row, and no sum is reordered.
+#define Q4_H(u) f32_unbox(g & 1 ? (u) & 0xFFFF0000u : (u) << 16)
 
-INLINE f32 q4_half(u32 u, u32 g) {
-  return f32_unbox(g & 1 ? u & 0xFFFF0000u : u << 16);
-}
-
-INLINE u32 q4_round(f32 v) {
-  u32 u = (u32)f32_rewrap(v);
-  u32 b = (u & 0x7FFFFFFFu) > 0x7F800000u ? ((u >> 16) & 0x8000u) | 0x7FFFu
-    : (u + 0x7FFFu + ((u >> 16) & 1u)) >> 16;
-  return b << 16;
-}
-
-// One row i, in base.bend's order, written to Y as bfloat16.
-#define Q4_ROW(W, X, Y, wm, xm, ym, i, c, cw, s0, sw, d, ng) \
-  { \
-    f32 acc_ = 0.0f; \
-    for (u32 g = 0; g < ng; g += 1) { \
-      f32 qx = 0.0f; \
-      for (u32 k = 0; k < 8; k += 1) { \
-        u32 q = W[((i) * cw + g * 8 + k) & wm]; \
-        u32 j = g * 64 + k * 8; \
-        for (u32 m = 0; m < 8; m += 1) { \
-          qx = qx + (f32)((q >> (4 * m)) & 15) * f32_unbox(X[(j + m) & xm]); \
-        } \
-      } \
-      u32 at = s0 + (i) * sw + (g >> 1); \
-      f32 sc = q4_half(W[at & wm], g); \
-      f32 bi = q4_half(W[(at + d) & wm], g); \
-      acc_ = acc_ + sc * qx; \
-      acc_ = acc_ + bi * f32_unbox(X[(c + g) & xm]); \
-    } \
-    Y[(i) & ym] = q4_round(acc_); \
-  }
-
-// The host hands a big product to the GPU's own kernel (one thread a row)
-// when a Metal heap is live; Q4_GPU_MIN weights is the break-even.
-#define Q4_GPU_MIN (1ull << 22)
-#if !DEVICE && BEND_METAL
-static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
-  u32 n, u32 c, u32 rows);
-#endif
-
-// Q4_RB rows run side by side: each keeps its own chain of adds in the
-// scalar order, so the lanes of a vector hold rows, never a reordered sum.
-#define Q4_RB 8
-
-INLINE Term q4mv(Env e, Term w, Term x, Term y, u64 r, u64 n, u64 cols,
-  u64 rows) {
-  DEV u64*  H  = e.mem;
-  DEV u32a* W  = blk_ptr(H, blk_loc(H, w), 0);
-  DEV u32a* X  = blk_ptr(H, blk_loc(H, x), 0);
-  DEV u32a* Y  = blk_ptr(H, blk_loc(H, y), 0);
-  u32 wm = (u32)((1ull << blk_cls(w)) - 1);
-  u32 xm = (u32)((1ull << blk_cls(x)) - 1);
-  u32 ym = (u32)((1ull << blk_cls(y)) - 1);
-  u32 c  = (u32)cols;
-  u32 cw = c >> 3;
-  u32 sw = c >> 7;
-  u32 ng = c >> 6;
-  u32 s0 = (u32)rows * cw;
-  u32 d  = (u32)rows * sw;
-  u32 i  = (u32)r;
-  u64 t  = 0;
-#if !DEVICE && BEND_METAL
-  if (n * cols >= Q4_GPU_MIN && (u64)rows * (cw + 2 * sw) <= (u64)wm + 1
-      && (u64)c + ng <= (u64)xm + 1 && r + n <= (u64)ym + 1 && r + n <= rows
-      && gpu_q4mv(blk_loc(H, w), blk_loc(H, x),
-      blk_loc(H, y), wm, xm, ym, i, (u32)n, c, (u32)rows)) {
-    return y;
-  }
-#endif
-  for (; t + Q4_RB <= n; t += Q4_RB, i += Q4_RB) {
-    f32 acc[Q4_RB];
-    for (u32 b = 0; b < Q4_RB; b += 1) {
-      acc[b] = 0.0f;
-    }
-    for (u32 g = 0; g < ng; g += 1) {
-      f32 qx[Q4_RB];
-      for (u32 b = 0; b < Q4_RB; b += 1) {
-        qx[b] = 0.0f;
-      }
-      for (u32 k = 0; k < 8; k += 1) {
-        u32 q[Q4_RB];
-        for (u32 b = 0; b < Q4_RB; b += 1) {
-          q[b] = W[((i + b) * cw + g * 8 + k) & wm];
+INLINE Term q4mv(Env e, Term w, Term x, Term y, u32 r, u32 n, u32 c, u32 rs) {
+  DEV u32a* W = blk_ptr(e.mem, blk_loc(e.mem, w), 0);
+  DEV u32a* X = blk_ptr(e.mem, blk_loc(e.mem, x), 0);
+  DEV u32a* Y = blk_ptr(e.mem, blk_loc(e.mem, y), 0);
+  u32 wm = (1ull << blk_cls(w)) - 1, xm = (1ull << blk_cls(x)) - 1;
+  u32 cw = c >> 3, sw = c >> 7;
+  for (u32 i = r; i < r + n; i += 8) {
+    f32 a[8] = {0};
+    for (u32 g = 0; g < c >> 6; g += 1) {
+      f32 q[8] = {0};
+      for (u32 k = 0; k < 64; k += 8) {
+        u32 o[8];
+        for (u32 b = 0; b < 8; b += 1) {
+          o[b] = W[((i + b) * cw + g * 8 + k / 8) & wm];
         }
-        u32 j = g * 64 + k * 8;
-        for (u32 m = 0; m < 8; m += 1) {
-          f32 xv = f32_unbox(X[(j + m) & xm]);
-          for (u32 b = 0; b < Q4_RB; b += 1) {
-            qx[b] = qx[b] + (f32)((q[b] >> (4 * m)) & 15) * xv;
+        for (u32 j = 0; j < 8; j += 1) {
+          f32 v = f32_unbox(X[(g * 64 + k + j) & xm]);
+          for (u32 b = 0; b < 8; b += 1) {
+            q[b] += (f32)(o[b] >> 4 * j & 15) * v;
           }
         }
       }
-      f32 xs = f32_unbox(X[(c + g) & xm]);
-      for (u32 b = 0; b < Q4_RB; b += 1) {
-        u32 at = s0 + (i + b) * sw + (g >> 1);
-        f32 sc = q4_half(W[at & wm], g);
-        f32 bi = q4_half(W[(at + d) & wm], g);
-        acc[b] = acc[b] + sc * qx[b];
-        acc[b] = acc[b] + bi * xs;
+      for (u32 b = 0; b < 8; b += 1) {
+        u32 t = rs * cw + (i + b) * sw + g / 2;
+        a[b] += Q4_H(W[t & wm]) * q[b];
+        a[b] += Q4_H(W[(t + rs * sw) & wm]) * f32_unbox(X[(c + g) & xm]);
       }
     }
-    for (u32 b = 0; b < Q4_RB; b += 1) {
-      Y[(i + b) & ym] = q4_round(acc[b]);
+    for (u32 b = 0; b < 8 && i + b < r + n; b += 1) {
+      u32 u = (u32)f32_rewrap(a[b]);
+      Y[(i + b) & ((1ull << blk_cls(y)) - 1)] = ((u & 0x7FFFFFFFu) > 0x7F800000u
+        ? u >> 16 & 0x8000u | 0x7FFFu : (u + 0x7FFFu + (u >> 16 & 1)) >> 16) << 16;
     }
-  }
-  for (; t < n; t += 1, i += 1) {
-    Q4_ROW(W, X, Y, wm, xm, ym, i, c, cw, s0, sw, d, ng)
   }
   return y;
 }
@@ -4669,42 +4593,6 @@ INLINE void bank_pack(DEV u64* H, u32 lane) {
     }
   }
 }
-
-#ifdef __METAL_VERSION__
-kernel void bend_q4mv(device const u32* W [[buffer(0)]],
-  device const u32* X [[buffer(1)]], device u32* Y [[buffer(2)]],
-  constant u32* P [[buffer(3)]], u32 t [[thread_position_in_grid]]) {
-  if (t >= P[7]) {
-    return;
-  }
-  u32 c  = P[3], rows = P[4];
-  u32 i  = P[6] + t;
-  u32 cw = c >> 3, sw = c >> 7, ng = c >> 6;
-  u32 sa = rows * cw + i * sw;
-  u32 d  = rows * sw;
-  device const uint2* R = (device const uint2*)(W + i * cw);
-  f32 acc = 0.0f;
-  for (u32 g = 0; g < ng; g += 1) {
-    f32 qx = 0.0f;
-    for (u32 h = 0; h < 4; h += 1) {
-      uint2 v = R[g * 4 + h];
-      u32 j = g * 64 + h * 16;
-      for (u32 m = 0; m < 8; m += 1) {
-        qx = qx + (f32)((v.x >> (4 * m)) & 15) * as_type<f32>(X[j + m]);
-      }
-      for (u32 m = 0; m < 8; m += 1) {
-        qx = qx + (f32)((v.y >> (4 * m)) & 15) * as_type<f32>(X[j + 8 + m]);
-      }
-    }
-    u32 at = sa + (g >> 1);
-    f32 sc = q4_half(W[at], g);
-    f32 bi = q4_half(W[at + d], g);
-    acc = acc + sc * qx;
-    acc = acc + bi * as_type<f32>(X[c + g]);
-  }
-  Y[i] = q4_round(acc);
-}
-#endif
 
 #ifdef __METAL_VERSION__
 kernel void bend_dev(DEV u64* H [[buffer(0)]], constant u32& pass [[buffer(1)]],
@@ -5054,7 +4942,6 @@ static MTLComputePipelineDescriptor* gpu_desc(void) {
   if (!lib) {
     gpu_fail(err);
   }
-  gpu_lib = lib;
   MTLComputePipelineDescriptor* d = [MTLComputePipelineDescriptor new];
   d.computeFunction = [lib newFunctionWithName:@"bend_dev"];
   return d;
@@ -5143,40 +5030,6 @@ static void gpu_pass(u32 f) {
       gpu_fail([cb error]);
     }
   }
-}
-
-static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
-  u32 n, u32 c, u32 rows) {
-  if (gpu_buf == nil || gpu_lib == nil) {
-    return false;
-  }
-  @autoreleasepool {
-    if (gpu_q4pso == nil) {
-      NSError* err = nil;
-      gpu_q4pso = [gpu_dev newComputePipelineStateWithFunction:
-        [gpu_lib newFunctionWithName:@"bend_q4mv"] error:&err];
-      if (gpu_q4pso == nil) {
-        gpu_fail(err);
-      }
-    }
-    u32 p[8] = { wm, xm, ym, c, rows, 0, r, n };
-    id<MTLCommandBuffer> cb = [gpu_que commandBuffer];
-    id<MTLComputeCommandEncoder> enc = [cb computeCommandEncoder];
-    [enc setComputePipelineState:gpu_q4pso];
-    [enc setBuffer:gpu_buf offset:wl * 8 atIndex:0];
-    [enc setBuffer:gpu_buf offset:xl * 8 atIndex:1];
-    [enc setBuffer:gpu_buf offset:yl * 8 atIndex:2];
-    [enc setBytes:p length:sizeof p atIndex:3];
-    [enc dispatchThreads:MTLSizeMake(n, 1, 1)
-      threadsPerThreadgroup:MTLSizeMake(256, 1, 1)];
-    [enc endEncoding];
-    [cb commit];
-    [cb waitUntilCompleted];
-    if ([cb error]) {
-      gpu_fail([cb error]);
-    }
-  }
-  return true;
 }
 
 #elif BEND_CUDA
