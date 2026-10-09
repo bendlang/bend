@@ -865,6 +865,8 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
   return adt;
 }
 
+// Whether A holds a type p seeks: a datatype p rejects is looked into,
+// but for the words.
 function ty_holds(A: HTerm | null,
   p: (t: HTerm | null) => boolean, seen = new Set<Name>()): boolean {
   const t = ty_wnf(A);
