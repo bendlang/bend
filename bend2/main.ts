@@ -312,7 +312,7 @@ async function cli_file(args: string[]): Promise<void> {
       process.exitCode = book_run(book, [file, ...argv]);
       return;
     }
-    const ins = new Set([...seen.keys(), ...[...book.tlds.values()].flatMap((t) =>
+    const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
     for (const out of outs) {
       if (output_conflicts(out, ins)) {
@@ -811,7 +811,7 @@ async function cli_login(): Promise<string> {
 // A LICENSE beside a published file goes along; a license/ directory, in
 // any case, is refused (it clashes with LICENSE on a case-blind disk).
 function pkg_files(file: string, book: Bend.Book,
-  seen: Map<string, string | null>): Record<string, string> {
+  seen: Map<string, Bend.FileId | null>): Record<string, string> {
   const entry = fs.realpathSync(file);
   const dir = path.join(path.dirname(entry), "/");
   if (dir !== path.join(fs.realpathSync(path.dirname(file)), "/")) {
@@ -825,9 +825,9 @@ function pkg_files(file: string, book: Bend.Book,
   const raws = [...[...seen].flatMap(([real, ns]): [string, string][] =>
     real === BASE || ns === null || ns.startsWith("0x") ? []
       : [[real === entry ? path.basename(file) : path.posix.relative(dir, real), real]]),
-  ...[...book.tlds].flatMap(([k, tld]): [string, string][] =>
+  ...Object.entries(book.tlds).flatMap(([k, tld]): [string, string][] =>
     tld.$ !== "Def" || tld.i === undefined || tld.b === true
-      || Bend.name_root(k).file.startsWith("0x") ? [] : tld.i.map((f) =>
+      || Bend.name_file(k as Bend.Name).startsWith("0x") ? [] : tld.i.map((f) =>
       [path.posix.normalize(f.slice(dir.length)), f]))];
   // .bend files come first, so a foreign file's .bend, its directory a
   // prefix of the file's path, is checked inside dir before its path is cut
@@ -917,20 +917,20 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
 // If the book holds a promise, a walk from the defs outside Base collects
 // who names whom, then the promises flood back along those edges.
 function book_promises(book: Bend.Book): Bend.Name[] {
-  const bad  = new Bend.NameSet([...book.tlds.keys()].filter((k) => {
-    const t = book.tlds.get(k)! as Bend.Def;
+  const bad  = new Set((Object.keys(book.tlds) as Bend.Name[]).filter((k) => {
+    const t = book.tlds[k] as Bend.Def;
     return t.u === true || (t.i !== undefined && t.b !== true);
   }));
   if (bad.size === 0) {
     return [];
   }
-  const own  = [...new Bend.NameSet(book.order)].filter((k) => book.tlds.get(k)!.b !== true);
-  const uses = new Bend.NameMap<Bend.Name[]>();
-  const reach = new Bend.NameSet(own);
+  const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
+  const uses: Record<string, Bend.Name[]> = Object.create(null);
+  const reach = new Set(own);
   for (const k of reach) {
-    const t = book.tlds.get(k);
+    const t = book.tlds[k];
     if (t !== undefined) {
-      const rs = new Bend.NameSet();
+      const rs = new Set<Bend.Name>();
       for (const c of t.$ === "ADT" ? [t, ...t.c] : [t]) {
         term_refs(Bend.term_lower(c.T), rs);
       }
@@ -938,21 +938,19 @@ function book_promises(book: Bend.Book): Bend.Name[] {
         term_refs(Bend.term_lower(Bend.checked_higher(t.e)), rs);
       }
       for (const r of rs) {
-        const users = uses.get(r);
-        if (users) users.push(k);
-        else uses.set(r, [k]);
+        (uses[r] ??= []).push(k);
         reach.add(r);
       }
     }
   }
   for (const k of bad) {
-    uses.get(k)?.forEach((j) => bad.add(j));
+    uses[k]?.forEach((j) => bad.add(j));
   }
   return own.filter((k) => bad.has(k));
 }
 
 // term_refs adds to out the names a term (a span skipped) refers to.
-function term_refs(t: Bend.LTerm, out: Bend.NameSet): void {
+function term_refs(t: Bend.LTerm, out: Set<Bend.Name>): void {
   const seen = new Set([t]);
   for (const todo = [t]; todo.length > 0;) {
     const x = todo.pop() as Bend.LTerm;
@@ -1007,7 +1005,7 @@ async function book_read(file: string, base?: Bend.Book,
       throw "Error: PROOF.bend must import ./LAWS.bend";
     }
     Bend.book_valid(book, base?.order.length ?? 0);
-    const holes = book.hols + [...book.tlds.values()]
+    const holes = book.hols + Object.values(book.tlds)
       .filter(t => t.$ === "Def" && t.v === null && t.b !== true && !t.i).length;
     if (holes > 0) {
       throw "Error: " + String(holes) + " TODO" + (holes === 1 ? "" : "s")
@@ -1026,8 +1024,8 @@ class Check_Fail {
 
 function book_seed(base: Bend.Book): Bend.Book {
   const book = Bend.book_nil();
-  for (const [k, t] of base.tlds) book.tlds.set(k, { ...t });
-  book.ctrs = new Bend.NameMap(base.ctrs);
+  for (const [k, t] of Object.entries(base.tlds)) book.tlds[k] = { ...t };
+  Object.assign(book.ctrs, base.ctrs);
   book.base = base.base;
   book.files = new Map(base.files);
   book.tmps = new Map(base.tmps);
@@ -1036,7 +1034,7 @@ function book_seed(base: Bend.Book): Bend.Book {
 }
 
 function book_main(book: Bend.Book): Bend.Def | null {
-  const main = book.tlds.get(Bend.name_source(book.entry, "main"));
+  const main = book.tlds[Bend.name_source(book.entry, "main")];
   return main === undefined || main.$ !== "Def"
     || (main.v === null && main.i === undefined) ? null : main;
 }
