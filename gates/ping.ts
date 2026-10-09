@@ -325,6 +325,45 @@ try {
     const got = await bend_closed(args);
     check("a closed reader keeps success: " + args.join(" "), got.code === 0);
   }
+  // BEND_CACHE: a warm --check-only skips an import an earlier run checked
+  // (800 proofs by computation, about half a second), whatever loads before
+  // it; an edit to it is checked again, and a failed run writes no entry
+  const cache = path.join(TMP, "cache");
+  const proofs = (off: number) => "import Base\n" + Array.from({ length: 800 },
+    (_, i) => "\ndef s" + String(i) + "() -> {U32.to_nat(" + String(500 + i)
+      + ") == " + String(500 + i + (i === 799 ? off : 0)) + "n : Nat}:\n  {==}\n")
+    .join("");
+  const cache_lib = path.join(TMP, "cache_lib.bend");
+  const cache_use = path.join(TMP, "cache_use.bend");
+  fs.writeFileSync(cache_lib, proofs(0));
+  fs.writeFileSync(cache_use, "import Base\nimport ./cache_lib.bend as L\n\n"
+    + "def two() -> {1n+1n == 2n : Nat}:\n  {==}\n");
+  const cached = async (): Promise<lib.Exec & { ms: number; n: number }> => {
+    const t = performance.now();
+    const got = await bend([cache_use, "--check-only"],
+      { BEND_CACHE: cache, BEND_NO_TELEMETRY: "1" });
+    const n = fs.existsSync(cache) ? fs.readdirSync(cache).length : 0;
+    return { ...got, ms: performance.now() - t, n };
+  };
+  const cold = await cached();
+  const warm = await cached();
+  check("BEND_CACHE: a cold check writes entries and a warm one skips the"
+    + " import: " + cold.err + warm.err, cold.code === 0 && cold.n > 0
+    && warm.code === 0 && warm.n === cold.n && warm.ms * 3 < cold.ms);
+  fs.writeFileSync(cache_lib, proofs(1));
+  const edit = await cached();
+  check("BEND_CACHE: an edited import is checked again, and its failure"
+    + " writes nothing", edit.code === 1 && edit.err.includes("SOME PROOFS FAIL")
+    && edit.n === cold.n);
+  fs.writeFileSync(cache_lib, "# an edit to a comment\n" + proofs(0));
+  const back = await cached();
+  check("BEND_CACHE: the import fixed, a comment apart, is warm again",
+    back.code === 0 && back.n === cold.n && back.ms * 3 < cold.ms);
+  fs.writeFileSync(cache_use, "import Base\nimport ./sum.bend as S\n"
+    + "import ./cache_lib.bend as L\n\ndef two() -> {1n+1n == 2n : Nat}:\n  {==}\n");
+  const after = await cached();
+  check("BEND_CACHE: an import loaded after another one is warm too: "
+    + after.err, after.code === 0 && after.ms * 3 < cold.ms);
   const two  = "import Base\ndef two() -> Nat:\n  2n\n";
   const use  = (at: string) => "import Base\nimport ./" + at
     + " as T\ndef main() -> Nat:\n  T.two\n";
