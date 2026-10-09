@@ -1,3 +1,6 @@
+# A partial match is legal while an Empty binder remains live. The foreign
+# keep prevents dead-code pruning from hiding its Efq tail from either
+# emitter. Neither sink constructs Empty or invokes the retained closure.
 import Base
 
 law absurd.arm:
