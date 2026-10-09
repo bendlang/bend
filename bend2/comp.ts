@@ -3298,6 +3298,9 @@ using namespace metal;
 #include <stdatomic.h>
 #include <unistd.h>
 #include <signal.h>
+#if defined(__ARM_NEON)
+#include <arm_neon.h>
+#endif
 #include <sys/mman.h>
 #include <time.h>
 #include <poll.h>
@@ -4225,7 +4228,7 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
 }
 
 // Array.q4mv: rows r .. r+n of an MLX affine q4g64 matrix against x, each
-// row summed in base.bend's order and narrowed to bfloat16 into y.
+// row summed in base.bend's tree order and narrowed to bfloat16 into y.
 
 INLINE f32 q4_half(u32 u, u32 g) {
   return f32_unbox(g & 1 ? u & 0xFFFF0000u : u << 16);
@@ -4238,29 +4241,49 @@ INLINE u32 q4_round(f32 v) {
   return b << 16;
 }
 
-// One row i, in base.bend's order, written to Y as bfloat16.
-#define Q4_ROW(W, X, Y, wm, xm, ym, i, c, cw, s0, sw, d, ng) \
-  { \
-    f32 acc_ = 0.0f; \
-    for (u32 g = 0; g < ng; g += 1) { \
-      f32 qx = 0.0f; \
-      for (u32 k = 0; k < 8; k += 1) { \
-        u32 q = W[((i) * cw + g * 8 + k) & wm]; \
-        u32 j = g * 64 + k * 8; \
-        for (u32 m = 0; m < 8; m += 1) { \
-          qx = qx + (f32)((q >> (4 * m)) & 15) * f32_unbox(X[(j + m) & xm]); \
-        } \
-      } \
-      u32 at = s0 + (i) * sw + (g >> 1); \
-      f32 sc = q4_half(W[at & wm], g); \
-      f32 bi = q4_half(W[(at + d) & wm], g); \
-      acc_ = acc_ + sc * qx; \
-      acc_ = acc_ + bi * f32_unbox(X[(c + g) & xm]); \
-    } \
-    Y[(i) & ym] = q4_round(acc_); \
-  }
+// A group's term: its eight lane sums meet as ((0+4)+(2+6))+((1+5)+(3+7)),
+// then scale * that + bias * the group's x-sum.
+INLINE f32 q4_term(DEV u32a* W, DEV u32a* X, u32 wm, u32 xm, u32 at, u32 d,
+  u32 g, u32 c, THR f32* L) {
+  f32 qx = ((L[0] + L[4]) + (L[2] + L[6])) + ((L[1] + L[5]) + (L[3] + L[7]));
+  return q4_half(W[at & wm], g) * qx
+    + q4_half(W[(at + d) & wm], g) * f32_unbox(X[(c + g) & xm]);
+}
 
-// The host hands a big product to the GPU's own kernel (one thread a row)
+// The 32 lane partials fold as p[l] += p[l + o] for o = 16, 8, 4, 2, 1.
+INLINE u32 q4_fold(THR f32* p) {
+  for (u32 o = 16; o > 0; o >>= 1) {
+    for (u32 l = 0; l < o; l += 1) {
+      p[l] = p[l] + p[l + o];
+    }
+  }
+  return q4_round(p[0]);
+}
+
+// One row i: lane j of group g sums q*x over its words k = 0..7 in order
+// (nibble j of word k), and group g's term goes onto partial g % 32.
+INLINE u32 q4_row(DEV u32a* W, DEV u32a* X, u32 wm, u32 xm, u32 i, u32 c,
+  u32 cw, u32 s0, u32 sw, u32 d) {
+  f32 p[32];
+  for (u32 l = 0; l < 32; l += 1) {
+    p[l] = 0.0f;
+  }
+  for (u32 g = 0; g < c >> 6; g += 1) {
+    f32 L[8] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+    for (u32 k = 0; k < 8; k += 1) {
+      u32 q = W[(i * cw + g * 8 + k) & wm];
+      for (u32 j = 0; j < 8; j += 1) {
+        L[j] = L[j] + (f32)((q >> (4 * j)) & 15)
+          * f32_unbox(X[(g * 64 + k * 8 + j) & xm]);
+      }
+    }
+    p[g & 31] = p[g & 31]
+      + q4_term(W, X, wm, xm, s0 + i * sw + (g >> 1), d, g, c, L);
+  }
+  return q4_fold(p);
+}
+
+// The host hands a big product to the GPU's own kernel (a SIMD group a row)
 // when a Metal heap is live; Q4_GPU_MIN weights is the break-even.
 #define Q4_GPU_MIN (1ull << 22)
 #if !DEVICE && BEND_METAL
@@ -4268,9 +4291,44 @@ static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
   u32 n, u32 c, u32 rows);
 #endif
 
-// Q4_RB rows run side by side: each keeps its own chain of adds in the
-// scalar order, so the lanes of a vector hold rows, never a reordered sum.
-#define Q4_RB 8
+#if !DEVICE && defined(__ARM_NEON)
+// Four rows at once in NEON: vector a holds lanes 0..3, b lanes 4..7.
+INLINE void q4_neon4(const u32* W, const f32* X, u32* Y, u32 i, u32 c,
+  u32 cw, u32 s0, u32 sw, u32 d) {
+  int32x4_t  ra = { 0, -4, -8, -12 };
+  int32x4_t  rb = { -16, -20, -24, -28 };
+  uint32x4_t nb = vdupq_n_u32(15);
+  f32 p[4][32];
+  memset(p, 0, sizeof p);
+  for (u32 g = 0; g < c >> 6; g += 1) {
+    float32x4_t a[4], b[4];
+    for (u32 r = 0; r < 4; r += 1) {
+      a[r] = b[r] = vdupq_n_f32(0.0f);
+    }
+    for (u32 k = 0; k < 8; k += 1) {
+      float32x4_t xa = vld1q_f32(X + g * 64 + k * 8);
+      float32x4_t xb = vld1q_f32(X + g * 64 + k * 8 + 4);
+      for (u32 r = 0; r < 4; r += 1) {
+        uint32x4_t q = vdupq_n_u32(W[(i + r) * cw + g * 8 + k]);
+        a[r] = vaddq_f32(a[r], vmulq_f32(xa,
+          vcvtq_f32_u32(vandq_u32(vshlq_u32(q, ra), nb))));
+        b[r] = vaddq_f32(b[r], vmulq_f32(xb,
+          vcvtq_f32_u32(vandq_u32(vshlq_u32(q, rb), nb))));
+      }
+    }
+    for (u32 r = 0; r < 4; r += 1) {
+      f32 L[8];
+      vst1q_f32(L, a[r]);
+      vst1q_f32(L + 4, b[r]);
+      p[r][g & 31] = p[r][g & 31] + q4_term((u32a*)W, (u32a*)X, ~0u, ~0u,
+        s0 + (i + r) * sw + (g >> 1), d, g, c, L);
+    }
+  }
+  for (u32 r = 0; r < 4; r += 1) {
+    Y[i + r] = q4_fold(p[r]);
+  }
+}
+#endif
 
 INLINE Term q4mv(Env e, Term w, Term x, Term y, u64 r, u64 n, u64 cols,
   u64 rows) {
@@ -4284,57 +4342,25 @@ INLINE Term q4mv(Env e, Term w, Term x, Term y, u64 r, u64 n, u64 cols,
   u32 c  = (u32)cols;
   u32 cw = c >> 3;
   u32 sw = c >> 7;
-  u32 ng = c >> 6;
   u32 s0 = (u32)rows * cw;
   u32 d  = (u32)rows * sw;
   u32 i  = (u32)r;
   u64 t  = 0;
+  bool fit = (u64)rows * (cw + 2 * sw) <= (u64)wm + 1
+    && (u64)c + (c >> 6) <= (u64)xm + 1 && r + n <= (u64)ym + 1 && r + n <= rows;
 #if !DEVICE && BEND_METAL
-  if (n * cols >= Q4_GPU_MIN && (u64)rows * (cw + 2 * sw) <= (u64)wm + 1
-      && (u64)c + ng <= (u64)xm + 1 && r + n <= (u64)ym + 1 && r + n <= rows
-      && gpu_q4mv(blk_loc(H, w), blk_loc(H, x),
+  if (fit && n * cols >= Q4_GPU_MIN && gpu_q4mv(blk_loc(H, w), blk_loc(H, x),
       blk_loc(H, y), wm, xm, ym, i, (u32)n, c, (u32)rows)) {
     return y;
   }
 #endif
-  for (; t + Q4_RB <= n; t += Q4_RB, i += Q4_RB) {
-    f32 acc[Q4_RB];
-    for (u32 b = 0; b < Q4_RB; b += 1) {
-      acc[b] = 0.0f;
-    }
-    for (u32 g = 0; g < ng; g += 1) {
-      f32 qx[Q4_RB];
-      for (u32 b = 0; b < Q4_RB; b += 1) {
-        qx[b] = 0.0f;
-      }
-      for (u32 k = 0; k < 8; k += 1) {
-        u32 q[Q4_RB];
-        for (u32 b = 0; b < Q4_RB; b += 1) {
-          q[b] = W[((i + b) * cw + g * 8 + k) & wm];
-        }
-        u32 j = g * 64 + k * 8;
-        for (u32 m = 0; m < 8; m += 1) {
-          f32 xv = f32_unbox(X[(j + m) & xm]);
-          for (u32 b = 0; b < Q4_RB; b += 1) {
-            qx[b] = qx[b] + (f32)((q[b] >> (4 * m)) & 15) * xv;
-          }
-        }
-      }
-      f32 xs = f32_unbox(X[(c + g) & xm]);
-      for (u32 b = 0; b < Q4_RB; b += 1) {
-        u32 at = s0 + (i + b) * sw + (g >> 1);
-        f32 sc = q4_half(W[at & wm], g);
-        f32 bi = q4_half(W[(at + d) & wm], g);
-        acc[b] = acc[b] + sc * qx[b];
-        acc[b] = acc[b] + bi * xs;
-      }
-    }
-    for (u32 b = 0; b < Q4_RB; b += 1) {
-      Y[(i + b) & ym] = q4_round(acc[b]);
-    }
+#if !DEVICE && defined(__ARM_NEON)
+  for (; fit && t + 4 <= n; t += 4, i += 4) {
+    q4_neon4((u32*)W, (f32*)X, (u32*)Y, i, c, cw, s0, sw, d);
   }
+#endif
   for (; t < n; t += 1, i += 1) {
-    Q4_ROW(W, X, Y, wm, xm, ym, i, c, cw, s0, sw, d, ng)
+    Y[i & ym] = q4_row(W, X, wm, xm, i, c, cw, s0, sw, d);
   }
   return y;
 }
@@ -4671,38 +4697,44 @@ INLINE void bank_pack(DEV u64* H, u32 lane) {
 }
 
 #ifdef __METAL_VERSION__
+// A SIMD group a row: lane l takes groups l, l + 32, ..., as q4_row's p[l].
 kernel void bend_q4mv(device const u32* W [[buffer(0)]],
   device const u32* X [[buffer(1)]], device u32* Y [[buffer(2)]],
-  constant u32* P [[buffer(3)]], u32 t [[thread_position_in_grid]]) {
-  if (t >= P[7]) {
+  constant u32* P [[buffer(3)]], u32 tg [[threadgroup_position_in_grid]],
+  u32 sg [[simdgroup_index_in_threadgroup]],
+  u32 l [[thread_index_in_simdgroup]]) {
+  if (tg * 8 + sg >= P[7]) {
     return;
   }
   u32 c  = P[3], rows = P[4];
-  u32 i  = P[6] + t;
-  u32 cw = c >> 3, sw = c >> 7, ng = c >> 6;
-  u32 sa = rows * cw + i * sw;
-  u32 d  = rows * sw;
+  u32 i  = P[6] + tg * 8 + sg;
+  u32 cw = c >> 3, sw = c >> 7;
   device const uint2* R = (device const uint2*)(W + i * cw);
-  f32 acc = 0.0f;
-  for (u32 g = 0; g < ng; g += 1) {
-    f32 qx = 0.0f;
-    for (u32 h = 0; h < 4; h += 1) {
-      uint2 v = R[g * 4 + h];
-      u32 j = g * 64 + h * 16;
-      for (u32 m = 0; m < 8; m += 1) {
-        qx = qx + (f32)((v.x >> (4 * m)) & 15) * as_type<f32>(X[j + m]);
-      }
-      for (u32 m = 0; m < 8; m += 1) {
-        qx = qx + (f32)((v.y >> (4 * m)) & 15) * as_type<f32>(X[j + 8 + m]);
-      }
+  f32 p = 0.0f;
+  for (u32 g = l; g < c >> 6; g += 32) {
+    float4 a = 0.0f, b = 0.0f;
+    for (u32 h = 0; h < 8; h += 1) {
+      u32 q = h & 1 ? R[g * 4 + (h >> 1)].y : R[g * 4 + (h >> 1)].x;
+      u32 j = g * 64 + h * 8;
+      a = a + float4(uint4(q, q >> 4, q >> 8, q >> 12) & 15u)
+        * float4(as_type<f32>(X[j]), as_type<f32>(X[j + 1]),
+          as_type<f32>(X[j + 2]), as_type<f32>(X[j + 3]));
+      b = b + float4(uint4(q >> 16, q >> 20, q >> 24, q >> 28) & 15u)
+        * float4(as_type<f32>(X[j + 4]), as_type<f32>(X[j + 5]),
+          as_type<f32>(X[j + 6]), as_type<f32>(X[j + 7]));
     }
-    u32 at = sa + (g >> 1);
-    f32 sc = q4_half(W[at], g);
-    f32 bi = q4_half(W[at + d], g);
-    acc = acc + sc * qx;
-    acc = acc + bi * as_type<f32>(X[c + g]);
+    float4 e = a + b;
+    float2 f = e.xy + e.zw;
+    u32 at = rows * cw + i * sw + (g >> 1);
+    p = p + (q4_half(W[at], g) * (f.x + f.y)
+      + q4_half(W[at + rows * sw], g) * as_type<f32>(X[c + g]));
   }
-  Y[i] = q4_round(acc);
+  for (u32 o = 16; o > 0; o >>= 1) {
+    p = p + simd_shuffle_down(p, (ushort)o);
+  }
+  if (l == 0) {
+    Y[i] = q4_round(p);
+  }
 }
 #endif
 
@@ -5167,7 +5199,7 @@ static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
     [enc setBuffer:gpu_buf offset:xl * 8 atIndex:1];
     [enc setBuffer:gpu_buf offset:yl * 8 atIndex:2];
     [enc setBytes:p length:sizeof p atIndex:3];
-    [enc dispatchThreads:MTLSizeMake(n, 1, 1)
+    [enc dispatchThreadgroups:MTLSizeMake((n + 7) / 8, 1, 1)
       threadsPerThreadgroup:MTLSizeMake(256, 1, 1)];
     [enc endEncoding];
     [cb commit];

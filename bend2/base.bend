@@ -2486,11 +2486,14 @@ def Array.get(-T: Data, a: Array<T>, +i: U32) -> Array<T> & T:
 # 8k+m of a row in bits 4m..4m+3 of its word k), then the bfloat16 scales
 # (rows * cols/128 words, group g in the low half when g is even), then the
 # biases laid out as the scales. x holds the cols activations, then at
-# cols + g the sum of group g. Each row is summed in index order (a word's
-# eight products onto the group's sum, then sum * scale and the group's
-# x-sum * bias onto the row), rounded to bfloat16 (nearest even, a NaN to
+# cols + g the sum of group g. Each row is summed in a fixed tree that
+# SIMD lanes can run: lane j of a group sums nibble j of its 8 words times
+# x in word order; the lanes meet as ((0+4)+(2+6))+((1+5)+(3+7)) into qx;
+# the group's term scale * qx + bias * x-sum goes onto partial g % 32 (from
+# 0.0, groups in order); the 32 partials fold as p[l] += p[l + o] for
+# o = 16, 8, 4, 2, 1. p[0] is rounded to bfloat16 (nearest even, a NaN to
 # sign | 0x7fff) and written to y at the row's index. The compiler lowers
-# it to a flat loop; the defs below are its meaning.
+# it to NEON and Metal SIMD-group loops; the defs below are its meaning.
 
 def Array.q4mv.f32(+u: U32) -> F32:
   match u:
@@ -2520,57 +2523,89 @@ def Array.q4mv.round(+x: F32) -> F32:
   +u = Array.q4mv.bits(x)
   Array.q4mv.f32((Array.q4mv.narrow(U32.is_gt((u .&. 2147483647 : U32), 2139095040), u) << 16n : U32))
 
-def Array.q4mv.mac(g: Array<F32> & F32, +c: U32, +s: F32) -> Array<F32> & F32:
+def Array.q4mv.mac(g: Array<F32> & F32, w: Array<U32>, +c: U32, +sh: U32, +s: F32) -> (Array<U32> & Array<F32>) & F32:
   (x, +a) = g
-  (x, (s + U32.to_f32((c .&. 15 : U32)) * a : F32))
+  ((w, x), (s + U32.to_f32(((c >> U32.to_nat(sh)) .&. 15 : U32)) * a : F32))
 
-def Array.q4mv.dot(n: Nat, +c: U32, r: Array<F32> & F32, +j: U32) -> Array<F32> & F32:
-  match n:
-    case 0n:
-      r
-    case 1n+p:
-      (x, +s) = r
-      Array.q4mv.dot(p, (c >> 4n : U32), Array.q4mv.mac(Array.get(F32, x, j), c, s), (j + 1 : U32))
-
-def Array.q4mv.wfin(w: Array<U32>, r: Array<F32> & F32) -> (Array<U32> & Array<F32>) & F32:
-  (x, +s) = r
-  ((w, x), s)
-
-def Array.q4mv.wstep(g: Array<U32> & U32, r: Array<F32> & F32, +j: U32) -> (Array<U32> & Array<F32>) & F32:
+def Array.q4mv.word(g: Array<U32> & U32, x: Array<F32>, +j: U32, +sh: U32, +s: F32) -> (Array<U32> & Array<F32>) & F32:
   (w, +c) = g
-  Array.q4mv.wfin(w, Array.q4mv.dot(8n, c, r, j))
+  Array.q4mv.mac(Array.get(F32, x, j), w, c, sh, s)
 
-def Array.q4mv.words(n: Nat, q: (Array<U32> & Array<F32>) & F32, +i: U32, +j: U32) -> (Array<U32> & Array<F32>) & F32:
+# Lane sum: nibble sh/4 of words i .. i+n against x[j], x[j + 8], ..., in order.
+def Array.q4mv.lane(n: Nat, q: (Array<U32> & Array<F32>) & F32, +i: U32, +j: U32, +sh: U32) -> (Array<U32> & Array<F32>) & F32:
   match n:
     case 0n:
       q
     case 1n+p:
       ((w, x), +s) = q
-      Array.q4mv.words(p, Array.q4mv.wstep(Array.get(U32, w, i), (x, s), j), (i + 1 : U32), (j + 8 : U32))
+      Array.q4mv.lane(p, Array.q4mv.word(Array.get(U32, w, i), x, j, sh, s), (i + 1 : U32), (j + 8 : U32), sh)
 
-def Array.q4mv.gb(g: Array<U32> & U32, x: Array<F32>, +sw: U32, +qx: F32, +xs: F32, +acc: F32, +even: Bool) -> (Array<U32> & Array<F32>) & F32:
+def Array.q4mv.add(q: (Array<U32> & Array<F32>) & F32, +a: F32) -> (Array<U32> & Array<F32>) & F32:
+  (wx, +b) = q
+  (wx, (a + b : F32))
+
+# Lanes m and m + 4 of the group at code word i, activation j, added.
+def Array.q4mv.l2(q: (Array<U32> & Array<F32>) & F32, +i: U32, +j: U32, +m: U32) -> (Array<U32> & Array<F32>) & F32:
+  (wx, +a) = q
+  Array.q4mv.add(Array.q4mv.lane(8n, (wx, 0.0), i, (j + m + 4 : U32), (m * 4 + 16 : U32)), a)
+
+def Array.q4mv.p2(wx: Array<U32> & Array<F32>, +i: U32, +j: U32, +m: U32) -> (Array<U32> & Array<F32>) & F32:
+  Array.q4mv.l2(Array.q4mv.lane(8n, (wx, 0.0), i, (j + m : U32), (m * 4 : U32)), i, j, m)
+
+def Array.q4mv.p4b(q: (Array<U32> & Array<F32>) & F32, +i: U32, +j: U32, +m: U32) -> (Array<U32> & Array<F32>) & F32:
+  (wx, +a) = q
+  Array.q4mv.add(Array.q4mv.p2(wx, i, j, (m + 2 : U32)), a)
+
+def Array.q4mv.p4(wx: Array<U32> & Array<F32>, +i: U32, +j: U32, +m: U32) -> (Array<U32> & Array<F32>) & F32:
+  Array.q4mv.p4b(Array.q4mv.p2(wx, i, j, m), i, j, m)
+
+def Array.q4mv.qxb(q: (Array<U32> & Array<F32>) & F32, +i: U32, +j: U32) -> (Array<U32> & Array<F32>) & F32:
+  (wx, +a) = q
+  Array.q4mv.add(Array.q4mv.p4(wx, i, j, 1), a)
+
+def Array.q4mv.gb(g: Array<U32> & U32, x: Array<F32>, +sw: U32, +qx: F32, +xs: F32, +even: Bool) -> (Array<U32> & Array<F32>) & F32:
   (w, +bw) = g
   +sc = Array.q4mv.half(even, sw)
-  ((w, x), (acc + sc * qx + Array.q4mv.half(even, bw) * xs : F32))
+  ((w, x), (sc * qx + Array.q4mv.half(even, bw) * xs : F32))
 
-def Array.q4mv.gs(g: Array<U32> & U32, h: Array<F32> & F32, +qx: F32, +acc: F32, +even: Bool, +bat: U32) -> (Array<U32> & Array<F32>) & F32:
+def Array.q4mv.gs(g: Array<U32> & U32, h: Array<F32> & F32, +qx: F32, +even: Bool, +bat: U32) -> (Array<U32> & Array<F32>) & F32:
   (w, +sw) = g
   (x, +xs) = h
-  Array.q4mv.gb(Array.get(U32, w, bat), x, sw, qx, xs, acc, even)
+  Array.q4mv.gb(Array.get(U32, w, bat), x, sw, qx, xs, even)
 
-def Array.q4mv.gfin(q: (Array<U32> & Array<F32>) & F32, +at: U32, +d: U32, +xg: U32, +acc: F32, +even: Bool) -> (Array<U32> & Array<F32>) & F32:
+def Array.q4mv.gfin(q: (Array<U32> & Array<F32>) & F32, +at: U32, +d: U32, +xg: U32, +even: Bool) -> (Array<U32> & Array<F32>) & F32:
   ((w, x), +qx) = q
-  Array.q4mv.gs(Array.get(U32, w, at), Array.get(F32, x, xg), qx, acc, even, (at + d : U32))
+  Array.q4mv.gs(Array.get(U32, w, at), Array.get(F32, x, xg), qx, even, (at + d : U32))
 
-def Array.q4mv.groups(n: Nat, q: (Array<U32> & Array<F32>) & F32, +i: U32, +g: U32, +sa: U32, +d: U32, +cols: U32) -> (Array<U32> & Array<F32>) & F32:
+# Group g's term: its lanes meet as ((0+4)+(2+6))+((1+5)+(3+7)) into qx, then
+# scale * qx + bias * the group's x-sum.
+def Array.q4mv.term(wx: Array<U32> & Array<F32>, +i: U32, +g: U32, +sa: U32, +d: U32, +cols: U32) -> (Array<U32> & Array<F32>) & F32:
+  +k = (i + g * 8 : U32)
+  +j = (g * 64 : U32)
+  Array.q4mv.gfin(Array.q4mv.qxb(Array.q4mv.p4(wx, k, j, 0), k, j), (sa + (g >> 1n) : U32), d, (cols + g : U32),
+    U32.is_zero((g .&. 1 : U32)))
+
+# Partial l: 0.0 plus the terms of groups l, l + 32, ... in order.
+def Array.q4mv.part(n: Nat, q: (Array<U32> & Array<F32>) & F32, +i: U32, +g: U32, +sa: U32, +d: U32, +cols: U32) -> (Array<U32> & Array<F32>) & F32:
   match n:
     case 0n:
       q
     case 1n+p:
-      (wx, +acc) = q
-      +at = (sa + (g >> 1n) : U32)
-      Array.q4mv.groups(p, Array.q4mv.gfin(Array.q4mv.words(8n, (wx, 0.0), i, (g * 64 : U32)), at, d, (cols + g : U32), acc,
-        U32.is_zero((g .&. 1 : U32))), (i + 8 : U32), (g + 1 : U32), sa, d, cols)
+      (wx, +s) = q
+      Array.q4mv.part(p, Array.q4mv.add(Array.q4mv.term(wx, i, g, sa, d, cols), s), i, (g + 32 : U32), sa, d, cols)
+
+def Array.q4mv.foldb(q: (Array<U32> & Array<F32>) & F32, +n: Nat, +i: U32, +l: U32, +s: U32, +sa: U32, +d: U32, +cols: U32) -> (Array<U32> & Array<F32>) & F32:
+  (wx, +a) = q
+  Array.q4mv.add(Array.q4mv.fold(n, wx, i, (l + s : U32), (s * 2 : U32), sa, d, cols), a)
+
+# The 32 partials folded as p[l] += p[l + o] for o = 16, 8, 4, 2, 1: the value
+# at lane l, stride s, is the partial l when s = 32, else its two halves' sum.
+def Array.q4mv.fold(+n: Nat, wx: Array<U32> & Array<F32>, +i: U32, +l: U32, +s: U32, +sa: U32, +d: U32, +cols: U32) -> (Array<U32> & Array<F32>) & F32:
+  match n:
+    case 0n:
+      Array.q4mv.part(U32.to_nat((((cols >> 6n) + 31 - l) >> 5n : U32)), (wx, 0.0), i, l, sa, d, cols)
+    case 1n+p:
+      Array.q4mv.foldb(Array.q4mv.fold(p, wx, i, l, (s * 2 : U32), sa, d, cols), p, i, l, s, sa, d, cols)
 
 def Array.q4mv.put(q: (Array<U32> & Array<F32>) & F32, y: Array<F32>, +i: U32) -> (Array<U32> & Array<F32>) & Array<F32>:
   (wx, +acc) = q
@@ -2582,8 +2617,8 @@ def Array.q4mv.rows(n: Nat, q: (Array<U32> & Array<F32>) & Array<F32>, +i: U32, 
       q
     case 1n+p:
       (wx, y) = q
-      Array.q4mv.rows(p, Array.q4mv.put(Array.q4mv.groups(U32.to_nat((cols >> 6n : U32)), (wx, 0.0), (i * cw : U32), 0,
-        (s0 + i * sw : U32), d, cols), y, i), (i + 1 : U32), cols, cw, s0, sw, d)
+      Array.q4mv.rows(p, Array.q4mv.put(Array.q4mv.fold(5n, wx, (i * cw : U32), 0, 1, (s0 + i * sw : U32), d, cols), y, i),
+        (i + 1 : U32), cols, cw, s0, sw, d)
 
 def Array.q4mv(w: Array<U32>, x: Array<F32>, y: Array<F32>, +r: U32, +n: U32, +cols: U32, +rows: U32) -> (Array<U32> & Array<F32>) & Array<F32>:
   +cw = (cols >> 3n : U32)
