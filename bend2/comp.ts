@@ -863,7 +863,6 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
   return adt;
 }
 
-// Whether A holds a type p takes, looking into every datatype but the words.
 function ty_holds(A: HTerm | null,
   p: (t: HTerm | null) => boolean, seen = new Set<Name>()): boolean {
   const t = ty_wnf(A);
@@ -2835,27 +2834,31 @@ export function compile_book(book: Bend.Book): string {
     "#endif"];
   const entries = [...FL.segs, seg_new(IO_EMIT, BOX, [""]),
     seg_new(CLO_APPLY, BOX, ["", ""])];
-  const cids = new Map<Name, number>();
-  const tails = new Map<Name, number>();
+  const cids = new Map<Name, number[]>();
+  const cid = (k: Name, n: number, tail = 255) => cids.set(k, n > WIDE
+    ? [240 + Math.log2(n), Number(FL.hot.has(k)), 255]
+    : [n, Number(FL.hot.has(k)), tail]);
   for (const k of FL.srcs.keys()) {
     for (const c of (FL.book.tlds[k] as Bend.ADT).c ?? []) {
-      cids.set(c.k, lay_node(c.k).ks.length);
-      ctr_doms(c).reduce((at, F) => {
+      let at = 0;
+      let tail = 255;
+      for (const F of ctr_doms(c)) {
         if (ty_holds(F, (u) => u?.$ === "ADT" && u.k === k)) {
-          tails.set(c.k, at);
+          tail = at;
         }
-        return at + lay_of(F).ks.length;
-      }, 0);
+        at += lay_of(F).ks.length;
+      }
+      cid(c.k, lay_node(c.k).ks.length, tail);
     }
   }
   for (const [k] of done_defs(def_foreign)) {
-    cids.set(k, fun_of(k).lays.length);
+    cid(k, fun_of(k).lays.length);
   }
   const forky = graph_close(new Set(FL.segs.filter((s) => s.fork)
     .map((s) => s.fid)), [...FL.segs, { fid: seg_fid(CLO_APPLY),
     refs: FL.clos }].flatMap((s) => [...s.refs].map((r) => [r, s.fid])));
-  const ars = [...cids.values()].map((n) => n > WIDE ? 240 + Math.log2(n) : n);
-  if (entries.some((s) => s.params.length > WIDE) || ars.some((n) => n > 255)) {
+  if (entries.some((s) => s.params.length > WIDE)
+    || [...cids.values()].some(([n]) => n > 255)) {
     die("an arity over " + WIDE);
   }
   const defs = [[...cids.keys()].map(cid_mac),
@@ -2871,9 +2874,8 @@ export function compile_book(book: Bend.Book): string {
     `{ ${s.params.length}, ${s.frame === null ? 0
       : s.params.length - s.frame.at.length}, ${Number(FL.bangs.has(s.def))
       | Number(!forky.has(s.fid)) << 1} }`).join(", ")} };`,
-  `CONSTV u8 CID_T[][3] = { ${[...cids.keys()].map((k, i) =>
-    `{ ${ars[i]}, ${Number(FL.hot.has(k))}, ${ars[i] > WIDE ? 255
-      : tails.get(k) ?? 255} }`).join(", ")} };`,
+  `CONSTV u8 CID_T[][3] = { ${[...cids.values()].map((r) =>
+    `{ ${r.join(", ")} }`).join(", ")} };`,
   `#define STAT_LEN ${FL.img.length}`, "",
   `#define WL_RESW ${resw}`, `#define BANGS   ${FL.bangs.size}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
