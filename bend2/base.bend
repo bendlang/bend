@@ -2625,6 +2625,18 @@ def Array.q4mv(w: Array<U32>, x: Array<F32>, y: Array<F32>, +r: U32, +n: U32, +c
   +sw = (cols >> 7n : U32)
   Array.q4mv.rows(U32.to_nat(n), ((w, x), y), r, cols, cw, (rows * cw : U32), sw, (rows * sw : U32))
 
+# Array.q4go is Array.q4mv, except that a native build with a Metal heap may
+# queue the product on the GPU: y then holds it only after the next
+# Array.q4wait. Queued products run concurrently, so none may read another's
+# y. The GPU reads w and x and writes y until the wait, and a value is freed
+# at its last use: wait on x, and use w and y after the wait.
+def Array.q4go(w: Array<U32>, x: Array<F32>, y: Array<F32>, +r: U32, +n: U32, +cols: U32, +rows: U32) -> (Array<U32> & Array<F32>) & Array<F32>:
+  Array.q4mv(w, x, y, r, n, cols, rows)
+
+# Array.q4wait(x) is x, once every queued Array.q4go has run.
+def Array.q4wait(x: Array<F32>) -> Array<F32>:
+  x
+
 def Array.to_list.go(~T: Type, a: Array<T>, acc: List<T>) -> List<T>:
   match a:
     case ALeaf{x}:
