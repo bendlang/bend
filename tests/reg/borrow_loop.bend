@@ -3,8 +3,9 @@
 # compilation in one process read the first book's stale rows and the
 # minted continuation died 'unbound binder: t' on THIS shape: a
 # let-bound t with two owners (lend and eat both take it; nothing
-# borrows) across spin's cut. The runner's reg_compiler_pure row
-# recompiles this file in-process and byte-compares the emissions.
+# borrows) across spin's cut. gates/test.ts recompiles this checked book
+# in-process around JS emission, normalization and a different book,
+# compares fresh C/JS bytes and retained probe counts, and runs both outputs.
 import Base
 
 type Bt is Data:
