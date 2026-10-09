@@ -251,6 +251,12 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   array_q4mv: { C: ["$0", "$1", "q4mv(e, $0, $1, $2, $3, $4, $5, $6, 0)"] },
   array_q4go: { C: ["$0", "$1", "q4mv(e, $0, $1, $2, $3, $4, $5, $6, 1)"] },
   array_q4wait: { C: "q4wait($0)" },
+  array_rmsq: { C: ["$0", "$1", "$2", "rmsq(e, $0, $1, $2, $3, $4, $5, $6)"] },
+  array_swq: { C: ["$0", "swq(e, $0, $1, $2)"] },
+  array_atq: { C: ["$0", "$1", "$2", "$3", "$4",
+    "atq(e, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"] },
+  array_gdn: { C: ["$0", "$1", "$2", "$3", "$4", "$5",
+    "gdn(e, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)"] },
   array_clone: {
     C:  ["$0", "blk_copy(e, $0)"],
     JS: "{$: \"Tuple\", fst: $0, snd: $0.slice()}",
@@ -585,7 +591,7 @@ function tpl_deep(e: string): boolean {
 
 function tpl(t: Tpl, xs: string[]): string {
   return typeof t !== "string" ? t(xs)
-    : t.split(/\$(\d)/).map((p, i) => (i % 2 ? xs[+p] : p)).join("");
+    : t.split(/\$(\d+)/).map((p, i) => (i % 2 ? xs[+p] : p)).join("");
 }
 
 function view_of(e: string): string | undefined {
@@ -1413,7 +1419,8 @@ function file_book(roots: Name[]): void {
         type_adts(s.T).forEach(src_add);
       }
       if (s.$ === "Ref") {
-        if (s.b || s.k === "Array.q4go") {
+        if (s.b || ["Array.q4go", "Array.rmsq", "Array.swq", "Array.gdn",
+          "Array.atq"].includes(s.k)) {
           FL.bangs.add(s.k);
         }
         if (intr_of(s.k, FL.js) === undefined) {
@@ -3584,6 +3591,10 @@ static u32                          gpu_qk;
 static id<MTLComputePipelineState>  gpu_qfpso;
 static id<MTLBuffer>                gpu_qflag;
 static u32                          gpu_qseq;
+static id<MTLComputePipelineState>  gpu_rmpso;
+static id<MTLComputePipelineState>  gpu_swpso;
+static id<MTLComputePipelineState>  gpu_gdpso;
+static id<MTLComputePipelineState>  gpu_atpso;
 #elif BEND_CUDA
 static CUdevice   gpu_dev;
 static CUmodule   gpu_lib;
@@ -4297,6 +4308,9 @@ INLINE u32 q4_row(DEV u32a* W, DEV u32a* X, u32 wm, u32 xm, u32 i, u32 c,
 // The host hands a big product to the GPU's own kernel (a SIMD group a row)
 // when a Metal heap is live; Q4_GPU_MIN weights is the break-even.
 #define Q4_GPU_MIN (1ull << 22)
+#ifndef Q4R
+#define Q4R 4
+#endif
 #if !DEVICE && BEND_METAL
 static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
   u32 n, u32 c, u32 rows, bool q);
@@ -4385,6 +4399,331 @@ INLINE Term q4mv(Env e, Term w, Term x, Term y, u64 r, u64 n, u64 cols,
     Y[i & ym] = q4_row(W, X, wm, xm, i, c, cw, s0, sw, d);
   }
   return y;
+}
+
+// Array.rmsq: base.bend's residual add and RMS norm into q4 activations; a
+// Metal heap queues it between the products before and after it.
+#if !DEVICE && BEND_METAL
+static bool gpu_rmsq(u64 xl, u64 yl, u64 wl, u64 ol, u32 n, u32 eps, u32 add);
+#endif
+INLINE Term rmsq(Env e, Term x, Term y, Term w, Term o, u64 n, u64 eps,
+  u64 add) {
+  DEV u64*  H = e.mem;
+  DEV u32a* X = blk_ptr(H, blk_loc(H, x), 0);
+  DEV u32a* Y = blk_ptr(H, blk_loc(H, y), 0);
+  DEV u32a* W = blk_ptr(H, blk_loc(H, w), 0);
+  DEV u32a* O = blk_ptr(H, blk_loc(H, o), 0);
+  u64 c = 1ull << blk_cls(x);
+  bool fit = n <= c && (n & 63) == 0 && n <= 1ull << blk_cls(w)
+    && (!add || n <= 1ull << blk_cls(y)) && n + (n >> 6) <= 1ull << blk_cls(o);
+#if !DEVICE && BEND_METAL
+  if (fit && gpu_rmsq(blk_loc(H, x), blk_loc(H, y), blk_loc(H, w),
+      blk_loc(H, o), (u32)n, (u32)eps, (u32)add)) {
+    return o;
+  }
+#endif
+  if (!fit) {
+    return o;
+  }
+  for (u32 i = 0; add && i < n; i += 1) {
+    X[i] = q4_round(f32_unbox(X[i]) + f32_unbox(Y[i]));
+  }
+  f32 s = 0.0f;
+  for (u32 i = 0; i < n; i += 1) {
+    s = s + f32_unbox(X[i]) * f32_unbox(X[i]);
+  }
+  f32 k = 1.0f / (f32)sqrt(s / (f32)(u32)n + f32_unbox(eps));
+  for (u32 i = 0; i < n; i += 1) {
+    O[i] = q4_round(f32_unbox(W[i]) * (f32_unbox(X[i]) * k));
+  }
+  for (u32 g = 0; g < n >> 6; g += 1) {
+    f32 a = 0.0f, b = 0.0f;
+    for (u32 j = 0; j < 32; j += 1) {
+      a = a + f32_unbox(O[g * 64 + j]);
+      b = b + f32_unbox(O[g * 64 + 32 + j]);
+    }
+    O[n + g] = (u32)f32_rewrap(a + b);
+  }
+  return o;
+}
+
+// Array.swq and Array.gdn: base.bend's SwiGLU and gated DeltaNet step into
+// q4 activations; a Metal heap queues them like Array.rmsq.
+#if !DEVICE && BEND_METAL
+static bool gpu_swq(u64 al, u64 ol, u32 n);
+static bool gpu_gdn(const u64* at, const u32* p);
+#endif
+INLINE f32 k2_round(f32 v) {
+  return f32_unbox(q4_round(v));
+}
+
+INLINE f32 k2_sig(f32 x) {
+  return 1.0f / (1.0f + (f32)exp(-x));
+}
+
+// o[n + g]: group g's sum, each 32-value half in order, then the halves.
+INLINE void k2_gsum(DEV u32a* O, u32 n) {
+  for (u32 g = 0; g < n >> 6; g += 1) {
+    f32 a = 0.0f, b = 0.0f;
+    for (u32 j = 0; j < 32; j += 1) {
+      a = a + f32_unbox(O[g * 64 + j]);
+      b = b + f32_unbox(O[g * 64 + 32 + j]);
+    }
+    O[n + g] = (u32)f32_rewrap(a + b);
+  }
+}
+
+INLINE Term swq(Env e, Term a, Term o, u64 n) {
+  DEV u64*  H = e.mem;
+  DEV u32a* A = blk_ptr(H, blk_loc(H, a), 0);
+  DEV u32a* O = blk_ptr(H, blk_loc(H, o), 0);
+  bool fit = (n & 63) == 0 && 2 * n <= 1ull << blk_cls(a)
+    && n + (n >> 6) <= 1ull << blk_cls(o);
+#if !DEVICE && BEND_METAL
+  if (fit && gpu_swq(blk_loc(H, a), blk_loc(H, o), (u32)n)) {
+    return o;
+  }
+#endif
+  for (u32 i = 0; fit && i < n; i += 1) {
+    f32 g = f32_unbox(A[i]);
+    f32 s = g / (1.0f + (f32)exp(-g));
+    O[i] = q4_round(s * f32_unbox(A[n + i]));
+  }
+  if (fit) {
+    k2_gsum(O, (u32)n);
+  }
+  return o;
+}
+
+#if !DEVICE
+// k heads of n values from i: unit norm, then scaled by sc, in place.
+static void k2_l2(f32* a, u32 i, u32 n, f32 eps, f32 sc) {
+  f32 s = 0.0f;
+  for (u32 j = 0; j < n; j += 1) {
+    s = s + a[i + j] * a[i + j];
+  }
+  f32 nf  = (f32)n;
+  f32 inv = 1.0f / (f32)sqrt(s / nf + eps / nf);
+  for (u32 j = 0; j < n; j += 1) {
+    a[i + j] = k2_round(a[i + j] * inv);
+  }
+  for (u32 j = 0; j < n; j += 1) {
+    a[i + j] = k2_round(a[i + j] * sc);
+  }
+}
+#endif
+
+INLINE Term gdn(Env e, Term y, Term w, Term s, Term cw, Term ab, Term sn,
+  Term o, u64 c, u64 dk, u64 dv, u64 nvh, u64 din, u64 ko, u64 eps) {
+  DEV u64*  H  = e.mem;
+  DEV u32a* Y  = blk_ptr(H, blk_loc(H, y), 0);
+  DEV u32a* Wn = blk_ptr(H, blk_loc(H, w), 0);
+  DEV u32a* S  = blk_ptr(H, blk_loc(H, s), 0);
+  DEV u32a* CW = blk_ptr(H, blk_loc(H, cw), 0);
+  DEV u32a* AB = blk_ptr(H, blk_loc(H, ab), 0);
+  DEV u32a* SN = blk_ptr(H, blk_loc(H, sn), 0);
+  DEV u32a* O  = blk_ptr(H, blk_loc(H, o), 0);
+  bool fit = dk > 0 && dk <= 256 && (dk & 31) == 0 && dv <= 256
+    && (dv & 63) == 0 && (din & 63) == 0 && nvh * dv <= din
+    && ko * 2 + nvh * dv <= c && nvh * dk <= ko
+    && c + din + 2 * nvh <= 1ull << blk_cls(y) && 3 * c <= 1ull << blk_cls(w)
+    && nvh * dv * dk <= 1ull << blk_cls(s) && 4 * c <= 1ull << blk_cls(cw)
+    && 2 * nvh <= 1ull << blk_cls(ab) && dv <= 1ull << blk_cls(sn)
+    && din + (din >> 6) <= 1ull << blk_cls(o);
+#if !DEVICE && BEND_METAL
+  u64 at[7] = { blk_loc(H, y), blk_loc(H, w), blk_loc(H, s), blk_loc(H, cw),
+    blk_loc(H, ab), blk_loc(H, sn), blk_loc(H, o) };
+  u32 p[8] = { (u32)c, (u32)dk, (u32)dv, (u32)nvh, (u32)din, (u32)eps,
+    (u32)ko, 0 };
+  if (fit && gpu_gdn(at, p)) {
+    return o;
+  }
+#endif
+#if !DEVICE
+  if (!fit) {
+    return o;
+  }
+  f32 ep = f32_unbox(eps);
+  f32* co = (f32*)malloc(c * sizeof(f32));
+  for (u32 i = 0; i < c; i += 1) {
+    f32 a = f32_unbox(Wn[i]), b = f32_unbox(Wn[i + c]);
+    f32 cc = f32_unbox(Wn[i + 2 * c]), d = f32_unbox(Y[i]);
+    f32 acc = a * f32_unbox(CW[i * 4]);
+    acc = acc + b * f32_unbox(CW[i * 4 + 1]);
+    acc = acc + cc * f32_unbox(CW[i * 4 + 2]);
+    f32 v = k2_round(acc + d * f32_unbox(CW[i * 4 + 3]));
+    Wn[i] = Wn[i + c];
+    Wn[i + c] = Wn[i + 2 * c];
+    Wn[i + 2 * c] = Y[i];
+    co[i] = k2_round(v * k2_round(k2_sig(v)));
+  }
+  f32 df = (f32)(u32)dk;
+  for (u32 h = 0; h < ko / dk; h += 1) {
+    k2_l2(co, h * (u32)dk, (u32)dk, ep, k2_round(1.0f / df));
+  }
+  for (u32 h = 0; h < ko / dk; h += 1) {
+    k2_l2(co, (u32)ko + h * (u32)dk, (u32)dk, ep, k2_round(1.0f / (f32)sqrt(df)));
+  }
+  for (u32 h = 0; h < nvh; h += 1) {
+    f32 x  = k2_round(f32_unbox(Y[c + din + nvh + h]) + f32_unbox(AB[nvh + h]));
+    f32 l1 = 1.0f + (f32)exp(-fabsf(x));
+    f32 sp = k2_round((x > 0.0f ? x : 0.0f) + (f32)log(l1));
+    f32 eg = (f32)exp(sp * f32_unbox(AB[h]));
+    f32 beta = k2_round(k2_sig(f32_unbox(Y[c + din + h])));
+    const f32* q = co + h * dk;
+    const f32* k = co + ko + h * dk;
+    const f32* v = co + 2 * ko + h * dv;
+    for (u32 j = 0; j < dv; j += 1) {
+      u64 ri = (h * dv + j) * dk;
+      f32 d = 0.0f;
+      for (u32 i = 0; i < dk; i += 1) {
+        d = d + (f32_unbox(S[ri + i]) * eg) * k[i];
+      }
+      f32 dj = (v[j] - d) * beta;
+      f32 ov = 0.0f;
+      for (u32 i = 0; i < dk; i += 1) {
+        f32 nv = f32_unbox(S[ri + i]) * eg + dj * k[i];
+        S[ri + i] = (u32)f32_rewrap(nv);
+        ov = ov + nv * q[i];
+      }
+      O[h * dv + j] = (u32)f32_rewrap(ov);
+    }
+  }
+  for (u32 h = 0; h < nvh; h += 1) {
+    f32 ss = 0.0f;
+    for (u32 j = 0; j < dv; j += 1) {
+      f32 r = k2_round(f32_unbox(O[h * dv + j]));
+      O[h * dv + j] = (u32)f32_rewrap(r);
+      ss = ss + r * r;
+    }
+    f32 inv = 1.0f / (f32)sqrt(ss / df + ep);
+    for (u32 j = 0; j < dv; j += 1) {
+      f32 x = k2_round(f32_unbox(SN[j]) * (f32_unbox(O[h * dv + j]) * inv));
+      f32 z = f32_unbox(Y[c + h * dv + j]);
+      O[h * dv + j] = q4_round(x * (z / (1.0f + (f32)exp(-z))));
+    }
+  }
+  k2_gsum(O, (u32)din);
+  free(co);
+#endif
+  return o;
+}
+
+// Array.atq: base.bend's gated attention for one token over the caches; a
+// Metal heap queues it (positions up to ATQ_MAX); past that it runs here at
+// once, so the caller waits first.
+#define ATQ_MAX 4096
+#if !DEVICE && BEND_METAL
+static bool gpu_atq(const u64* at, const u32* p);
+#endif
+#if !DEVICE
+// x[i ..] normed by w, then rotated by c, s, as base.bend's Array.atq.hds.
+static void k2_rope(DEV u32a* Y, u32 i, DEV u32a* W, u32 hd, u32 hf, f32 eps,
+  DEV u32a* CS) {
+  f32 s = 0.0f;
+  for (u32 d = 0; d < hd; d += 1) {
+    s = s + f32_unbox(Y[i + d]) * f32_unbox(Y[i + d]);
+  }
+  f32 inv = 1.0f / (f32)sqrt(s / (f32)hd + eps);
+  for (u32 d = 0; d < hd; d += 1) {
+    Y[i + d] = q4_round(f32_unbox(W[d]) * (f32_unbox(Y[i + d]) * inv));
+  }
+  for (u32 j = 0; j < hf; j += 1) {
+    f32 a = f32_unbox(Y[i + j]), b = f32_unbox(Y[i + j + hf]);
+    f32 c = f32_unbox(CS[j]), sn = f32_unbox(CS[hf + j]);
+    f32 ac = a * c, bs = b * sn, bc = b * c, as = a * sn;
+    Y[i + j] = q4_round(ac - bs);
+    Y[i + j + hf] = q4_round(bc + as);
+  }
+}
+#endif
+
+INLINE Term atq(Env e, Term y, Term kc, Term vc, Term kw, Term cs, Term o,
+  u64 pos, u64 nq, u64 nkv, u64 hd, u64 hf, u64 eps) {
+  DEV u64*  H  = e.mem;
+  DEV u32a* Y  = blk_ptr(H, blk_loc(H, y), 0);
+  DEV u32a* KC = blk_ptr(H, blk_loc(H, kc), 0);
+  DEV u32a* VC = blk_ptr(H, blk_loc(H, vc), 0);
+  DEV u32a* KW = blk_ptr(H, blk_loc(H, kw), 0);
+  DEV u32a* CS = blk_ptr(H, blk_loc(H, cs), 0);
+  DEV u32a* O  = blk_ptr(H, blk_loc(H, o), 0);
+  u64 st = nkv * hd;
+  bool fit = nkv > 0 && nq % nkv == 0 && hd > 0 && (hd & 63) == 0
+    && 2 * hf <= hd && nq * hd * 2 + 2 * st <= 1ull << blk_cls(y)
+    && (pos + 1) * st <= 1ull << blk_cls(kc) && (pos + 1) * st <= 1ull << blk_cls(vc)
+    && 2 * hd <= 1ull << blk_cls(kw) && 2 * hf <= 1ull << blk_cls(cs)
+    && nq * hd + nq * hd / 64 <= 1ull << blk_cls(o);
+#if !DEVICE && BEND_METAL
+  u64 at[6] = { blk_loc(H, y), blk_loc(H, kc), blk_loc(H, vc), blk_loc(H, kw),
+    blk_loc(H, cs), blk_loc(H, o) };
+  u32 p[8] = { (u32)pos, (u32)nq, (u32)nkv, (u32)hd, (u32)hf, (u32)eps, 0, 0 };
+  if (fit && hd <= 256 && pos < ATQ_MAX && gpu_atq(at, p)) {
+    return o;
+  }
+#endif
+#if !DEVICE
+  if (!fit) {
+    return o;
+  }
+  f32 ep = f32_unbox(eps);
+  u32 ko = (u32)(nq * hd * 2), n = (u32)pos + 1;
+  for (u32 g = 0; g < nkv; g += 1) {
+    k2_rope(Y, ko + g * (u32)hd, KW + hd, (u32)hd, (u32)hf, ep, CS);
+  }
+  for (u32 h = 0; h < nq; h += 1) {
+    k2_rope(Y, h * (u32)hd * 2, KW, (u32)hd, (u32)hf, ep, CS);
+  }
+  for (u64 d = 0; d < st; d += 1) {
+    KC[pos * st + d] = Y[ko + d];
+    VC[pos * st + d] = Y[ko + st + d];
+  }
+  f32* ss  = (f32*)malloc(n * sizeof(f32));
+  f32* acc = (f32*)malloc(hd * sizeof(f32));
+  f32 sc = 1.0f / (f32)sqrt((f32)(u32)hd);
+  for (u32 h = 0; h < nq; h += 1) {
+    u64 g = h / (nq / nkv);
+    for (u32 t = 0; t < n; t += 1) {
+      u64 ki = ((pos - t) * nkv + g) * hd;
+      f32 dot = 0.0f;
+      for (u32 d = 0; d < hd; d += 1) {
+        f32 kq = f32_unbox(KC[ki + d]) * f32_unbox(Y[h * hd * 2 + d]);
+        dot = dot + kq;
+      }
+      ss[t] = dot * sc;
+    }
+    f32 m = ss[0];
+    for (u32 t = 1; t < n; t += 1) {
+      m = ss[t] > m ? ss[t] : m;
+    }
+    f32 sum = 0.0f;
+    for (u32 t = 0; t < n; t += 1) {
+      ss[t] = (f32)exp(ss[t] - m);
+    }
+    for (u32 t = 0; t < n; t += 1) {
+      sum = sum + ss[t];
+    }
+    for (u32 d = 0; d < hd; d += 1) {
+      acc[d] = 0.0f;
+    }
+    for (u32 t = 0; t < n; t += 1) {
+      u64 vi = ((pos - t) * nkv + g) * hd;
+      for (u32 d = 0; d < hd; d += 1) {
+        f32 vp = f32_unbox(VC[vi + d]) * ss[t];
+        acc[d] = acc[d] + vp;
+      }
+    }
+    f32 inv = 1.0f / sum;
+    for (u32 d = 0; d < hd; d += 1) {
+      f32 a  = k2_round(acc[d] * inv);
+      f32 gt = k2_round(k2_sig(f32_unbox(Y[h * hd * 2 + hd + d])));
+      O[h * hd + d] = q4_round(a * gt);
+    }
+  }
+  free(ss);
+  free(acc);
+  k2_gsum(O, (u32)(nq * hd));
+#endif
+  return o;
 }
 
 // Ring
@@ -4719,7 +5058,8 @@ INLINE void bank_pack(DEV u64* H, u32 lane) {
 }
 
 #ifdef __METAL_VERSION__
-// A SIMD group a row: lane l takes groups l, l + 32, ..., as q4_row's p[l].
+// A SIMD group takes Q4R rows: lane l takes groups l, l + 32, ..., as
+// q4_row's p[l], each group's 64 activations read once for all the rows.
 kernel void bend_q4flag(device atomic_uint* F [[buffer(0)]],
   constant u32& v [[buffer(1)]]) {
   atomic_store_explicit(F, v, memory_order_relaxed);
@@ -4730,37 +5070,335 @@ kernel void bend_q4mv(device const u32* W [[buffer(0)]],
   constant u32* P [[buffer(3)]], u32 tg [[threadgroup_position_in_grid]],
   u32 sg [[simdgroup_index_in_threadgroup]],
   u32 l [[thread_index_in_simdgroup]]) {
-  if (tg * 8 + sg >= P[7]) {
+  u32 k0 = (tg * 8 + sg) * Q4R;
+  if (k0 >= P[7]) {
     return;
   }
+  u32 nr = min((u32)Q4R, P[7] - k0);
   u32 c  = P[3], rows = P[4];
-  u32 i  = P[6] + tg * 8 + sg;
+  u32 i0 = P[6] + k0;
   u32 cw = c >> 3, sw = c >> 7;
-  device const uint2* R = (device const uint2*)(W + i * cw);
-  f32 p = 0.0f;
+  f32 p[Q4R];
+  for (u32 r = 0; r < Q4R; r += 1) {
+    p[r] = 0.0f;
+  }
   for (u32 g = l; g < c >> 6; g += 32) {
-    float4 a = 0.0f, b = 0.0f;
-    for (u32 h = 0; h < 8; h += 1) {
-      u32 q = h & 1 ? R[g * 4 + (h >> 1)].y : R[g * 4 + (h >> 1)].x;
-      u32 j = g * 64 + h * 8;
-      a = a + float4(uint4(q, q >> 4, q >> 8, q >> 12) & 15u)
-        * float4(as_type<f32>(X[j]), as_type<f32>(X[j + 1]),
-          as_type<f32>(X[j + 2]), as_type<f32>(X[j + 3]));
-      b = b + float4(uint4(q >> 16, q >> 20, q >> 24, q >> 28) & 15u)
-        * float4(as_type<f32>(X[j + 4]), as_type<f32>(X[j + 5]),
-          as_type<f32>(X[j + 6]), as_type<f32>(X[j + 7]));
+    f32 xv[64];
+    for (u32 j = 0; j < 64; j += 1) {
+      xv[j] = as_type<f32>(X[g * 64 + j]);
     }
-    float4 e = a + b;
-    float2 f = e.xy + e.zw;
-    u32 at = rows * cw + i * sw + (g >> 1);
-    p = p + (q4_half(W[at], g) * (f.x + f.y)
-      + q4_half(W[at + rows * sw], g) * as_type<f32>(X[c + g]));
+    f32 xg = as_type<f32>(X[c + g]);
+    for (u32 r = 0; r < Q4R; r += 1) {
+      if (r < nr) {
+        u32 i = i0 + r;
+        device const uint2* R = (device const uint2*)(W + i * cw);
+        float4 a = 0.0f, b = 0.0f;
+        for (u32 h = 0; h < 8; h += 1) {
+          u32 q = h & 1 ? R[g * 4 + (h >> 1)].y : R[g * 4 + (h >> 1)].x;
+          u32 j = h * 8;
+          a = a + float4(uint4(q, q >> 4, q >> 8, q >> 12) & 15u)
+            * float4(xv[j], xv[j + 1], xv[j + 2], xv[j + 3]);
+          b = b + float4(uint4(q >> 16, q >> 20, q >> 24, q >> 28) & 15u)
+            * float4(xv[j + 4], xv[j + 5], xv[j + 6], xv[j + 7]);
+        }
+        float4 e = a + b;
+        float2 f = e.xy + e.zw;
+        u32 at = rows * cw + i * sw + (g >> 1);
+        p[r] = p[r] + (q4_half(W[at], g) * (f.x + f.y)
+          + q4_half(W[at + rows * sw], g) * xg);
+      }
+    }
   }
-  for (u32 o = 16; o > 0; o >>= 1) {
-    p = p + simd_shuffle_down(p, (ushort)o);
+  for (u32 r = 0; r < Q4R; r += 1) {
+    f32 v = p[r];
+    for (u32 o = 16; o > 0; o >>= 1) {
+      v = v + simd_shuffle_down(v, (ushort)o);
+    }
+    if (l == 0 && r < nr) {
+      Y[i0 + r] = q4_round(v);
+    }
   }
+}
+
+// rmsq's loops as one threadgroup of 512; the sum of squares is a tree.
+kernel void bend_rmsq(device u32* X [[buffer(0)]], device const u32* Y [[buffer(1)]],
+  device const u32* W [[buffer(2)]], device u32* O [[buffer(3)]],
+  constant u32* P [[buffer(4)]], u32 t [[thread_position_in_threadgroup]],
+  u32 sg [[simdgroup_index_in_threadgroup]], u32 l [[thread_index_in_simdgroup]]) {
+  threadgroup f32 ps[16];
+  u32 n = P[0];
+  f32 s = 0.0f;
+  for (u32 i = t; i < n; i += 512) {
+    f32 v = as_type<f32>(X[i]);
+    if (P[2]) {
+      v = as_type<f32>(q4_round(v + as_type<f32>(Y[i])));
+      X[i] = as_type<u32>(v);
+    }
+    s = s + v * v;
+  }
+  s = simd_sum(s);
   if (l == 0) {
-    Y[i] = q4_round(p);
+    ps[sg] = s;
+  }
+  threadgroup_barrier(mem_flags::mem_device | mem_flags::mem_threadgroup);
+  s = simd_sum(l < 16 ? ps[l] : 0.0f);
+  f32 k = 1.0f / sqrt(s / (f32)n + as_type<f32>(P[1]));
+  for (u32 g = sg; g < n >> 6; g += 16) {
+    u32 i = g * 64 + l;
+    f32 a = as_type<f32>(q4_round(as_type<f32>(W[i]) * (as_type<f32>(X[i]) * k)));
+    f32 b = as_type<f32>(q4_round(as_type<f32>(W[i + 32])
+      * (as_type<f32>(X[i + 32]) * k)));
+    O[i] = as_type<u32>(a);
+    O[i + 32] = as_type<u32>(b);
+    f32 sa = simd_sum(a), sb = simd_sum(b);
+    if (l == 0) {
+      O[n + g] = as_type<u32>(sa + sb);
+    }
+  }
+}
+
+// swq: a SIMD group per 64-value group.
+kernel void bend_swq(device const u32* A [[buffer(0)]], device u32* O [[buffer(1)]],
+  constant u32* P [[buffer(2)]], u32 g [[threadgroup_position_in_grid]],
+  u32 l [[thread_index_in_simdgroup]]) {
+  u32 n = P[0], i = g * 64 + l;
+  f32 x = as_type<f32>(A[i]), z = as_type<f32>(A[i + 32]);
+  f32 a = as_type<f32>(q4_round(x / (1.0f + exp(-x)) * as_type<f32>(A[n + i])));
+  f32 b = as_type<f32>(q4_round(z / (1.0f + exp(-z)) * as_type<f32>(A[n + i + 32])));
+  O[i] = as_type<u32>(a);
+  O[i + 32] = as_type<u32>(b);
+  f32 sa = simd_sum(a), sb = simd_sum(b);
+  if (l == 0) {
+    O[n + g] = as_type<u32>(sa + sb);
+  }
+}
+
+// gdn: a threadgroup of 512 per value head (head h reads key head h); every
+// phase of base.bend's Array.gdn is local to the head. Rows of the delta
+// rule go one to a SIMD group, dk / 32 state values to a lane.
+kernel void bend_gdn(device const u32* Y [[buffer(0)]], device u32* Wn [[buffer(1)]],
+  device u32* S [[buffer(2)]], device const u32* CW [[buffer(3)]],
+  device const u32* AB [[buffer(4)]], device const u32* SN [[buffer(5)]],
+  device u32* O [[buffer(6)]], constant u32* P [[buffer(7)]],
+  u32 h [[threadgroup_position_in_grid]], u32 t [[thread_position_in_threadgroup]],
+  u32 sg [[simdgroup_index_in_threadgroup]], u32 l [[thread_index_in_simdgroup]]) {
+  threadgroup f32 q[256], k[256], v[256], o[256], sc[8];
+  u32 c = P[0], dk = P[1], dv = P[2], nvh = P[3], din = P[4], ko = P[6];
+  f32 eps = as_type<f32>(P[5]), df = (f32)dk;
+  if (t < 2 * dk + dv) {
+    u32 i = t < dk ? h * dk + t : t < 2 * dk ? ko + h * dk + t - dk
+      : 2 * ko + h * dv + t - 2 * dk;
+    f32 a = as_type<f32>(Wn[i]), b = as_type<f32>(Wn[i + c]);
+    f32 cc = as_type<f32>(Wn[i + 2 * c]), d = as_type<f32>(Y[i]);
+    f32 acc = a * as_type<f32>(CW[i * 4]);
+    acc = acc + b * as_type<f32>(CW[i * 4 + 1]);
+    acc = acc + cc * as_type<f32>(CW[i * 4 + 2]);
+    f32 x = as_type<f32>(q4_round(acc + d * as_type<f32>(CW[i * 4 + 3])));
+    Wn[i] = as_type<u32>(b);
+    Wn[i + c] = as_type<u32>(cc);
+    Wn[i + 2 * c] = as_type<u32>(d);
+    x = as_type<f32>(q4_round(x * as_type<f32>(q4_round(1.0f / (1.0f + exp(-x))))));
+    if (t < dk) {
+      q[t] = x;
+    } else if (t < 2 * dk) {
+      k[t - dk] = x;
+    } else {
+      v[t - 2 * dk] = x;
+    }
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (sg < 2) {
+    threadgroup f32* a = sg == 0 ? q : k;
+    f32 s = 0.0f;
+    for (u32 i = l; i < dk; i += 32) {
+      s = s + a[i] * a[i];
+    }
+    s = simd_sum(s);
+    sc[sg] = 1.0f / sqrt(s / df + eps / df);
+  } else if (sg == 2 && l == 0) {
+    f32 x = as_type<f32>(q4_round(as_type<f32>(Y[c + din + nvh + h])
+      + as_type<f32>(AB[nvh + h])));
+    f32 sp = as_type<f32>(q4_round(max(x, 0.0f) + log(1.0f + exp(-fabs(x)))));
+    sc[2] = exp(sp * as_type<f32>(AB[h]));
+    f32 b = as_type<f32>(Y[c + din + h]);
+    sc[3] = as_type<f32>(q4_round(1.0f / (1.0f + exp(-b))));
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (t < dk) {
+    f32 s = as_type<f32>(q4_round(1.0f / df));
+    q[t] = as_type<f32>(q4_round(as_type<f32>(q4_round(q[t] * sc[0])) * s));
+  } else if (t < 2 * dk) {
+    f32 s = as_type<f32>(q4_round(1.0f / sqrt(df)));
+    k[t - dk] = as_type<f32>(q4_round(as_type<f32>(q4_round(k[t - dk] * sc[1])) * s));
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  f32 eg = sc[2], beta = sc[3];
+  for (u32 j = sg; j < dv; j += 16) {
+    device u32* R = S + (h * dv + j) * dk;
+    f32 sv[8];
+    f32 d = 0.0f;
+    for (u32 m = 0; m < dk / 32; m += 1) {
+      sv[m] = as_type<f32>(R[l + 32 * m]);
+      d = d + (sv[m] * eg) * k[l + 32 * m];
+    }
+    d = simd_sum(d);
+    f32 dj = (v[j] - d) * beta;
+    f32 ov = 0.0f;
+    for (u32 m = 0; m < dk / 32; m += 1) {
+      f32 nv = sv[m] * eg + dj * k[l + 32 * m];
+      R[l + 32 * m] = as_type<u32>(nv);
+      ov = ov + nv * q[l + 32 * m];
+    }
+    ov = simd_sum(ov);
+    if (l == 0) {
+      o[j] = as_type<f32>(q4_round(ov));
+    }
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (sg == 0) {
+    f32 s = 0.0f;
+    for (u32 i = l; i < dv; i += 32) {
+      s = s + o[i] * o[i];
+    }
+    s = simd_sum(s);
+    sc[4] = 1.0f / sqrt(s / df + eps);
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (t < dv) {
+    f32 x = as_type<f32>(q4_round(as_type<f32>(SN[t]) * (o[t] * sc[4])));
+    f32 z = as_type<f32>(Y[c + h * dv + t]);
+    f32 r = as_type<f32>(q4_round(x * (z / (1.0f + exp(-z)))));
+    O[h * dv + t] = as_type<u32>(r);
+    o[t] = r;
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  for (u32 g = sg; g < dv >> 6; g += 16) {
+    f32 sa = simd_sum(o[g * 64 + l]), sb = simd_sum(o[g * 64 + 32 + l]);
+    if (l == 0) {
+      O[din + ((h * dv) >> 6) + g] = as_type<u32>(sa + sb);
+    }
+  }
+}
+
+// atq: a threadgroup of 256 per query head. Each normalizes and rotates its
+// q and its KV head's new k (the group's first head writes k and v to the
+// caches at pos); scores, softmax and the weighted values follow, the
+// current position read from the threadgroup, the older ones from the caches.
+kernel void bend_atq(device const u32* Y [[buffer(0)]], device u32* KC [[buffer(1)]],
+  device u32* VC [[buffer(2)]], device const u32* KW [[buffer(3)]],
+  device const u32* CS [[buffer(4)]], device u32* O [[buffer(5)]],
+  constant u32* P [[buffer(6)]], u32 h [[threadgroup_position_in_grid]],
+  u32 t [[thread_position_in_threadgroup]],
+  u32 sg [[simdgroup_index_in_threadgroup]], u32 l [[thread_index_in_simdgroup]]) {
+  threadgroup f32 q[256], k[256], ss[ATQ_MAX], ra[8], rb[8], sc[4];
+  u32 pos = P[0], nq = P[1], nkv = P[2], hd = P[3], hf = P[4];
+  f32 eps = as_type<f32>(P[5]);
+  u32 g = h / (nq / nkv), ko = nq * hd * 2, st = nkv * hd, vo = ko + st;
+  u32 n = pos + 1;
+  f32 a = 0.0f, b = 0.0f;
+  for (u32 d = t; d < hd; d += 256) {
+    q[d] = as_type<f32>(Y[h * hd * 2 + d]);
+    k[d] = as_type<f32>(Y[ko + g * hd + d]);
+    a = a + q[d] * q[d];
+    b = b + k[d] * k[d];
+  }
+  a = simd_sum(a);
+  b = simd_sum(b);
+  if (l == 0) {
+    ra[sg] = a;
+    rb[sg] = b;
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (t == 0) {
+    f32 x = 0.0f, z = 0.0f;
+    for (u32 i = 0; i < 8; i += 1) {
+      x = x + ra[i];
+      z = z + rb[i];
+    }
+    sc[0] = 1.0f / sqrt(x / (f32)hd + eps);
+    sc[1] = 1.0f / sqrt(z / (f32)hd + eps);
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  for (u32 d = t; d < hd; d += 256) {
+    q[d] = as_type<f32>(q4_round(as_type<f32>(KW[d]) * (q[d] * sc[0])));
+    k[d] = as_type<f32>(q4_round(as_type<f32>(KW[hd + d]) * (k[d] * sc[1])));
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (t < hf) {
+    f32 c = as_type<f32>(CS[t]), s = as_type<f32>(CS[hf + t]);
+    f32 x = q[t], y = q[t + hf], u = k[t], v = k[t + hf];
+    q[t] = as_type<f32>(q4_round(x * c - y * s));
+    q[t + hf] = as_type<f32>(q4_round(y * c + x * s));
+    k[t] = as_type<f32>(q4_round(u * c - v * s));
+    k[t + hf] = as_type<f32>(q4_round(v * c + u * s));
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (h % (nq / nkv) == 0) {
+    for (u32 d = t; d < hd; d += 256) {
+      KC[pos * st + g * hd + d] = as_type<u32>(k[d]);
+      VC[pos * st + g * hd + d] = Y[vo + g * hd + d];
+    }
+  }
+  f32 rs = 1.0f / sqrt((f32)hd);
+  for (u32 p = sg; p < n; p += 8) {
+    f32 dot = 0.0f;
+    for (u32 d = l; d < hd; d += 32) {
+      f32 kv = p == pos ? k[d] : as_type<f32>(KC[(p * nkv + g) * hd + d]);
+      dot = dot + kv * q[d];
+    }
+    dot = simd_sum(dot);
+    if (l == 0) {
+      ss[p] = dot * rs;
+    }
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  f32 m = -INFINITY;
+  for (u32 p = t; p < n; p += 256) {
+    m = max(m, ss[p]);
+  }
+  m = simd_max(m);
+  if (l == 0) {
+    ra[sg] = m;
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  m = ra[0];
+  for (u32 i = 1; i < 8; i += 1) {
+    m = max(m, ra[i]);
+  }
+  f32 s = 0.0f;
+  for (u32 p = t; p < n; p += 256) {
+    f32 e = exp(ss[p] - m);
+    ss[p] = e;
+    s = s + e;
+  }
+  s = simd_sum(s);
+  if (l == 0) {
+    rb[sg] = s;
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  s = 0.0f;
+  for (u32 i = 0; i < 8; i += 1) {
+    s = s + rb[i];
+  }
+  f32 inv = 1.0f / s;
+  for (u32 d = t; d < hd; d += 256) {
+    f32 acc = 0.0f;
+    for (u32 p = 0; p < n; p += 1) {
+      u32 vb = p == pos ? Y[vo + g * hd + d] : VC[(p * nkv + g) * hd + d];
+      acc = acc + as_type<f32>(vb) * ss[p];
+    }
+    f32 gt = as_type<f32>(Y[h * hd * 2 + hd + d]);
+    f32 r = as_type<f32>(q4_round(as_type<f32>(q4_round(acc * inv))
+      * as_type<f32>(q4_round(1.0f / (1.0f + exp(-gt))))));
+    O[h * hd + d] = as_type<u32>(r);
+    q[d] = r;
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  for (u32 gg = sg; gg < hd >> 6; gg += 8) {
+    f32 sa = simd_sum(q[gg * 64 + l]), sb = simd_sum(q[gg * 64 + 32 + l]);
+    if (l == 0) {
+      O[nq * hd + ((h * hd) >> 6) + gg] = as_type<u32>(sa + sb);
+    }
   }
 }
 #endif
@@ -5261,34 +5899,128 @@ static void gpu_q4wait(void) {
   }
 }
 
+static id<MTLComputePipelineState> gpu_fn(NSString* name) {
+  NSError* err = nil;
+  id<MTLComputePipelineState> p = [gpu_dev newComputePipelineStateWithFunction:
+    [gpu_lib newFunctionWithName:name] error:&err];
+  if (p == nil) {
+    gpu_fail(err);
+  }
+  return p;
+}
+
+static void gpu_qinit(void) {
+  if (gpu_q4pso == nil) {
+    gpu_q4pso = gpu_fn(@"bend_q4mv");
+    gpu_qfpso = gpu_fn(@"bend_q4flag");
+    gpu_rmpso = gpu_fn(@"bend_rmsq");
+    gpu_swpso = gpu_fn(@"bend_swq");
+    gpu_gdpso = gpu_fn(@"bend_gdn");
+    gpu_atpso = gpu_fn(@"bend_atq");
+    gpu_qflag = [gpu_dev newBufferWithLength:64
+      options:MTLResourceStorageModeShared];
+  }
+}
+
+// Opens the queue's command buffer if none is (caller holds gpu_qlock).
+static void gpu_qopen(void) {
+  gpu_qinit();
+  if (gpu_qcb == nil) {
+    gpu_qt0  = gpu_us();
+    gpu_qcb  = [gpu_que commandBuffer];
+    gpu_qenc = [gpu_qcb computeCommandEncoderWithDispatchType:
+      MTLDispatchTypeConcurrent];
+  }
+  gpu_qk += 1;
+}
+
+static void gpu_qkern(id<MTLComputePipelineState> pso, const u64* at, u32 nb,
+  const u32* p, u32 np, u32 groups, u32 threads);
+
+static bool gpu_rmsq(u64 xl, u64 yl, u64 wl, u64 ol, u32 n, u32 eps, u32 add) {
+  if (gpu_buf == nil || gpu_lib == nil) {
+    return false;
+  }
+  @autoreleasepool {
+    pthread_mutex_lock(&gpu_qlock);
+    u64 at[4] = { xl, yl, wl, ol };
+    u32 p[4] = { n, eps, add, 0 };
+    gpu_qinit();
+    gpu_qkern(gpu_rmpso, at, 4, p, 4, 1, 512);
+    pthread_mutex_unlock(&gpu_qlock);
+  }
+  return true;
+}
+
+// A non-product kernel on the open queue: barriers on both sides, since the
+// encoder is concurrent (caller holds gpu_qlock).
+static void gpu_qkern(id<MTLComputePipelineState> pso, const u64* at, u32 nb,
+  const u32* p, u32 np, u32 groups, u32 threads) {
+  gpu_qopen();
+  [gpu_qenc memoryBarrierWithScope:MTLBarrierScopeBuffers];
+  [gpu_qenc setComputePipelineState:pso];
+  for (u32 i = 0; i < nb; i += 1) {
+    [gpu_qenc setBuffer:gpu_buf offset:at[i] * 8 atIndex:i];
+  }
+  [gpu_qenc setBytes:p length:np * 4 atIndex:nb];
+  [gpu_qenc dispatchThreadgroups:MTLSizeMake(groups, 1, 1)
+    threadsPerThreadgroup:MTLSizeMake(threads, 1, 1)];
+  [gpu_qenc memoryBarrierWithScope:MTLBarrierScopeBuffers];
+}
+
+static bool gpu_swq(u64 al, u64 ol, u32 n) {
+  if (gpu_buf == nil || gpu_lib == nil) {
+    return false;
+  }
+  @autoreleasepool {
+    pthread_mutex_lock(&gpu_qlock);
+    u64 at[2] = { al, ol };
+    u32 p[4] = { n, 0, 0, 0 };
+    gpu_qinit();
+    gpu_qkern(gpu_swpso, at, 2, p, 4, n >> 6, 32);
+    pthread_mutex_unlock(&gpu_qlock);
+  }
+  return true;
+}
+
+static bool gpu_gdn(const u64* at, const u32* p) {
+  if (gpu_buf == nil || gpu_lib == nil) {
+    return false;
+  }
+  @autoreleasepool {
+    pthread_mutex_lock(&gpu_qlock);
+    gpu_qinit();
+    gpu_qkern(gpu_gdpso, at, 7, p, 8, p[3], 512);
+    pthread_mutex_unlock(&gpu_qlock);
+  }
+  return true;
+}
+
+static bool gpu_atq(const u64* at, const u32* p) {
+  if (gpu_buf == nil || gpu_lib == nil) {
+    return false;
+  }
+  @autoreleasepool {
+    pthread_mutex_lock(&gpu_qlock);
+    gpu_qinit();
+    gpu_qkern(gpu_atpso, at, 6, p, 8, p[1], 256);
+    pthread_mutex_unlock(&gpu_qlock);
+  }
+  return true;
+}
+
 static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
   u32 n, u32 c, u32 rows, bool q) {
   if (gpu_buf == nil || gpu_lib == nil) {
     return false;
   }
   @autoreleasepool {
-    if (gpu_q4pso == nil) {
-      NSError* err = nil;
-      gpu_q4pso = [gpu_dev newComputePipelineStateWithFunction:
-        [gpu_lib newFunctionWithName:@"bend_q4mv"] error:&err];
-      if (gpu_q4pso == nil) {
-        gpu_fail(err);
-      }
-      gpu_qfpso = [gpu_dev newComputePipelineStateWithFunction:
-        [gpu_lib newFunctionWithName:@"bend_q4flag"] error:&err];
-      gpu_qflag = [gpu_dev newBufferWithLength:64
-        options:MTLResourceStorageModeShared];
-    }
     u32 p[8] = { wm, xm, ym, c, rows, 0, r, n };
     if (q) {
       pthread_mutex_lock(&gpu_qlock);
-      if (gpu_qcb == nil) {
-        gpu_qt0  = gpu_us();
-        gpu_qcb  = [gpu_que commandBuffer];
-        gpu_qenc = [gpu_qcb computeCommandEncoderWithDispatchType:
-          MTLDispatchTypeConcurrent];
-      }
-      gpu_qk += 1;
+      gpu_qopen();
+    } else {
+      gpu_qinit();
     }
     id<MTLCommandBuffer> cb = q ? gpu_qcb : [gpu_que commandBuffer];
     id<MTLComputeCommandEncoder> enc = q ? gpu_qenc : [cb computeCommandEncoder];
@@ -5297,7 +6029,7 @@ static bool gpu_q4mv(u64 wl, u64 xl, u64 yl, u32 wm, u32 xm, u32 ym, u32 r,
     [enc setBuffer:gpu_buf offset:xl * 8 atIndex:1];
     [enc setBuffer:gpu_buf offset:yl * 8 atIndex:2];
     [enc setBytes:p length:sizeof p atIndex:3];
-    [enc dispatchThreadgroups:MTLSizeMake((n + 7) / 8, 1, 1)
+    [enc dispatchThreadgroups:MTLSizeMake((n + 8 * Q4R - 1) / (8 * Q4R), 1, 1)
       threadsPerThreadgroup:MTLSizeMake(256, 1, 1)];
     if (q) {
       pthread_mutex_unlock(&gpu_qlock);

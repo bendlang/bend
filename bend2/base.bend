@@ -2637,6 +2637,732 @@ def Array.q4go(w: Array<U32>, x: Array<F32>, y: Array<F32>, +r: U32, +n: U32, +c
 def Array.q4wait(x: Array<F32>) -> Array<F32>:
   x
 
+# Array.rmsq(x, y, w, o, n, eps, add) is the residual add and RMS norm that
+# feeds Array.q4mv, for n a multiple of 64. When add is not 0, x[i] becomes
+# x[i] + y[i] rounded to bfloat16 (as Array.q4mv rounds). s sums x[i] * x[i]
+# from 0.0 in index order, and inv is 1.0 / sqrt(s / n + eps). o[i] becomes
+# w[i] * (x[i] * inv) rounded to bfloat16 (w holds F32 bits), and o[n + g]
+# the sum of group g as Array.q4mv reads it: each 32-value half summed from
+# 0.0 in order, then the halves added. A native build with a Metal heap
+# queues it as Array.q4go, after every product queued before it and before
+# every one queued after; use x, y, w and o after the next Array.q4wait.
+# The Metal kernel sums in a tree, so its last bits may differ.
+def Array.rmsq.two(a: Array<F32>, r: Array<F32> & F32, +u: F32) -> (Array<F32> & Array<F32>) & (F32 & F32):
+  (b, +v) = r
+  ((a, b), (u, v))
+
+def Array.rmsq.get(r: Array<F32> & F32, b: Array<F32>, +i: U32) -> (Array<F32> & Array<F32>) & (F32 & F32):
+  (a, +u) = r
+  Array.rmsq.two(a, Array.get(F32, b, i), u)
+
+def Array.rmsq.add1(r: (Array<F32> & Array<F32>) & (F32 & F32), +i: U32) -> Array<F32> & Array<F32>:
+  ((a, b), (u, v)) = r
+  (Array.set(F32, a, i, Array.q4mv.round((u + v : F32))), b)
+
+def Array.rmsq.adds(k: Nat, ab: Array<F32> & Array<F32>, +i: U32) -> Array<F32> & Array<F32>:
+  match k:
+    case 0n:
+      ab
+    case 1n+p:
+      (a, b) = ab
+      Array.rmsq.adds(p, Array.rmsq.add1(Array.rmsq.get(Array.get(F32, a, i), b, i), i), (i + 1 : U32))
+
+def Array.rmsq.sq1(r: Array<F32> & F32, +s: F32) -> Array<F32> & F32:
+  (a, +u) = r
+  (a, (s + u * u : F32))
+
+def Array.rmsq.sqs(k: Nat, as: Array<F32> & F32, +i: U32) -> Array<F32> & F32:
+  match k:
+    case 0n:
+      as
+    case 1n+p:
+      (a, +s) = as
+      Array.rmsq.sqs(p, Array.rmsq.sq1(Array.get(F32, a, i), s), (i + 1 : U32))
+
+def Array.rmsq.wtwo(a: Array<F32>, r: Array<U32> & U32, +u: F32) -> (Array<F32> & Array<U32>) & (F32 & F32):
+  (b, +v) = r
+  ((a, b), (u, Array.q4mv.f32(v)))
+
+def Array.rmsq.getw(r: Array<F32> & F32, b: Array<U32>, +i: U32) -> (Array<F32> & Array<U32>) & (F32 & F32):
+  (a, +u) = r
+  Array.rmsq.wtwo(a, Array.get(U32, b, i), u)
+
+def Array.rmsq.mul1(r: (Array<F32> & Array<U32>) & (F32 & F32), o: Array<F32>, +i: U32, +k: F32) -> (Array<F32> & Array<U32>) & Array<F32>:
+  (xw, (u, v)) = r
+  (xw, Array.set(F32, o, i, Array.q4mv.round((v * (u * k : F32) : F32))))
+
+def Array.rmsq.muls(n: Nat, q: (Array<F32> & Array<U32>) & Array<F32>, +i: U32, +k: F32) -> (Array<F32> & Array<U32>) & Array<F32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      ((x, w), o) = q
+      Array.rmsq.muls(p, Array.rmsq.mul1(Array.rmsq.getw(Array.get(F32, x, i), w, i), o, i, k), (i + 1 : U32), k)
+
+def Array.rmsq.ad1(r: Array<F32> & F32, +s: F32) -> Array<F32> & F32:
+  (a, +u) = r
+  (a, (s + u : F32))
+
+def Array.rmsq.half(k: Nat, as: Array<F32> & F32, +i: U32) -> Array<F32> & F32:
+  match k:
+    case 0n:
+      as
+    case 1n+p:
+      (a, +s) = as
+      Array.rmsq.half(p, Array.rmsq.ad1(Array.get(F32, a, i), s), (i + 1 : U32))
+
+def Array.rmsq.gset(r: Array<F32> & F32, +sa: F32, +j: U32) -> Array<F32>:
+  (a, +sb) = r
+  Array.set(F32, a, j, (sa + sb : F32))
+
+def Array.rmsq.g1(r: Array<F32> & F32, +i: U32, +j: U32) -> Array<F32>:
+  (a, +sa) = r
+  Array.rmsq.gset(Array.rmsq.half(32n, (a, 0.0), (i + 32 : U32)), sa, j)
+
+def Array.rmsq.gs(k: Nat, o: Array<F32>, +g: U32, +n: U32) -> Array<F32>:
+  match k:
+    case 0n:
+      o
+    case 1n+p:
+      Array.rmsq.gs(p, Array.rmsq.g1(Array.rmsq.half(32n, (o, 0.0), (g * 64 : U32)), (g * 64 : U32), (n + g : U32)),
+        (g + 1 : U32), n)
+
+def Array.rmsq.fin(q: (Array<F32> & Array<U32>) & Array<F32>, y: Array<F32>, +n: U32) -> ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  ((x, w), o) = q
+  (((x, y), w), Array.rmsq.gs(U32.to_nat((n >> 6n : U32)), o, 0, n))
+
+def Array.rmsq.norm(xs: Array<F32> & F32, w: Array<U32>, o: Array<F32>, y: Array<F32>, +n: U32, +eps: F32) -> ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (x, +s) = xs
+  +k = (1.0 / F32.sqrt((s / U32.to_f32(n) + eps : F32)) : F32)
+  Array.rmsq.fin(Array.rmsq.muls(U32.to_nat(n), ((x, w), o), 0, k), y, n)
+
+def Array.rmsq.go(xy: Array<F32> & Array<F32>, w: Array<U32>, o: Array<F32>, +n: U32, +eps: F32) -> ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (x, y) = xy
+  Array.rmsq.norm(Array.rmsq.sqs(U32.to_nat(n), (x, 0.0), 0), w, o, y, n, eps)
+
+def Array.rmsq.sel(z: Bool, x: Array<F32>, y: Array<F32>, +n: U32) -> Array<F32> & Array<F32>:
+  match z:
+    case True{}:
+      (x, y)
+    case False{}:
+      Array.rmsq.adds(U32.to_nat(n), (x, y), 0)
+
+def Array.rmsq(x: Array<F32>, y: Array<F32>, w: Array<U32>, o: Array<F32>, +n: U32, +eps: F32, +add: U32) -> ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  Array.rmsq.go(Array.rmsq.sel(U32.is_zero(add), x, y, n), w, o, n, eps)
+
+# Array.swq(a, o, n) is the SwiGLU that feeds Array.q4mv, for n a multiple
+# of 64: o[i] becomes silu(a[i]) * a[n + i] rounded to bfloat16, with
+# silu(x) = x / (1.0 + exp(-x)), and o[n + g] the sum of group g as
+# Array.rmsq writes it. Queued like Array.rmsq; use a and o after the next
+# Array.q4wait. Metal's exp and its tree sums may differ in the last bits.
+def Array.swq.put(r: Array<F32> & F32, o: Array<F32>, +g: F32, +i: U32) -> Array<F32> & Array<F32>:
+  (a, +u) = r
+  (a, Array.set(F32, o, i, Array.q4mv.round(((g / (1.0 + F32.exp(F32.neg(g))) : F32) * u : F32))))
+
+def Array.swq.at(r: Array<F32> & F32, o: Array<F32>, +i: U32, +n: U32) -> Array<F32> & Array<F32>:
+  (a, +g) = r
+  Array.swq.put(Array.get(F32, a, (n + i : U32)), o, g, i)
+
+def Array.swq.go(k: Nat, r: Array<F32> & Array<F32>, +i: U32, +n: U32) -> Array<F32> & Array<F32>:
+  match k:
+    case 0n:
+      r
+    case 1n+p:
+      (a, o) = r
+      Array.swq.go(p, Array.swq.at(Array.get(F32, a, i), o, i, n), (i + 1 : U32), n)
+
+def Array.swq.fin(r: Array<F32> & Array<F32>, +n: U32) -> Array<F32> & Array<F32>:
+  (a, o) = r
+  (a, Array.rmsq.gs(U32.to_nat((n >> 6n : U32)), o, 0, n))
+
+def Array.swq(a: Array<F32>, o: Array<F32>, +n: U32) -> Array<F32> & Array<F32>:
+  Array.swq.fin(Array.swq.go(U32.to_nat(n), (a, o), 0, n), n)
+
+# Array.gdn(y, w, s, cw, ab, sn, o, c, dk, dv, nvh, din, ko, eps) is one
+# token of a gated DeltaNet mixer (Qwen3.5's linear attention), feeding
+# Array.q4mv. y holds the projections: qkv (c values: q at 0, k at ko, v at
+# 2 * ko), then z (din), beta (nvh) and alpha (nvh). w is the conv window
+# (rows of c values, oldest first), s the state (value head h, row j at
+# (h * dv + j) * dk), cw the conv taps (4 a channel, oldest first), ab
+# a (nvh) then dt (nvh), and sn the gated norm's weights (dv); cw, ab and
+# sn hold F32 bits. Value head h reads key head h. Every value below is
+# rounded to bfloat16 where it says round, and sums run in index order:
+#  1. channel i: v = round(w0 * a + .. + w3 * y[i]) over the window and
+#     y[i], conv = round(v * round(sigmoid(v))); the window moves on a row.
+#  2. each q head of dk: q = round(round(q * inv) * round(1 / dk)) with
+#     inv = 1 / sqrt(sum q^2 / dk + eps / dk); each k head likewise with
+#     round(1 / sqrt(dk)).
+#  3. head h: g = exp(round(max(x, 0) + log(1 + exp(-|x|))) * a[h]) with
+#     x = round(alpha[h] + dt[h]), beta = round(sigmoid(beta[h])); row j:
+#     d = sum (s * g) * k, then s = s * g + ((v_j - d) * beta) * k in place
+#     and o_j = sum s * q.
+#  4. head h: o = round(o), inv = 1 / sqrt(sum o^2 / dk + eps), then
+#     o = round(round(sn * (o * inv)) * silu(z)).
+#  5. o[din + g] holds group g's sum as Array.rmsq writes it.
+# Queued like Array.rmsq; use every array after the next Array.q4wait.
+# Metal's exp and its tree sums may differ in the last bits.
+def Array.gdn.sig(+x: F32) -> F32:
+  (1.0 / (1.0 + F32.exp(F32.neg(x))) : F32)
+
+def Array.gdn.uf(r: Array<U32> & U32) -> Array<U32> & F32:
+  (a, +u) = r
+  (a, Array.q4mv.f32(u))
+
+def Array.gdn.ui(a: Array<U32>, +i: U32) -> Array<U32> & F32:
+  Array.gdn.uf(Array.get(U32, a, i))
+
+# Conv of channel i: the window's three values and y[i] against the taps.
+def Array.gdn.cv4(r: Array<U32> & F32, y: Array<F32>, w: Array<F32>, co: Array<F32>, +d: F32, +acc: F32, +i: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (cw, +t) = r
+  +v = Array.q4mv.round((acc + d * t : F32))
+  (((y, w), cw), Array.set(F32, co, i, Array.q4mv.round((v * Array.q4mv.round(Array.gdn.sig(v)) : F32))))
+
+def Array.gdn.cv3(r: Array<F32> & F32, w: Array<F32>, cw: Array<U32>, co: Array<F32>, +acc: F32, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (y, +d) = r
+  Array.gdn.cv4(Array.gdn.ui(cw, (i * 4 + 3 : U32)), y, Array.set(F32, w, (i + c + c : U32), d), co, d, acc, i)
+
+def Array.gdn.cv2(r: Array<U32> & F32, y: Array<F32>, w: Array<F32>, co: Array<F32>, +x: F32, +acc: F32, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (cw, +t) = r
+  Array.gdn.cv3(Array.get(F32, y, i), Array.set(F32, w, (i + c : U32), x), cw, co, (acc + x * t : F32), i, c)
+
+def Array.gdn.cvc(r: Array<F32> & F32, y: Array<F32>, cw: Array<U32>, co: Array<F32>, +acc: F32, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (w, +x) = r
+  Array.gdn.cv2(Array.gdn.ui(cw, (i * 4 + 2 : U32)), y, w, co, x, acc, i, c)
+
+def Array.gdn.cv1(r: Array<U32> & F32, y: Array<F32>, w: Array<F32>, co: Array<F32>, +x: F32, +acc: F32, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (cw, +t) = r
+  Array.gdn.cvc(Array.get(F32, Array.set(F32, w, i, x), (i + c + c : U32)), y, cw, co, (acc + x * t : F32), i, c)
+
+def Array.gdn.cvb(r: Array<F32> & F32, y: Array<F32>, cw: Array<U32>, co: Array<F32>, +acc: F32, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (w, +x) = r
+  Array.gdn.cv1(Array.gdn.ui(cw, (i * 4 + 1 : U32)), y, w, co, x, acc, i, c)
+
+def Array.gdn.cv0(r: Array<U32> & F32, y: Array<F32>, w: Array<F32>, co: Array<F32>, +a: F32, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (cw, +t) = r
+  Array.gdn.cvb(Array.get(F32, w, (i + c : U32)), y, cw, co, (a * t : F32), i, c)
+
+def Array.gdn.cva(r: Array<F32> & F32, y: Array<F32>, cw: Array<U32>, co: Array<F32>, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  (w, +a) = r
+  Array.gdn.cv0(Array.gdn.ui(cw, (i * 4 : U32)), y, w, co, a, i, c)
+
+def Array.gdn.conv(k: Nat, q: ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>, +i: U32, +c: U32) ->
+  ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>:
+  match k:
+    case 0n:
+      q
+    case 1n+p:
+      (((y, w), cw), co) = q
+      Array.gdn.conv(p, Array.gdn.cva(Array.get(F32, w, i), y, cw, co, i, c), (i + 1 : U32), c)
+
+# a[i ..] = round(a[i ..] * k) over n slots.
+def Array.gdn.sc1(r: Array<F32> & F32, +i: U32, +k: F32) -> Array<F32>:
+  (a, +x) = r
+  Array.set(F32, a, i, Array.q4mv.round((x * k : F32)))
+
+def Array.gdn.scl(n: Nat, a: Array<F32>, +i: U32, +k: F32) -> Array<F32>:
+  match n:
+    case 0n:
+      a
+    case 1n+p:
+      Array.gdn.scl(p, Array.gdn.sc1(Array.get(F32, a, i), i, k), (i + 1 : U32), k)
+
+def Array.gdn.l2f(r: Array<F32> & F32, +i: U32, +n: U32, +eps: F32, +sc: F32) -> Array<F32>:
+  (a, +s) = r
+  +nf = U32.to_f32(n)
+  +inv = (1.0 / F32.sqrt((s / nf + eps / nf : F32)) : F32)
+  Array.gdn.scl(U32.to_nat(n), Array.gdn.scl(U32.to_nat(n), a, i, inv), i, sc)
+
+# k heads of n values from i, each scaled to unit norm and by sc, in place.
+def Array.gdn.l2(k: Nat, a: Array<F32>, +i: U32, +n: U32, +eps: F32, +sc: F32) -> Array<F32>:
+  match k:
+    case 0n:
+      a
+    case 1n+p:
+      Array.gdn.l2(p, Array.gdn.l2f(Array.rmsq.sqs(U32.to_nat(n), (a, 0.0), i), i, n, eps, sc), (i + n : U32), n, eps, sc)
+
+# The delta rule's state rows: s[ri ..] against k = co[ki ..], q = co[qi ..].
+def Array.gdn.d1(g: Array<F32> & F32, s: Array<F32>, +a: F32, +eg: F32, +acc: F32) -> (Array<F32> & Array<F32>) & F32:
+  (co, +k) = g
+  ((s, co), (acc + (a * eg : F32) * k : F32))
+
+def Array.gdn.d0(g: Array<F32> & F32, co: Array<F32>, +ki: U32, +eg: F32, +acc: F32) -> (Array<F32> & Array<F32>) & F32:
+  (s, +a) = g
+  Array.gdn.d1(Array.get(F32, co, ki), s, a, eg, acc)
+
+def Array.gdn.dot(n: Nat, r: (Array<F32> & Array<F32>) & F32, +ri: U32, +ki: U32, +eg: F32) -> (Array<F32> & Array<F32>) & F32:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      ((s, co), +acc) = r
+      Array.gdn.dot(p, Array.gdn.d0(Array.get(F32, s, ri), co, ki, eg, acc), (ri + 1 : U32), (ki + 1 : U32), eg)
+
+def Array.gdn.u2(g: Array<F32> & F32, s: Array<F32>, +nv: F32, +o: F32) -> (Array<F32> & Array<F32>) & F32:
+  (co, +q) = g
+  ((s, co), (o + nv * q : F32))
+
+def Array.gdn.u1(g: Array<F32> & F32, s: Array<F32>, +a: F32, +ri: U32, +qi: U32, +eg: F32, +dj: F32, +o: F32) ->
+  (Array<F32> & Array<F32>) & F32:
+  (co, +k) = g
+  +nv = (a * eg + dj * k : F32)
+  Array.gdn.u2(Array.get(F32, co, qi), Array.set(F32, s, ri, nv), nv, o)
+
+def Array.gdn.u0(g: Array<F32> & F32, co: Array<F32>, +ri: U32, +ki: U32, +qi: U32, +eg: F32, +dj: F32, +o: F32) ->
+  (Array<F32> & Array<F32>) & F32:
+  (s, +a) = g
+  Array.gdn.u1(Array.get(F32, co, ki), s, a, ri, qi, eg, dj, o)
+
+def Array.gdn.upd(n: Nat, r: (Array<F32> & Array<F32>) & F32, +ri: U32, +ki: U32, +qi: U32, +eg: F32, +dj: F32) ->
+  (Array<F32> & Array<F32>) & F32:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      ((s, co), +o) = r
+      Array.gdn.upd(p, Array.gdn.u0(Array.get(F32, s, ri), co, ri, ki, qi, eg, dj, o), (ri + 1 : U32), (ki + 1 : U32),
+        (qi + 1 : U32), eg, dj)
+
+def Array.gdn.ro(r: (Array<F32> & Array<F32>) & F32, o: Array<F32>, +oi: U32) -> (Array<F32> & Array<F32>) & Array<F32>:
+  ((s, co), +ov) = r
+  ((s, co), Array.set(F32, o, oi, ov))
+
+def Array.gdn.rv(r: Array<F32> & F32, s: Array<F32>, o: Array<F32>, +d: F32, +ri: U32, +ki: U32, +qi: U32, +oi: U32,
+  +eg: F32, +beta: F32, +dk: U32) -> (Array<F32> & Array<F32>) & Array<F32>:
+  (co, +v) = r
+  Array.gdn.ro(Array.gdn.upd(U32.to_nat(dk), ((s, co), 0.0), ri, ki, qi, eg, ((v - d) * beta : F32)), o, oi)
+
+def Array.gdn.rd(r: (Array<F32> & Array<F32>) & F32, o: Array<F32>, +vi: U32, +ri: U32, +ki: U32, +qi: U32, +oi: U32,
+  +eg: F32, +beta: F32, +dk: U32) -> (Array<F32> & Array<F32>) & Array<F32>:
+  ((s, co), +d) = r
+  Array.gdn.rv(Array.get(F32, co, vi), s, o, d, ri, ki, qi, oi, eg, beta, dk)
+
+# Rows j .. of value head h; each reads s, co (q at qi, k at ki, v at vi)
+# and writes o[oi + j].
+def Array.gdn.rows(n: Nat, q: (Array<F32> & Array<F32>) & Array<F32>, +j: U32, +ri: U32, +ki: U32, +qi: U32, +vi: U32,
+  +oi: U32, +eg: F32, +beta: F32, +dk: U32) -> (Array<F32> & Array<F32>) & Array<F32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      (sc, o) = q
+      Array.gdn.rows(p, Array.gdn.rd(Array.gdn.dot(U32.to_nat(dk), (sc, 0.0), ri, ki, eg), o, (vi + j : U32), ri, ki, qi,
+        (oi + j : U32), eg, beta, dk), (j + 1 : U32), (ri + dk : U32), ki, qi, vi, oi, eg, beta, dk)
+
+def Array.gdn.soft(+x: F32) -> F32:
+  Array.q4mv.round((F32.max(x, 0.0) + F32.log((1.0 + F32.exp(F32.neg(F32.abs(x))) : F32)) : F32))
+
+def Array.gdn.hb(r: Array<F32> & F32, s: Array<F32>, co: Array<F32>, o: Array<F32>, ab: Array<U32>, +eg: F32, +h: U32,
+  +dk: U32, +dv: U32, +ko: U32) -> (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>:
+  (y, +b) = r
+  ((Array.gdn.rows(U32.to_nat(dv), ((s, co), o), 0, (h * dv * dk : U32), (ko + h * dk : U32), (h * dk : U32),
+    (ko + ko + h * dv : U32), (h * dv : U32), eg, Array.q4mv.round(Array.gdn.sig(b)), dk), y), ab)
+
+def Array.gdn.hp(g: Array<F32> & F32, ab: Array<U32>, s: Array<F32>, co: Array<F32>, o: Array<F32>, +a: F32, +dt: F32,
+  +h: U32, +dk: U32, +dv: U32, +nvh: U32, +ko: U32, +bi: U32) -> (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>:
+  (y, +al) = g
+  Array.gdn.hb(Array.get(F32, y, (bi + h : U32)), s, co, o, ab,
+    F32.exp((Array.gdn.soft(Array.q4mv.round((al + dt : F32))) * a : F32)), h, dk, dv, ko)
+
+def Array.gdn.hd(r: Array<U32> & F32, y: Array<F32>, s: Array<F32>, co: Array<F32>, o: Array<F32>, +a: F32, +h: U32,
+  +dk: U32, +dv: U32, +nvh: U32, +ko: U32, +bi: U32) -> (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>:
+  (ab, +dt) = r
+  Array.gdn.hp(Array.get(F32, y, (bi + nvh + h : U32)), ab, s, co, o, a, dt, h, dk, dv, nvh, ko, bi)
+
+def Array.gdn.ha(r: Array<U32> & F32, y: Array<F32>, s: Array<F32>, co: Array<F32>, o: Array<F32>, +h: U32, +dk: U32,
+  +dv: U32, +nvh: U32, +ko: U32, +bi: U32) -> (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>:
+  (ab, +a) = r
+  Array.gdn.hd(Array.gdn.ui(ab, (nvh + h : U32)), y, s, co, o, a, h, dk, dv, nvh, ko, bi)
+
+# Value heads h ..: decay, beta and the delta rule's rows.
+def Array.gdn.heads(n: Nat, q: (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>, +h: U32, +dk: U32,
+  +dv: U32, +nvh: U32, +ko: U32, +bi: U32) -> (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      ((((s, co), o), y), ab) = q
+      Array.gdn.heads(p, Array.gdn.ha(Array.gdn.ui(ab, h), y, s, co, o, h, dk, dv, nvh, ko, bi), (h + 1 : U32), dk, dv,
+        nvh, ko, bi)
+
+# The gated norm: o[i] = round(round(sn[j] * (o[i] * inv)) * silu(y[zi])).
+def Array.gdn.g2(r: Array<F32> & F32, o: Array<F32>, sn: Array<U32>, +x: F32, +w: F32, +i: U32) ->
+  (Array<F32> & Array<F32>) & Array<U32>:
+  (y, +z) = r
+  ((Array.set(F32, o, i, Array.q4mv.round((x * (z / (1.0 + F32.exp(F32.neg(z))) : F32) : F32))), y), sn)
+
+def Array.gdn.g1(r: Array<U32> & F32, o: Array<F32>, y: Array<F32>, +v: F32, +inv: F32, +i: U32, +zi: U32) ->
+  (Array<F32> & Array<F32>) & Array<U32>:
+  (sn, +w) = r
+  Array.gdn.g2(Array.get(F32, y, zi), o, sn, Array.q4mv.round((w * (v * inv : F32) : F32)), w, i)
+
+def Array.gdn.g0(r: Array<F32> & F32, y: Array<F32>, sn: Array<U32>, +inv: F32, +i: U32, +j: U32, +zi: U32) ->
+  (Array<F32> & Array<F32>) & Array<U32>:
+  (o, +v) = r
+  Array.gdn.g1(Array.gdn.ui(sn, j), o, y, v, inv, i, zi)
+
+def Array.gdn.gate(n: Nat, q: (Array<F32> & Array<F32>) & Array<U32>, +inv: F32, +i: U32, +j: U32, +zi: U32) ->
+  (Array<F32> & Array<F32>) & Array<U32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      ((o, y), sn) = q
+      Array.gdn.gate(p, Array.gdn.g0(Array.get(F32, o, i), y, sn, inv, i, j, zi), inv, (i + 1 : U32), (j + 1 : U32),
+        (zi + 1 : U32))
+
+def Array.gdn.gnf(r: Array<F32> & F32, y: Array<F32>, sn: Array<U32>, +i: U32, +zi: U32, +n: U32, +nf: F32, +eps: F32) ->
+  (Array<F32> & Array<F32>) & Array<U32>:
+  (o, +s) = r
+  Array.gdn.gate(U32.to_nat(n), ((o, y), sn), (1.0 / F32.sqrt((s / nf + eps : F32)) : F32), i, 0, zi)
+
+def Array.gdn.gn(k: Nat, q: (Array<F32> & Array<F32>) & Array<U32>, +i: U32, +zi: U32, +n: U32, +nf: F32, +eps: F32) ->
+  (Array<F32> & Array<F32>) & Array<U32>:
+  match k:
+    case 0n:
+      q
+    case 1n+p:
+      ((o, y), sn) = q
+      Array.gdn.gn(p, Array.gdn.gnf(Array.rmsq.sqs(U32.to_nat(n), (Array.gdn.scl(U32.to_nat(n), o, i, 1.0), 0.0), i), y,
+        sn, i, zi, n, nf, eps), (i + n : U32), (zi + n : U32), n, nf, eps)
+
+def Array.gdn.fin(q: (Array<F32> & Array<F32>) & Array<U32>, co: Array<F32>, w: Array<F32>, s: Array<F32>, cw: Array<U32>,
+  ab: Array<U32>, +din: U32) -> (((((Array<F32> & Array<F32>) & Array<F32>) & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>:
+  ((o, y), sn) = q
+  _ = co
+  ((((((y, w), s), cw), ab), sn), Array.rmsq.gs(U32.to_nat((din >> 6n : U32)), o, 0, din))
+
+def Array.gdn.mix(q: (((Array<F32> & Array<F32>) & Array<F32>) & Array<F32>) & Array<U32>, w: Array<F32>, cw: Array<U32>,
+  sn: Array<U32>, +c: U32, +dk: U32, +dv: U32, +nvh: U32, +din: U32, +eps: F32) ->
+  (((((Array<F32> & Array<F32>) & Array<F32>) & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>:
+  ((((s, co), o), y), ab) = q
+  Array.gdn.fin(Array.gdn.gn(U32.to_nat(nvh), ((o, y), sn), 0, c, dv, U32.to_f32(dk), eps), co, w, s, cw, ab, din)
+
+def Array.gdn.norm(q: ((Array<F32> & Array<F32>) & Array<U32>) & Array<F32>, s: Array<F32>, ab: Array<U32>, sn: Array<U32>,
+  o: Array<F32>, +c: U32, +dk: U32, +dv: U32, +nvh: U32, +din: U32, +ko: U32, +eps: F32) ->
+  (((((Array<F32> & Array<F32>) & Array<F32>) & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>:
+  (((y, w), cw), co) = q
+  +nk = U32.to_nat(U32.div(ko, dk))
+  +df = U32.to_f32(dk)
+  co2 = Array.gdn.l2(nk, Array.gdn.l2(nk, co, 0, dk, eps, Array.q4mv.round((1.0 / df : F32))), ko, dk, eps,
+    Array.q4mv.round((1.0 / F32.sqrt(df) : F32)))
+  Array.gdn.mix(Array.gdn.heads(U32.to_nat(nvh), ((((s, co2), o), y), ab), 0, dk, dv, nvh, ko, (c + din : U32)), w, cw, sn,
+    c, dk, dv, nvh, din, eps)
+
+def Array.gdn.co(r: Array<F32> & Array<F32>, w: Array<F32>, s: Array<F32>, cw: Array<U32>, ab: Array<U32>, sn: Array<U32>,
+  o: Array<F32>, +c: U32, +dk: U32, +dv: U32, +nvh: U32, +din: U32, +ko: U32, +eps: F32) ->
+  (((((Array<F32> & Array<F32>) & Array<F32>) & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>:
+  (y, co) = r
+  Array.gdn.norm(Array.gdn.conv(U32.to_nat(c), (((y, w), cw), co), 0, c), s, ab, sn, o, c, dk, dv, nvh, din, ko, eps)
+
+def Array.gdn(y: Array<F32>, w: Array<F32>, s: Array<F32>, cw: Array<U32>, ab: Array<U32>, sn: Array<U32>, o: Array<F32>,
+  +c: U32, +dk: U32, +dv: U32, +nvh: U32, +din: U32, +ko: U32, +eps: F32) ->
+  (((((Array<F32> & Array<F32>) & Array<F32>) & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>:
+  Array.gdn.co(Array.clone(F32, y), w, s, cw, ab, sn, o, c, dk, dv, nvh, din, ko, eps)
+
+# Array.atq(y, kc, vc, kw, cs, o, pos, nq, nkv, hd, half, eps) is one token of
+# gated full attention (Qwen3.5's), feeding Array.q4mv. y holds the
+# projections: query head h's q at h * 2 * hd and its gate after it, then
+# nkv keys (at nq * 2 * hd) and nkv values, hd values each. kc and vc are
+# the key and value caches as F32 bits, position p's head g at
+# (p * nkv + g) * hd; kw holds the q norm's weights then the k norm's (hd
+# each, F32 bits); cs the rotation's cos then sin (half each). In order:
+#  1. each key head, then each query head, in place in y: x = round(w * (x *
+#     inv)) with inv = 1 / sqrt(sum x^2 / hd + eps), then slots j < half
+#     rotate against j + half: (a, b) to (round(a c - b s), round(b c + a s)).
+#  2. the keys and values join the caches at pos.
+#  3. query head h reads cache head g = h / (nq / nkv) at every position t
+#     from pos down to 0: score = (sum k q, in order) * (1 / sqrt(hd)), m their
+#     max, e = exp(score - m), sum = the e's added in that order, acc = the
+#     e * v's added in that order; o[h * hd + d] = round(round(acc * (1 / sum))
+#     * round(sigmoid(gate))).
+#  4. o[nq * hd + g] holds group g's sum as Array.rmsq writes it.
+# Queued like Array.rmsq; use every array after the next Array.q4wait.
+# Metal's exp and its tree sums may differ in the last bits, and it leaves
+# y as it was. A Metal heap queues positions below 4096; past that the call
+# runs on the CPU at once, so wait before it.
+def Array.atq.dep(k: Nat, +n: U32, +m: U32, +d: Nat) -> Nat:
+  match k:
+    case 0n:
+      d
+    case 1n+p:
+      Bool.pick(Nat, U32.is_le(n, m), d, Array.atq.dep(p, n, (m + m : U32), 1n+d))
+
+# x[i ..] = round(w[j ..] * (x[i ..] * inv)) over n slots.
+def Array.atq.w1(r: Array<U32> & F32, a: Array<F32>, +x: F32, +inv: F32, +i: U32) -> Array<F32> & Array<U32>:
+  (kw, +w) = r
+  (Array.set(F32, a, i, Array.q4mv.round((w * (x * inv : F32) : F32))), kw)
+
+def Array.atq.w0(r: Array<F32> & F32, kw: Array<U32>, +inv: F32, +i: U32, +j: U32) -> Array<F32> & Array<U32>:
+  (a, +x) = r
+  Array.atq.w1(Array.gdn.ui(kw, j), a, x, inv, i)
+
+def Array.atq.ws(n: Nat, r: Array<F32> & Array<U32>, +inv: F32, +i: U32, +j: U32) -> Array<F32> & Array<U32>:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      (a, kw) = r
+      Array.atq.ws(p, Array.atq.w0(Array.get(F32, a, i), kw, inv, i, j), inv, (i + 1 : U32), (j + 1 : U32))
+
+def Array.atq.nf(r: Array<F32> & F32, kw: Array<U32>, +i: U32, +j: U32, +hd: U32, +eps: F32) -> Array<F32> & Array<U32>:
+  (a, +s) = r
+  Array.atq.ws(U32.to_nat(hd), (a, kw), (1.0 / F32.sqrt((s / U32.to_f32(hd) + eps : F32)) : F32), i, j)
+
+# The rotation of slot i + j against i + j + half by cs[j], cs[half + j].
+def Array.atq.r3(r: Array<F32> & F32, a: Array<F32>, +x: F32, +y: F32, +c: F32, +i: U32, +h: U32) -> Array<F32> & Array<F32>:
+  (cs, +s) = r
+  (Array.set(F32, Array.set(F32, a, i, Array.q4mv.round((x * c - y * s : F32))), (i + h : U32),
+    Array.q4mv.round((y * c + x * s : F32))), cs)
+
+def Array.atq.r2(r: Array<F32> & F32, a: Array<F32>, +x: F32, +y: F32, +i: U32, +j: U32, +h: U32) -> Array<F32> & Array<F32>:
+  (cs, +c) = r
+  Array.atq.r3(Array.get(F32, cs, (h + j : U32)), a, x, y, c, i, h)
+
+def Array.atq.r1(r: Array<F32> & F32, cs: Array<F32>, +x: F32, +i: U32, +j: U32, +h: U32) -> Array<F32> & Array<F32>:
+  (a, +y) = r
+  Array.atq.r2(Array.get(F32, cs, j), a, x, y, i, j, h)
+
+def Array.atq.r0(r: Array<F32> & F32, cs: Array<F32>, +i: U32, +j: U32, +h: U32) -> Array<F32> & Array<F32>:
+  (a, +x) = r
+  Array.atq.r1(Array.get(F32, a, (i + h : U32)), cs, x, i, j, h)
+
+def Array.atq.rot(n: Nat, r: Array<F32> & Array<F32>, +i: U32, +j: U32, +h: U32) -> Array<F32> & Array<F32>:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      (a, cs) = r
+      Array.atq.rot(p, Array.atq.r0(Array.get(F32, a, i), cs, i, j, h), (i + 1 : U32), (j + 1 : U32), h)
+
+def Array.atq.hr.k(r: Array<F32> & Array<F32>, kw: Array<U32>) -> (Array<F32> & Array<U32>) & Array<F32>:
+  (a, cs) = r
+  ((a, kw), cs)
+
+def Array.atq.hr(r: Array<F32> & Array<U32>, cs: Array<F32>, +i: U32, +h: U32) -> (Array<F32> & Array<U32>) & Array<F32>:
+  (a, kw) = r
+  Array.atq.hr.k(Array.atq.rot(U32.to_nat(h), (a, cs), i, 0, h), kw)
+
+def Array.atq.hd1(q: (Array<F32> & Array<U32>) & Array<F32>, +i: U32, +j: U32, +hd: U32, +h: U32, +eps: F32) ->
+  (Array<F32> & Array<U32>) & Array<F32>:
+  ((a, kw), cs) = q
+  Array.atq.hr(Array.atq.nf(Array.rmsq.sqs(U32.to_nat(hd), (a, 0.0), i), kw, i, j, hd, eps), cs, i, h)
+
+# k heads from i, step apart: norm by kw[j ..], then rotate, in place.
+def Array.atq.hds(k: Nat, q: (Array<F32> & Array<U32>) & Array<F32>, +i: U32, +step: U32, +j: U32, +hd: U32, +h: U32,
+  +eps: F32) -> (Array<F32> & Array<U32>) & Array<F32>:
+  match k:
+    case 0n:
+      q
+    case 1n+p:
+      Array.atq.hds(p, Array.atq.hd1(q, i, j, hd, h, eps), (i + step : U32), step, j, hd, h, eps)
+
+# c[j ..] = the bits of a[i ..] over n slots.
+def Array.atq.p1(r: Array<F32> & F32, c: Array<U32>, +j: U32) -> Array<F32> & Array<U32>:
+  (a, +x) = r
+  (a, Array.set(U32, c, j, Array.q4mv.bits(x)))
+
+def Array.atq.put(n: Nat, r: Array<F32> & Array<U32>, +i: U32, +j: U32) -> Array<F32> & Array<U32>:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      (a, c) = r
+      Array.atq.put(p, Array.atq.p1(Array.get(F32, a, i), c, j), (i + 1 : U32), (j + 1 : U32))
+
+# acc + k * q over hd slots, in order (cache k at ki, q in a at qi).
+def Array.atq.d1(r: Array<F32> & F32, kc: Array<U32>, +k: F32, +acc: F32) -> (Array<U32> & Array<F32>) & F32:
+  (a, +q) = r
+  ((kc, a), (acc + k * q : F32))
+
+def Array.atq.d0(r: Array<U32> & F32, a: Array<F32>, +qi: U32, +acc: F32) -> (Array<U32> & Array<F32>) & F32:
+  (kc, +k) = r
+  Array.atq.d1(Array.get(F32, a, qi), kc, k, acc)
+
+def Array.atq.dot(n: Nat, r: (Array<U32> & Array<F32>) & F32, +ki: U32, +qi: U32) -> (Array<U32> & Array<F32>) & F32:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      ((kc, a), +acc) = r
+      Array.atq.dot(p, Array.atq.d0(Array.gdn.ui(kc, ki), a, qi, acc), (ki + 1 : U32), (qi + 1 : U32))
+
+def Array.atq.sc1(r: (Array<U32> & Array<F32>) & F32, ss: Array<F32>, +t: U32, +sc: F32) ->
+  (Array<U32> & Array<F32>) & Array<F32>:
+  (ka, +d) = r
+  (ka, Array.set(F32, ss, t, (d * sc : F32)))
+
+# ss[t] = score of the position t below the newest, its key at ki.
+def Array.atq.scs(n: Nat, q: (Array<U32> & Array<F32>) & Array<F32>, +t: U32, +ki: U32, +qi: U32, +stride: U32,
+  +hd: U32, +sc: F32) -> (Array<U32> & Array<F32>) & Array<F32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      (ka, ss) = q
+      Array.atq.scs(p, Array.atq.sc1(Array.atq.dot(U32.to_nat(hd), (ka, 0.0), ki, qi), ss, t, sc), (t + 1 : U32),
+        (ki - stride : U32), qi, stride, hd, sc)
+
+def Array.atq.mx1(r: Array<F32> & F32, +m: F32) -> Array<F32> & F32:
+  (a, +x) = r
+  (a, F32.max(x, m))
+
+def Array.atq.mx(n: Nat, r: Array<F32> & F32, +i: U32) -> Array<F32> & F32:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      (a, +m) = r
+      Array.atq.mx(p, Array.atq.mx1(Array.get(F32, a, i), m), (i + 1 : U32))
+
+def Array.atq.ex1(r: Array<F32> & F32, +i: U32, +m: F32) -> Array<F32>:
+  (a, +x) = r
+  Array.set(F32, a, i, F32.exp((x - m : F32)))
+
+def Array.atq.ex(n: Nat, a: Array<F32>, +i: U32, +m: F32) -> Array<F32>:
+  match n:
+    case 0n:
+      a
+    case 1n+p:
+      Array.atq.ex(p, Array.atq.ex1(Array.get(F32, a, i), i, m), (i + 1 : U32), m)
+
+# acc[d] = acc[d] + v[d] * pr over hd slots (cache v at vi).
+def Array.atq.a1(r: Array<F32> & F32, vc: Array<U32>, +v: F32, +pr: F32, +d: U32) -> Array<U32> & Array<F32>:
+  (acc, +x) = r
+  (vc, Array.set(F32, acc, d, (x + (v * pr : F32) : F32)))
+
+def Array.atq.a0(r: Array<U32> & F32, acc: Array<F32>, +pr: F32, +d: U32) -> Array<U32> & Array<F32>:
+  (vc, +v) = r
+  Array.atq.a1(Array.get(F32, acc, d), vc, v, pr, d)
+
+def Array.atq.acc(n: Nat, r: Array<U32> & Array<F32>, +vi: U32, +d: U32, +pr: F32) -> Array<U32> & Array<F32>:
+  match n:
+    case 0n:
+      r
+    case 1n+p:
+      (vc, acc) = r
+      Array.atq.acc(p, Array.atq.a0(Array.gdn.ui(vc, vi), acc, pr, d), (vi + 1 : U32), (d + 1 : U32), pr)
+
+def Array.atq.wt1(r: Array<F32> & F32, va: Array<U32> & Array<F32>, +vi: U32, +hd: U32) -> Array<F32> & (Array<U32> & Array<F32>):
+  (es, +pr) = r
+  (es, Array.atq.acc(U32.to_nat(hd), va, vi, 0, pr))
+
+# acc = sum of e_t * v_t over the positions, newest first.
+def Array.atq.wts(n: Nat, q: Array<F32> & (Array<U32> & Array<F32>), +t: U32, +vi: U32, +stride: U32, +hd: U32) ->
+  Array<F32> & (Array<U32> & Array<F32>):
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      (es, va) = q
+      Array.atq.wts(p, Array.atq.wt1(Array.get(F32, es, t), va, vi, hd), (t + 1 : U32), (vi - stride : U32), stride, hd)
+
+def Array.atq.o2(r: Array<F32> & F32, acc: Array<F32>, o: Array<F32>, +a: F32, +inv: F32, +oi: U32) ->
+  (Array<F32> & Array<F32>) & Array<F32>:
+  (y, +g) = r
+  ((acc, y), Array.set(F32, o, oi, Array.q4mv.round((Array.q4mv.round((a * inv : F32)) *
+    Array.q4mv.round(Array.gdn.sig(g)) : F32))))
+
+def Array.atq.o1(r: Array<F32> & F32, y: Array<F32>, o: Array<F32>, +inv: F32, +gi: U32, +oi: U32) ->
+  (Array<F32> & Array<F32>) & Array<F32>:
+  (acc, +a) = r
+  Array.atq.o2(Array.get(F32, y, gi), acc, o, a, inv, oi)
+
+def Array.atq.outs(n: Nat, q: (Array<F32> & Array<F32>) & Array<F32>, +d: U32, +gi: U32, +oi: U32, +inv: F32) ->
+  (Array<F32> & Array<F32>) & Array<F32>:
+  match n:
+    case 0n:
+      q
+    case 1n+p:
+      ((acc, y), o) = q
+      Array.atq.outs(p, Array.atq.o1(Array.get(F32, acc, d), y, o, inv, gi, oi), (d + 1 : U32), (gi + 1 : U32),
+        (oi + 1 : U32), inv)
+
+# One query head's attention; its scratch arrays are dropped.
+def Array.atq.h4(q: (Array<F32> & Array<F32>) & Array<F32>, ss: Array<F32>, kc: Array<U32>, vc: Array<U32>) ->
+  ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  ((acc, y), o) = q
+  _ = acc
+  _ = ss
+  (((y, kc), vc), o)
+
+def Array.atq.h3(r: Array<F32> & (Array<U32> & Array<F32>), y: Array<F32>, kc: Array<U32>, o: Array<F32>, +sum: F32,
+  +h: U32, +hd: U32) -> ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  (ss, va) = r
+  (vc, acc) = va
+  Array.atq.h4(Array.atq.outs(U32.to_nat(hd), ((acc, y), o), 0, (h * hd * 2 + hd : U32), (h * hd : U32),
+    (1.0 / sum : F32)), ss, kc, vc)
+
+def Array.atq.h2(r: Array<F32> & F32, y: Array<F32>, kc: Array<U32>, vc: Array<U32>, o: Array<F32>, +n: U32, +vi: U32,
+  +stride: U32, +h: U32, +hd: U32) -> ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  (ss, +sum) = r
+  Array.atq.h3(Array.atq.wts(U32.to_nat(n), (ss, (vc, Array.new(F32, Array.atq.dep(32n, hd, 1, 0n), 0.0))), 0, vi, stride,
+    hd), y, kc, o, sum, h, hd)
+
+def Array.atq.h1(r: Array<F32> & F32, y: Array<F32>, kc: Array<U32>, vc: Array<U32>, o: Array<F32>, +n: U32, +vi: U32,
+  +stride: U32, +h: U32, +hd: U32) -> ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  (ss, +m) = r
+  Array.atq.h2(Array.rmsq.half(U32.to_nat(n), (Array.atq.ex(U32.to_nat(n), ss, 0, m), 0.0), 0), y, kc, vc, o, n, vi,
+    stride, h, hd)
+
+def Array.atq.h0(q: (Array<U32> & Array<F32>) & Array<F32>, vc: Array<U32>, o: Array<F32>, +n: U32, +vi: U32,
+  +stride: U32, +h: U32, +hd: U32) -> ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  ((kc, y), ss) = q
+  Array.atq.h1(Array.atq.mx(U32.to_nat((n - 1 : U32)), Array.get(F32, ss, 0), 1), y, kc, vc, o, n, vi, stride, h, hd)
+
+def Array.atq.head(q: ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>, +h: U32, +pos: U32, +nq: U32, +nkv: U32,
+  +hd: U32) -> ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  (((y, kc), vc), o) = q
+  +n = (pos + 1 : U32)
+  +stride = (nkv * hd : U32)
+  +at = ((pos * nkv + U32.div(h, U32.div(nq, nkv))) * hd : U32)
+  Array.atq.h0(Array.atq.scs(U32.to_nat(n), ((kc, y), Array.new(F32, Array.atq.dep(32n, n, 1, 0n), 0.0)), 0, at,
+    (h * hd * 2 : U32), stride, hd, (1.0 / F32.sqrt(U32.to_f32(hd)) : F32)), vc, o, n, at, stride, h, hd)
+
+def Array.atq.heads(k: Nat, q: ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>, +h: U32, +pos: U32, +nq: U32,
+  +nkv: U32, +hd: U32) -> ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>:
+  match k:
+    case 0n:
+      q
+    case 1n+p:
+      Array.atq.heads(p, Array.atq.head(q, h, pos, nq, nkv, hd), (h + 1 : U32), pos, nq, nkv, hd)
+
+def Array.atq.fin(q: ((Array<F32> & Array<U32>) & Array<U32>) & Array<F32>, kw: Array<U32>, cs: Array<F32>, +n: U32) ->
+  ((((Array<F32> & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>) & Array<F32>:
+  (((y, kc), vc), o) = q
+  (((((y, kc), vc), kw), cs), Array.rmsq.gs(U32.to_nat((n >> 6n : U32)), o, 0, n))
+
+def Array.atq.cv(r: Array<F32> & Array<U32>, kc: Array<U32>, kw: Array<U32>, cs: Array<F32>, o: Array<F32>, +pos: U32,
+  +nq: U32, +nkv: U32, +hd: U32) -> ((((Array<F32> & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>) & Array<F32>:
+  (y, vc) = r
+  Array.atq.fin(Array.atq.heads(U32.to_nat(nq), (((y, kc), vc), o), 0, pos, nq, nkv, hd), kw, cs, (nq * hd : U32))
+
+def Array.atq.ck(r: Array<F32> & Array<U32>, vc: Array<U32>, kw: Array<U32>, cs: Array<F32>, o: Array<F32>, +pos: U32,
+  +nq: U32, +nkv: U32, +hd: U32) -> ((((Array<F32> & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>) & Array<F32>:
+  (y, kc) = r
+  +ko = (nq * hd * 2 : U32)
+  Array.atq.cv(Array.atq.put(U32.to_nat((nkv * hd : U32)), (y, vc), (ko + nkv * hd : U32), (pos * nkv * hd : U32)), kc,
+    kw, cs, o, pos, nq, nkv, hd)
+
+def Array.atq.rq(q: (Array<F32> & Array<U32>) & Array<F32>, kc: Array<U32>, vc: Array<U32>, o: Array<F32>, +pos: U32,
+  +nq: U32, +nkv: U32, +hd: U32) -> ((((Array<F32> & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>) & Array<F32>:
+  ((y, kw), cs) = q
+  Array.atq.ck(Array.atq.put(U32.to_nat((nkv * hd : U32)), (y, kc), (nq * hd * 2 : U32), (pos * nkv * hd : U32)), vc, kw,
+    cs, o, pos, nq, nkv, hd)
+
+def Array.atq(y: Array<F32>, kc: Array<U32>, vc: Array<U32>, kw: Array<U32>, cs: Array<F32>, o: Array<F32>, +pos: U32,
+  +nq: U32, +nkv: U32, +hd: U32, +half: U32, +eps: F32) ->
+  ((((Array<F32> & Array<U32>) & Array<U32>) & Array<U32>) & Array<F32>) & Array<F32>:
+  Array.atq.rq(Array.atq.hds(U32.to_nat(nq), Array.atq.hds(U32.to_nat(nkv), ((y, kw), cs), (nq * hd * 2 : U32), hd, hd,
+    hd, half, eps), 0, (hd * 2 : U32), 0, hd, half, eps), kc, vc, o, pos, nq, nkv, hd)
+
 def Array.to_list.go(~T: Type, a: Array<T>, acc: List<T>) -> List<T>:
   match a:
     case ALeaf{x}:
