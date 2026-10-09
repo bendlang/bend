@@ -709,8 +709,7 @@ function call_eta(t: HTerm): HTerm | null {
   if (m.tld?.$ !== "Def" || f === null || m.args.length >= f.live.length) {
     return null;
   }
-  return term_eta(t, Bend.tele_fill(FL.book, m.tld.T, m.all,
-    Bend.ctx_nil()), f.n - m.all.length);
+  return term_eta(t, tele_fill(m.tld.T, m.all), f.n - m.all.length);
 }
 
 function term_kids(tm: HTerm): HTerm[] {
@@ -821,6 +820,10 @@ function op_name(k: Name): string {
 
 function tele_unbind(T: HTerm): { doms: Dom[]; ret: HTerm } {
   return memo(FL.teles, T, () => Bend.tele_unbind(FL.book, T));
+}
+
+function tele_fill(T: HTerm, xs: HTerm[]): HTerm {
+  return Bend.tele_fill(FL.book, T, xs, Bend.ctx_nil());
 }
 
 // Ty
@@ -1018,8 +1021,8 @@ function ctr_adt(x: Of<"Ctr">,
 }
 
 function ctr_tail(ctr: Bend.Ctr, xs?: HTerm[]): Dom[] {
-  const doms = (xs ? Bend.tele_unbind(FL.book, Bend.tele_fill(FL.book, ctr.T,
-    xs, Bend.ctx_nil())) : tele_unbind(ctr.T)).doms;
+  const doms = (xs ? Bend.tele_unbind(FL.book, tele_fill(ctr.T, xs))
+    : tele_unbind(ctr.T)).doms;
   return doms.slice(doms.length - ctr.n);
 }
 
@@ -1195,8 +1198,7 @@ function fun_of(k: Name): Fun {
       return { n, h, live, lays: Array(live.length + 1).fill(BOX), ret: BOX };
     }
     const lays = live.map(([, , A]) => lay_of(A));
-    const ret = lay_of(Bend.tele_fill(FL.book, tld.T,
-      Array(n).fill(DUMMY), Bend.ctx_nil()));
+    const ret = lay_of(tele_fill(tld.T, Array(n).fill(DUMMY)));
     const wide = lays.flatMap((l) => l.ks).length > WIDE;
     return { n, h, live, lays: lays.map((l) => wide && l.ks.length > 1 ? BOX
       : l), ret: ret.ks.length === 0 ? BOX : ret };
@@ -3201,8 +3203,7 @@ function js_host(k: Name): string {
   const { n, live } = fun_of(k);
   const ps = live.map((_, i) => "a" + i);
   const xs = live.map(([, , A], i) => `${js_marshal(A, false)}(${ps[i]})`);
-  const ret = Bend.tele_fill(FL.book, FL.book.tlds[k].T, Array(n).fill(DUMMY),
-    Bend.ctx_nil());
+  const ret = tele_fill(FL.book.tlds[k].T, Array(n).fill(DUMMY));
   const back = live.map(([, , A], i) =>
     `${js_marshal(A, true)}(${ps[i]});`);
   return `(${ps.join(", ")}) => { const r = ${js_marshal(ret, true)
