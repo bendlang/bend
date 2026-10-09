@@ -1088,6 +1088,15 @@ translation and then the kernel. The command `bend -o F.bendtt` writes
 the translated book to a file, where a reader can check what a law
 states.
 
+The translation gives opaque template constants closed models. When
+constructor, reflexivity and projection models do not suffice, it may
+use a safe definition of the same type, with a checked body and no
+template parameters. That definition is emitted as an ordinary
+dependency: the kernel checks its body too, not just the opaque
+constant's signature. A foreign declaration or an `@unsafe` definition
+is not such a witness. If no model is available, the constant remains
+outside the translation's scope.
+
 = Related Work <sec:related>
 
 *Type in type.* Martin-Löf's first type theory had a type of all types

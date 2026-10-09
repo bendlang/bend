@@ -459,10 +459,23 @@ function subst(t: HTerm, d: number, f: (o: Record<string, unknown>) => HTerm | u
 // is used once); none for an empty type. A projection model takes that
 // variable first: a law like {a == sub(add(a, b), b)} holds of it, one
 // like {add(a, b) == add(b, a)} of a constant. It reads the model book,
-// as the kernel checks a model with every opaque def at its own
+// where each opaque def is at its own model.
+// When those models fail, a closed safe def of the same type can stand
+// for T; the kernel checks its body as an ordinary dependency too.
 
 function model(e: Safe, T: HTerm): HTerm | null {
-  return model_by(e, T, false) ?? model_by(e, T, true);
+  const m = model_by(e, T, false) ?? model_by(e, T, true);
+  if (m !== null) {
+    return m;
+  }
+  for (const k of e.book.order) {
+    const tld = e.book.tlds[k];
+    if (tld.$ === "Def" && tld.e !== undefined && tld.u !== true
+      && tld.x === 0 && B.term_compare("EQ", e.mb, tld.T, T, 0)) {
+      return B.Ann(B.Ref(k), T);
+    }
+  }
+  return null;
 }
 
 // a round that cuts no branch finds what an unbounded search would; one
