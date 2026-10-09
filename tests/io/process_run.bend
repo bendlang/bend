@@ -82,6 +82,12 @@ def main() -> IO(Unit):
       Process.run("/bin/sh", ["-c", "printf A; (sleep 0.2; printf B) & exit 0"],
         "", 128, 2000)
     IO.print("descendant output: " ++ answer(q, 0, "AB", ""))
+    r : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/sh", ["-c", "yes & echo hi"], "", 4096, 2000)
+    IO.print("runaway descendant: " ++ failure(r, 27))
+    r0 : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/sh", ["-c", "exec >&- 2>&-; sleep 3"], "", 128, 300)
+    IO.print("closed stdio: " ++ timeout(r0))
 
 #|stdin: True
 #|literal argv: True
@@ -99,3 +105,5 @@ def main() -> IO(Unit):
 #|sigpipe default: True
 #|inherited pipe: True
 #|descendant output: True
+#|runaway descendant: True
+#|closed stdio: True

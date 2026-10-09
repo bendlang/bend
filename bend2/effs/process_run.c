@@ -3,6 +3,11 @@
 
 #include <spawn.h>
 #include <sys/wait.h>
+#ifdef __APPLE__
+#include <sys/event.h>
+#else
+#include <sys/syscall.h>
+#endif
 
 extern char** environ;
 
@@ -59,6 +64,24 @@ static void process_append(ProcessCall* p, bool error, const char* data,
   *len = need;
 }
 
+// A descriptor that polls readable once the child exits.
+static int process_exitfd(pid_t child) {
+#ifdef __APPLE__
+  int kq = kqueue();
+  struct kevent ev;
+  EV_SET(&ev, child, EVFILT_PROC, EV_ADD | EV_ONESHOT, NOTE_EXIT, 0, NULL);
+  if (kq >= 0 && kevent(kq, &ev, 1, NULL, 0, NULL) != 0) {
+    close(kq);
+    kq = -1;
+  }
+  return kq;
+#elif defined(SYS_pidfd_open)
+  return (int)syscall(SYS_pidfd_open, child, 0);
+#else
+  return -1;
+#endif
+}
+
 static int process_nonblock(int fd) {
   int flags = fcntl(fd, F_GETFL);
   return flags < 0 ? -1 : fcntl(fd, F_SETFL, flags | O_NONBLOCK);
@@ -89,6 +112,7 @@ static void process_call(IoWork* w) {
   int pipes[3][2] = {{-1, -1}, {-1, -1}, {-1, -1}};
   pid_t child = -1;
   int status = 0;
+  int exitfd = -1;
   for (int i = 0; i < 3; i += 1) {
     if (process_pipe(pipes[i]) != 0) {
       p->code = errno;
@@ -156,12 +180,14 @@ static void process_call(IoWork* w) {
     close(pipes[0][1]); pipes[0][1] = -1;
   }
   // Reads until stdout and stderr close, then reaps the child, all within
-  // the deadline: a descendant holding a pipe open extends the wait.
+  // the deadline: a descendant holding a pipe open extends the wait. The
+  // exit descriptor is polled only once both close, as it stays readable.
+  exitfd = process_exitfd(child);
   u64 deadline = io_tick() + (u64)p->timeout * 1000000ull;
   u64 written  = 0;
   while (p->code == 0) {
-    bool open = pipes[1][0] >= 0 || pipes[2][0] >= 0;
-    pid_t got = open ? 0 : waitpid(child, &status, WNOHANG);
+    bool reading = pipes[1][0] >= 0 || pipes[2][0] >= 0;
+    pid_t got = reading ? 0 : waitpid(child, &status, WNOHANG);
     if (got == child) {
       child = -1;
       break;
@@ -175,14 +201,15 @@ static void process_call(IoWork* w) {
       p->code = ETIMEDOUT;
       break;
     }
-    struct pollfd fds[3] = {
+    struct pollfd fds[4] = {
       {pipes[0][1], POLLOUT, 0},
       {pipes[1][0], POLLIN, 0},
-      {pipes[2][0], POLLIN, 0}
+      {pipes[2][0], POLLIN, 0},
+      {reading ? -1 : exitfd, POLLIN, 0}
     };
     u64 left = (deadline - now + 999999ull) / 1000000ull;
-    u64 most = open ? 1000000 : 1;
-    int ready = poll(fds, 3, (int)(left > most ? most : left));
+    u64 most = reading || exitfd >= 0 ? 1000000 : 50;
+    int ready = poll(fds, 4, (int)(left > most ? most : left));
     if (ready < 0) {
       if (errno == EINTR) {
         continue;
@@ -232,6 +259,9 @@ static void process_call(IoWork* w) {
       : WIFSIGNALED(status) ? 128 + (u32)WTERMSIG(status) : 1;
   }
 done:
+  if (exitfd >= 0) {
+    close(exitfd);
+  }
   for (int i = 0; i < 3; i += 1) {
     for (int j = 0; j < 2; j += 1) {
       if (pipes[i][j] >= 0) {

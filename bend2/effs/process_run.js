@@ -1,6 +1,63 @@
 // Process
 // =======
 
+// Bun.spawnSync reads until stdout and stderr close only since Bun 1.4; 1.3
+// returns when the direct child exits, losing what a descendant writes after.
+// So a worker runs the async Bun.spawn, which reads each pipe to its end on
+// any version, while this thread waits on a shared flag for the answer.
+const PROCESS_WORKER = `
+const { errno, signals } = require("node:os").constants;
+
+self.onmessage = async ({ data: { argv, input, max, ms, flag, port } }) => {
+  let got;
+  try {
+    got = await run(argv, input, max, ms);
+  } catch (e) {
+    got = { fail: errno[e] ?? (typeof e?.errno === "number"
+      ? Math.abs(e.errno) : errno.EIO) };
+  }
+  port.postMessage(got);
+  Atomics.store(flag, 0, 1);
+  Atomics.notify(flag, 0);
+};
+
+// Reads both pipes to their end and reaps the child, all within ms; past ms,
+// or past max bytes in all, kills the child and stops reading.
+async function run(argv, input, max, ms) {
+  const proc = Bun.spawn({ cmd: argv, stdin: input, stdout: "pipe",
+    stderr: "pipe" });
+  const readers = [proc.stdout.getReader(), proc.stderr.getReader()];
+  let size = 0;
+  const read = async (reader) => {
+    const chunks = [];
+    for (let r; !(r = await reader.read()).done;) {
+      chunks.push(r.value);
+      size += r.value.length;
+      if (size > max) {
+        throw "EFBIG";
+      }
+    }
+    return Buffer.concat(chunks).toString("utf8");
+  };
+  let timer;
+  try {
+    const [out, err] = await Promise.race([
+      Promise.all([...readers.map(read), proc.exited]),
+      new Promise((_, no) => timer = setTimeout(no, ms, "ETIMEDOUT"))]);
+    const sig = proc.signalCode === null ? 0 : signals[proc.signalCode] ?? 0;
+    return { code: proc.exitCode ?? 128 + sig, out, err };
+  } catch (e) {
+    proc.kill("SIGKILL");
+    readers.forEach((r) => r.cancel().catch(() => {}));
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+`;
+
+let process_worker = null;
+
 function process_run(program, args, input, maxOutput, timeoutMs) {
   const argv = [program];
   for (let xs = args; xs.$ === CID(Con); xs = xs.tail) {
@@ -10,26 +67,18 @@ function process_run(program, args, input, maxOutput, timeoutMs) {
     || argv.some((arg) => arg.includes("\0"))) {
     return io_fail(22);
   }
-  let got;
-  try {
-    got = Bun.spawnSync({ cmd: argv, stdin: Buffer.from(input),
-      stdout: "pipe", stderr: "pipe", timeout: timeoutMs,
-      maxBuffer: maxOutput + 1 });
-  } catch (e) {
-    return io_fail(typeof e.errno === "number" ? Math.abs(e.errno) : 5);
-  }
-  const out = Buffer.from(got.stdout ?? []);
-  const err = Buffer.from(got.stderr ?? []);
-  if (got.exitedDueToMaxBuffer || out.length + err.length > maxOutput) {
-    return io_fail(27);
-  }
-  if (got.exitedDueToTimeout) {
-    return io_fail(process.platform === "darwin" ? 60 : 110);
-  }
-  const sig = got.signalCode === null ? 0
-    : require("node:os").constants.signals[got.signalCode];
-  const code = got.exitCode ?? (128 + (sig ?? 0));
-  return io_done(io_tup(code, out.toString("utf8"), err.toString("utf8")));
+  const { MessageChannel, receiveMessageOnPort } = require("node:worker_threads");
+  process_worker ??= new Worker(URL.createObjectURL(new Blob([PROCESS_WORKER])));
+  process_worker.unref();
+  const flag = new Int32Array(new SharedArrayBuffer(4));
+  const { port1, port2 } = new MessageChannel();
+  process_worker.postMessage({ argv, input: Buffer.from(input), max: maxOutput,
+    ms: timeoutMs, flag, port: port2 }, [port2]);
+  Atomics.wait(flag, 0, 0);
+  const got = receiveMessageOnPort(port1).message;
+  port1.close();
+  return got.fail !== undefined ? io_fail(got.fail)
+    : io_done(io_tup(got.code, got.out, got.err));
 }
 
 io_eff(CID(Process.run), process_run);
