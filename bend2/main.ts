@@ -482,50 +482,98 @@ function cli_base(what?: string): void {
 }
 
 async function cli_bundle(page: string, dir: string): Promise<void> {
-  // Virtual files live beside each page so its module imports resolve there.
-  const scripts = new Map<string, string[]>();
-  let tag: string | undefined;
+  // Virtual modules resolve imports beside their page, without disk files.
+  type Script = { page: string; number: number; code: string[] };
+  const scripts = new Map<string, Script>();
   const inline: BunPlugin = {
     name: "bend inline modules",
     setup(build) {
       build.onResolve({ filter: /\.bend-inline-/ }, (a) => {
         const id = path.resolve(a.resolveDir, a.path);
-        if (scripts.has(id)) return { path: id, namespace: "bend-inline" };
+        if (scripts.has(id)) {
+          return { path: id, namespace: "bend-inline" };
+        }
       });
       build.onLoad({ filter: /.*/, namespace: "bend-inline" }, (a) => ({
-        contents: scripts.get(a.path)!.join(""),
+        contents: scripts.get(a.path)!.code.join(""),
         loader: "js",
       }));
       build.onLoad({ filter: /\.html$/ }, async (a) => {
+        const source = await Bun.file(a.path).text();
+        let marker = "<!--bend-inline-position-->";
+        while (source.includes(marker)) {
+          marker += ".";
+        }
+        const names: string[] = [];
         let code: string[] | null = null;
-        const html = await new HTMLRewriter().on("script", {
+        // Insert markers without changing the original markup: their offsets,
+        // less earlier markers, locate script bodies even in multiline tags.
+        const marked = await new HTMLRewriter().on("script", {
           element(el) {
             code = null;
-            if (el.getAttribute("type")?.toLowerCase() !== "module"
-              || el.getAttribute("src") !== null) return;
-            const name = `.${path.basename(a.path)}.bend-inline-${tag ??= crypto.randomUUID()}-${scripts.size}.js`;
+            if (el.getAttribute("type")?.trim().toLowerCase() !== "module"
+              || el.getAttribute("src") !== null) {
+              return;
+            }
+            const name = "." + path.basename(a.path)
+              + ".bend-inline-" + String(names.length) + ".js";
+            names.push(name);
             code = [];
-            scripts.set(path.join(path.dirname(a.path), name), code);
-            el.setAttribute("src", "./" + name);
-            el.setInnerContent("");
+            scripts.set(path.join(path.dirname(a.path), name),
+              { page: a.path, number: names.length, code });
+            el.prepend(marker, { html: true });
           },
           text(text) {
             code?.push(text.text);
           },
-        }).transform(new Response(Bun.file(a.path))).text();
+        }).transform(new Response(source)).text();
+        let from = 0;
+        let removed = 0;
+        for (const name of names) {
+          const at = marked.indexOf(marker, from);
+          const prefix = source.slice(0, at - removed);
+          scripts.get(path.join(path.dirname(a.path), name))!.code
+            .unshift(prefix.replace(/[^\r\n]/g, " "));
+          from = at + marker.length;
+          removed += marker.length;
+        }
+        let index = 0;
+        const html = await new HTMLRewriter().on("script", {
+          element(el) {
+            if (el.getAttribute("type")?.trim().toLowerCase() !== "module"
+              || el.getAttribute("src") !== null) {
+              return;
+            }
+            el.setAttribute("type", "module");
+            el.setAttribute("src", "./" + names[index++]);
+            el.setInnerContent("");
+          },
+        }).transform(new Response(source)).text();
         return { contents: html, loader: "html" };
       });
     },
   };
-  const out = await Bun.build({
-    entrypoints: [page],
-    outdir: dir,
-    target: "browser",
-    minify: true,
-    plugins: [inline, PLUGIN],
-  });
-  for (const a of out.outputs) {
-    cli_say(1, a.path + " (" + (a.size / 1024).toFixed(1) + "kb)\n");
+  try {
+    const out = await Bun.build({
+      entrypoints: [page],
+      outdir: dir,
+      target: "browser",
+      minify: true,
+      plugins: [inline, PLUGIN],
+    });
+    for (const a of out.outputs) {
+      cli_say(1, a.path + " (" + (a.size / 1024).toFixed(1) + "kb)\n");
+    }
+  } catch (e) {
+    let why = book_err(e);
+    for (const [id, script] of scripts) {
+      if (why.includes(id)) {
+        why = why.replaceAll(id, script.page);
+        why += "\nInline module " + String(script.number)
+          + " in " + script.page + ".";
+      }
+    }
+    throw why;
   }
 }
 

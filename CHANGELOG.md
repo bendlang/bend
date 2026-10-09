@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- HTML inline modules bundle with stable output names and shared imports.
+  Spaces around `type="module"` are accepted, and bundle diagnostics point
+  to the original HTML page's lines.
+
 ## 2.0.36 (2026-10-07)
 
 - **HOC's proving agent is now named BendAI**: `bend login` logs in to
