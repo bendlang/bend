@@ -756,8 +756,7 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
-    : s.$ === "Ctr" && (s.x.length === 0
-      || s.x.every(term_const));
+    : s.$ === "Ctr" && s.x.every(term_const);
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
@@ -928,10 +927,9 @@ function type_adts(T: HTerm): Name[] {
 // the open layout of its element type (the return type of its
 // constructors), so all callers agree. lay_el refuses an open element
 // type: one that reduces to neither a datatype nor a type former (a type
-// variable, a hole, a law or family with no body). A former's layout,
-// lay_of's, does not depend on what its parts mention; a function is a
-// box even when its arguments are erased. adt_of and js_expr call it
-// only for that check.
+// variable, a hole, a law or family with no body). A former is a box
+// whatever its parts mention: a function is one even when its arguments
+// are erased. adt_of and js_expr call it only for that check.
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -956,7 +954,7 @@ function lay_el(A: HTerm | null): Lay {
     if (!["All", "Eql", "Typ", "Qnt"].includes(t?.$ ?? "")) {
       die("an open Array element type");
     }
-    return lay_of(A);
+    return BOX;
   }
   const tld = FL.book.tlds[t.k];
   return lay_of(tld?.$ === "ADT" && tld.c[0]
@@ -1165,8 +1163,8 @@ function mat_ctrs(x: HTerm, adt: Of<"ADT">): [Name, HTerm][] {
   const { arms, end } = mat_arms(x);
   const io = adt.k === "IO.OP";
   return io && term_strip(end).$ !== "Efq"
-    ? [...arms, ["_", end], ["", Bend.Efq()]] : io
-    || arms.length < Bend.book_adt(FL.book, adt, Bend.Emp()).c.length
+    ? [...arms, ["_", end], ["", Bend.Efq()]]
+    : io || arms.length < Bend.book_adt(FL.book, adt, Bend.Emp()).c.length
     ? [...arms, ["", end]] : arms;
 }
 
