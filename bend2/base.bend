@@ -221,6 +221,20 @@ def IO.now() -> IO(Nat):
   import "./effs/now.c"
   import "./effs/now.js"
 
+# Seconds and nanoseconds: Wall is since the Unix epoch; Mono has
+# IO.now's origin. The nanosecond part is less than 1000000000, but
+# resolution is the host's. C Wall reads CLOCK_REALTIME; JS Wall uses
+# performance.timeOrigin + performance.now(), which does not follow
+# later wall-clock adjustments. Negative or out-of-range Nat seconds
+# fail-stop. IO.now stays in milliseconds.
+type Clock is Data:
+  Wall{}
+  Mono{}
+
+def IO.clock(which: Clock) -> IO(Nat & U32):
+  import "./effs/now.c"
+  import "./effs/now.js"
+
 def IO.thread_count() -> IO(U32):
   import "./effs/thread_count.c"
   import "./effs/thread_count.js"
