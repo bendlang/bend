@@ -2779,9 +2779,9 @@ export function compile_book(book: Bend.Book): string {
   // a pure main's descriptor names constructors of the types it prints,
   // so their datatypes are roots too
   const show = show_main();
-  const fams = (show ?? []).flatMap((c) =>
-    typeof c === "string" ? [Bend.book_fam(FL.book, c)] : []);
-  file_book(["main", ...RUNTIME_ADTS, ...fams]);
+  const names = (show ?? []).filter((c) => typeof c === "string");
+  file_book(["main", ...RUNTIME_ADTS,
+    ...names.map((c) => Bend.book_fam(FL.book, c))]);
   const facts = () => FL.own.size + FL.hot.size + FL.stat.size;
   let was: number;
   do {
@@ -2825,26 +2825,25 @@ export function compile_book(book: Bend.Book): string {
   const desc = show === null ? [] : ["#if !DEVICE",
     `static const u32 SHOW_DESC[] = { ${show.map((c) =>
       typeof c === "string" ? cid_mac(c) : c).join(", ")} };`,
-    `static const char* SHOW_NAMES[] = { ${show.filter((c) =>
-      typeof c === "string").map((n) => JSON.stringify(Bend.name_key(n)))
-      .join(", ")} };`,
+    `static const char* SHOW_NAMES[] = { ${names.map((n) =>
+      JSON.stringify(Bend.name_key(n))).join(", ")} };`,
     "#endif"];
   const entries = [...FL.segs, seg_new(IO_EMIT, BOX, [""]),
     seg_new(CLO_APPLY, BOX, ["", ""])];
   const cids = new Map<Name, number>();
+  const cid = (k: Name, n: number) =>
+    cids.set(k, n > WIDE ? 240 + Math.log2(n) : n);
   for (const k of FL.srcs.keys()) {
     for (const c of (FL.book.tlds[k] as Bend.ADT).c ?? []) {
-      cids.set(c.k, lay_node(c.k).ks.length);
+      cid(c.k, lay_node(c.k).ks.length);
     }
   }
-  for (const [k] of done_defs(def_foreign)) {
-    cids.set(k, fun_of(k).lays.length);
-  }
+  done_defs(def_foreign).forEach(([k]) => cid(k, fun_of(k).lays.length));
   const forky = graph_close(new Set(FL.segs.filter((s) => s.fork)
     .map((s) => s.fid)), [...FL.segs, { fid: seg_fid(CLO_APPLY),
     refs: FL.clos }].flatMap((s) => [...s.refs].map((r) => [r, s.fid])));
-  const ars = [...cids.values()].map((n) => n > WIDE ? 240 + Math.log2(n) : n);
-  if (entries.some((s) => s.params.length > WIDE) || ars.some((n) => n > 255)) {
+  if (entries.some((s) => s.params.length > WIDE)
+    || [...cids.values()].some((n) => n > 255)) {
     die("an arity over " + WIDE);
   }
   const defs = [[...cids.keys()].map(cid_mac),
@@ -2860,8 +2859,8 @@ export function compile_book(book: Bend.Book): string {
     `{ ${s.params.length}, ${s.frame === null ? 0
       : s.params.length - s.frame.at.length}, ${Number(FL.bangs.has(s.def))
       | Number(!forky.has(s.fid)) << 1} }`).join(", ")} };`,
-  `CONSTV u8 CID_T[][2] = { ${[...cids.keys()].map((k, i) =>
-    `{ ${ars[i]}, ${Number(FL.hot.has(k))} }`).join(", ")} };`,
+  `CONSTV u8 CID_T[][2] = { ${[...cids].map(([k, n]) =>
+    `{ ${n}, ${Number(FL.hot.has(k))} }`).join(", ")} };`,
   `#define STAT_LEN ${FL.img.length}`, "",
   `#define WL_RESW ${resw}`, `#define BANGS   ${FL.bangs.size}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
@@ -3102,11 +3101,11 @@ function js_def(sc: Scope, k: Name, def: Bend.Def): void {
   const params = loop.length > 0 ? [...Array(Math.max(...loop.map((d) =>
     fun_of(d).live.length))).keys()].map((i) => "$" + i)
     : live.map(([, x]) => name_local(sc, x));
-  if (def.i !== undefined) {
+  if (def_foreign(def)) {
     params.push(name_local(sc, "k"));
   }
   block(sc, `function ${js_sat(k)}(${params.join(", ")}) {`, () => {
-    if (def.i !== undefined) {
+    if (def_foreign(def)) {
       const doms = [...live, tele_unbind(def.T).doms.at(-1)!];
       const xs = params.map((p, i) =>
         `${js_marshal(doms[i][2], true)}(${p})`);
