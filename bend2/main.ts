@@ -36,7 +36,7 @@ const VERSION = "2.0.36";
 const USAGE = [
   ["bend <file.bend> [args]", "check the file, then run main with args"],
   ["bend <file.bend> -o <out>", "build a binary, or C, JS, .mjs or BendTT by extension"],
-  ["bend <file.bend> --check-only", "check the file and its imports; run nothing"],
+  ["bend <file.bend> --check-only", "check the file and its imports; run nothing (skips the files an earlier check passed)"],
   ["bend <file.bend> --verdict", "check it, then recheck it with the proven kernel"],
   ["bend <file.bend> --publish [<name>@<version>]", "publish the file and its imports; a name needs login"],
   ["bend link <name>@<version> 0x<hash>", "name a package already on the hub"],
@@ -301,9 +301,13 @@ async function cli_file(args: string[]): Promise<void> {
       return await cli_checkup(file);
     }
     const seen = new Map<string, string | null>();
-    const book = await book_read(file, undefined, seen);
+    const cache = only ? cache_open() : null;
+    const book = await book_read(file, undefined, seen, cache);
     if (only || verdict) {
-      process.exitCode = cli_verdict(book, verdict);
+      process.exitCode = cli_verdict(book, verdict, cache);
+      if (process.exitCode === 0 && cache !== null) {
+        cache_save(cache);
+      }
       return;
     }
     if (outs.length === 0) {
@@ -777,8 +781,9 @@ async function pow_mine(hash: string, bytes: number): Promise<number> {
 // def outside Base relies on unsafe or foreign code and, with the kernel,
 // when BendTT checks every def too; else FAIL and why. A kernel failure is
 // a mismatch: bend2 accepted what the kernel rejects.
-function cli_verdict(book: Bend.Book, kernel: boolean): number {
-  const bad = book_promises(book);
+function cli_verdict(book: Bend.Book, kernel: boolean,
+  cache: Cache | null = null): number {
+  const bad = book_promises(book, cache);
   if (bad.length !== 0) {
     cli_say(2, FAIL + "\nError: " + String(bad.length) + " def" + (bad.length === 1
       ? " relies" : "s rely") + " on unsafe or foreign code:\n"
@@ -798,18 +803,24 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
 // constructor fields name a def that relies on one. A foreign def is a
 // promise like @unsafe is: the checker reads its type, never its code.
 // If the book holds a promise, a walk from the defs outside Base collects
-// who names whom, then the promises flood back along those edges.
-function book_promises(book: Bend.Book): string[] {
+// who names whom, then the promises flood back along those edges. With a
+// cache, a def it skipped keeps no checked body: its entry names the defs
+// of its module that rely on a promise, and the walk starts from every
+// def, so that the entries this run writes name theirs.
+function book_promises(book: Bend.Book, cache: Cache | null = null): string[] {
   const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
-  const bad  = new Set(Object.keys(book.tlds).filter((k) => {
+  const bad  = new Set([...cache?.taint ?? [], ...Object.keys(book.tlds).filter((k) => {
     const t = book.tlds[k] as Bend.Def;
     return t.u === true || (t.i !== undefined && t.b !== true);
-  }));
+  })]);
+  if (cache !== null) {
+    cache.bad = bad;
+  }
   if (bad.size === 0) {
     return [];
   }
   const uses: Record<string, string[]> = Object.create(null);
-  const reach = new Set(own);
+  const reach = new Set(cache === null ? own : book.order);
   for (const k of reach) {
     const t = book.tlds[k];
     if (t !== undefined) {
@@ -870,19 +881,20 @@ function cli_fail(msg: string): never {
 // ====
 
 async function book_read(file: string, base?: Bend.Book,
-  seen = new Map<string, string | null>()): Promise<Bend.Book> {
+  seen = new Map<string, string | null>(), cache: Cache | null = null): Promise<Bend.Book> {
   const book = base === undefined ? Bend.book_nil() : book_seed(base);
+  const load = cache === null ? seen : new Seen(book, cache.ends);
   if (base !== undefined) {
     seen.set(BASE, "");
   }
   try {
-    await Bend.book_load(book, file, "", seen);
+    await Bend.book_load(book, file, "", load);
     const laws = path.join(path.dirname(file), "LAWS.bend");
     if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws)
-      && !seen.has(fs.realpathSync(laws))) {
+      && !load.has(fs.realpathSync(laws))) {
       throw "Error: PROOF.bend must import ./LAWS.bend";
     }
-    Bend.book_valid(book, base?.order.length ?? 0);
+    Bend.book_valid(book, base?.order.length ?? cache_find(book, cache));
     if (book.hols > 0) {
       throw "Error: " + String(book.hols) + " TODO" + (book.hols === 1 ? "" : "s")
         + " found.\nThe code is incomplete, and not a valid proof yet.";
@@ -944,6 +956,199 @@ function book_err(e: unknown): string {
       + " literal too large to expand)";
   }
   return err?.$ === "Err" ? Bend.err_show(err) : String(e);
+}
+
+// Cache
+// =====
+
+// --check-only skips the modules an earlier run checked: their entries
+// live in ~/.bend/checked, or in $BEND_CACHE (BEND_CACHE=off: none). A
+// module is the events the loader appended for one file (Seen marks its
+// end). Its key hashes the checker (cache_self), the keys of Base and
+// of each module that owns a name it refers to (where the name's
+// first event is), and its events: each name and the def or type it parsed
+// to, spans aside. Every def is declared up front, but a check reads only
+// the names its terms spell and the Base defs the checker names, so a key
+// fixes what its module's check reads, however the files were found and
+// whatever loaded before them. A module has no key when Base loads after
+// it or one of its names has an event in another module (a law filled
+// elsewhere), nor do its dependents; a book where a module refers to a
+// later one has no keys at all.
+// A run hands book_valid the names of the modules with an entry (their
+// deps having one too) as done, and it checks the rest. A run whose check
+// passes writes an entry for every other module with a key: its names
+// that rely on a promise (book_promises reads checked bodies, and a
+// skipped def keeps none). A failed run writes nothing. An entry is
+// written aside and renamed in, so runs share the dir; a cache that cannot be read or written is no cache, never a failure.
+
+type Mod = { names: string[]; key: string; deps: number[] };
+
+type Cache = { dir: string; ends: number[]; mods: Mod[]; hit: Set<number>;
+  taint: string[]; bad: Set<string> };
+
+function cache_open(): Cache | null {
+  const dir = process.env.BEND_CACHE
+    ?? path.join(os.homedir(), ".bend", "checked");
+  if (dir === "" || dir === "off") {
+    return null;
+  }
+  return { dir: path.resolve(dir), ends: [], mods: [], hit: new Set(),
+    taint: [], bad: new Set() };
+}
+
+// the loader's seen files, watched: book_load marks a file parsed by
+// setting its namespace, and the order's length then is the file's end
+class Seen extends Map<string, string | null> {
+  constructor(readonly book: Bend.Book, readonly ends: number[]) {
+    super();
+  }
+
+  override set(real: string, ns: string | null): this {
+    if (ns !== null) {
+      this.ends.push(this.book.order.length);
+    }
+    return super.set(real, ns);
+  }
+}
+
+// cache_find keys the modules and answers the names of those with an
+// entry: the check skips them
+function cache_find(book: Bend.Book, cache: Cache | null): Set<string> | 0 {
+  if (cache === null) {
+    return 0;
+  }
+  try {
+    cache.mods = cache_mods(book, cache.ends);
+  } catch {
+    return 0;
+  }
+  const done = new Set<string>();
+  for (const [j, m] of cache.mods.entries()) {
+    const ok = m.key !== "" && m.deps.every((d) => cache.hit.has(d));
+    if (ok && cache_read(cache, m.key)) {
+      cache.hit.add(j);
+      m.names.forEach((k) => done.add(k));
+    }
+  }
+  return done;
+}
+
+// cache_read adds an entry's names to the taint, if the entry is there
+function cache_read(cache: Cache, key: string): boolean {
+  try {
+    const at  = path.join(cache.dir, key);
+    const got = JSON.parse(fs.readFileSync(at, "utf8")) as { taint?: unknown };
+    if (Array.isArray(got.taint)) {
+      cache.taint.push(...got.taint.map(String));
+      return true;
+    }
+  } catch {}
+  return false;
+}
+
+// cache_save writes an entry for each module with a key the run checked
+function cache_save(cache: Cache): void {
+  try {
+    fs.mkdirSync(cache.dir, { recursive: true });
+    for (const [j, m] of cache.mods.entries()) {
+      const at = path.join(cache.dir, m.key);
+      if (m.key !== "" && !cache.hit.has(j) && !fs.existsSync(at)) {
+        const taint = [...new Set(m.names)].filter((k) => cache.bad.has(k));
+        const tmp = at + "." + String(process.pid) + ".tmp";
+        fs.writeFileSync(tmp, JSON.stringify({ taint }) + "\n");
+        fs.renameSync(tmp, at);
+      }
+    }
+  } catch {}
+}
+
+// cache_mods splits the order at the files' ends and keys each module,
+// in load order (a module's deps load before it)
+function cache_mods(book: Bend.Book, ends: number[]): Mod[] {
+  const mods: Mod[] = [];
+  const of = new Map<string, number>();
+  const all = new Map<string, Set<number>>();
+  let base = -1;
+  for (const [j, end] of ends.entries()) {
+    const names = book.order.slice(j === 0 ? 0 : ends[j - 1], end);
+    mods.push({ names, key: "", deps: [] });
+    for (const k of names) {
+      const t = book.tlds[k];
+      for (const r of [k, ...t.$ === "ADT" ? t.c.map((c) => c.k) : []]) {
+        if (!of.has(r)) {
+          of.set(r, j);
+        }
+      }
+      if (!all.has(k)) {
+        all.set(k, new Set());
+      }
+      (all.get(k) as Set<number>).add(j);
+      if (t.b === true) {
+        base = j;
+      }
+    }
+  }
+  if (base < 0) {
+    return mods;
+  }
+  const self = cache_self();
+  for (const [j, m] of mods.entries()) {
+    const deps = new Set(base >= 0 && base !== j ? [base] : []);
+    const see = (r: string): void => {
+      const d = of.get(r);
+      if (d !== undefined && d > j) {
+        throw new Error("a module refers to a later one");
+      }
+      if (d !== undefined && d !== j) {
+        deps.add(d);
+      }
+    };
+    const text = m.names.map((k) => k + "\n" + cache_text(book.tlds[k], see));
+    m.deps = [...deps];
+    const own = m.names.every((k) => (all.get(k) as Set<number>).size === 1);
+    if (own && base <= j && m.deps.every((d) => mods[d].key !== "")) {
+      m.key = sha256([self, ...m.deps.map((d) => mods[d].key).sort(), ...text]
+        .join("\n"));
+    }
+  }
+  return mods;
+}
+
+// cache_self names the checker: its version, Bun's, and bend.ts and this
+// file, or the compiled bend (its size and time: hashing it costs more
+// than most checks)
+function cache_self(): string {
+  const self = [VERSION, Bun.revision];
+  if (import.meta.url.startsWith("file:///$bunfs/")) {
+    const st = fs.statSync(fs.realpathSync(process.execPath));
+    self.push(process.execPath, String(st.size), String(st.mtimeMs));
+  } else {
+    for (const f of ["bend.ts", "main.ts"]) {
+      self.push(sha256(fs.readFileSync(path.join(Bend.BEND_DIR, f), "utf8")));
+    }
+  }
+  return self.join("\n");
+}
+
+// cache_text spells a parsed def or type, its terms lowered, spans and the
+// checked tree aside; see gets every name a term refers to. A term the
+// text cannot spell (a function) throws: that book has no cuts.
+function cache_text(t: Bend.TLD, see: (k: string) => void): string {
+  const tld = t.$ === "ADT"
+    ? { ...t, T: Bend.term_lower(t.T), c: t.c.map((c) => ({ ...c, T: Bend.term_lower(c.T) })) }
+    : { ...t, e: undefined, T: Bend.term_lower(t.T), v: t.v === null ? null : Bend.term_lower(t.v) };
+  return JSON.stringify(tld, function (this: Record<string, unknown>, k, v) {
+    if (typeof v === "function") {
+      throw new Error("a term the cache cannot spell");
+    }
+    if (k === "k" && ["Ref", "ADT", "Ctr", "Mat"].includes(this.$ as string)) {
+      see(v as string);
+    }
+    if (k === "r" && this.$ === "ADT") {
+      (v as string[]).forEach(see);
+    }
+    return k === "s" ? undefined : v;
+  });
 }
 
 // Load
