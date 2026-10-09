@@ -1,6 +1,7 @@
 # File.read_into lands bytes little-endian in an Array<U32>'s own slots: a
 # short tail keeps its slot's high bytes, a read stops at the array's end and
-# at the file's, and a failed read keeps the handle and the array.
+# at the file's, and a failed read keeps the handle and the array and leaves
+# no error behind for the next read.
 import Base
 
 law bytes:
@@ -168,16 +169,18 @@ def tail(fa):
     fa : File & Array<U32> <- into(p, 4, "read stops at the array's end")
     ends(fa)
 
-law reads:
-  for fa: File & Array<U32>
+law after:
+  for f: File
+  for pair: File & (Array<U32> & Result<&1, &1, U32 & String, U32>)
   IO(Unit)
 
-def reads(fa):
-  (f, a) = fa
+def after(f, pair):
   do IO<Unit>:
-    p : File & (Array<U32> & Result<&1, &1, U32 & String, U32>) <-
-      File.read_into(f, 0, 100, a, 0)
-    fa : File & Array<U32> <- into(p, 10, "read stops at the file's end")
+    q : File & (Array<U32> & Result<&1, &1, U32 & String, U32>) <-
+      File.read_into(f, 0, 100, Array.new(U32, 2n, 4294967295), 0)
+    a : Array<U32> <- bad(pair)
+    a : Array<U32> <- slot(a, 0, 7, "failed read leaves the array")
+    fa : File & Array<U32> <- into(q, 10, "read stops at the file's end")
     tail(fa)
 
 law main:
@@ -186,13 +189,11 @@ law main:
 def main():
   do IO<Unit>:
     write()
+    f : File <- IO.try(File, File.open("/tmp/bend_io_file_read_into", "r"))
     w : File <- IO.try(File, File.open("/tmp/bend_io_file_read_into", "a"))
     p : File & (Array<U32> & Result<&1, &1, U32 & String, U32>) <-
       File.read_into(w, 0, 4, Array.new(U32, 2n, 7), 0)
-    a : Array<U32> <- bad(p)
-    a : Array<U32> <- slot(a, 0, 7, "failed read leaves the array")
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_read_into", "r"))
-    reads((f, Array.new(U32, 2n, 4294967295)))
+    after(f, p)
 
 #|read on write-only handle
 #|failed read leaves the array

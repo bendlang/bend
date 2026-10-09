@@ -76,16 +76,23 @@ static void __attribute__((constructor)) file_read_at_use(void) {
 
 #ifdef CID(File.read_into)
 
-// The bytes land in the array's own words: a U32 array keeps its slots
-// packed little-endian, two a word, so slot i is byte 4i of its block. A
-// forked handle reaches the same cells, as Array.set's write does.
+// An Array<U32> block packs its slots little-endian, two to a 64-bit word,
+// so slot i is byte 4i of the block: the bytes land there as the file holds
+// them, with no List between. A forked handle writes the shared cells, as
+// Array.set does. On a GPU the block is already in the device's buffer.
 static void file_read_into_call(IoWork* w) {
-  int     fd  = (int)w->hand;
-  u64     got = 0;
-  ssize_t n   = 1;
-  while (got < w->word && n > 0) {
-    n = pread(fd, w->data + got, w->word - got, (off_t)w->made + (off_t)got);
-    got += io_sys_end(w, n);
+  u64 got = 0;
+  while (got < w->word) {
+    u64     want = w->word - got;
+    ssize_t n    = pread((int)w->hand, w->data + got,
+      want < (1u << 30) ? want : (1u << 30), (off_t)w->made + (off_t)got);
+    if (n <= 0) {
+      if (n < 0) {
+        io_sys_end(w, n);
+      }
+      break;
+    }
+    got += (u64)n;
   }
   w->size = got;
 }
@@ -98,7 +105,7 @@ static Term file_read_into_pack(Env e, IoWork* w) {
 Term file_read_into_run(Env e, Term* f, IoWork* w) {
   Term a    = f[3];
   u64  at   = (u32)f[4];
-  u64  n    = term_tag(a) == TAG_BUF ? 1ull << blk_cls(a) : 0;
+  u64  n    = 1ull << blk_cls(a);
   u64  room = at < n ? (n - at) * 4 : 0;
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->made = (intptr_t)(u32)f[1];
