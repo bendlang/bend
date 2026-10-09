@@ -2836,9 +2836,16 @@ export function compile_book(book: Bend.Book): string {
   const entries = [...FL.segs, seg_new(IO_EMIT, BOX, [""]),
     seg_new(CLO_APPLY, BOX, ["", ""])];
   const cids = new Map<Name, number>();
+  const tails = new Map<Name, number>();
   for (const k of FL.srcs.keys()) {
     for (const c of (FL.book.tlds[k] as Bend.ADT).c ?? []) {
       cids.set(c.k, lay_node(c.k).ks.length);
+      ctr_doms(c).reduce((at, F) => {
+        if (ty_holds(F, (u) => u?.$ === "ADT" && u.k === k)) {
+          tails.set(c.k, at);
+        }
+        return at + lay_of(F).ks.length;
+      }, 0);
     }
   }
   for (const [k] of done_defs(def_foreign)) {
@@ -2864,8 +2871,9 @@ export function compile_book(book: Bend.Book): string {
     `{ ${s.params.length}, ${s.frame === null ? 0
       : s.params.length - s.frame.at.length}, ${Number(FL.bangs.has(s.def))
       | Number(!forky.has(s.fid)) << 1} }`).join(", ")} };`,
-  `CONSTV u8 CID_T[][2] = { ${[...cids.keys()].map((k, i) =>
-    `{ ${ars[i]}, ${Number(FL.hot.has(k))} }`).join(", ")} };`,
+  `CONSTV u8 CID_T[][3] = { ${[...cids.keys()].map((k, i) =>
+    `{ ${ars[i]}, ${Number(FL.hot.has(k))}, ${ars[i] > WIDE ? 255
+      : tails.get(k) ?? 255} }`).join(", ")} };`,
   `#define STAT_LEN ${FL.img.length}`, "",
   `#define WL_RESW ${resw}`, `#define BANGS   ${FL.bangs.size}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
@@ -3995,6 +4003,12 @@ FAR void term_drop(Env e, Term t) {
         u32 cls = tag == TAG_ARR ? 64 | blk_cls(t)
           : n > ${WIDE} ? 64 | (n - 240)
           : cls_fit(tag == TAG_TSK ? n + 2 : n);
+        u32 s = tag == TAG_CTR ? CID_T[aux][2] : n;
+        if (s + 1 < n) {
+          Term f = H[loc + s];
+          H[loc + s] = H[loc + n - 1];
+          H[loc + n - 1] = f;
+        }
         c0 = H[loc];
         H[loc] = cur;
         cur = loc | ((u64)n << 48) | ((u64)cls << 56);
@@ -4017,27 +4031,21 @@ FAR void term_drop(Env e, Term t) {
           j = (u32)H[loc + 1];
         }
       }
-      if (j < n) {
-        Term c = j == 0 ? c0 : H[loc + j];
+      Term c = j >= n ? 0 : j == 0 ? c0 : H[loc + j];
+      if (j + 1 >= n) {
+        cur = H[loc];
+        heap_free(e, cls, loc);
+      } else {
         if (arr && j > 0) {
           H[loc + 1] = j + 1;
         }
         if (!arr || i < 2) {
           cur += 1ull << 40;
         }
-        if (!term_triv(c)) {
-          // The last child is held in c; its frame can be freed now.
-          if (j + 1 == n) {
-            cur = H[loc];
-            heap_free(e, cls, loc);
-          }
-          t = c;
-          break;
-        }
-      } else {
-        u64 up = H[loc];
-        heap_free(e, cls, loc);
-        cur = up;
+      }
+      if (!term_triv(c)) {
+        t = c;
+        break;
       }
     }
   }
