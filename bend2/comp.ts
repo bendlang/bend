@@ -3234,7 +3234,7 @@ export function js_lib(book: Bend.Book, mod = false): string {
   const effs = effect_srcs(".js", "a foreign def without a .js import: ")
     .map((t) => `(() => {\n${t}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) =>
-    `  "${Bend.name_key(k)}": run_lib(${js_host(k)}, ${
+    `  ${js_key(Bend.name_key(k))}run_lib(${js_host(k)}, ${
       fun_of(k).lays.length}),`).join("\n")}\n};\n`;
   const jmps = new Map<Name, boolean>();
   const jmp = (k: Name): boolean => k === CLO_APPLY || memo(jmps, k, () =>
