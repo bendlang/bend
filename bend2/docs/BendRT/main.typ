@@ -517,6 +517,17 @@ no IO. A fallible operation answers a `Result` carrying errno, and a
 handle threads back outside the `Result`, so even a failure cannot
 lose it.
 
+`Window.fullscreen(window, on)` requests a desktop transition without
+changing the logical drawing resolution. It threads the window back
+outside its `Result`; a desktop without fullscreen support returns
+`ENOTSUP`. Cocoa keeps the Metal drawable fixed while its layer scales
+to the view; X11 scales only the display blit. Absolute pointer positions
+stay in logical image coordinates, while grabbed look deltas stay raw.
+The desktop applies the requested state asynchronously: requesting the
+same state again does not toggle it, and requesting off restores the
+windowed size. X11 releases the fixed-size hints for the fullscreen
+transition and restores them on return to the windowed state.
+
 = The JavaScript Backend <sec:js>
 
 The same rewritten definitions (@sec:compile) print as plain

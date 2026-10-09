@@ -16,21 +16,46 @@
 // five words each (cid, a, b, c, d) as on the Mac, whether it holds the
 // pointer, and the display's refresh period in ns.
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 #include <dlfcn.h>
+#include <limits.h>
 
 typedef struct {
   Display* dpy;
   Window   win;
   Atom     del;
+#ifdef CID(Window.fullscreen)
+  Atom     state;
+  Atom     full;
+  bool     full_now;
+  bool     full_want;
+  bool     full_wait;
+#endif
   XImage*  img;
+  XImage*  view;
+  u32      width;
+  u32      height;
   u32      n;
   u32      cap;
   u32*     evs;
   u32      grab;
   u64      period;
 } BendWin;
+
+#ifdef CID(Window.fullscreen)
+static void window_limits(BendWin* win, bool on) {
+  u32 w = win->img->width, h = win->img->height;
+  XSizeHints hints = { .flags = PMinSize | PMaxSize, .min_width = w,
+    .min_height = h, .max_width = w, .max_height = h };
+  if (on) {
+    hints.flags = PMinSize;
+    hints.min_width = hints.min_height = 1;
+  }
+  XSetWMNormalHints(win->dpy, win->win, &hints);
+}
+#endif
 
 #endif
 
@@ -43,6 +68,13 @@ typedef struct {
   NSMutableData* evs;
   u64            flags;
   BOOL           grab;
+#ifdef CID(Window.fullscreen)
+  CGSize         draw_size;
+  NSUInteger     full_style;
+  BOOL           full_want;
+  BOOL           full_busy;
+  BOOL           full_dirty;
+#endif
 }
 @end
 
@@ -51,6 +83,15 @@ typedef struct {
 - (CALayer*)makeBackingLayer {
   return [CAMetalLayer layer];
 }
+
+#ifdef CID(Window.fullscreen)
+- (void)setFrameSize:(NSSize)size {
+  [super setFrameSize:size];
+  if (draw_size.width > 0) {
+    ((CAMetalLayer*)self.layer).drawableSize = draw_size;
+  }
+}
+#endif
 
 - (BOOL)acceptsFirstResponder {
   return YES;
@@ -93,6 +134,11 @@ typedef struct {
 - (NSPoint)at:(NSEvent*)ev {
   CGSize  size = ((CAMetalLayer*)self.layer).drawableSize;
   NSPoint p    = [self convertPoint:ev.locationInWindow fromView:nil];
+  NSSize bounds = self.bounds.size;
+  if (bounds.width != size.width || bounds.height != size.height) {
+    p.x *= size.width / bounds.width;
+    p.y *= size.height / bounds.height;
+  }
   return NSMakePoint(fmax(0, fmin(floor(p.x), size.width - 1)),
     fmax(0, fmin(floor(p.y), size.height - 1)));
 }
@@ -139,6 +185,63 @@ typedef struct {
 - (void)windowDidResignKey:(NSNotification*)note {
   [self setGrab:NO];
 }
+
+#ifdef CID(Window.fullscreen)
+// Queue the latest target during Cocoa's asynchronous transition. A
+// user-initiated exit has no queued target, so it does not enter again.
+- (void)setFullscreen:(BOOL)on {
+  full_want = on;
+  full_dirty = YES;
+  if (full_busy) {
+    return;
+  }
+  full_dirty = NO;
+  NSWindow* win = self.window;
+  if (on != ((win.styleMask & NSWindowStyleMaskFullScreen) != 0)) {
+    if (on) {
+      full_style = win.styleMask;
+      win.styleMask |= NSWindowStyleMaskResizable;
+      win.collectionBehavior |= NSWindowCollectionBehaviorFullScreenPrimary;
+    }
+    full_busy = YES;
+    [win toggleFullScreen:nil];
+  }
+}
+
+- (void)fullDone {
+  full_busy = NO;
+  if (!(self.window.styleMask & NSWindowStyleMaskFullScreen)) {
+    self.window.styleMask = full_style;
+  }
+  if (full_dirty) {
+    [self setFullscreen:full_want];
+  }
+}
+
+- (void)windowWillEnterFullScreen:(NSNotification*)note {
+  full_busy = YES;
+}
+
+- (void)windowWillExitFullScreen:(NSNotification*)note {
+  full_busy = YES;
+}
+
+- (void)windowDidEnterFullScreen:(NSNotification*)note {
+  [self fullDone];
+}
+
+- (void)windowDidExitFullScreen:(NSNotification*)note {
+  [self fullDone];
+}
+
+- (void)windowDidFailToEnterFullScreen:(NSWindow*)win {
+  err_fail("Window.fullscreen: Cocoa rejected entering fullscreen");
+}
+
+- (void)windowDidFailToExitFullScreen:(NSWindow*)win {
+  err_fail("Window.fullscreen: Cocoa rejected leaving fullscreen");
+}
+#endif
 
 - (void)mouseDown:(NSEvent*)ev {
   [self mouse:ev down:YES];
@@ -224,12 +327,20 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     BendView* view = [[BendView alloc] initWithFrame:win.contentLayoutRect];
     view->evs   = [NSMutableData new];
     view->flags = NSEvent.modifierFlags;
+#ifdef CID(Window.fullscreen)
+    view->draw_size = CGSizeMake(w, h);
+    view->full_style = win.styleMask;
+#endif
     view.wantsLayer = YES;
     CAMetalLayer* layer = (CAMetalLayer*)view.layer;
     layer.device = window_dev;
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     layer.framebufferOnly = NO;
     layer.drawableSize = CGSizeMake(w, h);
+#ifdef CID(Window.fullscreen)
+    layer.magnificationFilter = kCAFilterNearest;
+    layer.minificationFilter = kCAFilterNearest;
+#endif
     layer.displaySyncEnabled = YES;
     layer.maximumDrawableCount = 2;
     win.contentView = view;
@@ -288,9 +399,15 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   BendWin* win = io_mem(calloc(1, sizeof *win));
   win->dpy = dpy;
   win->period = window_period(dpy);
+  win->width = w;
+  win->height = h;
   win->win = XCreateSimpleWindow(dpy, RootWindow(dpy, scr), 0, 0, w, h, 0, 0,
     BlackPixel(dpy, scr));
   win->del = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+#ifdef CID(Window.fullscreen)
+  win->state = XInternAtom(dpy, "_NET_WM_STATE", False);
+  win->full = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
+#endif
   win->img = XCreateImage(dpy, DefaultVisual(dpy, scr), DefaultDepth(dpy, scr),
     ZPixmap, 0, io_mem(calloc(w * h, 4)), w, h, 32, w * 4);
   win->img->byte_order = LSBFirst;
@@ -300,7 +417,11 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   XSetWMProtocols(dpy, win->win, &win->del, 1);
   XStoreName(dpy, win->win, title);
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
-    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask);
+    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask
+#ifdef CID(Window.fullscreen)
+    | PropertyChangeMask
+#endif
+    | StructureNotifyMask);
   XMapRaised(dpy, win->win);
   XFlush(dpy);
   *out = (intptr_t)win;
@@ -578,21 +699,52 @@ static u32 window_clip(int v, u32 most) {
 static void window_pump(BendWin* win) {
   u32 w  = win->img->width;
   u32 h  = win->img->height;
-  int cx = w / 2;
-  int cy = h / 2;
+  u32 pw = win->width;
+  u32 ph = win->height;
+  int cx = pw / 2;
+  int cy = ph / 2;
   int x  = cx;
   int y  = cy;
   while (XPending(win->dpy) > 0) {
     XEvent ev;
     XNextEvent(win->dpy, &ev);
-    if (ev.type == KeyPress || ev.type == KeyRelease) {
+    if (ev.type == ConfigureNotify) {
+      win->width = pw = ev.xconfigure.width;
+      win->height = ph = ev.xconfigure.height;
+      x = cx = pw / 2;
+      y = cy = ph / 2;
+#ifdef CID(Window.fullscreen)
+    } else if (ev.type == PropertyNotify && ev.xproperty.atom == win->state) {
+      Atom type;
+      int format;
+      unsigned long n, rest;
+      unsigned char* data = NULL;
+      bool full = false;
+      if (XGetWindowProperty(win->dpy, win->win, win->state, 0, INT_MAX,
+        False, XA_ATOM, &type, &format, &n, &rest, &data) == Success
+        && type == XA_ATOM && format == 32) {
+        for (unsigned long i = 0; i < n; ++i) {
+          full |= ((Atom*)data)[i] == win->full;
+        }
+      }
+      XFree(data);
+      if (full == win->full_want) {
+        win->full_wait = false;
+      }
+      // Do not re-constrain an exit while the latest enter is still pending.
+      if (!full && !win->full_wait) {
+        window_limits(win, false);
+      }
+      win->full_now = full;
+#endif
+    } else if (ev.type == KeyPress || ev.type == KeyRelease) {
       window_push(win, CID(Key), window_key(&ev.xkey), ev.type == KeyPress,
         0, 0);
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
       // the wheel: 4 up, 5 down, 6 left, 7 right
       u32 b  = ev.xbutton.button;
-      u32 bx = window_clip(ev.xbutton.x, w);
-      u32 by = window_clip(ev.xbutton.y, h);
+      u32 bx = (u64)window_clip(ev.xbutton.x, pw) * w / pw;
+      u32 by = (u64)window_clip(ev.xbutton.y, ph) * h / ph;
       f32 s  = b % 2 ? -1 : 1;
       if (b <= 3) {
         window_push(win, CID(Mouse), bx, by, b == 1 ? 0 : 4 - b,
@@ -605,8 +757,8 @@ static void window_pump(BendWin* win) {
       x = ev.xmotion.x;
       y = ev.xmotion.y;
       if (!win->grab) {
-        window_push(win, CID(Move), window_clip(x, w), window_clip(y, h), 0,
-          0);
+        window_push(win, CID(Move), (u64)window_clip(x, pw) * w / pw,
+          (u64)window_clip(y, ph) * h / ph, 0, 0);
       }
     } else if (ev.type == FocusOut) {
       XUngrabPointer(win->dpy, CurrentTime);
@@ -696,14 +848,53 @@ static void window_pace(u64 period) {
   due = (due > now ? due : now) + period;
 }
 
+// Preserve the logical image; only the display blit grows. Integer
+// quotient/remainder steps implement nearest-neighbour scaling without
+// a coordinate allocation or a division for each output pixel.
+static XImage* window_scale(BendWin* win) {
+  u32 w = win->img->width, h = win->img->height;
+  u32 pw = win->width, ph = win->height;
+  if (win->view != NULL && (win->view->width != pw
+    || win->view->height != ph || (w == pw && h == ph))) {
+    XDestroyImage(win->view);
+    win->view = NULL;
+  }
+  if (w == pw && h == ph) {
+    return win->img;
+  }
+  if (win->view == NULL) {
+    int scr = DefaultScreen(win->dpy);
+    win->view = io_mem(XCreateImage(win->dpy, DefaultVisual(win->dpy, scr),
+      DefaultDepth(win->dpy, scr), ZPixmap, 0,
+      io_mem(calloc((u64)pw * ph, 4)), pw, ph, 32, pw * 4));
+    win->view->byte_order = LSBFirst;
+  }
+  u32* src = (u32*)win->img->data;
+  u32* dst = (u32*)win->view->data;
+  u32 dx = w / pw, rx = w % pw, dy = h / ph, ry = h % ph;
+  for (u32 y = 0, sy = 0, ey = 0; y < ph; ++y) {
+    for (u32 x = 0, sx = 0, ex = 0; x < pw; ++x) {
+      dst[(u64)y * pw + x] = src[(u64)sy * w + sx];
+      sx += dx;
+      ex += rx;
+      if (ex >= pw) { ++sx; ex -= pw; }
+    }
+    sy += dy;
+    ey += ry;
+    if (ey >= ph) { ++sy; ey -= ph; }
+  }
+  return win->view;
+}
+
 static void window_show(Env e, BendWin* win, Term image) {
   u32 w = win->img->width;
   u32 h = win->img->height;
   u32 k = window_depth(w > h ? w : h);
   window_fill(e, (u32*)win->img->data, w, h, image, k);
+  XImage* shown = window_scale(win);
   window_pace(win->period);
   XPutImage(win->dpy, win->win, DefaultGC(win->dpy, DefaultScreen(win->dpy)),
-    win->img, 0, 0, 0, 0, w, h);
+    shown, 0, 0, 0, 0, shown->width, shown->height);
   XFlush(win->dpy);
 }
 
@@ -775,6 +966,91 @@ static void __attribute__((constructor)) window_set_title_use(void) {
 
 #endif
 
+#ifdef CID(Window.fullscreen)
+
+#ifdef __OBJC__
+
+static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
+  NSWindow* win = (__bridge NSWindow*)(void*)at;
+  [win.contentView setValue:@(on) forKey:@"fullscreen"];
+  return 0;
+}
+
+#elif defined(__linux__)
+
+static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
+  BendWin* win = (BendWin*)at;
+  Display* dpy = win->dpy;
+  Window root = DefaultRootWindow(dpy);
+  Atom full = win->full;
+  Atom have = XInternAtom(dpy, "_NET_SUPPORTED", False);
+  Atom type;
+  int format;
+  unsigned long n, rest;
+  unsigned char* data = NULL;
+  bool supported = false;
+  if (XGetWindowProperty(dpy, root, have, 0, INT_MAX, False, XA_ATOM,
+    &type, &format, &n, &rest, &data) == Success && type == XA_ATOM
+    && format == 32) {
+    for (unsigned long i = 0; i < n; ++i) {
+      supported |= ((Atom*)data)[i] == full;
+    }
+  }
+  XFree(data);
+  if (!supported) {
+    *why = "Window.fullscreen: window manager has no fullscreen support";
+    return ENOTSUP;
+  }
+  XSizeHints saved;
+  long supplied;
+  bool had_hints = XGetWMNormalHints(dpy, win->win, &saved, &supplied);
+  window_limits(win, on);
+  XEvent ev = { 0 };
+  ev.xclient.type = ClientMessage;
+  ev.xclient.window = win->win;
+  ev.xclient.message_type = win->state;
+  ev.xclient.format = 32;
+  ev.xclient.data.l[0] = on ? 1 : 0;
+  ev.xclient.data.l[1] = full;
+  ev.xclient.data.l[3] = 1;
+  if (!XSendEvent(dpy, root, False,
+    SubstructureRedirectMask | SubstructureNotifyMask, &ev)) {
+    if (had_hints) {
+      XSetWMNormalHints(dpy, win->win, &saved);
+    }
+    *why = "Window.fullscreen: cannot send window-manager request";
+    return EIO;
+  }
+  win->full_wait = win->full_wait || win->full_now != on;
+  win->full_want = on;
+  XFlush(dpy);
+  return 0;
+}
+
+#else
+
+static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
+  *why = "Window.fullscreen: native window support is unavailable";
+  return ENOTSUP;
+}
+
+#endif
+
+Term window_fullscreen_run(Env e, Term* f, IoWork* w) {
+  const char* why = NULL;
+  u32 q = window_fullscreen((intptr_t)io_hand_v(f[0]),
+    term_aux(f[1]) == CID(True), &why);
+  Term result = q ? io_fail(e, q, why)
+    : io_done(e, term_pak(CID(Unit), 0));
+  return io_tup(e, f[0], result);
+}
+
+static void __attribute__((constructor)) window_fullscreen_use(void) {
+  io_eff(CID(Window.fullscreen), window_fullscreen_run);
+}
+
+#endif
+
 #ifdef CID(Window.grab)
 
 #ifdef __OBJC__
@@ -806,7 +1082,7 @@ static void window_grab(intptr_t at, bool on) {
     XFreePixmap(win->dpy, pix);
     if (win->grab) {
       XWarpPointer(win->dpy, None, win->win, 0, 0, 0, 0,
-        win->img->width / 2, win->img->height / 2);
+        win->width / 2, win->height / 2);
     }
   } else if (!on && win->grab) {
     XUngrabPointer(win->dpy, CurrentTime);
@@ -848,6 +1124,9 @@ static void window_close(intptr_t at) {
 static void window_close(intptr_t at) {
   BendWin* win = (BendWin*)at;
   XDestroyImage(win->img);
+  if (win->view != NULL) {
+    XDestroyImage(win->view);
+  }
   XCloseDisplay(win->dpy);
   free(win->evs);
   free(win);
