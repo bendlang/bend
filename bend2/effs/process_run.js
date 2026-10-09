@@ -1,10 +1,6 @@
 // Process
 // =======
 
-// Bun.spawnSync reads until stdout and stderr close only since Bun 1.4; 1.3
-// returns when the direct child exits, losing what a descendant writes after.
-// So a worker runs the async Bun.spawn, which reads each pipe to its end on
-// any version, while this thread waits on a shared flag for the answer.
 const PROCESS_WORKER = `
 const { errno, signals } = require("node:os").constants;
 
@@ -21,8 +17,6 @@ self.onmessage = async ({ data: { argv, input, max, ms, flag, port } }) => {
   Atomics.notify(flag, 0);
 };
 
-// Reads both pipes to their end and reaps the child, all within ms; past ms,
-// or past max bytes in all, kills the child and stops reading.
 async function run(argv, input, max, ms) {
   const proc = Bun.spawn({ cmd: argv, stdin: input, stdout: "pipe",
     stderr: "pipe" });

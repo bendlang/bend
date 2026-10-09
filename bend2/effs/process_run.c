@@ -179,9 +179,6 @@ static void process_call(IoWork* w) {
   if (p->input_len == 0) {
     close(pipes[0][1]); pipes[0][1] = -1;
   }
-  // Reads until stdout and stderr close, then reaps the child, all within
-  // the deadline: a descendant holding a pipe open extends the wait. The
-  // exit descriptor is polled only once both close, as it stays readable.
   exitfd = process_exitfd(child);
   u64 deadline = io_tick() + (u64)p->timeout * 1000000ull;
   u64 written  = 0;
