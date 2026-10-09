@@ -527,6 +527,10 @@ value. `bend file.bend` runs this backend in memory, and a loader makes
 a `.bend` file a module under node and Bun, so a Bend program is also a
 JavaScript library.
 
+`IO.get_env` matches exact own environment keys. A name containing
+a NUL byte answers `Fail` with ENOENT, as in the C backend; it never
+names the prefix before that byte.
+
 = Results <sec:eval>
 
 #figure(placement: top, caption: [The pinned suite, `bench/runtime/`:
