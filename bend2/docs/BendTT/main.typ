@@ -608,6 +608,10 @@ live. At run time it evaluates to #rfl, and then the rewrite steps to
 $f$. If $e$ could be dead, a dead proof of a false equation could
 change the type of live code, and evaluation could get stuck.
 
+The kernel infers the equality type of the evidence $e$. Bare `{==}`
+has no inferable type; an equality definition or a type-annotated term
+supplies it.
+
 == Typing <sec:typing>
 
 #figure(kind: image, supplement: [Figure], placement: top,
@@ -853,8 +857,8 @@ it is $(y, y)$, which uses $y$ twice. Quantitative type theory
 @mcbride2016 @atkey2018 handles this case by scaling the uses of an
 argument by the quantity of its binder. BendTT counts the argument once
 and evaluates closed terms only. When a quantity-2 lambda fires in a
-closed term, its argument is a closed #Da value. Its copies hold no
-variable and no call.
+closed term, its argument is a closed #Da value. The live parts of its
+copies hold no variable and no call.
 
 == Progress
 
@@ -866,14 +870,21 @@ The proof is by induction on the typing derivation, with a canonical
 forms lemma for each type former. Two side conditions of the typing
 rules matter here. The rules for matches require a live quantity, so
 evaluation computes the argument of every match, and a match meets a
-value. A copyable binder requires a #Da type, and a closed value of a
-#Da type holds no lambda and no call.
+value. A copyable binder requires a #Da type, and the live part of a
+closed value of a #Da type holds no lambda and no call. A quantity-0
+first field may hold a lambda: that field is erased, is never run, and
+the `Data` rule imposes no obligation on it.
 
 #thm[Lemma 4][Empty][No value has the type #emp.]
 
 A value of an enumeration type is one of its labels, and #emp has
 none. Other values have other head formers, which are not convertible
 to an enumeration.
+
+The companion lemma `empty_sig` rules out values of
+`Σx : <> -> B`. Canonical forms force such a value to be a tuple,
+not a stuck call. Its quantity-1 first field must itself be a value
+typed at `<>`, contradicting Lemma 4.
 
 == Termination
 
@@ -938,6 +949,13 @@ By Theorem 5, every evaluation sequence from $k$ is finite, so we
 follow one to its end. By Theorem 2, every term on the way has type
 #emp. By Theorem 3, the last term is a value, since it takes no step.
 By Lemma 4, no value has type #emp.
+
+Bend encodes an empty datatype as `Σx : <> -> B`, not as the literal
+enumeration `<>`. The separate claim `consistent_sig` forbids a
+checked definition's type from converting to this encoding, for any
+`B`. It follows by the same terminating evaluation argument, using
+`empty_sig` at the final value. The live quantity-1 tag matters; the
+claim does not extend to a quantity-0 first field.
 
 Every step of this proof is syntactic. In systems such as the calculus
 of constructions, consistency follows from the normalization of all
@@ -1072,9 +1090,11 @@ caption: [The claims of `bendtt.lean`.], {
     [#co[sr]], [Theorem 2: parallel reduction preserves types.],
     [#co[progress]], [Theorem 3: a closed typed term is a value or steps.],
     [#co[empty]], [Lemma 4: no value has the empty type.],
+    [#co[empty_sig]], [Lemma 4's companion: no value has a live empty-enum Σ tag.],
     [#co[halts]], [Theorem 5: live evaluation of closed terms ends.],
     [#co[sound]], [Theorem 6: an accepted book is well typed and live.],
     [#co[consistent]], [Theorem 7: no accepted definition has the empty type.],
+    [#co[consistent_sig]], [Theorem 7's companion: no accepted definition has a live empty-enum Σ tag.],
     table.hline(stroke: 0.5pt),
   )
 }) <tab:claims>
@@ -1087,6 +1107,11 @@ TypeScript, that has no proof. The command `bend --verdict` runs this
 translation and then the kernel. The command `bend -o F.bendtt` writes
 the translated book to a file, where a reader can check what a law
 states.
+
+These consistency claims concern the literal empty enumeration and its
+live-tag datatype encoding. They do not separately state a theorem
+about an equality with nonconvertible endpoints; equality checking
+uses the conversion gate.
 
 = Related Work <sec:related>
 
