@@ -863,15 +863,18 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
   return adt;
 }
 
+// Whether A holds a type p takes, looking into every datatype but the words.
 function ty_holds(A: HTerm | null,
-  p: (t: HTerm | null) => boolean | null, seen = new Set<Name>()): boolean {
+  p: (t: HTerm | null) => boolean, seen = new Set<Name>()): boolean {
   const t = ty_wnf(A);
   if (t?.$ === "Lam") {
     return ty_holds(t.f(DUMMY), p, seen);
   }
-  const got = p(t);
-  if (got !== null || t?.$ !== "ADT") {
-    return got === true;
+  if (p(t)) {
+    return true;
+  }
+  if (t?.$ !== "ADT" || WORDS[t.k]) {
+    return false;
   }
   const tld = FL.book.tlds[t.k];
   const ks = tld?.$ === "ADT" ? tele_unbind(tld.T).doms : [];
@@ -890,14 +893,12 @@ function ty_holds(A: HTerm | null,
 function ty_value(K: HTerm | null): boolean {
   const k = ty_wnf(K);
   return k?.$ === "All" ? ty_value(k.B(DUMMY)) : !ty_holds(k, (t) =>
-    t?.$ === "ADT" ? WORDS[t.k] ? false : null
-    : !["Qnt", "Eql"].includes(t?.$ ?? ""));
+    !["ADT", "Qnt", "Eql"].includes(t?.$ ?? ""));
 }
 
 function ty_clo(A: HTerm | null): boolean {
-  return ty_holds(A, (t) => t?.$ === "ADT"
-    ? WORDS[t.k] ? false : null
-    : !["Typ", "Qua", "Min", "Eql"].includes(t?.$ ?? ""));
+  return ty_holds(A, (t) =>
+    !["ADT", "Typ", "Qua", "Min", "Eql"].includes(t?.$ ?? ""));
 }
 
 function type_adts(T: HTerm): Name[] {
@@ -933,9 +934,6 @@ function type_adts(T: HTerm): Name[] {
 // box even when its arguments are erased. adt_of and js_expr call it
 // only for that check.
 
-// The type formers besides ADT: function, equality, Type, Quant.
-const FORMERS: ReadonlySet<string> = new Set(["All", "Eql", "Typ", "Qnt"]);
-
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
   return t === null ? BOX : WORDS[t.k] ?? memo(FL.lays,
@@ -943,7 +941,7 @@ function lay_of(A: HTerm | null): Lay {
     const tld = FL.book.tlds[t.k];
     if (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
       || tld.c.some((c) => ctr_doms(c).some((F) => ty_holds(F,
-        (u) => u?.$ !== "ADT" || WORDS[u.k] ? false : u.k === t.k || null)))) {
+        (u) => u?.$ === "ADT" && u.k === t.k)))) {
       return BOX;
     }
     FL.lays.set(key, BOX);
@@ -956,7 +954,7 @@ function lay_of(A: HTerm | null): Lay {
 function lay_el(A: HTerm | null): Lay {
   const t = ty_wnf(A);
   if (t?.$ !== "ADT") {
-    if (!t || !FORMERS.has(t.$)) {
+    if (!["All", "Eql", "Typ", "Qnt"].includes(t?.$ ?? "")) {
       die("an open Array element type");
     }
     return lay_of(A);
@@ -3155,9 +3153,9 @@ function js_marshal(A: HTerm | null, out: boolean): string {
     return x + y === "" ? y : `((f) => (x) => ${y}(f(${x}(x))))`;
   }
   const seen = new Set<Name>();
-  const nat = (u: HTerm | null): boolean | null => u?.$ === "All"
+  const nat = (u: HTerm | null): boolean => u?.$ === "All"
     ? [u.A, u.B(DUMMY)].some((v) => ty_holds(v, nat, seen))
-    : u?.$ !== "ADT" ? false : WORDS[u.k] ? u.k === "Nat" : null;
+    : u?.$ === "ADT" && u.k === "Nat";
   if (t?.$ !== "ADT" || !ty_holds(t, nat, seen)) {
     return "";
   }
@@ -4285,9 +4283,9 @@ INLINE Term task_deliver(DEV u64* H, Term cont, u32 idx, THR Term* v, u32 n) {
     a32_store_rel(a32_at(H, H_ROOT_DONE), n + 1);
     return 0;
   }
-  u64 tl = task_tail(cont);
-  if (a32_sub_rel(a32_at(H, tl + 1), 1) == 1) {
-    a32_acq(a32_at(H, tl + 1));
+  DEV u32* c = a32_at(H, task_tail(cont) + 1);
+  if (a32_sub_rel(c, 1) == 1) {
+    a32_acq(c);
     return cont;
   }
   return 0;
@@ -4945,15 +4943,12 @@ static void gpu_load(u64 bytes) {
   gpu_buf = [gpu_dev newBufferWithBytesNoCopy:CORPUS length:bytes
     options:MTLResourceStorageModeShared
       | MTLResourceHazardTrackingModeUntracked deallocator:nil];
-  u64 most = [gpu_dev maxBufferLength];
-  if (!gpu_buf && bytes > most) {
+  if (!gpu_buf) {
+    u64  most = [gpu_dev maxBufferLength];
     char msg[96];
     snprintf(msg, sizeof msg, "--gpu %lluMB is over the device's %lluMB",
       (unsigned long long)(bytes >> 20), (unsigned long long)(most >> 20));
-    err_fail(msg);
-  }
-  if (!gpu_buf) {
-    err_fail("the GPU span is more than the device has");
+    err_fail(bytes > most ? msg : "the GPU span is more than the device has");
   }
   @autoreleasepool {
     gpu_que = [gpu_dev newCommandQueue];
@@ -5283,8 +5278,8 @@ static bool corpus_grow(u64* H, u64 need) {
 static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
-  u64 dflt   = gpu ? gpu_span() : 1ull << 33;
-  u64 size   = (gpu && bytes != 0 ? bytes : dflt) & ~16383ull;
+  u64 size   = (!gpu ? 1ull << 33 : bytes != 0 ? bytes : gpu_span())
+    & ~16383ull;
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   u64* H     = CORPUS;
 #if BEND_CUDA
@@ -6014,8 +6009,7 @@ int main(int argc, char** argv) {
   if (gpu == 1 && BANGS != 0 && why != NULL) {
     err_fail(why);
   }
-  bool dev = why == NULL;
-  io_loop(corpus_setup(dev, thr > 0 ? thr : cpu_count(), mem));
+  io_loop(corpus_setup(why == NULL, thr > 0 ? thr : cpu_count(), mem));
   io_sync();
   return 0;
 }
