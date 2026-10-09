@@ -3776,8 +3776,9 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
 
 // Valid
 // =====
-// book_valid throws the first Err (its first done entries are taken
-// as validated: a harness resumes past a seeded base); an order entry
+// book_valid throws the first Err (its first done entries, or the
+// names in done, are taken as validated: a harness resumes past a seeded
+// base, a run skips the modules an earlier one checked); an order entry
 // is an event. every def declares (bodiless) up front and defines at
 // its event (a law: type checked at its law, defined at its fill), so
 // it is visible and stuck before, and unfolds after; an ADT declares
@@ -3801,7 +3802,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
 // (infer-ref) while the caller is declared; it stays outside the order
 // (a seeded book keeps it), so it is no claim.
 
-export function book_valid(book: Book, done: number = 0): void {
+export function book_valid(book: Book, done: number | Set<Name> = 0): void {
   const tlds = book.tlds;
   const last = new Map<Name, number>();
   for (let i = 0; i < book.order.length; i++) {
@@ -3816,8 +3817,9 @@ export function book_valid(book: Book, done: number = 0): void {
     const k   = book.order[i];
     const tld = tlds[k];
     const fin = last.get(k) === i;
+    const chk = typeof done === "number" ? i >= done : !done.has(k);
     if (tld.$ === "ADT") {
-      if (i >= done) {
+      if (chk) {
         term_check(book, { t: Ref(k), n: 0, def: k, qs: [] }, tld.T, None(), Typ(Qua(Lone())), ctx_nil(), 0);
         const { doms, ret: kind } = tele_unbind(book, tld.T);
         if (kind.$ !== "Typ") {
@@ -3855,7 +3857,7 @@ export function book_valid(book: Book, done: number = 0): void {
       }
       continue;
     }
-    if (i >= done) {
+    if (chk) {
       if (fin && tld.v === null && tld.b !== true && !tld.i) {
         book.hols += 1;
       }

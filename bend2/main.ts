@@ -36,7 +36,7 @@ const VERSION = "2.0.36";
 const USAGE = [
   ["bend <file.bend> [args]", "check the file, then run main with args"],
   ["bend <file.bend> -o <out>", "build a binary, or C, JS, .mjs or BendTT by extension"],
-  ["bend <file.bend> --check-only", "check the file and its imports; run nothing (BEND_CACHE=<dir>: skip the files a check there passed)"],
+  ["bend <file.bend> --check-only", "check the file and its imports; run nothing (skips the files an earlier check passed)"],
   ["bend <file.bend> --verdict", "check it, then recheck it with the proven kernel"],
   ["bend <file.bend> --publish [<name>@<version>]", "publish the file and its imports; a name needs login"],
   ["bend link <name>@<version> 0x<hash>", "name a package already on the hub"],
@@ -961,10 +961,11 @@ function book_err(e: unknown): string {
 // Cache
 // =====
 
-// With BEND_CACHE=<dir>, --check-only skips the modules an earlier run
-// checked. A module is the events the loader appended for one file (Seen
-// marks its end). Its key hashes the checker (cache_self), the keys of
-// Base and of each module that owns a name it refers to (where the name's
+// --check-only skips the modules an earlier run checked: their entries
+// live in ~/.bend/checked, or in $BEND_CACHE (BEND_CACHE=off: none). A
+// module is the events the loader appended for one file (Seen marks its
+// end). Its key hashes the checker (cache_self), the keys of Base and
+// of each module that owns a name it refers to (where the name's
 // first event is), and its events: each name and the def or type it parsed
 // to, spans aside. Every def is declared up front, but a check reads only
 // the names its terms spell and the Base defs the checker names, so a key
@@ -973,14 +974,12 @@ function book_err(e: unknown): string {
 // it or one of its names has an event in another module (a law filled
 // elsewhere), nor do its dependents; a book where a module refers to a
 // later one has no keys at all.
-// book_valid(book, done) checks the events from done on, so a run moves the
-// modules with an entry (their deps having one too) to the front of the
-// order, each still after its deps, the rest still after theirs, and
-// starts past them. A run whose check passes writes an entry for every
-// other module with a key: its names that rely on a promise (book_promises
-// reads checked bodies, and a skipped def keeps none). A failed run writes
-// nothing. An entry is written aside and renamed in, so runs share the
-// dir; a cache that cannot be read or written is no cache, never a failure.
+// A run hands book_valid the names of the modules with an entry (their
+// deps having one too) as done, and it checks the rest. A run whose check
+// passes writes an entry for every other module with a key: its names
+// that rely on a promise (book_promises reads checked bodies, and a
+// skipped def keeps none). A failed run writes nothing. An entry is
+// written aside and renamed in, so runs share the dir; a cache that cannot be read or written is no cache, never a failure.
 
 type Mod = { names: string[]; key: string; deps: number[] };
 
@@ -988,8 +987,9 @@ type Cache = { dir: string; ends: number[]; mods: Mod[]; hit: Set<number>;
   taint: string[]; bad: Set<string> };
 
 function cache_open(): Cache | null {
-  const dir = process.env.BEND_CACHE;
-  if (dir === undefined || dir === "") {
+  const dir = process.env.BEND_CACHE
+    ?? path.join(os.homedir(), ".bend", "checked");
+  if (dir === "" || dir === "off") {
     return null;
   }
   return { dir: path.resolve(dir), ends: [], mods: [], hit: new Set(),
@@ -1011,9 +1011,9 @@ class Seen extends Map<string, string | null> {
   }
 }
 
-// cache_find keys the modules, moves those with an entry to the front of
-// the order and answers where the check starts: past them
-function cache_find(book: Bend.Book, cache: Cache | null): number {
+// cache_find keys the modules and answers the names of those with an
+// entry: the check skips them
+function cache_find(book: Bend.Book, cache: Cache | null): Set<string> | 0 {
   if (cache === null) {
     return 0;
   }
@@ -1022,19 +1022,15 @@ function cache_find(book: Bend.Book, cache: Cache | null): number {
   } catch {
     return 0;
   }
-  const front: string[] = [];
-  const rest: string[] = [];
+  const done = new Set<string>();
   for (const [j, m] of cache.mods.entries()) {
     const ok = m.key !== "" && m.deps.every((d) => cache.hit.has(d));
     if (ok && cache_read(cache, m.key)) {
       cache.hit.add(j);
-      front.push(...m.names);
-    } else {
-      rest.push(...m.names);
+      m.names.forEach((k) => done.add(k));
     }
   }
-  book.order = front.concat(rest);
-  return front.length;
+  return done;
 }
 
 // cache_read adds an entry's names to the taint, if the entry is there
