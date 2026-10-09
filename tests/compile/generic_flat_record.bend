@@ -1,7 +1,8 @@
 # A flat generic def at a record of scalars takes and returns its words
 # (#1195): its spin is one per layout of its erased arguments. One that
 # returns an A gets it in words, from words or from a list's node; one
-# that only stores its A in a node keeps it boxed. Picks under a bang.
+# that only stores its A in a node keeps it boxed. Picks, swaps and a
+# tail-recursive last under a bang: the last stays a loop.
 import Base
 
 type Tint is Data:
@@ -28,6 +29,20 @@ def head(-A: Type, xs: List<A>, d: A) -> A:
     case Con{h, t}:
       h
 
+def last(-A: Type, xs: List<A>, d: A) -> A:
+  match xs:
+    case Nil{}:
+      d
+    case Con{h, t}:
+      last(A, t, h)
+
+def twos(+n: Nat, +i: U32) -> List<Two>:
+  match n:
+    case 0n:
+      []
+    case 1n+p:
+      Two{i, (i * 3 : U32)} <> twos(p, (i + 1 : U32))
+
 def red(t: Tint) -> U32:
   Tint{+r, g, b} = t
   F32.to_u32((r * 100.0 : F32))
@@ -40,13 +55,19 @@ def tally(p: U32 & Tint) -> U32:
   (n, t) = p
   (n + red(t) : U32)
 
+def total(p: U32 & Two) -> U32:
+  (n, t) = p
+  (n + sum(t) : U32)
+
 def swapped() -> U32:
   tally(swap(Tint, U32, (Tint{0.5, 0.25, 0.125}, 7)))
 
 def leaf(+i: U32) -> U32:
   +x = (U32.to_f32((i % 1000 : U32)) * 0.001 : F32)
   (red(choose(Tint, (x < 0.5 : F32), Tint{0.84, 0.95, 1.2}, Tint{x, 0.0, 0.0}))
-    + sum(choose(Two, U32.is_even(i), Two{i, 1}, Two{2, i})) : U32)
+    + sum(choose(Two, U32.is_even(i), Two{i, 1}, Two{2, i}))
+    + total(swap(Two, U32, (Two{i, 5}, (i % 7 : U32))))
+    + sum(last(Two, twos(20n, i), Two{i, 1})) : U32)
 
 def tree(+k: Nat, +i: U32) -> U32:
   match k:
@@ -68,4 +89,4 @@ def main() -> IO(Unit):
 #|7
 #|2
 #|ad
-#|606578
+#|3311469
