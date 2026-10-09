@@ -1599,16 +1599,14 @@ function node_fields(sc: Scope, t: string, k: Name, tail = false): Val[] {
   const r = sc.brwl.get(t);
   const z = r === undefined && (FL.hot.has(k) || FL.stat.has(k));
   const sp = name_local(sc, "sp");
-  let fb = `e.mem[${sp} + `;
-  let at = (r === undefined ? "term_loc(" : "term_peek(e.mem, ") + t + ")";
+  const fb = z ? name_local(sc, "fb") : "";
   if (z) {
-    fb = name_local(sc, "fb");
     file_push(sc, `Term ${fb}[${n}];`);
-    at = `ctr_take(e, ${t}, ${n}, ${fb})`;
-    fb += "[";
   }
-  file_push(sc, `u64 ${sp} = ${at};`);
-  const ws = emit_hold(sc, node.ks.map((_, j) => `${fb}${j}]`), "f", node.ks);
+  file_push(sc, `u64 ${sp} = ${z ? `ctr_take(e, ${t}, ${n}, ${fb})`
+    : r === undefined ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
+  const ws = emit_hold(sc, node.ks.map((_, j) =>
+    z ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
   const spare = { words: n, name: sp, z };
   if (r !== undefined) {
     ws.forEach((w, j) => {
@@ -1897,16 +1895,16 @@ function show_main(): (number | Name)[] | null {
     + " erased or dependent field)");
   const node = (T: HTerm, lay: Lay) => {
     const t = ty_wnf(T) as HTerm;
-    const box = lay === BOX;
     const key = Bend.term_key(Bend.term_lower(t));
     const ids = memo(lays, lay, () => new Map());
+    if (ids.has(key)) {
+      return ids.get(key)!;
+    }
+    const box = lay === BOX;
     const adt = ty_adt(t);
     const tld = adt && FL.book.tlds[adt.k];
     const kind = t.$ === "Eql" ? 5 : "U32 F32 Nat Char String . Array"
       .split(" ").indexOf(adt?.k ?? "") & 7;
-    if (ids.has(key)) {
-      return ids.get(key)!;
-    }
     if (kind !== 5 && (tld?.$ !== "ADT" || adt?.k === "IO.OP")) {
       return refuse();
     }
@@ -2186,13 +2184,14 @@ function emit_fuse(sc: Scope, ck: Spine, dst: Val | null, tail = false): void {
 function emit_open(sc: Scope, k: Name): [Scope, Val[]] {
   FUEL = FOLD_FUEL;
   const { live, lays, ret } = fun_of(k);
-  const vals = lays.map((l, i) =>
-    val_new(l.ks.map(() => name_local(sc, live[i]?.[1] ?? "k")), l));
-  brw_of(k).forEach((b, i) => vals[i].ws.forEach((w, j) => {
-    if (b && lays[i].ks[j] === "box") {
+  const brw = brw_of(k);
+  const vals = lays.map((l, i) => val_new(l.ks.map((kd) => {
+    const w = name_local(sc, live[i]?.[1] ?? "k");
+    if (brw[i] && kd === "box") {
       sc.brwl.set(w, k + "~" + i);
     }
-  }));
+    return w;
+  }), l));
   const seg = seg_new(k, ret, vals.flatMap((v) => v.ws),
     vals.flatMap((v) => v.lay.ks));
   return [{ ...sc, seg, spares: [], uses: new Map(), def: k }, vals];
