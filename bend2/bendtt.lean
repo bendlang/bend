@@ -22,7 +22,7 @@ import Std.Data.HashMap
 -- q=1 variable is used at most once, a q=0 one never), may call only
 -- earlier defs, and may call its own def only on parameters it rebuilt,
 -- then a piece of one.
--- A q=2 binder needs a Data domain, and Data holds no λ and no call.
+-- A q=2 binder needs a Data domain; its live fields hold no λ or call.
 -- A kind is *(q), for a quantity q : <Q0, Q1, Q2>: *1 is *(.Q1), Type,
 -- and *2 is *(.Q2), Data. A meet (a <&> b) runs on two of those labels.
 -- *(g) fits *(h) when g is .Q2 wherever h is, so a *(q) type is Data
@@ -518,7 +518,7 @@ def Nat.name (d : Nat) : String :=
   "x" ++ toString d
 
 def Term.show : Term → Nat → String
-  | Var i, d => Nat.name (d - i - 1)
+  | Var i, d => if i < d then Nat.name (d - i - 1) else "free[" ++ toString (i - d) ++ "]"
   | Ref k, _ => k
   | Ann x T, d =>
     let x := Term.show x d
@@ -1659,12 +1659,17 @@ inductive Eval (bk : Book) : Term → Term → Prop
 -- Claims
 -- ------
 
--- The main claim: no def of a checked book has type Empty (<>), even
--- up to conversion, so no checked def proves False. The claims below
--- are the steps of its proof.
+-- No def of a checked book has the literal empty-enum type, even up
+-- to conversion. consistent_sig covers the Σ encoding of an empty
+-- datatype; the claims below are the steps of both proofs.
 def Claim.consistent : Prop :=
   ∀ bk k d, Book.check bk = .ok () → Book.get bk k = some d →
     ¬ Conv bk d.T (Enu [])
+
+-- the live tag of Bend's empty datatype is itself uninhabitable
+def Claim.consistent_sig : Prop :=
+  ∀ bk k d, Book.check bk = .ok () → Book.get bk k = some d →
+    ∀ B, ¬ Conv bk d.T (Sig Q1 (Enu []) B)
 
 -- the checker is sound for the declarative theory and the live check
 def Claim.sound : Prop :=
@@ -1691,6 +1696,11 @@ def Claim.halts : Prop :=
 -- no value has type <>
 def Claim.empty : Prop :=
   ∀ bk t, Book.WellTyped bk → Value bk t → ¬ Typed bk [] t (Enu [])
+
+-- no value has a Σ type with a live empty-enum first field
+def Claim.empty_sig : Prop :=
+  ∀ bk t B, Book.WellTyped bk → Value bk t →
+    ¬ Typed bk [] t (Sig Q1 (Enu []) B)
 
 -- PROOF
 -- =====
@@ -2856,6 +2866,17 @@ theorem progress : Claim.progress := by
 theorem empty : Claim.empty := fun _ _ wt v h =>
   (canon_enu wt v h crefl).elim nofun
 
+-- A Σ value must be a tuple, not a stuck call (value_form); its live
+-- first field would be a value of the literal empty enumeration.
+theorem empty_sig : Claim.empty_sig := by
+  intro bk t B wt v h
+  have f := value_form wt v h crefl nofun
+  cases v <;> simp [Term.tform, Term.former, ↓tform_call] at f
+  case tup _ _ _ va _ =>
+    obtain ⟨_, ⟨A, B', rfl, ha, _⟩, hf, _⟩ := gen h
+    obtain ⟨rfl, c, _⟩ := conv_sig (fits_conv hf crefl nofun)
+    exact empty bk _ wt (va rfl) (.conv ha (.conv c))
+
 -- Termination
 -- -----------
 
@@ -3893,3 +3914,19 @@ theorem consistent : Claim.consistent := by
       (.conv (.ref get) (.conv (conv_sub (σ := Var) hc)))
   intro t a ht; induction a; rename_i t _ ih
   exact (progress bk t _ wt lv ht).elim (empty bk t wt · ht) fun ⟨u, e⟩ => ih u e (pars_sr wt ht (eval_pars lv.1 e))
+
+-- The same terminating evaluation rules out the live-tag Σ encoding.
+theorem consistent_sig : Claim.consistent_sig := by
+  intro bk k d ok get B hc
+  have ⟨wt, lv⟩ := book_check bk ok
+  have ⟨i, hi⟩ := index_of_get get
+  have hr : Typed bk [] (Ref k) d.T := by
+    simpa only [sub_var] using (Typed.ref (σ := Var) get : Typed bk [] (Ref k) (Term.sub Var d.T))
+  suffices ∀ t, Acc (fun u t => Eval bk t u) t →
+      ¬ Typed bk [] t (Sig Q1 (Enu []) B) from
+    this _ (halts bk _ lv (fun _ => rfl) (by
+      simp [Term.Live, Term.live, Term.called, Term.unspine, hi, index_lt hi]))
+      (.conv hr (.conv hc))
+  intro t a ht; induction a; rename_i t _ ih
+  exact (progress bk t _ wt lv ht).elim (empty_sig bk t B wt · ht)
+    fun ⟨u, e⟩ => ih u e (pars_sr wt ht (eval_pars lv.1 e))
