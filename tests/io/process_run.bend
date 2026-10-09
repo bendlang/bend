@@ -88,6 +88,9 @@ def main() -> IO(Unit):
     r0 : Result<&1, &1, U32 & String, U32 & (String & String)> <-
       Process.run("/bin/sh", ["-c", "exec >&- 2>&-; sleep 3"], "", 128, 300)
     IO.print("closed stdio: " ++ timeout(r0))
+    r1 : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/echo", ["hi"], "", 128, 4294967295)
+    IO.print("largest timeout: " ++ answer(r1, 0, "hi\n", ""))
 
 #|stdin: True
 #|literal argv: True
@@ -107,3 +110,4 @@ def main() -> IO(Unit):
 #|descendant output: True
 #|runaway descendant: True
 #|closed stdio: True
+#|largest timeout: True
