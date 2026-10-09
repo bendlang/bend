@@ -517,6 +517,12 @@ no IO. A fallible operation answers a `Result` carrying errno, and a
 handle threads back outside the `Result`, so even a failure cannot
 lose it.
 
+`File.write` and `File.write_bytes` complete positive short writes.
+A zero-byte host write with a nonempty buffer remaining fails with
+`EIO`, rather than retrying without progress; an empty write succeeds.
+Failure does not roll back an already-written prefix or consume the
+file handle, so the caller can inspect the file or continue writing.
+
 = The JavaScript Backend <sec:js>
 
 The same rewritten definitions (@sec:compile) print as plain
