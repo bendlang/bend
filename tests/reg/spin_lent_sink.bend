@@ -6,7 +6,7 @@
 # spin call, and the self-jump that takes the result runs no bind_dead, so
 # the spin call must sink it. Before, nothing did: every turn left the old
 # list's cells: about 81.6 MB -> 1.7 MB max RSS on one C thread with
-# --gpu off. The #| lines guard output, not RSS. In the emitted C, each
+# BEND_GPU=off. The #| lines guard output, not RSS. In the emitted C, each
 # spin call is followed by a term_sink of xs.
 import Base
 

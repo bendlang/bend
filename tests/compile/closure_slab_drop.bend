@@ -40,7 +40,7 @@ law main:
 def main():
   do IO<Unit>:
     xs : List<String> <- IO.args()
-    x : U32 = U32.from_nat(List.length(&1, String, xs))
+    x : U32 = U32.from_nat(Nat.add(1n, List.length(&1, String, xs)))
     value : U32 <- loop(20000n, x, 0)
     IO.print(U32.show(value))
 

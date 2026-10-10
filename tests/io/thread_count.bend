@@ -1,7 +1,7 @@
 # io (io_thread_count): IO.thread_count answers the worker pool's size:
-# --threads, else the CPU count, clamped to 1..128 on the C lane, and 1
-# on the JS lanes. The harness passes no flag and the CPU count differs
-# by machine, so the test prints only that the count is in range.
+# BEND_THREADS, else the CPU count, clamped to 1..128 on the C lane, and 1
+# on the JS lanes. The harness leaves it unset and CPU counts differ,
+# so the test prints only that the count is in range.
 import Base
 
 def in_range(+n: U32) -> Bool:

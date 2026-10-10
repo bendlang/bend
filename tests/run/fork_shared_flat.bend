@@ -3,7 +3,7 @@
 # the closed index is the flat Maybe<&2, U32>; a fork's call and the body
 # share it. The unbox once ran at the first sharing pop, after the fork's
 # frame had laid h out as one word: the next frame popped two, read the box
-# as a tag, and the sequential path (--threads 1, or a task the pool drains)
+# as a tag, and the sequential path (BEND_THREADS=1, or a task the pool drains)
 # printed 12 for 18. rr(10n) forks 1024 leaves, which the pool drains
 # sequentially at any thread count. Expect 1 + 10 + 7 = 18, then 1024 * 18.
 

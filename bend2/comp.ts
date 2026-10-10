@@ -158,7 +158,7 @@ const WORDS: Record<string, Lay> = Object.setPrototypeOf(
 const WIDE = 247;
 
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
-  + " --gpu 8GB|a function the device does not hold|a Nat past the"
+  + " BEND_GPU=8GB|a function the device does not hold|a Nat past the"
   + " largest immediate 2^48-1|*|memory fault (machine stack overflow?)|an"
   + " array past the deepest block class 31|a value has more than 2^24-1 live"
   + " copies: keep fewer alive at once, or build it again for some of them"
@@ -1305,8 +1305,8 @@ export function io_type(book: Bend.Book): HTerm | null {
 }
 
 export function io_run(book: Bend.Book, args: string[]): number {
-  const src = `${js_lib(book)}\n${RUNTIME_MAIN}\ncli_args = ${
-    JSON.stringify(args)};\nreturn io_run(${js_sat("main")});`;
+  const src = `${js_lib(book)}\n${RUNTIME_MAIN}\ncli(${
+    JSON.stringify(args)});\nreturn io_run(${js_sat("main")});`;
   return new Function("require", src)(import.meta.require);
 }
 
@@ -3245,7 +3245,7 @@ export function js_lib(book: Bend.Book, mod = false): string {
 export function js_book(book: Bend.Book): string {
   const lib = js_lib(book);
   const show = show_main();
-  return `${lib}\n${RUNTIME_MAIN}\ncli(process.argv.slice(1));\nio_exit(${
+  return `${lib}\n${RUNTIME_MAIN}\nio_exit(${
     js_sat("main")}, ${JSON.stringify(show && show.map((c) =>
       typeof c === "string" ? Bend.name_key(c) : c))});`;
 }
@@ -3570,15 +3570,6 @@ static CUfunction gpu_pso;
 #endif
 static bool io_gpu;
 static DEV Term*  io_stk;
-
-static const char* CLI_HELP =
-  "usage: %s [options] [arguments]\n"
-  "  --threads N       worker threads, 1 to 128 (default: the CPU count)\n"
-  "  --gpu on|off|4GB  run ! calls on the GPU, over this much of its memory\n"
-  "                    (default: on if present, over 2GB on Metal)\n"
-  "  --gpu-build       write the GPU program and exit\n"
-  "  --bend-help       show this text\n"
-  "  --                the rest are the program's arguments (IO.args)\n";
 
 #endif
 
@@ -4832,7 +4823,7 @@ OUTLINE void pool_turn(bool grow, u32 rows) {
 // ===
 
 // gpu_make compiles the device program into <binary>.gpu
-// (--gpu-build): Metal's binary archive, or CUDA's cubin behind a
+// (BEND_GPU_BUILD=1): Metal's binary archive, or CUDA's cubin behind a
 // hash of the text. A launch loads it, else notes and compiles. CUDA
 // shapes the bag by the device: a group of 128 lanes per 64 KB of
 // L2, a power of two in 16..128 (Apple keeps the tuned 128). CUDA
@@ -4939,7 +4930,7 @@ static void gpu_load(u64 bytes) {
   if (!gpu_buf) {
     u64  most = [gpu_dev maxBufferLength];
     char msg[96];
-    snprintf(msg, sizeof msg, "--gpu %lluMB is over the device's %lluMB",
+    snprintf(msg, sizeof msg, "BEND_GPU=%lluMB is over the device's %lluMB",
       (unsigned long long)(bytes >> 20), (unsigned long long)(most >> 20));
     err_fail(bytes > most ? msg : "the GPU span is more than the device has");
   }
@@ -5963,47 +5954,45 @@ int main(int argc, char** argv) {
   long thr = 0;
   int  gpu = -1;
   u64  mem = 0;
-  io_argv = argv;
-  io_argc = 1;
-  for (int i = 1; i < argc; i += 1) {
-    const char* a = argv[i];
-    const char* v = i + 1 < argc ? argv[i + 1] : "";
-    if (strcmp(a, "--") == 0) {
-      while (i + 1 < argc) {
-        io_argv[io_argc++] = argv[++i];
-      }
-    } else if (strcmp(a, "--bend-help") == 0) {
-      printf(CLI_HELP, argv[0]);
-      return 0;
-    } else if (strcmp(a, "--gpu-build") == 0) {
-      if (gpu_probe() == NULL && !gpu_make(gpu_path())) {
+  io_argv = argv + 1;
+  io_argc = argc - 1;
+  const char* v = getenv("BEND_THREADS");
+  if (v != NULL) {
+    char* end;
+    thr = strtol(v, &end, 10);
+    if (thr < 1 || *end != '\0') {
+      err_fail("expected a thread count of 1 or more in BEND_THREADS");
+    }
+  }
+  v = getenv("BEND_GPU");
+  if (v != NULL) {
+    char*  end;
+    double n   = strtod(v, &end);
+    u64    mul = strcmp(end, "GB") == 0 ? 1ull << 30
+      : strcmp(end, "MB") == 0 ? 1ull << 20 : 0;
+    if (strcmp(v, "off") == 0) {
+      gpu = 0;
+    } else if (strcmp(v, "on") == 0
+      || (mul != 0 && n > 0 && n * (double)mul < 0x1p64)) {
+      gpu = 1;
+      mem = (u64)(n * (double)mul);
+    } else {
+      err_fail("expected on, off or a size like 4GB in BEND_GPU");
+    }
+  }
+  v = getenv("BEND_GPU_BUILD");
+  if (v != NULL) {
+    if (strcmp(v, "1") == 0) {
+      const char* why = gpu_probe();
+      if (why != NULL) err_fail(why);
+      if (!gpu_make(gpu_path())) {
         fprintf(stderr, "bend: cannot write %s\n", gpu_path());
         return 1;
       }
       return 0;
-    } else if (strcmp(a, "--threads") == 0) {
-      char* end;
-      thr = strtol(v, &end, 10);
-      if (thr < 1 || *end != '\0') {
-        err_fail("expected a thread count of 1 or more after --threads");
-      }
-      i += 1;
-    } else if (strcmp(a, "--gpu") == 0) {
-      char*  end;
-      double n   = strtod(v, &end);
-      u64    mul = strcmp(end, "GB") == 0 ? 1ull << 30
-        : strcmp(end, "MB") == 0 ? 1ull << 20 : 0;
-      if (strcmp(v, "off") == 0) {
-        gpu = 0;
-      } else if (strcmp(v, "on") == 0 || (mul != 0 && n > 0)) {
-        gpu = 1;
-        mem = (u64)(n * (double)mul);
-      } else {
-        err_fail("expected on, off or a size like 4GB after --gpu");
-      }
-      i += 1;
-    } else {
-      io_argv[io_argc++] = argv[i];
+    }
+    if (strcmp(v, "0") != 0) {
+      err_fail("expected 0 or 1 in BEND_GPU_BUILD");
     }
   }
   const char* why = gpu != 0 && BANGS != 0 ? gpu_probe() : "";
@@ -6093,22 +6082,28 @@ const RUNTIME_MAIN: string = String.raw`
 // Cli
 // ===
 
-let cli_args = [];
+let cli_args;
 
 function cli(argv) {
-  cli_args.push(argv[0]);
-  for (let i = 1; i < argv.length; i += 1) {
-    if (argv[i] === "--") {
-      cli_args.push(...argv.slice(i + 1));
-      break;
-    } else if (argv[i] === "--bend-help") {
-      io_out(1, io_bytes("usage: " + argv[0] + "\n"));
-      process.exit(0);
-    } else if (argv[i] === "--threads" || argv[i] === "--gpu") {
-      i += 1;
-    } else {
-      cli_args.push(argv[i]);
-    }
+  cli_args = argv;
+  const threads = process.env.BEND_THREADS;
+  if (threads !== undefined
+    && (!/^[ \t\n\r\f\v]*\+?\d+$/.test(threads) || !(Number(threads) > 0))) {
+    throw "bend: expected a thread count of 1 or more in BEND_THREADS";
+  }
+  const gpu = process.env.BEND_GPU;
+  const size = gpu?.match(/^[ \t\n\r\f\v]*\+?((?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)(GB|MB)$/);
+  const bytes = size ? Number(size[1]) * (size[2] === "GB" ? 2 ** 30 : 2 ** 20) : 0;
+  if (gpu !== undefined && gpu !== "on" && gpu !== "off"
+    && !(bytes > 0 && bytes < 2 ** 64)) {
+    throw "bend: expected on, off or a size like 4GB in BEND_GPU";
+  }
+  const build = process.env.BEND_GPU_BUILD;
+  if (build === "1") {
+    throw "bend: GPU builds require a native binary";
+  }
+  if (build !== undefined && build !== "0") {
+    throw "bend: expected 0 or 1 in BEND_GPU_BUILD";
   }
 }
 
@@ -6164,6 +6159,7 @@ function show_val(D, d, v, chain) {
 
 function io_exit(main, show) {
   try {
+    cli(process.argv.slice(2));
     if (show !== null) {
       io_out(1, io_bytes(show_val(show, 0, run_loop(main()), 0) + "\n"));
       process.exit(0);

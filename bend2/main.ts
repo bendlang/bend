@@ -55,6 +55,11 @@ const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
 usage:
 ${USAGE.map(([use, say]) => `  ${use.padEnd(USE_W)}  ${say}`).join("\n")}
 
+Runtime settings: BEND_THREADS=N (native, positive, clamped to 128; default: CPU count),
+BEND_GPU=on|off|4GB (native; default: GPU if present), BEND_GPU_BUILD=1
+(write the native GPU program and exit). IO.args excludes the program name;
+compiled binaries reserve no arguments. JavaScript stays single-threaded.
+
 Read the guide (\`bend guide\`) before writing Bend code.
 `;
 
@@ -307,7 +312,7 @@ async function cli_file(args: string[]): Promise<void> {
       return;
     }
     if (outs.length === 0) {
-      process.exitCode = book_run(book, [file, ...argv]);
+      process.exitCode = book_run(book, argv);
       return;
     }
     const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
@@ -342,7 +347,7 @@ async function cli_checkup(file: string): Promise<void> {
     let code = 1;
     try {
       const own = /^import Base$/m.test(fs.readFileSync(at, "utf8"));
-      code = book_run(await book_read(at, own ? base : undefined), [at]);
+      code = book_run(await book_read(at, own ? base : undefined), []);
     } catch (e) {
       cli_say(2, book_err(e) + "\n");
     }
@@ -444,9 +449,11 @@ function cli_build(bin: string, file: string): void {
     : ["-DBEND_CUDA=1", "-I" + cuda + "/include", "-L" + cuda + "/lib64",
       "-L" + cuda + "/lib", ...cpu, "-lcuda", "-lnvrtc"];
   const steps: [string, string[]][] = bangs
-    ? [[cc, gpu], [path.resolve(bin), ["--gpu-build"]]] : [[cc, cpu]];
+    ? [[cc, gpu], [path.resolve(bin), []]] : [[cc, cpu]];
   for (const [cmd, args] of steps) {
-    if (child.spawnSync(cmd, args, { stdio: "inherit" }).status !== 0) {
+    if (child.spawnSync(cmd, args, { stdio: "inherit",
+      env: cmd === cc ? process.env : { ...process.env, BEND_GPU_BUILD: "1" }
+    }).status !== 0) {
       throw "Error: " + path.basename(cmd) + " failed to build " + bin;
     }
   }

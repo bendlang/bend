@@ -23,7 +23,7 @@ import * as child from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { BUILD, CC, FLAGS, MEMORY, MODES } from "../../gates/perf.ts";
+import { BUILD, CC, RUNTIME_ENV, MEMORY, MODES } from "../../gates/perf.ts";
 
 // Constants
 // =========
@@ -58,11 +58,11 @@ const POOL = ((): number => {
 type Ran = { secs: number; out: string; over: boolean; rss: number };
 
 function exec_run(cmd: string[], cwd: string, timeout: number,
-  quiet = false): Promise<Ran> {
+  quiet = false, env = process.env): Promise<Ran> {
   return new Promise((ok, no) => {
     const at = performance.now();
     const kid = child.spawn(cmd[0], cmd.slice(1),
-      { cwd, detached: true, stdio: ["ignore", "pipe", "pipe"] });
+      { cwd, env, detached: true, stdio: ["ignore", "pipe", "pipe"] });
     let outs = "";
     let errs = "";
     let over = false;
@@ -236,11 +236,13 @@ async function runtime_cell(b: Built, mode: number): Promise<Ran> {
   while (nt * 2 <= os.cpus().length && nt < 256) {
     nt *= 2;
   }
-  const args = FLAGS[mode].replace("$nt", String(nt))
-    .replace("$gm", MEMORY[b.bench] ?? "on").split(" ");
-  await exec_run([bin, ...args], dir, RUN_TIMEOUT);
+  const settings = RUNTIME_ENV[mode].replace("$nt", String(nt))
+    .replace("$gm", MEMORY[b.bench] ?? "on");
+  const env = { ...process.env, ...Object.fromEntries(
+    settings.split(" ").map((setting) => setting.split("="))) };
+  await exec_run([bin], dir, RUN_TIMEOUT, false, env);
   return runtime_check(b, MODES[mode],
-    await exec_run(["/usr/bin/time", "-l", bin, ...args], dir, RUN_TIMEOUT));
+    await exec_run(["/usr/bin/time", "-l", bin], dir, RUN_TIMEOUT, false, env));
 }
 
 async function runtime_ts(b: Built, dir: string): Promise<number> {

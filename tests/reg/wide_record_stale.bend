@@ -35,7 +35,7 @@ def drop(xs: +List<RA>, +s: String) -> String:
 def main() -> IO(Unit):
   do IO<Unit>:
     args : List<String> <- IO.args()
-    +x : U32 = U32.from_nat(List.length(&1, String, args))
+    +x : U32 = U32.from_nat(Nat.add(1n, List.length(&1, String, args)))
     +s : String = U32.show((x + 6 : U32))
     +h : String = heads([mks(s), mks(s), mks(s), mks(s), mks(s), mks(s)])
     +d : String = drop([mka(x), mka(x), mka(x), mka(x), mka(x), mka(x)], h)
