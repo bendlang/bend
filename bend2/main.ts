@@ -76,8 +76,8 @@ const CHECK = path.join(os.homedir(), ".bend", "check.json");
 
 const DAY = 86400000;
 
-// the verdict on a book: PASS when every def outside Base is a valid proof
-// (see cli_verdict), else FAIL and why
+// the verdict on a book: PASS when every claim is a valid proof (see
+// cli_verdict), else FAIL and why
 const PASS = "ALL PROOFS CHECK";
 
 const FAIL = "SOME PROOFS FAIL";
@@ -303,7 +303,7 @@ async function cli_file(args: string[]): Promise<void> {
     const seen = new Map<string, string | null>();
     const book = await book_read(file, undefined, seen);
     if (only || verdict) {
-      process.exitCode = cli_verdict(book, verdict);
+      process.exitCode = cli_verdict(book, file, verdict);
       return;
     }
     if (outs.length === 0) {
@@ -773,24 +773,36 @@ async function pow_mine(hash: string, bytes: number): Promise<number> {
 // Verdict
 // =======
 
-// cli_verdict prints the verdict on a book bend2 checked: PASS when no
-// def outside Base relies on unsafe or foreign code and, with the kernel,
-// when BendTT checks every def too; else FAIL and why. A kernel failure is
-// a mismatch: bend2 accepted what the kernel rejects.
-function cli_verdict(book: Bend.Book, kernel: boolean): number {
+// cli_verdict prints the verdict on a book bend2 checked from file: PASS
+// when no claim relies on unsafe or foreign code and, with the kernel,
+// when BendTT checks every def too, but a noted one may be out of its
+// scope; else FAIL and why. The claims are the defs outside Base, but a
+// PROOF.bend's are its own and its LAWS.bend's: another def that relies
+// on a promise is noted (#1463). A kernel failure is a mismatch: bend2
+// accepted what the kernel rejects.
+function cli_verdict(book: Bend.Book, file: string, kernel: boolean): number {
+  const proof = path.basename(file) === "PROOF.bend";
   const bad = book_promises(book);
-  if (bad.length !== 0) {
-    cli_say(2, FAIL + "\nError: " + String(bad.length) + " def" + (bad.length === 1
-      ? " relies" : "s rely") + " on unsafe or foreign code:\n"
-      + bad.map((k) => "- " + Bend.name_key(k) + "\n").join(""));
+  const note = bad.filter((k) => proof && k.includes(":") && !k.startsWith("LAWS:"));
+  const fail = bad.filter((k) => !note.includes(k));
+  if (fail.length !== 0) {
+    cli_say(2, FAIL + "\nError: " + relies(fail, ":"));
     return 1;
   }
-  if (kernel && !Safe.safe_check(book)) {
+  if (kernel && !Safe.safe_check(book, note)) {
     cli_say(2, FAIL + "\n" + MISMATCH + "\n");
     return 1;
   }
-  cli_say(1, PASS + "\n" + (kernel ? "" : HINT + "\n"));
+  cli_say(1, PASS + "\n" + (note.length === 0 ? "" : "Note: "
+    + relies(note, ", but no law or proof does:")) + (kernel ? "" : HINT + "\n"));
   return 0;
+}
+
+// relies lists the defs ks, which rely on unsafe or foreign code
+function relies(ks: string[], tail: string): string {
+  return String(ks.length) + " def" + (ks.length === 1 ? " relies" : "s rely")
+    + " on unsafe or foreign code" + tail + "\n"
+    + ks.map((k) => "- " + Bend.name_key(k) + "\n").join("");
 }
 
 // book_promises lists the defs outside Base (laws and types too) that are
@@ -920,7 +932,7 @@ function book_main(book: Bend.Book): Bend.Def | null {
 function book_run(book: Bend.Book, argv: string[]): number {
   const main = book_main(book);
   if (main === null) {
-    return cli_verdict(book, false);
+    return cli_verdict(book, argv[0], false);
   }
   if (Comp.io_type(book) !== null) {
     return Comp.io_run(book, argv);

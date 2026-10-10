@@ -1559,9 +1559,9 @@ export function safe_emit(book: Book, out: string): string[] {
   return got.oos.map(([k, why]) => "- " + B.name_key(k) + ": " + why + "\n");
 }
 
-// --verdict: whether every def of a book bend2 checked is in the kernel's
-// scope, and the kernel checks them all
-export function safe_check(book: Book): boolean {
+// --verdict: whether every def of a book bend2 checked, but those in skip,
+// is in the kernel's scope, and the kernel checks them all
+export function safe_check(book: Book, skip: Name[] = []): boolean {
   const got = safe_book(book);
-  return got.oos.length === 0 && kernel_check(got.text);
+  return got.oos.every(([k]) => skip.includes(k)) && kernel_check(got.text);
 }
