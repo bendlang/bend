@@ -497,6 +497,18 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
         ({ contents: code.get(a.path)!, loader: "js" }));
       build.onLoad({ filter: /\.html$/ }, async (a) => {
         const src = await Bun.file(a.path).text();
+        const marks: string[] = [];
+        const marked = new HTMLRewriter().on("script", {
+          element(el) {
+            const type = el.getAttribute("type")?.trim().toLowerCase();
+            if (type === "module" && !el.hasAttribute("src")) {
+              let mark = "BEND_INLINE_START_" + marks.length + "_";
+              while (src.includes(mark)) mark += "_";
+              marks.push(mark);
+              el.prepend(mark);
+            }
+          },
+        }).transform(src);
         const mods: { id: string; text: string }[] = [];
         let mod: { id: string; text: string } | null = null;
         const html = new HTMLRewriter().on("script", {
@@ -520,8 +532,14 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
         }).transform(src);
         let end = 0;
         let line = 0;
-        for (const m of mods) {
-          const at = src.indexOf(m.text, end);
+        let added = 0;
+        let search = 0;
+        for (let i = 0; i < mods.length; i++) {
+          const m = mods[i];
+          const found = marked.indexOf(marks[i], search);
+          const at = found - added;
+          search = found + marks[i].length;
+          added += marks[i].length;
           line += src.slice(end, at).split("\n").length - 1;
           const col = at - src.lastIndexOf("\n", at - 1) - 1;
           code.set(m.id, "\n".repeat(line) + " ".repeat(col) + m.text);
