@@ -426,6 +426,9 @@ function cc_find(gpu: boolean): string {
 // lib; else the ! runs on the cores). On macOS a program with a framework
 // (#import: a window, audio) builds as Objective-C; on Linux it links the X11
 // (plus libdl, for dlopen before glibc 2.34) and ALSA libraries it includes.
+// $CFLAGS goes after the build's own -O3, so CFLAGS=-march=native builds for
+// this machine's vector units (and a later -O wins); a flag the compiler
+// refuses fails the build as any other error does.
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
   const mac   = process.platform === "darwin";
@@ -438,7 +441,8 @@ function cli_build(bin: string, file: string): void {
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
   const libs  = [["X11", "X11", "dl"], ["alsa", "asound"]].flatMap(([h, ...ls]) =>
     !mac && c.includes("#include <" + h + "/") ? ls.map((l) => "-l" + l) : []);
-  const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
+  const flags = (process.env.CFLAGS ?? "").split(/\s+/).filter((f) => f);
+  const cpu = [...objc, "-std=c11", "-O3", ...flags, file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];
   const gpu = mac ? ["-DBEND_METAL=1", ...cpu]
     : ["-DBEND_CUDA=1", "-I" + cuda + "/include", "-L" + cuda + "/lib64",
