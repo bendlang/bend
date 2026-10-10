@@ -59,7 +59,7 @@ def heap.check(value: U32, expected: U32, before: U32) -> IO(U32):
 def main() -> IO(Unit):
   do IO<Unit>:
     xs : List<String> <- IO.args()
-    +n : Nat = Nat.sub(List.length(&1, String, xs), 1n)
+    +n : Nat = List.length(&1, String, xs)
     Unit <- IO.print(U32.show(head_u32(rebox(wrap(n) <> Nil{}))))
     Unit <- IO.print(Nat.show(head_nat(rebox(wrap(Nat.add(n, 4n)) <> Nil{}))))
     before : U32 <- heap.check(cycle(10000n, n, 0), 100000, 0)

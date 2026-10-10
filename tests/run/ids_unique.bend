@@ -2,8 +2,8 @@
 # constructor done beside Base's Done (#989), a def a.b beside a_b, and
 # defs named like the runtime's own segments (io_emit, clo_apply) once
 # met in one CID_ or FID_ macro, and the C build refused or merged them;
-# each def walks the arguments, not in tail position, so it stays a
-# segment of its own
+# each def walks a nonempty dynamic argument list, not in tail position,
+# so it stays a segment of its own
 import Base
 
 type Lower is Data:
@@ -48,7 +48,7 @@ def main() -> IO(Unit):
     x : List<String> <- IO.args()
     y : List<String> <- IO.args()
     z : List<String> <- IO.args()
-    IO.print(U32.show((lower(done{}) + a.b(w) + a_b(x) + io_emit(y)
-      + clo_apply(z) : U32)))
+    IO.print(U32.show((lower(done{}) + a.b("" <> w) + a_b("" <> x) + io_emit("" <> y)
+      + clo_apply("" <> z) : U32)))
 
 #|11115

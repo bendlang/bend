@@ -33,7 +33,7 @@ def after(xs: +List<R256>, +x: U32) -> String:
 def main() -> IO(Unit):
   do IO<Unit>:
     args : List<String> <- IO.args()
-    +x : U32 = U32.from_nat(List.length(&1, String, args))
+    +x : U32 = U32.from_nat(Nat.add(1n, List.length(&1, String, args)))
     IO.print(after([mk256((x + 400 : U32)), mk256((x + 400 : U32)), mk256((x + 400 : U32)), mk256((x + 400 : U32)), mk256((x + 400 : U32)), mk256((x + 400 : U32))], (x + 500 : U32)))
 
 #|501/501

@@ -8,7 +8,7 @@
 // 0.62 for bfs), then asks for the C alone (`-o main.c`: a plain `-o`
 // emits into a temp dir and drops it) and builds that with the cc line (the
 // -O3 of bend -o: no -lm, no -fmodules, no -fno-slp-vectorize, so the
-// gate grades the binary bend builds) and runs it with the flags the
+// gate grades the binary bend builds) and runs it with the settings the
 // pins were measured with (PAR on the power of two under the core
 // count, GPU over the bench's span), one warm run and one timed, or three
 // and their median when the warm run took under SHORT (a 60 ms GPU cell
@@ -70,8 +70,8 @@ export const BUILD = [CC + " main.c -lpthread", CC + " main.c -lpthread",
 const THREADS = "nt=1; while [ $nt -lt $(getconf _NPROCESSORS_ONLN) ] &&"
   + " [ $nt -lt 256 ]; do nt=$((nt*2)); done;";
 
-export const FLAGS = ["--threads 1 --gpu off", "--threads $nt --gpu off",
-  "--gpu $gm"];
+export const RUNTIME_ENV = ["BEND_THREADS=1 BEND_GPU=off",
+  "BEND_THREADS=$nt BEND_GPU=off", "BEND_GPU=$gm"];
 
 export const MEMORY: Record<string, string> = {
   "tree-bitonic": "768MB", gameoflife: "512MB", kmeans: "768MB",
@@ -263,7 +263,7 @@ function pin_write(cells: Cell[], chks: Chk[]): void {
 // Every runtime cell gets the one pack of bench/runtime and builds its
 // bench out of it.
 function cell_script(c: Cell): string {
-  const run = "./cell " + FLAGS[c.mode].replace("$gm", MEMORY[c.bench] ?? "on");
+  const env = RUNTIME_ENV[c.mode].replace("$gm", MEMORY[c.bench] ?? "on");
   const src = "runtime/" + c.bench + "/main.bend";
   return `d=$HOME/bend-perf/${c.bench}-${String(c.mode)}; rm -rf $d;`
     + ` mkdir -p $d; cd $d; tar -xzf -; ${THREADS} ${lib.BUN} bend2/main.ts`
@@ -273,9 +273,9 @@ function cell_script(c: Cell): string {
     + ` -o main.c >> build.txt 2>&1 && ${BUILD[c.mode]} -o cell >> build.txt`
     + ` 2>&1; b=$?; }; echo "${MARK} built $b $t0 $t1"; cat build.txt;`
     + ` if [ $b = 0 ]; then cat > tm.c <<'TM'\n${TM}\nTM\n ${CC} tm.c -o tm`
-    + ` && ./tm warm.txt ${run} > /dev/null 2>&1; n=1; awk '$2 < ${SHORT}`
+    + ` && ${env} ./tm warm.txt ./cell > /dev/null 2>&1; n=1; awk '$2 < ${SHORT}`
     + ` { exit 1 }' warm.txt || n=3; i=0; while [ $i -lt $n ]; do`
-    + ` i=$((i+1)); rm -f ran.txt; ./tm ran.txt ${run} > out.txt 2> err.txt;`
+    + ` i=$((i+1)); rm -f ran.txt; ${env} ./tm ran.txt ./cell > out.txt 2> err.txt;`
     + ` echo "${MARK} ran $(cat ran.txt 2> /dev/null || echo 127 0 0)";`
     + ` grep -q '^0 ' ran.txt 2> /dev/null || break;`
     + ` done; cat out.txt;`

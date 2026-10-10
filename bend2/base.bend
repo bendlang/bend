@@ -180,8 +180,7 @@ def IO.get_env(name: String) -> IO(Result<&1, &1, U32 & String, String>):
   import "./effs/get_env.c"
   import "./effs/get_env.js"
 
-# The command line, less the runtime's own options: the program as invoked
-# (the binary, the JS file or the .bend file), then its arguments.
+# Program arguments after the program name, unchanged; settings use the environment.
 def IO.args() -> IO(List<String>):
   import "./effs/args.c"
   import "./effs/args.js"

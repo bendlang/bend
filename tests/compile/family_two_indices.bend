@@ -2,7 +2,7 @@
 # node shared through the stuck family type (a : Mat(p, q)) heats every
 # arm of every index, else the C lane opens the shared MatQ with term_loc
 # and faults. The depth comes from the command line so the fold cannot
-# see it: 1 plus the length of the command line, 2 in the harness.
+# see it: 2 plus the argument count, 2 in the harness.
 import Base
 
 type Mat.Leaf is Data:
@@ -57,6 +57,6 @@ def run(+d: Nat) -> U32:
 def main() -> IO(Unit):
   do IO<Unit>:
     xs : List<String> <- IO.args()
-    IO.print(U32.show(run(Nat.add(1n, List.length(&1, String, xs)))))
+    IO.print(U32.show(run(Nat.add(2n, List.length(&1, String, xs)))))
 
 #|64
