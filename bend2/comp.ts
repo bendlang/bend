@@ -5480,15 +5480,25 @@ static Term io_wait_on(IoWork* w, int fd, short evts, u64 time, IoPack more) {
   return IO_PARK;
 }
 
+// A closed pipe on stdout or stderr ends the program by SIGPIPE; other
+// failed writes still fail loudly.
+static void io_short(FILE* h) {
+  if (errno == EPIPE && (h == stdout || h == stderr)) {
+    signal(SIGPIPE, SIG_DFL);
+    raise(SIGPIPE);
+  }
+  err_fail("a short write on a standard stream");
+}
+
 OUTLINE void io_out(FILE* h, const char* data, u64 len) {
   if (fwrite(data, 1, len, h) != len) {
-    err_fail("a short write on a standard stream");
+    io_short(h);
   }
 }
 
 OUTLINE void io_sync(void) {
   if (fflush(stdout) != 0) {
-    err_fail("a short write on a standard stream");
+    io_short(stdout);
   }
 }
 
@@ -6185,6 +6195,7 @@ function io_out(fd, data) {
       if (e.code === "EAGAIN" || e.code === "EINTR") {
         continue;
       }
+      if (e.code === "EPIPE" && (fd === 1 || fd === 2)) process.exit(141);
       try {
         fs.writeSync(2, "bend: a short write on a standard stream\n");
       } catch (o) {
