@@ -225,6 +225,17 @@ def IO.thread_count() -> IO(U32):
   import "./effs/thread_count.c"
   import "./effs/thread_count.js"
 
+# Whether fd is a terminal: color, say, is for terminals only.
+def IO.is_terminal(fd: U32) -> IO(Bool):
+  import "./effs/is_terminal.c"
+  import "./effs/is_terminal.js"
+
+# The columns of the terminal at fd: 0 when fd is no terminal, or the
+# terminal does not know its width.
+def IO.terminal_width(fd: U32) -> IO(U32):
+  import "./effs/terminal_width.c"
+  import "./effs/terminal_width.js"
+
 def Chan.new(-A: Type, room: U32) -> IO(Chan(A)):
   import "./effs/chan.c"
   import "./effs/chan.js"
