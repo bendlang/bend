@@ -368,13 +368,13 @@ def main() -> IO(Unit):
     IO.print(text)
 ```
 
-Every bind is annotated, and `x : T = v` binds a pure value in the middle of a
-block. A fallible effect answers `Result<&1, &1, U32 & String, A>`: `IO.try`
-unwraps it or exits with the error, and `IO.die` exits with your own. `IO.args`
-answers the command line, less the runtime's own options (a `--` ends them):
-its head is the program as invoked, like C's `argv[0]`. A handle (`File`,
-`Socket`, `Window`) is an affine, opaque value, so every effect on one hands it
-back beside its result, and no program can forge or reuse one.
+Binds need types; `x : T = v` binds a pure value. Fallible effects answer
+`Result<&1, &1, U32 & String, A>`; `IO.try` unwraps or exits with the error.
+`IO.die` exits with your message. An `IO(U32)` main exits silently with its
+result; `IO(Unit)` exits 0. Main/die codes outside 0..255 fail with a diagnostic
+and exit 1. `IO.args` includes the program name and omits runtime options before
+`--`. Handles are affine and opaque: effects return them beside results,
+preventing forging or reuse.
 
 `TCP.listen(host, port)` and `UDP.bind(host, port)` bind the IPv4 literal
 `host`: `"127.0.0.1"` serves this machine only, `"0.0.0.0"` every interface.

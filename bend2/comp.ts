@@ -1304,9 +1304,13 @@ export function io_type(book: Bend.Book): HTerm | null {
   return xs?.length === 1 ? xs[0] : null;
 }
 
+function io_status(): boolean {
+  return ty_adt(io_type(FL.book))?.k === "U32";
+}
+
 export function io_run(book: Bend.Book, args: string[]): number {
   const src = `${js_lib(book)}\n${RUNTIME_MAIN}\ncli_args = ${
-    JSON.stringify(args)};\nreturn io_run(${js_sat("main")});`;
+    JSON.stringify(args)};\nreturn io_run(${js_sat("main")}, ${io_status()});`;
   return new Function("require", src)(import.meta.require);
 }
 
@@ -2883,6 +2887,7 @@ export function compile_book(book: Bend.Book): string {
   `#define WL_TABLE ${entries.map((s) => `WL_X(${s.fid})`).join(" ")
     } WL_X(FID_EXIT)`, `#define MAIN_FID ${seg_fid("main")}`,
   `#define MAIN_PURE ${Number(show !== null)}`,
+  `#define MAIN_STATUS ${Number(io_status())}`,
   `#define BLK_SHR ${Number(FL.hot.has("t:Array"))}`);
   const tabs = [defs.join("\n"), ...[...FL.tabs].map(([r, i]) =>
     `CONSTV u64 TAB_${i}[] = { ${r} };`)].join("\n\n");
@@ -3247,7 +3252,7 @@ export function js_book(book: Bend.Book): string {
   const show = show_main();
   return `${lib}\n${RUNTIME_MAIN}\ncli(process.argv.slice(1));\nio_exit(${
     js_sat("main")}, ${JSON.stringify(show && show.map((c) =>
-      typeof c === "string" ? Bend.name_key(c) : c))});`;
+      typeof c === "string" ? Bend.name_key(c) : c))}, ${io_status()});`;
 }
 
 // RuntimeC
@@ -5372,6 +5377,13 @@ typedef Term (*Effect)(Env e, Term* f, IoWork* w);
 Effect io_eff_rows[sizeof CID_T / sizeof *CID_T];
 static u32    io_live;
 
+static int io_code(u32 code) {
+  if (code > 255) {
+    err_fail("exit status must be between 0 and 255");
+  }
+  return code;
+}
+
 static u64 io_tick(void) {
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -5418,6 +5430,9 @@ static IoWork* io_runs;
 static IoWork* io_park;
 static IoWork* io_jobs;
 
+static IoWork* io_root;
+static u32     io_result;
+
 static void io_push(IoWork** q, IoWork* a) {
   IoWork* l = *q != NULL ? *q : a;
   a->next = l->next;
@@ -5440,9 +5455,7 @@ static void io_spawn(Term m) {
   io_live += 1;
 }
 
-// io_park stays in deadline order (time 0, none, sorts last; ties keep
-// their park order), so io_wait wakes due timers in the order they expire.
-// It links both ways, so io_park_cut drops a waiter in O(1).
+// Deadline order: time 0 last, stable ties. Doubly linked for O(1) removal.
 static void io_park_add(IoWork* w) {
   IoWork* p = io_park;
   if (p == NULL || p->time - 1 <= w->time - 1) {
@@ -5882,6 +5895,10 @@ static void io_step(Env e, IoWork* a) {
     Term req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
     u32  c   = (u32)term_aux(req);
     if (c == CID(Emit)) {
+      if (MAIN_STATUS && a == io_root) {
+        io_result = e.mem[term_peek(e.mem, req)];
+        io_root = NULL;
+      }
       term_drop(e, req);
       free(a);
       io_live -= 1;
@@ -5891,8 +5908,9 @@ static void io_step(Env e, IoWork* a) {
     u32  n = cid_arity(c);
     spare_free(e, cls_fit(n), ctr_take(e, req, n, fs));
     if (c == CID(Halt)) {
+      int code = io_code(fs[0]);
       io_errs(e, fs[1]);
-      exit((int)(u32)fs[0]);
+      exit(code);
     }
     if (io_eff_rows[c] == NULL) {
       err_fail("an alien request");
@@ -5921,6 +5939,9 @@ OUTLINE void io_loop(u64* H) {
   return;
 #endif
   io_spawn(m);
+  if (MAIN_STATUS) {
+    io_root = io_runs;
+  }
   u64 look = 0;
   for (u32 n = 0;; n += 1) {
     if (io_runs == NULL) {
@@ -6012,7 +6033,7 @@ int main(int argc, char** argv) {
   }
   io_loop(corpus_setup(why == NULL, thr > 0 ? thr : cpu_count(), mem));
   io_sync();
-  return 0;
+  return MAIN_STATUS ? io_code(io_result) : 0;
 }
 
 #endif
@@ -6154,21 +6175,23 @@ function show_val(D, d, v, chain) {
 // Io
 // ==
 
-// Apple arm64 passes variadic fcntl flags on the stack, so io_sys
-// binds fcntl there with the flags as the ninth fixed argument. A
-// parked effect waits for fd (a write when out) or until at
-// (performance.now()), either one undefined when unused; once due, io_wait
-// calls more at once, as C calls pack, and resumes k with its value, while
-// undefined parks it again. The waits stay in deadline order, as io_park
-// does in C.
+// Apple arm64 fcntl flags are stack argument 9. Deadline-ordered waits accept
+// fd/out or at (performance.now()); more (C: pack) resumes k, undefined re-parks.
 
-function io_exit(main, show) {
+function io_code(code) {
+  if (code < 0 || code > 255) {
+    throw "bend: exit status must be between 0 and 255";
+  }
+  return code;
+}
+
+function io_exit(main, show, status) {
   try {
     if (show !== null) {
       io_out(1, io_bytes(show_val(show, 0, run_loop(main()), 0) + "\n"));
       process.exit(0);
     }
-    process.exit(io_run(main));
+    process.exit(io_run(main, status));
   } catch (e) {
     io_errs(String(e));
     process.exit(1);
@@ -6351,16 +6374,20 @@ function io_park_on(fd, out, k, more, at) {
   ws.splice(i + 1, 0, { fd, out, k, more, at });
 }
 
-function io_run(m) {
+function io_run(m, status) {
   const io = { runs: [], live: 0, waits: [] };
   globalThis.BEND_IO = io;
+  let code = 0;
   try {
-    io_push(run_loop(m()), (x) => ({ $: "Emit", value: x }), true);
+    io_push(run_loop(m()), (x) => {
+      if (status) code = x;
+      return { $: "Emit", value: x };
+    }, true);
     let look = 0;
     for (let n = 0;; n += 1) {
       if (io.runs.length === 0) {
         if (io.live === 0) {
-          return 0;
+          return status ? io_code(code) : 0;
         }
         if (io.waits.length === 0) {
           io_errs("bend: deadlock: every computation waits on a channel");
@@ -6384,8 +6411,9 @@ function io_run(m) {
           break;
         }
         if (op.$ === "Halt") {
+          const halt = io_code(op.code);
           io_errs(op.message);
-          return op.code;
+          return halt;
         }
         const run = $0eff[op.$];
         if (run === undefined) {

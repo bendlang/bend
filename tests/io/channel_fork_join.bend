@@ -1,9 +1,7 @@
 # io (io_channel_fork_join): bend3's channel round trip on bend's
 # surface. A spawned producer sends 11 and 22 into a channel with
 # room for four and closes it; main receives both in order (Some) and
-# prints 1122, then forks a pure value and joins it. main's value is
-# not the exit status: the process exits 0 once every computation
-# has answered.
+# prints 1122, then forks and joins a pure value, returning success.
 import Base
 
 law producer:
@@ -40,7 +38,7 @@ def main.go(c):
     z : Unit <- IO.print(U32.show((got(x) * 100 + got(y) : U32)))
     t : Chan(U32) <- IO.fork(U32, IO.pure(U32, 5))
     w : U32 <- IO.join(U32, t)
-    return w
+    return 0
 
 law main:
   IO(U32)
