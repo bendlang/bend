@@ -12,6 +12,6 @@ def main():
     a : Unit <- IO.join(Unit, t)
     u : Unit <- IO.spawn(Unit, IO.pure(Unit, Unit{}))
     b : Unit <- IO.print("joined")
-    return 9
+    return 0
 
 #|joined
