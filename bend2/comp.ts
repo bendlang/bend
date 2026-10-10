@@ -5480,15 +5480,24 @@ static Term io_wait_on(IoWork* w, int fd, short evts, u64 time, IoPack more) {
   return IO_PARK;
 }
 
+// EPIPE ends the program by SIGPIPE.
+static void io_lost(void) {
+  if (errno == EPIPE) {
+    signal(SIGPIPE, SIG_DFL);
+    raise(SIGPIPE);
+  }
+  err_fail("a short write on a standard stream");
+}
+
 OUTLINE void io_out(FILE* h, const char* data, u64 len) {
   if (fwrite(data, 1, len, h) != len) {
-    err_fail("a short write on a standard stream");
+    io_lost();
   }
 }
 
 OUTLINE void io_sync(void) {
   if (fflush(stdout) != 0) {
-    err_fail("a short write on a standard stream");
+    io_lost();
   }
 }
 
@@ -6184,6 +6193,11 @@ function io_out(fd, data) {
     } catch (e) {
       if (e.code === "EAGAIN" || e.code === "EINTR") {
         continue;
+      }
+      // Bun ignores SIGPIPE until a listener comes and goes.
+      if (e.code === "EPIPE") {
+        process.on("SIGPIPE", () => {}).removeAllListeners("SIGPIPE")
+          .kill(process.pid, "SIGPIPE");
       }
       try {
         fs.writeSync(2, "bend: a short write on a standard stream\n");
