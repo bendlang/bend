@@ -166,6 +166,7 @@ const MARK = ["-", "", "+"];
 // the unit type and value
 const UT: O = { $: "Enu", ks: ["()"] };
 const UV = lab("()");
+const ET: O = { $: "Enu", ks: [] };
 
 // Errors
 // ======
@@ -277,11 +278,12 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): Ou
 // not which arm names which. If G calls a template at one of k's ~
 // parameters (bound in it), the arms name the instances bare; any other
 // reason G cannot go out is k's. Returns the instances' names, and the
-// λ-match's (null without one)
+// λ-match's (null without one). An empty equation column instead emits
+// a checked refutation, without constructing a model for its evidence.
 function root_emit(e: Safe, k: Name): [string[], string | null] {
   const tld = e.book.tlds[k];
   const ns: string[] = [];
-  // k's type G: undefined until a finite parameter, null if it cannot go out
+  // k's type G: undefined until a cover, null if it cannot go out
   let G: O | null | undefined;
   let ps: Binder[] = [];
   // a column's kernel term, made once for every leaf below it
@@ -330,6 +332,22 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
     if (mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
       oos("a specialized parameter whose type names a parameter");
     }
+    if (A.$ === "Eql") {
+      const mark = trail(e);
+      try {
+        const H = term(e, scope_nil(), A, false) as Of<"Eql">;
+        const M = shape_diff(H.a, H.b) ? shape_pattern(H.a, d + 1, UT, ET) : null;
+        if (M !== null) {
+          const P = apps({ $: "Ann", x: M, T: alls([[1, d + 1, H.T]], { $: "Typ", q: lab("Q1") }) }, [[1, vr(d + 1)]]);
+          if (G === undefined) { G = null; }
+          return { $: "Ann", T: alls([[1, d, H]], UT), x: { $: "Lam", q: 1, l: d,
+            f: apps({ $: "Ann", x: { $: "Efq" }, T: alls([[1, d + 1, ET]], UT) }, [[1, { $: "Rwt", e: vr(d), l: d + 1, P, f: UV }]]) } };
+        }
+      } catch (x) {
+        if (!(x instanceof Scope_Error)) { throw x; }
+      }
+      undo(e, mark);
+    }
     // roots share a constant only where they give it the same model
     const f = chosen === null ? null : fit(e, k, chosen[j], F.A);
     const key = String(j) + "\n" + tkey(F.A) + "\n" + (f === null ? "" : tkey(f));
@@ -356,6 +374,26 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
   const n = fresh(e, name_tt(k));
   e.out.push([n, UT, G === null ? v : { $: "Let", q: 0, l: 0, v: G, f: v }, false]);
   return [ns, n];
+}
+
+// Kernel checks Unit at a, Empty at b.
+function shape_diff(a: O, b: O): boolean {
+  while (a.$ === "Ann") { a = a.x; }
+  while (b.$ === "Ann") { b = b.x; }
+  if (a.$ === "Lab" && b.$ === "Lab") { return a.k !== b.k; }
+  return a.$ === "Tup" && b.$ === "Tup"
+    && (shape_diff(a.a, b.a) || shape_diff(a.b, b.b));
+}
+
+function shape_pattern(a: O, l: number, yes: O, no: O): O | null {
+  while (a.$ === "Ann") { a = a.x; }
+  if (a.$ === "Lab") {
+    return { $: "Mat", k: a.k, h: yes, m: { $: "Lam", q: 1, l, f: no } };
+  }
+  if (a.$ !== "Tup" || a.q === 0) { return null; }
+  const r = shape_pattern(a.b, l, yes, no);
+  const h = r && shape_pattern(a.a, l, r, { $: "Lam", q: 1, l, f: no });
+  return h && { $: "Prj", h };
 }
 
 // item_ref, with a failure kept as the item's reason
