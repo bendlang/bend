@@ -335,8 +335,11 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
     if (A.$ === "Eql") {
       const mark = trail(e);
       try {
+        const nf = (t: HTerm): HTerm => (t = wnf(e.book, t)).$ === "Ctr" ? B.Ctr(t.k, t.x.map(nf)) : t;
         const H = term(e, scope_nil(), A, false) as Of<"Eql">;
-        const M = shape_diff(H.a, H.b) ? shape_pattern(H.a, d + 1, UT, ET) : null;
+        const S = { ...scope_nil(), sub: true };
+        const Ha = term(e, S, nf(A.a), false);
+        const M = shape_diff(Ha, term(e, S, nf(A.b), false)) ? shape_pattern(Ha, d + 1, UT, ET) : null;
         if (M !== null) {
           const P = apps({ $: "Ann", x: M, T: alls([[1, d + 1, H.T]], { $: "Typ", q: lab("Q1") }) }, [[1, vr(d + 1)]]);
           if (G === undefined) { G = null; }
@@ -387,12 +390,13 @@ function shape_diff(a: O, b: O): boolean {
 
 function shape_pattern(a: O, l: number, yes: O, no: O): O | null {
   while (a.$ === "Ann") { a = a.x; }
+  const n: O = { $: "Lam", q: 1, l, f: no };
   if (a.$ === "Lab") {
-    return { $: "Mat", k: a.k, h: yes, m: { $: "Lam", q: 1, l, f: no } };
+    return { $: "Mat", k: a.k, h: yes, m: n };
   }
   if (a.$ !== "Tup" || a.q === 0) { return null; }
   const r = shape_pattern(a.b, l, yes, no);
-  const h = r && shape_pattern(a.a, l, r, { $: "Lam", q: 1, l, f: no });
+  const h = r && shape_pattern(a.a, l, r, n);
   return h && { $: "Prj", h };
 }
 
@@ -508,7 +512,7 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const at = (k: string) => apps(ref(k), ps.map(([q, l]) => [q, vr(l)]));
   e.out.push([n, alls(ps, G), lams(e, ps, { $: "Sig", q: 1, l: t, A: Enu, B: apps(at(am), [[1, vr(t)]]) }), false]);
   if (tld.c.length === 0) {
-    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(e, ps, { $: "Prj", h: { $: "Efq" } }), false]);
+    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: ET }), lams(e, ps, { $: "Prj", h: { $: "Efq" } }), false]);
   }
 }
 
