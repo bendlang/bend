@@ -812,8 +812,7 @@ async function cli_login(): Promise<string> {
 // A leading byte order mark is dropped: the hub stores the text as sent,
 // and an importer's fetch drops the mark, so a file sent with one would
 // never match its hash.
-function pkg_files(file: string, book: Bend.Book,
-  seen: Map<string, Bend.FileId | null>): Record<string, string> {
+function pkg_files(file: string, book: Bend.Book, seen: Map<string, Bend.FileId | null>): Record<string, string> {
   const entry = fs.realpathSync(file);
   const dir = path.join(path.dirname(entry), "/");
   if (dir !== path.join(fs.realpathSync(path.dirname(file)), "/")) {
@@ -864,6 +863,7 @@ function pkg_files(file: string, book: Bend.Book,
         "it is the LICENSE beside " + real + "; copy it");
     }
   }
+
   const dirs = new Set(["."]);
   for (const p of Object.keys(files)) {
     for (let dir = path.posix.dirname(p); dir !== "."; dir = path.posix.dirname(dir)) {
@@ -873,6 +873,7 @@ function pkg_files(file: string, book: Bend.Book,
       dirs.add(dir);
     }
   }
+
   const check = (from: string, target: string, use: string): void => {
     const p = path.posix.join(path.posix.dirname(names.get(from)!), use);
     if (path.posix.isAbsolute(use) || names.get(target) !== p) {
@@ -894,6 +895,7 @@ function pkg_files(file: string, book: Bend.Book,
       check(from, book.files.get(scope.al[alias])?.path ?? "", use);
     }
   }
+
   for (const tld of Object.values(book.tlds)) {
     if (tld.$ !== "Def" || !tld.i) continue;
     const from = tld.i.file.path;
@@ -911,6 +913,7 @@ function pkg_files(file: string, book: Bend.Book,
       }
     }
   }
+
   for (const [real, p] of names) if (path.posix.basename(p) === "PROOF.bend") {
     const from = real === entry ? file : real;
     const laws = path.join(path.dirname(from), "LAWS.bend");
@@ -1001,10 +1004,10 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
 // its type, never its code. If the book holds a promise, a walk from the
 // defs outside Base collects who names whom, then each promise floods
 // back along those edges.
-function book_promises(book: Bend.Book): Array<[string, Bend.QualifiedName[]]> {
+function book_promises(book: Bend.Book): Array<[string, Bend.QName[]]> {
   const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
   const keys = Object.keys(book.tlds);
-  const roots: Array<[string, Bend.QualifiedName[]]> = [
+  const roots: Array<[string, Bend.QName[]]> = [
     ["@unsafe", keys.filter((k) => (book.tlds[k] as Bend.Def).u === true)],
     ["foreign effects", keys.filter((k) => {
       const t = book.tlds[k] as Bend.Def;
@@ -1014,12 +1017,13 @@ function book_promises(book: Bend.Book): Array<[string, Bend.QualifiedName[]]> {
   if (roots.every(([, ks]) => ks.length === 0)) {
     return [];
   }
-  const uses: Record<Bend.QualifiedName, Bend.QualifiedName[]> = Object.create(null);
+
+  const uses: Record<Bend.QName, Bend.QName[]> = Object.create(null);
   const reach = new Set(own);
   for (const k of reach) {
     const t = book.tlds[k];
     if (t !== undefined) {
-      const rs = new Set<Bend.QualifiedName>();
+      const rs = new Set<Bend.QName>();
       for (const c of t.$ === "ADT" ? [t, ...t.c] : [t]) {
         term_refs(Bend.term_lower(c.T), rs);
       }
@@ -1032,6 +1036,7 @@ function book_promises(book: Bend.Book): Array<[string, Bend.QualifiedName[]]> {
       }
     }
   }
+
   return roots.flatMap(([on, ks]) => {
     const bad = new Set(ks);
     for (const k of bad) {
@@ -1043,7 +1048,7 @@ function book_promises(book: Bend.Book): Array<[string, Bend.QualifiedName[]]> {
 }
 
 // term_refs adds to out the names a term (a span skipped) refers to.
-function term_refs(t: Bend.LTerm, out: Set<Bend.QualifiedName>): void {
+function term_refs(t: Bend.LTerm, out: Set<Bend.QName>): void {
   const seen = new Set([t]);
   for (const todo = [t]; todo.length > 0;) {
     const x = todo.pop() as Bend.LTerm;
@@ -1119,9 +1124,9 @@ function book_seed(base: Bend.Book): Bend.Book {
   const book = Bend.book_nil();
   for (const [k, t] of Object.entries(base.tlds)) book.tlds[k] = { ...t };
   Object.assign(book.ctrs, base.ctrs);
-  book.base = base.base;
+  book.base  = base.base;
   book.files = new Map(base.files);
-  book.tmps = new Map(base.tmps);
+  book.tmps  = new Map(base.tmps);
   book.order.push(...base.order);
   return book;
 }
