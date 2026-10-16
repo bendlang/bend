@@ -119,7 +119,7 @@ type Safe = {
   book: Book;
   mb: Book;
   out: Array<[QualifiedName, O, O, boolean]>;
-  names: Map<string, QualifiedName>;
+  names: Map<string, { k: QualifiedName; n: QualifiedName }>;
   seen: Set<string>;
   todo: Array<[QualifiedName, Cols]>;
   fail: Map<QualifiedName, string>;
@@ -138,8 +138,8 @@ type Probe = { left: number; depth: number; cut: boolean };
 // Constants
 // =========
 
-const QUANTS = [0, 1, 2].map(i => B.name_internal("Q" + i));
-const UNIT = B.name_internal("unit");
+const QUANTS = ["Q0", "Q1", "Q2"];
+const UNIT = "()";
 
 // a Nat literal longer than this goes out as arithmetic on shorter ones
 const NAT_MAX = 4096;
@@ -233,7 +233,7 @@ function safe_pass(book: Book, groups: Map<QualifiedName, Group>): { text: strin
   for (let it = e.todo.pop(); it !== undefined; it = e.todo.pop()) {
     item_try(e, it[0], it[1]);
   }
-  if (e.grew || groups.size > g0 && [...e.names.values()].some(n => groups.has(B.name_parent(n)!))) {
+  if (e.grew || groups.size > g0 && [...e.names.values()].some(({ k }) => groups.has(k))) {
     return null;
   }
   // a def that names a def out of scope is out too
@@ -303,7 +303,7 @@ function item_try(e: Safe, k: QualifiedName, cols: Cols): QualifiedName {
     if (!(x instanceof Scope_Error)) {
       throw x;
     }
-    return e.names.get(item_key(k, cols))!;
+    return e.names.get(item_key(k, cols))!.n;
   }
 }
 
@@ -322,10 +322,10 @@ function item_key(k: QualifiedName, cols: Cols): string {
 function item_ref(e: Safe, k: QualifiedName, cols: Cols, live: boolean): QualifiedName {
   const key = item_key(k, cols);
   const m = live && !e.seen.has(key) ? trail(e) : null;
-  let n = e.names.get(key);
+  let n = e.names.get(key)?.n;
   if (n === undefined) {
     n = B.name_fresh(k, "tt");
-    e.names.set(key, n);
+    e.names.set(key, { k, n });
     e.todo.push([k, cols]);
   }
   const why = e.fail.get(n);
@@ -1038,7 +1038,7 @@ function args(e: Safe, s: Scope, k: QualifiedName | O, T: HTerm | null, xs: HTer
   // a call that closed a live cycle goes again, through its group
   let n: QualifiedName | null;
   try {
-    const g = typeof k === "string" ? group_of(e, k) : null;
+    const g = typeof k === "string" ? e.groups.get(k) ?? null : null;
     if (g !== null) {
       return group_call(e, s, g, k as QualifiedName, ps, U as HTerm, live);
     }
@@ -1067,11 +1067,6 @@ function args(e: Safe, s: Scope, k: QualifiedName | O, T: HTerm | null, xs: HTer
 // a group: k, its members (k first), and the lead's quantities (k's)
 type Group = { k: QualifiedName; id: QualifiedName; ms: QualifiedName[]; qs: Q[] };
 
-// k's group, once a live cycle through k has gone out
-function group_of(e: Safe, k: QualifiedName): Group | null {
-  return e.groups.get(k) ?? null;
-}
-
 // the live cycle from the item at key to the top of the stack, as a group:
 // a group item on it brings its members, and the lead is the member
 // filled last (the law its helpers call back). A cycle that adds no
@@ -1079,7 +1074,7 @@ function group_of(e: Safe, k: QualifiedName): Group | null {
 // one def. Growing a group stales the pass, which may have sent the group
 // out already
 function regroup(e: Safe, key: string): never {
-  const ns = e.stack.slice(e.stack.indexOf(key)).map((x) => B.name_parent(e.names.get(x)!)!);
+  const ns = e.stack.slice(e.stack.indexOf(key)).map((x) => e.names.get(x)!.k);
   const gs = [...new Set(ns.flatMap((x) => [...e.groups.values()].filter((g) => g.id === x)))];
   const ms = [...new Set(ns.flatMap((x) => gs.find((g) => g.id === x)?.ms ?? [x]))];
   if (ms.length < 2 || gs.length === 1 && ms.length === gs[0].ms.length) {
@@ -1277,7 +1272,14 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
     if (fam.n !== 0) {
       oos("a word literal of a parameterized datatype");
     }
-    return word_ref(e, x.k, f, w);
+    // A word literal is shared as a def of its own.
+    const k = B.name_gen(x.k, "word", w);
+    if (!e.names.has(k)) {
+      e.names.set(k, { k: x.k, n: k });
+      const v = term(e, { ...scope_nil(), sub: true }, B.Ctr(x.k, [B.word_to_term(w, owner)]), true);
+      e.out.push([k, { $: "Ref", k: item_ref(e, f, [], false) }, v, false]);
+    }
+    return { $: "Ref", k };
   }
   const G = T === null || fam.n === 0 ? null : B.term_wnf(e.book, T);
   const ps: HTerm[] = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, () => B.Var("_", -1));
@@ -1295,17 +1297,6 @@ function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm |
   const k = x.k;
   const tail = fs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), { $: "Lab", k: UNIT });
   return { $: "Tup", q: 1, a: { $: "Lab", k }, b: tail };
-}
-
-// a U32 or F32 word, as a def of its own
-function word_ref(e: Safe, T: QualifiedName, fam: QualifiedName, n: number): O {
-  const k = B.name_gen(T, "word", n);
-  if (!e.names.has(k)) {
-    e.names.set(k, k);
-    const v = term(e, { ...scope_nil(), sub: true }, B.Ctr(T, [B.word_to_term(n, B.name_file(T))]), true);
-    e.out.push([k, { $: "Ref", k: item_ref(e, fam, [], false) }, v, false]);
-  }
-  return { $: "Ref", k };
 }
 
 // parallel lets as nested kernel lets; a let of a variable is inlined,
@@ -1464,7 +1455,7 @@ function o_uses(e: Safe, o: O, live: boolean = true, out?: Map<number, number>):
 // ====
 
 function name_tt(k: QualifiedName): string {
-  return k === UNIT ? "()" : QUANTS.includes(k) ? B.name_text(k) : B.name_emit(k);
+  return k === UNIT || QUANTS.includes(k) ? k : B.name_emit(k);
 }
 
 function book_show(e: Safe): string {
