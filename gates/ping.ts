@@ -335,6 +335,13 @@ try {
     + " with no crash banner: " + page.err, page.code === 1
     && page.err.includes("Could not resolve: \"./none.ts\"")
     && page.err.includes("page.ts:1:") && !page.err.includes("Bun v"));
+  const input_page = path.join(TMP, "input.html");
+  const input_html = '<script type="module">console.log(42);</script>\n';
+  fs.writeFileSync(input_page, input_html);
+  const inplace = await bend([input_page, "-o", TMP]);
+  check("a page cannot overwrite its input: " + inplace.err,
+    inplace.code === 1 && inplace.err.includes("would overwrite the input page")
+    && fs.readFileSync(input_page, "utf8") === input_html);
   const bad_file = path.join(TMP, "bad.bend");
   const sum_file = path.join(TMP, "sum.bend");
   const unsafe_file = path.join(TMP, "unsafe.bend");
