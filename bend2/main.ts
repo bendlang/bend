@@ -504,6 +504,9 @@ function is_inline_module(el: HTMLRewriterTypes.Element): boolean {
 // inline plugin moves each to a virtual file beside its page, padded so an
 // error points at the page's own line and column.
 async function cli_bundle(page: string, dir: string): Promise<void> {
+  if (path_real(path.join(dir, path.basename(page))) === path_real(page)) {
+    cli_fail("-o " + dir + " would overwrite the input page");
+  }
   const code = new Map<string, string>();
   const inline: BunPlugin = {
     name: "bend inline",
