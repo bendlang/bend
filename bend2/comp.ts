@@ -1171,6 +1171,7 @@ function file_new(book: Bend.Book, js: boolean) {
     facts: new Set<string>(),
     heat: new Set<string>(),
     when: new Map<string, (() => void)[]>(),
+    stale: new Set<Unit>(),
     units: new Map<string, Unit>(),
     unit: null as Unit | null,
     tabs: new Map<string, number>(),
@@ -1264,7 +1265,10 @@ function file_book(roots: Name[]): void {
 }
 
 function fact(kind: string, k = ""): boolean {
-  return FL.facts.has(kind + " " + k);
+  const key = kind + " " + k;
+  const u = FL.unit;
+  u && memo(FL.when, key, () => []).push(() => FL.stale.add(u));
+  return FL.facts.has(key);
 }
 
 function fact_add(kind: string, k = ""): boolean {
@@ -1406,6 +1410,7 @@ function seg_text(lines: string[], tab: number): string[] {
 
 function seg_ref(sc: Scope, fid: string): string {
   sc.seg.refs.add(fid);
+  fact_add("ref", fid);
   return fid;
 }
 
@@ -1710,6 +1715,7 @@ function unit_new(name: string, emit: () => void): Unit {
   // unit_emit fills the rest
   const u = { name, emit } as Unit;
   FL.units.set(name, u);
+  FL.stale.add(u);
   return u;
 }
 
@@ -2713,7 +2719,11 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 function c_units(): Unit[] {
   for (const [k, tld] of [...done_defs().reverse(),
     ...done_defs(def_foreign)]) {
-    unit_new(k, () => {
+    if (k === "main" || FL.bangs.has(k) || FL.fids.has(k)
+      || !flat_of(k) && FL.sites.get(k) !== 1) {
+      fact_add("ref", seg_fid(k));
+    }
+    fact_when("ref", seg_fid(k), () => unit_new(k, () => {
       const [dl, vals] = emit_open(k);
       FL.unit!.segs.push(dl.seg);
       if (def_foreign(tld)) {
@@ -2721,12 +2731,10 @@ function c_units(): Unit[] {
       } else {
         emit_body(dl, fun_of(k).h!, tld.T, vals, null);
       }
-    });
+    }));
   }
-  let was;
-  do {
-    was = FL.facts.size;
-    FL.units.forEach(unit_emit);
+  while (FL.stale.size > 0) {
+    FL.units.forEach((u) => FL.stale.delete(u) && unit_emit(u));
     const us = [...FL.units.values()];
     const lent = graph_close(new Set(us.flatMap((u) => [...u.lent])),
       us.flatMap((u) => u.lends.map(([at, r]) => [r, at])));
@@ -2734,7 +2742,7 @@ function c_units(): Unit[] {
       brw_of(k).forEach((b, i) => b && !lent.has(arg_key(k, i))
         && fact_add("own", arg_key(k, i)));
     }
-  } while (was !== FL.facts.size);
+  }
   return [...FL.units.values()];
 }
 
