@@ -92,7 +92,9 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
 // CLO_APPLY and IO_EMIT are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
-// is a device call (DFAR); a node past WIDE pads to its size class.
+// is a device call (DFAR), and a host call too if it loops over F32 (FAR):
+// inlined, clang's SLP vectorizer packs its state as the caller suits, not
+// the loop. A node past WIDE pads to its size class.
 
 const CLO_APPLY = "Clo~apply";
 
@@ -2328,8 +2330,9 @@ function emit_native(sc: Scope, k: Name): string {
     const far = body.join("\n").length + 1 >= SPIN_FAR;
     const ps = seg.ks.map((kd, i) => `, ${lay_c(kd)} r${i}`
       + (arr_q(kd) ? `, u64 q${i}` : "")).join("");
-    const head = `${far ? "DFAR" : "INLINE"} Term ${name}(Env e, THR Term* o${
-      ps})`;
+    const q = !far ? "INLINE" : seg.spin && fun_of(k).live.some(([, , A]) =>
+      ty_adt(A)?.k === "F32") ? "FAR" : "DFAR";
+    const head = `${q} Term ${name}(Env e, THR Term* o${ps})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
   }));
   return seg_ref(sc, name);
