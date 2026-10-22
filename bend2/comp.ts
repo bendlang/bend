@@ -92,9 +92,9 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
 // CLO_APPLY and IO_EMIT are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
-// is a device call (DFAR), and a host call too if it loops over F32 (FAR):
-// inlined, clang's SLP vectorizer packs its state as the caller suits, not
-// the loop. A node past WIDE pads to its size class.
+// is a device call (DFAR), and a host call too if it loops over F32 (to
+// prevent SLP vectorizer misjudgement); a node past WIDE pads to its size
+// class.
 
 const CLO_APPLY = "Clo~apply";
 
