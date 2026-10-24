@@ -652,7 +652,7 @@ async function cli_publish(file: string, named?: string): Promise<void> {
   const book = await book_read(file, undefined, seen);
   const files = pkg_files(file, book, seen);
   const entry = Object.keys(files)[0];
-  const name  = path.basename(entry, ".bend");
+  const name  = path.basename(entry, ".bend").replaceAll("-", "_");
   if (name === "") {
     cli_fail("a published file needs a name before .bend");
   }
