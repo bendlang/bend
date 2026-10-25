@@ -40,10 +40,44 @@ function chan_wake(row, x) {
   return w.item;
 }
 
+// The buffer is a ring: head is the oldest value and size how many there
+// are, so neither a push nor a pull moves a value (Array.shift moved every
+// one of them, which cost n^2 to drain n values on V8). The live values sit
+// at [head, head+size): a push appends to that end and a pull advances head.
+// A small wasted prefix is left alone; once it outgrows the live values the
+// ring moves them to the front and gives the tail back, so the slots stay
+// near the room rather than at the highest index ever written.
+function chan_push(row, value) {
+  row.ring[row.head + row.size] = value;
+  row.size += 1;
+}
+
+function chan_pull(row) {
+  const v = row.ring[row.head];
+  row.ring[row.head] = undefined;
+  row.size -= 1;
+  if (row.size === 0) {
+    // Empty: start over from the front. The slots stay, so a channel used
+    // one value at a time does not reallocate for every receive.
+    row.head = 0;
+  } else {
+    row.head += 1;
+    if (row.head > row.size + 64) {
+      // The front has left the live values far behind, so move them to the
+      // front once and give the tail back: head had to grow by size+64
+      // receives since the last move, so a receive moves at most one value.
+      row.ring.copyWithin(0, row.head, row.head + row.size);
+      row.ring.length = row.size;
+      row.head = 0;
+    }
+  }
+  return v;
+}
+
 function chan_take(row) {
-  const v = row.ring.shift();
+  const v = chan_pull(row);
   if (chan_head(row) !== undefined) {
-    row.ring.push(chan_wake(row, chan_done()));
+    chan_push(row, chan_wake(row, chan_done()));
   }
   return v;
 }
@@ -85,8 +119,8 @@ function chan_put(row, value) {
     chan_wake(row, { $: CID(Some), value: value });
     return chan_done();
   }
-  if (row.ring.length < row.room) {
-    row.ring.push(value);
+  if (row.size < row.room) {
+    chan_push(row, value);
     return chan_done();
   }
   return undefined;
@@ -94,7 +128,7 @@ function chan_put(row, value) {
 
 // Receives without waiting: Some{v}, None{} at the end, undefined if not.
 function chan_get(row) {
-  if (row.ring.length > 0) {
+  if (row.size > 0) {
     return { $: CID(Some), value: chan_take(row) };
   }
   const w = chan_head(row);
@@ -119,7 +153,8 @@ function chan_try(row, x, item, ms, k) {
 }
 
 function chan_new(room) {
-  return { room: Number(room), ring: [], wait: [], shut: false };
+  return { room: Number(room), ring: [], head: 0, size: 0,
+    wait: [], shut: false };
 }
 
 function chan_send(row, value, k) {
