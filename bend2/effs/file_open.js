@@ -9,7 +9,7 @@ function file_open_with(name, mode) {
   if (name.includes(0)) {
     return io_fail(process.platform === "darwin" ? 92 : 84);
   }
-  if (!["r", "w", "a", "x"].includes(mode)) {
+  if (!["r", "r+", "w", "a", "x"].includes(mode)) {
     return io_fail(22);
   }
   try {

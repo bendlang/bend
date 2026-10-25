@@ -301,6 +301,8 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
 
+# Modes: "r" reads, "r+" reads and writes without creating or truncating,
+# "w" creates or truncates, "a" appends or creates, "x" creates exclusively.
 def File.open(path: String, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):
   import "./effs/file_open.c"
@@ -309,6 +311,7 @@ def File.open(path: String, mode: String) ->
 # The path as its bytes (0..255), with no UTF-8 encoding, so a name that
 # isn't UTF-8, as IO.args_bytes gives it, opens. A value past 255 fails
 # with EINVAL, and a 0 with EILSEQ, as a NUL in File.open's path does.
+# Modes are the same as File.open's.
 def File.open_bytes(path: List<&2, U32>, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):
   import "./effs/file_open.c"
