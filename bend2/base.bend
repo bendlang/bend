@@ -1491,6 +1491,33 @@ def U32.mul(a: U32, b: U32) -> U32:
     case U32{x} U32{y}:
       U32{Word.mul(32n, x, y)}
 
+# The high 32 bits of the 64-bit product: what U32.mul drops. Compiled to one
+# widening multiply; this definition is what the checker and proofs see.
+def U32.mul_hi(a: U32, b: U32) -> U32:
+  U32.from_nat(Nat.div(Nat.mul(U32.to_nat(a), U32.to_nat(b)), Nat.mul(65536n, 65536n)))
+
+# The carry out of a + b (0 or 1): the bit U32.add drops. Compiled to one widening
+# add; this definition is what the checker and proofs see.
+def U32.add_hi(a: U32, b: U32) -> U32:
+  U32.from_nat(Nat.div(Nat.add(U32.to_nat(a), U32.to_nat(b)), Nat.mul(65536n, 65536n)))
+
+# The high 32 bits of a * b + c + d (the sum always fits in 64 bits): one
+# multiply-accumulate step of multi-limb arithmetic. The low half is
+# (a * b + c + d : U32).
+def U32.mac_hi(a: U32, b: U32, c: U32, d: U32) -> U32:
+  U32.from_nat(Nat.div(Nat.add(Nat.add(Nat.mul(U32.to_nat(a), U32.to_nat(b)), U32.to_nat(c)), U32.to_nat(d)), Nat.mul(65536n, 65536n)))
+
+# The 64-bit value hi * 2^32 + lo (a helper for U32.mac64's definition).
+def U32.mac64.word(lo: U32, hi: U32) -> Nat:
+  Nat.add(U32.to_nat(lo), Nat.mul(U32.to_nat(hi), Nat.mul(65536n, 65536n)))
+
+# Word k (0..3, little-endian) of the 128-bit a * b + c + d, where a, b, c, d are
+# 64-bit values given as (lo, hi) U32 halves: one 64x64-bit multiply-accumulate,
+# the step of 64-bit-limb multi-precision arithmetic. Compiled to one widening
+# multiply; the four words of the same operands share it after inlining.
+def U32.mac64(k: U32, al: U32, ah: U32, bl: U32, bh: U32, cl: U32, ch: U32, dl: U32, dh: U32) -> U32:
+  U32.from_nat(Nat.div(Nat.add(Nat.add(Nat.mul(U32.mac64.word(al, ah), U32.mac64.word(bl, bh)), U32.mac64.word(cl, ch)), U32.mac64.word(dl, dh)), Nat.pow(2n, Nat.mul(32n, U32.to_nat(k)))))
+
 def U32.not(a: U32) -> U32:
   match a:
     case U32{x}:

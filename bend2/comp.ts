@@ -141,6 +141,11 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
   ...tpl_ops("u32_", CMPS, "U32_BIN($0, $o, $1)", "($0 $o $1)"),
   u32_mul: { C: "U32_BIN($0, *, $1)", JS: "(Math.imul($0, $1) >>> 0)" },
+  ...Object.fromEntries("mul_hi:2 add_hi:2 mac_hi:4 mac64:9".split(" ").map((p) => {
+    const [k, n] = p.split(":");
+    const f = `u32_${k}(${[...Array(+n).keys()].map((i) => "$" + i)})`;
+    return ["u32_" + k, { C: f, JS: f }];
+  })),
   // C only: a JS file runs Base's U32.pow, U32.log2, Map.msb.u and Map.bit,
   // as intr_of skips an op with no JS
   u32_pow: { C: "u32_pow($0, $1)" },
@@ -313,6 +318,34 @@ ${SHIMS}
 
 #define U32_BIN(a, o, b) ((u64)((u32)(a) o (u32)(b)))
 
+// The wide ops: the high half of a * b, a + b and a * b + c + d, and word k
+// of the 128-bit a * b + c + d over 64-bit (lo, hi) halves, whose four words
+// share one multiply once inlined.
+#define U32_W64(lo, hi) ((u64)(u32)(lo) | (u64)(u32)(hi) << 32)
+#define u32_mul_hi(a, b) ((u64)(u32)(a) * (u32)(b) >> 32)
+#define u32_add_hi(a, b) ((u64)(u32)(a) + (u32)(b) >> 32)
+#define u32_mac_hi(a, b, c, d) \
+  (((u64)(u32)(a) * (u32)(b) + (u32)(c) + (u32)(d)) >> 32)
+
+INLINE u64 u32_mac64(u32 k, u32 al, u32 ah, u32 bl, u32 bh, u32 cl, u32 ch,
+  u32 dl, u32 dh) {
+  u64 a = U32_W64(al, ah), b = U32_W64(bl, bh);
+  u64 c = U32_W64(cl, ch), d = U32_W64(dl, dh);
+#if defined(__METAL_VERSION__)
+  u64 lo = a * b, hi = mulhi(a, b);
+#elif defined(__CUDACC_RTC__)
+  u64 lo = a * b, hi = __umul64hi(a, b);
+#else
+  unsigned __int128 p = (unsigned __int128)a * b;
+  u64 lo = (u64)p, hi = (u64)(p >> 64);
+#endif
+  lo += c;
+  hi += lo < c;
+  lo += d;
+  hi += lo < d;
+  return (u32)(k == 0 ? lo : k == 1 ? lo >> 32 : k == 2 ? hi : hi >> 32);
+}
+
 INLINE u64 u32_pow(u32 a, u64 n) {
   u32 r = 1;
   for (; n; n >>= 1, a *= a) {
@@ -437,6 +470,15 @@ function u32_to_word(x) {
   }
   return w;
 }
+
+// The wide ops, exactly, with BigInt: word k of x; x from (lo, hi) halves.
+const u32_w64 = (lo, hi = 0) => BigInt(hi >>> 0) << 32n | BigInt(lo >>> 0);
+const u32_word = (k, x) => Number(x >> BigInt(32 * k) & 0xffffffffn);
+const u32_mul_hi = (a, b) => u32_word(1, u32_w64(a) * u32_w64(b));
+const u32_add_hi = (a, b) => u32_word(1, u32_w64(a) + u32_w64(b));
+const u32_mac_hi = (a, b, c, d) => u32_mac64(1, a, 0, b, 0, c, 0, d, 0);
+const u32_mac64 = (k, al, ah, bl, bh, cl, ch, dl, dh) => u32_word(k,
+  u32_w64(al, ah) * u32_w64(bl, bh) + u32_w64(cl, ch) + u32_w64(dl, dh));
 
 function cmp_new(a, b) {
   return {$: a < b ? "LT" : a === b ? "EQ" : "GT"};
