@@ -207,13 +207,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 // on its own before the member's group was found
 function safe_pass(book: Book, groups: Map<Name, Group>): { text: string; oos: Array<[Name, string]> } | null {
   const g0 = groups.size;
-  // Copy model bodies and constructor telescopes together to preserve their sharing.
-  const copy = B.term_copy(v => v);
-  const mb: Book = { ...book, tlds: Object.create(null), ctrs: Object.create(null) };
-  for (const [k, t] of Object.entries(book.tlds)) {
-    mb.tlds[k] = t.$ === "Def" ? { ...t, v: t.v === null ? null : copy(t.v) }
-      : { ...t, c: t.c.map(c => mb.ctrs[c.k] = { ...c, T: copy(c.T) }) };
-  }
+  const mb: Book = { ...book, tlds: Object.create(book.tlds) };
   const e: Safe = {
     book, mb,
     out: [], names: new Map(), seen: new Set(), todo: [], fail: new Map(), log: [],
@@ -443,7 +437,7 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: Name): void {
 function def_emit(e: Safe, k: Name, cols: Cols, n: Name, tld: Def): void {
   const T = B.tele_fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[], B.ctx_nil());
   const m = e.mb.tlds[k] as Def;
-  const t = tld.e !== undefined ? null : m.e !== undefined ? B.term_higher(m.e) : m.v ?? model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_display(e.book, k));
+  const t = tld.e !== undefined ? null : m.e !== undefined ? B.term_copy(v => v)(B.term_higher(m.e)) : m.v ?? model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_display(e.book, k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -542,8 +536,8 @@ function model(e: Safe, T: HTerm): HTerm | null {
 function inst_pick(e: Safe, k: Name): HTerm[] | null {
   instances: for (const n of e.book.tmps.values()) {
     if (B.name_parent(n) !== k) continue;
-    const xs = (e.book.tlds[n] as Def).model_args!.map(x => B.term_higher(x));
-    let T = B.term_copy(v => v)(e.book.tlds[k].T);
+    const xs = (e.book.tlds[n] as Def).model_args!;
+    let T = e.book.tlds[k].T;
     for (const x of xs) {
       const F = B.term_wnf(e.mb, T);
       if (F.$ !== "All" || fit(e, k, x, F.A) === null) continue instances;
@@ -1323,8 +1317,7 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: Name): void {
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
   const ps = tld.x === 0 ? null : new Map(cols.slice(0, tld.x).map((v, j) => [B.name_gen(k, "param", j), v]));
-  const t0 = B.term_higher(tld.e as B.LTerm);
-  let t = ps === null ? t0 : B.term_copy(x => x, 0, ps)(t0);
+  let t = B.term_copy(x => x, 0, ps ?? undefined)(B.term_higher(tld.e as B.LTerm));
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
