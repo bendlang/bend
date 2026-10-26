@@ -1,9 +1,9 @@
-# io (io_file_open_mode): File.open speaks "r", "r+", "w", "a" and "x" in
-# every backend; any other mode answers Fail(EINVAL). The JS kit
-# once took fs.openSync's wider vocabulary; "w+" and Node's own "wx"
-# stay refused. "x" creates a new path and refuses one that exists,
-# leaving its bytes alone. Bend
-# has no unlink, so the "x" path is random.
+# io (io_file_open_mode): File.open speaks "r", "r+", "w", "a" and "x"
+# in every backend; any other mode answers Fail(EINVAL). The JS kit
+# once took fs.openSync's wider vocabulary, so "w+" opened where C
+# refused it; it and Node's own "wx" stay refused. "x" creates a new
+# path and refuses one that exists, leaving its bytes alone. Bend has
+# no unlink, so the "x" path is random.
 import Base
 
 law answer:

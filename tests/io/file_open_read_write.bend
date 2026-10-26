@@ -1,5 +1,6 @@
-# r+ reads and writes an existing file without truncation or append, through
-# both String and byte paths. A missing file must fail without creating it.
+# io (io_file_open_read_write): "r+" reads and writes an existing file
+# in place, with no truncation or append, through both File.open and
+# File.open_bytes. A missing file fails with ENOENT and is not created.
 import Base
 
 def written(pair: File & Result<&1, &1, U32 & String, Unit>) -> IO(File):
