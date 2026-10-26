@@ -3849,10 +3849,10 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // Heap
 // ====
 
-// Lanes keep a free chain and word count per class. Full host chains
-// replace COLD and bank old COLD. Host blocks >= CAP_WORDS go straight to the
-// bank. A miss takes COLD, the bank or fresh memory. Device lanes bank
-// chains at dev_cut.
+// Lanes keep a free chain and word count per class. Host chains reaching
+// KEEP_WORDS replace COLD and bank old COLD; blocks >= CAP_WORDS >=
+// KEEP_WORDS go straight to the bank. A miss takes COLD, the bank or fresh
+// memory. Devices bank at dev_cut.
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))

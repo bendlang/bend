@@ -40,6 +40,7 @@ static void reuse_small(Env e, u32 cls) {
   Env a = {e.mem, rows[0]}, b = {e.mem, rows[1]};
   u64 blocks[4];
   u32 keep = KEEP(cls);
+  reuse_need(2 * keep <= 4, "a small generation outgrew the check");
   for (u32 i = 0; i < 2 * keep; i += 1) blocks[i] = heap_alloc(a, cls);
   u32 bank = bank_at(e.mem, cls)->rd;
   for (u32 i = 0; i < keep; i += 1) {
