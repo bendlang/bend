@@ -2647,7 +2647,8 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_put(sc, dst, v);
       }
       const { h, ret } = fun_of(ck.k);
-      const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld);
+      const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld)
+        && (ret !== BOX || sc.seg.ret === BOX);
       if (sc.seg.def !== ck.k && (flat_call(x) || (dst === null && once))) {
         return flat_of(ck.k) ? emit_put(sc, dst, emit_spin(sc, ck, true))
           : emit_body({ ...sc, def: ck.k }, h!, ck.tld!.T,
