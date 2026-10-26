@@ -15,13 +15,28 @@ function chan_wait(item) {
   return { $: CID(Wait), rest: item === CHAN_RECV ? { $: CID(Unit) } : item };
 }
 
+// The waiters are wait[seen..]: like the ring below, Array.shift would drain
+// n of them in n^2 on V8.
+function chan_drop(row) {
+  // Not only for the GC: chan_park's late finds w by indexOf, and must miss
+  // a woken w rather than splice a live waiter out.
+  row.wait[row.seen] = undefined;
+  row.seen += 1;
+  if (row.seen > row.wait.length - row.seen + 64) {
+    // Compacts after live+64 drops, so a drop moves O(1) waiters.
+    row.wait.copyWithin(0, row.seen);
+    row.wait.length -= row.seen;
+    row.seen = 0;
+  }
+}
+
 // The first waiter, past those whose IO has returned (a nested io_run): their
 // computations are gone with it, so the row drops them and their items.
 function chan_head(row) {
-  while (row.wait.length > 0 && row.wait[0].io.done) {
-    row.wait.shift();
+  while (row.seen < row.wait.length && row.wait[row.seen].io.done) {
+    chan_drop(row);
   }
-  return row.wait[0];
+  return row.wait[row.seen];
 }
 
 // Wakes the first live waiter with x, as Ready{x} if try_ (cutting its timer,
@@ -29,7 +44,7 @@ function chan_head(row) {
 // io_run may wake an outer one.
 function chan_wake(row, x) {
   const w = chan_head(row);
-  row.wait.shift();
+  chan_drop(row);
   if (w.late !== undefined) {
     const ws = w.io.waits;
     const at = ws.findIndex((t) => t.more === w.late);
@@ -76,7 +91,7 @@ function chan_take(row) {
 function chan_shut(row) {
   row.shut = true;
   while (chan_head(row) !== undefined) {
-    const item = row.wait[0].item;
+    const item = row.wait[row.seen].item;
     chan_wake(row, item === CHAN_RECV ? { $: CID(None) }
       : { $: CID(Fail), error: item });
   }
@@ -144,7 +159,7 @@ function chan_try(row, x, item, ms, k) {
 
 function chan_new(room) {
   return { room: Number(room), ring: [], head: 0, size: 0,
-    wait: [], shut: false };
+    wait: [], seen: 0, shut: false };
 }
 
 function chan_send(row, value, k) {
