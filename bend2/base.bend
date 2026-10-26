@@ -134,12 +134,12 @@ type Event is Data:
 # What Gesture.step reads in the pointers' main buttons: a Tap (a press let
 # go in place before it holds, where it went up; count is how many in a
 # row, each within 300 ms and 16 pixels of the last), a LongPress (a press
-# kept in place for 500 ms), a Drag (one pointer pressed, past 8 pixels from
-# where it went down or was left alone: by dx, dy since its last Move; then
-# one DragEnd, lost if its pointer was or another went down), and a Pan and
-# a Pinch (fingers pointers pressed, moving: their center (x, y), its
-# motion and their spread's scale and turn about it since the last; or a
-# trackpad's Swipe and Zoom).
+# kept in place for 500 ms, where it is), a Drag (one pointer pressed, past
+# 8 pixels from where it went down or was left alone: by dx, dy since its
+# last Move; then one DragEnd, lost if its pointer was or another went
+# down), and a Pan and a Pinch (fingers pointers pressed, moving: their
+# center (x, y), its motion and their spread's scale and turn about it
+# since the last; or a trackpad's Swipe and Zoom).
 type Gesture is Data:
   Tap{x: F32, y: F32, count: U32}
   LongPress{x: F32, y: F32}
@@ -3513,7 +3513,7 @@ def Gesture.end(
       (Bool.pick(Gesture.State, tapped, Gesture.State{left, x, y, time, c},
         Gesture.State{left, lx, ly, lt, n}),
         Bool.pick(List<&2, Gesture>, tapped, [Tap{x, y, c}],
-          Bool.pick(List<&2, Gesture>, up, [LongPress{x0, y0}],
+          Bool.pick(List<&2, Gesture>, up, [LongPress{x, y}],
             Bool.pick(List<&2, Gesture>, drag,
               [DragEnd{id, x, y, Bool.not(go)}], []))))
 
@@ -3553,9 +3553,9 @@ def Gesture.holds(ts: List<&2, Gesture.Pointer>, +now: Nat) ->
   match ts:
     case Nil{}:
       ([], [])
-    case Gesture.Pointer{id, +x0, +y0, +t0, at, x, y, +tap, drag} <> rest:
+    case Gesture.Pointer{id, x0, y0, +t0, at, +x, +y, +tap, drag} <> rest:
       +due = tap && Nat.is_ge(Nat.sub(now, t0), 500n)
-      Gesture.put(due, LongPress{x0, y0}, Gesture.Pointer{id, x0, y0, t0, at,
+      Gesture.put(due, LongPress{x, y}, Gesture.Pointer{id, x0, y0, t0, at,
         x, y, tap && Bool.not(due), drag}, Gesture.holds(rest, now))
 
 def Gesture.step.cat(

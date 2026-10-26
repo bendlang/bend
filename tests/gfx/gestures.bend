@@ -1,6 +1,7 @@
 # gfx (gfx_gestures): Gesture.step reads scripted frames (a time and its
 # events): a tap, a second tap near and soon after it, a press held past
-# 500 ms (no tap when let go), a drag past its 8 pixel slop (dropped, and
+# 500 ms drifting 5 pixels (a LongPress where it is, no tap when let go), a
+# drag past its 8 pixel slop (dropped, and
 # another lost), two fingers
 # pinched out to twice their distance then turned a quarter clockwise, a
 # press lost (no tap), a trackpad's Zoom and Swipe, three fingers spread,
@@ -73,7 +74,7 @@ def main() -> IO(Unit):
   play([(1000n, [down(0, 10.0, 10.0, 1000)]),
     (1100n, [up(0, 10.0, 10.0, 1100)]),
     (1200n, [down(0, 12.0, 11.0, 1200), up(0, 12.0, 11.0, 1200)]),
-    (2000n, [down(0, 40.0, 40.0, 2000)]), (2600n, []),
+    (2000n, [down(0, 40.0, 40.0, 2000)]), (2600n, [go(0, 43.0, 44.0, 2600)]),
     (2700n, [up(0, 40.0, 40.0, 2700)]),
     (3000n, [down(0, 50.0, 50.0, 3000), go(0, 52.0, 50.0, 3000),
       go(0, 70.0, 50.0, 3000)]),
@@ -109,7 +110,7 @@ def main() -> IO(Unit):
 
 #|tap 10 10 1
 #|tap 12 11 2
-#|long 40 40
+#|long 43 44
 #|drag 0 70 50 18 0
 #|drag 0 80 55 10 5
 #|dragend 0 80 55 False
