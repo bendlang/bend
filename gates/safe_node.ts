@@ -16,15 +16,19 @@ export type Got = {
   diagnostic?: string; diagnostic_error?: string; diagnostic_ms?: number;
 };
 
+// a report row's reason: one line, at most 300 chars
+export function one_line(s: string): string {
+  return s.replace(/\s+/g, " ").slice(0, 300);
+}
+
 // Classification consumes explicit process outcomes, never elapsed diagnostics.
 export function judge(g: Got): [string, string] {
   const out = g.out.trim();
   if (g.timeout) {
-    const why = g.error?.replace(/\s+/g, " ").slice(0, 300);
-    return ["t", why ? "timeout; " + why : "timeout"];
+    return ["t", g.error ? "timeout; " + one_line(g.error) : "timeout"];
   }
   if (g.error || g.code === null || g.code < 0) {
-    const why = (g.error ?? out).replace(/\s+/g, " ").slice(0, 300);
+    const why = one_line(g.error ?? out);
     return ["e", "infrastructure: " + why];
   }
   if (g.code === 0 && out === "ALL PROOFS CHECK") {
@@ -52,7 +56,9 @@ export function judge(g: Got): [string, string] {
 // own group (detached), which the kernel joins; one kill(-pid) reaches
 // all of it at once, and no pid is reused while its group has a member.
 // live maps a group to the check that leads it, from its spawn to its
-// close, so a group a check left is never signalled under its pid
+// close, so a group a check left is never signalled under its pid. If
+// the group kill fails but the group exists (ESRCH says it is empty),
+// bend2 alone is killed, as before
 const live = new Map<number, child.ChildProcess>();
 
 function kill_group(kid: child.ChildProcess): boolean {
@@ -62,8 +68,8 @@ function kill_group(kid: child.ChildProcess): boolean {
   try {
     process.kill(-kid.pid, "SIGKILL");
     return true;
-  } catch {
-    return false;
+  } catch (e) {
+    return (e as NodeJS.ErrnoException).code !== "ESRCH" && kid.kill("SIGKILL");
   }
 }
 
@@ -150,7 +156,7 @@ async function one(f: string, cap: number): Promise<Got> {
 if (import.meta.main) {
   // a check's group is not the runner's, so a ^C or a kill that ends the
   // runner ends every live check first
-  for (const sig of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
+  for (const sig of ["SIGINT", "SIGTERM", "SIGHUP", "SIGQUIT"] as const) {
     process.once(sig, () => {
       for (const kid of live.values()) {
         kill_group(kid);
