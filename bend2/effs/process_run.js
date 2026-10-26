@@ -2,12 +2,10 @@
 // =======
 
 const PROCESS_WORKER = `
-// Eval workers may inherit module mode; create a local require in either mode.
-import("node:module").then(({ createRequire }) => {
-const require = createRequire(process.execPath);
-const { errno, signals } = require("node:os").constants;
-const { parentPort } = require("node:worker_threads");
-const { spawn } = require("node:child_process");
+// Eval workers may inherit module mode, where require is undefined.
+const { errno, signals } = process.getBuiltinModule("node:os").constants;
+const { parentPort } = process.getBuiltinModule("node:worker_threads");
+const { spawn } = process.getBuiltinModule("node:child_process");
 let port;
 let flag;
 
@@ -77,7 +75,6 @@ function run({ argv, input, env, max, ms }) {
     stdin.end(input);
   });
 }
-});
 `;
 
 let process_worker = null;

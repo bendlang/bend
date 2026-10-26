@@ -42,6 +42,7 @@ child.spawn = function (...args) {
       encoding: "utf8",
       env: { ...process.env, HOME: dir, BEND_ORIGIN: "http://127.0.0.1:9" },
     };
+    delete options.env.NODE_OPTIONS;
     const built = child.spawnSync(command,
       [...prefix, input, "-o", output], options);
     if (built.status !== 0) {
