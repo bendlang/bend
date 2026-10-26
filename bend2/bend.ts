@@ -3153,14 +3153,27 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
           && compare_go(mode, book, b.A, a.A, dep)
           && compare_go(mode, book, a.B(x), b.B(x), dep + 1);
     }
-    // a stuck call is canonical: its head def compares by name, not by eta
+    // a stuck call is canonical: its head def compares by name, not by
+    // eta. Calls of two defs on as many arguments compare by each body
+    // once on its arguments, every def rigid: a call inside stays a call
     case "App": {
       if (b.$ !== "App") {
         return false;
       }
       const head = a.f.$ === "Ref" && b.f.$ === "Ref" ? a.f.k === b.f.k
         : compare_go("EQ", book, a.f, b.f, dep);
-      return head && compare_go("EQ", book, a.x, b.x, dep);
+      if (head) {
+        return compare_go("EQ", book, a.x, b.x, dep);
+      }
+      const [f, xs] = term_unapply(a);
+      const [g, ys] = term_unapply(b);
+      const F = f.$ === "Ref" ? book.tlds[f.k] : undefined;
+      const G = g.$ === "Ref" ? book.tlds[g.k] : undefined;
+      if (F?.$ !== "Def" || G?.$ !== "Def" || F.v === null || G.v === null || xs.length !== ys.length) {
+        return false;
+      }
+      const on = (v: HTerm, zs: HTerm[]): HTerm => zs.reduce((t, z) => term_apply(t, z), v);
+      return compare_go("EQ", RIGID, on(F.v, xs), on(G.v, ys), dep);
     }
     case "ADT": {
       if (b.$ !== "ADT" || a.k !== b.k || a.x.length !== b.x.length) {

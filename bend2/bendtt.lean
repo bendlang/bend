@@ -976,23 +976,40 @@ def Term.parts : Term → Term → Option (List (Term × Term))
   | Rwt e P f, Rwt d Q g => some [(e, d), (P, Q), (f, g)]
   | a,         b         => if a = b then some [] else none
 
+-- two calls of distinct defs on as many arguments, as each def's body
+-- on its arguments
+def Term.unfold (ck : Book) (a b : Term) : Option (Term × Term) :=
+  match Term.unspine a [], Term.unspine b [] with
+  | (Ref f, xs), (Ref g, ys) =>
+    match ck.get f, ck.get g with
+    | some ⟨_, _, u, false⟩, some ⟨_, _, v, false⟩ =>
+      if f ≠ g ∧ xs.length = ys.length then some (Term.spine u xs, Term.spine v ys) else none
+    | _, _ => none
+  | _, _ => none
+
 -- a and b convert, lazily: they are equal, or their weak heads match
--- and each pair of parts converts, in turn. Returns the fuel left:
--- 0 when it ran out. A binder's parts may be open.
-def Term.conv (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
-  | 0, _, _ => (false, 0)
-  | n + 1, a, b =>
+-- and each pair of parts converts, in turn, or they are calls of two
+-- defs whose bodies convert, unfolded once with no def unfolding within
+-- (the empty book): a call inside either body stays a call. Returns the
+-- fuel left: 0 when it ran out. A binder's parts may be open.
+def Term.conv : Book → Bool → Nat → Term → Term → Bool × Nat
+  | _, _, 0, _, _ => (false, 0)
+  | ck, cl, n + 1, a, b =>
     if a = b then
       (true, n)
     else
       let (a, m) := Term.wnf ck cl n a []
       let (b, m) := Term.wnf ck cl (min m n) b []
-      match Term.parts a b with
-      | some ps =>
-        let go := fun (r : Bool × Nat) (p : Term × Term) =>
-          if r.1 then Term.conv ck (cl && !Term.binds a) (min r.2 n) p.1 p.2 else r
-        ps.foldl go (true, min m n)
-      | none => (false, m)
+      let r := match Term.parts a b with
+        | some ps =>
+          let go := fun (r : Bool × Nat) (p : Term × Term) =>
+            if r.1 then Term.conv ck (cl && !Term.binds a) (min r.2 n) p.1 p.2 else r
+          ps.foldl go (true, min m n)
+        | none => (false, m)
+      if r.1 then r else
+      match Term.unfold ck a b with
+      | some (u, v) => Term.conv (Book.of []) cl (min r.2 n) u v
+      | none => r
 
 -- g is at least h, in the quantity order: .Q2 is the top, .Q0 and .Q1
 -- the bottom, a meet on the left needs both sides, on the right either;
@@ -2167,16 +2184,40 @@ theorem parts_conv (h : parts a b = some ps) (H : ∀ p ∈ ps, Conv bk p.1 p.2)
 theorem wnf_nil (hb : Sees ck bk) (e : wnf ck cl n t [] = (u, k)) : Pars bk t u :=
   (e ▸ (wnf_pars (t := t) (xs := []) hb).1 :)
 
+-- a term is its head on its spine
+theorem unspine_eq : ∀ {acc}, unspine t acc = (h, xs) → spine t acc = spine h xs := by
+  induction t <;> intro acc e <;> simp only [unspine, Prod.mk.injEq] at e
+  case App ih _ => exact ih e
+  all_goals obtain ⟨rfl, rfl⟩ := e; rfl
+
+theorem sees_nil : Sees (Book.of []) bk := fun _ _ h => by simp [Book.get, Book.of, Book.table] at h
+
+-- an unfolded call converts with the call (δ)
+theorem unfold_conv (hb : Sees ck bk) (e : Term.unfold ck a b = some (u, v)) : Conv bk a u ∧ Conv bk b v := by
+  have U {k a w xs T k'} (e : unspine a [] = (Ref k, xs)) (hk : Book.get ck k = some ⟨k', T, w, false⟩) :
+      Conv bk a (spine w xs) := by
+    have ⟨_, hk, hc⟩ := hb _ _ hk
+    rw [show a = spine (Ref k) xs from unspine_eq e]; exact ⟨_, .step (par_spine (.delta hk hc)) .refl, .refl⟩
+  unfold Term.unfold at e; split at e <;> (try simp at e)
+  split at e <;> (try simp at e)
+  obtain ⟨_, rfl, rfl⟩ := e; exact ⟨U ‹_› ‹_›, U ‹_› ‹_›⟩
+
 theorem conv_sound (hb : Sees ck bk) : (Term.conv ck cl n a b).1 = true → Conv bk a b := by
-  induction n using Nat.strongRecOn generalizing a b cl; rename_i n ih
+  induction n using Nat.strongRecOn generalizing ck a b cl; rename_i n ih
   unfold Term.conv; split; nofun; split
   · intro _; subst_vars; exact crefl
-  split; split; split
-  · intro h; rename_i hps
-    have ⟨_, hf⟩ := fold_true (g := fun m x y => Term.conv ck _ (min m _) x y) h
-    have ⟨c, h1, h2⟩ := parts_conv hps fun p m => have ⟨_, hp⟩ := hf p m; ih _ (by omega) hp
-    exact ⟨c, pars_trans (wnf_nil hb ‹_›) h1, pars_trans (wnf_nil hb ‹_›) h2⟩
-  · nofun
+  split; split; dsimp only; intro h; rename_i _ a' _ e1 _ b' _ e2
+  refine conv_trans ⟨_, wnf_nil hb e1, .refl⟩ (conv_trans ?_ (csym ⟨_, wnf_nil hb e2, .refl⟩))
+  -- the parts convert, or a' and b' unfold to bodies that do
+  split at h <;> split at h
+  all_goals first
+    | (simp at h; done)
+    | (rename_i hps _
+       have ⟨_, hf⟩ := fold_true (g := fun m x y => Term.conv ck _ (min m _) x y) h
+       exact parts_conv hps fun p m => have ⟨_, hp⟩ := hf p m; ih _ (by omega) hb hp)
+    | (split at h
+       · rename_i hu; have ⟨c1, c2⟩ := unfold_conv hb hu; exact conv_trans c1 (conv_trans (ih _ (by omega) sees_nil h) (csym c2))
+       · simp_all)
 
 theorem lab_fix : Pars bk (Lab k) c → c = Lab k := pars_fix fun _ s => by cases s; rfl
 
