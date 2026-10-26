@@ -11,7 +11,7 @@ def tick(events: List<Event>, n: U32) -> IO(Maybe<U32>):
       IO.pure(Maybe<U32>, Some{n})
     case Con{Close{}, rest}:
       IO.pure(Maybe<U32>, None{})
-    case Con{Press{i, t, x, y, b, d}, rest}:
+    case Con{Press{i, t, x, y, ms, b, d}, rest}:
       do IO<Maybe<U32>>:
         IO.print("press down=" ++ Bool.show(d))
         tick(rest, n)

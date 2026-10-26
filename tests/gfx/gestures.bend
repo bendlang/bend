@@ -3,8 +3,12 @@
 # 500 ms (no tap when let go), a drag past its 8 pixel slop (dropped, and
 # another lost), two fingers
 # pinched out to twice their distance then turned a quarter clockwise, a
-# press lost (no tap), a trackpad's Zoom and Swipe, three fingers spread
-# and a two-finger tap (no tap). A pinch prints its scale and turn in
+# press lost (no tap), a trackpad's Zoom and Swipe, three fingers spread,
+# a two-finger tap (no tap), a pinch's last finger moved 1 pixel (no drag)
+# then past 8, a held press's jitter (no drag) then a drag, a press up far
+# with no Move (a drag) then a tap where it went up, in frames 700 ms apart
+# a press up at 100 ms (a tap) and one at 650 (a LongPress), and a second
+# finger ending a drag (lost). A pinch prints its scale and turn in
 # hundredths.
 import Base
 
@@ -56,32 +60,52 @@ def play(frames: List<(Nat & List<Event>)>, s: Gesture.State) -> IO(Unit):
     case f <> rest:
       shown(frame(f, s), u => play(rest, u))
 
-def down(id: U32, x: F32, y: F32) -> Event:
-  Press{id, Finger{0.5, 1.0, 1.0}, x, y, 0, True{}}
+def down(id: U32, x: F32, y: F32, t: U32) -> Event:
+  Press{id, Finger{0.5, 1.0, 1.0}, x, y, t, 0, True{}}
 
-def up(id: U32, x: F32, y: F32) -> Event:
-  Press{id, Finger{0.5, 1.0, 1.0}, x, y, 0, False{}}
+def up(id: U32, x: F32, y: F32, t: U32) -> Event:
+  Press{id, Finger{0.5, 1.0, 1.0}, x, y, t, 0, False{}}
 
-def go(id: U32, x: F32, y: F32) -> Event:
-  Move{id, Finger{0.5, 1.0, 1.0}, x, y}
+def go(id: U32, x: F32, y: F32, t: U32) -> Event:
+  Move{id, Finger{0.5, 1.0, 1.0}, x, y, t}
 
 def main() -> IO(Unit):
-  play([(1000n, [down(0, 10.0, 10.0)]), (1100n, [up(0, 10.0, 10.0)]),
-    (1200n, [down(0, 12.0, 11.0), up(0, 12.0, 11.0)]),
-    (2000n, [down(0, 40.0, 40.0)]), (2600n, []), (2700n, [up(0, 40.0, 40.0)]),
-    (3000n, [down(0, 50.0, 50.0), go(0, 52.0, 50.0), go(0, 70.0, 50.0)]),
-    (3050n, [go(0, 80.0, 55.0), up(0, 80.0, 55.0)]),
-    (4000n, [down(1, 100.0, 100.0), down(2, 200.0, 100.0),
-      go(2, 300.0, 100.0)]),
-    (4050n, [go(2, 100.0, 300.0), up(1, 100.0, 100.0), up(2, 100.0, 300.0)]),
-    (5000n, [down(3, 5.0, 5.0), Lost{3}, up(3, 5.0, 5.0),
+  play([(1000n, [down(0, 10.0, 10.0, 1000)]),
+    (1100n, [up(0, 10.0, 10.0, 1100)]),
+    (1200n, [down(0, 12.0, 11.0, 1200), up(0, 12.0, 11.0, 1200)]),
+    (2000n, [down(0, 40.0, 40.0, 2000)]), (2600n, []),
+    (2700n, [up(0, 40.0, 40.0, 2700)]),
+    (3000n, [down(0, 50.0, 50.0, 3000), go(0, 52.0, 50.0, 3000),
+      go(0, 70.0, 50.0, 3000)]),
+    (3050n, [go(0, 80.0, 55.0, 3050), up(0, 80.0, 55.0, 3050)]),
+    (4000n, [down(1, 100.0, 100.0, 4000), down(2, 200.0, 100.0, 4000),
+      go(2, 300.0, 100.0, 4000)]),
+    (4050n, [go(2, 100.0, 300.0, 4050), up(1, 100.0, 100.0, 4050),
+      up(2, 100.0, 300.0, 4050)]),
+    (5000n, [down(3, 5.0, 5.0, 5000), Lost{3}, up(3, 5.0, 5.0, 5000),
       Zoom{1.0, 2.0, 1.25, F32.neg(0.5), 2}, Swipe{1.0, 2.0, 3.0, 4.0, 3}]),
-    (6000n, [down(4, 0.0, 0.0), down(5, 60.0, 0.0), down(6, 0.0, 60.0)]),
-    (6050n, [go(5, 120.0, 0.0), up(4, 0.0, 0.0), up(5, 120.0, 0.0),
-      up(6, 0.0, 60.0)]),
-    (7000n, [down(7, 10.0, 10.0), down(8, 30.0, 10.0)]),
-    (7050n, [up(7, 10.0, 10.0), up(8, 30.0, 10.0)]),
-    (8000n, [down(9, 0.0, 0.0), go(9, 20.0, 0.0), Lost{9}])], Gesture.new())
+    (6000n, [down(4, 0.0, 0.0, 6000), down(5, 60.0, 0.0, 6000),
+      down(6, 0.0, 60.0, 6000)]),
+    (6050n, [go(5, 120.0, 0.0, 6050), up(4, 0.0, 0.0, 6050),
+      up(5, 120.0, 0.0, 6050), up(6, 0.0, 60.0, 6050)]),
+    (7000n, [down(7, 10.0, 10.0, 7000), down(8, 30.0, 10.0, 7000)]),
+    (7050n, [up(7, 10.0, 10.0, 7050), up(8, 30.0, 10.0, 7050)]),
+    (8000n, [down(9, 0.0, 0.0, 8000), go(9, 20.0, 0.0, 8000), Lost{9}]),
+    (9000n, [down(10, 100.0, 100.0, 9000), down(11, 200.0, 100.0, 9000)]),
+    (9050n, [up(10, 100.0, 100.0, 9050), go(11, 201.0, 100.0, 9050),
+      go(11, 215.0, 100.0, 9050), up(11, 215.0, 100.0, 9050)]),
+    (10000n, [down(12, 10.0, 10.0, 10000)]), (10600n, []),
+    (10650n, [go(12, 10.5, 10.0, 10650), go(12, 30.0, 10.0, 10650),
+      up(12, 30.0, 10.0, 10650)]),
+    (11000n, [down(13, 10.0, 10.0, 11000)]),
+    (11100n, [up(13, 300.0, 300.0, 11100), down(14, 50.0, 50.0, 11100),
+      up(14, 54.0, 53.0, 11150)]),
+    (12000n, [down(15, 70.0, 70.0, 12000)]),
+    (12700n, [up(15, 70.0, 70.0, 12100), down(16, 90.0, 90.0, 12700)]),
+    (13400n, [up(16, 90.0, 90.0, 13350)]),
+    (14000n, [down(17, 0.0, 0.0, 14000), go(17, 20.0, 0.0, 14000),
+      down(18, 100.0, 0.0, 14000), go(18, 120.0, 0.0, 14000),
+      up(17, 20.0, 0.0, 14000), up(18, 120.0, 0.0, 14000)])], Gesture.new())
 
 #|tap 10 10 1
 #|tap 12 11 2
@@ -99,3 +123,17 @@ def main() -> IO(Unit):
 #|pinch 40 20 156 7 3
 #|drag 9 20 0 20 0
 #|dragend 9 20 0 True
+#|drag 11 215 100 14 0
+#|dragend 11 215 100 False
+#|long 10 10
+#|drag 12 30 10 19.5 0
+#|dragend 12 30 10 False
+#|drag 13 300 300 290 290
+#|dragend 13 300 300 False
+#|tap 54 53 1
+#|tap 70 70 1
+#|long 90 90
+#|drag 17 20 0 20 0
+#|dragend 17 20 0 True
+#|pan 70 0 10 0 2
+#|pinch 70 0 125 0 2

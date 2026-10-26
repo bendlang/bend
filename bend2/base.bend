@@ -85,8 +85,8 @@ type Image is Data:
 # A pointer's tool and what it measures, as W3C Pointer Events name it: a
 # force from 0 to 1, a contact's size in pixels, a pen's tilts (-90 to 90)
 # and twist (0 to 359, clockwise) in degrees and its barrel's pressure
-# (-1 to 1). A value its device does not report is that standard's
-# default: a force of 0.5 while pressed (else 0), a size of 1, an angle 0.
+# (-1 to 1). A force is 0 unless pressed. A value its device does not
+# report is that standard's default: a force of 0.5, a size of 1, an angle 0.
 type Tool is Data:
   Mouse{}
   Finger{force: F32, width: F32, height: F32}
@@ -98,7 +98,8 @@ type Tool is Data:
 # commit can come as several Texts.
 # Press is a pointer's button pressed or let go, and Move its motion, in
 # pixels from the window's top left (past its edge while a button holds
-# it): a Move with no button down is a hover. The mouse is id 0; a finger
+# it), at the system's time in ms (it wraps: only the difference of two
+# counts): a Move with no button down is a hover. The mouse is id 0; a finger
 # or a pen takes the least free id, free again once it lifts (a finger)
 # or is lost. Buttons are W3C's: 0 the main one (a finger's or a pen's
 # contact), 1 the middle, 2 the right (a pen's barrel), 3 back, 4 forward
@@ -117,8 +118,8 @@ type Tool is Data:
 type Event is Data:
   Key{code: U32, down: Bool}
   Text{text: String}
-  Press{id: U32, tool: Tool, x: F32, y: F32, button: U32, down: Bool}
-  Move{id: U32, tool: Tool, x: F32, y: F32}
+  Press{id: U32, tool: Tool, x: F32, y: F32, time: U32, button: U32, down: Bool}
+  Move{id: U32, tool: Tool, x: F32, y: F32, time: U32}
   Lost{id: U32}
   Look{dx: F32, dy: F32}
   Scroll{x: F32, y: F32, dx: F32, dy: F32}
@@ -131,14 +132,14 @@ type Event is Data:
   Close{}
 
 # What Gesture.step reads in the pointers' main buttons: a Tap (a press let
-# go in place before it holds; count is how many in a row, each within
-# 300 ms and 16 pixels of the last), a LongPress (a press kept in place for
-# 500 ms), a Drag (one pointer pressed, past 8 pixels from where it went
-# down: by dx, dy since its last Move; then one DragEnd, lost if its
-# pointer was), and a Pan and a Pinch (fingers
-# pointers pressed, moving: their center (x, y), its motion and their
-# spread's scale and turn about it since the last; or a trackpad's Swipe
-# and Zoom).
+# go in place before it holds, where it went up; count is how many in a
+# row, each within 300 ms and 16 pixels of the last), a LongPress (a press
+# kept in place for 500 ms), a Drag (one pointer pressed, past 8 pixels from
+# where it went down or was left alone: by dx, dy since its last Move; then
+# one DragEnd, lost if its pointer was or another went down), and a Pan and
+# a Pinch (fingers pointers pressed, moving: their center (x, y), its
+# motion and their spread's scale and turn about it since the last; or a
+# trackpad's Swipe and Zoom).
 type Gesture is Data:
   Tap{x: F32, y: F32, count: U32}
   LongPress{x: F32, y: F32}
@@ -147,16 +148,17 @@ type Gesture is Data:
   Pan{x: F32, y: F32, dx: F32, dy: F32, fingers: U32}
   Pinch{x: F32, y: F32, scale: F32, turn: F32, fingers: U32}
 
-# A pointer pressed: its id, where and when (ms) it went down, where it
-# is, whether it is still (a Tap or LongPress to be: alone, not past 8
-# pixels, not held) and whether it dragged.
+# A pointer pressed: its id, where its 8 pixels start (where it went down
+# or was left alone), when it went down (the frame's ms and its own), where
+# it is, whether it is a tap (a Tap or LongPress to be: alone, not past its
+# 8 pixels, not held) and whether it drags.
 type Gesture.Pointer is Data:
-  Gesture.Pointer{id: U32, x0: F32, y0: F32, t0: Nat, x: F32, y: F32, still: Bool, drag: Bool}
+  Gesture.Pointer{id: U32, x0: F32, y0: F32, t0: Nat, at: U32, x: F32, y: F32, tap: Bool, drag: Bool}
 
 # The pointers pressed, in the order they went down, and the last Tap's
 # place, time and count.
 type Gesture.State is Data:
-  Gesture.State{down: List<&2, Gesture.Pointer>, x: F32, y: F32, t: Nat, n: U32}
+  Gesture.State{down: List<&2, Gesture.Pointer>, x: F32, y: F32, t: U32, n: U32}
 
 type Map<a, -V: Kind(a)> is Kind(a):
   MTip{}
@@ -3290,12 +3292,12 @@ def App.play(~S: Type, ~app: App<S>, frames: List<List<Event>>, state: S) ->
 # -------
 
 # Gesture.step(events, state, now), now from IO.now, answers the next state
-# beside a frame's gestures, in its events' order, its LongPresses last.
+# beside a frame's gestures, in its events' order, then the LongPresses due.
 def Gesture.new() -> Gesture.State:
-  Gesture.State{[], 0.0, 0.0, 0n, 0}
+  Gesture.State{[], 0.0, 0.0, 0, 0}
 
 def Gesture.is(t: Gesture.Pointer, +id: U32) -> Bool:
-  Gesture.Pointer{i, x0, y0, t0, x, y, still, drag} = t
+  Gesture.Pointer{i, x0, y0, t0, at, x, y, tap, drag} = t
   U32.is_eq(i, id)
 
 def Gesture.take.put(
@@ -3319,28 +3321,29 @@ def Gesture.take(ts: List<&2, Gesture.Pointer>, +id: U32) ->
     case +h <> t:
       Gesture.take.put(h, Gesture.is(h, id), Gesture.take(t, id))
 
-# t at (x, y) if it is id's: still while within 8 pixels of where it went
-# down, and else a Drag by its motion.
+# t at (x, y) if it is id's: no longer a tap past its 8 pixels, and moving
+# past them (or dragging) a Drag by its motion.
 def Gesture.slide(t: Gesture.Pointer, +id: U32, +x: F32, +y: F32) ->
   Gesture.Pointer & List<&2, Gesture>:
   match t:
-    case Gesture.Pointer{+i, +x0, +y0, t0, +px, +py, still, drag}:
+    case Gesture.Pointer{+i, +x0, +y0, t0, at, +px, +py, tap, +drag}:
       +hit = U32.is_eq(i, id)
       +nx = Bool.pick(F32, hit, x, px)
       +ny = Bool.pick(F32, hit, y, py)
-      +s = still && F32.is_le(F32.hypot((nx - x0 : F32), (ny - y0 : F32)), 8.0)
-      +go = hit && Bool.not(s)
-      (Gesture.Pointer{i, x0, y0, t0, nx, ny, s, drag || go},
-        Bool.pick(List<&2, Gesture>, go,
+      +far = F32.is_gt(F32.hypot((nx - x0 : F32), (ny - y0 : F32)), 8.0)
+      +go = (F32.is_ne(nx, px) || F32.is_ne(ny, py)) && (drag || far)
+      (Gesture.Pointer{i, x0, y0, t0, at, nx, ny, tap && Bool.not(far),
+        drag || go}, Bool.pick(List<&2, Gesture>, go,
           [Drag{i, nx, ny, (nx - px : F32), (ny - py : F32)}], []))
 
-# t of a group: at (x, y) if it is id's, and no longer still.
+# t of a group, at (x, y) if it is id's.
 def Gesture.all.to(t: Gesture.Pointer, +id: U32, x: F32, y: F32) ->
   Gesture.Pointer:
   match t:
-    case Gesture.Pointer{+i, x0, y0, t0, px, py, still, drag}:
-      Gesture.Pointer{i, x0, y0, t0, Bool.pick(F32, U32.is_eq(i, id), x, px),
-        Bool.pick(F32, U32.is_eq(i, id), y, py), False{}, drag}
+    case Gesture.Pointer{+i, x0, y0, t0, at, px, py, tap, drag}:
+      Gesture.Pointer{i, x0, y0, t0, at,
+        Bool.pick(F32, U32.is_eq(i, id), x, px),
+        Bool.pick(F32, U32.is_eq(i, id), y, py), tap, drag}
 
 def Gesture.all(ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
   List<&2, Gesture.Pointer>:
@@ -3350,12 +3353,15 @@ def Gesture.all(ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
     case t <> rest:
       Gesture.all.to(t, id, x, y) <> Gesture.all(rest, id, x, y)
 
-def Gesture.has(ts: List<&2, Gesture.Pointer>, +id: U32) -> Bool:
+# Whether id's pointer is in ts, off (x, y).
+def Gesture.moved(ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
+  Bool:
   match ts:
     case Nil{}:
       False{}
-    case t <> rest:
-      Gesture.is(t, id) || Gesture.has(rest, id)
+    case Gesture.Pointer{i, _, _, _, _, px, py, _, _} <> rest:
+      (U32.is_eq(i, id) && (F32.is_ne(px, x) || F32.is_ne(py, y)))
+        || Gesture.moved(rest, id, x, y)
 
 def Gesture.wrap(+a: F32) -> F32:
   Bool.pick(F32, F32.is_gt(a, F32.pi()), (a - 6.2831853 : F32),
@@ -3370,7 +3376,7 @@ def Gesture.sum(ts: List<&2, Gesture.Pointer>) -> F32 & F32 & U32:
   match ts:
     case Nil{}:
       (0.0, 0.0, 0)
-    case Gesture.Pointer{_, _, _, _, x, y, _, _} <> rest:
+    case Gesture.Pointer{_, _, _, _, _, x, y, _, _} <> rest:
       Gesture.sum.add(x, y, Gesture.sum(rest))
 
 def Gesture.spin.add(a: F32, b: F32, c: F32, r: F32 & F32 & F32) ->
@@ -3385,8 +3391,8 @@ def Gesture.spin(
   +ay: F32, +bx: F32, +by: F32
 ) -> F32 & F32 & F32:
   match us vs:
-    case Gesture.Pointer{_, _, _, _, +x, +y, _, _} <> rest
-      Gesture.Pointer{_, _, _, _, +u, +v, _, _} <> more:
+    case Gesture.Pointer{_, _, _, _, _, +x, +y, _, _} <> rest
+      Gesture.Pointer{_, _, _, _, _, +u, +v, _, _} <> more:
       Gesture.spin.add(F32.hypot((x - ax : F32), (y - ay : F32)),
         F32.hypot((u - bx : F32), (v - by : F32)),
         Gesture.wrap((F32.atan2((v - by : F32), (u - bx : F32))
@@ -3420,10 +3426,10 @@ def Gesture.group(
   +by = (ty / k : F32)
   Gesture.shape(ax, ay, bx, by, m, Gesture.spin(us, vs, ax, ay, bx, by))
 
-# Two or more pressed, as a group: a Pan and a Pinch if id's is one.
+# Two or more pressed, as a group: a Pan and a Pinch if id's moves.
 def Gesture.many(+ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
   List<&2, Gesture.Pointer> & List<&2, Gesture>:
-  +hit = Gesture.has(ts, id)
+  +hit = Gesture.moved(ts, id, x, y)
   +vs = Gesture.all(ts, id, x, y)
   (Bool.pick(List<&2, Gesture.Pointer>, hit, vs, ts),
     Bool.pick(List<&2, Gesture>, hit,
@@ -3445,62 +3451,15 @@ def Gesture.moves(ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
       Gesture.many(a <> b <> rest, id, x, y)
 
 def Gesture.event.put(
-  +lx: F32, +ly: F32, +lt: Nat, +n: U32,
+  +lx: F32, +ly: F32, +lt: U32, +n: U32,
   r: List<&2, Gesture.Pointer> & List<&2, Gesture>
 ) -> Gesture.State & List<&2, Gesture>:
   (ts, gs) = r
   (Gesture.State{ts, lx, ly, lt, n}, gs)
 
-# A pointer let go (go) or lost: a Tap if let go still and quick, the
-# count's next if near the last Tap in place and time; a DragEnd if it
-# dragged.
-def Gesture.end(
-  r: Maybe<&2, Gesture.Pointer> & List<&2, Gesture.Pointer>, +lx: F32, +ly: F32,
-  +lt: Nat, +n: U32, +now: Nat, +go: Bool
-) -> Gesture.State & List<&2, Gesture>:
-  match r:
-    case Tuple{None{}, rest}:
-      (Gesture.State{rest, lx, ly, lt, n}, [])
-    case Tuple{Some{Gesture.Pointer{id, +x0, +y0, +t0, x, y, +still, drag}},
-      +rest}:
-      +tap = go && still && Nat.is_lt(Nat.sub(now, t0), 500n)
-      +near = Nat.is_le(Nat.sub(now, lt), 300n)
-        && F32.is_le(F32.abs((x0 - lx : F32)), 16.0)
-        && F32.is_le(F32.abs((y0 - ly : F32)), 16.0)
-      +c = Bool.pick(U32, near, (n + 1 : U32), 1)
-      (Bool.pick(Gesture.State, tap, Gesture.State{rest, x0, y0, now, c},
-        Gesture.State{rest, lx, ly, lt, n}),
-        Bool.pick(List<&2, Gesture>, tap, [Tap{x0, y0, c}],
-          Bool.pick(List<&2, Gesture>, drag, [DragEnd{id, x, y, Bool.not(go)}],
-            [])))
-
-def Gesture.event(e: Event, s: Gesture.State, +now: Nat) ->
-  Gesture.State & List<&2, Gesture>:
-  match e:
-    case Press{+id, tool, +x, +y, 0, True{}}:
-      Gesture.State{+down, lx, ly, lt, n} = s
-      (Gesture.State{List.append(&2, Gesture.Pointer,
-        Gesture.all(down, id, x, y), [Gesture.Pointer{id, x, y, now, x, y,
-          List.is_empty(&2, Gesture.Pointer, down), False{}}]), lx, ly, lt, n},
-        [])
-    case Press{id, tool, x, y, 0, False{}}:
-      Gesture.State{down, lx, ly, lt, n} = s
-      Gesture.end(Gesture.take(down, id), lx, ly, lt, n, now, True{})
-    case Move{id, tool, x, y}:
-      Gesture.State{down, lx, ly, lt, n} = s
-      Gesture.event.put(lx, ly, lt, n, Gesture.moves(down, id, x, y))
-    case Lost{id}:
-      Gesture.State{down, lx, ly, lt, n} = s
-      Gesture.end(Gesture.take(down, id), lx, ly, lt, n, now, False{})
-    case Zoom{x, y, scale, turn, fingers}:
-      (s, [Pinch{x, y, scale, turn, fingers}])
-    case Swipe{x, y, dx, dy, fingers}:
-      (s, [Pan{x, y, dx, dy, fingers}])
-    case _:
-      (s, [])
-
-def Gesture.holds.put(
-  due: Bool, +x: F32, +y: F32, t: Gesture.Pointer,
+# t before r's pointers, and g before its gestures if due.
+def Gesture.put(
+  due: Bool, g: Gesture, t: Gesture.Pointer,
   r: List<&2, Gesture.Pointer> & List<&2, Gesture>
 ) -> List<&2, Gesture.Pointer> & List<&2, Gesture>:
   match due:
@@ -3509,18 +3468,95 @@ def Gesture.holds.put(
       (t <> ts, gs)
     case True{}:
       (ts, gs) = r
-      (t <> ts, LongPress{x, y} <> gs)
+      (t <> ts, g <> gs)
 
-# Each pointer still for 500 ms holds, once.
+# ts, then p joining them: none is a tap any more, and a drag ends, lost.
+def Gesture.join(ts: List<&2, Gesture.Pointer>, p: Gesture.Pointer) ->
+  List<&2, Gesture.Pointer> & List<&2, Gesture>:
+  match ts:
+    case Nil{}:
+      ([p], [])
+    case Gesture.Pointer{+id, x0, y0, t0, at, +x, +y, tap, drag} <> rest:
+      Gesture.put(drag, DragEnd{id, x, y, True{}},
+        Gesture.Pointer{id, x0, y0, t0, at, x, y, False{}, False{}},
+        Gesture.join(rest, p))
+
+# ts after one went up: one left alone starts its 8 pixels where it is.
+def Gesture.alone(ts: List<&2, Gesture.Pointer>) -> List<&2, Gesture.Pointer>:
+  match ts:
+    case Gesture.Pointer{id, x0, y0, t0, at, +x, +y, tap, drag} <> Nil{}:
+      [Gesture.Pointer{id, x, y, t0, at, x, y, tap, drag}]
+    case a <> b <> rest:
+      a <> b <> rest
+    case Nil{}:
+      []
+
+# A pointer let go at time (go) or lost: a Tap where it went up if a tap
+# let go within 500 ms (the count's next if near the last Tap in place and
+# time), a LongPress if one let go past them; a DragEnd if it dragged.
+def Gesture.end(
+  r: Maybe<&2, Gesture.Pointer> & List<&2, Gesture.Pointer>, +lx: F32, +ly: F32,
+  +lt: U32, +n: U32, +time: U32, +go: Bool
+) -> Gesture.State & List<&2, Gesture>:
+  match r:
+    case Tuple{None{}, rest}:
+      (Gesture.State{rest, lx, ly, lt, n}, [])
+    case Tuple{Some{Gesture.Pointer{id, x0, y0, t0, at, +x, +y, tap, drag}},
+      rest}:
+      +up = go && tap
+      +tapped = up && U32.is_lt(U32.sub(time, at), 500)
+      +near = U32.is_le(U32.sub(time, lt), 300)
+        && F32.is_le(F32.abs((x - lx : F32)), 16.0)
+        && F32.is_le(F32.abs((y - ly : F32)), 16.0)
+      +c = Bool.pick(U32, near, (n + 1 : U32), 1)
+      +left = Gesture.alone(rest)
+      (Bool.pick(Gesture.State, tapped, Gesture.State{left, x, y, time, c},
+        Gesture.State{left, lx, ly, lt, n}),
+        Bool.pick(List<&2, Gesture>, tapped, [Tap{x, y, c}],
+          Bool.pick(List<&2, Gesture>, up, [LongPress{x0, y0}],
+            Bool.pick(List<&2, Gesture>, drag,
+              [DragEnd{id, x, y, Bool.not(go)}], []))))
+
+def Gesture.lift(s: Gesture.State, id: U32, time: U32, go: Bool) ->
+  Gesture.State & List<&2, Gesture>:
+  Gesture.State{down, lx, ly, lt, n} = s
+  Gesture.end(Gesture.take(down, id), lx, ly, lt, n, time, go)
+
+# A press up first moves its pointer to where it went up.
+def Gesture.event(e: Event, s: Gesture.State, +now: Nat) ->
+  Gesture.State & List<&2, Gesture>:
+  match e:
+    case Press{id, tool, +x, +y, time, 0, True{}}:
+      Gesture.State{+down, lx, ly, lt, n} = s
+      Gesture.event.put(lx, ly, lt, n, Gesture.join(down,
+        Gesture.Pointer{id, x, y, now, time, x, y,
+          List.is_empty(&2, Gesture.Pointer, down), False{}}))
+    case Press{+id, tool, x, y, time, 0, False{}}:
+      Gesture.State{down, lx, ly, lt, n} = s
+      Gesture.step.then(Gesture.event.put(lx, ly, lt, n,
+        Gesture.moves(down, id, x, y)), u => Gesture.lift(u, id, time, True{}))
+    case Move{id, tool, x, y, time}:
+      Gesture.State{down, lx, ly, lt, n} = s
+      Gesture.event.put(lx, ly, lt, n, Gesture.moves(down, id, x, y))
+    case Lost{id}:
+      Gesture.lift(s, id, 0, False{})
+    case Zoom{x, y, scale, turn, fingers}:
+      (s, [Pinch{x, y, scale, turn, fingers}])
+    case Swipe{x, y, dx, dy, fingers}:
+      (s, [Pan{x, y, dx, dy, fingers}])
+    case _:
+      (s, [])
+
+# Each pointer a tap for 500 ms of frames holds, once.
 def Gesture.holds(ts: List<&2, Gesture.Pointer>, +now: Nat) ->
   List<&2, Gesture.Pointer> & List<&2, Gesture>:
   match ts:
     case Nil{}:
       ([], [])
-    case Gesture.Pointer{id, +x0, +y0, +t0, x, y, +still, drag} <> rest:
-      +due = still && Nat.is_ge(Nat.sub(now, t0), 500n)
-      Gesture.holds.put(due, x0, y0, Gesture.Pointer{id, x0, y0, t0, x, y,
-        still && Bool.not(due), drag}, Gesture.holds(rest, now))
+    case Gesture.Pointer{id, +x0, +y0, +t0, at, x, y, +tap, drag} <> rest:
+      +due = tap && Nat.is_ge(Nat.sub(now, t0), 500n)
+      Gesture.put(due, LongPress{x0, y0}, Gesture.Pointer{id, x0, y0, t0, at,
+        x, y, tap && Bool.not(due), drag}, Gesture.holds(rest, now))
 
 def Gesture.step.cat(
   gs: List<&2, Gesture>, r: Gesture.State & List<&2, Gesture>

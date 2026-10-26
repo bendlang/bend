@@ -6,10 +6,10 @@
 
 // An event: its constructor's id, then its fields as the compiler lays
 // them out (a Tool inline, as its tag and five words).
-#define WIN_EV 12
+#define WIN_EV 13
 
 // a Press's words
-enum { WIN_TAG = 2, WIN_BUTTON = 10, WIN_DOWN = 11 };
+enum { WIN_TAG = 2, WIN_BUTTON = 11, WIN_DOWN = 12 };
 
 // A Tool's tag
 enum { WIN_MOUSE, WIN_FINGER, WIN_PEN };
@@ -126,7 +126,7 @@ typedef struct {
 // a pinch's; a swipe's ends at raw_dy
 typedef struct {
   WinXIHead      h;
-  double         dx, dy, raw_dx, raw_dy, scale, delta_scale, angle;
+  double         dx, dy, raw_dx, raw_dy, scale, angle;
 } WinXIGesture;
 
 // A device's class: a valuator's, whose number stands at a touch class's
@@ -167,7 +167,7 @@ enum {
   WIN_XDND_AWARE, WIN_XDND_ENTER, WIN_XDND_POSITION, WIN_XDND_STATUS,
   WIN_XDND_LEAVE, WIN_XDND_DROP, WIN_XDND_FINISHED, WIN_XDND_SELECTION,
   WIN_XDND_COPY, WIN_XDND_TYPES, WIN_XDND_URIS, WIN_XDND_UTF8,
-  WIN_XDND_PLAIN, WIN_XDND_N
+  WIN_XDND_PLAIN, WIN_XDND_INCR, WIN_XDND_N
 };
 
 // The X11 window: its own connection (so its queue holds only its
@@ -176,7 +176,8 @@ enum {
 // its events, whether it holds the pointer, the display's refresh period
 // in ns, XInput2's opcode (0 if none), a pinch's scale so far, the
 // devices met, XDND's atoms, and another app's drag: its source, the type
-// it is read as (None: it has no files or text) and where it is.
+// it is read as (None: it has no files or text), where it is, and its
+// drop's data so far, while it comes in INCR's chunks.
 typedef struct {
   Display* dpy;
   Window   win;
@@ -198,6 +199,9 @@ typedef struct {
   Atom     xdnd_as;
   int      xdnd_x;
   int      xdnd_y;
+  char*    xdnd_buf;
+  u64      xdnd_n;
+  bool     xdnd_incr;
 } BendWin;
 
 // Names the window in UTF-8: _NET_WM_NAME, which window managers show,
@@ -340,12 +344,12 @@ static inline void window_push(WinQueue* q, u32 cid, u32 a, u32 b, u32 c,
   window_put(q, ev);
 }
 
-// A Press, or a Move (which ends before b).
+// A Press, or a Move (which ends before b), at ms.
 static inline void window_point(WinQueue* q, u32 cid, u32 id, WinTool t,
-  f32 x, f32 y, u32 b, bool down) {
+  f32 x, f32 y, u32 ms, u32 b, bool down) {
   u32 ev[WIN_EV] = { cid, id, t.tag, f32_rewrap(t.v[0]), f32_rewrap(t.v[1]),
     f32_rewrap(t.v[2]), f32_rewrap(t.v[3]), f32_rewrap(t.v[4]),
-    f32_rewrap(x), f32_rewrap(y), b, down };
+    f32_rewrap(x), f32_rewrap(y), ms, b, down };
   window_put(q, ev);
 }
 
@@ -537,6 +541,10 @@ static inline void window_focus(WinQueue* q, bool on) {
   return [self convertPoint:ev.locationInWindow fromView:nil];
 }
 
+- (u32)ms:(NSEvent*)ev {
+  return (u32)(u64)(ev.timestamp * 1000);
+}
+
 // A tablet's pen moves the cursor, but is its own pointer.
 - (u32)pointer:(NSEvent*)ev tool:(WinTool*)t {
   if (ev.subtype != NSEventSubtypeTabletPoint) {
@@ -555,8 +563,9 @@ static inline void window_focus(WinQueue* q, bool on) {
   u32     id = [self pointer:ev tool:&t];
   NSPoint p  = [self at:ev];
   u32     n  = (u32)ev.buttonNumber;
-  window_point(&q, CID(Press), id, t, p.x, p.y, t.tag == WIN_PEN && eraser
-    && n == 0 ? 5 : n == 1 ? 2 : n == 2 ? 1 : n, down);
+  window_point(&q, CID(Press), id, t, p.x, p.y, [self ms:ev],
+    t.tag == WIN_PEN && eraser && n == 0 ? 5 : n == 1 ? 2 : n == 2 ? 1 : n,
+    down);
   if (!down && id < 16 && q.down[id] == 0
     && !NSPointInRect(p, self.bounds)) {
     window_push(&q, CID(Lost), id, 0, 0, 0);
@@ -578,7 +587,7 @@ static inline void window_focus(WinQueue* q, bool on) {
   u32     id = [self pointer:ev tool:&t];
   NSPoint p  = [self at:ev];
   if (id < 16 && (q.down[id] != 0 || NSPointInRect(p, self.bounds))) {
-    window_point(&q, CID(Move), id, t, p.x, p.y, 0, 0);
+    window_point(&q, CID(Move), id, t, p.x, p.y, [self ms:ev], 0, 0);
   }
 }
 
@@ -927,7 +936,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   static const char* xdnd[WIN_XDND_N] = { "XdndAware", "XdndEnter",
     "XdndPosition", "XdndStatus", "XdndLeave", "XdndDrop", "XdndFinished",
     "XdndSelection", "XdndActionCopy", "XdndTypeList", "text/uri-list",
-    "UTF8_STRING", "text/plain;charset=utf-8" };
+    "UTF8_STRING", "text/plain;charset=utf-8", "INCR" };
   long version = 5;
   XInternAtoms(dpy, (char**)xdnd, WIN_XDND_N, False, win->xdnd);
   XChangeProperty(dpy, win->win, win->xdnd[WIN_XDND_AWARE], XA_ATOM, 32,
@@ -935,8 +944,8 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   window_x_title(dpy, win->win, title, strlen(title));
   win->xi = window_xi(dpy, win->win);
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | FocusChangeMask
-    | im_evs | (win->xi ? 0 : ButtonPressMask | ButtonReleaseMask
-      | PointerMotionMask | LeaveWindowMask));
+    | PropertyChangeMask | im_evs | (win->xi ? 0 : ButtonPressMask
+      | ButtonReleaseMask | PointerMotionMask | LeaveWindowMask));
   XMapRaised(dpy, win->win);
   XFlush(dpy);
   *out = (intptr_t)win;
@@ -1267,13 +1276,13 @@ static void window_text(BendWin* win, XKeyEvent* key) {
 // X buttons: 1 to 3 left, middle, right; 4 to 7 the wheel (up, down, left,
 // right; a notch is 1, up and left positive); 8 and 9 back, forward.
 static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
-  u32 b, bool down, bool eraser) {
+  u32 ms, u32 b, bool down, bool eraser) {
   f32 s = b % 2 ? -1 : 1;
   if (b >= 4 && b <= 7 && down) {
     window_delta(&win->q, CID(Scroll), x, y, b > 5 ? s : 0, b > 5 ? 0 : s,
       0);
   } else if (b <= 3 || b == 8 || b == 9) {
-    window_point(&win->q, CID(Press), id, t, x, y,
+    window_point(&win->q, CID(Press), id, t, x, y, ms,
       eraser && b == 1 ? 5 : b <= 3 ? b - 1 : b - 5, down);
   }
 }
@@ -1297,9 +1306,10 @@ static const struct {
 };
 
 // A device as first met: a touch screen if it has a direct touch class, a
-// pen if a force (its eraser is its own device, by name), else a mouse. A
-// finger's size is in the screen's width over its position's range. The
-// table empties when full, or when devices come or go.
+// mouse if another (a touchpad), a pen if a force (its eraser is its own
+// device, by name), else a mouse. A finger's size is in the screen's width
+// over its position's range. The table empties when full, or when devices
+// come or go.
 static WinDev* window_dev(BendWin* win, int id) {
   for (u32 i = 0; i < win->nd; i += 1) {
     if (win->devs[i].id == id) {
@@ -1310,13 +1320,13 @@ static WinDev* window_dev(BendWin* win, int id) {
   WinDev* d = &win->devs[win->nd++];
   *d = (WinDev){ .id = id, .ax = { -1, -1, -1, -1, -1 } };
   int          n     = 0;
-  bool         touch = false;
+  int          touch = 0;
   WinXIDevice* info  = window_xi_query(win->dpy, id, &n);
   for (int k = 0; info != NULL && k < info->num_classes; k += 1) {
     WinXIClass* c = info->classes[k];
     char*       s = c->type == XIValuatorClass && c->label != None
       ? XGetAtomName(win->dpy, c->label) : NULL;
-    touch |= c->type == XITouchClass && c->number == XIDirectTouch;
+    touch = c->type == XITouchClass ? c->number : touch;
     for (u32 j = 0; s != NULL && j < sizeof window_axes / sizeof *window_axes;
       j += 1) {
       if (strcmp(s, window_axes[j].label) == 0) {
@@ -1333,7 +1343,8 @@ static WinDev* window_dev(BendWin* win, int id) {
       XFree(s);
     }
   }
-  d->tool   = touch ? WIN_FINGER : d->ax[WIN_FORCE] < 0 ? WIN_MOUSE : WIN_PEN;
+  d->tool   = touch == XIDirectTouch ? WIN_FINGER
+    : touch || d->ax[WIN_FORCE] < 0 ? WIN_MOUSE : WIN_PEN;
   d->eraser = d->tool == WIN_PEN && info != NULL
     && (strstr(info->name, "eraser") || strstr(info->name, "Eraser"));
   if (info != NULL) {
@@ -1361,7 +1372,7 @@ static f32 window_axis(const WinDev* d, int a, bool norm, f32 none) {
 }
 
 static WinTool window_tool(const WinDev* d, bool down) {
-  f32 force = window_axis(d, WIN_FORCE, true, down ? 0.5f : 0);
+  f32 force = down ? window_axis(d, WIN_FORCE, true, 0.5f) : 0;
   if (d->tool == WIN_FINGER) {
     f32 w = (f32)d->px * window_axis(d, WIN_MAJOR, false, 0);
     f32 h = (f32)d->px * window_axis(d, WIN_MINOR, false, 0);
@@ -1412,7 +1423,8 @@ static void window_xi_event(BendWin* win, XGenericEventCookie* c, int* gx,
     window_vals(d, &xe->vals);
     window_point(&win->q, t == XI_TouchUpdate ? CID(Move) : CID(Press),
       window_id(&win->q, name | (u32)xe->h.detail, t == XI_TouchBegin),
-      window_tool(d, true), x, y, 0, t == XI_TouchBegin);
+      window_tool(d, t != XI_TouchEnd), x, y, (u32)xe->h.time, 0,
+      t == XI_TouchBegin);
   }
   if (touch || d->tool == WIN_FINGER) {
     return;
@@ -1429,12 +1441,15 @@ static void window_xi_event(BendWin* win, XGenericEventCookie* c, int* gx,
     return;
   }
   window_vals(d, &xe->vals);
-  WinTool tool = window_tool(d, id < 16 && win->q.down[id] != 0);
+  bool    pressed = t == XI_ButtonPress
+    || (t != XI_ButtonRelease && id < 16 && win->q.down[id] != 0);
+  WinTool tool    = window_tool(d, pressed);
   if (t == XI_Motion) {
-    window_point(&win->q, CID(Move), id, tool, x, y, 0, false);
+    window_point(&win->q, CID(Move), id, tool, x, y, (u32)xe->h.time, 0,
+      false);
   } else {
-    window_button(win, id, tool, x, y, xe->h.detail, t == XI_ButtonPress,
-      d->eraser);
+    window_button(win, id, tool, x, y, (u32)xe->h.time, xe->h.detail,
+      t == XI_ButtonPress, d->eraser);
   }
 }
 
@@ -1520,19 +1535,9 @@ static u64 window_unescape(char* d, const char* s, u64 n) {
   return k;
 }
 
-// The drop's data: a URI list's file paths are its files, its other lines
-// and any text its text.
-static void window_xdnd_data(BendWin* win, const XSelectionEvent* sel) {
-  Atom           kind;
-  int            fmt;
-  unsigned long  n    = 0;
-  unsigned long  rest;
-  unsigned char* data = NULL;
-  if (sel->property != None) {
-    XGetWindowProperty(win->dpy, win->win, sel->property, 0, 1 << 24, True,
-      AnyPropertyType, &kind, &fmt, &n, &rest, &data);
-  }
-  const char* s    = data != NULL ? (const char*)data : "";
+// A drop's data, s (n bytes): a URI list's file paths are its files, its
+// other lines and any text its text.
+static void window_xdnd_drop(BendWin* win, const char* s, u64 n) {
   bool        uris = win->xdnd_as == win->xdnd[WIN_XDND_URIS];
   char*       path = io_mem(malloc(n + 1));
   char*       text = io_mem(malloc(n + 1));
@@ -1563,10 +1568,41 @@ static void window_xdnd_data(BendWin* win, const XSelectionEvent* sel) {
   window_side(&win->q, text, uris && tn > 0 ? tn - 1 : tn);
   window_push(&win->q, CID(Dropped), f32_rewrap(win->xdnd_x),
     f32_rewrap(win->xdnd_y), at, nf);
-  window_xdnd_tell(win, WIN_XDND_FINISHED, sel->property != None,
-    sel->property != None ? (long)win->xdnd[WIN_XDND_COPY] : None, 0, 0);
+  window_xdnd_tell(win, WIN_XDND_FINISHED, 1,
+    (long)win->xdnd[WIN_XDND_COPY], 0, 0);
   free(path);
   free(text);
+}
+
+// The drop's property prop as it comes: whole, or (INCR, for a big drop) a
+// chunk per PropertyNotify until an empty one; refused (None), a DropOut.
+static void window_xdnd_data(BendWin* win, Atom prop) {
+  if (prop == None) {
+    window_xdnd_tell(win, WIN_XDND_FINISHED, 0, None, 0, 0);
+    window_push(&win->q, CID(DropOut), 0, 0, 0, 0);
+    return;
+  }
+  Atom           kind;
+  int            fmt;
+  unsigned long  n    = 0;
+  unsigned long  rest;
+  unsigned char* data = NULL;
+  XGetWindowProperty(win->dpy, win->win, prop, 0, 1 << 24, True,
+    AnyPropertyType, &kind, &fmt, &n, &rest, &data);
+  bool incr = kind == win->xdnd[WIN_XDND_INCR];
+  if (!incr && n > 0) {
+    win->xdnd_buf = io_mem(realloc(win->xdnd_buf, win->xdnd_n + n));
+    memcpy(win->xdnd_buf + win->xdnd_n, data, n);
+    win->xdnd_n += n;
+  }
+  win->xdnd_incr = incr || (win->xdnd_incr && n > 0);
+  if (!win->xdnd_incr) {
+    window_xdnd_drop(win, win->xdnd_buf != NULL ? win->xdnd_buf : "",
+      win->xdnd_n);
+    free(win->xdnd_buf);
+    win->xdnd_buf = NULL;
+    win->xdnd_n   = 0;
+  }
   if (data != NULL) {
     XFree(data);
   }
@@ -1600,13 +1636,14 @@ static void window_pump(BendWin* win) {
       }
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
       window_button(win, 0, (WinTool){ WIN_MOUSE }, ev.xbutton.x,
-        ev.xbutton.y, ev.xbutton.button, ev.type == ButtonPress, false);
+        ev.xbutton.y, (u32)ev.xbutton.time, ev.xbutton.button,
+        ev.type == ButtonPress, false);
     } else if (ev.type == MotionNotify) {
       x = ev.xmotion.x;
       y = ev.xmotion.y;
       if (!win->grab) {
-        window_point(&win->q, CID(Move), 0, (WinTool){ WIN_MOUSE }, x, y, 0,
-          false);
+        window_point(&win->q, CID(Move), 0, (WinTool){ WIN_MOUSE }, x, y,
+          (u32)ev.xmotion.time, 0, false);
       }
     } else if (ev.type == LeaveNotify) {
       window_leave(win, 0, ev.xcrossing.mode);
@@ -1637,7 +1674,11 @@ static void window_pump(BendWin* win) {
       window_xdnd(win, &ev.xclient);
     } else if (ev.type == SelectionNotify
       && ev.xselection.selection == win->xdnd[WIN_XDND_SELECTION]) {
-      window_xdnd_data(win, &ev.xselection);
+      window_xdnd_data(win, ev.xselection.property);
+    } else if (ev.type == PropertyNotify && win->xdnd_incr
+      && ev.xproperty.atom == win->xdnd[WIN_XDND_SELECTION]
+      && ev.xproperty.state == PropertyNewValue) {
+      window_xdnd_data(win, ev.xproperty.atom);
     }
   }
   // grabbed, the frame's motion is one look from the centre
@@ -1877,6 +1918,7 @@ static void window_close(intptr_t at) {
   XCloseDisplay(win->dpy);
   free(win->q.evs);
   free(win->q.side);
+  free(win->xdnd_buf);
   free(win);
 }
 

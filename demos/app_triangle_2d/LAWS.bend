@@ -14,10 +14,11 @@ law click_inside:
   for tool: Tool
   for +x: F32
   for +y: F32
+  for time: U32
   for button: U32
   for +n: U32
   for hit: {True{} == App.Tri.inside(F32.to_u32(x), F32.to_u32(y)) : Bool}
-  {App.Tri.event(Press{id, tool, x, y, button, True{}}, n)
+  {App.Tri.event(Press{id, tool, x, y, time, button, True{}}, n)
     == Some{(n + 1 : U32)} : Maybe<U32>}
 
 # LAW: a press outside the triangle keeps the count.
@@ -26,8 +27,9 @@ law click_outside:
   for tool: Tool
   for +x: F32
   for +y: F32
+  for time: U32
   for button: U32
   for +n: U32
   for miss: {False{} == App.Tri.inside(F32.to_u32(x), F32.to_u32(y)) : Bool}
-  {App.Tri.event(Press{id, tool, x, y, button, True{}}, n) == Some{n}
+  {App.Tri.event(Press{id, tool, x, y, time, button, True{}}, n) == Some{n}
     : Maybe<U32>}

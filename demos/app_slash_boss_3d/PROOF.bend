@@ -107,9 +107,9 @@ def Laws.esc_quits(pre, post, g):
         s => Laws.esc_quits(rest, post, s))
     case Text{text} <> rest:
       Laws.esc_quits(rest, post, g)
-    case Press{id, tool, x, y, button, down} <> rest:
+    case Press{id, tool, x, y, time, button, down} <> rest:
       Laws.esc_quits(rest, post, g)
-    case Move{id, tool, x, y} <> rest:
+    case Move{id, tool, x, y, time} <> rest:
       Laws.esc_quits(rest, post, g)
     case Lost{id} <> rest:
       Laws.esc_quits(rest, post, g)
