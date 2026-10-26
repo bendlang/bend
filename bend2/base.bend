@@ -134,8 +134,8 @@ type Event is Data:
 # go in place before it holds; count is how many in a row, each within
 # 300 ms and 16 pixels of the last), a LongPress (a press kept in place for
 # 500 ms), a Drag (one pointer pressed, past 8 pixels from where it went
-# down: by dx, dy since its last Move; then one DragEnd, dropped if let go,
-# else lost), and a Pan and a Pinch (fingers
+# down: by dx, dy since its last Move; then one DragEnd, lost if its
+# pointer was), and a Pan and a Pinch (fingers
 # pointers pressed, moving: their center (x, y), its motion and their
 # spread's scale and turn about it since the last; or a trackpad's Swipe
 # and Zoom).
@@ -143,20 +143,20 @@ type Gesture is Data:
   Tap{x: F32, y: F32, count: U32}
   LongPress{x: F32, y: F32}
   Drag{id: U32, x: F32, y: F32, dx: F32, dy: F32}
-  DragEnd{id: U32, x: F32, y: F32, dropped: Bool}
+  DragEnd{id: U32, x: F32, y: F32, lost: Bool}
   Pan{x: F32, y: F32, dx: F32, dy: F32, fingers: U32}
   Pinch{x: F32, y: F32, scale: F32, turn: F32, fingers: U32}
 
 # A pointer pressed: its id, where and when (ms) it went down, where it
 # is, whether it is still (a Tap or LongPress to be: alone, not past 8
 # pixels, not held) and whether it dragged.
-type Gesture.Touch is Data:
-  Gesture.Touch{id: U32, x0: F32, y0: F32, t0: Nat, x: F32, y: F32, still: Bool, drag: Bool}
+type Gesture.Pointer is Data:
+  Gesture.Pointer{id: U32, x0: F32, y0: F32, t0: Nat, x: F32, y: F32, still: Bool, drag: Bool}
 
 # The pointers pressed, in the order they went down, and the last Tap's
 # place, time and count.
 type Gesture.State is Data:
-  Gesture.State{down: List<&2, Gesture.Touch>, x: F32, y: F32, t: Nat, n: U32}
+  Gesture.State{down: List<&2, Gesture.Pointer>, x: F32, y: F32, t: Nat, n: U32}
 
 type Map<a, -V: Kind(a)> is Kind(a):
   MTip{}
@@ -3294,14 +3294,14 @@ def App.play(~S: Type, ~app: App<S>, frames: List<List<Event>>, state: S) ->
 def Gesture.new() -> Gesture.State:
   Gesture.State{[], 0.0, 0.0, 0n, 0}
 
-def Gesture.is(t: Gesture.Touch, +id: U32) -> Bool:
-  Gesture.Touch{i, x0, y0, t0, x, y, still, drag} = t
+def Gesture.is(t: Gesture.Pointer, +id: U32) -> Bool:
+  Gesture.Pointer{i, x0, y0, t0, x, y, still, drag} = t
   U32.is_eq(i, id)
 
 def Gesture.take.put(
-  +h: Gesture.Touch, hit: Bool,
-  r: Maybe<&2, Gesture.Touch> & List<&2, Gesture.Touch>
-) -> Maybe<&2, Gesture.Touch> & List<&2, Gesture.Touch>:
+  +h: Gesture.Pointer, hit: Bool,
+  r: Maybe<&2, Gesture.Pointer> & List<&2, Gesture.Pointer>
+) -> Maybe<&2, Gesture.Pointer> & List<&2, Gesture.Pointer>:
   match hit:
     case True{}:
       (m, rs) = r
@@ -3310,9 +3310,9 @@ def Gesture.take.put(
       (m, rs) = r
       (m, h <> rs)
 
-# The touch of id, out of ts.
-def Gesture.take(ts: List<&2, Gesture.Touch>, +id: U32) ->
-  Maybe<&2, Gesture.Touch> & List<&2, Gesture.Touch>:
+# The pointer of id, out of ts.
+def Gesture.take(ts: List<&2, Gesture.Pointer>, +id: U32) ->
+  Maybe<&2, Gesture.Pointer> & List<&2, Gesture.Pointer>:
   match ts:
     case Nil{}:
       (None{}, [])
@@ -3321,35 +3321,36 @@ def Gesture.take(ts: List<&2, Gesture.Touch>, +id: U32) ->
 
 # t at (x, y) if it is id's: still while within 8 pixels of where it went
 # down, and else a Drag by its motion.
-def Gesture.slide(t: Gesture.Touch, +id: U32, +x: F32, +y: F32) ->
-  Gesture.Touch & List<&2, Gesture>:
+def Gesture.slide(t: Gesture.Pointer, +id: U32, +x: F32, +y: F32) ->
+  Gesture.Pointer & List<&2, Gesture>:
   match t:
-    case Gesture.Touch{+i, +x0, +y0, t0, +px, +py, still, drag}:
+    case Gesture.Pointer{+i, +x0, +y0, t0, +px, +py, still, drag}:
       +hit = U32.is_eq(i, id)
       +nx = Bool.pick(F32, hit, x, px)
       +ny = Bool.pick(F32, hit, y, py)
       +s = still && F32.is_le(F32.hypot((nx - x0 : F32), (ny - y0 : F32)), 8.0)
       +go = hit && Bool.not(s)
-      (Gesture.Touch{i, x0, y0, t0, nx, ny, s, drag || go},
+      (Gesture.Pointer{i, x0, y0, t0, nx, ny, s, drag || go},
         Bool.pick(List<&2, Gesture>, go,
           [Drag{i, nx, ny, (nx - px : F32), (ny - py : F32)}], []))
 
 # t of a group: at (x, y) if it is id's, and no longer still.
-def Gesture.to(t: Gesture.Touch, +id: U32, x: F32, y: F32) -> Gesture.Touch:
+def Gesture.all.to(t: Gesture.Pointer, +id: U32, x: F32, y: F32) ->
+  Gesture.Pointer:
   match t:
-    case Gesture.Touch{+i, x0, y0, t0, px, py, still, drag}:
-      Gesture.Touch{i, x0, y0, t0, Bool.pick(F32, U32.is_eq(i, id), x, px),
+    case Gesture.Pointer{+i, x0, y0, t0, px, py, still, drag}:
+      Gesture.Pointer{i, x0, y0, t0, Bool.pick(F32, U32.is_eq(i, id), x, px),
         Bool.pick(F32, U32.is_eq(i, id), y, py), False{}, drag}
 
-def Gesture.all(ts: List<&2, Gesture.Touch>, +id: U32, +x: F32, +y: F32) ->
-  List<&2, Gesture.Touch>:
+def Gesture.all(ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
+  List<&2, Gesture.Pointer>:
   match ts:
     case Nil{}:
       []
     case t <> rest:
-      Gesture.to(t, id, x, y) <> Gesture.all(rest, id, x, y)
+      Gesture.all.to(t, id, x, y) <> Gesture.all(rest, id, x, y)
 
-def Gesture.has(ts: List<&2, Gesture.Touch>, +id: U32) -> Bool:
+def Gesture.has(ts: List<&2, Gesture.Pointer>, +id: U32) -> Bool:
   match ts:
     case Nil{}:
       False{}
@@ -3360,33 +3361,33 @@ def Gesture.wrap(+a: F32) -> F32:
   Bool.pick(F32, F32.is_gt(a, F32.pi()), (a - 6.2831853 : F32),
     Bool.pick(F32, F32.is_lt(a, F32.neg(F32.pi())), (a + 6.2831853 : F32), a))
 
-def Gesture.add(x: F32, y: F32, r: F32 & F32 & U32) -> F32 & F32 & U32:
+def Gesture.sum.add(x: F32, y: F32, r: F32 & F32 & U32) -> F32 & F32 & U32:
   (sx, sy, n) = r
   ((sx + x : F32), (sy + y : F32), (n + 1 : U32))
 
 # The sums of ts' positions, and their count.
-def Gesture.sum(ts: List<&2, Gesture.Touch>) -> F32 & F32 & U32:
+def Gesture.sum(ts: List<&2, Gesture.Pointer>) -> F32 & F32 & U32:
   match ts:
     case Nil{}:
       (0.0, 0.0, 0)
-    case Gesture.Touch{_, _, _, _, x, y, _, _} <> rest:
-      Gesture.add(x, y, Gesture.sum(rest))
+    case Gesture.Pointer{_, _, _, _, x, y, _, _} <> rest:
+      Gesture.sum.add(x, y, Gesture.sum(rest))
 
-def Gesture.acc(a: F32, b: F32, c: F32, r: F32 & F32 & F32) ->
+def Gesture.spin.add(a: F32, b: F32, c: F32, r: F32 & F32 & F32) ->
   F32 & F32 & F32:
   (sa, sb, sc) = r
   ((sa + a : F32), (sb + b : F32), (sc + c : F32))
 
-# A group's touches us before a move and vs after: the sums of their
+# A group's pointers us before a move and vs after: the sums of their
 # distances to their centers (ax, ay) and (bx, by), and of their turns.
 def Gesture.spin(
-  us: List<&2, Gesture.Touch>, vs: List<&2, Gesture.Touch>, +ax: F32,
+  us: List<&2, Gesture.Pointer>, vs: List<&2, Gesture.Pointer>, +ax: F32,
   +ay: F32, +bx: F32, +by: F32
 ) -> F32 & F32 & F32:
   match us vs:
-    case Gesture.Touch{_, _, _, _, +x, +y, _, _} <> rest
-      Gesture.Touch{_, _, _, _, +u, +v, _, _} <> more:
-      Gesture.acc(F32.hypot((x - ax : F32), (y - ay : F32)),
+    case Gesture.Pointer{_, _, _, _, +x, +y, _, _} <> rest
+      Gesture.Pointer{_, _, _, _, +u, +v, _, _} <> more:
+      Gesture.spin.add(F32.hypot((x - ax : F32), (y - ay : F32)),
         F32.hypot((u - bx : F32), (v - by : F32)),
         Gesture.wrap((F32.atan2((v - by : F32), (u - bx : F32))
           - F32.atan2((y - ay : F32), (x - ax : F32)) : F32)),
@@ -3394,7 +3395,7 @@ def Gesture.spin(
     case _ _:
       (0.0, 0.0, 0.0)
 
-def Gesture.ratio(+a: F32, b: F32) -> F32:
+def Gesture.shape.ratio(+a: F32, b: F32) -> F32:
   Bool.pick(F32, F32.is_gt(a, 0.0), F32.div(b, a), 1.0)
 
 def Gesture.shape(
@@ -3402,12 +3403,12 @@ def Gesture.shape(
 ) -> List<&2, Gesture>:
   (d0, d1, t) = r
   [Pan{bx, by, (bx - ax : F32), (by - ay : F32), n},
-    Pinch{bx, by, Gesture.ratio(d0, d1), F32.div(t, U32.to_f32(n)), n}]
+    Pinch{bx, by, Gesture.shape.ratio(d0, d1), F32.div(t, U32.to_f32(n)), n}]
 
-# The Pan and Pinch of n touches us moving to vs, whose positions sum to a
+# The Pan and Pinch of n pointers us moving to vs, whose positions sum to a
 # and b: by their center's motion, mean distance's ratio and mean turn.
 def Gesture.group(
-  +us: List<&2, Gesture.Touch>, +vs: List<&2, Gesture.Touch>,
+  +us: List<&2, Gesture.Pointer>, +vs: List<&2, Gesture.Pointer>,
   a: F32 & F32 & U32, b: F32 & F32 & U32
 ) -> List<&2, Gesture>:
   (sx, sy, n) = a
@@ -3420,47 +3421,47 @@ def Gesture.group(
   Gesture.shape(ax, ay, bx, by, m, Gesture.spin(us, vs, ax, ay, bx, by))
 
 # Two or more pressed, as a group: a Pan and a Pinch if id's is one.
-def Gesture.many(+ts: List<&2, Gesture.Touch>, +id: U32, +x: F32, +y: F32) ->
-  List<&2, Gesture.Touch> & List<&2, Gesture>:
+def Gesture.many(+ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
+  List<&2, Gesture.Pointer> & List<&2, Gesture>:
   +hit = Gesture.has(ts, id)
   +vs = Gesture.all(ts, id, x, y)
-  (Bool.pick(List<&2, Gesture.Touch>, hit, vs, ts),
+  (Bool.pick(List<&2, Gesture.Pointer>, hit, vs, ts),
     Bool.pick(List<&2, Gesture>, hit,
       Gesture.group(ts, vs, Gesture.sum(ts), Gesture.sum(vs)), []))
 
-def Gesture.one(r: Gesture.Touch & List<&2, Gesture>) ->
-  List<&2, Gesture.Touch> & List<&2, Gesture>:
+def Gesture.moves.one(r: Gesture.Pointer & List<&2, Gesture>) ->
+  List<&2, Gesture.Pointer> & List<&2, Gesture>:
   (t, gs) = r
   ([t], gs)
 
-def Gesture.moves(ts: List<&2, Gesture.Touch>, +id: U32, +x: F32, +y: F32) ->
-  List<&2, Gesture.Touch> & List<&2, Gesture>:
+def Gesture.moves(ts: List<&2, Gesture.Pointer>, +id: U32, +x: F32, +y: F32) ->
+  List<&2, Gesture.Pointer> & List<&2, Gesture>:
   match ts:
     case Nil{}:
       ([], [])
     case a <> Nil{}:
-      Gesture.one(Gesture.slide(a, id, x, y))
+      Gesture.moves.one(Gesture.slide(a, id, x, y))
     case +a <> +b <> +rest:
       Gesture.many(a <> b <> rest, id, x, y)
 
-def Gesture.put(
+def Gesture.event.put(
   +lx: F32, +ly: F32, +lt: Nat, +n: U32,
-  r: List<&2, Gesture.Touch> & List<&2, Gesture>
+  r: List<&2, Gesture.Pointer> & List<&2, Gesture>
 ) -> Gesture.State & List<&2, Gesture>:
   (ts, gs) = r
   (Gesture.State{ts, lx, ly, lt, n}, gs)
 
-# A touch let go (go) or lost: a Tap if let go still and quick, the
+# A pointer let go (go) or lost: a Tap if let go still and quick, the
 # count's next if near the last Tap in place and time; a DragEnd if it
 # dragged.
 def Gesture.end(
-  r: Maybe<&2, Gesture.Touch> & List<&2, Gesture.Touch>, +lx: F32, +ly: F32,
+  r: Maybe<&2, Gesture.Pointer> & List<&2, Gesture.Pointer>, +lx: F32, +ly: F32,
   +lt: Nat, +n: U32, +now: Nat, +go: Bool
 ) -> Gesture.State & List<&2, Gesture>:
   match r:
     case Tuple{None{}, rest}:
       (Gesture.State{rest, lx, ly, lt, n}, [])
-    case Tuple{Some{Gesture.Touch{id, +x0, +y0, +t0, x, y, +still, drag}},
+    case Tuple{Some{Gesture.Pointer{id, +x0, +y0, +t0, x, y, +still, drag}},
       +rest}:
       +tap = go && still && Nat.is_lt(Nat.sub(now, t0), 500n)
       +near = Nat.is_le(Nat.sub(now, lt), 300n)
@@ -3470,23 +3471,24 @@ def Gesture.end(
       (Bool.pick(Gesture.State, tap, Gesture.State{rest, x0, y0, now, c},
         Gesture.State{rest, lx, ly, lt, n}),
         Bool.pick(List<&2, Gesture>, tap, [Tap{x0, y0, c}],
-          Bool.pick(List<&2, Gesture>, drag, [DragEnd{id, x, y, go}], [])))
+          Bool.pick(List<&2, Gesture>, drag, [DragEnd{id, x, y, Bool.not(go)}],
+            [])))
 
 def Gesture.event(e: Event, s: Gesture.State, +now: Nat) ->
   Gesture.State & List<&2, Gesture>:
   match e:
     case Press{+id, tool, +x, +y, 0, True{}}:
       Gesture.State{+down, lx, ly, lt, n} = s
-      (Gesture.State{List.append(&2, Gesture.Touch, Gesture.all(down, id, x, y),
-        [Gesture.Touch{id, x, y, now, x, y,
-          List.is_empty(&2, Gesture.Touch, down), False{}}]), lx, ly, lt, n},
+      (Gesture.State{List.append(&2, Gesture.Pointer,
+        Gesture.all(down, id, x, y), [Gesture.Pointer{id, x, y, now, x, y,
+          List.is_empty(&2, Gesture.Pointer, down), False{}}]), lx, ly, lt, n},
         [])
     case Press{id, tool, x, y, 0, False{}}:
       Gesture.State{down, lx, ly, lt, n} = s
       Gesture.end(Gesture.take(down, id), lx, ly, lt, n, now, True{})
     case Move{id, tool, x, y}:
       Gesture.State{down, lx, ly, lt, n} = s
-      Gesture.put(lx, ly, lt, n, Gesture.moves(down, id, x, y))
+      Gesture.event.put(lx, ly, lt, n, Gesture.moves(down, id, x, y))
     case Lost{id}:
       Gesture.State{down, lx, ly, lt, n} = s
       Gesture.end(Gesture.take(down, id), lx, ly, lt, n, now, False{})
@@ -3497,10 +3499,10 @@ def Gesture.event(e: Event, s: Gesture.State, +now: Nat) ->
     case _:
       (s, [])
 
-def Gesture.hold(
-  due: Bool, +x: F32, +y: F32, t: Gesture.Touch,
-  r: List<&2, Gesture.Touch> & List<&2, Gesture>
-) -> List<&2, Gesture.Touch> & List<&2, Gesture>:
+def Gesture.holds.put(
+  due: Bool, +x: F32, +y: F32, t: Gesture.Pointer,
+  r: List<&2, Gesture.Pointer> & List<&2, Gesture>
+) -> List<&2, Gesture.Pointer> & List<&2, Gesture>:
   match due:
     case False{}:
       (ts, gs) = r
@@ -3509,34 +3511,36 @@ def Gesture.hold(
       (ts, gs) = r
       (t <> ts, LongPress{x, y} <> gs)
 
-# Each touch still for 500 ms holds, once.
-def Gesture.holds(ts: List<&2, Gesture.Touch>, +now: Nat) ->
-  List<&2, Gesture.Touch> & List<&2, Gesture>:
+# Each pointer still for 500 ms holds, once.
+def Gesture.holds(ts: List<&2, Gesture.Pointer>, +now: Nat) ->
+  List<&2, Gesture.Pointer> & List<&2, Gesture>:
   match ts:
     case Nil{}:
       ([], [])
-    case Gesture.Touch{id, +x0, +y0, +t0, x, y, +still, drag} <> rest:
+    case Gesture.Pointer{id, +x0, +y0, +t0, x, y, +still, drag} <> rest:
       +due = still && Nat.is_ge(Nat.sub(now, t0), 500n)
-      Gesture.hold(due, x0, y0, Gesture.Touch{id, x0, y0, t0, x, y,
+      Gesture.holds.put(due, x0, y0, Gesture.Pointer{id, x0, y0, t0, x, y,
         still && Bool.not(due), drag}, Gesture.holds(rest, now))
 
-def Gesture.cat(gs: List<&2, Gesture>, r: Gesture.State & List<&2, Gesture>) ->
-  Gesture.State & List<&2, Gesture>:
+def Gesture.step.cat(
+  gs: List<&2, Gesture>, r: Gesture.State & List<&2, Gesture>
+) -> Gesture.State & List<&2, Gesture>:
   (s, hs) = r
   (s, List.append(&2, Gesture, gs, hs))
 
-def Gesture.then(
+def Gesture.step.then(
   r: Gesture.State & List<&2, Gesture>,
   k: Gesture.State -> Gesture.State & List<&2, Gesture>
 ) -> Gesture.State & List<&2, Gesture>:
   (s, gs) = r
-  Gesture.cat(gs, k(s))
+  Gesture.step.cat(gs, k(s))
 
 def Gesture.step(events: List<Event>, s: Gesture.State, +now: Nat) ->
   Gesture.State & List<&2, Gesture>:
   match events:
     case Nil{}:
       Gesture.State{down, lx, ly, lt, n} = s
-      Gesture.put(lx, ly, lt, n, Gesture.holds(down, now))
+      Gesture.event.put(lx, ly, lt, n, Gesture.holds(down, now))
     case e <> rest:
-      Gesture.then(Gesture.event(e, s, now), u => Gesture.step(rest, u, now))
+      Gesture.step.then(Gesture.event(e, s, now),
+        u => Gesture.step(rest, u, now))

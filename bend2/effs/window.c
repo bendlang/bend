@@ -11,8 +11,8 @@
 // a Press's words
 enum { WIN_TAG = 2, WIN_BUTTON = 10, WIN_DOWN = 11 };
 
-// A Tool's tag; WIN_ERASER, a pen whose contact is button 5, is the lanes'.
-enum { WIN_MOUSE, WIN_FINGER, WIN_PEN, WIN_ERASER };
+// A Tool's tag
+enum { WIN_MOUSE, WIN_FINGER, WIN_PEN };
 
 typedef struct {
   u32 tag;
@@ -30,12 +30,12 @@ typedef struct {
   char* side;
   u32   sn;
   u32   scap;
-  u64  name[16];
-  u32  down[16];
-  u32  live;
-  u32  keys[32];
-  u32  nk;
-  bool focus;
+  u64   name[16];
+  u32   down[16];
+  u32   live;
+  u32   keys[32];
+  u32   nk;
+  bool  focus;
 } WinQueue;
 
 #ifdef __OBJC__
@@ -148,14 +148,15 @@ typedef struct {
   WinXIClass**   classes;
 } WinXIDevice;
 
-// A device met: its tool, each axis's valuator (-1: none), range and last
-// value (events carry only changes), and a touch screen's pixels per unit
-// of position.
+// A device met: its tool (a pen's contact is button 5 at its eraser),
+// each axis's valuator (-1: none), range and last value (events carry only
+// changes), and a touch screen's pixels per unit of position.
 enum { WIN_FORCE, WIN_TILT_X, WIN_TILT_Y, WIN_MAJOR, WIN_MINOR, WIN_AXES };
 
 typedef struct {
   int    id;
   u32    tool;
+  bool   eraser;
   int    ax[WIN_AXES];
   double lo[WIN_AXES], hi[WIN_AXES], at[WIN_AXES];
   double px;
@@ -193,10 +194,10 @@ typedef struct {
   u32      nd;
   WinDev   devs[8];
   Atom     xdnd[WIN_XDND_N];
-  Window   drag;
-  Atom     drag_as;
-  int      drag_x;
-  int      drag_y;
+  Window   xdnd_src;
+  Atom     xdnd_as;
+  int      xdnd_x;
+  int      xdnd_y;
 } BendWin;
 
 // Names the window in UTF-8: _NET_WM_NAME, which window managers show,
@@ -356,7 +357,8 @@ static inline void window_delta(WinQueue* q, u32 cid, f32 x, f32 y, f32 a,
   window_put(q, ev);
 }
 
-// s, n bytes, into the side buffer.
+// s, n bytes, into the side buffer: a Dropped's (x, y, at, nf) are where,
+// and its nf files then its text from at on.
 static inline void window_side(WinQueue* q, const char* s, u64 n) {
   if (q->sn + n + 1 > q->scap) {
     q->scap = (q->sn + n + 1) * 2;
@@ -365,13 +367,6 @@ static inline void window_side(WinQueue* q, const char* s, u64 n) {
   memcpy(q->side + q->sn, s, n);
   q->side[q->sn + n] = 0;
   q->sn += n + 1;
-}
-
-// A Dropped at (x, y): the nf files and the text put in the side buffer
-// from at on.
-static inline void window_drop(WinQueue* q, f32 x, f32 y, u32 at, u32 nf) {
-  u32 ev[WIN_EV] = { CID(Dropped), f32_rewrap(x), f32_rewrap(y), at, nf };
-  window_put(q, ev);
 }
 
 // The focus come, or gone: then it first loses the pointers pressed and
@@ -543,7 +538,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 }
 
 // A tablet's pen moves the cursor, but is its own pointer.
-- (u32)tool:(WinTool*)t of:(NSEvent*)ev {
+- (u32)pointer:(NSEvent*)ev tool:(WinTool*)t {
   if (ev.subtype != NSEventSubtypeTabletPoint) {
     *t = (WinTool){ WIN_MOUSE };
     return 0;
@@ -557,7 +552,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 // Let go past the view, the pointer is gone.
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
   WinTool t;
-  u32     id = [self tool:&t of:ev];
+  u32     id = [self pointer:ev tool:&t];
   NSPoint p  = [self at:ev];
   u32     n  = (u32)ev.buttonNumber;
   window_point(&q, CID(Press), id, t, p.x, p.y, t.tag == WIN_PEN && eraser
@@ -580,7 +575,7 @@ static inline void window_focus(WinQueue* q, bool on) {
     return;
   }
   WinTool t;
-  u32     id = [self tool:&t of:ev];
+  u32     id = [self pointer:ev tool:&t];
   NSPoint p  = [self at:ev];
   if (id < 16 && (q.down[id] != 0 || NSPointInRect(p, self.bounds))) {
     window_point(&q, CID(Move), id, t, p.x, p.y, 0, 0);
@@ -682,7 +677,8 @@ static inline void window_focus(WinQueue* q, bool on) {
     window_side(&q, path, strlen(path));
   }
   window_side(&q, t != NULL ? t : "", t != NULL ? strlen(t) : 0);
-  window_drop(&q, p.x, p.y, at, (u32)fs.count);
+  window_push(&q, CID(Dropped), f32_rewrap(p.x), f32_rewrap(p.y), at,
+    (u32)fs.count);
   return YES;
 }
 
@@ -1337,9 +1333,9 @@ static WinDev* window_dev(BendWin* win, int id) {
       XFree(s);
     }
   }
-  d->tool = touch ? WIN_FINGER : d->ax[WIN_FORCE] < 0 ? WIN_MOUSE
-    : info != NULL && (strstr(info->name, "eraser")
-      || strstr(info->name, "Eraser")) ? WIN_ERASER : WIN_PEN;
+  d->tool   = touch ? WIN_FINGER : d->ax[WIN_FORCE] < 0 ? WIN_MOUSE : WIN_PEN;
+  d->eraser = d->tool == WIN_PEN && info != NULL
+    && (strstr(info->name, "eraser") || strstr(info->name, "Eraser"));
   if (info != NULL) {
     window_xi_free(info);
   }
@@ -1372,7 +1368,7 @@ static WinTool window_tool(const WinDev* d, bool down) {
     return (WinTool){ WIN_FINGER, { force, w > 0 ? w : 1,
       h > 0 ? h : w > 0 ? w : 1 } };
   }
-  if (d->tool != WIN_MOUSE) {
+  if (d->tool == WIN_PEN) {
     return (WinTool){ WIN_PEN, { force, 0,
       fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_X, false, 0))),
       fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_Y, false, 0))), 0 } };
@@ -1438,17 +1434,17 @@ static void window_xi_event(BendWin* win, XGenericEventCookie* c, int* gx,
     window_point(&win->q, CID(Move), id, tool, x, y, 0, false);
   } else {
     window_button(win, id, tool, x, y, xe->h.detail, t == XI_ButtonPress,
-      d->tool == WIN_ERASER);
+      d->eraser);
   }
 }
 
 // An XDND message to the drag's source, from the window.
 static void window_xdnd_tell(BendWin* win, int msg, long a, long b, long c,
   long d) {
-  XEvent ev = { .xclient = { .type = ClientMessage, .window = win->drag,
+  XEvent ev = { .xclient = { .type = ClientMessage, .window = win->xdnd_src,
     .message_type = win->xdnd[msg], .format = 32,
     .data.l = { (long)win->win, a, b, c, d } } };
-  XSendEvent(win->dpy, win->drag, False, NoEventMask, &ev);
+  XSendEvent(win->dpy, win->xdnd_src, False, NoEventMask, &ev);
 }
 
 // The type a drag is read as: files if it offers them, else UTF-8 text.
@@ -1459,13 +1455,13 @@ static Atom window_xdnd_as(BendWin* win, const XClientMessageEvent* m) {
   unsigned long  rest;
   unsigned char* list = NULL;
   const Atom*    ts   = (const Atom*)&m->data.l[2];
-  if (m->data.l[1] & 1 && XGetWindowProperty(win->dpy, win->drag,
+  if (m->data.l[1] & 1 && XGetWindowProperty(win->dpy, win->xdnd_src,
     win->xdnd[WIN_XDND_TYPES], 0, 1024, False, XA_ATOM, &kind, &fmt, &n,
     &rest, &list) == Success && list != NULL) {
     ts = (const Atom*)list;
   }
   Atom as = None;
-  for (int k = WIN_XDND_PLAIN; k >= WIN_XDND_URIS; k -= 1) {
+  for (int k = WIN_XDND_URIS; as == None && k <= WIN_XDND_PLAIN; k += 1) {
     for (unsigned long i = 0; i < n; i += 1) {
       as = ts[i] == win->xdnd[k] ? ts[i] : as;
     }
@@ -1481,21 +1477,21 @@ static Atom window_xdnd_as(BendWin* win, const XClientMessageEvent* m) {
 // asks for its data, which comes as a SelectionNotify.
 static void window_xdnd(BendWin* win, const XClientMessageEvent* m) {
   Atom t = m->message_type;
-  bool taken = win->drag_as != None;
+  bool taken = win->xdnd_as != None;
   if (t == win->xdnd[WIN_XDND_ENTER]) {
-    win->drag    = (Window)m->data.l[0];
-    win->drag_as = window_xdnd_as(win, m);
+    win->xdnd_src    = (Window)m->data.l[0];
+    win->xdnd_as = window_xdnd_as(win, m);
   } else if (t == win->xdnd[WIN_XDND_POSITION]) {
     Window child;
     XTranslateCoordinates(win->dpy, DefaultRootWindow(win->dpy), win->win,
       (int)((unsigned long)m->data.l[2] >> 16), (int)(m->data.l[2] & 0xFFFF),
-      &win->drag_x, &win->drag_y, &child);
-    window_push(&win->q, CID(DropOver), f32_rewrap(win->drag_x),
-      f32_rewrap(win->drag_y), 0, 0);
+      &win->xdnd_x, &win->xdnd_y, &child);
+    window_push(&win->q, CID(DropOver), f32_rewrap(win->xdnd_x),
+      f32_rewrap(win->xdnd_y), 0, 0);
     window_xdnd_tell(win, WIN_XDND_STATUS, taken, 0, 0,
       taken ? (long)win->xdnd[WIN_XDND_COPY] : None);
   } else if (t == win->xdnd[WIN_XDND_DROP] && taken) {
-    XConvertSelection(win->dpy, win->xdnd[WIN_XDND_SELECTION], win->drag_as,
+    XConvertSelection(win->dpy, win->xdnd[WIN_XDND_SELECTION], win->xdnd_as,
       win->xdnd[WIN_XDND_SELECTION], win->win, (Time)m->data.l[2]);
   } else if (t == win->xdnd[WIN_XDND_DROP]
     || t == win->xdnd[WIN_XDND_LEAVE]) {
@@ -1537,7 +1533,7 @@ static void window_xdnd_data(BendWin* win, const XSelectionEvent* sel) {
       AnyPropertyType, &kind, &fmt, &n, &rest, &data);
   }
   const char* s    = data != NULL ? (const char*)data : "";
-  bool        uris = win->drag_as == win->xdnd[WIN_XDND_URIS];
+  bool        uris = win->xdnd_as == win->xdnd[WIN_XDND_URIS];
   char*       path = io_mem(malloc(n + 1));
   char*       text = io_mem(malloc(n + 1));
   u64         tn   = uris ? 0 : n;
@@ -1565,7 +1561,8 @@ static void window_xdnd_data(BendWin* win, const XSelectionEvent* sel) {
     i = j + 1;
   }
   window_side(&win->q, text, uris && tn > 0 ? tn - 1 : tn);
-  window_drop(&win->q, win->drag_x, win->drag_y, at, nf);
+  window_push(&win->q, CID(Dropped), f32_rewrap(win->xdnd_x),
+    f32_rewrap(win->xdnd_y), at, nf);
   window_xdnd_tell(win, WIN_XDND_FINISHED, sel->property != None,
     sel->property != None ? (long)win->xdnd[WIN_XDND_COPY] : None, 0, 0);
   free(path);

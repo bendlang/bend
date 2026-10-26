@@ -88,7 +88,7 @@ def main() -> IO(Unit):
 #|long 40 40
 #|drag 0 70 50 18 0
 #|drag 0 80 55 10 5
-#|dragend 0 80 55 True
+#|dragend 0 80 55 False
 #|pan 200 100 50 0 2
 #|pinch 200 100 200 0 2
 #|pan 100 200 -100 100 2
@@ -98,4 +98,4 @@ def main() -> IO(Unit):
 #|pan 40 20 20 0 3
 #|pinch 40 20 156 7 3
 #|drag 9 20 0 20 0
-#|dragend 9 20 0 False
+#|dragend 9 20 0 True
