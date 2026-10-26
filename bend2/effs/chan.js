@@ -15,28 +15,44 @@ function chan_wait(item) {
   return { $: CID(Wait), rest: item === CHAN_RECV ? { $: CID(Unit) } : item };
 }
 
-// The waiters are wait[seen..]: like the ring below, Array.shift would drain
-// n of them in n^2 on V8.
-function chan_drop(row) {
-  // Not only for the GC: chan_park's late finds w by indexOf, and must miss
-  // a woken w rather than splice a live waiter out.
-  row.wait[row.seen] = undefined;
-  row.seen += 1;
-  if (row.seen > row.wait.length - row.seen + 64) {
-    // Compacts after live+64 drops, so a drop moves O(1) waiters.
-    row.wait.copyWithin(0, row.seen);
-    row.wait.length -= row.seen;
-    row.seen = 0;
+// The buffer and the waiters are queues, xs[head..]: Array.shift drains n in
+// n^2 on V8, so a pull moves head, and compacts once head passes the live
+// ones + 64, so a pull moves O(1) of them.
+function q_new() {
+  return { xs: [], head: 0 };
+}
+
+function q_size(q) {
+  return q.xs.length - q.head;
+}
+
+function q_push(q, x) {
+  q.xs.push(x);
+}
+
+function q_pull(q) {
+  const x = q.xs[q.head];
+  q.xs[q.head] = undefined;
+  q.head += 1;
+  const live = q_size(q);
+  if (live === 0 || q.head > live + 64) {
+    q.xs.copyWithin(0, q.head);
+    q.xs.length = live;
+    q.head = 0;
   }
+  return x;
 }
 
 // The first waiter, past those whose IO has returned (a nested io_run): their
-// computations are gone with it, so the row drops them and their items.
+// computations are gone with it, so the row drops them and their items; and
+// past those whose try_ timer came first, which left without a wake.
 function chan_head(row) {
-  while (row.seen < row.wait.length && row.wait[row.seen].io.done) {
-    chan_drop(row);
+  let w = row.wait.xs[row.wait.head];
+  while (w !== undefined && (w.gone || w.io.done)) {
+    q_pull(row.wait);
+    w = row.wait.xs[row.wait.head];
   }
-  return row.wait[row.seen];
+  return w;
 }
 
 // Wakes the first live waiter with x, as Ready{x} if try_ (cutting its timer,
@@ -44,7 +60,8 @@ function chan_head(row) {
 // io_run may wake an outer one.
 function chan_wake(row, x) {
   const w = chan_head(row);
-  chan_drop(row);
+  q_pull(row.wait);
+  w.gone = true;
   if (w.late !== undefined) {
     const ws = w.io.waits;
     const at = ws.findIndex((t) => t.more === w.late);
@@ -55,34 +72,10 @@ function chan_wake(row, x) {
   return w.item;
 }
 
-// The buffer is ring[head, head+size): Array.shift drains n in n^2 on V8.
-function chan_push(row, value) {
-  row.ring[row.head + row.size] = value;
-  row.size += 1;
-}
-
-function chan_pull(row) {
-  const v = row.ring[row.head];
-  row.ring[row.head] = undefined;
-  row.size -= 1;
-  if (row.size === 0) {
-    row.head = 0;
-  } else {
-    row.head += 1;
-    if (row.head > row.size + 64) {
-      // Compacts after size+64 receives, so a receive moves O(1) values.
-      row.ring.copyWithin(0, row.head, row.head + row.size);
-      row.ring.length = row.size;
-      row.head = 0;
-    }
-  }
-  return v;
-}
-
 function chan_take(row) {
-  const v = chan_pull(row);
+  const v = q_pull(row.ring);
   if (chan_head(row) !== undefined) {
-    chan_push(row, chan_wake(row, chan_done()));
+    q_push(row.ring, chan_wake(row, chan_done()));
   }
   return v;
 }
@@ -90,28 +83,27 @@ function chan_take(row) {
 // A handle is the row (a stale copy keeps it, shut).
 function chan_shut(row) {
   row.shut = true;
-  while (chan_head(row) !== undefined) {
-    const item = row.wait[row.seen].item;
-    chan_wake(row, item === CHAN_RECV ? { $: CID(None) }
-      : { $: CID(Fail), error: item });
+  for (let w; (w = chan_head(row)) !== undefined;) {
+    chan_wake(row, w.item === CHAN_RECV ? { $: CID(None) }
+      : { $: CID(Fail), error: w.item });
   }
 }
 
 // Parks k on row with item; with ms, a timer too, whose late answers Wait:
-// the first of the two to come cuts the other.
+// the first of the two to come cuts the other. A late w stays in the queue,
+// gone, for chan_head to drop, so a timeout costs O(1).
 function chan_park(row, k, item, ms) {
-  const w = { io: io_active, cont: k, item: item };
+  const w = { io: io_active, cont: k, item: item, gone: false };
   if (ms !== undefined) {
     w.late = () => {
       // An earlier callback of the same ready batch may have woken w.
-      const at = row.wait.indexOf(w);
-      if (at < 0) return undefined;
-      row.wait.splice(at, 1);
+      if (w.gone) return undefined;
+      w.gone = true;
       return chan_wait(item);
     };
     io_park_on(undefined, false, k, w.late, io_until(ms));
   }
-  row.wait.push(w);
+  q_push(row.wait, w);
   return undefined;
 }
 
@@ -124,8 +116,8 @@ function chan_put(row, value) {
     chan_wake(row, { $: CID(Some), value: value });
     return chan_done();
   }
-  if (row.size < row.room) {
-    chan_push(row, value);
+  if (q_size(row.ring) < row.room) {
+    q_push(row.ring, value);
     return chan_done();
   }
   return undefined;
@@ -133,7 +125,7 @@ function chan_put(row, value) {
 
 // Receives without waiting: Some{v}, None{} at the end, undefined if not.
 function chan_get(row) {
-  if (row.size > 0) {
+  if (q_size(row.ring) > 0) {
     return { $: CID(Some), value: chan_take(row) };
   }
   const w = chan_head(row);
@@ -158,8 +150,7 @@ function chan_try(row, x, item, ms, k) {
 }
 
 function chan_new(room) {
-  return { room: Number(room), ring: [], head: 0, size: 0,
-    wait: [], seen: 0, shut: false };
+  return { room: Number(room), ring: q_new(), wait: q_new(), shut: false };
 }
 
 function chan_send(row, value, k) {
