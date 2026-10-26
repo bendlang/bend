@@ -5,10 +5,15 @@ Term title_run(Env e, Term* f, IoWork* w) {
   return io_tup(e, f[0], io_str(e, text, strlen(text)));
 #elif defined(__linux__)
   BendWin* win = (BendWin*)(uintptr_t)io_hand_v(f[0]);
-  char* text = NULL;
-  XFetchName(win->dpy, win->win, &text);
-  Term got = io_str(e, text == NULL ? "" : text,
-    text == NULL ? 0 : strlen(text));
+  Atom           type;
+  int            fmt;
+  unsigned long  n = 0, left;
+  unsigned char* text = NULL;
+  XGetWindowProperty(win->dpy, win->win,
+    XInternAtom(win->dpy, "_NET_WM_NAME", False), 0, 1 << 16, False,
+    XInternAtom(win->dpy, "UTF8_STRING", False), &type, &fmt, &n, &left,
+    &text);
+  Term got = io_str(e, text == NULL ? "" : (char*)text, text == NULL ? 0 : n);
   if (text != NULL) {
     XFree(text);
   }
