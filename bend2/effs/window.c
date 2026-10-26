@@ -4,6 +4,37 @@
 // All window effects share this source; each entry is present only when
 // its effect is reachable.
 
+// An event: its constructor's id, then its fields as the compiler lays
+// them out (a Tool inline, as its tag and five words).
+#define WIN_EV 12
+
+// a Press's words
+enum { WIN_TAG = 2, WIN_BUTTON = 10, WIN_DOWN = 11 };
+
+// A Tool's tag
+enum { WIN_MOUSE, WIN_FINGER, WIN_PEN };
+
+typedef struct {
+  u32 tag;
+  f32 v[5];
+} WinTool;
+
+// A window's events since its last frame, and what they leave held: per
+// pointer id (the mouse 0, the others 1 to 15) its system name and buttons
+// down, the ids live (the mouse while over the window), the keys down and
+// the focus.
+typedef struct {
+  u32* evs;
+  u32  n;
+  u32  cap;
+  u64  name[16];
+  u32  down[16];
+  u32  live;
+  u32  keys[32];
+  u32  nk;
+  bool focus;
+} WinQueue;
+
 #ifdef __OBJC__
 
 #import <AppKit/AppKit.h>
@@ -11,12 +42,6 @@
 
 #elif defined(__linux__)
 
-// The X11 window: its own connection (so its queue holds only its
-// events), its input method and context (NULL if none opened), the
-// time and code of the last key the method took, the frame's image,
-// the events pumped since the last frame, five words each (cid, a, b,
-// c, d) as on the Mac, whether it holds the pointer, and the display's
-// refresh period in ns.
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
@@ -24,6 +49,11 @@
 #include <langinfo.h>
 #include <locale.h>
 
+// The X11 window: its own connection (so its queue holds only its
+// events), its input method and context (NULL if none opened), the
+// time and code of the last key the method took, the frame's image,
+// its events, whether it holds the pointer and the display's refresh
+// period in ns.
 typedef struct {
   Display* dpy;
   Window   win;
@@ -33,9 +63,7 @@ typedef struct {
   u32      kc;
   Atom     del;
   XImage*  img;
-  u32      n;
-  u32      cap;
-  u32*     evs;
+  WinQueue q;
   u32      grab;
   u64      period;
 } BendWin;
@@ -60,7 +88,8 @@ static inline void window_x_title(Display* dpy, Window w, const char* text,
 // UTF-8 in its four words, cut between characters, so a long input
 // method commit comes as several. Control characters and the Mac's
 // function-key characters (U+F700 on) are keys, not text: dropped.
-static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
+static inline bool window_chunk(const char* s, u64 n, u64* at,
+  u32 ev[WIN_EV]) {
   char b[16] = { 0 };
   u32  k = 0;
   while (*at < n) {
@@ -86,6 +115,128 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
   ev[0] = CID(Text);
   memcpy(ev + 1, b, sizeof b);
   return k > 0;
+}
+
+// The id of the pointer the system names name: the one it holds, else (if
+// make) the least free, else 16 (none). The mouse's is 0, by its lane.
+static inline u32 window_id(WinQueue* q, u64 name, bool make) {
+  u32 free = 16;
+  for (u32 i = 15; i > 0; i -= 1) {
+    if (!(q->live >> i & 1)) {
+      free = i;
+    } else if (q->name[i] == name) {
+      return i;
+    }
+  }
+  if (!make || free == 16) {
+    return 16;
+  }
+  q->name[free] = name;
+  q->live |= 1u << free;
+  return free;
+}
+
+// Whether ev goes out, as it updates q: a Key or Press up of nothing down,
+// an event of an id not live (or none) and a Focus that changes nothing do
+// not. A Press or Move makes its id live, a finger's last Press up or a
+// Lost frees it.
+static inline bool window_keep(WinQueue* q, const u32* ev) {
+  u32 c = ev[0];
+  u32 a = ev[1];
+  if (c == CID(Key)) {
+    u32 i = 0;
+    while (i < q->nk && q->keys[i] != a) {
+      i += 1;
+    }
+    if (ev[2] && i == q->nk && i < 32) {
+      q->keys[q->nk++] = a;
+    } else if (!ev[2] && i == q->nk) {
+      return false;
+    } else if (!ev[2]) {
+      q->keys[i] = q->keys[--q->nk];
+    }
+    return true;
+  }
+  if (c == CID(Focus)) {
+    bool was = q->focus;
+    q->focus = a;
+    return was != a;
+  }
+  if (c != CID(Press) && c != CID(Move) && c != CID(Lost)) {
+    return true;
+  }
+  if (a >= 16 || (c == CID(Lost) && !(q->live >> a & 1))) {
+    return false;
+  }
+  u32 m = 1u << a;
+  u32 b = c == CID(Press) ? 1u << (ev[WIN_BUTTON] & 31) : 0;
+  if (c == CID(Lost)) {
+    q->live &= ~m;
+    q->down[a] = 0;
+    return true;
+  }
+  if (c == CID(Press) && !ev[WIN_DOWN]) {
+    if (!(q->down[a] & b)) {
+      return false;
+    }
+    q->down[a] &= ~b;
+    if (ev[WIN_TAG] == WIN_FINGER && q->down[a] == 0) {
+      q->live &= ~m;
+    }
+    return true;
+  }
+  q->down[a] |= b;
+  q->live |= m;
+  return true;
+}
+
+static inline void window_put(WinQueue* q, const u32* ev) {
+  if (!window_keep(q, ev)) {
+    return;
+  }
+  if (q->n == q->cap) {
+    q->cap = q->cap == 0 ? 64 : q->cap * 2;
+    q->evs = io_mem(realloc(q->evs, q->cap * WIN_EV * sizeof *ev));
+  }
+  memcpy(q->evs + q->n * WIN_EV, ev, WIN_EV * sizeof *ev);
+  q->n += 1;
+}
+
+static inline void window_push(WinQueue* q, u32 cid, u32 a, u32 b, u32 c,
+  u32 d) {
+  u32 ev[WIN_EV] = { cid, a, b, c, d };
+  window_put(q, ev);
+}
+
+// A Press, or a Move (which ends before b).
+static inline void window_point(WinQueue* q, u32 cid, u32 id, WinTool t,
+  f32 x, f32 y, u32 b, bool down) {
+  u32 ev[WIN_EV] = { cid, id, t.tag, f32_rewrap(t.v[0]), f32_rewrap(t.v[1]),
+    f32_rewrap(t.v[2]), f32_rewrap(t.v[3]), f32_rewrap(t.v[4]),
+    f32_rewrap(x), f32_rewrap(y), b, down };
+  window_put(q, ev);
+}
+
+// A Scroll, Zoom or Swipe at (x, y), by a and b, of n fingers.
+static inline void window_delta(WinQueue* q, u32 cid, f32 x, f32 y, f32 a,
+  f32 b, u32 n) {
+  u32 ev[WIN_EV] = { cid, f32_rewrap(x), f32_rewrap(y), f32_rewrap(a),
+    f32_rewrap(b), n };
+  window_put(q, ev);
+}
+
+// The focus come, or gone: then it first loses the pointers pressed and
+// lets go of the keys held.
+static inline void window_focus(WinQueue* q, bool on) {
+  for (u32 i = 0; !on && i < 16; i += 1) {
+    if (q->down[i] != 0) {
+      window_push(q, CID(Lost), i, 0, 0, 0);
+    }
+  }
+  while (!on && q->nk > 0) {
+    window_push(q, CID(Key), q->keys[q->nk - 1], false, 0, 0);
+  }
+  window_push(q, CID(Focus), on, 0, 0, 0);
 }
 
 #endif
@@ -482,7 +633,8 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   XSetWMProtocols(dpy, win->win, &win->del, 1);
   window_x_title(dpy, win->win, title, strlen(title));
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
-    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask | im_evs);
+    | ButtonReleaseMask | PointerMotionMask | LeaveWindowMask | FocusChangeMask
+    | im_evs);
   XMapRaised(dpy, win->win);
   XFlush(dpy);
   *out = (intptr_t)win;
@@ -521,8 +673,8 @@ static void __attribute__((constructor)) window_open_use(void) {
 
 #ifdef CID(Window.frame)
 
-// An event is five words: its constructor's id and its fields; a frame
-// answers the events pumped since the last one.
+// A frame answers the events pumped since the last one; a constructor of
+// one word packs it in its term, as the compiler builds it.
 #if defined(__OBJC__) || defined(__linux__)
 
 static Term window_node(Env e, const u32* ev) {
@@ -531,8 +683,8 @@ static Term window_node(Env e, const u32* ev) {
     return io_box(e, CID(Text), io_str(e, s, strnlen(s, 16)));
   }
   u32 n = cid_arity(ev[0]);
-  if (n == 0) {
-    return term_pak(ev[0], 0);
+  if (n <= 1) {
+    return term_pak(ev[0], n == 0 ? 0 : ev[1]);
   }
   u64 l = heap_alloc(e, cls_fit(n));
   for (u32 j = 0; j < n; j += 1) {
@@ -548,7 +700,7 @@ static u32 window_depth(u32 n) {
 static Term window_list(Env e, const u32* p, u64 n) {
   Term list = term_pak(CID(Nil), 0);
   for (u64 i = n; i > 0; i -= 1) {
-    list = io_node(e, CID(Con), window_node(e, p + 5 * (i - 1)), list);
+    list = io_node(e, CID(Con), window_node(e, p + WIN_EV * (i - 1)), list);
   }
   return list;
 }
@@ -747,16 +899,6 @@ static u32 window_key(XKeyEvent* ev) {
   return 65536 + ev->keycode;
 }
 
-static void window_push(BendWin* win, u32 cid, u32 a, u32 b, u32 c, u32 d) {
-  if (win->n == win->cap) {
-    win->cap = win->cap == 0 ? 64 : win->cap * 2;
-    win->evs = io_mem(realloc(win->evs, win->cap * 20));
-  }
-  u32 ev[5] = { cid, a, b, c, d };
-  memcpy(win->evs + win->n * 5, ev, sizeof ev);
-  win->n += 1;
-}
-
 // A key press's text: what the input method commits, else (no method)
 // the character of the key's symbol, unless Control is held.
 static void window_text(BendWin* win, XKeyEvent* key) {
@@ -786,24 +928,41 @@ static void window_text(BendWin* win, XKeyEvent* key) {
     n = l;
   }
   u64 at = 0;
-  u32 ev[5];
+  u32 ev[WIN_EV];
   while (window_chunk(s, n, &at, ev)) {
-    window_push(win, ev[0], ev[1], ev[2], ev[3], ev[4]);
+    window_put(&win->q, ev);
   }
   if (s != buf) {
     free(s);
   }
 }
 
-static u32 window_clip(int v, u32 most) {
-  return v < 0 ? 0 : (u32)v < most ? (u32)v : most - 1;
+// X buttons: 1 to 3 left, middle, right; 4 to 7 the wheel (up, down, left,
+// right; a notch is 1, up and left positive); 8 and 9 back, forward.
+static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
+  u32 b, bool down) {
+  f32 s = b % 2 ? -1 : 1;
+  if (b >= 4 && b <= 7 && down) {
+    window_delta(&win->q, CID(Scroll), x, y, b > 5 ? s : 0, b > 5 ? 0 : s,
+      0);
+  } else if (b <= 3 || b == 8 || b == 9) {
+    window_point(&win->q, CID(Press), id, t, x, y,
+      b <= 3 ? b - 1 : b - 5, down);
+  }
+}
+
+// Off the window, a pointer is lost unless a button holds it; a grab
+// elsewhere takes only a held one (its release then goes there).
+static void window_leave(BendWin* win, u32 id, int mode) {
+  bool held = id < 16 && win->q.down[id] != 0;
+  if (held == (mode == NotifyGrab)) {
+    window_push(&win->q, CID(Lost), id, 0, 0, 0);
+  }
 }
 
 static void window_pump(BendWin* win) {
-  u32 w  = win->img->width;
-  u32 h  = win->img->height;
-  int cx = w / 2;
-  int cy = h / 2;
+  int cx = win->img->width / 2;
+  int cy = win->img->height / 2;
   int x  = cx;
   int y  = cy;
   while (XPending(win->dpy) > 0) {
@@ -818,8 +977,8 @@ static void window_pump(BendWin* win) {
       u32 code = key.keycode << 1 | (ev.type == KeyPress);
       if (key.keycode != 0
         && (took || key.time != win->kt || code != win->kc)) {
-        window_push(win, CID(Key), window_key(&key), ev.type == KeyPress, 0,
-          0);
+        window_push(&win->q, CID(Key), window_key(&key), ev.type == KeyPress,
+          0, 0);
       }
       if (took) {
         win->kt = key.time;
@@ -828,42 +987,42 @@ static void window_pump(BendWin* win) {
         window_text(win, &ev.xkey);
       }
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
-      // the wheel: 4 up, 5 down, 6 left, 7 right
-      u32 b  = ev.xbutton.button;
-      u32 bx = window_clip(ev.xbutton.x, w);
-      u32 by = window_clip(ev.xbutton.y, h);
-      f32 s  = b % 2 ? -1 : 1;
-      if (b <= 3) {
-        window_push(win, CID(Mouse), bx, by, b == 1 ? 0 : 4 - b,
-          ev.type == ButtonPress);
-      } else if (b <= 7 && ev.type == ButtonPress) {
-        window_push(win, CID(Scroll), bx, by, f32_rewrap(b > 5 ? s : 0),
-          f32_rewrap(b > 5 ? 0 : s));
-      }
+      window_button(win, 0, (WinTool){ WIN_MOUSE }, ev.xbutton.x,
+        ev.xbutton.y, ev.xbutton.button, ev.type == ButtonPress);
     } else if (ev.type == MotionNotify) {
       x = ev.xmotion.x;
       y = ev.xmotion.y;
       if (!win->grab) {
-        window_push(win, CID(Move), window_clip(x, w), window_clip(y, h), 0,
-          0);
+        window_point(&win->q, CID(Move), 0, (WinTool){ WIN_MOUSE }, x, y, 0,
+          false);
       }
-    } else if (ev.type == FocusIn && win->ic != NULL) {
-      XSetICFocus(win->ic);
-    } else if (ev.type == FocusOut) {
-      if (win->ic != NULL) {
+    } else if (ev.type == LeaveNotify) {
+      window_leave(win, 0, ev.xcrossing.mode);
+    } else if (ev.type == FocusIn || ev.type == FocusOut) {
+      bool on = ev.type == FocusIn;
+      if (win->ic != NULL && on) {
+        XSetICFocus(win->ic);
+      } else if (win->ic != NULL) {
         XUnsetICFocus(win->ic);
       }
-      XUngrabPointer(win->dpy, CurrentTime);
-      win->grab = 0;
+      if (!on) {
+        XUngrabPointer(win->dpy, CurrentTime);
+        win->grab = 0;
+      }
+      bool follows = ev.xfocus.detail == NotifyPointer
+        || ev.xfocus.detail == NotifyInferior;
+      if (!follows) {
+        window_focus(&win->q, on);
+      }
     } else if (ev.type == ClientMessage
       && (Atom)ev.xclient.data.l[0] == win->del) {
-      window_push(win, CID(Close), 0, 0, 0, 0);
+      window_push(&win->q, CID(Close), 0, 0, 0, 0);
     }
   }
   // grabbed, the frame's motion is one look from the centre
   if (win->grab && (x != cx || y != cy)) {
-    window_push(win, CID(Look), f32_rewrap(x - cx), f32_rewrap(y - cy), 0,
-      0);
+    window_push(&win->q, CID(Look), f32_rewrap(x - cx), f32_rewrap(y - cy),
+      0, 0);
     XWarpPointer(win->dpy, None, win->win, 0, 0, 0, 0, cx, cy);
   }
 }
@@ -956,8 +1115,8 @@ static Term window_frame(Env e, intptr_t at, Term image) {
   io_sync();
   window_pump(win);
   window_show(e, win, image);
-  Term list = window_list(e, win->evs, win->n);
-  win->n = 0;
+  Term list = window_list(e, win->q.evs, win->q.n);
+  win->q.n = 0;
   return list;
 }
 
@@ -1097,7 +1256,7 @@ static void window_close(intptr_t at) {
   }
   XDestroyImage(win->img);
   XCloseDisplay(win->dpy);
-  free(win->evs);
+  free(win->q.evs);
   free(win);
 }
 
