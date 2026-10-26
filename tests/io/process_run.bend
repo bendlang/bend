@@ -56,6 +56,9 @@ def main() -> IO(Unit):
     g : Result<&1, &1, U32 & String, U32 & (String & String)> <-
       Process.run("/__bend_missing_executable__", [], "", 128, 1000)
     v : Unit <- IO.print("missing: " ++ failure(g, 2))
+    g0 : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("", [], "", 128, 1000)
+    v0 : Unit <- IO.print("empty program: " ++ failure(g0, 2))
     h : Result<&1, &1, U32 & String, U32 & (String & String)> <-
       Process.run("/bin/cat", [], "", 0, 1000)
     w : Unit <- IO.print("invalid limit: " ++ failure(h, 22))
@@ -117,6 +120,7 @@ def main() -> IO(Unit):
 #|combined limit: True
 #|timeout: True
 #|missing: True
+#|empty program: True
 #|invalid limit: True
 #|invalid timeout: True
 #|nul argument: True

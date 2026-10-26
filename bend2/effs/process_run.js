@@ -88,6 +88,10 @@ function process_run(program, args, input, maxOutput, timeoutMs) {
     || argv.some((arg) => arg.includes("\0"))) {
     return io_fail(22);
   }
+  if (argv[0] === "") {
+    // spawn("") throws with no errno; C's posix_spawnp("") answers ENOENT.
+    return io_fail(2);
+  }
   if (process_worker === null) {
     const { Worker, MessageChannel, receiveMessageOnPort } = require("node:worker_threads");
     const { port1, port2 } = new MessageChannel();
