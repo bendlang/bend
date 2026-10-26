@@ -56,20 +56,18 @@ function chan_head(row) {
   return w;
 }
 
-// Where w's timer is in ws, which io_park_on keeps sorted by at: a binary
-// search to the first timer due at w.at, then past other waiters' timers due
-// at the same time. -1 if the poller has taken it.
-function chan_timer(ws, w) {
+// Where timer t is in ws, which io_park_on keeps sorted by at: a binary search
+// to the first timer due at t.at, then past others due at the same time. -1 if
+// the poller has taken it.
+function chan_timer(ws, t) {
   let i = 0;
   for (let hi = ws.length; i < hi;) {
     const mid = (i + hi) >> 1;
-    if ((ws[mid].at ?? Infinity) < w.at) i = mid + 1;
+    if (ws[mid].at < t.at) i = mid + 1;
     else hi = mid;
   }
-  for (; i < ws.length && ws[i].at === w.at; i += 1) {
-    if (ws[i].more === w.late) return i;
-  }
-  return -1;
+  while (i < ws.length && ws[i] !== t && ws[i].at === t.at) i += 1;
+  return ws[i] === t ? i : -1;
 }
 
 // Wakes the first live waiter with x, as Ready{x} if try_ (cutting its timer,
@@ -81,7 +79,7 @@ function chan_wake(row, x) {
   w.gone = true;
   if (w.late !== undefined) {
     const ws = w.io.waits;
-    const i = chan_timer(ws, w);
+    const i = chan_timer(ws, w.timer);
     if (i >= 0) ws.splice(i, 1);
     x = { $: CID(Ready), value: x };
   }
@@ -127,14 +125,13 @@ function chan_late(row, w) {
 function chan_park(row, k, item, ms) {
   const w = { io: io_active, cont: k, item: item, gone: false };
   if (ms !== undefined) {
-    w.at = io_until(ms);
     w.late = () => {
       // An earlier callback of the same ready batch may have woken w.
       if (w.gone) return undefined;
       chan_late(row, w);
       return chan_wait(item);
     };
-    io_park_on(undefined, false, k, w.late, w.at);
+    w.timer = io_park_on(undefined, false, k, w.late, io_until(ms));
   }
   q_push(row.wait, w);
   return undefined;

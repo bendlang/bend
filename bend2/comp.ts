@@ -6499,10 +6499,11 @@ function io_wait(io, block) {
   }
 }
 
-function io_park_on(fd, out, k, more, at) {
+function io_park_on(fd, out, k, more, at = Infinity) {
   const ws = io_active.waits;
-  const i = ws.findLastIndex((w) => (w.at ?? Infinity) <= (at ?? Infinity));
-  ws.splice(i + 1, 0, { fd, out, k, more, at });
+  const t = { fd, out, k, more, at };
+  ws.splice(ws.findLastIndex((w) => w.at <= at) + 1, 0, t);
+  return t;
 }
 
 function io_run(m) {

@@ -1,9 +1,14 @@
 # io: a woken try_ waiter cuts its own timer wherever it sits in the timer
 # list. 300 senders park on a with a 60 s bound, then 300 on b with 30 s and
-# 300 on b with 60 s, so b's timers sit both before and after a's. Draining
-# b, then a, leaves no timer: a recv that nothing will answer then reports
-# the deadlock at once instead of waiting out the bounds.
+# 300 on b with 60 s, so b's timers sit both before and after a's; on JS the
+# clock is stopped first, so b's 60 s timers are due at the same time as a's.
+# Draining b, then a, leaves no timer: a recv that nothing will answer then
+# reports the deadlock at once instead of waiting out the bounds.
 import Base
+
+def Clock.stop() -> IO(Unit):
+  import "./chan_try_wake_timers.c"
+  import "./chan_try_wake_timers.js"
 
 def sender(c: Chan(U32), +i: U32, ms: U32) -> IO(Unit):
   do IO<Unit>:
@@ -39,6 +44,7 @@ def main() -> IO(Unit):
   do IO<Unit>:
     +a : Chan(U32) <- Chan.new(U32, 0)
     +b : Chan(U32) <- Chan.new(U32, 0)
+    t : Unit <- Clock.stop()
     x : Unit <- spawn_all(300n, a, 0, 60000)
     y : Unit <- spawn_all(300n, b, 0, 30000)
     z : Unit <- spawn_all(300n, b, 300, 60000)
