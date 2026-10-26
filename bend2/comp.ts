@@ -523,7 +523,7 @@ export const PROBES: Of<"Var">[] = [];
 
 const DUMMY = probe("~");
 
-const CB = {} as Bend.Span;
+const CBS = new WeakSet<Bend.HBody>();
 
 let FUEL = 0;
 
@@ -711,10 +711,10 @@ function cb_spine(m: Spine): Spine {
   const j = m.all.indexOf(l);
   const ps: Of<"Var">[] = [];
   const ts: Bend.LTerm[] = [];
-  let ok = FL.segs.length === 0;
+  const ok = FL.segs.length === 0 && !term_kids(term_strip(l)).some((x) =>
+    term_any(x, (s) => s.$ === "Lam" && CBS.has(s.f)));
   const lo = Bend.term_lower({ ...term_strip(l), s: undefined }, 1e9);
   const at = m.k! + j + JSON.stringify(lo, (k, v) => {
-    ok &&= v !== CB;
     if (v?.$ === "Ann" && v.x.$ === "Var") {
       ts[v.x.i] ??= v.T;
     }
@@ -731,7 +731,9 @@ function cb_spine(m: Spine): Spine {
     const p = ps[xs.length];
     const B = (x: HTerm) => abs(t, lam, [...xs, x]);
     if (p === undefined) {
-      return def_inst(t, j, { ...Bend.term_higher(lo, env), s: CB });
+      const v = Bend.term_higher(lo, env) as Of<"Lam">;
+      CBS.add(v.f);
+      return def_inst(t, j, v);
     }
     return lam ? Bend.Lam(p.k, 0, B)
       : Bend.All(Bend.Lone(), p.k, 0, Bend.term_higher(ts[p.i], env), B);
@@ -747,7 +749,8 @@ function cb_spine(m: Spine): Spine {
   const k = FL.cbs.get(at);
   const all = [...ps, ...m.all.filter((x) => x !== l)];
   const args = [...ps, ...m.args.filter((x) => x !== l)];
-  return k === undefined ? m : { ...m, t: Bend.Ref(k), all, args, xs: args, k };
+  return k === undefined ? m
+    : { ...m, t: Bend.Ref(k), tld: FL.book.tlds[k], all, args, xs: args, k };
 }
 
 function def_inst(t: HTerm, j: number, v: HTerm): HTerm {
