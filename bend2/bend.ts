@@ -882,7 +882,9 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    throw Err(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
+    const k = name_key(tm.k);
+    const why = tld === undefined ? "unknown: " + k : k + " is a def, applied as " + k + "(...)";
+    throw Err(book, ctx, "a declared datatype (" + why + ")", undefined, tm.s, def);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -1769,7 +1771,10 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
     }
     if (k === "do") {
       const m = parse_name(p);
-      parse_eat(p, "<");
+      parse_skip(p);
+      if (!parse_take(p, "<")) {
+        parse_fail(p, "'<' (a do block is written do " + name_key(m) + "<...>:)");
+      }
       const ts = parse_fill(p, parse_reso(p, m), parse_term_args(p, ">"),
         parse_span(p, beg));
       parse_eat(p, ":");

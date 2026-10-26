@@ -12,7 +12,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : '<'
+#|- expected : '<' (a do block is written do Result<...>:)
 #|- observed : ':'
 #|Location:
 #| 9 | def main():
