@@ -39,6 +39,7 @@ allow(".github/workflows/repo-gate.yml");
 allow(".gitattributes");
 allow(".gitignore");
 allow("AGENTS.md");
+allow(/^\.agents\/.+\.md$/);
 allow("CHANGELOG.md");
 allow("README.md", 4000);
 allow("WONTFIX.txt");
