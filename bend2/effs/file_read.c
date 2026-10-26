@@ -10,6 +10,7 @@
 static void file_read_fill(IoWork* w, int at, int line) {
   int fd  = (int)w->hand;
   u64 got = 0;
+  w->code = 0;
   do {
     u64     want = line && got < w->word ? 1 : w->word - got;
     ssize_t n    = at ? pread(fd, w->data + got, want, (off_t)(w->made + got))
