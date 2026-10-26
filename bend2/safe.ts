@@ -3,8 +3,9 @@
 // `bend f.bend --verdict` elaborates bend2's checked book to BendTT, then
 // runs the kernel (bend2/bendtt.lean). The kernel trusts no elaboration.
 // A rejected book never reaches it. Checked bodies (Def.e) annotate each
-// node with its type. Bare terms inside types use their context's type:
-// lambdas use the codomain; match arms use the constructor fields.
+// node with its type; the elaborator needs no inference. For a bare term
+// inside a type, it carries down the type bend2 checked it at: a lambda's
+// codomain or a match arm's constructor fields.
 // bend2 converts functions up to η; the kernel does not, and unfolds
 // defs only at applications. Emit functions η-long so the kernel can
 // compare both sides of an equation under their binders.
@@ -336,9 +337,7 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
     const m = f ?? model(e, F.A);
     const def: Def = { $: "Def", n: 0, x: 0, T: F.A, v: null };
     e.book.tlds[c] = def;
-    if (m !== null) {
-      e.mb.tlds[c] = { ...def, v: m };
-    }
+    e.mb.tlds[c] = { ...def, v: m };
     e.consts.set(key, c);
     return at(B.Ref(c));
   };
@@ -525,11 +524,12 @@ function subst(t: HTerm, d: number, f: (o: Record<string, unknown>) => HTerm | u
 // -----
 // Build a model from lambdas, constructors, Unit, or reflexivity.
 // Constructor fields each need a model; skip datatypes on the path.
-// A live variable of the required type is the fallback. The projection
-// pass tries it before constructors: {a == sub(add(a, b), b)} needs it,
-// while commutativity can use constants. Read opaque defs at their models.
-// If both passes fail, use a closed checked def of the same type.
-// Normal emission makes the kernel check its body too.
+// An empty type has no model. A live variable of the required type is
+// the codomain's own, used once. The projection pass tries it before
+// constructors: {a == sub(add(a, b), b)} needs it; commutativity can use
+// constants. Read opaque defs at their models. If both passes fail, use
+// a checked def of the same type: a body, no template parameters, and
+// no @unsafe flag. Normal emission makes the kernel check its body too.
 
 function model(e: Safe, T: HTerm): HTerm | null {
   const m = model_by(e, T, false) ?? model_by(e, T, true);
