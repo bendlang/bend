@@ -2,7 +2,7 @@
 # the C lane caps it, so it answers what waits instead of failing. The peer
 # sends "hello", then "world": recv with max 4294967295 reads "hello",
 # recv_bytes with max 2147483648 (the first value past INT32_MAX) reads
-# "world", and try_recv with max 4294967295 then waits on the open socket.
+# "world", and after it sends "again", try_recv with max 4294967295 reads it.
 import Base
 
 law show_bytes:
@@ -126,9 +126,11 @@ def run(l, c, a):
     c2 : Socket <- sent(s1)
     r1 : Socket & Result<&1, &1, (U32 & String), Maybe<&1, List<&2, U32>>> <- TCP.recv_bytes(a1, 2147483648)
     a2 : Socket <- told("recv_bytes 2147483648: ", list(r1))
-    p0 : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit> <- TCP.try_recv(a2, 4294967295, 100)
+    s2 : Socket & Result<&1, &1, (U32 & String) & List<&2, U32>, Unit> <- TCP.send(c2, "again")
+    c3 : Socket <- sent(s2)
+    p0 : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String), Maybe<&1, String>>, Unit> <- TCP.try_recv(a2, 4294967295, 5000)
     a3 : Socket <- told("try_recv 4294967295: ", poll(p0))
-    x  : Unit <- Socket.close(c2)
+    x  : Unit <- Socket.close(c3)
     y  : Unit <- Socket.close(a3)
     z  : Unit <- Listener.close(l)
     return 0
@@ -193,4 +195,4 @@ def main():
 
 #|recv 4294967295: done: hello
 #|recv_bytes 2147483648: done: 119 111 114 108 100
-#|try_recv 4294967295: wait
+#|try_recv 4294967295: done: again
