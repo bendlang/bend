@@ -111,7 +111,9 @@ type Tool is Data:
 # notch is 1 on X11). Zoom and Swipe are a trackpad's pinch and swipe of
 # that many fingers: Zoom's scale is the factor since the last one and turn
 # the angle, clockwise, in radians; Swipe's dx, dy its motion since the
-# last (on the Mac, once per swipe, its direction: -1, 0 or 1).
+# last (on the Mac, once per swipe, its direction: -1, 0 or 1). DropOver
+# is another app's drag over the window, DropOut its leaving (or end), and
+# Dropped its drop: the paths of its files, and its text.
 type Event is Data:
   Key{code: U32, down: Bool}
   Text{text: String}
@@ -122,6 +124,9 @@ type Event is Data:
   Scroll{x: F32, y: F32, dx: F32, dy: F32}
   Zoom{x: F32, y: F32, scale: F32, turn: F32, fingers: U32}
   Swipe{x: F32, y: F32, dx: F32, dy: F32, fingers: U32}
+  DropOver{x: F32, y: F32}
+  DropOut{}
+  Dropped{x: F32, y: F32, files: List<&2, String>, text: String}
   Focus{on: Bool}
   Close{}
 

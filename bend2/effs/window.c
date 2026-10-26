@@ -19,14 +19,17 @@ typedef struct {
   f32 v[5];
 } WinTool;
 
-// A window's events since its last frame, and what they leave held: per
-// pointer id (the mouse 0, the others 1 to 15) its system name and buttons
-// down, the ids live (the mouse while over the window), the keys down and
-// the focus.
+// A window's events since its last frame, its drops' strings (each
+// NUL-ended), and what they leave held: per pointer id (the mouse 0, the
+// others 1 to 15) its system name and buttons down, the ids live (the
+// mouse while over the window), the keys down and the focus.
 typedef struct {
-  u32* evs;
-  u32  n;
-  u32  cap;
+  u32*  evs;
+  u32   n;
+  u32   cap;
+  char* side;
+  u32   sn;
+  u32   scap;
   u64  name[16];
   u32  down[16];
   u32  live;
@@ -42,6 +45,7 @@ typedef struct {
 
 #elif defined(__linux__)
 
+#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
@@ -157,12 +161,21 @@ typedef struct {
   double px;
 } WinDev;
 
+// XDND's atoms (its version 5): drags between apps.
+enum {
+  WIN_XDND_AWARE, WIN_XDND_ENTER, WIN_XDND_POSITION, WIN_XDND_STATUS,
+  WIN_XDND_LEAVE, WIN_XDND_DROP, WIN_XDND_FINISHED, WIN_XDND_SELECTION,
+  WIN_XDND_COPY, WIN_XDND_TYPES, WIN_XDND_URIS, WIN_XDND_UTF8,
+  WIN_XDND_PLAIN, WIN_XDND_N
+};
+
 // The X11 window: its own connection (so its queue holds only its
 // events), its input method and context (NULL if none opened), the
 // time and code of the last key the method took, the frame's image,
 // its events, whether it holds the pointer, the display's refresh period
-// in ns, XInput2's opcode (0 if none), a pinch's scale so far and the
-// devices met.
+// in ns, XInput2's opcode (0 if none), a pinch's scale so far, the
+// devices met, XDND's atoms, and another app's drag: its source, the type
+// it is read as (None: it has no files or text) and where it is.
 typedef struct {
   Display* dpy;
   Window   win;
@@ -179,6 +192,11 @@ typedef struct {
   double   pinch;
   u32      nd;
   WinDev   devs[8];
+  Atom     xdnd[WIN_XDND_N];
+  Window   drag;
+  Atom     drag_as;
+  int      drag_x;
+  int      drag_y;
 } BendWin;
 
 // Names the window in UTF-8: _NET_WM_NAME, which window managers show,
@@ -338,6 +356,24 @@ static inline void window_delta(WinQueue* q, u32 cid, f32 x, f32 y, f32 a,
   window_put(q, ev);
 }
 
+// s, n bytes, into the side buffer.
+static inline void window_side(WinQueue* q, const char* s, u64 n) {
+  if (q->sn + n + 1 > q->scap) {
+    q->scap = (q->sn + n + 1) * 2;
+    q->side = io_mem(realloc(q->side, q->scap));
+  }
+  memcpy(q->side + q->sn, s, n);
+  q->side[q->sn + n] = 0;
+  q->sn += n + 1;
+}
+
+// A Dropped at (x, y): the nf files and the text put in the side buffer
+// from at on.
+static inline void window_drop(WinQueue* q, f32 x, f32 y, u32 at, u32 nf) {
+  u32 ev[WIN_EV] = { CID(Dropped), f32_rewrap(x), f32_rewrap(y), at, nf };
+  window_put(q, ev);
+}
+
 // The focus come, or gone: then it first loses the pointers pressed and
 // lets go of the keys held.
 static inline void window_focus(WinQueue* q, bool on) {
@@ -391,6 +427,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 
 - (void)dealloc {
   free(q.evs);
+  free(q.side);
 }
 
 - (void)key:(NSEvent*)ev down:(BOOL)down {
@@ -617,6 +654,38 @@ static inline void window_focus(WinQueue* q, bool on) {
   window_focus(&q, true);
 }
 
+// Another app's drag: a DropOver as it moves, a DropOut as it leaves; a
+// drop is taken, as a copy, with its file paths and text.
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)info {
+  return [self draggingUpdated:info];
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)info {
+  NSPoint p = [self convertPoint:info.draggingLocation fromView:nil];
+  window_push(&q, CID(DropOver), f32_rewrap(p.x), f32_rewrap(p.y), 0, 0);
+  return NSDragOperationCopy;
+}
+
+- (void)draggingExited:(id<NSDraggingInfo>)info {
+  window_push(&q, CID(DropOut), 0, 0, 0, 0);
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)info {
+  NSPasteboard* pb = info.draggingPasteboard;
+  NSPoint       p  = [self convertPoint:info.draggingLocation fromView:nil];
+  NSArray*      fs = [pb readObjectsForClasses:@[NSURL.class]
+    options:@{ NSPasteboardURLReadingFileURLsOnlyKey: @YES }];
+  const char*   t  = [pb stringForType:NSPasteboardTypeString].UTF8String;
+  u32           at = q.sn;
+  for (NSURL* f in fs) {
+    const char* path = f.fileSystemRepresentation;
+    window_side(&q, path, strlen(path));
+  }
+  window_side(&q, t != NULL ? t : "", t != NULL ? strlen(t) : 0);
+  window_drop(&q, p.x, p.y, at, (u32)fs.count);
+  return YES;
+}
+
 - (void)mouseDown:(NSEvent*)ev {
   [self mouse:ev down:YES];
 }
@@ -712,6 +781,8 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     [view addTrackingArea:[[NSTrackingArea alloc] initWithRect:NSZeroRect
       options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
         | NSTrackingInVisibleRect owner:view userInfo:nil]];
+    [view registerForDraggedTypes:@[NSPasteboardTypeFileURL,
+      NSPasteboardTypeString]];
     [win makeFirstResponder:view];
     [win center];
     [win makeKeyAndOrderFront:nil];
@@ -857,6 +928,14 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     .min_height = h, .max_width = w, .max_height = h };
   XSetWMNormalHints(dpy, win->win, &hints);
   XSetWMProtocols(dpy, win->win, &win->del, 1);
+  static const char* xdnd[WIN_XDND_N] = { "XdndAware", "XdndEnter",
+    "XdndPosition", "XdndStatus", "XdndLeave", "XdndDrop", "XdndFinished",
+    "XdndSelection", "XdndActionCopy", "XdndTypeList", "text/uri-list",
+    "UTF8_STRING", "text/plain;charset=utf-8" };
+  long version = 5;
+  XInternAtoms(dpy, (char**)xdnd, WIN_XDND_N, False, win->xdnd);
+  XChangeProperty(dpy, win->win, win->xdnd[WIN_XDND_AWARE], XA_ATOM, 32,
+    PropModeReplace, (unsigned char*)&version, 1);
   window_x_title(dpy, win->win, title, strlen(title));
   win->xi = window_xi(dpy, win->win);
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | FocusChangeMask
@@ -904,10 +983,34 @@ static void __attribute__((constructor)) window_open_use(void) {
 // one word packs it in its term, as the compiler builds it.
 #if defined(__OBJC__) || defined(__linux__)
 
-static Term window_node(Env e, const u32* ev) {
+static Term window_dropped(Env e, const WinQueue* q, const u32* ev) {
+  u32* at = io_mem(malloc((ev[4] + 1) * sizeof *at));
+  for (u32 i = 0, j = ev[3]; i <= ev[4]; i += 1) {
+    at[i] = j;
+    j += strlen(q->side + j) + 1;
+  }
+  Term files = term_pak(CID(Nil), 0);
+  for (u32 i = ev[4]; i > 0; i -= 1) {
+    const char* f = q->side + at[i - 1];
+    files = io_node(e, CID(Con), io_str(e, f, strlen(f)), files);
+  }
+  const char* t = q->side + at[ev[4]];
+  u64         l = heap_alloc(e, cls_fit(4));
+  e.mem[l]     = ev[1];
+  e.mem[l + 1] = ev[2];
+  e.mem[l + 2] = io_seal(e, files, CID(Dropped));
+  e.mem[l + 3] = io_seal(e, io_str(e, t, strlen(t)), CID(Dropped));
+  free(at);
+  return term_ctr(CID(Dropped), l);
+}
+
+static Term window_node(Env e, const WinQueue* q, const u32* ev) {
   if (ev[0] == CID(Text)) {
     const char* s = (const char*)(ev + 1);
     return io_box(e, CID(Text), io_str(e, s, strnlen(s, 16)));
+  }
+  if (ev[0] == CID(Dropped)) {
+    return window_dropped(e, q, ev);
   }
   u32 n = cid_arity(ev[0]);
   if (n <= 1) {
@@ -924,11 +1027,15 @@ static u32 window_depth(u32 n) {
   return n > 1 ? 32 - CLZ(n - 1) : 0;
 }
 
-static Term window_list(Env e, const u32* p, u64 n) {
+// The queue's events, which it then forgets.
+static Term window_list(Env e, WinQueue* q) {
   Term list = term_pak(CID(Nil), 0);
-  for (u64 i = n; i > 0; i -= 1) {
-    list = io_node(e, CID(Con), window_node(e, p + WIN_EV * (i - 1)), list);
+  for (u64 i = q->n; i > 0; i -= 1) {
+    list = io_node(e, CID(Con), window_node(e, q, q->evs + WIN_EV * (i - 1)),
+      list);
   }
+  q->n  = 0;
+  q->sn = 0;
   return list;
 }
 
@@ -1086,9 +1193,7 @@ static Term window_frame(Env e, intptr_t at, Term image) {
   BendView* view = (BendView*)((__bridge NSWindow*)(void*)at).contentView;
   io_sync();
   window_show(e, (CAMetalLayer*)view.layer, image);
-  Term list = window_list(e, view->q.evs, view->q.n);
-  view->q.n = 0;
-  return list;
+  return window_list(e, &view->q);
 }
 
 #elif defined(__linux__)
@@ -1337,6 +1442,139 @@ static void window_xi_event(BendWin* win, XGenericEventCookie* c, int* gx,
   }
 }
 
+// An XDND message to the drag's source, from the window.
+static void window_xdnd_tell(BendWin* win, int msg, long a, long b, long c,
+  long d) {
+  XEvent ev = { .xclient = { .type = ClientMessage, .window = win->drag,
+    .message_type = win->xdnd[msg], .format = 32,
+    .data.l = { (long)win->win, a, b, c, d } } };
+  XSendEvent(win->dpy, win->drag, False, NoEventMask, &ev);
+}
+
+// The type a drag is read as: files if it offers them, else UTF-8 text.
+static Atom window_xdnd_as(BendWin* win, const XClientMessageEvent* m) {
+  Atom           kind;
+  int            fmt;
+  unsigned long  n    = 3;
+  unsigned long  rest;
+  unsigned char* list = NULL;
+  const Atom*    ts   = (const Atom*)&m->data.l[2];
+  if (m->data.l[1] & 1 && XGetWindowProperty(win->dpy, win->drag,
+    win->xdnd[WIN_XDND_TYPES], 0, 1024, False, XA_ATOM, &kind, &fmt, &n,
+    &rest, &list) == Success && list != NULL) {
+    ts = (const Atom*)list;
+  }
+  Atom as = None;
+  for (int k = WIN_XDND_PLAIN; k >= WIN_XDND_URIS; k -= 1) {
+    for (unsigned long i = 0; i < n; i += 1) {
+      as = ts[i] == win->xdnd[k] ? ts[i] : as;
+    }
+  }
+  if (list != NULL) {
+    XFree(list);
+  }
+  return as;
+}
+
+// Another app's drag: a DropOver per move (taken, as a copy, if it has
+// files or text), a DropOut as it leaves or drops nothing taken; a drop
+// asks for its data, which comes as a SelectionNotify.
+static void window_xdnd(BendWin* win, const XClientMessageEvent* m) {
+  Atom t = m->message_type;
+  bool taken = win->drag_as != None;
+  if (t == win->xdnd[WIN_XDND_ENTER]) {
+    win->drag    = (Window)m->data.l[0];
+    win->drag_as = window_xdnd_as(win, m);
+  } else if (t == win->xdnd[WIN_XDND_POSITION]) {
+    Window child;
+    XTranslateCoordinates(win->dpy, DefaultRootWindow(win->dpy), win->win,
+      (int)((unsigned long)m->data.l[2] >> 16), (int)(m->data.l[2] & 0xFFFF),
+      &win->drag_x, &win->drag_y, &child);
+    window_push(&win->q, CID(DropOver), f32_rewrap(win->drag_x),
+      f32_rewrap(win->drag_y), 0, 0);
+    window_xdnd_tell(win, WIN_XDND_STATUS, taken, 0, 0,
+      taken ? (long)win->xdnd[WIN_XDND_COPY] : None);
+  } else if (t == win->xdnd[WIN_XDND_DROP] && taken) {
+    XConvertSelection(win->dpy, win->xdnd[WIN_XDND_SELECTION], win->drag_as,
+      win->xdnd[WIN_XDND_SELECTION], win->win, (Time)m->data.l[2]);
+  } else if (t == win->xdnd[WIN_XDND_DROP]
+    || t == win->xdnd[WIN_XDND_LEAVE]) {
+    if (t == win->xdnd[WIN_XDND_DROP]) {
+      window_xdnd_tell(win, WIN_XDND_FINISHED, 0, None, 0, 0);
+    }
+    window_push(&win->q, CID(DropOut), 0, 0, 0, 0);
+  }
+}
+
+static int window_hex(char c) {
+  int l = c | 32;
+  return c >= '0' && c <= '9' ? c - '0' : l >= 'a' && l <= 'f' ? l - 'a' + 10
+    : -1;
+}
+
+// %XX escapes decoded, from s (n bytes) into d: its length.
+static u64 window_unescape(char* d, const char* s, u64 n) {
+  u64 k = 0;
+  for (u64 i = 0; i < n; i += 1) {
+    int h = s[i] == '%' && i + 2 < n ? window_hex(s[i + 1]) : -1;
+    int l = h >= 0 ? window_hex(s[i + 2]) : -1;
+    d[k++] = l >= 0 ? (char)(h * 16 + l) : s[i];
+    i += l >= 0 ? 2 : 0;
+  }
+  return k;
+}
+
+// The drop's data: a URI list's file paths are its files, its other lines
+// and any text its text.
+static void window_xdnd_data(BendWin* win, const XSelectionEvent* sel) {
+  Atom           kind;
+  int            fmt;
+  unsigned long  n    = 0;
+  unsigned long  rest;
+  unsigned char* data = NULL;
+  if (sel->property != None) {
+    XGetWindowProperty(win->dpy, win->win, sel->property, 0, 1 << 24, True,
+      AnyPropertyType, &kind, &fmt, &n, &rest, &data);
+  }
+  const char* s    = data != NULL ? (const char*)data : "";
+  bool        uris = win->drag_as == win->xdnd[WIN_XDND_URIS];
+  char*       path = io_mem(malloc(n + 1));
+  char*       text = io_mem(malloc(n + 1));
+  u64         tn   = uris ? 0 : n;
+  u32         at   = win->q.sn;
+  u32         nf   = 0;
+  memcpy(text, s, tn);
+  for (u64 i = 0; uris && i < n;) {
+    u64         j = i;
+    const char* p = NULL;
+    while (j < n && s[j] != '\n') {
+      j += 1;
+    }
+    u64 e = j > i && s[j - 1] == '\r' ? j - 1 : j;
+    if (e - i > 7 && memcmp(s + i, "file://", 7) == 0) {
+      p = memchr(s + i + 7, '/', e - i - 7);
+    }
+    if (p != NULL) {
+      window_side(&win->q, path, window_unescape(path, p, s + e - p));
+      nf += 1;
+    } else if (e > i && s[i] != '#') {
+      memcpy(text + tn, s + i, e - i);
+      tn += e - i;
+      text[tn++] = '\n';
+    }
+    i = j + 1;
+  }
+  window_side(&win->q, text, uris && tn > 0 ? tn - 1 : tn);
+  window_drop(&win->q, win->drag_x, win->drag_y, at, nf);
+  window_xdnd_tell(win, WIN_XDND_FINISHED, sel->property != None,
+    sel->property != None ? (long)win->xdnd[WIN_XDND_COPY] : None, 0, 0);
+  free(path);
+  free(text);
+  if (data != NULL) {
+    XFree(data);
+  }
+}
+
 static void window_pump(BendWin* win) {
   int cx = win->img->width / 2;
   int cy = win->img->height / 2;
@@ -1398,6 +1636,11 @@ static void window_pump(BendWin* win) {
     } else if (ev.type == ClientMessage
       && (Atom)ev.xclient.data.l[0] == win->del) {
       window_push(&win->q, CID(Close), 0, 0, 0, 0);
+    } else if (ev.type == ClientMessage) {
+      window_xdnd(win, &ev.xclient);
+    } else if (ev.type == SelectionNotify
+      && ev.xselection.selection == win->xdnd[WIN_XDND_SELECTION]) {
+      window_xdnd_data(win, &ev.xselection);
     }
   }
   // grabbed, the frame's motion is one look from the centre
@@ -1496,9 +1739,7 @@ static Term window_frame(Env e, intptr_t at, Term image) {
   io_sync();
   window_pump(win);
   window_show(e, win, image);
-  Term list = window_list(e, win->q.evs, win->q.n);
-  win->q.n = 0;
-  return list;
+  return window_list(e, &win->q);
 }
 
 #else
@@ -1638,6 +1879,7 @@ static void window_close(intptr_t at) {
   XDestroyImage(win->img);
   XCloseDisplay(win->dpy);
   free(win->q.evs);
+  free(win->q.side);
   free(win);
 }
 

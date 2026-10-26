@@ -48,6 +48,7 @@ def main() -> IO(Unit):
         Press{1, Pen{0.5, 0.0, 10.0, F32.neg(5.0), 90.0}, 1.5, 2.5, 0, True{}},
         Lost{1}, Look{1.5, 0.25}, Scroll{3.0, 4.0, F32.neg(0.5), 1.0},
         Zoom{1.0, 2.0, 1.25, 0.5, 2}, Swipe{1.0, 2.0, 3.0, 4.0, 3},
+        DropOver{1.0, 2.0}, DropOut{}, Dropped{1.0, 2.0, ["/a"], "b"},
         Focus{False{}}], [], [Key{99, True{}}]],
       Counter{0})
     u : Unit <- show(a)
@@ -62,7 +63,7 @@ def main() -> IO(Unit):
 #|frame
 #|frame
 #|frame
-#|12
+#|15
 #|frame
 #|frame
 #|quit
