@@ -107,13 +107,21 @@ def Laws.esc_quits(pre, post, g):
         s => Laws.esc_quits(rest, post, s))
     case Text{text} <> rest:
       Laws.esc_quits(rest, post, g)
-    case Mouse{x, y, button, down} <> rest:
+    case Press{id, tool, x, y, button, down} <> rest:
       Laws.esc_quits(rest, post, g)
-    case Move{x, y} <> rest:
+    case Move{id, tool, x, y} <> rest:
+      Laws.esc_quits(rest, post, g)
+    case Lost{id} <> rest:
       Laws.esc_quits(rest, post, g)
     case Look{dx, dy} <> rest:
       Laws.esc_quits(rest, post, g)
     case Scroll{x, y, dx, dy} <> rest:
+      Laws.esc_quits(rest, post, g)
+    case Zoom{x, y, scale, turn, fingers} <> rest:
+      Laws.esc_quits(rest, post, g)
+    case Swipe{x, y, dx, dy, fingers} <> rest:
+      Laws.esc_quits(rest, post, g)
+    case Focus{on} <> rest:
       Laws.esc_quits(rest, post, g)
     case Close{} <> rest:
       {==}
