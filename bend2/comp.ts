@@ -4651,12 +4651,12 @@ kernel void bend_dev(DEV u64* H [[buffer(0)]], constant u32& pass [[buffer(1)]],
   u32 row [[threadgroup_position_in_grid]],
   u32 lane [[thread_position_in_threadgroup]]) {
 #else
-extern "C" __global__ void bend_dev(DEV u64* H, u32 pass, u32 at) {
+extern "C" __global__ void bend_dev(DEV u64* H, u32 pass, u32 at, u32 chk) {
   __shared__ u32 vote[3];
   u32 grids = gridDim.x;
   u32 row   = blockIdx.x;
   u32 lane  = threadIdx.x;
-  if (!turn_groups(H[H_FRONT], at)) {
+  if (chk && !turn_groups(H[H_FRONT], at)) {
     return;
   }
 #endif
@@ -4973,12 +4973,15 @@ static void gpu_note(const char* path) {
 
 #if BEND_METAL || BEND_CUDA
 
-static void gpu_kernel(u32 pass, u32 at);
+static void gpu_kernel(u32 pass, u32 at, u32 chk);
 
-// Dispatch at runs on TURN_ROWS(at) groups.
-static void gpu_run(void) {
+// Dispatch at runs on TURN_ROWS(at) groups. From a frontier f the host read,
+// a round launches what f needs; f = 0 launches all five, checked.
+static void gpu_run(u64 f) {
   for (u32 i = 0; i < 5; i += 1) {
-    gpu_kernel((u32[]){ 0, 0, 1, 3, 2 }[i], i);
+    if (f == 0 || turn_groups(f, i)) {
+      gpu_kernel((u32[]){ 0, 0, 1, 3, 2 }[i], i, f == 0);
+    }
   }
 }
 
@@ -5068,7 +5071,7 @@ static void gpu_load(u64 bytes) {
   }
 }
 
-static void gpu_kernel(u32 pass, u32 at) {
+static void gpu_kernel(u32 pass, u32 at, u32 chk) {
   [gpu_enc setBytes:&pass length:sizeof pass atIndex:1];
   [gpu_enc dispatchThreadgroupsWithIndirectBuffer:gpu_buf
     indirectBufferOffset:H_GROUPS * 8 + at * 12
@@ -5103,7 +5106,7 @@ static void gpu_pass(u64* H) {
         [gpu_enc setComputePipelineState:gpu_pso];
         [gpu_enc setBuffer:gpu_buf offset:0 atIndex:0];
         [gpu_enc setThreadgroupMemoryLength:TG_HOLD * 8 atIndex:0];
-        gpu_run();
+        gpu_run(0);
         [gpu_enc endEncoding];
         [c encodeSignalEvent:gpu_ev value:++gpu_ev_at];
         [c commit];
@@ -5246,8 +5249,8 @@ static void gpu_load(u64 bytes) {
   }
 }
 
-static void gpu_kernel(u32 pass, u32 at) {
-  void* args[] = { &CORPUS, &pass, &at };
+static void gpu_kernel(u32 pass, u32 at, u32 chk) {
+  void* args[] = { &CORPUS, &pass, &at, &chk };
   if (cuLaunchKernel(gpu_pso, TURN_ROWS(at), 1, 1, CUBE_T, 1, 1, 0, NULL,
     args, NULL) != CUDA_SUCCESS) {
     err_fail("device launch failed");
@@ -5255,11 +5258,13 @@ static void gpu_kernel(u32 pass, u32 at) {
 }
 
 // A bang launches 1, 2, 4 .. 64 rounds between syncs, until the pack
-// empties the frontier. A pass launched past that returns at once.
+// empties the frontier. The round after a sync is picked on the host: the
+// device's check costs every launch. A pass launched past that returns.
 static void gpu_pass(u64* H) {
   for (u32 n = 1; H[H_FRONT] != 0; n = n < 32 ? 2 * n : 64) {
-    for (u32 i = 0; i < n; i += 1) {
-      gpu_run();
+    gpu_run(H[H_FRONT]);
+    for (u32 i = 1; i < n; i += 1) {
+      gpu_run(0);
     }
     if (cuCtxSynchronize() != CUDA_SUCCESS) {
       err_fail("device fault");
