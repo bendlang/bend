@@ -886,7 +886,8 @@ export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx,
     if (tld === undefined) {
       throw Err(book, ctx, "a declared datatype (unknown: " + k + ")", undefined, tm.s, def);
     }
-    throw Err(book, ctx, "a declared datatype", undefined, tm.s, def, "Note: " + k + " is a def: write its arguments as ()");
+    const nte = tld.n === 0 ? " with no arguments: write it as " + k : ": write its arguments as ()";
+    throw Err(book, ctx, "a declared datatype", undefined, tm.s, def, "Note: " + k + " is a def" + nte);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -3319,7 +3320,10 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "Ref": {
       const tld = book.tlds[tm.k];
       if (tld === undefined) {
-        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def);
+        const m = /^(.+)\.(pure|bind)$/.exec(tm.k);
+        const e = m === null ? "" : name_show(tm.s?.file, m[1]);
+        const nte = m === null ? undefined : "Note: a do block on " + e + " calls " + e + ".bind and " + e + ".pure";
+        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def, nte);
       }
       let k = tm.k;
       let x = 0;
