@@ -248,9 +248,10 @@ static inline void window_focus(WinQueue* q, bool on) {
 // It draws no composition: marked holds it only so the method can work.
 @interface BendView : NSView <NSWindowDelegate, NSTextInputClient> {
   @public
-  NSMutableData* evs;
+  WinQueue       q;
   u64            flags;
   BOOL           grab;
+  BOOL           eraser;
   NSString*      marked;
   NSMutableArray* held;
   BOOL           other;
@@ -275,15 +276,14 @@ static inline void window_focus(WinQueue* q, bool on) {
   return YES;
 }
 
-- (void)push:(u32)cid a:(u32)a b:(u32)b c:(u32)c d:(u32)d {
-  u32 ev[5] = { cid, a, b, c, d };
-  [evs appendBytes:ev length:sizeof ev];
+- (void)dealloc {
+  free(q.evs);
 }
 
 - (void)key:(NSEvent*)ev down:(BOOL)down {
   NSString* s = [ev.charactersIgnoringModifiers lowercaseString];
   u32 code = s.length > 0 ? [s characterAtIndex:0] : 65536 + ev.keyCode;
-  [self push:CID(Key) a:code b:down c:0 d:0];
+  window_push(&q, CID(Key), code, down, 0, 0);
 }
 
 - (void)keyDown:(NSEvent*)ev {
@@ -322,9 +322,9 @@ static inline void window_focus(WinQueue* q, bool on) {
     : s) UTF8String];
   u64 n  = strlen(t);
   u64 at = 0;
-  u32 ev[5];
+  u32 ev[WIN_EV];
   while (window_chunk(t, n, &at, ev)) {
-    [evs appendBytes:ev length:sizeof ev];
+    window_put(&q, ev);
   }
 }
 
@@ -384,37 +384,97 @@ static inline void window_focus(WinQueue* q, bool on) {
 
 - (void)flagsChanged:(NSEvent*)ev {
   u64 now = ev.modifierFlags;
-  [self push:CID(Key) a:65536 + ev.keyCode b:(now & ~flags) != 0 c:0
-    d:0];
+  window_push(&q, CID(Key), 65536 + ev.keyCode, (now & ~flags) != 0, 0, 0);
   flags = now;
 }
 
 - (NSPoint)at:(NSEvent*)ev {
-  CGSize  size = ((CAMetalLayer*)self.layer).drawableSize;
-  NSPoint p    = [self convertPoint:ev.locationInWindow fromView:nil];
-  return NSMakePoint(fmax(0, fmin(floor(p.x), size.width - 1)),
-    fmax(0, fmin(floor(p.y), size.height - 1)));
+  return [self convertPoint:ev.locationInWindow fromView:nil];
 }
 
+// A tablet's pen moves the cursor, but is its own pointer.
+- (u32)tool:(WinTool*)t of:(NSEvent*)ev {
+  if (ev.subtype != NSEventSubtypeTabletPoint) {
+    *t = (WinTool){ WIN_MOUSE };
+    return 0;
+  }
+  *t = (WinTool){ WIN_PEN, { ev.pressure, ev.tangentialPressure,
+    ev.tilt.x * 90, ev.tilt.y * 90, fmod(ev.rotation + 360, 360) } };
+  return window_id(&q, ev.deviceID, YES);
+}
+
+// The Mac's buttons 1 and 2 are W3C's 2 and 1; an eraser's contact is 5.
+// Let go past the view, the pointer is gone.
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
-  NSPoint p = [self at:ev];
-  [self push:CID(Mouse) a:p.x b:p.y c:(u32)ev.buttonNumber d:down];
+  WinTool t;
+  u32     id = [self tool:&t of:ev];
+  NSPoint p  = [self at:ev];
+  u32     n  = (u32)ev.buttonNumber;
+  window_point(&q, CID(Press), id, t, p.x, p.y, t.tag == WIN_PEN && eraser
+    && n == 0 ? 5 : n == 1 ? 2 : n == 2 ? 1 : n, down);
+  if (!down && id < 16 && q.down[id] == 0
+    && !NSPointInRect(p, self.bounds)) {
+    window_push(&q, CID(Lost), id, 0, 0, 0);
+  }
 }
 
+// Past the view, only a held pointer moves.
 - (void)move:(NSEvent*)ev {
-  NSPoint p = [self at:ev];
   if (grab) {
-    [self push:CID(Look) a:f32_rewrap(ev.deltaX) b:f32_rewrap(ev.deltaY)
-      c:0 d:0];
+    window_push(&q, CID(Look), f32_rewrap(ev.deltaX), f32_rewrap(ev.deltaY),
+      0, 0);
+    return;
+  }
+  if (ev.subtype == NSEventSubtypeTabletProximity) {
+    [self tabletProximity:ev];
+    return;
+  }
+  WinTool t;
+  u32     id = [self tool:&t of:ev];
+  NSPoint p  = [self at:ev];
+  if (id < 16 && (q.down[id] != 0 || NSPointInRect(p, self.bounds))) {
+    window_point(&q, CID(Move), id, t, p.x, p.y, 0, 0);
+  }
+}
+
+- (void)tabletProximity:(NSEvent*)ev {
+  if (ev.enteringProximity) {
+    eraser = ev.pointingDeviceType == NSPointingDeviceTypeEraser;
   } else {
-    [self push:CID(Move) a:p.x b:p.y c:0 d:0];
+    window_push(&q, CID(Lost), window_id(&q, ev.deviceID, NO), 0, 0, 0);
+  }
+}
+
+- (void)mouseExited:(NSEvent*)ev {
+  if (q.down[0] == 0) {
+    window_push(&q, CID(Lost), 0, 0, 0, 0);
   }
 }
 
 - (void)scrollWheel:(NSEvent*)ev {
   NSPoint p = [self at:ev];
-  [self push:CID(Scroll) a:p.x b:p.y c:f32_rewrap(ev.scrollingDeltaX)
-    d:f32_rewrap(ev.scrollingDeltaY)];
+  window_delta(&q, CID(Scroll), p.x, p.y, ev.scrollingDeltaX,
+    ev.scrollingDeltaY, 0);
+}
+
+// magnification adds to the scale; rotation is in degrees, counterclockwise
+- (void)magnifyWithEvent:(NSEvent*)ev {
+  NSPoint p = [self at:ev];
+  window_delta(&q, CID(Zoom), p.x, p.y, 1 + ev.magnification, 0, 2);
+}
+
+- (void)rotateWithEvent:(NSEvent*)ev {
+  NSPoint p = [self at:ev];
+  window_delta(&q, CID(Zoom), p.x, p.y, 1, -ev.rotation * M_PI / 180, 2);
+}
+
+// once per swipe, its direction (AppKit's is reversed); three fingers
+// unless its touches say
+- (void)swipeWithEvent:(NSEvent*)ev {
+  NSPoint p = [self at:ev];
+  u32     n = (u32)[ev touchesMatchingPhase:NSTouchPhaseAny inView:self].count;
+  window_delta(&q, CID(Swipe), p.x, p.y, -ev.deltaX, -ev.deltaY,
+    n > 0 ? n : 3);
 }
 
 // Window.grab sets this by key: the cursor is hidden and held at the
@@ -437,6 +497,11 @@ static inline void window_focus(WinQueue* q, bool on) {
 
 - (void)windowDidResignKey:(NSNotification*)note {
   [self setGrab:NO];
+  window_focus(&q, false);
+}
+
+- (void)windowDidBecomeKey:(NSNotification*)note {
+  window_focus(&q, true);
 }
 
 - (void)mouseDown:(NSEvent*)ev {
@@ -480,7 +545,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 }
 
 - (BOOL)windowShouldClose:(NSWindow*)sender {
-  [self push:CID(Close) a:0 b:0 c:0 d:0];
+  window_push(&q, CID(Close), 0, 0, 0, 0);
   return NO;
 }
 
@@ -520,7 +585,6 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     win.title = [NSString stringWithUTF8String:title];
     [win setContentSize:NSMakeSize(w, h)];
     BendView* view = [[BendView alloc] initWithFrame:win.contentLayoutRect];
-    view->evs   = [NSMutableData new];
     view->flags = NSEvent.modifierFlags;
     view.wantsLayer = YES;
     CAMetalLayer* layer = (CAMetalLayer*)view.layer;
@@ -532,6 +596,9 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     layer.maximumDrawableCount = 2;
     win.contentView = view;
     win.delegate = view;
+    [view addTrackingArea:[[NSTrackingArea alloc] initWithRect:NSZeroRect
+      options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
+        | NSTrackingInVisibleRect owner:view userInfo:nil]];
     [win makeFirstResponder:view];
     [win center];
     [win makeKeyAndOrderFront:nil];
@@ -856,12 +923,11 @@ static void window_show(Env e, CAMetalLayer* layer, Term image) {
 }
 
 static Term window_frame(Env e, intptr_t at, Term image) {
-  NSView*        view = ((__bridge NSWindow*)(void*)at).contentView;
-  NSMutableData* evs  = [view valueForKey:@"evs"];
+  BendView* view = (BendView*)((__bridge NSWindow*)(void*)at).contentView;
   io_sync();
   window_show(e, (CAMetalLayer*)view.layer, image);
-  Term list = window_list(e, evs.bytes, evs.length / 20);
-  evs.length = 0;
+  Term list = window_list(e, view->q.evs, view->q.n);
+  view->q.n = 0;
   return list;
 }
 
