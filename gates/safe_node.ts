@@ -45,6 +45,35 @@ export function judge(g: Got): [string, string] {
   return ["!", tt.split("\n").slice(1, 3).join(" | ").slice(0, 300)];
 }
 
+// a check's deadline kills bend2 and every process under it: bend2 runs
+// the kernel as its child, and a SIGKILL to bend2 alone left the kernel
+// running, orphaned, while the next check started. bend2 is stopped
+// first, so it starts no child between the ps and the kills; if ps
+// fails, only bend2 is killed, as before
+function kill_tree(kid: child.ChildProcess): boolean {
+  const pid = kid.pid;
+  if (pid === undefined) {
+    return kid.kill("SIGKILL");
+  }
+  const kids = new Map<number, number[]>();
+  try {
+    process.kill(pid, "SIGSTOP");
+    for (const l of child.execFileSync("ps", ["-A", "-o", "pid=,ppid="], { encoding: "utf8" }).split("\n")) {
+      const [p, pp] = l.trim().split(/\s+/).map(Number);
+      kids.set(pp, [...(kids.get(pp) ?? []), p]);
+    }
+  } catch { /* bend2 is gone, or ps failed */ }
+  const tree = [pid];
+  for (let i = 0; i < tree.length; i++) {
+    tree.push(...(kids.get(tree[i]) ?? []));
+  }
+  const killed = kid.kill("SIGKILL");
+  for (const p of tree.slice(1)) {
+    try { process.kill(p, "SIGKILL"); } catch { /* it exited */ }
+  }
+  return killed;
+}
+
 async function run(bin: string, args: string[], cap: number): Promise<Omit<Got, "f">> {
   const g: Omit<Got, "f"> = { code: null, ms: 0, out: "", timeout: false };
   const t0 = Date.now();
@@ -53,7 +82,7 @@ async function run(bin: string, args: string[], cap: number): Promise<Omit<Got, 
     kid.stdout.on("data", (d) => { g.out += d; });
     kid.stderr.on("data", (d) => { g.out += d; });
     kid.on("error", (e) => { g.error = e.message; });
-    const bomb = setTimeout(() => { g.timeout = kid.kill("SIGKILL"); }, cap);
+    const bomb = setTimeout(() => { g.timeout = kill_tree(kid); }, cap);
     kid.on("close", (code, signal) => {
       clearTimeout(bomb);
       g.code = code;
