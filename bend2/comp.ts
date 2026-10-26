@@ -36,6 +36,7 @@ type Seg = {
   spin: boolean;
   fork: boolean;
   native: boolean;
+  head?: string;
 };
 
 type Spine = {
@@ -89,10 +90,10 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // Constants
 // =========
 
-// CLO_APPLY and IO_EMIT are runtime segments (their ~ keeps a file from
-// declaring them). FOLD_FUEL caps the nodes unfolds add to a segment. A
-// spin of SPIN_FAR characters is a device call (DFAR). A node past WIDE pads
-// to its size class.
+// CLO_APPLY and IO_EMIT are runtime segments (~ keeps a file from declaring
+// them). FOLD_FUEL caps the nodes unfolds add to a segment; a spin of
+// SPIN_FAR characters is a device call (DFAR); a node past WIDE pads to its
+// size class.
 
 const CLO_APPLY = "Clo~apply";
 
@@ -236,8 +237,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
 // ---------
 
 // Per native constructor: builder, field readers, test. The runtime lays
-// out RUNTIME_ADTS; OWNED are Base names the compiler encodes, which only
-// Base may declare.
+// out RUNTIME_ADTS; OWNED are Base names the compiler encodes, Base's alone.
 
 const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
   Bool: {
@@ -545,7 +545,7 @@ function cid_mac(k: string): string {
 // ====
 
 // A Char past the Unicode scalars is 0xDC00 and three 11-bit pieces (str_out
-// writes U+FFFD). The JS runtime holds this function's text.
+// writes U+FFFD); the JS runtime holds this function's text.
 function char_new(c: number): string {
   return c < 0xD800 || c >= 0xE000 && c <= 0x10FFFF ? String.fromCodePoint(c)
     : String.fromCharCode(0xDC00, c >>> 22, c >>> 11 & 0x7FF, c & 0x7FF);
@@ -617,7 +617,7 @@ function graph_close<K>(set: Set<K>, edges: K[][]): Set<K> {
 // ====
 
 // A literal is a constant tree, but a Nat past the cap is U32.to_nat of its
-// word. A spine calls its def when its live arguments meet the def's
+// word. A spine calls its def on as many live arguments as it has
 // parameters, else Clo~apply over the outermost live one.
 
 function lit_call(s: Of<"Lit">): HTerm | null {
@@ -946,10 +946,10 @@ function ty_srcs(T: HTerm): void {
 // ===
 
 // An Array, an IO.OP and a datatype re-entering itself (maybe via a family)
-// are a box. A lay without arms is W32, W64 or BOX. An Array cell takes its
-// element type's open layout, so callers agree. lay_el refuses an open
-// element type (a variable, hole, bodiless law or family); a type former
-// such as a function is a box.
+// are a box, as is a type former such as a function. A lay without arms is
+// W32, W64 or BOX. An Array cell takes its element type's open layout, so
+// callers agree; lay_el refuses an open one (a variable, hole, bodiless law
+// or family).
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -1109,11 +1109,11 @@ function ctr_packed(t: HTerm): boolean {
 // Mat
 // ===
 
-// A Nat or word match's row holds the arm, the low bits known (32: a hit),
-// their value and the fields bound; a Nat row binds the scrutinee less its
-// level (64). A default covers the deeper rows replaying it. A U32 match
-// reads a table if its hits cover over half of 0..max and the rest share a
-// body. A default arm is named "".
+// A Nat or word match's row holds the arm (a default's is ""), the low bits
+// known (32: a hit), their value and the fields bound; a Nat row binds the
+// scrutinee less its level (64). A default covers the deeper rows replaying
+// it. A U32 match reads a table if its hits cover over half of 0..max and
+// the rest share a body.
 
 function mat_head(t: HTerm): boolean {
   return t.$ === "Mat" || t.$ === "Efq";
@@ -1192,23 +1192,19 @@ function mat_rows(sc: Scope, x: HTerm, ty: HTerm | null, self: HTerm) {
   const ret = all.B(DUMMY);
   if (adt.k === "Nat") {
     const rows: Row[] = [];
-    const nat = (h: HTerm, bits: number, val: number) => {
+    const nat = (h: HTerm, bits: number, val: number): Row => {
       const [arm, flds] = arm_self(h, 1, self, ([p]) =>
         [...Array(val)].reduce((t: HTerm) =>
           Bend.Ctr("Succ", [t]), p));
-      rows.push([arm, bits, val, flds]);
+      return [arm, bits, val, flds];
     };
     for (let m = x, n = 0; ; n++) {
       const { arms, end } = mat_arms(m);
       const { Zero, Succ } = Object.fromEntries(arms);
-      if (Zero) {
-        rows.push([Zero, 64, n, 0]);
-      } else {
-        nat(end, 64, n);
-      }
+      rows.push(Zero ? [Zero, 64, n, 0] : nat(end, 64, n));
       m = term_strip(Succ ?? end);
       if (!Succ || m.$ !== "Mat") {
-        nat(Succ ?? end, 0, Succ ? n + 1 : n);
+        rows.push(nat(Succ ?? end, 0, Succ ? n + 1 : n));
         return { adt, ret, rows, cells: rows.map(([a]) => a) };
       }
     }
@@ -1249,8 +1245,8 @@ function mat_ops(eq: (k: Name) => string): string {
 
 // fun_of raises a def's arity by the lambdas its body opens past its
 // parameters under every arm. A def is flat if it and its callees have no
-// fork, no bang call and only tail self-calls. loop_of gives a def's tail
-// cycle (Tarjan over its tail callees).
+// fork, no bang call and only tail self-calls. loop_of is its tail cycle
+// (Tarjan).
 
 function fun_of(k: Name): Fun {
   return memo(FL.funs, k, () => {
@@ -1292,11 +1288,6 @@ function def_raise(t: HTerm, left: number): number {
       def_raise(s.m, left));
   }
   return s.$ === "Efq" ? Infinity : 0;
-}
-
-function def_answer(def: Bend.Def): HTerm | null {
-  const K = ty_wnf(tele_unbind(def.T).doms.at(-1)![2]);
-  return K?.$ === "All" ? K.A : null;
 }
 
 function def_foreign(tld: Bend.TLD | undefined):
@@ -1507,9 +1498,7 @@ function fact_add(kind: string, k = ""): boolean {
     return false;
   }
   FL.facts.add(key);
-  const then = FL.when.get(key) ?? [];
-  FL.when.delete(key);
-  then.forEach((f) => f());
+  FL.when.get(key)?.splice(0).forEach((f) => f());
   return true;
 }
 
@@ -1708,10 +1697,10 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
 // Val
 // ===
 
-// A box rooted in a borrowed parameter (rs) is not owned; a word that is
-// not a box holds no reference, so it has no root. val_own is the gate:
-// at an owned position a rooted word owns its root; lent at `at`, a
-// rooted word passes its lend on and an unheld owned box owns `at`.
+// A box rooted in a borrowed parameter (rs) is not owned; a word not a box
+// has no root. val_own is the gate: at an owned position a rooted word owns
+// its root; lent at `at`, a rooted word passes its lend on and an unheld
+// owned box owns `at`.
 
 function val_new(ws: string[], lay: Lay, rs: (string | null)[] = [],
   stat = false): Val {
@@ -1873,8 +1862,8 @@ function arr_leaf(sc: Scope, s: string, el: Lay): Val {
 // Bind
 // ====
 
-// A binding counts its uses: the last takes the value, others share it. A
-// frame slot holding a shared word takes the wrapped one.
+// A binding counts its uses: the last takes the value, others share it; a
+// frame slot of a shared word takes the wrapped one.
 
 function bind_pop(sc: Scope, x: HTerm): Val {
   const p = probe_of(x);
@@ -1945,32 +1934,10 @@ function memo<K, V>(m: { get(k: K): V | undefined; set(k: K, v: V): void },
 // ====
 
 function unit_new(name: string, emit: () => void): Unit {
-  const u = { name, segs: [], n: 0, lent: new Set<string>(), lends: [],
-    clos: new Set<string>(), emit };
+  // unit_emit fills the rest
+  const u = { name, emit } as Unit;
   FL.units.set(name, u);
   return u;
-}
-
-function unit_order(): Unit[] {
-  const at = new Map<string, Unit>();
-  FL.units.forEach((u) => u.segs.forEach((s) => at.set(s.fid, u)));
-  const seen = new Set<Unit>();
-  const out: Unit[] = [];
-  // a stack, not recursion: a call chain past the JS stack still sorts; [u]
-  // pushes u once its callees are out
-  const todo: (Unit | [Unit] | undefined)[] = [...FL.units.values()].reverse();
-  while (todo.length > 0) {
-    const u = todo.pop();
-    if (Array.isArray(u)) {
-      out.push(u[0]);
-    } else if (u !== undefined && !seen.has(u)) {
-      seen.add(u);
-      todo.push([u]);
-      u.segs.flatMap((s) => [...s.refs]).reverse()
-        .forEach((r) => todo.push(at.get(r)));
-    }
-  }
-  return out;
 }
 
 function unit_emit(u: Unit): void {
@@ -1988,6 +1955,7 @@ function unit_emit(u: Unit): void {
 
 function main_pure(book: Bend.Book, whole = false): Bend.Book {
   const main = book.tlds.main;
+  FL = file_new(book, whole);
   file_owned();
   if (!book.tlds.IO) {
     die("a build needs import Base");
@@ -2232,9 +2200,9 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
 // borrowed ones (a read asks a lend). A closure moves its captures into a
 // node. A jump's returns agree or are one word, else it is a cut. A fork
 // runs a join task and a task per call; in sequence one frame serves each
-// step. A self-jump reads its parameters back, so the device's loop keeps
-// them typed. A foreign def short of its continuation is an IO action. On
-// C, an F32 table row is its bits (a NaN payload has no JS number).
+// step. A self-jump reads its parameters back, keeping them typed in the
+// device's loop. A foreign def short of its continuation is an IO action.
+// A C table's F32 row is its bits (a NaN payload has no JS number).
 
 function emit_hold(sc: Scope, exprs: string[], k: string,
   ks?: Kind[]): string[] {
@@ -2379,8 +2347,9 @@ function emit_native(sc: Scope, k: Name): string {
     const far = body.join("\n").length + 1 >= SPIN_FAR;
     const ps = seg.ks.map((kd, i) => `, ${lay_c(kd)} r${i}`
       + (arr_q(kd) ? `, u64 q${i}` : "")).join("");
-    FL.unit!.segs.push({ ...seg, lines: [`${far ? "DFAR" : "INLINE"} Term ${
-      name}(Env e, THR Term* o${ps}) {`, ...body] });
+    const head = `${far ? "DFAR" : "INLINE"} Term ${name}(Env e, THR Term* o${
+      ps})`;
+    FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
   }));
   return seg_ref(sc, name);
 }
@@ -2509,10 +2478,8 @@ function emit_refold(sc: Scope, x: HTerm): HTerm {
   if (got === null || got === x) {
     return x;
   }
-  const a = term_uses(x);
-  const b = term_uses(got);
   sc.uses.forEach((bd, p) => bind_set(sc, p, bd,
-    bd.n - term_use(a, p) + term_use(b, p)));
+    bd.n - term_use(term_uses(x), p) + term_use(term_uses(got), p)));
   return got;
 }
 
@@ -2976,8 +2943,8 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 
 // A segment may fork if one it reaches does; Clo~apply reaches every
 // closure. The device holds what bangs reach (every closure, if a bang may
-// take one). rp pads the host's twelfth slot, keeping rax free for the tail
-// call. WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
+// take one). rp pads the host's twelfth slot, freeing rax for the tail call.
+// WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
 
 function c_units(): Unit[] {
   for (const [k, tld] of [...done_defs().reverse(),
@@ -3066,7 +3033,6 @@ function c_header(segs: Seg[], clos: string[]): string {
 }
 
 export function compile_book(book: Bend.Book): string {
-  FL = file_new(book, false);
   FL = file_new(main_pure(book), false);
   file_book(["main", ...RUNTIME_ADTS]);
   const us = c_units();
@@ -3079,10 +3045,11 @@ export function compile_book(book: Bend.Book): string {
     ty_holds(A, (t) => !ty_tag(t, "ADT Typ Qua Min Eql"))));
   const dev = reach([...[...FL.bangs].map(seg_fid), ...wide ? clos : []]);
   const segs = all.filter((s) => !s.native && live.has(s.fid));
-  const spins = unit_order().flatMap((u) => u.segs)
-    .filter((s) => s.native && live.has(s.fid));
+  const spins = all.filter((s) => s.native && live.has(s.fid));
   const tabs = c_header(segs, clos);
+  // a spin may call one defined after it
   const img = [`CONSTV u64 STAT_IMG[] = { ${FL.img.join(", ") || 0} };`,
+    spins.map((s) => s.head + ";").join("\n"),
     ...spins.map((s) => s.lines.join("\n"))].join("\n\n");
   const text = segs.map((seg) => {
     const out = [`  WL_CASE(${seg.fid})`, ...seg_text([...seg_take(seg),
@@ -3340,9 +3307,10 @@ function js_def(k: Name, def: Bend.Def): void {
   }
   block(sc, `function ${name_id("$", k)}(${params.join(", ")}) {`, () => {
     if (def_foreign(def)) {
+      const K = ty_wnf(tele_unbind(def.T).doms.at(-1)![2]);
       return file_push(sc, `return { $: ${JSON.stringify(k)
         }, args: [${live.map(([, , A], i) => host(A, params[i], true))
-        }], kont: (x) => ${params.at(-1)}(${host(def_answer(def),
+        }], kont: (x) => ${params.at(-1)}(${host(K?.$ === "All" ? K.A : null,
         "x", false)}) };`);
     }
     if (loop.length === 0) {
@@ -3365,8 +3333,8 @@ function js_def(k: Name, def: Bend.Def): void {
   file_push(sc, "");
 }
 
-// What crosses a host edge: a Nat comes in as a number nat_in checks; text
-// gets U+FFFD for non-scalars.
+// Across a host edge a Nat comes in as a number nat_in checks; text gets
+// U+FFFD for non-scalars.
 function host(A: HTerm | null, x: string, out: boolean): string {
   const k = ty_adt(A)?.k;
   return k === "Char" || k === "String" ? `str_${out ? "out" : "in"}(${x})`
@@ -3404,8 +3372,8 @@ export function js_lib(book: Bend.Book, mod = false): string {
   const entries = [...FL.entries].map((k) => {
     const [f, g] = [name_id("$", k), name_id("$$", k)];
     const ps = fun_of(k).live.map((_, i) => "a" + i);
-    return jumps.has(k) ? `function ${g}(${ps}) {\n  return run_loop(${f}(${
-      ps}));\n}` : `const ${g} = ${f};`;
+    return `const ${g} = ${jumps.has(k) ? `(${ps}) => run_loop(${f}(${ps}))`
+      : f};`;
   });
   PROBES.length = 1;
   return RUNTIME + effs + "// Program\n// =======\n\n" + [...funs, ...entries,
@@ -3414,7 +3382,6 @@ export function js_lib(book: Bend.Book, mod = false): string {
 }
 
 export function js_book(book: Bend.Book): string {
-  FL = file_new(book, true);
   return `${js_lib(main_pure(book, true))}\n${RUNTIME_MAIN}\n`
     + `cli(process.argv.slice(1));\nio_exit(${name_id("$", "main")});`;
 }
@@ -6278,16 +6245,14 @@ function io_out(fd, data) {
   }
 }
 
-// Standard output off a terminal is buffered, as C's stdout: io_sync
-// writes it before a wait, an error, an exit and a File.write, or at 64
-// KiB held; a write that large goes out as is.
+// Stdout off a terminal is buffered, as C's: io_sync writes it before a
+// wait, an error, an exit and a File.write, or at 64 KiB.
 
 let io_held = null;
 
 function io_std(data) {
   io_held ??= !require("tty").isatty(1) && [];
-  if (!io_held || data.length >= 65536) {
-    io_sync();
+  if (!io_held) {
     return io_out(1, data);
   }
   io_held.push(data);
