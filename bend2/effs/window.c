@@ -11,8 +11,8 @@
 // a Press's words
 enum { WIN_TAG = 2, WIN_BUTTON = 10, WIN_DOWN = 11 };
 
-// A Tool's tag
-enum { WIN_MOUSE, WIN_FINGER, WIN_PEN };
+// A Tool's tag; WIN_ERASER, a pen whose contact is button 5, is the lanes'.
+enum { WIN_MOUSE, WIN_FINGER, WIN_PEN, WIN_ERASER };
 
 typedef struct {
   u32 tag;
@@ -49,11 +49,120 @@ typedef struct {
 #include <langinfo.h>
 #include <locale.h>
 
+// XInput2's names and types, as XI2.h and XInput2.h have them (a build
+// needs no libxi-dev). Device, leave (its mode at flags) and gesture
+// events share the head.
+#define XIAllDevices          0
+#define XIAllMasterDevices    1
+#define XI_ButtonPress        4
+#define XI_ButtonRelease      5
+#define XI_Motion             6
+#define XI_Leave              8
+#define XI_HierarchyChanged   11
+#define XI_TouchBegin         18
+#define XI_TouchUpdate        19
+#define XI_TouchEnd           20
+#define XI_GesturePinchBegin  27
+#define XI_GesturePinchUpdate 28
+#define XI_GesturePinchEnd    29
+#define XI_GestureSwipeBegin  30
+#define XI_GestureSwipeUpdate 31
+#define XI_GestureSwipeEnd    32
+#define XIValuatorClass       2
+#define XITouchClass          8
+#define XIDirectTouch         1
+#define XINotifyPassiveGrab   4
+#define XISetMask(ptr, event) \
+  (((unsigned char*)(ptr))[(event) >> 3] |= (1 << ((event) & 7)))
+
+typedef struct {
+  int            deviceid;
+  int            mask_len;
+  unsigned char* mask;
+} WinXIMask;
+
+typedef struct {
+  int            type;
+  unsigned long  serial;
+  Bool           send_event;
+  Display*       display;
+  int            extension;
+  int            evtype;
+  Time           time;
+  int            deviceid;
+  int            sourceid;
+  int            detail;
+  Window         root;
+  Window         event;
+  Window         child;
+  double         root_x;
+  double         root_y;
+  double         event_x;
+  double         event_y;
+} WinXIHead;
+
+typedef struct {
+  int            len;
+  unsigned char* mask;
+} WinXIBits;
+
+typedef struct {
+  int            len;
+  unsigned char* mask;
+  double*        values;
+} WinXIVals;
+
+typedef struct {
+  WinXIHead      h;
+  int            flags;
+  WinXIBits      buttons;
+  WinXIVals      vals;
+} WinXIEvent;
+
+// a pinch's; a swipe's ends at raw_dy
+typedef struct {
+  WinXIHead      h;
+  double         dx, dy, raw_dx, raw_dy, scale, delta_scale, angle;
+} WinXIGesture;
+
+// A device's class: a valuator's, whose number stands at a touch class's
+// mode.
+typedef struct {
+  int            type;
+  int            sourceid;
+  int            number;
+  Atom           label;
+  double         min, max, value;
+} WinXIClass;
+
+typedef struct {
+  int            deviceid;
+  char*          name;
+  int            use, attachment;
+  Bool           enabled;
+  int            num_classes;
+  WinXIClass**   classes;
+} WinXIDevice;
+
+// A device met: its tool, each axis's valuator (-1: none), range and last
+// value (events carry only changes), and a touch screen's pixels per unit
+// of position.
+enum { WIN_FORCE, WIN_TILT_X, WIN_TILT_Y, WIN_MAJOR, WIN_MINOR, WIN_AXES };
+
+typedef struct {
+  int    id;
+  u32    tool;
+  int    ax[WIN_AXES];
+  double lo[WIN_AXES], hi[WIN_AXES], at[WIN_AXES];
+  double px;
+} WinDev;
+
 // The X11 window: its own connection (so its queue holds only its
 // events), its input method and context (NULL if none opened), the
 // time and code of the last key the method took, the frame's image,
-// its events, whether it holds the pointer and the display's refresh
-// period in ns.
+// its events, whether it holds the pointer, the display's refresh period
+// in ns, XInput2's opcode (0 if none), a pinch's scale so far and the
+// devices met.
 typedef struct {
   Display* dpy;
   Window   win;
@@ -66,6 +175,10 @@ typedef struct {
   WinQueue q;
   u32      grab;
   u64      period;
+  int      xi;
+  double   pinch;
+  u32      nd;
+  WinDev   devs[8];
 } BendWin;
 
 // Names the window in UTF-8: _NET_WM_NAME, which window managers show,
@@ -664,6 +777,52 @@ static void window_ime(BendWin* win) {
   }
 }
 
+// XInput2, through a libXi loaded at run time as libXrandr is: the
+// pointers and (from 2.4) a trackpad's pinch on the window, devices
+// plugged or unplugged on the root. Its opcode, or 0 (no libXi or XInput
+// 2.2: core events then stand for the mouse alone).
+static WinXIDevice* (*window_xi_query)(Display*, int, int*);
+static void         (*window_xi_free)(WinXIDevice*);
+
+static int window_xi(Display* dpy, Window w) {
+  int   op, ev, er;
+  void* xi = XQueryExtension(dpy, "XInputExtension", &op, &ev, &er)
+    ? dlopen("libXi.so.6", RTLD_LAZY | RTLD_LOCAL) : NULL;
+  if (xi == NULL) {
+    return 0;
+  }
+  Status (*version)(Display*, int*, int*) =
+    (Status (*)(Display*, int*, int*))dlsym(xi, "XIQueryVersion");
+  int (*select)(Display*, Window, WinXIMask*, int) =
+    (int (*)(Display*, Window, WinXIMask*, int))dlsym(xi, "XISelectEvents");
+  window_xi_query = (WinXIDevice* (*)(Display*, int, int*))dlsym(xi,
+    "XIQueryDevice");
+  window_xi_free = (void (*)(WinXIDevice*))dlsym(xi, "XIFreeDeviceInfo");
+  int major = 2;
+  int minor = 4;
+  if (!version || !select || !window_xi_query || !window_xi_free
+    || version(dpy, &major, &minor) != Success || major * 10 + minor < 22) {
+    return 0;
+  }
+  int           evs[] = { XI_ButtonPress, XI_ButtonRelease, XI_Motion,
+    XI_Leave, XI_TouchBegin, XI_TouchUpdate, XI_TouchEnd,
+    XI_GesturePinchBegin, XI_GesturePinchUpdate, XI_GesturePinchEnd,
+    XI_GestureSwipeBegin, XI_GestureSwipeUpdate, XI_GestureSwipeEnd };
+  unsigned char on[5]   = { 0 };
+  unsigned char plug[2] = { 0 };
+  for (u32 i = 0; i < sizeof evs / sizeof *evs; i += 1) {
+    if (evs[i] < XI_GesturePinchBegin || minor >= 4) {
+      XISetMask(on, evs[i]);
+    }
+  }
+  XISetMask(plug, XI_HierarchyChanged);
+  WinXIMask m[2] = { { XIAllMasterDevices, sizeof on, on },
+    { XIAllDevices, sizeof plug, plug } };
+  select(dpy, w, &m[0], 1);
+  select(dpy, DefaultRootWindow(dpy), &m[1], 1);
+  return op;
+}
+
 static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
@@ -699,9 +858,10 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   XSetWMNormalHints(dpy, win->win, &hints);
   XSetWMProtocols(dpy, win->win, &win->del, 1);
   window_x_title(dpy, win->win, title, strlen(title));
-  XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
-    | ButtonReleaseMask | PointerMotionMask | LeaveWindowMask | FocusChangeMask
-    | im_evs);
+  win->xi = window_xi(dpy, win->win);
+  XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | FocusChangeMask
+    | im_evs | (win->xi ? 0 : ButtonPressMask | ButtonReleaseMask
+      | PointerMotionMask | LeaveWindowMask));
   XMapRaised(dpy, win->win);
   XFlush(dpy);
   *out = (intptr_t)win;
@@ -1006,14 +1166,14 @@ static void window_text(BendWin* win, XKeyEvent* key) {
 // X buttons: 1 to 3 left, middle, right; 4 to 7 the wheel (up, down, left,
 // right; a notch is 1, up and left positive); 8 and 9 back, forward.
 static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
-  u32 b, bool down) {
+  u32 b, bool down, bool eraser) {
   f32 s = b % 2 ? -1 : 1;
   if (b >= 4 && b <= 7 && down) {
     window_delta(&win->q, CID(Scroll), x, y, b > 5 ? s : 0, b > 5 ? 0 : s,
       0);
   } else if (b <= 3 || b == 8 || b == 9) {
     window_point(&win->q, CID(Press), id, t, x, y,
-      b <= 3 ? b - 1 : b - 5, down);
+      eraser && b == 1 ? 5 : b <= 3 ? b - 1 : b - 5, down);
   }
 }
 
@@ -1021,8 +1181,159 @@ static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
 // elsewhere takes only a held one (its release then goes there).
 static void window_leave(BendWin* win, u32 id, int mode) {
   bool held = id < 16 && win->q.down[id] != 0;
-  if (held == (mode == NotifyGrab)) {
+  if (held == (mode == NotifyGrab || mode == XINotifyPassiveGrab)) {
     window_push(&win->q, CID(Lost), id, 0, 0, 0);
+  }
+}
+
+static const struct {
+  const char* label;
+  int         ax;
+} window_axes[] = {
+  { "Abs Pressure", WIN_FORCE }, { "Abs MT Pressure", WIN_FORCE },
+  { "Abs Tilt X", WIN_TILT_X }, { "Abs Tilt Y", WIN_TILT_Y },
+  { "Abs MT Touch Major", WIN_MAJOR }, { "Abs MT Touch Minor", WIN_MINOR },
+};
+
+// A device as first met: a touch screen if it has a direct touch class, a
+// pen if a force (its eraser is its own device, by name), else a mouse. A
+// finger's size is in the screen's width over its position's range. The
+// table empties when full, or when devices come or go.
+static WinDev* window_dev(BendWin* win, int id) {
+  for (u32 i = 0; i < win->nd; i += 1) {
+    if (win->devs[i].id == id) {
+      return &win->devs[i];
+    }
+  }
+  win->nd = win->nd == 8 ? 0 : win->nd;
+  WinDev* d = &win->devs[win->nd++];
+  *d = (WinDev){ .id = id, .ax = { -1, -1, -1, -1, -1 } };
+  int          n     = 0;
+  bool         touch = false;
+  WinXIDevice* info  = window_xi_query(win->dpy, id, &n);
+  for (int k = 0; info != NULL && k < info->num_classes; k += 1) {
+    WinXIClass* c = info->classes[k];
+    char*       s = c->type == XIValuatorClass && c->label != None
+      ? XGetAtomName(win->dpy, c->label) : NULL;
+    touch |= c->type == XITouchClass && c->number == XIDirectTouch;
+    for (u32 j = 0; s != NULL && j < sizeof window_axes / sizeof *window_axes;
+      j += 1) {
+      if (strcmp(s, window_axes[j].label) == 0) {
+        d->ax[window_axes[j].ax] = c->number;
+        d->lo[window_axes[j].ax] = c->min;
+        d->hi[window_axes[j].ax] = c->max;
+      }
+    }
+    if (s != NULL && strcmp(s, "Abs MT Position X") == 0 && c->max > c->min) {
+      d->px = DisplayWidth(win->dpy, DefaultScreen(win->dpy))
+        / (c->max - c->min);
+    }
+    if (s != NULL) {
+      XFree(s);
+    }
+  }
+  d->tool = touch ? WIN_FINGER : d->ax[WIN_FORCE] < 0 ? WIN_MOUSE
+    : info != NULL && (strstr(info->name, "eraser")
+      || strstr(info->name, "Eraser")) ? WIN_ERASER : WIN_PEN;
+  if (info != NULL) {
+    window_xi_free(info);
+  }
+  return d;
+}
+
+static void window_vals(WinDev* d, const WinXIVals* v) {
+  const double* p = v->values;
+  for (int k = 0; k < v->len * 8; k += 1) {
+    if (v->mask[k >> 3] >> (k & 7) & 1) {
+      for (u32 j = 0; j < WIN_AXES; j += 1) {
+        d->at[j] = d->ax[j] == k ? *p : d->at[j];
+      }
+      p += 1;
+    }
+  }
+}
+
+// Axis a's value (from 0 to 1 if norm), else none if it has no valuator.
+static f32 window_axis(const WinDev* d, int a, bool norm, f32 none) {
+  return d->ax[a] < 0 || (norm && d->hi[a] <= d->lo[a]) ? none
+    : (f32)(norm ? (d->at[a] - d->lo[a]) / (d->hi[a] - d->lo[a]) : d->at[a]);
+}
+
+static WinTool window_tool(const WinDev* d, bool down) {
+  f32 force = window_axis(d, WIN_FORCE, true, down ? 0.5f : 0);
+  if (d->tool == WIN_FINGER) {
+    f32 w = (f32)d->px * window_axis(d, WIN_MAJOR, false, 0);
+    f32 h = (f32)d->px * window_axis(d, WIN_MINOR, false, 0);
+    return (WinTool){ WIN_FINGER, { force, w > 0 ? w : 1,
+      h > 0 ? h : w > 0 ? w : 1 } };
+  }
+  if (d->tool != WIN_MOUSE) {
+    return (WinTool){ WIN_PEN, { force, 0,
+      fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_X, false, 0))),
+      fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_Y, false, 0))), 0 } };
+  }
+  return (WinTool){ WIN_MOUSE };
+}
+
+// Each finger of a touch screen is its own pointer (its pointer events,
+// which repeat them, are dropped), a pen one per device. A pinch's scale
+// counts from its start. Under the window's grab a motion only sets (gx,
+// gy), as a core one does.
+static void window_xi_event(BendWin* win, XGenericEventCookie* c, int* gx,
+  int* gy) {
+  const WinXIEvent* xe = c->data;
+  int               t  = c->evtype;
+  if (t == XI_HierarchyChanged) {
+    win->nd = 0;
+    return;
+  }
+  f32 x = (f32)xe->h.event_x;
+  f32 y = (f32)xe->h.event_y;
+  const WinXIGesture* g = c->data;
+  if (t >= XI_GestureSwipeBegin) {
+    if (t == XI_GestureSwipeUpdate) {
+      window_delta(&win->q, CID(Swipe), x, y, g->dx, g->dy, xe->h.detail);
+    }
+    return;
+  }
+  if (t >= XI_GesturePinchBegin) {
+    if (t == XI_GesturePinchUpdate && win->pinch > 0) {
+      window_delta(&win->q, CID(Zoom), x, y, g->scale / win->pinch,
+        g->angle * M_PI / 180, xe->h.detail);
+    }
+    win->pinch = t == XI_GesturePinchBegin ? 1 : g->scale;
+    return;
+  }
+  WinDev* d     = window_dev(win, xe->h.sourceid);
+  u64     name  = (u64)(u32)d->id << 32;
+  bool    touch = t >= XI_TouchBegin && t <= XI_TouchEnd;
+  if (touch && d->tool == WIN_FINGER) {
+    window_vals(d, &xe->vals);
+    window_point(&win->q, t == XI_TouchUpdate ? CID(Move) : CID(Press),
+      window_id(&win->q, name | (u32)xe->h.detail, t == XI_TouchBegin),
+      window_tool(d, true), x, y, 0, t == XI_TouchBegin);
+  }
+  if (touch || d->tool == WIN_FINGER) {
+    return;
+  }
+  u32 id = d->tool == WIN_MOUSE ? 0 : window_id(&win->q, name | 0xFFFFFFFF,
+    t != XI_Leave);
+  if (t == XI_Leave) {
+    window_leave(win, id, xe->flags);
+    return;
+  }
+  if (t == XI_Motion && win->grab) {
+    *gx = (int)xe->h.event_x;
+    *gy = (int)xe->h.event_y;
+    return;
+  }
+  window_vals(d, &xe->vals);
+  WinTool tool = window_tool(d, id < 16 && win->q.down[id] != 0);
+  if (t == XI_Motion) {
+    window_point(&win->q, CID(Move), id, tool, x, y, 0, false);
+  } else {
+    window_button(win, id, tool, x, y, xe->h.detail, t == XI_ButtonPress,
+      d->tool == WIN_ERASER);
   }
 }
 
@@ -1054,7 +1365,7 @@ static void window_pump(BendWin* win) {
       }
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
       window_button(win, 0, (WinTool){ WIN_MOUSE }, ev.xbutton.x,
-        ev.xbutton.y, ev.xbutton.button, ev.type == ButtonPress);
+        ev.xbutton.y, ev.xbutton.button, ev.type == ButtonPress, false);
     } else if (ev.type == MotionNotify) {
       x = ev.xmotion.x;
       y = ev.xmotion.y;
@@ -1064,6 +1375,10 @@ static void window_pump(BendWin* win) {
       }
     } else if (ev.type == LeaveNotify) {
       window_leave(win, 0, ev.xcrossing.mode);
+    } else if (ev.type == GenericEvent && ev.xcookie.extension == win->xi
+      && XGetEventData(win->dpy, &ev.xcookie)) {
+      window_xi_event(win, &ev.xcookie, &x, &y);
+      XFreeEventData(win->dpy, &ev.xcookie);
     } else if (ev.type == FocusIn || ev.type == FocusOut) {
       bool on = ev.type == FocusIn;
       if (win->ic != NULL && on) {
