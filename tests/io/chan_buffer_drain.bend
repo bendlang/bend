@@ -1,8 +1,7 @@
-# A big buffer keeps FIFO when it wraps and when it drains after close: fill
-# a 100000-slot buffer, drain 60000, fill 20000 more (so the buffer wraps),
-# close, then drain the last 60000. Every value must arrive in the order it
-# was sent. The JS buffer is a ring, so a receive moves no value, where the
-# plain array it replaced shifted the whole buffer on every receive.
+# A big buffer keeps FIFO through compaction and a drain after close: fill a
+# 100000-slot buffer, then a spawned producer parks sending 20000 more (each
+# receive takes a value and wakes it into the buffer) and closes. Draining
+# all 120000 values must see them in the order they were sent, then None.
 import Base
 
 def check(ok: Bool, at: U32) -> IO(Unit):
@@ -48,14 +47,26 @@ def drain(n: Nat, +c: Chan(U32), +next: U32, acc: U32) -> IO(U32):
         v : U32 <- got(next, r)
         drain(p, c, U32.inc(next), U32.add(acc, v))
 
+def feed(+c: Chan(U32)) -> IO(Unit):
+  do IO<Unit>:
+    a : Unit <- fill(20000n, c, 100000)
+    Chan.close(U32, c)
+
+def ended(r: Maybe<&1, U32>) -> IO(Unit):
+  match r:
+    case None{}:
+      IO.pure(Unit, Unit{})
+    case Some{v}:
+      IO.die(Unit, 1, "closed buffer retained data")
+
 def main() -> IO(Unit):
   do IO<Unit>:
     +c : Chan(U32) <- Chan.new(U32, 100000)
     a : Unit <- fill(100000n, c, 0)
-    s0 : U32 <- drain(60000n, c, 0, 0)
-    b : Unit <- fill(20000n, c, 100000)
-    u : Unit <- Chan.close(U32, c)
-    s1 : U32 <- drain(60000n, c, 60000, 0)
-    IO.print(U32.show(U32.add(s0, s1)))
+    b : Unit <- IO.spawn(Unit, feed(c))
+    s : U32 <- drain(120000n, c, 0, 0)
+    r : Maybe<&1, U32> <- Chan.recv(U32, c)
+    u : Unit <- ended(r)
+    IO.print(U32.show(s))
 
 #|2904972704
