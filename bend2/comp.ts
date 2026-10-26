@@ -3849,10 +3849,10 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // Heap
 // ====
 
-// Per lane and class: a LIFO free chain, its length in words, and on the
-// host COLD, one parked generation. A host free reaching KEEP_WORDS parks the
-// chain as COLD and banks the old COLD. A miss takes COLD, a bank entry or a
-// fresh quantum. A device lane banks its generations at the end (dev_cut).
+// Lanes keep a free chain and word count per class. Full host chains
+// replace COLD and bank old COLD. Host blocks >= CAP_WORDS go straight to the
+// bank. A miss takes COLD, the bank or fresh memory. Device lanes bank
+// chains at dev_cut.
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))
@@ -3864,11 +3864,12 @@ INLINE u32 cls_fit(u32 words) {
 }
 
 OUTLINE void heap_hand(Env e, u32 cls) {
-  u64 cold = ALC_COLD(e, cls);
+  bool large = (1ull << cls) >= CAP_WORDS;
+  u64 cold = large ? ALC_AT(e, cls) : ALC_COLD(e, cls);
   if (cold) {
     bank_push(e.mem, cls, cold);
   }
-  ALC_COLD(e, cls) = ALC_AT(e, cls);
+  ALC_COLD(e, cls) = large ? 0 : ALC_AT(e, cls);
   ALC_AT(e, cls)   = ALC_LEN(e, cls) = 0;
 }
 
