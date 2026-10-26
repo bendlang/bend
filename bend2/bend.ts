@@ -658,6 +658,11 @@ export function term_apply(fn: HTerm, tm: HTerm, s?: Span): HTerm {
   return App(f, tm, s);
 }
 
+// tm applied to each of xs in turn, a λ head firing
+export function term_spine(tm: HTerm, xs: HTerm[]): HTerm {
+  return xs.reduce((f, x) => term_apply(f, x), tm);
+}
+
 export function term_unapply<X>(tm: TermOf<X>): [TermOf<X>, TermOf<X>[]] {
   const xs: TermOf<X>[] = [];
   let cur = tm;
@@ -3104,11 +3109,8 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
         return b.$ === "Ref";
       }
       const n = Math.max(book.tlds[a.k]?.n ?? 0, book.tlds[b.k]?.n ?? 0);
-      let [f, g]: HTerm[] = [a, b];
-      for (let j = 0; j < n; j++) {
-        [f, g] = [App(f, Var("_", dep + j)), App(g, Var("_", dep + j))];
-      }
-      return n > 0 && compare_go(mode, book, f, g, dep + n);
+      const xs: HTerm[] = Array.from({ length: n }, (_, j) => Var("_", dep + j));
+      return n > 0 && compare_go(mode, book, term_spine(a, xs), term_spine(b, xs), dep + n);
     }
     case "Typ": {
       if (b.$ !== "Typ") {
@@ -3172,8 +3174,7 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
       if (F?.$ !== "Def" || G?.$ !== "Def" || F.v === null || G.v === null || xs.length !== ys.length) {
         return false;
       }
-      const on = (v: HTerm, zs: HTerm[]): HTerm => zs.reduce((t, z) => term_apply(t, z), v);
-      return compare_go("EQ", RIGID, on(F.v, xs), on(G.v, ys), dep);
+      return compare_go("EQ", RIGID, term_spine(F.v, xs), term_spine(G.v, ys), dep);
     }
     case "ADT": {
       if (b.$ !== "ADT" || a.k !== b.k || a.x.length !== b.x.length) {
@@ -3777,7 +3778,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
     }
     o = tm.k + "~" + String(is.size);
     is.set(key, o);
-    const inst: Def = { $: "Def", n: def.n - def.x, x: 0, T, v: xs.reduce((v, a) => term_apply(v, a), def.v as HTerm), u: def.u };
+    const inst: Def = { $: "Def", n: def.n - def.x, x: 0, T, v: term_spine(def.v as HTerm, xs), u: def.u };
     book.tlds[o] = { ...inst, v: null };
     inst.e = def_check(book, o, inst, z);
     book.tlds[o] = inst;
