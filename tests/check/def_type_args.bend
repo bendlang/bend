@@ -1,5 +1,5 @@
 # A def given arguments in <...>, the syntax of a datatype's: the error
-# says the name is a def and how a def is applied, not that it is unknown.
+# notes that the name is a def, which takes its arguments in (...).
 
 import Base
 
@@ -11,10 +11,11 @@ def main() -> Twice<U32>:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a declared datatype (Twice is a def, applied as Twice(...))
+#|- message  : a declared datatype
 #|Location: main
 #| 8 | 
 #| 9>| def main() -> Twice<U32>:
 #|   |               ^^^^^^^^^
 #|10 |   (1, 2)
+#|Note: Twice is a def: write its arguments as ()
 #|exit 1

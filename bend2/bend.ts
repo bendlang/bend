@@ -882,9 +882,11 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    const k = name_key(tm.k);
-    const why = tld === undefined ? "unknown: " + k : k + " is a def, applied as " + k + "(...)";
-    throw Err(book, ctx, "a declared datatype (" + why + ")", undefined, tm.s, def);
+    const k = name_show(tm.s?.file, tm.k);
+    if (tld === undefined) {
+      throw Err(book, ctx, "a declared datatype (unknown: " + k + ")", undefined, tm.s, def);
+    }
+    throw Err(book, ctx, "a declared datatype", undefined, tm.s, def, "Note: " + k + " is a def: write its arguments as ()");
   }
   if (tm.r.length === 0) {
     return tld;
@@ -1773,7 +1775,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       const m = parse_name(p);
       parse_skip(p);
       if (!parse_take(p, "<")) {
-        parse_fail(p, "'<' (a do block is written do " + name_key(m) + "<...>:)");
+        parse_fail(p, "'<' (a do block is written do " + m + "<...>:)");
       }
       const ts = parse_fill(p, parse_reso(p, m), parse_term_args(p, ">"),
         parse_span(p, beg));
