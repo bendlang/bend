@@ -45,33 +45,56 @@ export function judge(g: Got): [string, string] {
   return ["!", tt.split("\n").slice(1, 3).join(" | ").slice(0, 300)];
 }
 
+// every process's pid and parent pid, from ps. The text goes through a
+// file, as run_read's does in bend2/safe.ts: bun's spawnSync can lose a
+// pipe's bytes under load
+function ps_rows(): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-ps-"));
+  const log = path.join(dir, "out");
+  const fd = fs.openSync(log, "w");
+  try {
+    const got = child.spawnSync("ps", ["-A", "-o", "pid=,ppid="], { stdio: ["ignore", fd, "ignore"] });
+    return got.status === 0 ? fs.readFileSync(log, "utf8") : "";
+  } finally {
+    fs.closeSync(fd);
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 // a check's deadline kills bend2 and every process under it: bend2 runs
 // the kernel as its child, and a SIGKILL to bend2 alone left the kernel
 // running, orphaned, while the next check started. bend2 is stopped
-// first, so it starts no child between the ps and the kills; if ps
-// fails, only bend2 is killed, as before
-function kill_tree(kid: child.ChildProcess): boolean {
+// first, so it starts no child between the ps and the kills, and reaps
+// none whose pid could be reused. A bend2 that already exited is never
+// signalled by pid, which may be reused. If ps fails (no row for bend2),
+// only bend2 is killed, as before, and the result says so
+function kill_tree(kid: child.ChildProcess, g: Omit<Got, "f">): void {
   const pid = kid.pid;
-  if (pid === undefined) {
-    return kid.kill("SIGKILL");
+  if (pid === undefined || kid.exitCode !== null || kid.signalCode !== null) {
+    g.timeout = kid.kill("SIGKILL");
+    return;
   }
-  const kids = new Map<number, number[]>();
+  let rows = "";
   try {
     process.kill(pid, "SIGSTOP");
-    for (const l of child.execFileSync("ps", ["-A", "-o", "pid=,ppid="], { encoding: "utf8" }).split("\n")) {
-      const [p, pp] = l.trim().split(/\s+/).map(Number);
-      kids.set(pp, [...(kids.get(pp) ?? []), p]);
-    }
+    rows = ps_rows();
   } catch { /* bend2 is gone, or ps failed */ }
+  const kids = new Map<number, number[]>();
+  for (const l of rows.split("\n")) {
+    const [p, pp] = l.trim().split(/\s+/).map(Number);
+    kids.set(pp, [...(kids.get(pp) ?? []), p]);
+  }
+  if (![...kids.values()].some((ps) => ps.includes(pid))) {
+    g.error = "deadline: ps listed no bend2, so a process it started may still run";
+  }
   const tree = [pid];
   for (let i = 0; i < tree.length; i++) {
     tree.push(...(kids.get(tree[i]) ?? []));
   }
-  const killed = kid.kill("SIGKILL");
+  g.timeout = kid.kill("SIGKILL");
   for (const p of tree.slice(1)) {
     try { process.kill(p, "SIGKILL"); } catch { /* it exited */ }
   }
-  return killed;
 }
 
 async function run(bin: string, args: string[], cap: number): Promise<Omit<Got, "f">> {
@@ -82,7 +105,7 @@ async function run(bin: string, args: string[], cap: number): Promise<Omit<Got, 
     kid.stdout.on("data", (d) => { g.out += d; });
     kid.stderr.on("data", (d) => { g.out += d; });
     kid.on("error", (e) => { g.error = e.message; });
-    const bomb = setTimeout(() => { g.timeout = kill_tree(kid); }, cap);
+    const bomb = setTimeout(() => { kill_tree(kid, g); }, cap);
     kid.on("close", (code, signal) => {
       clearTimeout(bomb);
       g.code = code;
