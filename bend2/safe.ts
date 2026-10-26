@@ -332,7 +332,7 @@ function root_emit(e: Safe, k: Name): [Name[], Name | null] {
     }
     // roots share a constant only where they give it the same model
     const f = pick === null ? null : fit(e, k, pick[j], F.A);
-    const key = String(j) + "\n" + B.term_key(B.term_lower(F.A)) + "\n" + (f === null ? "" : B.term_key(B.term_lower(f)));
+    const key = String(j) + "\n" + B.term_key(B.term_lower(F.A)) + "\n" + (f === null ? "" : B.term_key(B.term_lower(f.v)));
     const kept = e.consts.get(key);
     if (kept !== undefined) {
       return at(B.Ref(kept));
@@ -340,8 +340,7 @@ function root_emit(e: Safe, k: Name): [Name[], Name | null] {
     const c = B.name_fresh(k, "root");
     const def: Def = { $: "Def", n: 0, x: 0, T: F.A, v: null };
     e.book.tlds[c] = def;
-    const m = f ?? model(e, F.A);
-    e.mb.tlds[c] = { ...def, v: m };
+    e.mb.tlds[c] = { ...def, ...(f ?? { v: model(e, F.A) }) };
     e.consts.set(key, c);
     return at(B.Ref(c));
   };
@@ -443,7 +442,8 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: Name): void {
 // no body goes out opaque, at a model of its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: Name, tld: Def): void {
   const T = B.tele_fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[], B.ctx_nil());
-  const t = tld.e !== undefined ? null : (e.mb.tlds[k] as Def).v ?? model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_display(e.book, k));
+  const m = e.mb.tlds[k] as Def;
+  const t = tld.e !== undefined ? null : m.e !== undefined ? B.term_higher(m.e) : m.v ?? model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_display(e.book, k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -540,26 +540,27 @@ function model(e: Safe, T: HTerm): HTerm | null {
 // its parameter's type after the ones before it; k's constants take their
 // models from it alone
 function inst_pick(e: Safe, k: Name): HTerm[] | null {
-  const fits = (T: HTerm, [x, ...xs]: HTerm[]): boolean => {
-    if (x === undefined) {
-      return true;
-    }
-    const F = B.term_wnf(e.mb, T);
-    return F.$ === "All" && fit(e, k, x, F.A) !== null && fits(F.B(x), xs);
-  };
-  for (const n of e.book.tmps.values()) {
+  instances: for (const n of e.book.tmps.values()) {
     if (B.name_parent(n) !== k) continue;
-    const xs = (e.book.tlds[n] as Def).args!.map(x => B.term_higher(x));
-    if (fits(B.term_copy(v => v)(e.book.tlds[k].T), xs)) return xs;
+    const xs = (e.book.tlds[n] as Def).model_args!.map(x => B.term_higher(x));
+    let T = B.term_copy(v => v)(e.book.tlds[k].T);
+    for (const x of xs) {
+      const F = B.term_wnf(e.mb, T);
+      if (F.$ !== "All" || fit(e, k, x, F.A) === null) continue instances;
+      T = F.B(x);
+    }
+    return xs;
   }
   return null;
 }
 
-// x checked at T in the model book, as k's code; null if it does not fit
-function fit(e: Safe, k: Name, x: HTerm, T: HTerm): HTerm | null {
+// A model keeps its source body for dependent checks, and its checked
+// tree for emission, where each node's known type is required.
+function fit(e: Safe, k: Name, x: HTerm, T: HTerm): { v: HTerm; e: B.LTerm } | null {
   try {
     const copy = B.term_copy(v => v);
-    return B.term_higher(B.term_check(e.mb, { t: B.Ref(k), n: 0, def: k, qs: [] }, copy(x), B.Lone(), copy(T), B.ctx_nil(), 0).tm);
+    const checked = B.term_check(e.mb, { t: B.Ref(k), n: 0, def: k, qs: [] }, copy(x), B.Lone(), copy(T), B.ctx_nil(), 0);
+    return { v: B.Ann(copy(x), copy(T)), e: checked.tm };
   } catch (err) {
     if ((err as B.Err).$ !== "Err") {
       throw err;
@@ -833,14 +834,15 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   return mat(cv, false);
 }
 
-// the tag switch of a match chain on a scrutinee of goal T; an arm splits
-// its constructor's fields, and a default binds the tag and the fields
+// Emit the match at T, visiting only branches reachable at its input type.
 function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: number[]): O {
-  const [x, U] = open(t);
-  const all = all_of(e, U ?? T);
+  const all = all_of(e, T ?? open(t)[1]);
+  const A = all === null ? null : B.term_wnf(e.book, all.A);
+  if (A !== null && no_ctr(e, A)) return { $: "Efq" };
+  const [x] = open(t);
   switch (x.$) {
     case "Efq": {
-      if (all === null || no_ctr(e, all.A) || s.empty.length === 0) {
+      if (all === null || s.empty.length === 0) {
         return { $: "Efq" };
       }
       // tags remain, but a live tag in scope is of the empty enum
@@ -849,19 +851,35 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       return { $: "Lam", q, l: s.D, f: { $: "Lam", q, l: s.D + 1, f } };
     }
     case "Mat": {
+      if (A?.$ === "ADT" && A.r.includes(x.k)) return swi(e, s, x.m, all, fs, cv);
       const ctr = e.book.ctrs[x.k];
       if (ctr === undefined) {
         oos("an unknown constructor " + B.name_display(e.book, x.k));
       }
       const [hT, mT] = goals(e, all, ctr);
       const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
-      const dead = mT?.$ === "All" && no_ctr(e, mT.A) && x.m.$ !== "Mat";
-      const m = swi(e, s, dead ? B.Efq() : x.m, mT, fs, cv);
+      const m = swi(e, s, x.m, mT, fs, cv);
       return { $: "Mat", k: x.k, h, m };
     }
     default: {
       if (all === null) {
         return oos("a default arm with no known type");
+      }
+      // A residual default and explicit remaining arms must have the same
+      // target shape: the kernel does not convert a lambda to a tag switch.
+      if (A?.$ === "ADT" && A.r.length > 0) {
+        const arm = (c: B.Ctr, U: HTerm, xs: HTerm[]): HTerm => {
+          const F = B.term_wnf(e.book, U);
+          if (F.$ === "All") {
+            return B.Lam(F.k, 0, (x: HTerm) => arm(c, F.B(x), [...xs, x]));
+          }
+          const v = B.Ctr(c.k, xs);
+          return B.Ann(B.term_wnf(e.book, B.App(t, v)), all.B(v));
+        };
+        const cs = (e.book.tlds[A.k] as ADT).c.filter(c => !A.r.includes(c.k));
+        const m = cs.reduceRight<HTerm>((m, c) => B.Mat(c.k,
+          arm(c, B.tele_fill(e.book, c.T, A.x, B.ctx_nil()), []), m), B.Efq());
+        return swi(e, s, m, all, fs, cv);
       }
       const q = quant(all.q);
       const [lt, la] = [s.D, s.D + 1];
@@ -1017,7 +1035,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     case "All": {
       const l = s.D;
       const A = term(e, s, x.A, false);
-      const Bo = term(e, scope_bind(s, { $: "Var", l }, x.A, true), x.B(B.Var(x.k, s.d)), false);
+      const Bo = term(e, scope_kq(scope_bind(s, { $: "Var", l }, x.A, true), l, quant(x.q)), x.B(B.Var(x.k, s.d)), false);
       return { $: "All", q: quant(x.q), l, A, B: Bo };
     }
     case "Lam":
@@ -1323,7 +1341,7 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 }
 
 // an argument at its domain A: an untyped λ or match (in a type) takes
-// A as its goal. Any other argument of a function type goes η-long at A
+// A as its goal. Every argument of a function type goes η-long at A
 // (a tree leaf does): the kernel converts without η, and an argument may
 // reach a type, as a side of an equation whose carrier only the call
 // knows. A live self-call's argument stays whole, as the live check
@@ -1331,9 +1349,9 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
   const tree = y.$ === "Lam" || y.$ === "Mat" || y.$ === "Efq";
-  const all = tree || y.$ === "Ctr" ? null : all_of(e, A);
+  const all = y.$ === "Ctr" ? null : all_of(e, A);
   if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
-    return term(e, s, eta(x, all), live);
+    return term(e, s, eta(B.Ann(B.term_wnf(e.book, x), A), all), live);
   }
   return term(e, s, T === null && (tree || y.$ === "Ctr") ? B.Ann(x, A) : x, live);
 }

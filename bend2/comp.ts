@@ -2033,7 +2033,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
     switch (s.$) {
       case "Ann": {
         const x = go(s.x, top, s.T);
-        return x === s.x ? s : Bend.Ann(x, s.T, s.s);
+        return x === s.x ? s : { ...s, x };
       }
       case "Rwt": {
         return go(s.f, top, T);
@@ -2050,7 +2050,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
           const f = term_force(v);
           if (f.$ === "Ann") {
             const x = spine(f.x);
-            return x === f.x ? f : Bend.Ann(x, f.T, f.s);
+            return x === f.x ? f : { ...f, x };
           }
           if (f.$ !== "App") {
             return f;
@@ -2418,8 +2418,8 @@ function emit_fold(t: HTerm): HTerm | null {
     return as.every((a, i) => a === m.all[i]) ? s
       : as.reduce((f, x) => Bend.App(f, x), m.t);
   });
-  const T = ty_ann(t);
-  return r === s ? t : r === null || T === null ? r : Bend.Ann(r, T);
+  const a = term_force(t);
+  return r === s ? t : r === null || a.$ !== "Ann" ? r : { ...a, x: r };
 }
 
 function emit_fold_args(m: Spine): HTerm[] {

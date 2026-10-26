@@ -371,7 +371,7 @@ export type TermOf<B> = (
   | { $: "Rfl" }                                                                   // {==}
   | { $: "Rwt"; e: TermOf<B>; p: TermOf<B>; f: TermOf<B> }                         // %e@E : P; f (p = _ => e => P)
   | { $: "Hol"; k: RName }                                                          // ?name; .member awaits an operator namespace
-  | { $: "Ann"; x: TermOf<B>; T: TermOf<B>; value?: HTerm }                        // {x : T}
+  | { $: "Ann"; x: TermOf<B>; T: TermOf<B>; ascribed?: true }                   // {x : T}
 ) & { s?: Span };
 
 export type LTerm = TermOf<[LTerm]>;
@@ -386,7 +386,7 @@ export type Ctr  = { k: Name; n: number; T: HTerm }
 export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
 export type Def  = {
-  $: "Def"; n: number; x: number; args?: LTerm[]; T: HTerm; v: HTerm | null; e?: LTerm;
+  $: "Def"; n: number; x: number; args?: LTerm[]; model_args?: LTerm[]; T: HTerm; v: HTerm | null; e?: LTerm;
   i?: { file: File; paths: string[] }; b?: Bool; u?: Bool; l?: Bool;
 };
 export type TLD  = ADT | Def;
@@ -395,8 +395,8 @@ export type Book = {
   tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Map<string, Name>;
 };
 
-// Context
-export type Ann = { q: Quant; k: RName; T: HTerm };
+// Context: v supplies a checked let value when constructing the output.
+export type Ann = { q: Quant; k: RName; T: HTerm; v?: HTerm };
 export type Ctx = PMap<Ann>;
 
 // Body
@@ -418,7 +418,7 @@ export type Parse = File & {
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
-export type LHS   = { t: HTerm; n: number; def: Name; qs: Quant[]; u?: Bool; z?: number };
+export type LHS   = { t: HTerm; n: number; def: Name; qs: Quant[]; u?: Bool; z?: number; close?: boolean };
 export type Frame =
   | { $: "APP"; x: HTerm; s?: Span }                                                                             // _(x)
   | { $: "MAT"; t: Extract<HTerm, { $: "Mat" }>; e: HTerm; lhs: { t: () => HTerm; n: number } | null; s?: Span } // \{c:h;m}(_)
@@ -427,8 +427,9 @@ export type Frame =
   | { $: "MNB"; a: HTerm; s?: Span }                                                                             // a <&> _
 
 // Infer
-export type Infer = { tm: LTerm; ty: HTerm; us: Uses; x?: number; changed: boolean };
-export type Check = { tm: LTerm; us: Uses; changed: boolean };
+// ty is the source judgment; tm is the checked output.
+export type Infer = Check & { x?: number };
+export type Check = { tm: LTerm; ty: HTerm; us: Uses };
 
 // Error
 export type Expr = HTerm | string;
@@ -488,7 +489,7 @@ export function ADT<X>(k: Name, x: TermOf<X>[], s?: Span, r: Name[] = []): TermO
   return { $: "ADT", k, x, r, s };
 }
 
-export function Ctr<X>(k: Name, x: TermOf<X>[], s?: Span): TermOf<X> {
+export function Ctr<X>(k: Name, x: TermOf<X>[], s?: Span): Extract<TermOf<X>, { $: "Ctr" }> {
   return { $: "Ctr", k, x, s };
 }
 
@@ -522,8 +523,9 @@ export function Hol<X>(k: RName, s?: Span): TermOf<X> {
   return { $: "Hol", k, s };
 }
 
-export function Ann<X>(x: TermOf<X>, T: TermOf<X>, s?: Span): TermOf<X> {
-  return { $: "Ann", x, T, s };
+// Ascriptions constrain checking; absent ascribed marks known type metadata.
+export function Ann<X>(x: TermOf<X>, T: TermOf<X>, s?: Span, ascribed = true): TermOf<X> {
+  return ascribed ? { $: "Ann", x, T, s, ascribed: true } : { $: "Ann", x, T, s };
 }
 
 // PMap
@@ -555,18 +557,27 @@ export function Many(): Quant {
 // Infer
 // -----
 
-export function Infer(tm: LTerm, ty: HTerm, us: Uses, changed = false, x?: number): Infer {
-  return { tm: Ann(tm, Var("_", -1, undefined, ty)), ty, us, x, changed };
+// Prune annotations only for closed template output; ty stays in source form.
+// A cell stores each semantic type inside the first-order checked output.
+export function Infer(book: Book, lhs: LHS, ctx: Ctx, d: number, tm: LTerm, ty: HTerm, us: Uses, x?: number): Infer {
+  let T = ty;
+  if (lhs.close) {
+    const checked = term_check(book, { ...lhs, close: false }, ty, None(), Typ(Qua(Lone())), ctx, d);
+    T = term_higher(checked.tm, null, true);
+  }
+  return { tm: Ann(tm, Var("_", -1, undefined, T), undefined, false), ty, us, x };
 }
 
-export function Check(tm: LTerm, ty: HTerm, us: Uses, changed = false): Check {
-  return { tm: Ann(tm, Var("_", -1, undefined, ty)), us, changed };
-}
+export const Check = Infer;
 
-// Reuse source values unless checking pruned a default. Projection retains
-// source template calls, not the generated refs used by compilation.
-export function checked_value(result: Check, source: HTerm): HTerm {
-  return result.changed ? term_higher(result.tm, null, true) : source;
+// Preserve the known type when a substituted source value must infer.
+export function term_typed(source: HTerm, ty: HTerm): HTerm {
+  switch (term_force(source).$) {
+    case "Lam": case "Let": case "Ctr": case "Lit": case "Mat":
+    case "Efq": case "Rfl": case "Rwt": case "Hol":
+      return Ann(source, ty, undefined, false);
+    default: return source;
+  }
 }
 
 // Err
@@ -850,8 +861,9 @@ export function term_higher(tm: LTerm, env: Env = null, value = false): HTerm {
     case "App": {
       const f = term_higher(tm.f, env, value);
       const x = term_higher(tm.x, env, value);
-      if (f.$ === "Lam") {
-        return f.f(x);
+      const head = f.$ === "Ann" && !f.ascribed ? term_strip(f) : f;
+      if (head.$ === "Lam") {
+        return head.f(x);
       }
       return App(f, x, tm.s);
     }
@@ -871,21 +883,19 @@ export function term_higher(tm: LTerm, env: Env = null, value = false): HTerm {
       return Rwt(term_higher(tm.e, env, value), term_higher(tm.p, env, value), term_higher(tm.f, env, value), tm.s);
     }
     case "Ann": {
+      if (value && !tm.ascribed) {
+        return term_higher(tm.x, env, value);
+      }
       if (tm.T.$ === "Var" && tm.T.i < 0 && tm.T.v !== undefined) {
-        if (value) {
-          // Ref projections include only closed template arguments.
-          if (env === null || tm.x.$ === "Ref") return tm.value ??= term_higher(tm.x, env, value);
-          return term_higher(tm.x, env, value);
-        }
         const x = term_higher(tm.x, env, value);
-        if (env === null || tm.x.$ === "Ref") return Ann(x, tm.T, tm.s);
+        if (env === null || tm.x.$ === "Ref") return Ann(x, tm.T, tm.s, tm.ascribed === true);
         const copy = env.copy ??= term_copy(v => {
           if (v.i < 0) throw Error("missing checked binding: " + v.k + "@" + v.i);
           return term_higher(v, env);
         }, env.k + 1);
-        return Ann(x, term_cell(copy(tm.T.v!)), tm.s);
+        return Ann(x, term_cell(copy(tm.T.v!)), tm.s, tm.ascribed === true);
       }
-      return Ann(term_higher(tm.x, env, value), term_higher(tm.T, env, value), tm.s);
+      return Ann(term_higher(tm.x, env, value), term_higher(tm.T, env, value), tm.s, tm.ascribed === true);
     }
     default: {
       return tm;
@@ -934,7 +944,7 @@ export function term_lower(term: HTerm, d: number = 0): LTerm {
       return Rwt(term_lower(tm.e, d), term_lower(tm.p, d), term_lower(tm.f, d), tm.s);
     }
     case "Ann": {
-      return Ann(term_lower(tm.x, d), term_lower(tm.T, d), tm.s);
+      return Ann(term_lower(tm.x, d), term_lower(tm.T, d), tm.s, tm.ascribed === true);
     }
     default: {
       return tm as LTerm;
@@ -983,7 +993,7 @@ export function term_copy(free: (v: Variable) => HTerm, d = 0, refs?: Map<Name, 
       case "Mat": out = Mat(t.k, go(t.h), go(t.m), t.s); break;
       case "Eql": out = Eql(go(t.a), go(t.b), go(t.T), t.s); break;
       case "Rwt": out = Rwt(go(t.e), go(t.p), go(t.f), t.s); break;
-      case "Ann": out = Ann(go(t.x), go(t.T), t.s); break;
+      case "Ann": out = Ann(go(t.x), go(t.T), t.s, t.ascribed === true); break;
       default: return t;
     }
     (memo ??= new WeakMap()).set(t, out);
@@ -999,8 +1009,8 @@ export function ctx_nil(): Ctx {
   return Emp<Ann>();
 }
 
-export function ctx_bind(ctx: Ctx, i: number, q: Quant, k: RName, T: HTerm): Ctx {
-  return pmap_set(ctx, i, { q, k, T });
+export function ctx_bind(ctx: Ctx, i: number, q: Quant, k: RName, T: HTerm, v?: HTerm): Ctx {
+  return pmap_set(ctx, i, { q, k, T, v });
 }
 
 export function ctx_dead(book: Book, ctx: Ctx): boolean {
@@ -1235,7 +1245,8 @@ export function tele_head(book: Book, tel: HTerm, ctx: Ctx, def?: Name, s?: Span
 export function tele_fill(book: Book, tel: HTerm, xs: HTerm[], ctx: Ctx, def?: Name, s?: Span): HTerm {
   let out = tel;
   for (const x of xs) {
-    out = tele_head(book, out, ctx, def, s).B(x);
+    const all = tele_head(book, out, ctx, def, s);
+    out = all.B(term_typed(x, all.A));
   }
   return out;
 }
@@ -1280,7 +1291,7 @@ export function lit_of(cs: U32[], s?: Span, owner = BASE_ID): LTerm {
     Ctr(key("SCon"), [Ctr(key("Chr"), [Lit(owner, "U32", c, s)], s), out], s), Ctr(key("SNil"), [], s));
 }
 
-export function lit_step<X>(t: Extract<TermOf<X>, { $: "Lit" }>): TermOf<X> {
+export function lit_step<X>(t: Extract<TermOf<X>, { $: "Lit" }>): Extract<TermOf<X>, { $: "Ctr" }> {
   const { file, kind, v, s } = t;
   const key = (text: string) => name_source(file, text, "ctr");
   if (kind === "String") {
@@ -1395,7 +1406,7 @@ const ESCAPES: Record<string, U32> = {
 // Size limits ignore name lengths, so qualification cannot exhaust them.
 export function term_key(tm: LTerm | LTerm[], exact = true): string {
   return JSON.stringify(tm, (k, v) => {
-    if (k === "s") return undefined;
+    if (k === "s" || !exact && k === "ascribed") return undefined;
     if (!exact && (k === "k" || k === "r" || k === "file")) return Array.isArray(v) ? v.map(() => 0) : 0;
     if (!exact && v?.$ === "Lit") return { $: "Lit", k: 0, v: v.v };
     return v;
@@ -3151,7 +3162,7 @@ export function term_wnf(book: Book, term: HTerm): HTerm {
               default: break;
             }
             fr.l.v = fr.a === undefined ? tm
-              : Ann(tm, term_cell(fr.a.T), fr.a.s);
+              : Ann(tm, term_cell(fr.a.T), fr.a.s, fr.a.ascribed === true);
             fr.l.i = -2;
             continue main;
           }
@@ -3272,7 +3283,7 @@ export function term_snf(book: Book, term: HTerm): HTerm {
       return Rwt(term_snf(book, tm.e), term_snf(book, tm.p), term_snf(book, tm.f), tm.s);
     }
     case "Ann": {
-      return Ann(term_snf(book, tm.x), term_snf(book, tm.T), tm.s);
+      return Ann(term_snf(book, tm.x), term_snf(book, tm.T), tm.s, tm.ascribed === true);
     }
     default: {
       return tm;
@@ -3456,8 +3467,8 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
 // returns first-order: an LTerm built bottom-up, every node Ann-wrapped
 // with its type in a share cell (Infer, Check), so no type is lowered.
 // term_higher converts checked syntax to HOAS and substitutes through its
-// inferred types. Dependent goals keep source template calls with pruned
-// defaults; changed records pruning so other source values are reused.
+// inferred types. Source judgments substitute original expressions, with
+// their known types, while the returned syntax drops unreachable defaults.
 // lhs is the def's
 // own equation, rebuilt as the tree walks; lhs.qs holds the def's
 // parameter quantities, read off its type once, so descent can skip
@@ -3526,7 +3537,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       if (ann === null) {
         throw Err(book, ctx, "a bound variable", tm, tm.s, lhs.def);
       } else {
-        return Infer(tm, ann.T, pmap_set(uses_nil(), tm.i, qt));
+        return Infer(book, lhs, ctx, d, ann.v === undefined ? tm : Var(tm.k, tm.i, tm.s, ann.v), ann.T, pmap_set(uses_nil(), tm.i, qt));
       }
     }
     // Book(k) : T
@@ -3553,8 +3564,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
         throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def);
       }
       let k = tm.k;
-      let value: HTerm | undefined;
-      let changed = false;
+      let source_type: HTerm | undefined;
       let x = 0;
       if (qt.$ !== "None") {
         const gen = tld.$ === "Def" && tld.x > 0 && !(book.tlds[lhs.def] as Def).x ? tld : null;
@@ -3562,7 +3572,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
           throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
-          ({ k, value, changed } = def_inst(book, lhs, tm, gen, sp, ctx, d));
+          ({ k, source_type } = def_inst(book, lhs, tm, gen, sp, ctx, d));
           x  = gen.x;
           sp = sp.slice(x);
         }
@@ -3580,9 +3590,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       if (tld.$ === "ADT" && tld.n > 0) {
         throw Err(book, ctx, "a family instance (write " + name_display(book, tm.k) + "<..>)", tm, tm.s, lhs.def);
       }
-      const result = Infer(k === tm.k ? tm : Ref(k, tm.s, tm.b), book.tlds[k].T, uses_nil(), changed, x);
-      if (value !== undefined) (result.tm as Extract<LTerm, { $: "Ann" }>).value = value;
-      return result;
+      return Infer(book, lhs, ctx, d, k === tm.k ? tm : Ref(k, tm.s, tm.b), source_type ?? book.tlds[k].T, uses_nil(), x);
     }
     // Γ ⊢ q : Quant
     // where q is dead
@@ -3590,16 +3598,16 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // Γ ⊢ Kind(q) : Type
     case "Typ": {
       const g_chk = term_check(book, lhs, tm.g, None(), Qnt(tm.s), ctx, d);
-      return Infer(Typ(g_chk.tm, tm.s), Typ(Qua(Lone()), tm.s), uses_nil(), g_chk.changed);
+      return Infer(book, lhs, ctx, d, Typ(g_chk.tm, tm.s), Typ(Qua(Lone()), tm.s), uses_nil());
     }
     // ∅
     // ------------------------------------ infer-qnt
     // Γ ⊢ Quant : Type    Γ ⊢ &1, &2 : Quant
     case "Qnt": {
-      return Infer(tm, Typ(Qua(Lone()), tm.s), uses_nil());
+      return Infer(book, lhs, ctx, d, tm, Typ(Qua(Lone()), tm.s), uses_nil());
     }
     case "Qua": {
-      return Infer(tm, Qnt(tm.s), uses_nil());
+      return Infer(book, lhs, ctx, d, tm, Qnt(tm.s), uses_nil());
     }
     // Γ ⊢ a : Quant ~ au    Γ ⊢ b : Quant ~ bu
     // ------------------------------------- infer-min
@@ -3607,7 +3615,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "Min": {
       const a_chk = term_check(book, lhs, tm.a, qt, Qnt(tm.s), ctx, d);
       const b_chk = term_check(book, lhs, tm.b, qt, Qnt(tm.s), ctx, d);
-      return Infer(Min(a_chk.tm, b_chk.tm, tm.s), Qnt(tm.s), uses_add(a_chk.us, b_chk.us), a_chk.changed || b_chk.changed);
+      return Infer(book, lhs, ctx, d, Min(a_chk.tm, b_chk.tm, tm.s), Qnt(tm.s), uses_add(a_chk.us, b_chk.us));
     }
     // Γ ⊢ A : Kind(q)
     // Γ , x : qA ⊢ B(x) : Type
@@ -3615,9 +3623,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // Γ ⊢ @q x:A -> B : Type
     case "All": {
       const A_chk = term_check_kind(book, lhs, tm.A, tm.q, tm.k, ctx, d, tm.A.s ?? tm.s);
-      const B_ctx = ctx_bind(ctx, d, tm.q, tm.k, checked_value(A_chk, tm.A));
+      const B_ctx = ctx_bind(ctx, d, tm.q, tm.k, tm.A);
       const B_chk = term_check(book, lhs, tm.B(Var(tm.k, d)), None(), Typ(Qua(Lone()), tm.s), B_ctx, d+1);
-      return Infer(All(tm.q, tm.k, d, A_chk.tm, B_chk.tm, tm.s), Typ(Qua(Lone()), tm.s), uses_nil(), A_chk.changed || B_chk.changed);
+      return Infer(book, lhs, ctx, d, All(tm.q, tm.k, d, A_chk.tm, B_chk.tm, tm.s), Typ(Qua(Lone()), tm.s), uses_nil());
     }
     // Γ ⊢ f : @q x:A -> B ~ fu
     // Γ ⊢ a : A ~ au
@@ -3642,7 +3650,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
         throw Err(book, ctx, "a function type", f_inf.ty, tm.s, lhs.def);
       }
       const x_chk = term_check(book, lhs, tm.x, quant_dem(f_wnf.q, qt), f_wnf.A, ctx, d);
-      return Infer(App(f_inf.tm, x_chk.tm, tm.s), f_wnf.B(checked_value(x_chk, tm.x)), uses_add(f_inf.us, x_chk.us), f_inf.changed || x_chk.changed);
+      return Infer(book, lhs, ctx, d, App(f_inf.tm, x_chk.tm, tm.s), f_wnf.B(term_typed(tm.x, x_chk.ty)), uses_add(f_inf.us, x_chk.us));
     }
     // book[k].T = @q1 p1:K1 -> .. -> Kind(G)
     // Γ ⊢ xi : Ki ~ ui
@@ -3654,8 +3662,8 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       if (tm.x.length !== adt.n) {
         throw Err(book, ctx, name_display(book, tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
       }
-      const { xs, us, tel, changed } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
-      return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us, changed);
+      const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
+      return Infer(book, lhs, ctx, d, ADT(tm.k, xs, tm.s, tm.r), tel, us);
     }
     // Γ ⊢ A : Type    Γ ⊢ a : A    Γ ⊢ b : A
     // where A, a and b are dead; evidence is erased, so Data
@@ -3663,10 +3671,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // Γ ⊢ {a == b : A} : Data ~ {}
     case "Eql": {
       const T_chk = term_check(book, lhs, tm.T, None(), Typ(Qua(Lone()), tm.s), ctx, d);
-      const T = checked_value(T_chk, tm.T);
-      const a_chk = term_check(book, lhs, tm.a, None(), T, ctx, d);
-      const b_chk = term_check(book, lhs, tm.b, None(), T, ctx, d);
-      return Infer(Eql(a_chk.tm, b_chk.tm, T_chk.tm, tm.s), Typ(Qua(Many()), tm.s), uses_nil(), T_chk.changed || a_chk.changed || b_chk.changed);
+      const a_chk = term_check(book, lhs, tm.a, None(), tm.T, ctx, d);
+      const b_chk = term_check(book, lhs, tm.b, None(), tm.T, ctx, d);
+      return Infer(book, lhs, ctx, d, Eql(a_chk.tm, b_chk.tm, T_chk.tm, tm.s), Typ(Qua(Many()), tm.s), uses_nil());
     }
     // Γ ⊢ T : Type
     // Γ ⊢ x : T ~ u
@@ -3675,9 +3682,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // Γ ⊢ {x : T} : T ~ u
     case "Ann": {
       const T_chk = term_check(book, lhs, tm.T, None(), Typ(Qua(Lone()), tm.s), ctx, d);
-      const T = checked_value(T_chk, tm.T);
-      const x_chk = term_check(book, lhs, tm.x, qt, T, ctx, d);
-      return Infer(Ann(x_chk.tm, T_chk.tm, tm.s), T, x_chk.us, T_chk.changed || x_chk.changed);
+      const x_chk = term_check(book, lhs, tm.x, qt, tm.T, ctx, d);
+      if (!tm.ascribed) return x_chk;
+      return Infer(book, lhs, ctx, d, Ann(x_chk.tm, T_chk.tm, tm.s, tm.ascribed === true), tm.T, x_chk.us);
     }
     // x is a Lam, Let, Ctr, Lit, Mat, Efq, Rfl, Rwt or Hol
     // ------------------------------------------- infer-err
@@ -3692,19 +3699,18 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
   }
 }
 
-export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: HTerm; changed: boolean } {
+export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: HTerm } {
   const out: LTerm[] = [];
-  let us = uses_nil(), changed = false;
+  let us = uses_nil();
   for (const x of xs) {
     const t_all = tele_head(book, tel, ctx, lhs.def, s);
     const t_dem = quant_dem(t_all.q, qt);
     const x_chk = term_check(book, lhs, x, t_dem, t_all.A, ctx, d);
     out.push(x_chk.tm);
     us  = uses_add(us, x_chk.us);
-    tel = t_all.B(checked_value(x_chk, x));
-    changed ||= x_chk.changed;
+    tel = t_all.B(term_typed(x, x_chk.ty));
   }
-  return { xs: out, us, tel, changed };
+  return { xs: out, us, tel };
 }
 
 // the type T of a binder q k fits Kind(q); a miss is reported at s, and
@@ -3764,7 +3770,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       }
       const f_ctx = ctx_bind(ctx, d, q, tm.k, t_wnf.A);
       const f_chk = term_check(book, f_lhs, tm.f(x), qt, t_wnf.B(x), f_ctx, d+1);
-      return Check(Lam(tm.k, d, f_chk.tm, tm.s, tm.q), ty, uses_close(book, ctx, f_chk.us, d, tm.k, q, tm.s, lhs.def), f_chk.changed);
+      return Check(book, lhs, ctx, d, Lam(tm.k, d, f_chk.tm, tm.s, tm.q), ty, uses_close(book, ctx, f_chk.us, d, tm.k, q, tm.s, lhs.def));
     }
     // Γ ⊢ vj : Aj ~ vuj  (each value in Γ: the binders are parallel)
     // Γ ⊢ Aj : Kind(qj)
@@ -3777,17 +3783,16 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const n = tm.k.length;
       const vx: LTerm[] = [];
       const values: HTerm[] = [];
-      let us = uses_nil(), changed = false;
+      let us = uses_nil();
       let f_ctx = ctx;
       for (let j = 0; j < n; j++) {
         const v_dem = quant_dem(tm.q[j], qt);
         const v_inf = term_infer(book, lhs, tm.v[j], v_dem, ctx, d);
         term_check_kind(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
         vx.push(v_inf.tm);
-        values.push(checked_value(v_inf, tm.v[j]));
-        changed ||= v_inf.changed;
+        values.push(term_typed(tm.v[j], v_inf.ty));
         us = uses_add(us, v_inf.us);
-        f_ctx = ctx_bind(f_ctx, d + j, tm.q[j], tm.k[j], v_inf.ty);
+        f_ctx = ctx_bind(f_ctx, d + j, tm.q[j], tm.k[j], v_inf.ty, lhs.close ? term_higher(v_inf.tm, null, true) : undefined);
       }
       const xs = tm.k.map((k, j): HTerm => Var(k, d + j, undefined, values[j]));
       const f_chk = term_check(book, lhs, tm.f(xs), qt, ty, f_ctx, d + n);
@@ -3795,51 +3800,49 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       for (let j = 0; j < n; j++) {
         fu = uses_close(book, ctx, fu, d + j, tm.k[j], tm.q[j], tm.s, lhs.def);
       }
-      return Check(Let(tm.k, xs.map((_, j) => d + j), vx, f_chk.tm, tm.s, tm.q), ty, uses_add(us, fu), changed || f_chk.changed);
+      const T = f_chk.ty === ty ? ty : term_copy(v => v, d + n)(f_chk.ty);
+      return Check(book, lhs, ctx, d, Let(tm.k, xs.map((_, j) => d + j), vx, f_chk.tm, tm.s, tm.q), T, uses_add(us, fu));
     }
     // T == D<p1, .., pm>
     // D.c[k] = @q1 x1:F1 -> .. -> D<p1, .., pm>
     // Γ ⊢ xi : Fi ~ ui
     // where xi is dead if qi is -
+    //       literals validate their constructor step and remain compact;
+    //       an unrefined Base literal type needs no expansion
     // ------------------------------------------ check-ctr
     // Γ ⊢ k{x1, .., xn} : T ~ u1 + .. + un
-    case "Ctr": {
-      const t_wnf = term_wnf(book, ty);
-      if (t_wnf.$ !== "ADT") {
-        const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
-        const file = name_file(tm.k), text = name_text(tm.k);
-        const type = file === "" ? undefined : (book.tlds[name_source(file, text)]
-          ?? (file === tm.s?.file.ns ? book.tlds[name_resolve(book, tm.s.file, text).k] : undefined));
-        const nte = fam === null && type?.$ === "ADT" ? "Note: " + name_display(book, tm.k) + " is a datatype: write its arguments as <>" : undefined;
-        throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
-      }
-      const adt = book_adt(book, t_wnf, ctx, lhs.def);
-      const ctr = adt.c.find((c) => c.k === tm.k);
-      if (ctr === undefined) {
-        if (book_ctr(book, tm.k) === null) {
-          throw Err(book, ctx, "a declared constructor (" + name_display(book, t_wnf.k) + " declares " + adt.c.map((c) => name_display(book, c.k)).join(", ") + ")", tm, tm.s, lhs.def);
-        }
-        throw Err(book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
-      }
-      if (tm.x.length !== ctr.n) {
-        throw Err(book, ctx, name_display(book, tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
-      }
-      const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
-      const { xs, us, changed } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
-      return Check(Ctr(tm.k, xs, tm.s), ty, us, changed);
-    }
-    // T == the literal's type file:kind, with b = true and no constructor removed
-    // where any other T checks the literal's first step, which reports
-    //       as the constructor it is
-    // ----------------------------------------------------------- check-lit
-    // Γ ⊢ "text" : T ~ {}    Γ ⊢ 3n : T ~ {}
+    case "Ctr":
     case "Lit": {
       const t_wnf = term_wnf(book, ty);
-      const k = name_source(tm.file, tm.kind);
-      if (t_wnf.$ === "ADT" && t_wnf.k === k && t_wnf.r.length === 0 && book.tlds[k]?.b === true) {
-        return Check(tm, ty, uses_nil());
+      if (tm.$ === "Lit") {
+        const k = name_source(tm.file, tm.kind);
+        if (t_wnf.$ === "ADT" && t_wnf.k === k && t_wnf.r.length === 0 && book.tlds[k]?.b === true) {
+          return Check(book, lhs, ctx, d, tm, ty, uses_nil());
+        }
       }
-      return term_check(book, lhs, lit_step(tm), qt, ty, ctx, d);
+      const value = tm.$ === "Lit" ? lit_step<HBody>(tm) : tm;
+      if (t_wnf.$ !== "ADT") {
+        const fam = book_ctr(book, value.k) === null ? null : book_fam(book, value.k);
+        const file = name_file(value.k), text = name_text(value.k);
+        const type = file === "" ? undefined : (book.tlds[name_source(file, text)]
+          ?? (file === value.s?.file.ns ? book.tlds[name_resolve(book, value.s.file, text).k] : undefined));
+        const nte = fam === null && type?.$ === "ADT" ? "Note: " + name_display(book, value.k) + " is a datatype: write its arguments as <>" : undefined;
+        throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, value.s), value.s, lhs.def, nte);
+      }
+      const adt = book_adt(book, t_wnf, ctx, lhs.def);
+      const ctr = adt.c.find((c) => c.k === value.k);
+      if (ctr === undefined) {
+        if (book_ctr(book, value.k) === null) {
+          throw Err(book, ctx, "a declared constructor (" + name_display(book, t_wnf.k) + " declares " + adt.c.map((c) => name_display(book, c.k)).join(", ") + ")", value, value.s, lhs.def);
+        }
+        throw Err(book, ctx, ty, Ref(book_fam(book, value.k), value.s), value.s, lhs.def);
+      }
+      if (value.x.length !== ctr.n) {
+        throw Err(book, ctx, name_display(book, value.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), value, value.s, lhs.def);
+      }
+      const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, value.s);
+      const { xs, us } = tele_check(book, lhs, tel, value.x, qt, ctx, d, value.s);
+      return Check(book, lhs, ctx, d, tm.$ === "Lit" ? tm : Ctr(value.k, xs, value.s), ty, us);
     }
     // T == @q s:D<p..> -> P
     // D.c[k] = @r1 x1:F1 -> .. -> D<p..>
@@ -3879,7 +3882,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           if (rem.length !== 0 && !ctx_dead(book, ctx)) {
             throw Err(book, ctx, "cases for " + rem.map((c) => name_display(book, c.k)).join(", "), tm, tm.s, lhs.def);
           }
-          return Check(tm, ty, uses_nil());
+          return Check(book, lhs, ctx, d, tm, ty, uses_nil());
         }
         case "Mat": {
           const b     = tm;
@@ -3906,8 +3909,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           }
           const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, []), ctx, d);
           const m_gol = All(t_wnf.q, t_wnf.k, t_wnf.i, ADT(a_wnf.k, a_wnf.x, tm.s, a_wnf.r.concat([ctr.k])), t_wnf.B, tm.s);
-          const m_chk = rem.length === 1 && tm.m.$ !== "Mat" ? Check(Efq(tm.s), m_gol, uses_nil(), tm.m.$ !== "Efq") : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
-          return Check(Mat(tm.k, h_chk.tm, m_chk.tm, tm.s), ty, pmap_union(h_chk.us, m_chk.us, quant_join), h_chk.changed || m_chk.changed);
+          const m_chk = rem.length === 1 && tm.m.$ !== "Mat" ? Check(book, lhs, ctx, d, Efq(tm.s), m_gol, uses_nil()) : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
+          return Check(book, lhs, ctx, d, Mat(tm.k, h_chk.tm, m_chk.tm, tm.s), ty, pmap_union(h_chk.us, m_chk.us, quant_join));
         }
       }
     }
@@ -3922,14 +3925,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (!term_compare("EQ", book, t_wnf.a, t_wnf.b, d)) {
         throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
       }
-      return Check(tm, ty, uses_nil());
+      return Check(book, lhs, ctx, d, tm, ty, uses_nil());
     }
     // T
     // ------------------- check-hol
     // Γ ⊢ ?TODO : T ~ {}
     case "Hol": {
       if (tm.k === "TODO") {
-        return Check(tm, ty, uses_nil());
+        return Check(book, lhs, ctx, d, tm, ty, uses_nil());
       }
       throw Err(book, ctx, ty, tm, tm.s, lhs.def);
     }
@@ -3948,15 +3951,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       }
       const p_typ = All<HBody>(Lone(), "_", 0, e_wnf.T, (x: HTerm) => All<HBody>(Lone(), "e", 0, Eql(e_wnf.a, x, e_wnf.T), () => Typ(Qua(Lone())), tm.s), tm.s);
       const p_chk = term_check(book, lhs, tm.p, None(), p_typ, ctx, d);
-      const p = checked_value(p_chk, tm.p);
-      const e = checked_value(e_inf, tm.e);
-      const b_gol = term_apply(term_apply(p, e_wnf.b), e);
+      const e = term_typed(tm.e, e_inf.ty);
+      const b_gol = term_apply(term_apply(tm.p, e_wnf.b), e);
       if (!term_compare("LE", book, b_gol, ty, d)) {
         throw Err(book, ctx, ty, b_gol, tm.s, lhs.def);
       }
-      const a_gol = term_apply(term_apply(p, e_wnf.a), Rfl<HBody>(tm.s));
+      const a_gol = term_apply(term_apply(tm.p, e_wnf.a), Rfl<HBody>(tm.s));
       const f_chk = term_check(book, lhs, tm.f, qt, a_gol, ctx, d);
-      return Check(Rwt(e_inf.tm, p_chk.tm, f_chk.tm, tm.s), ty, uses_add(e_inf.us, f_chk.us), e_inf.changed || p_chk.changed || f_chk.changed);
+      return Check(book, lhs, ctx, d, Rwt(e_inf.tm, p_chk.tm, f_chk.tm, tm.s), b_gol, uses_add(e_inf.us, f_chk.us));
     }
     // Γ ⊢ x : A ~ u    A <= T
     // ---------------------- check-any
@@ -3972,46 +3974,30 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
   throw Err(book, ctx, ty, x_inf.ty, tm.s, lhs.def);
 }
 
-export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
+export function def_check(book: Book, k: Name, def: Def, z?: number, depth = 0, close = false): LTerm {
   const qs = tele_unbind(book, def.T).doms.map((dom) => dom[0]);
   const gen = def.x === 0 ? book : { ...book, tlds: Object.create(book.tlds) };
-  const binders: Extract<HTerm, { $: "Lam" }>[] = [];
   let [t, v, T]: HTerm[] = [Ref(k), def.v as HTerm, def.T];
   for (let j = 0; j < def.x; j++) {
     const h = tele_head(gen, T, ctx_nil(), k);
     const o = name_gen(k, "param", j);
     gen.tlds[o] = { $: "Def", n: 0, x: 0, T: h.A, v: null, b: true };
-    binders.push(v as Extract<HTerm, { $: "Lam" }>);
     t = App(t, Ref(o));
     v = term_apply(v, Ref(o));
     T = h.B(Ref(o));
   }
-  const checked = term_check(gen, { t, n: def.n - def.x, def: k, qs, u: def.u, z }, v, Lone(), T, ctx_nil(), 0);
-  if (checked.changed) {
-    let value = term_higher(checked.tm, null, true);
-    if (def.x > 0) {
-      // Generic checking used opaque refs; restore the original ~ binders.
-      const refs = new Map(binders.map((b, j): [Name, HTerm] => [name_gen(k, "param", j), Var(b.k, j)]));
-      let body = term_lower(term_copy(v => v, def.x, refs)(value), def.x);
-      for (let j = def.x - 1; j >= 0; j--) {
-        const b = binders[j];
-        body = Lam(b.k, j, body, b.s, b.q);
-      }
-      value = term_higher(body, null, true);
-    }
-    def.v = value;
-  }
+  const checked = term_check(gen, { t, n: def.n - def.x, def: k, qs, u: def.u, z, close }, v, Lone(), T, ctx_nil(), depth);
   return checked.tm;
 }
 
-export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, sp: HTerm[], ctx: Ctx, d: number): { k: Name; value: HTerm; changed: boolean } {
+export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, sp: HTerm[], ctx: Ctx, d: number): { k: Name; source_type: HTerm } {
   const xs = sp.slice(0, def.x);
   if (xs.length < def.x) {
     throw Err(book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
   }
   let checked: ReturnType<typeof tele_check>;
   try {
-    checked = tele_check(book, lhs, def.T, xs, None(), ctx_nil(), d, tm.s);
+    checked = tele_check(book, { ...lhs, close: false }, def.T, xs, None(), ctx_nil(), d, tm.s);
   } catch (e) {
     const v = (e as Err)?.obs;
     if (typeof v === "object" && v.$ === "Var" && v.i >= 0 && v.i < d) {
@@ -4020,7 +4006,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
     throw e;
   }
 
-  const values = checked.changed ? checked.xs.map(a => term_higher(a, null, true)) : xs;
+  const values = checked.xs.map(a => term_higher(a, null, true));
   const args = values.map(a => term_lower(a));
   if (args.reduce((n, a) => n + term_key(a, false).length + 1, -1) > 32768) {
     throw Err(book, ctx, "a ~ argument that stops growing", tm, tm.s, lhs.def);
@@ -4036,10 +4022,27 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
     o = name_fresh(tm.k, "inst");
     book.tmps.set(key, o);
     try {
-      const v = values.reduce((v, a) => term_apply(v, a), def.v as HTerm);
-      const inst: Def = { $: "Def", n: def.n - def.x, x: 0, T: checked.tel, v, u: def.u, args: checked.xs };
+      // Only ignored branches of the original arguments can retain caller variables.
+      let open = false;
+      const close_model = term_copy(v => { open = true; return Hol("_unused_model", v.s); }, d);
+      const model_args = xs.map(a => term_lower(close_model(a)));
+      let v = def.v as HTerm, tel = def.T;
+      for (const x of xs) {
+        const all = tele_head(book, tel, ctx_nil(), lhs.def, tm.s);
+        const value = term_typed(x, all.A);
+        v = term_apply(v, value);
+        tel = all.B(value);
+      }
+      const inst: Def = { $: "Def", n: def.n - def.x, x: 0, T: checked.tel, v, u: def.u, args };
       book.tlds[o] = { ...inst, v: null };
-      inst.e = def_check(book, o, inst, z);
+      inst.e = def_check(book, o, inst, z, d, open);
+      if (open) {
+        const T = term_check(book, { t: Ref(o), n: 0, def: o, qs: [], u: inst.u, close: true }, inst.T, None(), Typ(Qua(Lone())), ctx_nil(), d);
+        inst.T = term_higher(T.tm, null, true);
+      }
+      inst.v = term_higher(inst.e, null, true);
+      inst.e = term_lower(term_higher(inst.e));
+      inst.model_args = model_args;
       book.tlds[o] = inst;
     } catch (error) {
       book.tmps.delete(key);
@@ -4049,7 +4052,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
   } else if ((book.tlds[o] as Def).v === null && o !== lhs.def) {
     throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
   }
-  return { k: o, value: values.reduce<HTerm>((f, a) => App(f, a), tm), changed: checked.changed };
+  return { k: o, source_type: checked.tel };
 }
 
 // Valid
@@ -4098,8 +4101,7 @@ export function book_valid(book: Book, done: number = 0): void {
     const fin = last.get(k) === i;
     if (tld.$ === "ADT") {
       if (i >= done) {
-        const T = term_check(book, { t: Ref(k), n: 0, def: k, qs: [] }, tld.T, None(), Typ(Qua(Lone())), ctx_nil(), 0);
-        if (T.changed) tld.T = term_higher(T.tm, null, true);
+        term_check(book, { t: Ref(k), n: 0, def: k, qs: [] }, tld.T, None(), Typ(Qua(Lone())), ctx_nil(), 0);
         const { doms, ret: kind } = tele_unbind(book, tld.T);
         if (kind.$ !== "Typ") {
           let ctx = ctx_nil();
@@ -4109,8 +4111,6 @@ export function book_valid(book: Book, done: number = 0): void {
           throw Err(book, ctx, "a kind (type " + name_display(book, k) + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
         }
         for (const ctr of tld.c) {
-          const fields: Array<[Quant, RName, number, LTerm, Span | undefined]> = [];
-          let changed = false;
           let tel: HTerm = ctr.T;
           let ctx = ctx_nil();
           for (let d = 0; d < tld.n + ctr.n; d++) {
@@ -4119,10 +4119,8 @@ export function book_valid(book: Book, done: number = 0): void {
             if (d >= tld.n && t_all.q.$ === "Lone") {
               goal = kind;
             }
-            const A = term_check(book, { t: Ref(ctr.k), n: 0, def: ctr.k, qs: [] }, t_all.A, None(), goal, ctx, d);
-            fields.push([t_all.q, t_all.k, d, A.tm, t_all.s]);
-            changed ||= A.changed;
-            ctx = ctx_bind(ctx, d, t_all.q, t_all.k, checked_value(A, t_all.A));
+            term_check(book, { t: Ref(ctr.k), n: 0, def: ctr.k, qs: [] }, t_all.A, None(), goal, ctx, d);
+            ctx = ctx_bind(ctx, d, t_all.q, t_all.k, t_all.A);
             tel = t_all.B(Var(t_all.k, d));
           }
           const tip = term_wnf(book, tel);
@@ -4135,17 +4133,12 @@ export function book_valid(book: Book, done: number = 0): void {
               throw Err(book, ctx, "a telescope tipped at " + name_display(book, k) + " applied to its own parameters", tip, undefined, ctr.k);
             }
           }
-          if (changed) ctr.T = term_higher(tele_bind(fields, term_lower(tip)), null, true);
         }
       }
       continue;
     }
     if (i >= done) {
-      const T = term_check(book, { t: Ref(k), n: 0, def: k, qs: [], u: tld.u }, tld.T, None(), Typ(Qua(Lone())), ctx_nil(), 0);
-      if (T.changed) {
-        tld.T = term_higher(T.tm, null, true);
-        book.tlds[k].T = tld.T;
-      }
+      term_check(book, { t: Ref(k), n: 0, def: k, qs: [], u: tld.u }, tld.T, None(), Typ(Qua(Lone())), ctx_nil(), 0);
       if (tld.i) {
         let tel = term_strip(tld.T);
         for (let d = 0; tel.$ === "All"; d++) {
