@@ -49,6 +49,7 @@ function q_pull(q) {
 function chan_head(row) {
   let w = row.wait.xs[row.wait.head];
   while (w !== undefined && (w.gone || w.io.done)) {
+    row.dead -= w.gone ? 1 : 0;
     q_pull(row.wait);
     w = row.wait.xs[row.wait.head];
   }
@@ -89,16 +90,31 @@ function chan_shut(row) {
   }
 }
 
+// A late w stays in the queue, gone and holding nothing, for chan_head to
+// drop when it comes first. Once the gone outnumber the live by 64, the
+// queue sheds them all, so a timeout costs O(1) and the gone stay under
+// live+64, even behind a waiter that is never woken.
+function chan_late(row, w) {
+  w.gone = true;
+  w.io = w.cont = w.item = w.late = undefined;
+  row.dead += 1;
+  const q = row.wait;
+  if (row.dead > q_size(q) - row.dead + 64) {
+    q.xs = q.xs.slice(q.head).filter((x) => !x.gone);
+    q.head = 0;
+    row.dead = 0;
+  }
+}
+
 // Parks k on row with item; with ms, a timer too, whose late answers Wait:
-// the first of the two to come cuts the other. A late w stays in the queue,
-// gone, for chan_head to drop, so a timeout costs O(1).
+// the first of the two to come cuts the other.
 function chan_park(row, k, item, ms) {
   const w = { io: io_active, cont: k, item: item, gone: false };
   if (ms !== undefined) {
     w.late = () => {
       // An earlier callback of the same ready batch may have woken w.
       if (w.gone) return undefined;
-      w.gone = true;
+      chan_late(row, w);
       return chan_wait(item);
     };
     io_park_on(undefined, false, k, w.late, io_until(ms));
@@ -150,7 +166,8 @@ function chan_try(row, x, item, ms, k) {
 }
 
 function chan_new(room) {
-  return { room: Number(room), ring: q_new(), wait: q_new(), shut: false };
+  return { room: Number(room), ring: q_new(), wait: q_new(), dead: 0,
+    shut: false };
 }
 
 function chan_send(row, value, k) {
