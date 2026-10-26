@@ -577,8 +577,6 @@ function probe(k: Name): Of<"Var"> {
   return p;
 }
 
-// a and b share most nodes: walk both until they meet, comparing by key
-// (spans and annotations aside) what the walk does not open
 function term_same(a: HTerm, b: HTerm, d = 1 << 29): boolean {
   const x = Bend.term_strip(a);
   const y = Bend.term_strip(b) as any;
