@@ -20,7 +20,8 @@ export type Got = {
 export function judge(g: Got): [string, string] {
   const out = g.out.trim();
   if (g.timeout) {
-    return ["t", g.error ? "timeout; " + g.error : "timeout"];
+    const why = g.error?.replace(/\s+/g, " ").slice(0, 300);
+    return ["t", why ? "timeout; " + why : "timeout"];
   }
   if (g.error || g.code === null || g.code < 0) {
     const why = (g.error ?? out).replace(/\s+/g, " ").slice(0, 300);
@@ -45,82 +46,45 @@ export function judge(g: Got): [string, string] {
   return ["!", tt.split("\n").slice(1, 3).join(" | ").slice(0, 300)];
 }
 
-// every process's pid and parent pid, from ps, or "" if ps failed or ran
-// past 5 s (it blocks every worker). The text goes through a file, as
-// run_read's does in bend2/safe.ts: bun's spawnSync can lose a pipe's
-// bytes under load
-function ps_rows(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-ps-"));
-  const log = path.join(dir, "out");
-  const fd = fs.openSync(log, "w");
-  try {
-    const got = child.spawnSync("ps", ["-A", "-o", "pid=,ppid="],
-      { stdio: ["ignore", fd, "ignore"], timeout: 5000, killSignal: "SIGKILL" });
-    return got.status === 0 ? fs.readFileSync(log, "utf8") : "";
-  } finally {
-    fs.closeSync(fd);
-    fs.rmSync(dir, { recursive: true, force: true });
-  }
-}
+// a check's deadline kills its whole process group: bend2 runs the
+// kernel as its child, and a SIGKILL to bend2 alone left the kernel
+// running, orphaned, while the next check started. Each check leads its
+// own group (detached), which the kernel joins; one kill(-pid) reaches
+// all of it at once, and no pid is reused while its group has a member.
+// live maps a group to the check that leads it, from its spawn to its
+// close, so a group a check left is never signalled under its pid
+const live = new Map<number, child.ChildProcess>();
 
-// a check's deadline kills bend2 and every process under it: bend2 runs
-// the kernel as its child, and a SIGKILL to bend2 alone left the kernel
-// running, orphaned, while the next check started. bend2 is stopped
-// before the ps, so it starts no child in between and reaps none whose
-// pid could be reused; the rest of the tree is stopped after it, then
-// killed from the leaves up, so no process outlives its parent's kill.
-// A child forked below bend2 between the ps and its parent's stop is
-// missed (the kernel forks none). A bend2 that already exited is never
-// signalled by pid, which may be reused. If ps fails (no row for bend2),
-// only bend2 is killed, as before, and the timeout's reason says so
-function kill_tree(kid: child.ChildProcess, g: Omit<Got, "f">): void {
-  const pid = kid.pid;
-  if (pid === undefined || kid.exitCode !== null || kid.signalCode !== null) {
-    g.timeout = kid.kill("SIGKILL");
-    return;
+function kill_group(kid: child.ChildProcess): boolean {
+  if (kid.pid === undefined || live.get(kid.pid) !== kid) {
+    return false;
   }
-  let rows = "";
   try {
-    process.kill(pid, "SIGSTOP");
-    rows = ps_rows();
-  } catch { /* bend2 is gone, or ps failed */ }
-  const kids = new Map<number, number[]>();
-  let seen = false;
-  for (const l of rows.split("\n")) {
-    const [p, pp] = l.trim().split(/\s+/).map(Number);
-    if (p && pp) {
-      seen ||= p === pid;
-      (kids.get(pp) ?? kids.set(pp, []).get(pp)!).push(p);
-    }
+    process.kill(-kid.pid, "SIGKILL");
+    return true;
+  } catch {
+    return false;
   }
-  if (!seen) {
-    g.error = "ps listed no bend2, so a process it started may still run";
-  }
-  const tree = [pid];
-  for (let i = 0; i < tree.length; i++) {
-    tree.push(...(kids.get(tree[i]) ?? []));
-  }
-  const signal = (ps: number[], sig: NodeJS.Signals): void => {
-    for (const p of ps) {
-      try { process.kill(p, sig); } catch { /* it exited */ }
-    }
-  };
-  signal(tree.slice(1), "SIGSTOP");
-  signal(tree.slice(1).reverse(), "SIGKILL");
-  g.timeout = kid.kill("SIGKILL");
 }
 
 async function run(bin: string, args: string[], cap: number): Promise<Omit<Got, "f">> {
   const g: Omit<Got, "f"> = { code: null, ms: 0, out: "", timeout: false };
   const t0 = Date.now();
   await new Promise<void>((done) => {
-    const kid = child.spawn(bin, args, { env: { ...process.env, BEND_NO_TELEMETRY: "1" } });
+    const kid = child.spawn(bin, args,
+      { env: { ...process.env, BEND_NO_TELEMETRY: "1" }, detached: true });
+    if (kid.pid !== undefined) {
+      live.set(kid.pid, kid);
+    }
     kid.stdout.on("data", (d) => { g.out += d; });
     kid.stderr.on("data", (d) => { g.out += d; });
     kid.on("error", (e) => { g.error = e.message; });
-    const bomb = setTimeout(() => { kill_tree(kid, g); }, cap);
+    const bomb = setTimeout(() => { g.timeout = kill_group(kid); }, cap);
     kid.on("close", (code, signal) => {
       clearTimeout(bomb);
+      if (kid.pid !== undefined && live.get(kid.pid) === kid) {
+        live.delete(kid.pid);
+      }
       g.code = code;
       g.ms = Date.now() - t0;
       if (signal) {
@@ -184,6 +148,16 @@ async function one(f: string, cap: number): Promise<Got> {
 }
 
 if (import.meta.main) {
+  // a check's group is not the runner's, so a ^C or a kill that ends the
+  // runner ends every live check first
+  for (const sig of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
+    process.once(sig, () => {
+      for (const kid of live.values()) {
+        kill_group(kid);
+      }
+      process.kill(process.pid, sig);
+    });
+  }
   const files = fs.readFileSync(0, "utf8").split("\n").filter((l) => l !== "");
   const cap = Number(process.env.CAP ?? 30) * 1000;
   const res: Got[] = [];
