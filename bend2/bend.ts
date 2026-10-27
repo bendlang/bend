@@ -86,9 +86,9 @@
 // hash the hub names it, kept under BEND_LIB/names. "as Name" binds a
 // per-file alias: Name.x resolves to the file's canonical name, so two
 // aliases of one file agree, and a def of an aliased name fills it.
-// "import Base" is the "Base" namespace; an unknown name is the file's own,
-// unless its bare spelling is Base's. Alias/Base conflicts fail within
-// each category (definition or constructor).
+// "import Base" opens the "Base" namespace only in this file. References
+// use the current file, then its imported Base. Alias/Base conflicts fail
+// within each category (definition or constructor).
 // a def with no prior law types itself: a Bind telescope and a
 // "->" return type. a def after its law takes bare names, no "->".
 // "def f?(..)" is "@unsafe def f(..)".
@@ -1159,7 +1159,7 @@ export async function book_load(book: Book, file: string, seen: Map<string, File
     const lines = text.split("\n");
     const body  = lines.slice();
     const al    : Record<string, FileId> = Object.create(null);
-    const source: File & { path: string } = { str: text, ns, al, base: book.base, path: real };
+    const source: File & { path: string } = { str: text, ns, al, base: null, path: real };
 
     const hub   = (s: string): boolean => /^0x[0-9a-f]+\//.test(s);
     const ok    = (s: string, lib: boolean): boolean => hub(s) === lib
@@ -1181,6 +1181,7 @@ export async function book_load(book: Book, file: string, seen: Map<string, File
       }
       body[i] = "";
       if (m[2] === undefined) {
+        source.base = BASE_ID;
         await discover(BASE_BEND, sp);
         continue;
       }
@@ -1211,11 +1212,9 @@ export async function book_load(book: Book, file: string, seen: Map<string, File
   }
   await discover(entry, spn);
 
-  // Discovery chooses the sugar vocabulary; declaration visibility still
-  // follows the original import postorder.
+  // Parse imported files before the files that import them.
   let done = book.order.length;
   for (const file of nodes) {
-    file.base = book.base;
     const n0 = book.order.length;
     if (file.path === entry) {
       done = n0;
@@ -2662,12 +2661,14 @@ export function parse_tele(p: Parse, close: string, tk: string[] = []): Array<[Q
 
 export function parse_fresh(p: Parse, nm: RName, category: Category = "def", what = "a fresh name"): Name {
   const tab = category === "def" ? p.book.tlds : p.book.ctrs;
-  const k = parse_lookup(p, nm, category).k;
+  const k = name_source(p.ns, nm, category);
   const a = nm.substring(0, nm.indexOf("."));
   const alias = Object.hasOwn(p.al, a);
   if (k in tab || alias) {
     parse_fail(p, what + " (" + (alias ? a + " is an import's alias" : "duplicate declaration: " + nm) + ")", p.pos - nm.length);
   }
+  // Bind the declared name before parsing its signature and body.
+  p.resolved[category].set(nm, { k });
   return k;
 }
 

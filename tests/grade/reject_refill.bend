@@ -12,11 +12,11 @@ def boom():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a fresh name (duplicate declaration: IO)
-#|- observed : 'IO'
+#|- expected : '->' (a def with no return type fills a law; no law named IO is in scope)
+#|- observed : ':'
 #|Location:
 #|3 | # a native claim of the library cannot be filled by a later file
 #|4>| def IO(A):
-#|  |     ^^
+#|  |          ^
 #|5 |   Empty
 #|exit 1

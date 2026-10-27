@@ -1,11 +1,5 @@
-# refusal pin: bend3's file redefined Pair.Pair to elaborate a raw
-# tuple field into a function type, and its own golden was the
-# duplicate-declaration refusal -- the negative-self-application Empty
-# never checked. bend hits the same first wall: a Base name cannot be
-# redeclared (and bend has no Data table for the redefinition to
-# poison; the D/delta skeleton below the dying line is inert).
-# ported from bend3: Pair.Pair -> String.eq (bend's base owns no
-# Pair; the wall is the name, not the signature)
+# Local String.eq is distinct from Base's. This imported bend3 example
+# remains invalid: its datatype declaration lacks `is Type` or `is Data`.
 import Base
 
 law String.eq:
@@ -45,11 +39,11 @@ def main(): delta(Empty, MkD2{delta(Empty)})
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a fresh name (duplicate declaration: String.eq)
-#|- observed : 'String.eq'
+#|- expected : 'is'
+#|- observed : ':'
 #|Location:
-#|10 | 
-#|11>| law String.eq:
-#|   |     ^^^^^^^^^
-#|12 |   for a: String
+#|12 |
+#|13>| type D2<result: Type>:
+#|   |                      ^
+#|14 |   MkD2{fun: D2<result> -> result}
 #|exit 1

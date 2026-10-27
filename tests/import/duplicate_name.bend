@@ -1,7 +1,4 @@
-# bend3 refused duplicate def names across its one global namespace;
-# bend imports are namespaced per file and the wall moved: the
-# collision fires against the imported book itself -- redeclaring a
-# base def dies as an ordinary duplicate
+# This law and its implementation belong to this file, not to Base.
 import Base
 
 law Nat.add:
@@ -18,13 +15,4 @@ law main:
 def main():
   0
 
-#|SOME PROOFS FAIL
-#|Error:
-#|- expected : a fresh name (duplicate declaration: Nat.add)
-#|- observed : 'Nat.add'
-#|Location:
-#|6 | 
-#|7>| law Nat.add:
-#|  |     ^^^^^^^
-#|8 |   for a: Nat
-#|exit 1
+#|0
