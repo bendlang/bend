@@ -882,7 +882,12 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    throw Err(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
+    const k = name_show(tm.s?.file, tm.k);
+    if (tld === undefined) {
+      throw Err(book, ctx, "a declared datatype (unknown: " + k + ")", undefined, tm.s, def);
+    }
+    const nte = tld.n === 0 ? " with no arguments: write it as " + k : ": write its arguments as ()";
+    throw Err(book, ctx, "a declared datatype", undefined, tm.s, def, "Note: " + k + " is a def" + nte);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -1787,7 +1792,10 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
     }
     if (k === "do") {
       const m = parse_name(p);
-      parse_eat(p, "<");
+      parse_skip(p);
+      if (!parse_take(p, "<")) {
+        parse_fail(p, "'<' (a do block is written do " + m + "<...>:)");
+      }
       const ts = parse_fill(p, parse_reso(p, m), parse_term_args(p, ">"),
         parse_span(p, beg));
       parse_eat(p, ":");
@@ -3330,7 +3338,10 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "Ref": {
       const tld = book.tlds[tm.k];
       if (tld === undefined) {
-        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def);
+        const m = /^(.+)\.(pure|bind)$/.exec(tm.k);
+        const e = m === null ? "" : name_show(tm.s?.file, m[1]);
+        const nte = m === null ? undefined : "Note: a do block on " + e + " calls " + e + ".bind and " + e + ".pure";
+        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def, nte);
       }
       let k = tm.k;
       let x = 0;

@@ -23,4 +23,5 @@ def main():
 #|14>|     x : U32 <- Mk{3}
 #|   |     ^^^^^^^^^^^^^^^^
 #|15 |     return x
+#|Note: a do block on Box calls Box.bind and Box.pure
 #|exit 1
