@@ -26,8 +26,11 @@ setTimeout(() => require(${JSON.stringify(output)}), 0);
     const ran = child.spawnSync(compiled ? "bun" : process.execPath,
       ["-e", source], { encoding: "utf8", timeout: 2000 });
     if (ran.error) throw ran.error;
-    return ran.status === 0 && ran.stdout === "0\n" && ran.stderr === ""
-      ? 0 : 1;
+    // The probe prints 0 if collected, 1 if retained; anything else is shown.
+    if (ran.status === 0 && ran.stderr === "" && /^[01]\n$/.test(ran.stdout)) {
+      return Number(ran.stdout[0]);
+    }
+    throw new Error(`probe exited ${ran.status}: ${ran.stdout}${ran.stderr}`);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -39,7 +42,7 @@ function chan_release_payload() {
   return value;
 }
 
-function chan_release_collected(row) {
+function chan_release_collected() {
   Bun.gc(true);
   return globalThis.channel_release.ref.deref() === undefined ? 0 : 1;
 }
