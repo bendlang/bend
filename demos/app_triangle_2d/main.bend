@@ -73,8 +73,9 @@ def Tri.event(e: Event, +n: U32) -> Maybe<U32>:
       None{}
     case Close{}:
       None{}
-    case Mouse{x, y, button, True{}}:
-      Some{Tri.pick(Tri.inside(x, y), (n + 1 : U32), n)}
+    case Press{id, tool, x, y, time, button, True{}}:
+      Some{Tri.pick(Tri.inside(F32.to_u32(x), F32.to_u32(y)), (n + 1 : U32),
+        n)}
     case _:
       Some{n}
 

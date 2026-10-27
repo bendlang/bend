@@ -530,9 +530,10 @@ outside its `Result`; a desktop without fullscreen support returns
 and input conversion, independent of backing-scale changes. X11 uploads
 only that logical image and uses a nearest-neighbour XRender transform
 for the fullscreen display, preserving aspect ratio with black bars.
-On X11, ordinary windowed rendering stays unscaled. Absolute positions and
-grabbed look deltas use the same logical image units; bar positions clamp
-to the image edge.
+On X11, ordinary windowed rendering stays unscaled. Press, Move and Scroll
+positions and grabbed look deltas use the same logical image units; a
+position over the black bars falls outside the image, as one off the
+window does.
 The desktop applies the state asynchronously: `Done` acknowledges the
 request, not its completion, and `Window.frame` pumps desktop events.
 X11 defers an initial request until its window manager owns the window,

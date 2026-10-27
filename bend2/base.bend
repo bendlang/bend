@@ -82,17 +82,46 @@ type Image is Data:
   Pix{color: U32}
   Qua{tl: Image, tr: Image, bl: Image, br: Image}
 
+# A pointer's tool and what it measures, as W3C Pointer Events name it: a
+# force from 0 to 1, a contact's size in pixels, a pen's tilts (-90 to 90)
+# and twist (0 to 359, clockwise) in degrees and its barrel's pressure
+# (-1 to 1). A force is 0 unless pressed. A value its device does not
+# report is that standard's default: a force of 0.5, a size of 1, an angle 0.
+type Tool is Data:
+  Tool.Mouse{}
+  Tool.Finger{force: F32, width: F32, height: F32}
+  Tool.Pen{force: F32, tangential: F32, tilt_x: F32, tilt_y: F32, twist: F32}
+
 # Key is a key, pressed or let go. Text is what the keys typed, after
 # Shift, Caps Lock, the layout and any input method: never a control
 # character, so Enter or Backspace come only as Keys. A long input method
 # commit can come as several Texts.
+# Press is a pointer's button pressed or let go, and Move its motion, in
+# pixels from the window's top left (past its edge while a button holds
+# it), at the system's time in ms (it wraps: only the difference of two
+# counts): a Move with no button down is a hover. The mouse is id 0; a finger
+# or a pen takes the least free id, free again once it lifts (a finger),
+# leaves or is lost. Buttons are W3C's: 0 the main one (a finger's or a
+# pen's contact), 1 the middle, 2 the right (a pen's barrel), 3 back, 4
+# forward and 5 a pen's eraser. Leave is a pointer with no button down gone off
+# the window or out of a pen's range (W3C's pointerleave): the mouse comes
+# back as id 0. Lost is a pointer pressed taken away (W3C's pointercancel):
+# what it held ends with no Press up.
+# A window losing the focus loses its pointers pressed and lets go of its
+# keys held, then sends Focus{False}. Look is the mouse's motion while
+# Window.grab holds it, in Move's units. Scroll is a wheel or trackpad
+# under the pointer: its deltas scroll toward a page's top and left (a
+# notch is 1 on X11).
 type Event is Data:
   Key{code: U32, down: Bool}
   Text{text: String}
-  Mouse{x: U32, y: U32, button: U32, down: Bool}
-  Move{x: U32, y: U32}
+  Press{id: U32, tool: Tool, x: F32, y: F32, time: U32, button: U32, down: Bool}
+  Move{id: U32, tool: Tool, x: F32, y: F32, time: U32}
+  Leave{id: U32}
+  Lost{id: U32}
   Look{dx: F32, dy: F32}
-  Scroll{x: U32, y: U32, dx: F32, dy: F32}
+  Scroll{x: F32, y: F32, dx: F32, dy: F32}
+  Focus{on: Bool}
   Close{}
 
 type Map<a, -V: Kind(a)> is Kind(a):

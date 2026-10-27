@@ -4,32 +4,52 @@
 // All window effects share this source; each entry is present only when
 // its effect is reachable.
 
+// An event: its constructor's id, then its fields as the compiler lays
+// them out (a Tool inline, as its tag and five words).
+#define WIN_EV 13
+
+// a Press's words
+enum { WIN_TAG = 2, WIN_BUTTON = 11, WIN_DOWN = 12 };
+
+// A Tool's tag
+enum { WIN_MOUSE, WIN_FINGER, WIN_PEN };
+
+typedef struct {
+  u32 tag;
+  f32 v[5];
+} WinTool;
+
+// A window's events since its last frame, and what they leave held: per pointer id (the mouse 0, the
+// others 1 to 15) its system name and buttons down, the ids live (the
+// mouse while over the window), the keys down and the focus.
+typedef struct {
+  u32*  evs;
+  u32   n;
+  u32   cap;
+  u64   name[16];
+  u32   down[16];
+  u32   live;
+  u32   keys[32];
+  u32   nk;
+  bool  focus;
+} WinQueue;
+
 #ifdef __OBJC__
 
 #import <AppKit/AppKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface NSView (BendImage)
-- (CGSize)logicalSize;
-#ifdef CID(Window.fullscreen)
-- (void)fullTick;
-#endif
-@end
-
 #elif defined(__linux__)
 
-// The X11 window: its own connection (so its queue holds only its
-// events), its input method and context (NULL if none opened), the
-// time and code of the last key the method took, the frame's image,
-// the events pumped since the last frame, five words each (cid, a, b,
-// c, d) as on the Mac, its pointer grab and warp baseline, and the display's
-// refresh period in ns.
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 #include <dlfcn.h>
 #include <limits.h>
+#include <langinfo.h>
+#include <locale.h>
+
 #ifdef CID(Window.fullscreen)
 // XRender is loaded at run time, like RandR below: only Xlib headers are needed.
 typedef struct {
@@ -62,9 +82,110 @@ enum {
   BEND_RENDER_PAD = 2
 };
 #endif
-#include <langinfo.h>
-#include <locale.h>
 
+// XInput2's names and types, as XI2.h and XInput2.h have them (a build
+// needs no libxi-dev). Device and leave (its mode at flags) events share
+// the head.
+#define XIAllDevices          0
+#define XIAllMasterDevices    1
+#define XI_ButtonPress        4
+#define XI_ButtonRelease      5
+#define XI_Motion             6
+#define XI_Leave              8
+#define XI_HierarchyChanged   11
+#define XI_TouchBegin         18
+#define XI_TouchUpdate        19
+#define XI_TouchEnd           20
+#define XIValuatorClass       2
+#define XITouchClass          8
+#define XIDirectTouch         1
+#define XINotifyPassiveGrab   4
+#define XISetMask(ptr, event) \
+  (((unsigned char*)(ptr))[(event) >> 3] |= (1 << ((event) & 7)))
+
+typedef struct {
+  int            deviceid;
+  int            mask_len;
+  unsigned char* mask;
+} WinXIMask;
+
+typedef struct {
+  int            type;
+  unsigned long  serial;
+  Bool           send_event;
+  Display*       display;
+  int            extension;
+  int            evtype;
+  Time           time;
+  int            deviceid;
+  int            sourceid;
+  int            detail;
+  Window         root;
+  Window         event;
+  Window         child;
+  double         root_x;
+  double         root_y;
+  double         event_x;
+  double         event_y;
+} WinXIHead;
+
+typedef struct {
+  int            len;
+  unsigned char* mask;
+} WinXIBits;
+
+typedef struct {
+  int            len;
+  unsigned char* mask;
+  double*        values;
+} WinXIVals;
+
+typedef struct {
+  WinXIHead      h;
+  int            flags;
+  WinXIBits      buttons;
+  WinXIVals      vals;
+} WinXIEvent;
+
+// A device's class: a valuator's, whose number stands at a touch class's
+// mode.
+typedef struct {
+  int            type;
+  int            sourceid;
+  int            number;
+  Atom           label;
+  double         min, max, value;
+} WinXIClass;
+
+typedef struct {
+  int            deviceid;
+  char*          name;
+  int            use, attachment;
+  Bool           enabled;
+  int            num_classes;
+  WinXIClass**   classes;
+} WinXIDevice;
+
+// A device met: its tool (a pen's contact is button 5 at its eraser),
+// each axis's valuator (-1: none), range and last value (events carry only
+// changes), and a touch screen's pixels per unit of position.
+enum { WIN_FORCE, WIN_TILT_X, WIN_TILT_Y, WIN_MAJOR, WIN_MINOR, WIN_AXES };
+
+typedef struct {
+  int    id;
+  u32    tool;
+  bool   eraser;
+  int    ax[WIN_AXES];
+  double lo[WIN_AXES], hi[WIN_AXES], at[WIN_AXES];
+  double px;
+} WinDev;
+
+// The X11 window: its own connection (so its queue holds only its
+// events), its input method and context (NULL if none opened), the
+// time and code of the last key the method took, the frame's image and
+// the window's size, its events, its pointer grab and warp baseline, the
+// display's refresh period in ns, XInput2's opcode (0 if none) and the
+// devices met.
 typedef struct {
   Display* dpy;
   Window   win;
@@ -91,13 +212,14 @@ typedef struct {
   XImage*  img;
   u32      width;
   u32      height;
-  u32      n;
-  u32      cap;
-  u32*     evs;
+  WinQueue q;
   u32      grab;
   unsigned long warp_serial, warp_floor;
   int      mouse_x, mouse_y;
   u64      period;
+  int      xi;
+  u32      nd;
+  WinDev   devs[8];
 } BendWin;
 
 // A grab or resize changes the basis; an ordinary recenter preserves queued input.
@@ -263,7 +385,8 @@ static inline void window_x_title(Display* dpy, Window w, const char* text,
 // UTF-8 in its four words, cut between characters, so a long input
 // method commit comes as several. Control characters and the Mac's
 // function-key characters (U+F700 on) are keys, not text: dropped.
-static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
+static inline bool window_chunk(const char* s, u64 n, u64* at,
+  u32 ev[WIN_EV]) {
   char b[16] = { 0 };
   u32  k = 0;
   while (*at < n) {
@@ -291,6 +414,121 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
   return k > 0;
 }
 
+// The id of the pointer the system names name: the one it holds, else (if
+// make) the least free, else 16 (none). The mouse's is 0, by its lane.
+static inline u32 window_id(WinQueue* q, u64 name, bool make) {
+  u32 free = 16;
+  for (u32 i = 15; i > 0; i -= 1) {
+    if (!(q->live >> i & 1)) {
+      free = i;
+    } else if (q->name[i] == name) {
+      return i;
+    }
+  }
+  if (!make || free == 16) {
+    return 16;
+  }
+  q->name[free] = name;
+  q->live |= 1u << free;
+  return free;
+}
+
+// Whether ev goes out, as it updates q: a Key or Press up of nothing down,
+// an event of an id not live (or none) and a Focus that changes nothing do
+// not. A Press or Move makes its id live, a finger's last Press up, a
+// Leave or a Lost frees it.
+static inline bool window_keep(WinQueue* q, const u32* ev) {
+  u32 c = ev[0];
+  u32 a = ev[1];
+  if (c == CID(Key)) {
+    u32 i = 0;
+    while (i < q->nk && q->keys[i] != a) {
+      i += 1;
+    }
+    if (ev[2] && i == q->nk && i < 32) {
+      q->keys[q->nk++] = a;
+    } else if (!ev[2] && i == q->nk) {
+      return false;
+    } else if (!ev[2]) {
+      q->keys[i] = q->keys[--q->nk];
+    }
+    return true;
+  }
+  if (c == CID(Focus)) {
+    bool was = q->focus;
+    q->focus = a;
+    return was != a;
+  }
+  bool gone = c == CID(Leave) || c == CID(Lost);
+  if (c != CID(Press) && c != CID(Move) && !gone) {
+    return true;
+  }
+  if (a >= 16 || (gone && !(q->live >> a & 1))) {
+    return false;
+  }
+  u32 m = 1u << a;
+  u32 b = c == CID(Press) ? 1u << (ev[WIN_BUTTON] & 31) : 0;
+  if (gone) {
+    q->live &= ~m;
+    q->down[a] = 0;
+    return true;
+  }
+  if (c == CID(Press) && !ev[WIN_DOWN]) {
+    if (!(q->down[a] & b)) {
+      return false;
+    }
+    q->down[a] &= ~b;
+    if (ev[WIN_TAG] == WIN_FINGER && q->down[a] == 0) {
+      q->live &= ~m;
+    }
+    return true;
+  }
+  q->down[a] |= b;
+  q->live |= m;
+  return true;
+}
+
+static inline void window_put(WinQueue* q, const u32* ev) {
+  if (!window_keep(q, ev)) {
+    return;
+  }
+  if (q->n == q->cap) {
+    q->cap = q->cap == 0 ? 64 : q->cap * 2;
+    q->evs = io_mem(realloc(q->evs, q->cap * WIN_EV * sizeof *ev));
+  }
+  memcpy(q->evs + q->n * WIN_EV, ev, WIN_EV * sizeof *ev);
+  q->n += 1;
+}
+
+static inline void window_push(WinQueue* q, u32 cid, u32 a, u32 b, u32 c,
+  u32 d) {
+  u32 ev[WIN_EV] = { cid, a, b, c, d };
+  window_put(q, ev);
+}
+
+// A Press, or a Move (which ends before b), at ms.
+static inline void window_point(WinQueue* q, u32 cid, u32 id, WinTool t,
+  f32 x, f32 y, u32 ms, u32 b, bool down) {
+  u32 ev[WIN_EV] = { cid, id, t.tag, f32_rewrap(t.v[0]), f32_rewrap(t.v[1]),
+    f32_rewrap(t.v[2]), f32_rewrap(t.v[3]), f32_rewrap(t.v[4]),
+    f32_rewrap(x), f32_rewrap(y), ms, b, down };
+  window_put(q, ev);
+}
+
+// The focus come, or gone: then it first loses the pointers pressed and
+// lets go of the keys held.
+static inline void window_focus(WinQueue* q, bool on) {
+  for (u32 i = 0; !on && i < 16; i += 1) {
+    if (q->down[i] != 0) {
+      window_push(q, CID(Lost), i, 0, 0, 0);
+    }
+  }
+  while (!on && q->nk > 0) {
+    window_push(q, CID(Key), q->keys[q->nk - 1], false, 0, 0);
+  }
+  window_push(q, CID(Focus), on, 0, 0, 0);
+}
+
 #endif
 
 #ifdef __OBJC__
@@ -300,9 +538,10 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
 // It draws no composition: marked holds it only so the method can work.
 @interface BendView : NSView <NSWindowDelegate, NSTextInputClient> {
   @public
-  NSMutableData* evs;
+  WinQueue       q;
   u64            flags;
   BOOL           grab;
+  BOOL           eraser;
   CGSize         draw_size;
 #ifdef CID(Window.fullscreen)
   NSUInteger     full_style;
@@ -337,10 +576,6 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
   ((CAMetalLayer*)self.layer).drawableSize = draw_size;
 }
 
-- (CGSize)logicalSize {
-  return draw_size;
-}
-
 - (BOOL)acceptsFirstResponder {
   return YES;
 }
@@ -353,15 +588,14 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
   return YES;
 }
 
-- (void)push:(u32)cid a:(u32)a b:(u32)b c:(u32)c d:(u32)d {
-  u32 ev[5] = { cid, a, b, c, d };
-  [evs appendBytes:ev length:sizeof ev];
+- (void)dealloc {
+  free(q.evs);
 }
 
 - (void)key:(NSEvent*)ev down:(BOOL)down {
   NSString* s = [ev.charactersIgnoringModifiers lowercaseString];
   u32 code = s.length > 0 ? [s characterAtIndex:0] : 65536 + ev.keyCode;
-  [self push:CID(Key) a:code b:down c:0 d:0];
+  window_push(&q, CID(Key), code, down, 0, 0);
 }
 
 - (void)keyDown:(NSEvent*)ev {
@@ -400,9 +634,9 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
     : s) UTF8String];
   u64 n  = strlen(t);
   u64 at = 0;
-  u32 ev[5];
+  u32 ev[WIN_EV];
   while (window_chunk(t, n, &at, ev)) {
-    [evs appendBytes:ev length:sizeof ev];
+    window_put(&q, ev);
   }
 }
 
@@ -462,11 +696,15 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
 
 - (void)flagsChanged:(NSEvent*)ev {
   u64 now = ev.modifierFlags;
-  [self push:CID(Key) a:65536 + ev.keyCode b:(now & ~flags) != 0 c:0
-    d:0];
+  window_push(&q, CID(Key), 65536 + ev.keyCode, (now & ~flags) != 0, 0, 0);
   flags = now;
 }
 
+- (NSPoint)at:(NSEvent*)ev {
+  return [self convertPoint:ev.locationInWindow fromView:nil];
+}
+
+// Where the image shows in the view: all of it, or fullscreen, letterboxed.
 - (NSRect)imageRect {
   NSSize bounds = self.bounds.size;
   BOOL full = [self.layer.contentsGravity isEqualToString:kCAGravityResizeAspect];
@@ -479,36 +717,86 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
   return NSMakeRect((bounds.width - w) / 2, (bounds.height - h) / 2, w, h);
 }
 
-- (NSPoint)at:(NSEvent*)ev {
-  CGSize  size = draw_size;
-  NSPoint p    = [self convertPoint:ev.locationInWindow fromView:nil];
-  NSRect rect = [self imageRect];
-  p.x = (p.x - rect.origin.x) * size.width / rect.size.width;
-  p.y = (p.y - rect.origin.y) * size.height / rect.size.height;
-  return NSMakePoint(fmax(0, fmin(floor(p.x), size.width - 1)),
-    fmax(0, fmin(floor(p.y), size.height - 1)));
+// A view point in the image's units.
+- (NSPoint)px:(NSPoint)p {
+  NSRect r = [self imageRect];
+  return NSMakePoint((p.x - r.origin.x) * draw_size.width / r.size.width,
+    (p.y - r.origin.y) * draw_size.height / r.size.height);
 }
 
+- (u32)ms:(NSEvent*)ev {
+  return (u32)(u64)(ev.timestamp * 1000);
+}
+
+// A tablet's pen moves the cursor, but is its own pointer.
+- (u32)pointer:(NSEvent*)ev tool:(WinTool*)t {
+  if (ev.subtype != NSEventSubtypeTabletPoint) {
+    *t = (WinTool){ WIN_MOUSE };
+    return 0;
+  }
+  *t = (WinTool){ WIN_PEN, { ev.pressure, ev.tangentialPressure,
+    ev.tilt.x * 90, ev.tilt.y * 90, fmod(ev.rotation + 360, 360) } };
+  return window_id(&q, ev.deviceID, YES);
+}
+
+// The Mac's buttons 1 and 2 are W3C's 2 and 1; an eraser's contact is 5.
+// Let go past the view, the pointer leaves.
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
-  NSPoint p = [self at:ev];
-  [self push:CID(Mouse) a:p.x b:p.y c:(u32)ev.buttonNumber d:down];
+  WinTool t;
+  u32     id = [self pointer:ev tool:&t];
+  NSPoint p  = [self at:ev];
+  NSPoint i  = [self px:p];
+  u32     n  = (u32)ev.buttonNumber;
+  window_point(&q, CID(Press), id, t, i.x, i.y, [self ms:ev],
+    t.tag == WIN_PEN && eraser && n == 0 ? 5 : n == 1 ? 2 : n == 2 ? 1 : n,
+    down);
+  if (!down && id < 16 && q.down[id] == 0
+    && !NSPointInRect(p, self.bounds)) {
+    window_push(&q, CID(Leave), id, 0, 0, 0);
+  }
 }
 
+// Past the view, only a held pointer moves.
 - (void)move:(NSEvent*)ev {
-  NSPoint p = [self at:ev];
   if (grab) {
-    NSSize size = [self imageRect].size;
-    [self push:CID(Look) a:f32_rewrap(ev.deltaX * draw_size.width / size.width)
-      b:f32_rewrap(ev.deltaY * draw_size.height / size.height) c:0 d:0];
+    NSSize s = [self imageRect].size;
+    window_push(&q, CID(Look), f32_rewrap(ev.deltaX * draw_size.width / s.width),
+      f32_rewrap(ev.deltaY * draw_size.height / s.height), 0, 0);
+    return;
+  }
+  if (ev.subtype == NSEventSubtypeTabletProximity) {
+    [self tabletProximity:ev];
+    return;
+  }
+  WinTool t;
+  u32     id = [self pointer:ev tool:&t];
+  NSPoint p  = [self at:ev];
+  if (id < 16 && (q.down[id] != 0 || NSPointInRect(p, self.bounds))) {
+    NSPoint i = [self px:p];
+    window_point(&q, CID(Move), id, t, i.x, i.y, [self ms:ev], 0, 0);
+  }
+}
+
+- (void)tabletProximity:(NSEvent*)ev {
+  if (ev.enteringProximity) {
+    eraser = ev.pointingDeviceType == NSPointingDeviceTypeEraser;
   } else {
-    [self push:CID(Move) a:p.x b:p.y c:0 d:0];
+    u32 id = window_id(&q, ev.deviceID, NO);
+    window_push(&q, id < 16 && q.down[id] != 0 ? CID(Lost) : CID(Leave), id,
+      0, 0, 0);
+  }
+}
+
+- (void)mouseExited:(NSEvent*)ev {
+  if (q.down[0] == 0) {
+    window_push(&q, CID(Leave), 0, 0, 0, 0);
   }
 }
 
 - (void)scrollWheel:(NSEvent*)ev {
-  NSPoint p = [self at:ev];
-  [self push:CID(Scroll) a:p.x b:p.y c:f32_rewrap(ev.scrollingDeltaX)
-    d:f32_rewrap(ev.scrollingDeltaY)];
+  NSPoint p = [self px:[self at:ev]];
+  window_push(&q, CID(Scroll), f32_rewrap(p.x), f32_rewrap(p.y),
+    f32_rewrap(ev.scrollingDeltaX), f32_rewrap(ev.scrollingDeltaY));
 }
 
 // Window.grab sets this by key: the cursor is hidden and held at the
@@ -531,6 +819,11 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
 
 - (void)windowDidResignKey:(NSNotification*)note {
   [self setGrab:NO];
+  window_focus(&q, false);
+}
+
+- (void)windowDidBecomeKey:(NSNotification*)note {
+  window_focus(&q, true);
 }
 
 #ifdef CID(Window.fullscreen)
@@ -650,7 +943,7 @@ static inline bool window_chunk(const char* s, u64 n, u64* at, u32 ev[5]) {
 }
 
 - (BOOL)windowShouldClose:(NSWindow*)sender {
-  [self push:CID(Close) a:0 b:0 c:0 d:0];
+  window_push(&q, CID(Close), 0, 0, 0, 0);
   return NO;
 }
 
@@ -690,7 +983,6 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     win.title = [NSString stringWithUTF8String:title];
     [win setContentSize:NSMakeSize(w, h)];
     BendView* view = [[BendView alloc] initWithFrame:win.contentLayoutRect];
-    view->evs   = [NSMutableData new];
     view->flags = NSEvent.modifierFlags;
     view->draw_size = CGSizeMake(w, h);
 #ifdef CID(Window.fullscreen)
@@ -713,6 +1005,9 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     layer.maximumDrawableCount = 2;
     win.contentView = view;
     win.delegate = view;
+    [view addTrackingArea:[[NSTrackingArea alloc] initWithRect:NSZeroRect
+      options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
+        | NSTrackingInVisibleRect owner:view userInfo:nil]];
     [win makeFirstResponder:view];
     [win center];
     [win makeKeyAndOrderFront:nil];
@@ -778,6 +1073,47 @@ static void window_ime(BendWin* win) {
   }
 }
 
+// XInput2, through a libXi loaded at run time as libXrandr is: the
+// pointers on the window, devices plugged or unplugged on the root. Its opcode, or 0 (no libXi or XInput
+// 2.2: core events then stand for the mouse alone).
+static WinXIDevice* (*window_xi_query)(Display*, int, int*);
+static void         (*window_xi_free)(WinXIDevice*);
+
+static int window_xi(Display* dpy, Window w) {
+  int   op, ev, er;
+  void* xi = XQueryExtension(dpy, "XInputExtension", &op, &ev, &er)
+    ? dlopen("libXi.so.6", RTLD_LAZY | RTLD_LOCAL) : NULL;
+  if (xi == NULL) {
+    return 0;
+  }
+  Status (*version)(Display*, int*, int*) =
+    (Status (*)(Display*, int*, int*))dlsym(xi, "XIQueryVersion");
+  int (*select)(Display*, Window, WinXIMask*, int) =
+    (int (*)(Display*, Window, WinXIMask*, int))dlsym(xi, "XISelectEvents");
+  window_xi_query = (WinXIDevice* (*)(Display*, int, int*))dlsym(xi,
+    "XIQueryDevice");
+  window_xi_free = (void (*)(WinXIDevice*))dlsym(xi, "XIFreeDeviceInfo");
+  int major = 2;
+  int minor = 2;
+  if (!version || !select || !window_xi_query || !window_xi_free
+    || version(dpy, &major, &minor) != Success || major * 10 + minor < 22) {
+    return 0;
+  }
+  int           evs[] = { XI_ButtonPress, XI_ButtonRelease, XI_Motion,
+    XI_Leave, XI_TouchBegin, XI_TouchUpdate, XI_TouchEnd };
+  unsigned char on[3]   = { 0 };
+  unsigned char plug[2] = { 0 };
+  for (u32 i = 0; i < sizeof evs / sizeof *evs; i += 1) {
+    XISetMask(on, evs[i]);
+  }
+  XISetMask(plug, XI_HierarchyChanged);
+  WinXIMask m[2] = { { XIAllMasterDevices, sizeof on, on },
+    { XIAllDevices, sizeof plug, plug } };
+  select(dpy, w, &m[0], 1);
+  select(dpy, DefaultRootWindow(dpy), &m[1], 1);
+  return op;
+}
+
 static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
@@ -823,8 +1159,10 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 #endif
   XSetWMProtocols(dpy, win->win, &win->del, 1);
   window_x_title(dpy, win->win, title, strlen(title));
-  XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
-    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask | im_evs
+  win->xi = window_xi(dpy, win->win);
+  XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | FocusChangeMask
+    | im_evs | (win->xi ? 0 : ButtonPressMask | ButtonReleaseMask
+      | PointerMotionMask | LeaveWindowMask)
 #ifdef CID(Window.fullscreen)
     | PropertyChangeMask | StructureNotifyMask
 #endif
@@ -867,8 +1205,8 @@ static void __attribute__((constructor)) window_open_use(void) {
 
 #ifdef CID(Window.frame)
 
-// An event is five words: its constructor's id and its fields; a frame
-// answers the events pumped since the last one.
+// A frame answers the events pumped since the last one; a constructor of
+// one word packs it in its term, as the compiler builds it.
 #if defined(__OBJC__) || defined(__linux__)
 
 static Term window_node(Env e, const u32* ev) {
@@ -877,8 +1215,8 @@ static Term window_node(Env e, const u32* ev) {
     return io_box(e, CID(Text), io_str(e, s, strnlen(s, 16)));
   }
   u32 n = cid_arity(ev[0]);
-  if (n == 0) {
-    return term_pak(ev[0], 0);
+  if (n <= 1) {
+    return term_pak(ev[0], n == 0 ? 0 : ev[1]);
   }
   u64 l = heap_alloc(e, cls_fit(n));
   for (u32 j = 0; j < n; j += 1) {
@@ -891,11 +1229,14 @@ static u32 window_depth(u32 n) {
   return n > 1 ? 32 - CLZ(n - 1) : 0;
 }
 
-static Term window_list(Env e, const u32* p, u64 n) {
+// The queue's events, which it then forgets.
+static Term window_list(Env e, WinQueue* q) {
   Term list = term_pak(CID(Nil), 0);
-  for (u64 i = n; i > 0; i -= 1) {
-    list = io_node(e, CID(Con), window_node(e, p + 5 * (i - 1)), list);
+  for (u64 i = q->n; i > 0; i -= 1) {
+    list = io_node(e, CID(Con), window_node(e, q->evs + WIN_EV * (i - 1)),
+      list);
   }
+  q->n = 0;
   return list;
 }
 
@@ -1052,16 +1393,13 @@ static void window_show(Env e, CAMetalLayer* layer, Term image, CGSize size) {
 }
 
 static Term window_frame(Env e, intptr_t at, Term image) {
-  NSView*        view = ((__bridge NSWindow*)(void*)at).contentView;
-  NSMutableData* evs  = [view valueForKey:@"evs"];
+  BendView* view = (BendView*)((__bridge NSWindow*)(void*)at).contentView;
   io_sync();
 #ifdef CID(Window.fullscreen)
   [view fullTick];
 #endif
-  window_show(e, (CAMetalLayer*)view.layer, image, [view logicalSize]);
-  Term list = window_list(e, evs.bytes, evs.length / 20);
-  evs.length = 0;
-  return list;
+  window_show(e, (CAMetalLayer*)view.layer, image, view->draw_size);
+  return window_list(e, &view->q);
 }
 
 #elif defined(__linux__)
@@ -1098,16 +1436,6 @@ static u32 window_key(XKeyEvent* ev) {
   return 65536 + ev->keycode;
 }
 
-static void window_push(BendWin* win, u32 cid, u32 a, u32 b, u32 c, u32 d) {
-  if (win->n == win->cap) {
-    win->cap = win->cap == 0 ? 64 : win->cap * 2;
-    win->evs = io_mem(realloc(win->evs, win->cap * 20));
-  }
-  u32 ev[5] = { cid, a, b, c, d };
-  memcpy(win->evs + win->n * 5, ev, sizeof ev);
-  win->n += 1;
-}
-
 // A key press's text: what the input method commits, else (no method)
 // the character of the key's symbol, unless Control is held.
 static void window_text(BendWin* win, XKeyEvent* key) {
@@ -1137,38 +1465,213 @@ static void window_text(BendWin* win, XKeyEvent* key) {
     n = l;
   }
   u64 at = 0;
-  u32 ev[5];
+  u32 ev[WIN_EV];
   while (window_chunk(s, n, &at, ev)) {
-    window_push(win, ev[0], ev[1], ev[2], ev[3], ev[4]);
+    window_put(&win->q, ev);
   }
   if (s != buf) {
     free(s);
   }
 }
 
-static u32 window_clip(int v, u32 most) {
-  return v < 0 ? 0 : (u32)v < most ? (u32)v : most - 1;
-}
-
-static u32 window_coord(BendWin* win, int p, bool vertical) {
-  u32 logical = vertical ? win->img->height : win->img->width;
+// A window position in the image's units: fullscreen scales it out of the
+// letterbox.
+static void window_px(BendWin* win, f32* x, f32* y) {
 #ifdef CID(Window.fullscreen)
   if (win->full_now && win->source) {
-    u32 offset = vertical ? win->vy : win->vx;
-    u32 size = vertical ? win->vh : win->vw;
-    if (p < (int)offset) {
-      return 0;
-    }
-    u64 point = (u64)(p - (int)offset) * logical / size;
-    return point < logical ? (u32)point : logical - 1;
+    *x = (*x - (f32)win->vx) * win->img->width / win->vw;
+    *y = (*y - (f32)win->vy) * win->img->height / win->vh;
   }
 #endif
-  return window_clip(p, logical);
+}
+
+// A grabbed motion to (x, y): its move from the last position, counted past
+// the warp back to the centre, not the warp itself. Motion queued before a
+// grab or resize reset the basis is dropped.
+static void window_look(BendWin* win, unsigned long serial, int x, int y,
+  f32* dx, f32* dy) {
+  if (serial < win->warp_floor) {
+    return;
+  }
+  if (win->warp_serial && serial >= win->warp_serial) {
+    win->warp_serial = 0;
+    win->mouse_x = win->width / 2;
+    win->mouse_y = win->height / 2;
+  }
+  *dx += x - win->mouse_x;
+  *dy += y - win->mouse_y;
+  win->mouse_x = x;
+  win->mouse_y = y;
+}
+
+// X buttons: 1 to 3 left, middle, right; 4 to 7 the wheel (up, down, left,
+// right; a notch is 1, up and left positive); 8 and 9 back, forward.
+static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
+  u32 ms, u32 b, bool down, bool eraser) {
+  f32 s = b % 2 ? -1 : 1;
+  if (b >= 4 && b <= 7 && down) {
+    window_push(&win->q, CID(Scroll), f32_rewrap(x), f32_rewrap(y),
+      f32_rewrap(b > 5 ? s : 0), f32_rewrap(b > 5 ? 0 : s));
+  } else if (b <= 3 || b == 8 || b == 9) {
+    window_point(&win->q, CID(Press), id, t, x, y, ms,
+      eraser && b == 1 ? 5 : b <= 3 ? b - 1 : b - 5, down);
+  }
+}
+
+// Off the window, a pointer leaves unless a button holds it; a grab
+// elsewhere takes only a held one, which is lost (its release then goes
+// there).
+static void window_leave(BendWin* win, u32 id, int mode) {
+  bool held = id < 16 && win->q.down[id] != 0;
+  bool took = mode == NotifyGrab || mode == XINotifyPassiveGrab;
+  if (held == took) {
+    window_push(&win->q, held ? CID(Lost) : CID(Leave), id, 0, 0, 0);
+  }
+}
+
+static const struct {
+  const char* label;
+  int         ax;
+} window_axes[] = {
+  { "Abs Pressure", WIN_FORCE }, { "Abs MT Pressure", WIN_FORCE },
+  { "Abs Tilt X", WIN_TILT_X }, { "Abs Tilt Y", WIN_TILT_Y },
+  { "Abs MT Touch Major", WIN_MAJOR }, { "Abs MT Touch Minor", WIN_MINOR },
+};
+
+// A device as first met: a touch screen if it has a direct touch class, a
+// mouse if another (a touchpad), a pen if a force (its eraser is its own
+// device, by name), else a mouse. A finger's size is in the screen's width
+// over its position's range. The table empties when full, or when devices
+// come or go.
+static WinDev* window_dev(BendWin* win, int id) {
+  for (u32 i = 0; i < win->nd; i += 1) {
+    if (win->devs[i].id == id) {
+      return &win->devs[i];
+    }
+  }
+  win->nd = win->nd == 8 ? 0 : win->nd;
+  WinDev* d = &win->devs[win->nd++];
+  *d = (WinDev){ .id = id, .ax = { -1, -1, -1, -1, -1 } };
+  int          n     = 0;
+  int          touch = 0;
+  WinXIDevice* info  = window_xi_query(win->dpy, id, &n);
+  for (int k = 0; info != NULL && k < info->num_classes; k += 1) {
+    WinXIClass* c = info->classes[k];
+    char*       s = c->type == XIValuatorClass && c->label != None
+      ? XGetAtomName(win->dpy, c->label) : NULL;
+    touch = c->type == XITouchClass ? c->number : touch;
+    for (u32 j = 0; s != NULL && j < sizeof window_axes / sizeof *window_axes;
+      j += 1) {
+      if (strcmp(s, window_axes[j].label) == 0) {
+        d->ax[window_axes[j].ax] = c->number;
+        d->lo[window_axes[j].ax] = c->min;
+        d->hi[window_axes[j].ax] = c->max;
+      }
+    }
+    if (s != NULL && strcmp(s, "Abs MT Position X") == 0 && c->max > c->min) {
+      d->px = DisplayWidth(win->dpy, DefaultScreen(win->dpy))
+        / (c->max - c->min);
+    }
+    if (s != NULL) {
+      XFree(s);
+    }
+  }
+  d->tool   = touch == XIDirectTouch ? WIN_FINGER
+    : touch || d->ax[WIN_FORCE] < 0 ? WIN_MOUSE : WIN_PEN;
+  d->eraser = d->tool == WIN_PEN && info != NULL
+    && (strstr(info->name, "eraser") || strstr(info->name, "Eraser"));
+  if (info != NULL) {
+    window_xi_free(info);
+  }
+  return d;
+}
+
+static void window_vals(WinDev* d, const WinXIVals* v) {
+  const double* p = v->values;
+  for (int k = 0; k < v->len * 8; k += 1) {
+    if (v->mask[k >> 3] >> (k & 7) & 1) {
+      for (u32 j = 0; j < WIN_AXES; j += 1) {
+        d->at[j] = d->ax[j] == k ? *p : d->at[j];
+      }
+      p += 1;
+    }
+  }
+}
+
+// Axis a's value (from 0 to 1 if norm), else none if it has no valuator.
+static f32 window_axis(const WinDev* d, int a, bool norm, f32 none) {
+  return d->ax[a] < 0 || (norm && d->hi[a] <= d->lo[a]) ? none
+    : (f32)(norm ? (d->at[a] - d->lo[a]) / (d->hi[a] - d->lo[a]) : d->at[a]);
+}
+
+static WinTool window_tool(const WinDev* d, bool down) {
+  f32 force = down ? window_axis(d, WIN_FORCE, true, 0.5f) : 0;
+  if (d->tool == WIN_FINGER) {
+    f32 w = (f32)d->px * window_axis(d, WIN_MAJOR, false, 0);
+    f32 h = (f32)d->px * window_axis(d, WIN_MINOR, false, 0);
+    return (WinTool){ WIN_FINGER, { force, w > 0 ? w : 1,
+      h > 0 ? h : w > 0 ? w : 1 } };
+  }
+  if (d->tool == WIN_PEN) {
+    return (WinTool){ WIN_PEN, { force, 0,
+      fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_X, false, 0))),
+      fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_Y, false, 0))), 0 } };
+  }
+  return (WinTool){ WIN_MOUSE };
+}
+
+// Each finger of a touch screen is its own pointer (its pointer events,
+// which repeat them, are dropped), a pen one per device. Under the window's
+// grab a motion only adds to the look (dx, dy), as a core one does.
+static void window_xi_event(BendWin* win, XGenericEventCookie* c, f32* dx,
+  f32* dy) {
+  const WinXIEvent* xe = c->data;
+  int               t  = c->evtype;
+  if (t == XI_HierarchyChanged) {
+    win->nd = 0;
+    return;
+  }
+  f32 x = (f32)xe->h.event_x;
+  f32 y = (f32)xe->h.event_y;
+  window_px(win, &x, &y);
+  WinDev* d     = window_dev(win, xe->h.sourceid);
+  u64     name  = (u64)(u32)d->id << 32;
+  bool    touch = t >= XI_TouchBegin && t <= XI_TouchEnd;
+  if (touch && d->tool == WIN_FINGER) {
+    window_vals(d, &xe->vals);
+    window_point(&win->q, t == XI_TouchUpdate ? CID(Move) : CID(Press),
+      window_id(&win->q, name | (u32)xe->h.detail, t == XI_TouchBegin),
+      window_tool(d, t != XI_TouchEnd), x, y, (u32)xe->h.time, 0,
+      t == XI_TouchBegin);
+  }
+  if (touch || d->tool == WIN_FINGER) {
+    return;
+  }
+  u32 id = d->tool == WIN_MOUSE ? 0 : window_id(&win->q, name | 0xFFFFFFFF,
+    t != XI_Leave);
+  if (t == XI_Leave) {
+    window_leave(win, id, xe->flags);
+    return;
+  }
+  if (t == XI_Motion && win->grab) {
+    window_look(win, xe->h.serial, (int)xe->h.event_x, (int)xe->h.event_y, dx,
+      dy);
+    return;
+  }
+  window_vals(d, &xe->vals);
+  bool    pressed = t == XI_ButtonPress
+    || (t != XI_ButtonRelease && id < 16 && win->q.down[id] != 0);
+  WinTool tool    = window_tool(d, pressed);
+  if (t == XI_Motion) {
+    window_point(&win->q, CID(Move), id, tool, x, y, (u32)xe->h.time, 0,
+      false);
+  } else {
+    window_button(win, id, tool, x, y, (u32)xe->h.time, xe->h.detail,
+      t == XI_ButtonPress, d->eraser);
+  }
 }
 
 static void window_pump(BendWin* win) {
-  u32 w  = win->img->width;
-  u32 h  = win->img->height;
   u32 pw = win->width;
   u32 ph = win->height;
   int cx = pw / 2;
@@ -1224,8 +1727,8 @@ static void window_pump(BendWin* win) {
       u32 code = key.keycode << 1 | (ev.type == KeyPress);
       if (key.keycode != 0
         && (took || key.time != win->kt || code != win->kc)) {
-        window_push(win, CID(Key), window_key(&key), ev.type == KeyPress, 0,
-          0);
+        window_push(&win->q, CID(Key), window_key(&key), ev.type == KeyPress,
+          0, 0);
       }
       if (took) {
         win->kt = key.time;
@@ -1234,48 +1737,46 @@ static void window_pump(BendWin* win) {
         window_text(win, &ev.xkey);
       }
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
-      // the wheel: 4 up, 5 down, 6 left, 7 right
-      u32 b  = ev.xbutton.button;
-      u32 bx = window_coord(win, ev.xbutton.x, false);
-      u32 by = window_coord(win, ev.xbutton.y, true);
-      f32 s  = b % 2 ? -1 : 1;
-      if (b <= 3) {
-        window_push(win, CID(Mouse), bx, by, b == 1 ? 0 : 4 - b,
-          ev.type == ButtonPress);
-      } else if (b <= 7 && ev.type == ButtonPress) {
-        window_push(win, CID(Scroll), bx, by, f32_rewrap(b > 5 ? s : 0),
-          f32_rewrap(b > 5 ? 0 : s));
-      }
+      f32 x = ev.xbutton.x, y = ev.xbutton.y;
+      window_px(win, &x, &y);
+      window_button(win, 0, (WinTool){ WIN_MOUSE }, x, y,
+        (u32)ev.xbutton.time, ev.xbutton.button, ev.type == ButtonPress,
+        false);
     } else if (ev.type == MotionNotify) {
-      int x = ev.xmotion.x, y = ev.xmotion.y;
+      f32 x = ev.xmotion.x, y = ev.xmotion.y;
       if (win->grab) {
-        if (ev.xmotion.serial < win->warp_floor) {
-          continue;
-        }
-        if (win->warp_serial && ev.xmotion.serial >= win->warp_serial) {
-          win->warp_serial = 0;
-          win->mouse_x = cx;
-          win->mouse_y = cy;
-        }
-        dx += x - win->mouse_x;
-        dy += y - win->mouse_y;
-        win->mouse_x = x;
-        win->mouse_y = y;
+        window_look(win, ev.xmotion.serial, ev.xmotion.x, ev.xmotion.y, &dx,
+          &dy);
       } else {
-        window_push(win, CID(Move), window_coord(win, x, false),
-          window_coord(win, y, true), 0, 0);
+        window_px(win, &x, &y);
+        window_point(&win->q, CID(Move), 0, (WinTool){ WIN_MOUSE }, x, y,
+          (u32)ev.xmotion.time, 0, false);
       }
-    } else if (ev.type == FocusIn && win->ic != NULL) {
-      XSetICFocus(win->ic);
-    } else if (ev.type == FocusOut) {
-      if (win->ic != NULL) {
+    } else if (ev.type == LeaveNotify) {
+      window_leave(win, 0, ev.xcrossing.mode);
+    } else if (ev.type == GenericEvent && ev.xcookie.extension == win->xi
+      && XGetEventData(win->dpy, &ev.xcookie)) {
+      window_xi_event(win, &ev.xcookie, &dx, &dy);
+      XFreeEventData(win->dpy, &ev.xcookie);
+    } else if (ev.type == FocusIn || ev.type == FocusOut) {
+      bool on = ev.type == FocusIn;
+      if (win->ic != NULL && on) {
+        XSetICFocus(win->ic);
+      } else if (win->ic != NULL) {
         XUnsetICFocus(win->ic);
       }
-      XUngrabPointer(win->dpy, CurrentTime);
-      win->grab = 0;
+      if (!on) {
+        XUngrabPointer(win->dpy, CurrentTime);
+        win->grab = 0;
+      }
+      bool follows = ev.xfocus.detail == NotifyPointer
+        || ev.xfocus.detail == NotifyInferior;
+      if (!follows) {
+        window_focus(&win->q, on);
+      }
     } else if (ev.type == ClientMessage
       && (Atom)ev.xclient.data.l[0] == win->del) {
-      window_push(win, CID(Close), 0, 0, 0, 0);
+      window_push(&win->q, CID(Close), 0, 0, 0, 0);
     }
   }
 #ifdef CID(Window.fullscreen)
@@ -1288,15 +1789,15 @@ static void window_pump(BendWin* win) {
     window_viewport(win);
   }
 #endif
-  // Sum real motion across the pending warp without counting the warp itself.
+  // grabbed, the frame's motion is one look, in the image's units
   if (win->grab && (dx != 0 || dy != 0)) {
 #ifdef CID(Window.fullscreen)
     if (win->full_now && win->source) {
-      dx *= (f32)w / win->vw;
-      dy *= (f32)h / win->vh;
+      dx *= (f32)win->img->width / win->vw;
+      dy *= (f32)win->img->height / win->vh;
     }
 #endif
-    window_push(win, CID(Look), f32_rewrap(dx), f32_rewrap(dy), 0, 0);
+    window_push(&win->q, CID(Look), f32_rewrap(dx), f32_rewrap(dy), 0, 0);
   }
   if (win->grab && (win->mouse_x != cx || win->mouse_y != cy)) {
     window_warp(win, cx, cy, false);
@@ -1401,9 +1902,7 @@ static Term window_frame(Env e, intptr_t at, Term image) {
   io_sync();
   window_pump(win);
   window_show(e, win, image);
-  Term list = window_list(e, win->evs, win->n);
-  win->n = 0;
-  return list;
+  return window_list(e, &win->q);
 }
 
 #else
@@ -1631,7 +2130,7 @@ static void window_close(intptr_t at) {
   }
 #endif
   XCloseDisplay(win->dpy);
-  free(win->evs);
+  free(win->q.evs);
   free(win);
 }
 
