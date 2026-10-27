@@ -467,9 +467,10 @@ function cc_find(gpu: boolean): string {
 // builds with the GPU lane and writes its GPU program too (on Linux only with
 // CUDA at the first of $CUDA_HOME, $CUDA_PATH, /usr/local/cuda and /opt/cuda
 // (Arch's) that holds nvrtc.h, its libraries in lib64 or, as nix lays them,
-// lib; else the ! runs on the cores). On macOS a program with a framework
-// (#import: a window, audio) builds as Objective-C; on Linux it links the X11
-// (plus libdl, for dlopen before glibc 2.34) and ALSA libraries it includes.
+// lib; else the ! runs on the cores, and the build says so). On macOS a
+// program with a framework (#import: a window, audio) builds as Objective-C;
+// on Linux it links the X11 (plus libdl, for dlopen before glibc 2.34) and
+// ALSA libraries it includes.
 // The GPU program's build runs without the user's $BENDRTS.
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
@@ -477,7 +478,12 @@ function cli_build(bin: string, file: string): void {
   const cuda  = [process.env.CUDA_HOME, process.env.CUDA_PATH,
     "/usr/local/cuda", "/opt/cuda"]
     .find(d => d && fs.existsSync(d + "/include/nvrtc.h")) ?? "";
-  const bangs = !/^#define BANGS\s+0$/m.test(c) && (mac || cuda !== "");
+  const uses  = !/^#define BANGS\s+0$/m.test(c);
+  const bangs = uses && (mac || cuda !== "");
+  if (uses && !bangs) {
+    cli_say(2, "bend: no CUDA toolkit (include/nvrtc.h under $CUDA_HOME,"
+      + " $CUDA_PATH, /usr/local/cuda or /opt/cuda), so ! runs on the CPU\n");
+  }
   const cc    = cc_find(bangs);
   const objc  = mac && (bangs || /^#import /m.test(c))
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
