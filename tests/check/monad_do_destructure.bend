@@ -20,11 +20,11 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a pattern (a binder or a constructor)
-#|- observed : Result.bind(&1, &1, U32, Pair(U32, U32), U32, Done{(1, 2)}, p => {(a, b) : Result<&1, &1, U32, U32>})
+#|- expected : a do-block let with its type (write "x : T = ...")
+#|- observed : '='
 #|Location:
-#|10 |   do Result<U32, U32>:
-#|11>|     p : U32 & U32 <- Done{(1, 2)}
-#|   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#|12 |     (a, b) = p
+#|11 |     p : U32 & U32 <- Done{(1, 2)}
+#|12>|     (a, b) = p
+#|   |            ^
+#|13 |     return (a + b : U32)
 #|exit 1
