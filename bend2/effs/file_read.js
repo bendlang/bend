@@ -21,6 +21,10 @@ function file_read_with(file, max, offset, pack, line = false) {
       n = fs.readvSync(file, [b.subarray(got, got + want)],
         offset === null ? null : offset + got);
     } catch (e) {
+      // libuv retries EINTR for most calls, but not for read
+      if (Math.abs(e.errno) === 4) {
+        continue;
+      }
       if (got === 0) {
         return io_tup(file, io_fail(Math.abs(e.errno ?? 5)));
       }
