@@ -110,7 +110,7 @@ function chan_shut(row) {
 // live+64, even behind a waiter that is never woken.
 function chan_late(row, w) {
   w.gone = true;
-  w.io = w.cont = w.item = w.late = undefined;
+  w.io = w.cont = w.item = w.late = w.timer = undefined;
   row.dead += 1;
   const q = row.wait;
   if (row.dead > q_size(q) - row.dead + 64) {
