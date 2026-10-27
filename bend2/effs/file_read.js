@@ -11,6 +11,8 @@
 // does, and it needs no bun:ffi, which node lacks.
 function file_read_with(file, max, offset, pack, line = false) {
   const fs = require("fs");
+  // A prompt must reach stdout before this synchronous read can wait.
+  io_sync();
   const len = Math.min(max, 2147483647);
   const b = new Uint8Array(Math.max(len, 1));
   let got = 0;
