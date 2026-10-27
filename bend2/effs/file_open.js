@@ -16,6 +16,9 @@ function file_open_with(name, mode) {
     // Node spells "x" as "wx".
     const fd = require("fs").openSync(name.length > 0 ? Buffer.from(name) : "",
       mode === "x" ? "wx" : mode, 0o644);
+    if (mode === "a") {
+      io_file_append.add(fd);
+    }
     return io_done(fd);
   } catch (e) {
     return io_fail(-e.errno);

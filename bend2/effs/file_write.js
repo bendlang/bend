@@ -33,7 +33,8 @@ function file_write_bytes(file, data) {
 
 function file_write_at(file, offset, data) {
   const b = io_unlist(data);
-  return b === null ? io_tup(file, io_fail(22)) : file_write_buffer(file, b, offset);
+  return b === null || io_file_append.has(file)
+    ? io_tup(file, io_fail(22)) : file_write_buffer(file, b, offset);
 }
 
 io_eff(CID(File.write_at), file_write_at);

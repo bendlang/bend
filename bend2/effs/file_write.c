@@ -69,7 +69,8 @@ Term file_write_at_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->made = (intptr_t)f[1];
   w->data = io_cbuf(e, f[2], &w->size, CID(Con));
-  w->code = w->data == NULL ? EINVAL : 0;
+  int flags = fcntl((int)w->hand, F_GETFL);
+  w->code = w->data == NULL || (flags >= 0 && (flags & O_APPEND)) ? EINVAL : 0;
   return w->code ? file_write_pack(e, w)
     : io_work(w, file_write_at_call, file_write_pack);
 }

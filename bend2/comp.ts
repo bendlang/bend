@@ -6152,6 +6152,7 @@ function run_lib(f, n) {
 // ======
 
 const $0eff = Object.create(null);
+const io_file_append = new Set();
 
 function io_eff(k, run) {
   if (arguments.length > 2) {
