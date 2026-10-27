@@ -1,10 +1,11 @@
-# File.read, read_line, read_bytes and read_at read through io_sys(),
-# which binds libc's read and pread through bun:ffi. On a host without it
-# (node) the first ask threw and the run ended, though node's fs reads the
-# same descriptor. The twin makes io_sys() throw for the reads and puts
-# it back after: see file_read_no_ffi.js. Only a .js twin here, so the
-# test pins the JS lane. A read on an append-only file answers EBADF, so
-# an error still comes back as its errno, even a read of 0 bytes.
+# File.read, read_line, read_bytes and read_at once read through
+# io_sys(), which binds libc's read and pread through bun:ffi. On a host
+# without it (node) the first ask threw and the run ended. They read
+# through fs now; the twin makes io_sys() throw for the reads and puts it
+# back after (see file_read_no_ffi.js), so a read that still asked for
+# the FFI table fails here. Only a .js twin here, so the test pins the JS
+# lane. A read on an append-only file answers EBADF, so an error still
+# comes back as its errno, even a read of 0 bytes.
 import Base
 
 def ffi_absent() -> IO(Unit):
