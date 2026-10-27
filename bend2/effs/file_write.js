@@ -3,6 +3,8 @@
 
 function file_write_buffer(file, b, offset = null) {
   const fs = require("fs");
+  // the file may be stdout, so what IO.print holds goes first
+  io_sync();
   let at = 0;
   try {
     while (at < b.length) {

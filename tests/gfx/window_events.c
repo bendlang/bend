@@ -57,8 +57,8 @@ static void feed_xi(BendWin* win, int type, int dev, int detail, double x,
     .detail = detail, .event_x = x, .event_y = y },
     .vals = { 1, &mask, vals } };
   XGenericEventCookie c = { .evtype = type, .data = &ev };
-  int gx, gy;
-  window_xi_event(win, &c, &gx, &gy);
+  f32 dx = 0, dy = 0;
+  window_xi_event(win, &c, &dx, &dy);
 }
 
 Term feed_run(Env e, Term* f, IoWork* w) {
