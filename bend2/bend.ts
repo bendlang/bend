@@ -882,7 +882,12 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    throw Err(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
+    const k = name_show(tm.s?.file, tm.k);
+    if (tld === undefined) {
+      throw Err(book, ctx, "a declared datatype (unknown: " + k + ")", undefined, tm.s, def);
+    }
+    const nte = tld.n === 0 ? " with no arguments: write it as " + k : ": write its arguments as ()";
+    throw Err(book, ctx, "a declared datatype", undefined, tm.s, def, "Note: " + k + " is a def" + nte);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -1467,6 +1472,24 @@ export function expr_show(book: Book, x: Expr, bnd: Name[] = [], file?: File): s
   }
 }
 
+export function err_lost_type(err: Err): string | undefined {
+  const spn = err.spn!;
+  const str = spn.file.str;
+  const k   = str.slice(spn.beg, spn.end);
+  const at  = str.slice(str.lastIndexOf("\n", spn.beg - 1) + 1, spn.beg);
+  const op  = /^[ \t]*(<-|=(?!=))/.exec(str.slice(spn.end))?.[1];
+  if (op === undefined || !/^[ \t]*$/.test(at) || !/^[A-Za-z_][A-Za-z0-9_.]*$/.test(k)) {
+    return undefined;
+  }
+  if (op === "<-" && (err.exp === "a defined name" || typeof err.exp !== "string" && err.exp.$ === "Typ")) {
+    return "Note: in a do-block, " + k + " <- m runs m at type " + k + "; to bind its result, write " + k + " : A <- m.";
+  }
+  if (op === "=" && err.exp === "a pattern (a binder or a constructor)") {
+    return "Note: in a do-block, a let names its type: " + k + " : A = v.";
+  }
+  return undefined;
+}
+
 export function err_show(err: Err): string {
   const file = err.spn?.file;
   const bnd  = ctx_scope(err.ctx);
@@ -1493,7 +1516,7 @@ export function err_show(err: Err): string {
       String(beg + j).padStart(num) + (beg + j === at ? ">| " + l + "\n" + car : " | " + l)).join("\n");
   }
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
-  const nte = err.nte === undefined ? "" : "\n" + err.nte;
+  const nte = [err.nte, err.spn && err_lost_type(err)].filter((n) => n).map((n) => "\n" + n).join("");
   return "Error:" + msg + (anns.length === 0 ? "" : "\nContext:") + ctx + loc + nte;
 }
 
@@ -1769,7 +1792,10 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
     }
     if (k === "do") {
       const m = parse_name(p);
-      parse_eat(p, "<");
+      parse_skip(p);
+      if (!parse_take(p, "<")) {
+        parse_fail(p, "'<' (a do block is written do " + m + "<...>:)");
+      }
       const ts = parse_fill(p, parse_reso(p, m), parse_term_args(p, ">"),
         parse_span(p, beg));
       parse_eat(p, ":");
@@ -3321,7 +3347,10 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "Ref": {
       const tld = book.tlds[tm.k];
       if (tld === undefined) {
-        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def);
+        const m = /^(.+)\.(pure|bind)$/.exec(tm.k);
+        const e = m === null ? "" : name_show(tm.s?.file, m[1]);
+        const nte = m === null ? undefined : "Note: a do block on " + e + " calls " + e + ".bind and " + e + ".pure";
+        throw Err(book, ctx, "a defined name", tm, tm.s, lhs.def, nte);
       }
       let k = tm.k;
       let x = 0;

@@ -1,8 +1,8 @@
 # io (io_stack_fault_trap): a machine stack fault is LOUD - the one
-# numbered line, never a silent death by signal. Every host machine
+# numbered line, then a re-raise of SIGSEGV/SIGBUS. Every host machine
 # stack (the event loop's own and each pool worker's) is a guarded
 # mmap: a 16KB PROT_NONE page past the window, an altstack, and the
-# SIGSEGV/SIGBUS trap answering "bend: error 9" before the abort.
+# SIGSEGV/SIGBUS trap prints the memory-fault line before re-raising.
 # NOTHING drove it: gutting both sigaction lines kept the whole
 # suite green while this program died by raw SIGBUS with an EMPTY
 # stderr - the exact silent-loss class the numbered-error law
@@ -22,6 +22,9 @@
 # limit now loud AND numbered. The device half of the law (WL_ROOM posting
 # ERR_DEEP on the strided device stacks) rides on no host drive, so
 # a csrc pin holds it verbatim beside the four host trap sites.
+# The print BEFORE the deep call pins the trap's stdout flush: stdout is
+# buffered when it goes to a pipe, so a trap that skips the flush loses
+# what the program already printed.
 import Base
 
 law deep:
@@ -53,8 +56,10 @@ law main:
 
 def main():
   do IO<U32>:
+    a : Unit <- IO.print("BEFORE")
     u : Unit <- IO.print(U32.show(run(300000000)))
     return 0
 
+#|BEFORE
 #|bend: memory fault (machine stack overflow?)
 #|exit 1

@@ -8,21 +8,28 @@ law esc_quits:
   for n: U32
   {App.Tri.events(Key{27, True{}} <> rest, n) == None{} : Maybe<U32>}
 
-# LAW: a mouse-down inside the triangle adds one to the count.
+# LAW: a press inside the triangle adds one to the count.
 law click_inside:
-  for +x: U32
-  for +y: U32
+  for id: U32
+  for tool: Tool
+  for +x: F32
+  for +y: F32
+  for time: U32
   for button: U32
   for +n: U32
-  for hit: {True{} == App.Tri.inside(x, y) : Bool}
-  {App.Tri.event(Mouse{x, y, button, True{}}, n) == Some{(n + 1 : U32)}
-    : Maybe<U32>}
+  for hit: {True{} == App.Tri.inside(F32.to_u32(x), F32.to_u32(y)) : Bool}
+  {App.Tri.event(Press{id, tool, x, y, time, button, True{}}, n)
+    == Some{(n + 1 : U32)} : Maybe<U32>}
 
-# LAW: a mouse-down outside the triangle keeps the count.
+# LAW: a press outside the triangle keeps the count.
 law click_outside:
-  for +x: U32
-  for +y: U32
+  for id: U32
+  for tool: Tool
+  for +x: F32
+  for +y: F32
+  for time: U32
   for button: U32
   for +n: U32
-  for miss: {False{} == App.Tri.inside(x, y) : Bool}
-  {App.Tri.event(Mouse{x, y, button, True{}}, n) == Some{n} : Maybe<U32>}
+  for miss: {False{} == App.Tri.inside(F32.to_u32(x), F32.to_u32(y)) : Bool}
+  {App.Tri.event(Press{id, tool, x, y, time, button, True{}}, n) == Some{n}
+    : Maybe<U32>}

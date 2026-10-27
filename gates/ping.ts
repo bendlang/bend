@@ -27,7 +27,11 @@
 // latest.json fallback name the version, no sha256 and the move notice; the
 // formula carries the sum; --publish ships LICENSE files, names the license
 // as the hub does, sends no leading byte order mark (a package published
-// from a file with one imports), refuses a License/ directory, and every
+// from a file with one imports), prints a usable alias for a hyphenated
+// entry, refuses a License/ directory and a file
+// leaving the entry's directory (a climb, even one back in, a link out, a
+// linked entry, LICENSE included) before mining, publishes a link inside
+// and a nested file's climb that stays inside, and every
 // request carries User-Agent: bend/<ver>. SKIP when the site repo is not at
 // lib.SITE.
 
@@ -76,7 +80,7 @@ let total = 0;
 function run(bin: string, args: string[], env: Record<string, string> = {},
   input?: string): Promise<lib.Exec> {
   return lib.exec(bin, args, input, 25_000, { HOME, PATH: PATHS,
-    BEND_ORIGIN: ORIGIN, ...env }, TMP);
+    BEND_ORIGIN: ORIGIN, BENDRTS: "", ...env }, TMP);
 }
 
 function bend(args: string[], env: Record<string, string> = {}):
@@ -89,6 +93,37 @@ function bend_closed(args: string[]): Promise<lib.Exec> {
   return run("bash", ["-c",
     'exec 3> >(true); wait "$!"; exec "$@" >&3 2>&3',
     "--", BIN, ...args], { BEND_NO_TELEMETRY: "1" });
+}
+
+// A real nonblocking pipe makes a large CLI write return before its end.
+function bend_nonblock(args: string[]): Promise<lib.Exec> {
+  return run(process.execPath, ["-e", String.raw`
+    const { dlopen, ptr } = require("bun:ffi");
+    const fs = require("fs");
+    const mac = process.platform === "darwin";
+    // Apple arm64's variadic fcntl takes its flags as the ninth argument.
+    const vari = mac && process.arch === "arm64";
+    const sys = dlopen(mac ? "libSystem.dylib" : "libc.so.6", {
+      pipe: { args: ["ptr"], returns: "i32" },
+      fcntl: { args: Array(vari ? 9 : 3).fill("i32"), returns: "i32" },
+      close: { args: ["i32"], returns: "i32" },
+    }).symbols;
+    const p = new Int32Array(2);
+    if (sys.pipe(ptr(p)) < 0) throw new Error("pipe failed");
+    const fcntl = (fd, cmd, v) => sys.fcntl(fd, cmd,
+      ...vari ? [0, 0, 0, 0, 0, 0, v] : [v]);
+    if (fcntl(p[1], 4, fcntl(p[1], 3, 0) | (mac ? 4 : 0x800)) < 0) {
+      throw new Error("fcntl failed");
+    }
+    const kid = Bun.spawn(process.argv.slice(1), {
+      stdin: "ignore", stdout: p[1], stderr: "inherit",
+    });
+    sys.close(p[1]);
+    const chunks = [];
+    for await (const b of fs.createReadStream("", { fd: p[0] })) chunks.push(b);
+    fs.writeFileSync(1, Buffer.concat(chunks));
+    process.exit(await kid.exited);
+  `, BIN, ...args], { BEND_NO_TELEMETRY: "1" });
 }
 
 // the card without its colors
@@ -302,6 +337,17 @@ try {
   check("guide, base and a program run through the executable",
     guide.out.startsWith("# Bend") && base.out.startsWith("type Map")
     && sum5.code === 0 && sum5.out === "5n\n");
+  const guide_file = path.join(BEND, "guide", "GUIDE.md");
+  const guide_before = fs.readFileSync(guide_file);
+  const pipe_text = "x" + "λ😀é".repeat(262144);
+  try {
+    fs.writeFileSync(guide_file, pipe_text);
+    const got = await bend_nonblock(["guide"]);
+    check("CLI output completes short writes across UTF-8 bytes",
+      got.code === 0 && got.out === pipe_text && got.err === "");
+  } finally {
+    fs.writeFileSync(guide_file, guide_before);
+  }
   const fork = await bend(["base", "Array.fork"]);
   check("base keeps the @unsafe line above the selected def",
     fork.code === 0 && fork.out === "@unsafe\ndef Array.fork(-T: Type,"
@@ -407,6 +453,49 @@ try {
   const argv = await bend([argn, "x", "--", "--verdict"]);
   check("a plain run gets its arguments: " + argv.err, argv.code === 0
     && argv.out === "3\n");
+  // a built program's runtime options are BENDRTS's, then those between
+  // +RTS and -RTS; the rest are its arguments, -- among them, and --RTS
+  // (dropped) makes every one after it the program's
+  const argf = path.join(TMP, "args.bend");
+  const argo = path.join(TMP, "args");
+  fs.writeFileSync(argf, "import Base\nlaw main:\n  IO(Unit)\ndef main():\n"
+    + "  do IO<Unit>:\n    xs : List<String> <- IO.args()\n"
+    + "    IO.print(List.show(~&1, ~String, ~(s => \"<\" ++ s ++ \">\"), xs))\n");
+  const built = await bend([argf, "-o", argo, "-o", argo + ".js"]);
+  const rts   = ["grep", "-e", "--threads", "--help", "+RTS", "--threads", "2",
+    "--gpu", "off", "-RTS", "", "space value", "--", "+RTS", "--threads", "3",
+    "-RTS", "x"];
+  const kept  = ", <grep>, <-e>, <--threads>, <--help>, <>, <space value>,"
+    + " <-->, <x>]\n";
+  const c_rts  = await run(argo, rts);
+  const js_rts = await run(process.execPath, [argo + ".js", ...rts]);
+  check("a built program's +RTS options are the runtime's, the rest its own: "
+    + built.err + c_rts.out + c_rts.err + js_rts.out + js_rts.err,
+    built.code === 0 && [c_rts, js_rts].every((r) => r.code === 0
+      && r.out.endsWith(kept)));
+  const ends = await run(argo, ["a", "--RTS", "+RTS", "b"],
+    { BENDRTS: "--threads 2" });
+  const zero = await run(argo, ["a"], { BENDRTS: "--threads 0" });
+  const span = await run(argo, ["+RTS", "2"], { BENDRTS: "--threads" });
+  const c_help  = await run(argo, ["+RTS", "--help"]);
+  const js_help = await run(process.execPath, [argo + ".js", "+RTS", "--help"]);
+  check("+RTS --help prints the usage on C and JS: " + c_help.err + js_help.err,
+    [c_help, js_help].every((r) => r.code === 0
+      && r.out.startsWith("usage: ")));
+  check("--RTS ends the runtime's options; BENDRTS holds some, each value in"
+    + " its own span: " + ends.out + ends.err + zero.err + span.err,
+    ends.code === 0 && ends.out.endsWith(", <a>, <+RTS>, <b>]\n")
+    && zero.code === 1 && span.code === 1);
+  for (const bad of [["+RTS", "--thread", "2"], ["+RTS", "--gpu", "of"],
+    ["+RTS", "--gpu", "1e2GB"], ["+RTS", "--gpu", "0.001MB"],
+    ["+RTS", "", "-RTS"], ["+RTS", "--", "-RTS"],
+    ["+RTS", "--threads", "-RTS", "x", "+RTS", "2"]]) {
+    const c  = await run(argo, bad);
+    const js = await run(process.execPath, [argo + ".js", ...bad]);
+    check("a malformed runtime option fails alike on C and JS: "
+      + bad.join(" ") + ": " + c.err + js.err,
+      c.code === 1 && js.code === 1 && c.err === js.err);
+  }
   const two  = "import Base\ndef two() -> Nat:\n  2n\n";
   const use  = (at: string) => "import Base\nimport ./" + at
     + " as T\ndef main() -> Nat:\n  T.two\n";
@@ -458,17 +547,18 @@ try {
     && none.err.includes(TERMS + "License: MIT-0, the default (no LICENSE"
     + " file): https://bend-lang.com/bendai/terms#s18.4\nwarning: no file is"
     + " named exactly LICENSE"));
-  const bom  = { "lic_bom.bend": use("two.bend"), "two.bend": two,
+  const bom  = { "lic_bom--name.bend": use("two.bend"), "two.bend": two,
     "LICENSE": "SPDX-License-Identifier: MIT\n" };
-  const mark = await publish("bom",
+  const mark = await publish("bom--name",
     { ...bom, "LICENSE": "\uFEFF" + bom.LICENSE });
-  fs.writeFileSync(path.join(TMP, "bom.bend"), "import Base\nimport "
-    + pkg_hash(bom) + "/two.bend as T\ndef main() -> Nat:\n  T.two\n");
+  fs.writeFileSync(path.join(TMP, "bom.bend"), "import Base\n"
+    + mark.out.slice(mark.out.indexOf("\n") + 1)
+    + "def main() -> Nat:\n  Lic_bom__name.main()\n");
   const imp  = await bend([path.join(TMP, "bom.bend")], { BEND_HUB: ORIGIN });
-  check("a LICENSE opening with a byte order mark goes without it, so the"
-    + " package imports: " + mark.err + imp.err, mark.code === 0
-    && mark.out.startsWith(pkg_hash(bom) + "\n") && imp.code === 0
-    && imp.out === "2n\n");
+  check("a LICENSE opening with a byte order mark goes without it, and a"
+    + " hyphenated entry's printed import works: " + mark.err + imp.err,
+    mark.code === 0 && mark.out.startsWith(pkg_hash(bom) + "\n")
+    && imp.code === 0 && imp.out === "2n\n");
   const posts = seen.filter((s) => s.startsWith("POST / ")).length;
   const dir  = await publish("dir", { "lic_dir.bend": use("License/two.bend"),
     "License/two.bend": two });
@@ -476,6 +566,51 @@ try {
     dir.code === 1 && dir.err.includes("in a directory named license")
     && !dir.err.includes("mining")
     && seen.filter((s) => s.startsWith("POST / ")).length === posts);
+  const ffi  = (at: string) => "import Base\ndef boot(a: U32) -> IO(Unit):\n"
+    + '  import "' + at + '"\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n'
+    + '    IO.print("hi\\n")\n';
+  const link = (at: string, to: string) => {
+    fs.mkdirSync(path.dirname(path.join(TMP, "pub", at)), { recursive: true });
+    fs.symlinkSync(to, path.join(TMP, "pub", at));
+  };
+  fs.mkdirSync(path.join(TMP, "pub", "out"), { recursive: true });
+  fs.writeFileSync(path.join(TMP, "pub", "out.c"), "// secret\n");
+  fs.writeFileSync(path.join(TMP, "pub", "out", "x.c"), "// secret\n");
+  fs.writeFileSync(path.join(TMP, "pub", "out", "lic_link.bend"), two);
+  link("file/p.c", "../out.c");
+  link("tree/d", "../out");
+  link("lic/LICENSE", "../out.c");
+  link("link/lic_link.bend", "../out/lic_link.bend");
+  const away = "cannot be published: it is outside ";
+  const outs: [string, Record<string, string>, string][] = [
+    ["climb", { "lic_climb.bend": ffi("../out.c") }, away],
+    ["file", { "lic_file.bend": ffi("./p.c") }, away],
+    ["tree", { "lic_tree.bend": ffi("./d/x.c") }, away],
+    ["lic", { "lic_lic.bend": two }, "; it is the LICENSE beside "],
+    ["link", {}, "cannot be published: it links to "],
+    ["up", { "lic_up.bend": use("../out/lic_link.bend") }, away],
+    ["back", { "lic_back.bend": ffi("../back/ok.c"), "ok.c": "// ok\n" },
+      "its import climbs out of the package (../back/ok.c)"]];
+  for (const [dir, pkg, why] of outs) {
+    const count = seen.filter((s) => s.startsWith("POST / ")).length;
+    const run   = await publish(dir, pkg);
+    check("a published " + dir + " leaving the entry's directory is refused"
+      + " before mining: " + run.err, run.code === 1
+      && run.err.includes(why)
+      && !run.err.includes("mining")
+      && seen.filter((s) => s.startsWith("POST / ")).length === count);
+  }
+  link("in/p.c", "real.c");
+  const inside = await publish("in", { "lic_in.bend": ffi("./p.c"),
+    "real.c": "// ok\n" });
+  const nest   = { "lic_nest.bend": use("sub/f.bend"), "ok.c": "// ok\n",
+    "sub/f.bend": two + '\ndef boot(a: U32) -> IO(Unit):\n  import "../ok.c"\n' };
+  const up     = await publish("nest", nest);
+  check("a link inside the entry's directory goes, and a nested file's climb"
+    + " that stays inside goes at its path: " + inside.err + up.err,
+    inside.code === 0 && inside.out.startsWith(pkg_hash({ "lic_in.bend":
+      ffi("./p.c"), "p.c": "// ok\n" }) + "\n") && up.code === 0
+    && up.out.startsWith(pkg_hash(nest) + "\n"));
   fs.writeFileSync(path.join(TMP, "pkg.bend"), "import Base\nimport " + hash
     + "/sub/two.bend as T\nimport bend-ping-probe@1.0.0.0/x.bend as X\n"
     + "def main() -> Nat:\n  T.two\n");

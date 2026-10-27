@@ -16,14 +16,19 @@ export type Got = {
   diagnostic?: string; diagnostic_error?: string; diagnostic_ms?: number;
 };
 
+// a report row's reason: one line, at most 300 chars
+export function one_line(s: string): string {
+  return s.replace(/\s+/g, " ").slice(0, 300);
+}
+
 // Classification consumes explicit process outcomes, never elapsed diagnostics.
 export function judge(g: Got): [string, string] {
   const out = g.out.trim();
   if (g.timeout) {
-    return ["t", "timeout"];
+    return ["t", g.error ? "timeout; " + one_line(g.error) : "timeout"];
   }
   if (g.error || g.code === null || g.code < 0) {
-    const why = (g.error ?? out).replace(/\s+/g, " ").slice(0, 300);
+    const why = one_line(g.error ?? out);
     return ["e", "infrastructure: " + why];
   }
   if (g.code === 0 && out === "ALL PROOFS CHECK") {
@@ -45,17 +50,47 @@ export function judge(g: Got): [string, string] {
   return ["!", tt.split("\n").slice(1, 3).join(" | ").slice(0, 300)];
 }
 
+// a check's deadline kills its whole process group: bend2 runs the
+// kernel as its child, and a SIGKILL to bend2 alone left the kernel
+// running, orphaned, while the next check started. Each check leads its
+// own group (detached), which the kernel joins; one kill(-pid) reaches
+// all of it at once, and no pid is reused while its group has a member.
+// live maps a group to the check that leads it, from its spawn to its
+// close, so a group a check left is never signalled under its pid. If
+// the group kill fails but the group exists (ESRCH says it is empty),
+// bend2 alone is killed, as before
+const live = new Map<number, child.ChildProcess>();
+
+function kill_group(kid: child.ChildProcess): boolean {
+  if (kid.pid === undefined || live.get(kid.pid) !== kid) {
+    return false;
+  }
+  try {
+    process.kill(-kid.pid, "SIGKILL");
+    return true;
+  } catch (e) {
+    return (e as NodeJS.ErrnoException).code !== "ESRCH" && kid.kill("SIGKILL");
+  }
+}
+
 async function run(bin: string, args: string[], cap: number): Promise<Omit<Got, "f">> {
   const g: Omit<Got, "f"> = { code: null, ms: 0, out: "", timeout: false };
   const t0 = Date.now();
   await new Promise<void>((done) => {
-    const kid = child.spawn(bin, args, { env: { ...process.env, BEND_NO_TELEMETRY: "1" } });
+    const kid = child.spawn(bin, args,
+      { env: { ...process.env, BEND_NO_TELEMETRY: "1" }, detached: true });
+    if (kid.pid !== undefined) {
+      live.set(kid.pid, kid);
+    }
     kid.stdout.on("data", (d) => { g.out += d; });
     kid.stderr.on("data", (d) => { g.out += d; });
     kid.on("error", (e) => { g.error = e.message; });
-    const bomb = setTimeout(() => { g.timeout = kid.kill("SIGKILL"); }, cap);
+    const bomb = setTimeout(() => { g.timeout = kill_group(kid); }, cap);
     kid.on("close", (code, signal) => {
       clearTimeout(bomb);
+      if (kid.pid !== undefined && live.get(kid.pid) === kid) {
+        live.delete(kid.pid);
+      }
       g.code = code;
       g.ms = Date.now() - t0;
       if (signal) {
@@ -119,6 +154,16 @@ async function one(f: string, cap: number): Promise<Got> {
 }
 
 if (import.meta.main) {
+  // a check's group is not the runner's, so a ^C or a kill that ends the
+  // runner ends every live check first
+  for (const sig of ["SIGINT", "SIGTERM", "SIGHUP", "SIGQUIT"] as const) {
+    process.once(sig, () => {
+      for (const kid of live.values()) {
+        kill_group(kid);
+      }
+      process.kill(process.pid, sig);
+    });
+  }
   const files = fs.readFileSync(0, "utf8").split("\n").filter((l) => l !== "");
   const cap = Number(process.env.CAP ?? 30) * 1000;
   const res: Got[] = [];

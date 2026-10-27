@@ -4,7 +4,9 @@
 #include <spawn.h>
 #include <sys/wait.h>
 #ifdef __APPLE__
+#include <limits.h>
 #include <sys/event.h>
+#include <sys/stat.h>
 #else
 #include <sys/syscall.h>
 #endif
@@ -107,6 +109,59 @@ static int process_pipe(int fds[2]) {
   return 0;
 }
 
+// Spawns argv with no shell. macOS's posix_spawnp reruns a file the kernel
+// refuses (ENOEXEC: no #! line) with /bin/sh; Linux's and Bun's answer
+// ENOEXEC. So on macOS the PATH search is done here, with posix_spawn and
+// the rest of Libc's posix_spawnp: a name with a slash is not searched, an
+// empty entry is ".", a candidate too long for the buffer is ENAMETOOLONG
+// rather than a skip to another program, and an error from a candidate that
+// stat can't see (behind a locked directory, say) moves on, as EACCES from
+// one it can does once no later entry runs.
+static int process_spawn(pid_t* child, char** argv,
+  posix_spawn_file_actions_t* actions, posix_spawnattr_t* attrp) {
+#ifdef __APPLE__
+  const char* name = argv[0];
+  if (strchr(name, '/') != NULL) {
+    return posix_spawn(child, name, actions, attrp, argv, environ);
+  }
+  if (name[0] == 0) {
+    return ENOENT;
+  }
+  const char* path = getenv("PATH");
+  int code = ENOENT;
+  char full[PATH_MAX];
+  for (const char* dir = path != NULL ? path : "/usr/bin:/bin";; ) {
+    size_t n = strcspn(dir, ":");
+    int len = n == 0 ? snprintf(full, sizeof full, "./%s", name)
+      : snprintf(full, sizeof full, "%.*s/%s", (int)n, dir, name);
+    if (len < 0 || (size_t)len >= sizeof full) {
+      return ENAMETOOLONG;
+    }
+    int got = posix_spawn(child, full, actions, attrp, argv, environ);
+    bool next = got == ENOENT || got == ENOTDIR || got == ELOOP
+      || got == ENAMETOOLONG;
+    if (got != 0 && got != E2BIG && got != ENOMEM && got != ETXTBSY
+      && !next) {
+      struct stat st;
+      next = stat(full, &st) != 0;
+      if (!next && got == EACCES) {
+        code = EACCES;
+        next = true;
+      }
+    }
+    if (!next) {
+      return got;
+    }
+    if (dir[n] == 0) {
+      return code;
+    }
+    dir += n + 1;
+  }
+#else
+  return posix_spawnp(child, argv[0], actions, attrp, argv, environ);
+#endif
+}
+
 static void process_call(IoWork* w) {
   ProcessCall* p = (ProcessCall*)w->data;
   int pipes[3][2] = {{-1, -1}, {-1, -1}, {-1, -1}};
@@ -162,8 +217,7 @@ static void process_call(IoWork* w) {
   }
 #endif
   if (p->code == 0) {
-    p->code = posix_spawnp(&child, p->argv[0], &actions, attrp, p->argv,
-      environ);
+    p->code = process_spawn(&child, p->argv, &actions, attrp);
   }
   if (attrp != NULL) {
     posix_spawnattr_destroy(attrp);
