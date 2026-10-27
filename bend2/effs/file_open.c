@@ -5,6 +5,9 @@ static int file_open_mode(const char* mode) {
   if (strcmp(mode, "r") == 0) {
     return O_RDONLY;
   }
+  if (strcmp(mode, "r+") == 0) {
+    return O_RDWR;
+  }
   if (strcmp(mode, "w") == 0) {
     return O_WRONLY | O_CREAT | O_TRUNC;
   }

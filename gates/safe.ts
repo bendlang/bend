@@ -18,7 +18,7 @@ import * as child from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { ROOT, node_pool, ssh } from "./_lib.ts";
-import { judge, type Got } from "./safe_node.ts";
+import { judge, one_line, type Got } from "./safe_node.ts";
 
 const HUB = process.env.SAFE_HUB ?? "";
 const corpus = process.argv[2];
@@ -77,7 +77,7 @@ gots.sort((a, b) => a.f < b.f ? -1 : 1);
 const rows = gots.map((g) => {
   const [c, reason] = judge(g);
   const r = reason + (g.diagnostic_error
-    ? " [diagnostic failed: " + g.diagnostic_error.replace(/\s+/g, " ").slice(0, 300) + "]" : "");
+    ? " [diagnostic failed: " + one_line(g.diagnostic_error) + "]" : "");
   return [c, r, g.f, g.out] as const;
 });
 fs.mkdirSync(OUT, { recursive: true });

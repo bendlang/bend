@@ -10,10 +10,12 @@ function tcp_recv_with(socket, max, k, read, at) {
   }
   const sys = io_sys();
   const fd = socket;
-  const b = new Uint8Array(Number(max));
+  // recv(2) past INT32_MAX bytes answers EINVAL on macOS: cap as C does.
+  const len = Math.min(Number(max), 2147483647);
+  const b = new Uint8Array(len);
   const again = sys.mac ? 35 : 11;
   const go = () => {
-    const n = Number(sys.recv(fd, sys.ptr(b), Number(max), 0));
+    const n = Number(sys.recv(fd, sys.ptr(b), len, 0));
     if (n < 0) {
       const code = sys.errno();
       if (code !== again) {

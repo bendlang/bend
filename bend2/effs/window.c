@@ -243,6 +243,16 @@ static void window_full_request(BendWin* win) {
 }
 #endif
 
+// Names the window in UTF-8: _NET_WM_NAME, which window managers show,
+// and WM_NAME, which XStoreName types Latin-1, for those that read only it.
+static inline void window_x_title(Display* dpy, Window w, const char* text,
+  u64 n) {
+  XStoreName(dpy, w, text);
+  XChangeProperty(dpy, w, XInternAtom(dpy, "_NET_WM_NAME", False),
+    XInternAtom(dpy, "UTF8_STRING", False), 8, PropModeReplace,
+    (const unsigned char*)text, (int)n);
+}
+
 #endif
 
 #ifdef CID(Window.open)
@@ -677,8 +687,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
       backing:NSBackingStoreBuffered defer:NO];
     win.releasedWhenClosed = NO;
     win.acceptsMouseMovedEvents = YES;
-    win.title = [NSString stringWithCString:title
-      encoding:NSISOLatin1StringEncoding];
+    win.title = [NSString stringWithUTF8String:title];
     [win setContentSize:NSMakeSize(w, h)];
     BendView* view = [[BendView alloc] initWithFrame:win.contentLayoutRect];
     view->evs   = [NSMutableData new];
@@ -813,7 +822,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   window_viewport(win);
 #endif
   XSetWMProtocols(dpy, win->win, &win->del, 1);
-  XStoreName(dpy, win->win, title);
+  window_x_title(dpy, win->win, title, strlen(title));
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
     | ButtonReleaseMask | PointerMotionMask | FocusChangeMask | im_evs
 #ifdef CID(Window.fullscreen)
@@ -1430,7 +1439,7 @@ static void window_set_title(intptr_t at, const char* text, u64 n) {
 
 static void window_set_title(intptr_t at, const char* text, u64 n) {
   BendWin* win = (BendWin*)at;
-  XStoreName(win->dpy, win->win, text);
+  window_x_title(win->dpy, win->win, text, n);
   XFlush(win->dpy);
 }
 

@@ -5,7 +5,9 @@ static void file_write_call(IoWork* w) {
   int fd = (int)w->hand;
   ssize_t n = 0;
   for (uint64_t at = 0; n >= 0 && at < w->size; at += (uint64_t)n) {
-    n = write(fd, w->data + at, w->size - at);
+    do {
+      n = write(fd, w->data + at, w->size - at);
+    } while (n < 0 && errno == EINTR);
     // no progress would retry forever (#1445)
     if (n == 0) {
       w->code = EIO;

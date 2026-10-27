@@ -6,7 +6,7 @@
 // ====
 
 // Compiles a checked Book to C, one source for the host and
-// the device, or to JS. The C and JS runtimes close the file.
+// the device, or to JS.
 
 import * as fs from "node:fs";
 
@@ -141,8 +141,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
   ...tpl_ops("u32_", CMPS, "U32_BIN($0, $o, $1)", "($0 $o $1)"),
   u32_mul: { C: "U32_BIN($0, *, $1)", JS: "(Math.imul($0, $1) >>> 0)" },
-  // C only: a JS file runs Base's U32.pow, U32.log2, Map.msb.u and Map.bit,
-  // as intr_of skips an op with no JS
+  // C only: intr_of skips an op with no JS, so a JS file runs Base's def
   u32_pow: { C: "u32_pow($0, $1)" },
   u32_log2: { C: "(31 - CLZ((u32)$0 | 1))" },
   map_msb_u: { C: "map_msb_u($0, $1)" },
@@ -167,9 +166,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
     JS: "cmp_new($0, $1)",
   },
-  u32_to_f32: { C: "f32_rewrap((f32)(u32)($0))", JS: "Math.fround($0 >>> 0)" },
-  u32_to_nat: { C: "((u64)$0)", JS: "$0" },
-  u32_from_nat: { C: "((u64)(u32)($0))", JS: "($0 >>> 0)" },
+  ...tpl_ops("", "u32_to_f32:(u32):>>>0 f32_from_nat::",
+    "f32_rewrap((f32)$o($0))", "Math.fround($0 $o)"),
+  ...tpl_ops("u32_", "to_nat:: from_nat:(u32):>>>0",
+    "((u64)$o($0))", "($0 $o)"),
   ...tpl_ops("f32_", "add:+ sub:- mul:* div:/",
     "f32_rewrap(f32_unbox($0) $o f32_unbox($1))", "Math.fround($0 $o $1)"),
   f32_neg: { C: "f32_rewrap(-f32_unbox($0))", JS: "(-$0)" },
@@ -1088,7 +1088,7 @@ function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
       FL.img.push(...exprs) - exprs.length);
     return `term_ctr(${cid}, STAT_OFF + ${at})`;
   }
-  const alloc = `heap_alloc(e, cls_fit(${exprs.length}))`;
+  const alloc = `heap_alloc(e, ${cls_fit(exprs.length)})`;
   const at = sc.spares.findIndex((s) =>
     cls_fit(s.words) === cls_fit(exprs.length));
   const s = at < 0 ? null : sc.spares.splice(at, 1)[0];
@@ -1642,7 +1642,7 @@ function seg_ref(sc: Scope, fid: string): string {
 function seg_clo(sc: Scope, fid: string, words: string[]): string {
   FL.clos.add(fid);
   return `term_clo(${seg_ref(sc, fid)}, ${words.length === 0 ? 0 : node_fill(
-    sc, "nd", `heap_alloc(e, cls_fit(${words.length}))`, words)})`;
+    sc, "nd", `heap_alloc(e, ${cls_fit(words.length)})`, words)})`;
 }
 
 function seg_name(sc: Scope, stem: string): string {
@@ -2806,25 +2806,39 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   }
 }
 
+// Arms that each open with their one alloc, of one class and in no inner
+// block, share one allocation made first: their stores become selects.
 function emit_chain(sc: Scope, arms: [string, () => void][]): void {
   if (arms.length === 1) {
     return arms[0][1]();
   }
-  arms.forEach(([cond, body], i) => {
-    file_push(sc, i === arms.length - 1 ? "} else {"
+  const ls = sc.seg.lines;
+  const at = ls.length;
+  const al = new Set(arms.map(([cond, body], i) => {
+    const n = ls.push(i === arms.length - 1 ? "} else {"
       : `${i === 0 ? "if" : "} else if"} (${cond}) {`);
     body();
-  });
+    if (FL.js) {
+      return;
+    }
+    return ls.slice(n).join("\n")
+      .match(/^u64 \w+ = (heap_alloc\(e, \d+\));(?![^]*(heap_alloc|\{))/)?.[1];
+  }));
   file_push(sc, "}");
+  const [a] = al;
+  if (al.size === 1 && a) {
+    const nd = name_local(sc, "nd");
+    ls.splice(at, ls.length, `u64 ${nd} = ${a};`,
+      ...ls.slice(at).map((l) => l.replace(a, nd)));
+  }
 }
 
 // Compile
 // =======
 
 // Hand-written C and JS name ids as CID(k) and FID(k): k in the source's
-// namespace, else as is. An effect source is read once, in one namespace.
-// effect_src splices a C source's backslash-newlines first, as C does even
-// in a comment; JS does not.
+// namespace, else as is. effect_src splices a C source's backslash-newlines
+// first, as C does even in a comment; JS does not.
 
 const ID_WORDS = /\/\/.*|\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CF]ID)\(([\w./~-]+)\)/gu;
 
@@ -2879,7 +2893,6 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 
 export function compile_book(book: Bend.Book): string {
   FL = file_new(book, false);
-  // the datatypes of the constructors a pure main prints are roots too
   const show = show_main();
   const names = (show ?? []).filter((c) => typeof c === "string");
   file_book(["main", ...RUNTIME_ADTS,
@@ -3577,7 +3590,7 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 // =======
 
 // The bag is 2^CUBE_LOG groups of CUBE_T lanes (a -D constant on the
-// device). The device program compiles from the binary's own text.
+// device).
 
 #if !DEVICE
 
@@ -3755,7 +3768,7 @@ INLINE void err_post(DEV u64* H, u32 code) {
 static const char* ERR_TEXT[] = { ${ERRS.map((s) => JSON.stringify(s))
   .join(",\n  ")} };
 
-// The first to fail gets 1; others wait a second for its _exit, then 0.
+// First failure wins; others wait a second for it to terminate.
 FAR int err_claim(void) {
   static _Atomic uintptr_t first;
   uintptr_t self = (uintptr_t)pthread_self(), seen = 0;
@@ -3775,12 +3788,13 @@ static void err_post(u64* H, u32 code) {
   err_fail(ERR_TEXT[code]);
 }
 
-// A trap never waits on a lock: it flushes only if free, then writes raw.
+// Flush if free, report the fault, then re-raise its signal.
 static void err_trap(int sig) {
   static const char line[] = ${JSON.stringify(`bend: ${ERRS[7]}\n`)};
   if (err_claim() && ftrylockfile(stdout) == 0) fflush(stdout);
   if (write(2, line, sizeof line - 1)) {}
-  _exit(1);
+  signal(sig, SIG_DFL);
+  raise(sig);
 }
 
 #endif
@@ -3835,10 +3849,10 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // Heap
 // ====
 
-// Per lane and class: a LIFO free chain, its length in words, and on the
-// host COLD, one parked generation. A host free reaching KEEP_WORDS parks the
-// chain as COLD and banks the old COLD. A miss takes COLD, a bank entry or a
-// fresh quantum. A device lane banks its generations at the end (dev_cut).
+// Lanes keep a free chain and word count per class. Host chains reaching
+// KEEP_WORDS replace COLD and bank old COLD; blocks >= CAP_WORDS >=
+// KEEP_WORDS go straight to the bank. A miss takes COLD, the bank or fresh
+// memory. Devices bank at dev_cut.
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))
@@ -3850,11 +3864,12 @@ INLINE u32 cls_fit(u32 words) {
 }
 
 OUTLINE void heap_hand(Env e, u32 cls) {
-  u64 cold = ALC_COLD(e, cls);
+  bool large = (1ull << cls) >= CAP_WORDS;
+  u64 cold = large ? ALC_AT(e, cls) : ALC_COLD(e, cls);
   if (cold) {
     bank_push(e.mem, cls, cold);
   }
-  ALC_COLD(e, cls) = ALC_AT(e, cls);
+  ALC_COLD(e, cls) = large ? 0 : ALC_AT(e, cls);
   ALC_AT(e, cls)   = ALC_LEN(e, cls) = 0;
 }
 
@@ -4946,9 +4961,8 @@ OUTLINE void pool_turn(bool grow, u32 rows) {
 // ===
 
 // gpu_make compiles the device program into <binary>.gpu: Metal's binary
-// archive, or CUDA's cubin behind a hash of the text; a launch loads it or
-// compiles. CUDA sizes the bag by L2 (a group per 64 KB, 16..128) and runs
-// one stream, which starts faster.
+// archive, or CUDA's cubin behind a hash of the text. CUDA sizes the bag by
+// L2 (a group per 64 KB, 16..128) and runs one stream, which starts faster.
 
 static const char* gpu_path(void) {
   static char path[4096];
@@ -5253,8 +5267,7 @@ static void gpu_kernel(u32 pass, u32 at) {
   }
 }
 
-// A bang launches 1, 2, 4 .. 64 rounds between syncs, until the pack
-// empties the frontier. A pass launched past that returns at once.
+// A pass launched past an empty frontier returns at once.
 static void gpu_pass(u64* H) {
   for (u32 n = 1; H[H_FRONT] != 0; n = n < 32 ? 2 * n : 64) {
     for (u32 i = 0; i < n; i += 1) {
@@ -5457,11 +5470,9 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
 // ==
 
 // Base's opaque, linear handles pack host fds or pointers into aux and loc.
-// A request's cont applied to its item is the next request. A parked
-// request keeps its fd, deadline and events in word, time and evts; once
-// due, pack resumes it or parks it again (IO_PARK). Text is UTF-8, decoded
-// as WHATWG does. io_sys_addr refuses a leading zero (octal to some libcs).
-// macOS poll misses FIFO EOF, so io_wait selects, sized to the highest fd.
+// Text is UTF-8, decoded as WHATWG does. io_sys_addr refuses a leading zero
+// (octal to some libcs). macOS poll misses FIFO EOF, so io_wait selects,
+// sized to the highest fd.
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -6049,7 +6060,6 @@ OUTLINE void io_loop(u64* H) {
       io_wait(e, true);
       continue;
     }
-    // A busy loop still checks due timers, and fds periodically.
     if ((n & 63) == 0) {
       if (io_busy != 0) {
         io_take(e);
@@ -6419,7 +6429,7 @@ function io_text(b, n) {
 }
 
 // Bytes cross as they are (0..255), one List cell each, with no UTF-8 in
-// either direction; io_unlist answers null if a value is past 255.
+// either direction.
 function io_list(b, n) {
   let xs = { $: "Nil" };
   while (n > 0) {
@@ -6490,10 +6500,11 @@ function io_wait(io, block) {
   }
 }
 
-function io_park_on(fd, out, k, more, at) {
+function io_park_on(fd, out, k, more, at = Infinity) {
   const ws = io_active.waits;
-  const i = ws.findLastIndex((w) => (w.at ?? Infinity) <= (at ?? Infinity));
-  ws.splice(i + 1, 0, { fd, out, k, more, at });
+  const t = { fd, out, k, more, at };
+  ws.splice(ws.findLastIndex((w) => w.at <= at) + 1, 0, t);
+  return t;
 }
 
 function io_run(m) {

@@ -201,6 +201,8 @@ def IO.args_bytes() -> IO(List<List<&2, U32>>):
   import "./effs/args.c"
   import "./effs/args.js"
 
+# Runs an argv subprocess on C, Bun and Node, without a shell.
+# max_output bounds combined stdout/stderr bytes; timeout_ms includes pipe draining.
 def Process.run(program: String, args: List<String>, input: String,
   max_output: U32, timeout_ms: U32) ->
   IO(Result<&1, &1, U32 & String, U32 & (String & String)>):
@@ -299,6 +301,8 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
 
+# Modes: "r" reads, "r+" reads and writes without creating or truncating,
+# "w" creates or truncates, "a" appends or creates, "x" creates exclusively.
 def File.open(path: String, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):
   import "./effs/file_open.c"
@@ -307,12 +311,23 @@ def File.open(path: String, mode: String) ->
 # The path as its bytes (0..255), with no UTF-8 encoding, so a name that
 # isn't UTF-8, as IO.args_bytes gives it, opens. A value past 255 fails
 # with EINVAL, and a 0 with EILSEQ, as a NUL in File.open's path does.
+# Modes are the same as File.open's.
 def File.open_bytes(path: List<&2, U32>, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):
   import "./effs/file_open.c"
   import "./effs/file_open.js"
 
+# Up to max bytes. A short read or a pipe does not stop it before max
+# unless the file ends first; EINTR is retried.
 def File.read(file: File, max: U32) ->
+  IO(File & Result<&1, &1, U32 & String, String>):
+  import "./effs/file_read.c"
+  import "./effs/file_read.js"
+
+# The next line with its "\n", up to max bytes, so a terminal or a pipe
+# answers each line as it comes; "" at the end of the file, or when max
+# is 0.
+def File.read_line(file: File, max: U32) ->
   IO(File & Result<&1, &1, U32 & String, String>):
   import "./effs/file_read.c"
   import "./effs/file_read.js"
@@ -1912,8 +1927,10 @@ def F32.round(a: F32) -> F32:
 def F32.pi() -> F32:
   3.14159265
 
-def F32.from_nat(n: Nat) -> F32:
-  U32.to_f32(U32.from_nat(n))
+# The full Nat conversion is intrinsic on every backend, like U32.to_f32.
+law F32.from_nat:
+  for n: Nat
+  F32
 
 # Preserve the direct cast below 2^32; wider Nats need both word halves.
 # Past 2^48-1 no Nat fits, so the direct cast gives 0.
