@@ -987,6 +987,7 @@ def Term.conv (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
     else
       let (a, m) := Term.wnf ck cl n a []
       let (b, m) := Term.wnf ck cl (min m n) b []
+      if a = b then (true, m) else
       match Term.parts a b with
       | some ps =>
         let go := fun (r : Bool × Nat) (p : Term × Term) =>
@@ -1018,15 +1019,26 @@ def Term.qge (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
 def Term.fits (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
   | 0, _, _ => (false, 0)
   | n + 1, U, T =>
-    let (U, m) := Term.wnf ck cl n U []
-    let (T, m) := Term.wnf ck cl (min m n) T []
-    match U, T with
-    | Typ g, Typ h => Term.qge ck cl (min m n) g h
-    | Enu ks, Enu js => (ks.all js.contains, m)
-    | All q A B, All p C D =>
-      let r := if q == p then Term.fits ck cl (min m n) C A else (false, m)
-      if r.1 then Term.fits ck false (min r.2 n) B D else r
-    | U, T => Term.conv ck cl (min m n) U T
+    if U = T then
+      (true, n)
+    else
+      let (U, m) := Term.wnf ck cl n U []
+      let (T, m) := Term.wnf ck cl (min m n) T []
+      if U = T then (true, m) else
+      match U, T with
+      | Typ g, Typ h => Term.qge ck cl (min m n) g h
+      | Enu ks, Enu js => (ks.all js.contains, m)
+      | All q A B, All p C D =>
+        let r := if q == p then Term.fits ck cl (min m n) C A else (false, m)
+        if r.1 then Term.fits ck false (min r.2 n) B D else r
+      | U, T => Term.conv ck cl (min m n) U T
+
+-- f's comparison of a and b, first with every def rigid (a book with
+-- none unfolds none), then with ck's; each pass from n fuel
+def Term.rigid (f : Book → Bool → Nat → Term → Term → Bool × Nat)
+    (ck : Book) (cl : Bool) (n : Nat) (a b : Term) : Bool × Nat :=
+  let r := f (Book.of []) cl n a b
+  if r.1 then r else f ck cl n a b
 
 -- Checker
 -- =======
@@ -1048,7 +1060,7 @@ def Ctx.need (c : Ctx) (r : Bool × Nat) (x : String) (o : Term) : Res Unit :=
 def Ctx.fit (ck : Book) (c : Ctx) (U T : Term) : Res Unit :=
   let U := Ctx.zeta c U
   let T := Ctx.zeta c T
-  Ctx.need c (Term.fits ck c.isEmpty FUEL U T) (Term.show T c.length) U
+  Ctx.need c (Term.rigid Term.fits ck c.isEmpty FUEL U T) (Term.show T c.length) U
 
 mutual
 
@@ -1213,7 +1225,7 @@ def Term.check (ck : Book) : Nat → Ctx → Term → Term → Res Unit
     | T => Ctx.fail c "a function type" T
   | _ + 1, c, Rfl, T =>
     match Ctx.wnf ck c T with
-    | Eql a b _ => Ctx.need c (Term.conv ck c.isEmpty FUEL a b) (Term.show a c.length) b
+    | Eql a b _ => Ctx.need c (Term.rigid Term.conv ck c.isEmpty FUEL a b) (Term.show a c.length) b
     | T => Ctx.fail c "an equation" T
   | n + 1, c, Rwt e P f, T => do
     let E ← Term.infer ck n c e
@@ -2172,6 +2184,8 @@ theorem conv_sound (hb : Sees ck bk) : (Term.conv ck cl n a b).1 = true → Conv
   unfold Term.conv; split; nofun; split
   · intro _; subst_vars; exact crefl
   split; split; split
+  · intro _; subst_vars; exact ⟨_, wnf_nil hb ‹_›, wnf_nil hb ‹_›⟩
+  split
   · intro h; rename_i hps
     have ⟨_, hf⟩ := fold_true (g := fun m x y => Term.conv ck _ (min m _) x y) h
     have ⟨c, h1, h2⟩ := parts_conv hps fun p m => have ⟨_, hp⟩ := hf p m; ih _ (by omega) hp
@@ -2266,9 +2280,13 @@ theorem qge_sound (hb : Sees ck bk) : (qge ck cl n g h).1 = true →
 theorem fits_sound (hb : Sees ck bk) (h : (fits ck cl n U T).1 = true) : Fits bk U T := by
   induction n using Nat.strongRecOn generalizing cl U T; rename_i n ih
   unfold fits at h; split at h; simp at h; rename_i n
+  split at h
+  · subst T; exact .conv crefl
   have L {a} : min a n < n + 1 := by omega
   split at h; rename_i e1; split at h; rename_i e2
   refine .trans (.conv ⟨_, wnf_nil hb e1, .refl⟩) (.trans ?_ (.conv ⟨_, .refl, wnf_nil hb e2⟩))
+  split at h
+  · subst_vars; exact .conv crefl
   split at h
   · exact .typ (qge_sound hb h)
   · exact .enu fun _ m => by simpa using List.all_eq_true.1 h _ m
@@ -2276,6 +2294,16 @@ theorem fits_sound (hb : Sees ck bk) (h : (fits ck cl n U T).1 = true) : Fits bk
     · rename_i e; cases beq_iff_eq.1 e; split at h; exact .all (ih _ L ‹_›) (ih _ L h); simp_all
     · simp at h
   · exact .conv (conv_sound hb h)
+
+theorem sees_nil : Sees (Book.of []) bk := fun _ _ h => by simp [Book.get, Book.of, Book.table] at h
+
+-- a rigid pass and a full pass are each sound
+theorem rigid_sound {P : Prop} {f : Book → Bool → Nat → Term → Term → Bool × Nat}
+    (s : ∀ {ck}, Sees ck bk → (f ck cl n a b).1 = true → P) (hb : Sees ck bk)
+    (h : (Term.rigid f ck cl n a b).1 = true) : P := by
+  unfold Term.rigid at h; dsimp only at h; split at h
+  · exact s sees_nil ‹_›
+  · exact s hb h
 
 -- a substitution from Γ into Δ that keeps types
 def SubstOk (bk : Book) (Δ : List Term) (σ : Subst) (Γ : List Term) : Prop :=
@@ -2374,7 +2402,7 @@ attribute [local simp] ok_bind ok_map ok_pure ok_unit ok_need ok_cneed ok_fail o
 
 theorem fit_sound (hb : Sees ck bk) (h : Ctx.fit ck c U T = .ok a) :
     Fits bk (sub (Ctx.drop c) U) (sub (Ctx.drop c) T) :=
-  (zeta_drop ▸ zeta_drop ▸ fits_sub (σ := Ctx.drop c) (fits_sound hb (ok_cneed.1 h)) :)
+  (zeta_drop ▸ zeta_drop ▸ fits_sub (σ := Ctx.drop c) (rigid_sound fits_sound hb (ok_cneed.1 h)) :)
 
 -- a checker type converts with its Ctx.wnf
 theorem wnf_conv (hcl : Sees ck bk) (e : Ctx.wnf ck c T = W) : Conv bk (sub (Ctx.drop c) T) (sub (Ctx.drop c) W) :=
@@ -2431,7 +2459,7 @@ theorem chk (hcl : Sees ck bk) (n : Nat) : ∀ c t T, Ctx.ok bk c →
     · exact .lab h
     · exact .mat h.1 h.2.1 (inst_sub ▸ C _ _ h.2.2.1 :) (C _ _ h.2.2.2)
     · exact .efq h
-    · exact .rfl (conv_sub (conv_sound hcl h))
+    · exact .rfl (conv_sub (rigid_sound conv_sound hcl h))
     · obtain ⟨E, h1, h⟩ := h; split at h <;> simp at h; rename_i e
       refine .rwt (.conv (I _ _ h1) (.conv (wnf_conv hcl e))) ?_ ?_ ?_
       · simpa only [Ctx.decl, Ctx.drop, sub, Subst.up, sub_succ] using
