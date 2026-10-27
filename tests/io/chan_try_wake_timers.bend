@@ -3,10 +3,16 @@
 # 300 on b with 60 s, so b's timers sit both before and after a's; on JS the
 # clock is stopped first, so b's 60 s timers are due at the same time as a's.
 # Draining b, then a, leaves no timer: a recv that nothing will answer then
-# reports the deadlock at once instead of waiting out the bounds.
+# reports the deadlock at once instead of waiting out the bounds. The clock
+# starts again once no timer is left: the checkup interprets a shard's tests
+# in one process, and a later test's timers must still come due (#1885).
 import Base
 
 def Clock.stop() -> IO(Unit):
+  import "./chan_try_wake_timers.c"
+  import "./chan_try_wake_timers.js"
+
+def Clock.start() -> IO(Unit):
   import "./chan_try_wake_timers.c"
   import "./chan_try_wake_timers.js"
 
@@ -50,6 +56,7 @@ def main() -> IO(Unit):
     z : Unit <- spawn_all(300n, b, 300, 60000)
     sb : U32 <- drain(600n, b, 0)
     sa : U32 <- drain(300n, a, 0)
+    v : Unit <- Clock.start()
     u : Unit <- IO.print("b " ++ U32.show(sb) ++ ", a " ++ U32.show(sa))
     r : Maybe<&1, U32> <- Chan.recv(U32, b)
     IO.pure(Unit, Unit{})
