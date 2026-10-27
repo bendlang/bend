@@ -187,10 +187,13 @@ static inline void window_x_title(Display* dpy, Window w, const char* text,
 #ifndef CID(Text)
 #define CID(Key)    0
 #define CID(Text)   0
-#define CID(Mouse)  0
+#define CID(Press)  0
 #define CID(Move)   0
+#define CID(Leave)  0
+#define CID(Lost)   0
 #define CID(Look)   0
 #define CID(Scroll) 0
+#define CID(Focus)  0
 #define CID(Close)  0
 #endif
 
