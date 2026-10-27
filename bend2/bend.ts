@@ -2282,8 +2282,6 @@ export function parse_term_do_stmt(p: Parse, m: Name, ts: LTerm[], col: number):
   return parse_call(p, m + ".bind", [...ts.slice(0, -1), A, ...ts.slice(-1), v, Lam(x.k, x.i, f, s, x.q)], s);
 }
 
-// The last statement ends its do block, so an `=` past it is an untyped let
-// (`x = v`, `(a, b) = v`) that would leak to the term around the block.
 export function parse_do_end(p: Parse): void {
   parse_skip(p);
   if (parse_at(p, "=") && !parse_at(p, "==") && !parse_at(p, "=>")) {
