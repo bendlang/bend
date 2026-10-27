@@ -523,7 +523,7 @@ export function Hol<X>(k: RName, s?: Span): TermOf<X> {
   return { $: "Hol", k, s };
 }
 
-// Ascriptions constrain checking; absent ascribed marks known type metadata.
+// Written annotations constrain checking; generated ones supply inference goals.
 export function Ann<X>(x: TermOf<X>, T: TermOf<X>, s?: Span, ascribed = true): TermOf<X> {
   return ascribed ? { $: "Ann", x, T, s, ascribed: true } : { $: "Ann", x, T, s };
 }
@@ -564,14 +564,10 @@ export function Infer(tm: LTerm, ty: HTerm, us: Uses, x?: number): Infer {
 
 export const Check = Infer;
 
-// Preserve the known type when a substituted source value must infer.
+// Keep the known type with a value used in substitution.
+// An existing annotation already supplies the goal; do not nest another.
 export function term_typed(source: HTerm, ty: HTerm): HTerm {
-  switch (term_force(source).$) {
-    case "Lam": case "Let": case "Ctr": case "Lit": case "Mat":
-    case "Efq": case "Rfl": case "Rwt": case "Hol":
-      return Ann(source, ty, undefined, false);
-    default: return source;
-  }
+  return term_force(source).$ === "Ann" ? source : Ann(source, ty, undefined, false);
 }
 
 // Err
@@ -3507,7 +3503,7 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   }
 }
 
-export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {
+export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = [], hint?: HTerm): Infer {
   switch (tm.$) {
     // Γ[x] = q A
     // where x is bound in Γ (a ~ argument checks in the empty context,
@@ -3516,7 +3512,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // Γ ⊢ x : A ~ {x:q}
     case "Var": {
       if (tm.i < 0 && tm.v !== undefined) {
-        return term_infer(book, lhs, term_force(tm), qt, ctx, d, sp);
+        return term_infer(book, lhs, term_force(tm), qt, ctx, d, sp, hint);
       }
       const ann = pmap_get(ctx, tm.i);
       if (ann === null) {
@@ -3663,18 +3659,21 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // Γ ⊢ T : Type
     // Γ ⊢ x : T ~ u
     // where T is dead
-    // ------------------- infer-ann
+    // ------------------- infer-ann (written)
     // Γ ⊢ {x : T} : T ~ u
+    // A generated annotation supplies T only when x needs a goal;
+    // otherwise inference derives x's type in its current context.
     case "Ann": {
       const T_chk = term_check(book, lhs, tm.T, None(), Typ(Qua(Lone()), tm.s), ctx, d);
+      if (!tm.ascribed) return term_infer(book, lhs, tm.x, qt, ctx, d, sp, tm.T);
       const x_chk = term_check(book, lhs, tm.x, qt, tm.T, ctx, d);
-      if (!tm.ascribed) return x_chk;
       return Infer(Ann(x_chk.tm, T_chk.tm, tm.s, tm.ascribed === true), tm.T, x_chk.us);
     }
     // x is a Lam, Let, Ctr, Lit, Mat, Efq, Rfl, Rwt or Hol
     // ------------------------------------------- infer-err
     // Γ ⊢ x : ⊥ (a goal is needed)
     default: {
+      if (hint !== undefined) return term_check(book, lhs, tm, qt, hint, ctx, d);
       const t = tm.$ === "Lit" ? lit_step(tm) : tm;
       if (t.$ === "Ctr" && book_ctr(book, t.k) === null) {
         throw Err(book, ctx, "a declared constructor", tm, tm.s, lhs.def);
@@ -3879,7 +3878,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
           function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
             if (n === 0) {
-              return t_all.B(Ctr(b.k, xs, b.s));
+              return t_all.B(term_typed(Ctr(b.k, xs, b.s), t_all.A));
             } else {
               const c_all = tele_head(book, cur, ctx, lhs.def, b.s);
               const c_dem = c_all.q.$ === "None" ? None() : c_all.q.$ === "Lone" ? t_all.q : quant_add(t_all.q, t_all.q);
@@ -3937,11 +3936,13 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const p_typ = All<HBody>(Lone(), "_", 0, e_wnf.T, (x: HTerm) => All<HBody>(Lone(), "e", 0, Eql(e_wnf.a, x, e_wnf.T), () => Typ(Qua(Lone())), tm.s), tm.s);
       const p_chk = term_check(book, lhs, tm.p, None(), p_typ, ctx, d);
       const e = term_typed(tm.e, e_inf.ty);
-      const b_gol = term_apply(term_apply(tm.p, e_wnf.b), e);
+      const b_gol = term_apply(term_apply(tm.p, term_typed(e_wnf.b, e_wnf.T)), e);
       if (!term_compare("LE", book, b_gol, ty, d)) {
         throw Err(book, ctx, ty, b_gol, tm.s, lhs.def);
       }
-      const a_gol = term_apply(term_apply(tm.p, e_wnf.a), Rfl<HBody>(tm.s));
+      const a = term_typed(e_wnf.a, e_wnf.T);
+      const refl = term_typed(Rfl<HBody>(tm.s), Eql(e_wnf.a, e_wnf.a, e_wnf.T, tm.s));
+      const a_gol = term_apply(term_apply(tm.p, a), refl);
       const f_chk = term_check(book, lhs, tm.f, qt, a_gol, ctx, d);
       return Check(Rwt(e_inf.tm, p_chk.tm, f_chk.tm, tm.s), b_gol, uses_add(e_inf.us, f_chk.us));
     }
