@@ -86,8 +86,8 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // CLO_APPLY and IO_EMIT are the runtime's own segments (a ~ keeps any file
 // from declaring them). FOLD_FUEL caps the nodes unfolds add to a segment.
 // A spin of SPIN_FAR characters is a call on the device (DFAR). A node past
-// WIDE pads to its size class (240 + log2 in CID_T). An argument nested past
-// TPL_DEEP brackets goes to a local (clang allows 256).
+// WIDE pads to its size class. An argument nested past TPL_DEEP brackets
+// goes to a local (clang allows 256).
 
 const CLO_APPLY = "Clo~apply";
 
@@ -948,8 +948,7 @@ function ty_srcs(T: HTerm): void {
 // family) are one box. A lay without arms is W32, W64 or BOX. An Array cell
 // takes its element type's open layout, so all callers agree. lay_el refuses
 // an open element type (a variable, a hole, a bodiless law or family); a
-// type former, such as a function, is a box. adt_of and js_expr call it
-// only for that check.
+// type former, such as a function, is a box.
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -2837,8 +2836,8 @@ function emit_chain(sc: Scope, arms: [string, () => void][]): void {
 // =======
 
 // Hand-written C and JS name ids as CID(k) and FID(k): k in the source's
-// namespace, else as is. effect_src splices a C source's backslash-newlines
-// first, as C does even in a comment; JS does not.
+// namespace, else as is. A C source's backslash-newlines splice first, even
+// in a comment.
 
 const ID_WORDS = /\/\/.*|\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CF]ID)\(([\w./~-]+)\)/gu;
 
@@ -2875,6 +2874,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
     const src = FL.js ? raw : raw.replace(/\\[ \t]*\r?\n/g, "");
     FL.effs.set(path, [m, src]);
     if (!FL.js) c_ids(src, m, (p, q) => {
+      if (p === "CID" && q in FL.book.ctrs) src_add(Bend.book_fam(FL.book, q));
       if (p === "FID" && fun_runs(FL.book.tlds[q])) {
         src_add(q);
         FL.fids.add(q);
