@@ -181,22 +181,6 @@ static inline void window_x_title(Display* dpy, Window w, const char* text,
 
 #ifdef CID(Window.open)
 
-// Events reach a program only through Window.frame. One that never asks
-// for them may have no Event constructors, so their ids are 0 here: the
-// window still takes its events, and nothing reads them.
-#ifndef CID(Text)
-#define CID(Key)    0
-#define CID(Text)   0
-#define CID(Press)  0
-#define CID(Move)   0
-#define CID(Leave)  0
-#define CID(Lost)   0
-#define CID(Look)   0
-#define CID(Scroll) 0
-#define CID(Focus)  0
-#define CID(Close)  0
-#endif
-
 #if defined(__OBJC__) || defined(__linux__)
 
 // Typed text, from *at on, as the next Text event: up to 16 bytes of

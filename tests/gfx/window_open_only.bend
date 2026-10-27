@@ -1,6 +1,6 @@
-# A program may call Window.open without Window.frame, so it has no Event
-# constructors. Its C build once failed on their ids. A zero width fails
-# before Window.open looks for a display.
+# A program may call Window.open without Window.frame, so only window.c
+# names the Event constructors. Its C build once failed on their ids. A zero
+# width fails before Window.open looks for a display.
 import Base
 
 def opened(result: Result<&1, &1, U32 & String, Window>) -> IO(Unit):
