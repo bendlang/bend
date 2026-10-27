@@ -386,6 +386,13 @@ def File.write_bytes(file: File, data: List<&2, U32>) ->
   import "./effs/file_write.c"
   import "./effs/file_write.js"
 
+# Write bytes at offset on a non-append handle, without moving its
+# position. A value past 255 fails with EINVAL before any byte is written.
+def File.write_at(file: File, offset: U32, data: List<&2, U32>) ->
+  IO(File & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/file_write.c"
+  import "./effs/file_write.js"
+
 def File.close(file: File) -> IO(Unit):
   import "./effs/file_close.c"
   import "./effs/file_close.js"
