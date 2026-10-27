@@ -88,9 +88,9 @@ type Image is Data:
 # (-1 to 1). A force is 0 unless pressed. A value its device does not
 # report is that standard's default: a force of 0.5, a size of 1, an angle 0.
 type Tool is Data:
-  Mouse{}
-  Finger{force: F32, width: F32, height: F32}
-  Pen{force: F32, tangential: F32, tilt_x: F32, tilt_y: F32, twist: F32}
+  Tool.Mouse{}
+  Tool.Finger{force: F32, width: F32, height: F32}
+  Tool.Pen{force: F32, tangential: F32, tilt_x: F32, tilt_y: F32, twist: F32}
 
 # Key is a key, pressed or let go. Text is what the keys typed, after
 # Shift, Caps Lock, the layout and any input method: never a control
@@ -100,11 +100,13 @@ type Tool is Data:
 # pixels from the window's top left (past its edge while a button holds
 # it), at the system's time in ms (it wraps: only the difference of two
 # counts): a Move with no button down is a hover. The mouse is id 0; a finger
-# or a pen takes the least free id, free again once it lifts (a finger)
-# or is lost. Buttons are W3C's: 0 the main one (a finger's or a pen's
-# contact), 1 the middle, 2 the right (a pen's barrel), 3 back, 4 forward
-# and 5 a pen's eraser. Lost is a pointer gone (off the window, out of a
-# pen's range, taken by the system): what it held ends with no Press up.
+# or a pen takes the least free id, free again once it lifts (a finger),
+# leaves or is lost. Buttons are W3C's: 0 the main one (a finger's or a
+# pen's contact), 1 the middle, 2 the right (a pen's barrel), 3 back, 4
+# forward and 5 a pen's eraser. Leave is a pointer with no button down gone off
+# the window or out of a pen's range (W3C's pointerleave): the mouse comes
+# back as id 0. Lost is a pointer pressed taken away (W3C's pointercancel):
+# what it held ends with no Press up.
 # A window losing the focus loses its pointers pressed and lets go of its
 # keys held, then sends Focus{False}. Look is the mouse's motion while
 # Window.grab holds it, in Move's units. Scroll is a wheel or trackpad
@@ -115,6 +117,7 @@ type Event is Data:
   Text{text: String}
   Press{id: U32, tool: Tool, x: F32, y: F32, time: U32, button: U32, down: Bool}
   Move{id: U32, tool: Tool, x: F32, y: F32, time: U32}
+  Leave{id: U32}
   Lost{id: U32}
   Look{dx: F32, dy: F32}
   Scroll{x: F32, y: F32, dx: F32, dy: F32}

@@ -15,11 +15,11 @@ def hundredths(x: F32) -> String:
 
 def tool(t: Tool) -> String:
   match t:
-    case Mouse{}:
+    case Tool.Mouse{}:
       "mouse"
-    case Finger{force, width, height}:
+    case Tool.Finger{force, width, height}:
       "finger " ++ hundredths(force)
-    case Pen{force, tangential, tilt_x, tilt_y, twist}:
+    case Tool.Pen{force, tangential, tilt_x, tilt_y, twist}:
       "pen " ++ hundredths(force) ++ " " ++ F32.show(tilt_x)
 
 def mine(+time: U32, s: String) -> String:

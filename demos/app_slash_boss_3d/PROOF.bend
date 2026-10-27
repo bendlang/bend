@@ -111,6 +111,8 @@ def Laws.esc_quits(pre, post, g):
       Laws.esc_quits(rest, post, g)
     case Move{id, tool, x, y, time} <> rest:
       Laws.esc_quits(rest, post, g)
+    case Leave{id} <> rest:
+      Laws.esc_quits(rest, post, g)
     case Lost{id} <> rest:
       Laws.esc_quits(rest, post, g)
     case Look{dx, dy} <> rest:

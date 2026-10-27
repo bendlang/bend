@@ -464,8 +464,8 @@ An `Image` is a quadtree: `Pix{color}` paints a square, and `Qua{tl, tr, bl,
 br}` splits it in four, so a frame is drawn by recursion like everything else,
 in parallel if you want. The events are Base's `Event`, each explained in
 `bend2/base.bend`: a pointer (the mouse, a finger or a pen) comes as `Press`,
-`Move` and `Lost`, and a key or button held as the window loses the focus
-comes up. For a first-person camera, `Window.grab(window, True{})`
+`Move`, `Leave` and `Lost`, and a key or button held as the window loses the
+focus comes up. For a first-person camera, `Window.grab(window, True{})`
 hides and holds the cursor, and the mouse's motion comes as `Look{dx, dy}`
 until `Window.grab(window, False{})` or the window losing focus lets it go.
 `App.run` opens a window and calls `view` then `tick` once per frame, until

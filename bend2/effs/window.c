@@ -237,8 +237,8 @@ static inline u32 window_id(WinQueue* q, u64 name, bool make) {
 
 // Whether ev goes out, as it updates q: a Key or Press up of nothing down,
 // an event of an id not live (or none) and a Focus that changes nothing do
-// not. A Press or Move makes its id live, a finger's last Press up or a
-// Lost frees it.
+// not. A Press or Move makes its id live, a finger's last Press up, a
+// Leave or a Lost frees it.
 static inline bool window_keep(WinQueue* q, const u32* ev) {
   u32 c = ev[0];
   u32 a = ev[1];
@@ -261,15 +261,16 @@ static inline bool window_keep(WinQueue* q, const u32* ev) {
     q->focus = a;
     return was != a;
   }
-  if (c != CID(Press) && c != CID(Move) && c != CID(Lost)) {
+  bool gone = c == CID(Leave) || c == CID(Lost);
+  if (c != CID(Press) && c != CID(Move) && !gone) {
     return true;
   }
-  if (a >= 16 || (c == CID(Lost) && !(q->live >> a & 1))) {
+  if (a >= 16 || (gone && !(q->live >> a & 1))) {
     return false;
   }
   u32 m = 1u << a;
   u32 b = c == CID(Press) ? 1u << (ev[WIN_BUTTON] & 31) : 0;
-  if (c == CID(Lost)) {
+  if (gone) {
     q->live &= ~m;
     q->down[a] = 0;
     return true;
@@ -499,7 +500,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 }
 
 // The Mac's buttons 1 and 2 are W3C's 2 and 1; an eraser's contact is 5.
-// Let go past the view, the pointer is gone.
+// Let go past the view, the pointer leaves.
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
   WinTool t;
   u32     id = [self pointer:ev tool:&t];
@@ -510,7 +511,7 @@ static inline void window_focus(WinQueue* q, bool on) {
     down);
   if (!down && id < 16 && q.down[id] == 0
     && !NSPointInRect(p, self.bounds)) {
-    window_push(&q, CID(Lost), id, 0, 0, 0);
+    window_push(&q, CID(Leave), id, 0, 0, 0);
   }
 }
 
@@ -537,13 +538,15 @@ static inline void window_focus(WinQueue* q, bool on) {
   if (ev.enteringProximity) {
     eraser = ev.pointingDeviceType == NSPointingDeviceTypeEraser;
   } else {
-    window_push(&q, CID(Lost), window_id(&q, ev.deviceID, NO), 0, 0, 0);
+    u32 id = window_id(&q, ev.deviceID, NO);
+    window_push(&q, id < 16 && q.down[id] != 0 ? CID(Lost) : CID(Leave), id,
+      0, 0, 0);
   }
 }
 
 - (void)mouseExited:(NSEvent*)ev {
   if (q.down[0] == 0) {
-    window_push(&q, CID(Lost), 0, 0, 0, 0);
+    window_push(&q, CID(Leave), 0, 0, 0, 0);
   }
 }
 
@@ -1136,12 +1139,14 @@ static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
   }
 }
 
-// Off the window, a pointer is lost unless a button holds it; a grab
-// elsewhere takes only a held one (its release then goes there).
+// Off the window, a pointer leaves unless a button holds it; a grab
+// elsewhere takes only a held one, which is lost (its release then goes
+// there).
 static void window_leave(BendWin* win, u32 id, int mode) {
   bool held = id < 16 && win->q.down[id] != 0;
-  if (held == (mode == NotifyGrab || mode == XINotifyPassiveGrab)) {
-    window_push(&win->q, CID(Lost), id, 0, 0, 0);
+  bool took = mode == NotifyGrab || mode == XINotifyPassiveGrab;
+  if (held == took) {
+    window_push(&win->q, held ? CID(Lost) : CID(Leave), id, 0, 0, 0);
   }
 }
 
