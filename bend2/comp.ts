@@ -2285,6 +2285,7 @@ function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = [],
 }
 
 function emit_put(sc: Scope, dst: Val | null, v: Val): void {
+  bind_dead(sc, []);
   if (dst === null) {
     spare_flush(sc);
   }
@@ -2295,7 +2296,7 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
   }
 }
 
-function emit_spin(sc: Scope, ck: Spine, tail = false): Val {
+function emit_spin(sc: Scope, ck: Spine): Val {
   const k = ck.k!;
   const { lays, ret } = fun_of(k);
   const ws = emit_args(sc, ck).flatMap((v) => v.ws);
@@ -2310,8 +2311,8 @@ function emit_spin(sc: Scope, ck: Spine, tail = false): Val {
     : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
   block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(sc, "return 0;"));
-  bind_dead(sc, tail ? [] : sc.rest, tail ? undefined
-    : ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
+  bind_dead(sc, sc.rest,
+    ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
   return out;
 }
 
@@ -2638,15 +2639,13 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       sc = { ...sc, rest: [] };
       const ck = term_spine(x);
       if (ck.k === null) {
-        const v = emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret);
-        bind_dead(sc, []);
-        return emit_put(sc, dst, v);
+        return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
       }
       const { h, ret } = fun_of(ck.k);
       const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld)
         && (ret !== BOX || sc.seg.ret === BOX);
       if (sc.seg.def !== ck.k && (flat_call(x) || (dst === null && once))) {
-        return flat_of(ck.k) ? emit_put(sc, dst, emit_spin(sc, ck, true))
+        return flat_of(ck.k) ? emit_put(sc, dst, emit_spin(sc, ck))
           : emit_body({ ...sc, def: ck.k }, h!, ck.tld!.T,
             emit_args(sc, ck, true), dst);
       }
@@ -2807,7 +2806,6 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   const sw = u.ws[0];
   const tab = emit_tab(sc, cells, ret, sw);
   if (tab !== null) {
-    bind_dead(sc, []);
     return emit_put(sc, dst, val_new([tab], lay_of(ret)));
   }
   const is = (c: Name) => `term_aux(${sw}) == ${cid_mac(c)}`;
