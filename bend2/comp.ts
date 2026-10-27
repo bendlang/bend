@@ -615,9 +615,10 @@ function lit_call(s: Of<"Lit">): HTerm | null {
 
 function term_force(t: HTerm, native = false): HTerm {
   const s = Bend.term_force(t);
-  return s.$ !== "Lit" || native && s.file === Bend.BASE_ID
-    && (s.kind === "U32" || s.kind === "F32") ? s
-    : memo(FL.steps, s.file + ":" + s.kind + ":" + s.v, () => lit_call(s) ?? Bend.lit_step(s));
+  if (s.$ !== "Lit" || native && s.file === Bend.BASE_ID
+    && (s.kind === "U32" || s.kind === "F32")) return s;
+  const value = memo(FL.steps, s.file + ":" + s.kind + ":" + s.v, () => lit_call(s) ?? Bend.lit_step(s));
+  return s.ty === undefined ? value : Bend.term_typed(value, s.ty);
 }
 
 function term_strip(t: HTerm): HTerm {
@@ -687,7 +688,7 @@ function term_eta(t: HTerm, T: HTerm, n: number): HTerm {
     return t;
   }
   const all = ty_all(T);
-  return Bend.Ann(Bend.Lam("x", 0, (y: HTerm) =>
+  return Bend.term_typed(Bend.Lam("x", 0, (y: HTerm) =>
     term_eta(Bend.App(t, y), all.B(y), n - 1)), T);
 }
 
@@ -825,7 +826,7 @@ function tele_fill(T: HTerm, xs: HTerm[]): HTerm {
 
 function ty_ann(t: HTerm): HTerm | null {
   const v = term_force(t);
-  return v.$ === "Ann" ? v.T : null;
+  return v.ty ?? (v.$ === "Ann" ? v.T : null);
 }
 
 function ty_wnf(ty: HTerm | null): HTerm | null {
@@ -840,10 +841,10 @@ function ty_all(ty: HTerm | null): Of<"All"> {
 function ty_peel(tm: HTerm, ty: HTerm | null): [HTerm, HTerm | null] {
   let x = term_force(tm, true);
   while (x.$ === "Ann" || x.$ === "Rwt") {
-    ty = x.$ === "Ann" ? x.T : ty;
+    ty = x.ty ?? (x.$ === "Ann" ? x.T : ty);
     x = term_force(x.$ === "Ann" ? x.x : x.f, true);
   }
-  return [x, ty];
+  return [x, x.ty ?? ty];
 }
 
 function ty_adt(A: HTerm | null): Of<"ADT"> | null {
@@ -1472,6 +1473,7 @@ function file_book(roots: Name[]): void {
     const refs = new Set<Name>();
     let flat = true;
     term_any(fun_of(d).h!, (s, tail) => {
+      if (s.ty !== undefined) ty_srcs(s.ty);
       if (s.$ === "Ann") {
         ty_srcs(s.T);
       }
@@ -2022,11 +2024,12 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
       return r;
     }
     const p = probe("h");
-    binds.push([p, Bend.Ann(r, T!)]);
-    return Bend.Ann(p, T!);
+    binds.push([p, Bend.term_typed(r, T!)]);
+    return Bend.term_typed(p, T!);
   };
   const go = (u: HTerm, top: boolean, T: HTerm | null): HTerm => {
     const s = term_force(u, true);
+    T = s.ty ?? T;
     if (term_const(s)) {
       return s;
     }
@@ -2041,7 +2044,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
       case "Ctr": {
         const on = ctr_flds(s.k, s.x);
         const xs = s.x.map((x) => on.includes(x) ? go(x, false, null) : x);
-        return xs.every((x, j) => x === s.x[j]) ? s : Bend.Ctr(s.k, xs, s.s);
+        return xs.every((x, j) => x === s.x[j]) ? s : { ...s, x: xs };
       }
       case "Ref":
       case "App": {
@@ -2057,11 +2060,13 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
           }
           const on = m.args.includes(f.x);
           if (m.t.$ === "Var" && !on) {
-            return spine(f.f);
+            const value = spine(f.f);
+            // The result type no longer includes this erased argument.
+            return f.ty === undefined ? value : { ...value, ty: f.ty };
           }
           const g = on ? cut(spine(f.f), ty_ann(f.f)) : spine(f.f);
           const x = on ? go(f.x, false, null) : f.x;
-          return g === f.f && x === f.x ? f : Bend.App(g, x, f.s);
+          return g === f.f && x === f.x ? f : { ...f, f: g, x };
         };
         const r = spine(s);
         return top ? r : cut(r, T);
@@ -2078,8 +2083,10 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
       }
       case "Lam": {
         const all = T && Bend.tele_open(FL.book, T);
-        return all?.q.$ !== "None" ? s
-          : Bend.Ann(go(s.f(DUMMY), top, all.B(DUMMY)), all.B(DUMMY));
+        if (all?.q.$ !== "None") return s;
+        const v = s.f(DUMMY);
+        const b = go(v, top, all.B(DUMMY));
+        return b === v ? s : { ...s, f: () => b };
       }
       default: {
         return s;
@@ -2091,7 +2098,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
   const x = term_force(t, true);
   if (x.$ !== "Let") {
     const b = go(x, true, ty);
-    return wrap(binds.length === 0 || ty === null ? b : Bend.Ann(b, ty));
+    return wrap(binds.length === 0 || ty === null ? b : Bend.term_typed(b, ty));
   }
   const o = term_open(x);
   const on = let_live(x);
@@ -2419,7 +2426,10 @@ function emit_fold(t: HTerm): HTerm | null {
       : as.reduce((f, x) => Bend.App(f, x), m.t);
   });
   const a = term_force(t);
-  return r === s ? t : r === null || a.$ !== "Ann" ? r : { ...a, x: r };
+  if (r === s) return t;
+  if (r === null) return null;
+  if (a.$ === "Ann") return { ...a, x: r };
+  return a.ty === undefined ? r : Bend.term_typed(r, a.ty);
 }
 
 function emit_fold_args(m: Spine): HTerm[] {
@@ -2462,7 +2472,7 @@ function emit_unfold(m: Spine): HTerm | null {
     const a = fs[i];
     return i === fs.length ? walk(ys)! : !m.args.includes(m.all[i])
       || term_const(a) || term_strip(a).$ === "Var" ? bind(i + 1, [...ys, a])
-      : Bend.Let(["a"], [0], [Bend.Ann(a, doms[i][2])], (xs) =>
+      : Bend.Let(["a"], [0], [Bend.term_typed(a, doms[i][2])], (xs) =>
         bind(i + 1, [...ys, xs[0]]), undefined, [Bend.Many()]);
   };
   return walk(fs) === null ? null : bind(0, []);
@@ -2603,7 +2613,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null,
       }
       if (!lay_eq(sc.seg.ret, ret)
         && (sc.seg.ret.arms !== null || ret.arms !== null)) {
-        return emit_body(sc, Bend.Let(["r"], [0], [Bend.Ann(x, ty!)],
+        return emit_body(sc, Bend.Let(["r"], [0], [Bend.term_typed(x, ty!)],
           (xs) => xs[0]), ty, ers, args, dst);
       }
       const cargs = emit_args(sc, ck, true, false, f.lays);

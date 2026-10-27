@@ -703,11 +703,12 @@ function convoy_bind(e: Safe, s: Scope, cv: number[], t: HTerm | ((s: Scope) => 
 
 // a term without its type wrappers, and the type the outermost gives
 function open(t: HTerm): [HTerm, HTerm | null] {
-  let T: HTerm | null = null;
   let x = B.term_force(t);
+  let T: HTerm | null = x.ty === undefined ? null : B.term_force(x.ty);
   while (x.$ === "Ann") {
     T ??= B.term_force(x.T);
     x = B.term_force(x.x);
+    T ??= x.ty === undefined ? null : B.term_force(x.ty);
   }
   return [x, T];
 }
@@ -908,14 +909,14 @@ function goals(e: Safe, all: Extract<HTerm, { $: "All" }> | null, c: B.Ctr): [HT
 
 // t at T, when bend2 left it bare
 function typed(t: HTerm, T?: HTerm | null): HTerm {
-  return T == null || open(t)[1] !== null ? t : B.Ann(t, T);
+  return T == null || open(t)[1] !== null ? t : B.term_typed(t, T);
 }
 
 // the arm of the λ-match t that the closed constructor v takes, and
 // what it binds: v's fields (a default arm binds v whole)
 function pick(e: Safe, t: HTerm, v: HTerm): [HTerm, HTerm[]] {
   const w = B.term_wnf(e.book, v);
-  const c = w.$ === "Lit" ? B.term_higher(B.lit_step(w)) : w;
+  const c = w.$ === "Lit" ? B.lit_step<B.HBody>(w) : w;
   let [m] = open(t);
   while (m.$ === "Mat" && c.$ === "Ctr" && m.k !== c.k) {
     [m] = open(m.m);
@@ -1050,7 +1051,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
         const mul: HTerm = B.App(B.App(B.Ref(B.name_source(x.file, "Nat.mul")), B.Lit(x.file, "Nat", q)), B.Lit(x.file, "Nat", NAT_MAX));
         return term(e, s, B.App(B.App(B.Ref(B.name_source(x.file, "Nat.add")), mul), B.Lit(x.file, "Nat", r)), live);
       }
-      return term(e, s, B.term_higher(B.lit_step(x)), live);
+      return term(e, s, B.lit_step<B.HBody>(x), live);
     }
     case "Eql": {
       return { $: "Eql", a: arg_term(e, s, x.a, x.T, false), b: arg_term(e, s, x.b, x.T, false), T: term(e, s, x.T, false) };
