@@ -476,6 +476,10 @@ def Book.length (bk : Book) : Nat :=
 def Book.of (ds : List Def) : Book :=
   ⟨ds, Book.table 0 ds, rfl⟩
 
+-- the empty book: every def in it is rigid
+def Book.nil : Book :=
+  Book.of []
+
 -- Ctx
 -- ===
 
@@ -987,7 +991,6 @@ def Term.conv (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
     else
       let (a, m) := Term.wnf ck cl n a []
       let (b, m) := Term.wnf ck cl (min m n) b []
-      if a = b then (true, m) else
       match Term.parts a b with
       | some ps =>
         let go := fun (r : Bool × Nat) (p : Term × Term) =>
@@ -1024,7 +1027,6 @@ def Term.fits (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
     else
       let (U, m) := Term.wnf ck cl n U []
       let (T, m) := Term.wnf ck cl (min m n) T []
-      if U = T then (true, m) else
       match U, T with
       | Typ g, Typ h => Term.qge ck cl (min m n) g h
       | Enu ks, Enu js => (ks.all js.contains, m)
@@ -1037,7 +1039,7 @@ def Term.fits (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
 -- none unfolds none), then with ck's; each pass from n fuel
 def Term.rigid (f : Book → Bool → Nat → Term → Term → Bool × Nat)
     (ck : Book) (cl : Bool) (n : Nat) (a b : Term) : Bool × Nat :=
-  let r := f (Book.of []) cl n a b
+  let r := f Book.nil cl n a b
   if r.1 then r else f ck cl n a b
 
 -- Checker
@@ -2184,8 +2186,6 @@ theorem conv_sound (hb : Sees ck bk) : (Term.conv ck cl n a b).1 = true → Conv
   unfold Term.conv; split; nofun; split
   · intro _; subst_vars; exact crefl
   split; split; split
-  · intro _; subst_vars; exact ⟨_, wnf_nil hb ‹_›, wnf_nil hb ‹_›⟩
-  split
   · intro h; rename_i hps
     have ⟨_, hf⟩ := fold_true (g := fun m x y => Term.conv ck _ (min m _) x y) h
     have ⟨c, h1, h2⟩ := parts_conv hps fun p m => have ⟨_, hp⟩ := hf p m; ih _ (by omega) hp
@@ -2286,8 +2286,6 @@ theorem fits_sound (hb : Sees ck bk) (h : (fits ck cl n U T).1 = true) : Fits bk
   split at h; rename_i e1; split at h; rename_i e2
   refine .trans (.conv ⟨_, wnf_nil hb e1, .refl⟩) (.trans ?_ (.conv ⟨_, .refl, wnf_nil hb e2⟩))
   split at h
-  · subst_vars; exact .conv crefl
-  split at h
   · exact .typ (qge_sound hb h)
   · exact .enu fun _ m => by simpa using List.all_eq_true.1 h _ m
   · dsimp only at h; split at h
@@ -2295,7 +2293,7 @@ theorem fits_sound (hb : Sees ck bk) (h : (fits ck cl n U T).1 = true) : Fits bk
     · simp at h
   · exact .conv (conv_sound hb h)
 
-theorem sees_nil : Sees (Book.of []) bk := fun _ _ h => by simp [Book.get, Book.of, Book.table] at h
+theorem sees_nil : Sees Book.nil bk := fun _ _ h => by simp [Book.nil, Book.get, Book.of, Book.table] at h
 
 -- a rigid pass and a full pass are each sound
 theorem rigid_sound {P : Prop} {f : Book → Bool → Nat → Term → Term → Bool × Nat}
