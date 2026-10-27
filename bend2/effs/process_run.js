@@ -79,7 +79,7 @@ function run({ argv, input, env, max, ms }) {
 
 let process_worker = null;
 
-function process_run(program, args, input, maxOutput, timeoutMs) {
+function process_run_now(program, args, input, maxOutput, timeoutMs) {
   const argv = [str_out(program)];
   for (let xs = args; xs.$ === CID(Con); xs = xs.tail) {
     argv.push(str_out(xs.head));
@@ -113,6 +113,10 @@ function process_run(program, args, input, maxOutput, timeoutMs) {
   const got = receive(port).message;
   return got.fail !== undefined ? io_fail(got.fail)
     : io_done(io_tup(got.code, got.out, got.err));
+}
+
+function process_run(...a) {
+  io_park_on(undefined, 0, a.pop(), () => process_run_now(...a), 0);
 }
 
 io_eff(CID(Process.run), process_run);

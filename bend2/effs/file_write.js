@@ -3,8 +3,6 @@
 
 function file_write_buffer(file, b, offset = null) {
   const fs = require("fs");
-  // the file may be stdout, so what IO.print holds goes first
-  io_sync();
   let at = 0;
   try {
     while (at < b.length) {
@@ -22,13 +20,16 @@ function file_write_buffer(file, b, offset = null) {
   }
 }
 
-function file_write(file, data) {
-  return file_write_buffer(file, io_bytes(data));
+function file_write(file, data, k) {
+  io_park_on(undefined, 0, k, () => file_write_buffer(file, io_bytes(data)), 0);
 }
 
-function file_write_bytes(file, data) {
+function file_write_bytes(file, data, k) {
   const b = io_unlist(data);
-  return b === null ? io_tup(file, io_fail(22)) : file_write_buffer(file, b);
+  if (b === null) {
+    return io_tup(file, io_fail(22));
+  }
+  io_park_on(undefined, 0, k, () => file_write_buffer(file, b), 0);
 }
 
 function file_write_at(file, offset, data) {

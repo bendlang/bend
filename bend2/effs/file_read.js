@@ -38,20 +38,24 @@ function file_read_with(file, max, offset, pack, line = false) {
   return io_tup(file, io_done(pack(b, got)));
 }
 
-function file_read(file, max) {
-  return file_read_with(file, max, null, io_text);
+function file_read(file, max, k) {
+  io_park_on(undefined, 0, k,
+    () => file_read_with(file, max, null, io_text), 0);
 }
 
-function file_read_line(file, max) {
-  return file_read_with(file, max, null, io_text, true);
+function file_read_line(file, max, k) {
+  io_park_on(undefined, 0, k,
+    () => file_read_with(file, max, null, io_text, true), 0);
 }
 
-function file_read_bytes(file, max) {
-  return file_read_with(file, max, null, io_list);
+function file_read_bytes(file, max, k) {
+  io_park_on(undefined, 0, k,
+    () => file_read_with(file, max, null, io_list), 0);
 }
 
-function file_read_at(file, offset, max) {
-  return file_read_with(file, max, offset, io_list);
+function file_read_at(file, offset, max, k) {
+  io_park_on(undefined, 0, k,
+    () => file_read_with(file, max, offset, io_list), 0);
 }
 
 io_eff(CID(File.read), file_read);

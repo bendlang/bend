@@ -6246,7 +6246,7 @@ function io_out(fd, data) {
 }
 
 // Stdout off a terminal is buffered, as C's: io_sync writes it before a
-// wait, an error, an exit and a File.write, or at 64 KiB.
+// wait, an error and an exit, or at 64 KiB.
 
 let io_held = null;
 
@@ -6393,9 +6393,9 @@ function io_wait(io, block) {
   }
   const tv = new BigInt64Array([BigInt(ms / 1000 | 0),
     BigInt(ms % 1000 * 1000)]);
-  const sys = io_sys();
   io_sync();
-  if (sys.select(top + 1, sys.ptr(set), sys.ptr(set, len), null,
+  const sys = fds.length > 0 || ms !== 0 ? io_sys() : null;
+  if (sys?.select(top + 1, sys.ptr(set), sys.ptr(set, len), null,
     ms < 0 ? null : sys.ptr(tv)) < 0) {
     if (sys.errno() !== 4) {
       throw "bend: the poller failed";

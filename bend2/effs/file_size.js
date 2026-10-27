@@ -1,7 +1,7 @@
 // File
 // ====
 
-function file_size(file) {
+function file_size_now(file) {
   const fs = require("fs");
   try {
     const size = fs.fstatSync(file).size;
@@ -15,6 +15,10 @@ function file_size(file) {
   } catch (e) {
     return io_tup(file, io_fail(Math.abs(e.errno ?? 5)));
   }
+}
+
+function file_size(file, k) {
+  io_park_on(undefined, 0, k, () => file_size_now(file), 0);
 }
 
 io_eff(CID(File.size), file_size);
