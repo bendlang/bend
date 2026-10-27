@@ -117,16 +117,6 @@ def Laws.esc_quits(pre, post, g):
       Laws.esc_quits(rest, post, g)
     case Scroll{x, y, dx, dy} <> rest:
       Laws.esc_quits(rest, post, g)
-    case Zoom{x, y, scale, turn, fingers} <> rest:
-      Laws.esc_quits(rest, post, g)
-    case Swipe{x, y, dx, dy, fingers} <> rest:
-      Laws.esc_quits(rest, post, g)
-    case DropOver{x, y} <> rest:
-      Laws.esc_quits(rest, post, g)
-    case DropOut{} <> rest:
-      Laws.esc_quits(rest, post, g)
-    case Dropped{x, y, files, text} <> rest:
-      Laws.esc_quits(rest, post, g)
     case Focus{on} <> rest:
       Laws.esc_quits(rest, post, g)
     case Close{} <> rest:

@@ -1,12 +1,9 @@
 # gfx (gfx_window_events): events through window.c's own handlers. On X11,
 # feed (window_events.c) hands the window XInput2 events of a touch screen,
-# a pen, a touchpad (the mouse) and a trackpad's pinch, and another
-# connection drags three drops onto it: two files and a line, 300000 bytes
-# in INCR's chunks, and one it refuses. On the Mac it moves and clicks the
-# mouse. Each event the test made (a pointer's at time 4000000000 on, a
-# Zoom, a drop) is a line, forces and turns in hundredths: True once they
-# are its platform's, else the lines after 200 frames. Without a display,
-# True, as window_title.
+# a pen and a touchpad (the mouse). On the Mac it moves and clicks the
+# mouse. Each event the test made (a pointer's at time 4000000000 on) is a
+# line, forces in hundredths: True once they are its platform's, else the
+# lines after 200 frames. Without a display, True, as window_title.
 import Base
 
 def feed(window: Window) -> IO(Window & String):
@@ -39,17 +36,6 @@ def line(e: Event) -> String:
     case Move{id, t, x, y, +time}:
       mine(time, "move " ++ U32.show(id) ++ " " ++ tool(t) ++ " "
         ++ F32.show(x) ++ " " ++ F32.show(y))
-    case Zoom{x, y, scale, turn, fingers}:
-      "zoom " ++ F32.show(x) ++ " " ++ F32.show(y) ++ " " ++ hundredths(scale)
-        ++ " " ++ hundredths(turn) ++ " " ++ U32.show(fingers) ++ "\n"
-    case DropOver{x, y}:
-      "over\n"
-    case DropOut{}:
-      "out\n"
-    case Dropped{x, y, files, +text}:
-      "dropped " ++ String.join(files, ",") ++ " "
-        ++ Nat.show(String.length(text)) ++ " " ++ String.take(text, 3n) ++ " "
-        ++ String.drop(text, Nat.sub(String.length(text), 3n)) ++ "\n"
     case _:
       ""
 
@@ -73,11 +59,7 @@ def want(platform: String) -> String:
       ++ "press 1 pen 0 30 30 40 0 False 4000000006\n"
       ++ "move 0 mouse 5 6 4000000007\n"
       ++ "press 0 mouse 5 6 0 True 4000000008\n"
-      ++ "press 0 mouse 5 6 0 False 4000000009\n"
-      ++ "zoom 7 8 200 157 2\n"
-      ++ "over\ndropped /tmp/a b,/etc/x 5 hel llo\n"
-      ++ "over\ndropped  300000 abc jkl\n"
-      ++ "over\nout\n")
+      ++ "press 0 mouse 5 6 0 False 4000000009\n")
 
 def report(window: Window, text: String) -> IO(Unit):
   do IO<Unit>:
