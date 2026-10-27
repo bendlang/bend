@@ -1301,15 +1301,20 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   e.out.push([n, To, lams(e, [...ls, [1, l0]], v), false]);
 }
 
-// def k's checked tree at the terms vs (its parameters left to right,
-// but the specialized ones, in cols; a group's variables): a λ binds its
-// term, and the terms left go to the tree as arguments, (λ{..} x ..), so
-// its matches stay nodes of the case tree. bend2 checks a template once,
-// each ~ parameter p an opaque constant k~p its tree names, which stands
-// for its ~ argument, a column the tree drops
+// Translate def k's checked tree at vs, including group variables.
+// Drop specialized parameters in cols. Bind each leading λ; apply remaining
+// arguments to its case tree. Bend checks each template once, with opaque
+// constants k~p for ~ parameters. Replace each constant with its argument at
+// its checked domain. Substitute earlier arguments into later domains.
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
-  const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
+  let T = tld.T;
+  const ps = tld.x === 0 ? null : new Map(cols.slice(0, tld.x).map((v) => {
+    const F = all_of(e, T)!;
+    const x = typed(v as HTerm, F.A);
+    T = F.B(x);
+    return [k + "~" + F.k, x];
+  }));
   const t0 = B.term_higher(tld.e as B.LTerm);
   let t = ps === null ? B.term_higher(B.term_lower(t0)) : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
