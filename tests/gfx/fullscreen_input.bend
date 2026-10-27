@@ -1,9 +1,9 @@
 # gfx (gfx_fullscreen_input): fullscreen input through window.c's own
 # handlers. fake (fullscreen_input.c) shows the 64 x 48 image at 4x in a
 # 256 x 256 window, bars 32 tall, and feeds a mouse (and on X11 a touch
-# screen): positions and a finger's size come in the image's units, a pointer
-# with no button held leaves on a bar and its press there is dropped, and a
-# grabbed motion is a Look in the image's units. True once those lines come,
+# screen and a pen): positions and a finger's size come in the image's units,
+# a pointer with no button held leaves on a bar once and its press there is
+# dropped, and a grabbed motion is a Look in the image's units. True once those lines come,
 # in order, from the first frame. Without a display, True, as window_title.
 import Base
 
@@ -64,6 +64,8 @@ def want(platform: String) -> String:
       ++ "press 0 mouse 16 -5.5 0 False 4000000006\n"
       ++ "press 1 finger 0.25 0.25 32 32 0 True 4000000008\n"
       ++ "press 1 finger 0.25 0.25 32 32 0 False 4000000009\n"
+      ++ "move 1 pen 32 32 4000000010\n"
+      ++ "leave 1\n"
       ++ "look 10 -5\n")
 
 def report(window: Window, text: String) -> IO(Unit):

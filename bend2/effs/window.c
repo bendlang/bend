@@ -732,15 +732,16 @@ static inline void window_focus(WinQueue* q, bool on) {
   return (u32)(u64)(ev.timestamp * 1000);
 }
 
-// A tablet's pen moves the cursor, but is its own pointer.
-- (u32)pointer:(NSEvent*)ev tool:(WinTool*)t {
+// A tablet's pen moves the cursor, but is its own pointer: one off the
+// image takes no id (if make is NO) but the one it holds.
+- (u32)pointer:(NSEvent*)ev tool:(WinTool*)t make:(BOOL)make {
   if (ev.subtype != NSEventSubtypeTabletPoint) {
     *t = (WinTool){ WIN_MOUSE };
     return 0;
   }
   *t = (WinTool){ WIN_PEN, { ev.pressure, ev.tangentialPressure,
     ev.tilt.x * 90, ev.tilt.y * 90, fmod(ev.rotation + 360, 360) } };
-  return window_id(&q, ev.deviceID, YES);
+  return window_id(&q, ev.deviceID, make);
 }
 
 // The Mac's buttons 1 and 2 are W3C's 2 and 1; an eraser's contact is 5.
@@ -748,10 +749,10 @@ static inline void window_focus(WinQueue* q, bool on) {
 // bars is off the window.
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
   WinTool t;
-  u32     id = [self pointer:ev tool:&t];
   NSPoint p  = [self at:ev];
   NSPoint i  = [self px:p];
   BOOL    on = NSPointInRect(p, [self imageRect]);
+  u32     id = [self pointer:ev tool:&t make:on || !down];
   u32     n  = (u32)ev.buttonNumber;
   if (down && !on && (id >= 16 || q.down[id] == 0)) {
     return;
@@ -778,9 +779,10 @@ static inline void window_focus(WinQueue* q, bool on) {
     return;
   }
   WinTool t;
-  u32     id = [self pointer:ev tool:&t];
   NSPoint p  = [self at:ev];
-  if (id < 16 && (q.down[id] != 0 || NSPointInRect(p, [self imageRect]))) {
+  BOOL    on = NSPointInRect(p, [self imageRect]);
+  u32     id = [self pointer:ev tool:&t make:on];
+  if (id < 16 && (q.down[id] != 0 || on)) {
     NSPoint i = [self px:p];
     window_point(&q, CID(Move), id, t, i.x, i.y, [self ms:ev], 0, 0);
   } else if (id < 16 && NSPointInRect(p, self.bounds)) {
@@ -876,16 +878,19 @@ static inline void window_focus(WinQueue* q, bool on) {
     self.window.collectionBehavior = full_behavior;
     self.layer.contentsGravity = kCAGravityResize;
   }
-  if (full_dirty) {
-    [self setFullscreen:full_want];
-  }
 }
 
 // An ignored toggle sends no delegate notification. Frames and later requests
-// retire it rather than leaving every future target queued forever.
+// retire it rather than leaving every future target queued forever. A target
+// queued during a transition goes here, after it: AppKit ignores a toggle
+// sent from its own did-enter or did-exit notification.
 - (void)fullTick {
   if (full_busy && !full_started && io_tick() >= full_due) {
     [self fullDone];
+  }
+  if (!full_busy && full_dirty) {
+    full_dirty = NO;
+    [self setFullscreen:full_want];
   }
 }
 
@@ -1501,10 +1506,12 @@ static void window_px(BendWin* win, f32* x, f32* y, bool at) {
 }
 
 // Fullscreen, the bars are off the image: a pointer there with no button
-// held is off the window, as one past its edge.
+// held is off the window, as one past its edge. A grab holds the mouse in
+// the window, bars and all, between warps: nothing is off.
 static bool window_off(BendWin* win, u32 id, f32 x, f32 y) {
 #ifdef CID(Window.fullscreen)
-  return win->full_now && win->source && (id >= 16 || win->q.down[id] == 0)
+  return win->full_now && win->source && !win->grab
+    && (id >= 16 || win->q.down[id] == 0)
     && (x < 0 || y < 0 || x >= win->img->width || y >= win->img->height);
 #else
   return false;
@@ -1682,8 +1689,9 @@ static void window_xi_event(BendWin* win, XGenericEventCookie* c, f32* dx,
   if (touch || d->tool == WIN_FINGER) {
     return;
   }
+  // a pen takes an id on the image, not on the bars
   u32 id = d->tool == WIN_MOUSE ? 0 : window_id(&win->q, name | 0xFFFFFFFF,
-    t != XI_Leave);
+    false);
   if (t == XI_Leave) {
     window_leave(win, id, xe->flags);
     return;
@@ -1700,6 +1708,8 @@ static void window_xi_event(BendWin* win, XGenericEventCookie* c, f32* dx,
     }
     return;
   }
+  id = id < 16 || d->tool == WIN_MOUSE ? id
+    : window_id(&win->q, name | 0xFFFFFFFF, true);
   bool    pressed = t == XI_ButtonPress
     || (t != XI_ButtonRelease && id < 16 && win->q.down[id] != 0);
   WinTool tool    = window_tool(d, pressed);
@@ -1756,9 +1766,10 @@ static void window_pump(BendWin* win) {
         window_viewport(win);
       }
     } else if (ev.type == MapNotify || ev.type == UnmapNotify) {
-      // a request waits for the window to show, and goes again if it was
-      // hidden before the window manager answered
+      // a request waits for the window to show, and goes again (its clock
+      // with it) if the window hid before the window manager answered
       win->mapped = ev.type == MapNotify;
+      win->full_sent &= win->mapped;
       window_full_request(win);
 #endif
     } else if (ev.type == KeyPress || ev.type == KeyRelease) {
@@ -2132,11 +2143,12 @@ static void window_close(intptr_t at) {
   NSWindow* win = CFBridgingRelease((void*)at);
   [win.contentView setValue:@NO forKey:@"grab"];
 #ifdef CID(Window.fullscreen)
-  // a transition AppKit never finishes (the display slept) waits 5 s at most
+  // it leaves fullscreen first, after any transition under way; one AppKit
+  // never finishes (the display slept) waits 5 s at most
   BendView* view = (BendView*)win.contentView;
   u64       end  = io_tick() + 5000000000ull;
   [view setFullscreen:NO];
-  while (view->full_busy && io_tick() < end) {
+  while ((view->full_busy || view->full_dirty) && io_tick() < end) {
     @autoreleasepool {
       NSEvent* ev = [NSApp nextEventMatchingMask:NSEventMaskAny
         untilDate:NSDate.distantPast inMode:NSDefaultRunLoopMode dequeue:YES];
