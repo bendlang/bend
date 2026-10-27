@@ -32,10 +32,12 @@ function file_write_bytes(file, data, k) {
   io_park_on(undefined, 0, k, () => file_write_buffer(file, b), 0);
 }
 
-function file_write_at(file, offset, data) {
+function file_write_at(file, offset, data, k) {
   const b = io_unlist(data);
-  return b === null || io_file_append.has(file)
-    ? io_tup(file, io_fail(22)) : file_write_buffer(file, b, offset);
+  if (b === null || io_file_append.has(file)) {
+    return io_tup(file, io_fail(22));
+  }
+  io_park_on(undefined, 0, k, () => file_write_buffer(file, b, offset), 0);
 }
 
 io_eff(CID(File.write_at), file_write_at);

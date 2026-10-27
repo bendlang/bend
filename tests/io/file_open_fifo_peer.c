@@ -13,8 +13,11 @@ Term peer_arm_run(Env e, Term* f, IoWork* w) {
   int  p[2];
   snprintf(path, sizeof path, "/tmp/bend_peer_%d", (int)getpid());
   unlink(path);
-  mkfifo(path, 0600);
-  if (pipe(p) == 0 && fork() == 0) {
+  pid_t child = -1;
+  if (mkfifo(path, 0600) != 0 || pipe(p) != 0 || (child = fork()) < 0) {
+    err_fail("peer_arm: the FIFO, pipe or peer failed");
+  }
+  if (child == 0) {
     dup2(p[0], 0);
     close(p[0]);
     close(p[1]);

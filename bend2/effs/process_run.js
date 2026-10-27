@@ -115,8 +115,9 @@ function process_run_now(program, args, input, maxOutput, timeoutMs) {
     : io_done(io_tup(got.code, got.out, got.err));
 }
 
-function process_run(...a) {
-  io_park_on(undefined, 0, a.pop(), () => process_run_now(...a), 0);
+function process_run(program, args, input, maxOutput, timeoutMs, k) {
+  io_park_on(undefined, 0, k,
+    () => process_run_now(program, args, input, maxOutput, timeoutMs), 0);
 }
 
 io_eff(CID(Process.run), process_run);

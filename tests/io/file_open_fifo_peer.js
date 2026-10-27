@@ -22,9 +22,11 @@ function peer_arm() {
   const lib = peer_lib();
   const path = `/tmp/bend_peer_js_${process.pid}`;
   require("fs").rmSync(path, { force: true });
-  lib.mkfifo(Buffer.from(path + "\0"), 0o600);
   const p = new Int32Array(2);
-  lib.pipe(sys.ptr(p));
+  if (lib.mkfifo(Buffer.from(path + "\0"), 0o600) !== 0
+    || lib.pipe(sys.ptr(p)) !== 0) {
+    throw "bend: peer_arm: the FIFO or pipe failed";
+  }
   sys.fcntl(p[1], 2, 1);
   Bun.spawn(["sh", "-c", PEER_SH, "sh", path],
     { stdin: p[0], stdout: "inherit" });

@@ -25,8 +25,6 @@ function file_open_with(name, mode) {
   }
 }
 
-// The File and Process effects C runs through io_work park here to run
-// at the next wait, after its io_sync, as there.
 function file_open(path, mode, k) {
   io_park_on(undefined, 0, k, () => file_open_with(io_bytes(path), mode), 0);
 }
