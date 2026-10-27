@@ -13,7 +13,10 @@ function udp_send_to_with(socket, host, port, data, b, k, at) {
     return fail(22);
   }
   const go = () => {
-    const sent = sys.sendto(fd, b.length ? sys.ptr(b) : null, b.length, 0, sys.ptr(to), 16);
+    let sent;
+    do {
+      sent = sys.sendto(fd, b.length ? sys.ptr(b) : null, b.length, 0, sys.ptr(to), 16);
+    } while (Number(sent) < 0 && sys.errno() === 4);
     if (Number(sent) < 0) {
       const code = sys.errno();
       if (code !== (sys.mac ? 35 : 11)) {
