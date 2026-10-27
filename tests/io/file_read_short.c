@@ -1,3 +1,6 @@
+// bend-ids 1
+// CID :short.file BEND_CID_short_file
+// bend-ids end
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -49,5 +52,5 @@ Term short_file_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) short_file_use(void) {
-  io_eff(CID(short.file), short_file_run);
+  io_eff(BEND_CID_short_file, short_file_run);
 }

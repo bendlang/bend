@@ -1,3 +1,6 @@
+// bend-ids 1
+// CID :short.file BEND_CID_short_file
+// bend-ids end
 function short_file(n) {
   const fs = require("fs");
   const cp = require("child_process");
@@ -15,4 +18,4 @@ function short_file(n) {
   return rd;
 }
 
-io_eff(CID(short.file), short_file);
+io_eff(BEND_CID_short_file, short_file);

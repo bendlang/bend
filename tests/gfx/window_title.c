@@ -1,3 +1,6 @@
+// bend-ids 1
+// CID :title BEND_CID_title
+// bend-ids end
 Term title_run(Env e, Term* f, IoWork* w) {
 #ifdef __OBJC__
   NSWindow* win = (__bridge NSWindow*)(void*)(uintptr_t)io_hand_v(f[0]);
@@ -24,5 +27,5 @@ Term title_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) title_use(void) {
-  io_eff(CID(title), title_run);
+  io_eff(BEND_CID_title, title_run);
 }

@@ -1,3 +1,6 @@
+// bend-ids 1
+// CID :Host.process_run_node_module BEND_CID_Host_process_run_node_module
+// bend-ids end
 function process_run_node_module() {
   const bun = typeof Bun !== "undefined";
   const node = bun ? Bun.which("node") : process.execPath;
@@ -70,4 +73,4 @@ child.spawn = function (...args) {
   }
 }
 
-io_eff(CID(Host.process_run_node_module), process_run_node_module);
+io_eff(BEND_CID_Host_process_run_node_module, process_run_node_module);

@@ -1,3 +1,8 @@
+// bend-ids 1
+// CID :Interrupted.pair BEND_CID_Interrupted_pair
+// CID :Interrupted.arm BEND_CID_Interrupted_arm
+// CID :Interrupted.check BEND_CID_Interrupted_check
+// bend-ids end
 #include <dlfcn.h>
 
 static int interrupted_fd = -1;
@@ -42,7 +47,7 @@ Term interrupted_check_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) interrupted_use(void) {
-  io_eff(CID(Interrupted.pair), interrupted_pair_run);
-  io_eff(CID(Interrupted.arm), interrupted_arm_run);
-  io_eff(CID(Interrupted.check), interrupted_check_run);
+  io_eff(BEND_CID_Interrupted_pair, interrupted_pair_run);
+  io_eff(BEND_CID_Interrupted_arm, interrupted_arm_run);
+  io_eff(BEND_CID_Interrupted_check, interrupted_check_run);
 }

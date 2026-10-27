@@ -1,3 +1,8 @@
+// bend-ids 1
+// CID :Interrupted.pair BEND_CID_Interrupted_pair
+// CID :Interrupted.arm BEND_CID_Interrupted_arm
+// CID :Interrupted.check BEND_CID_Interrupted_check
+// bend-ids end
 let interrupted_fd = -1;
 let interrupted_stage = 0;
 let interrupted_real;
@@ -51,6 +56,6 @@ function interrupted_check(socket) {
   return socket;
 }
 
-io_eff(CID(Interrupted.pair), interrupted_pair);
-io_eff(CID(Interrupted.arm), interrupted_arm);
-io_eff(CID(Interrupted.check), interrupted_check);
+io_eff(BEND_CID_Interrupted_pair, interrupted_pair);
+io_eff(BEND_CID_Interrupted_arm, interrupted_arm);
+io_eff(BEND_CID_Interrupted_check, interrupted_check);

@@ -523,7 +523,7 @@ function model(e: Safe, T: HTerm): HTerm | null {
   }
   for (const [k, d] of Object.entries(e.book.tlds)) {
     if (d.$ === "Def" && d.e !== undefined && d.x === 0 && d.u !== true
-      && B.term_compare("EQ", e.mb, d.T, T, 0)) {
+      && B.term_compare("EQ", e.mb, B.term_copy(v => v)(d.T), T, 0)) {
       return B.Ref(k);
     }
   }

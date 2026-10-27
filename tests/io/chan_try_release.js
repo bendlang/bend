@@ -1,3 +1,8 @@
+// bend-ids 1
+// CID :Host.run BEND_CID_Host_run
+// CID :Host.payload BEND_CID_Host_payload
+// CID :Host.collected BEND_CID_Host_collected
+// bend-ids end
 function chan_release_run(action) {
   if (globalThis.channel_release !== undefined) {
     return io_run(() => action);
@@ -47,6 +52,6 @@ function chan_release_collected() {
   return globalThis.channel_release.ref.deref() === undefined ? 0 : 1;
 }
 
-io_eff(CID(Host.run), chan_release_run);
-io_eff(CID(Host.payload), chan_release_payload);
-io_eff(CID(Host.collected), chan_release_collected);
+io_eff(BEND_CID_Host_run, chan_release_run);
+io_eff(BEND_CID_Host_payload, chan_release_payload);
+io_eff(BEND_CID_Host_collected, chan_release_collected);

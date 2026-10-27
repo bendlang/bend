@@ -1,3 +1,7 @@
+// bend-ids 1
+// CID #Unit BEND_CID_Unit
+// CID :Heap.check BEND_CID_Heap_check
+// bend-ids end
 static void reuse_need(bool ok, const char* message) {
   if (!ok) err_fail(message);
 }
@@ -85,9 +89,9 @@ Term heap_large_reuse_run(Env e, Term* f, IoWork* w) {
     reuse_small(e, cls_fit(KEEP_WORDS));
     reuse_small(e, cls - 1);
   }
-  return term_pak(CID(Unit), 0);
+  return term_pak(BEND_CID_Unit, 0);
 }
 
 static void __attribute__((constructor)) heap_large_reuse_use(void) {
-  io_eff(CID(Heap.check), heap_large_reuse_run);
+  io_eff(BEND_CID_Heap_check, heap_large_reuse_run);
 }
