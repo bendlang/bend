@@ -8,7 +8,8 @@
 // codomain or a match arm's constructor fields.
 // bend2 converts functions up to η; the kernel does not, and unfolds
 // defs only at applications. Emit functions η-long so the kernel can
-// compare both sides of an equation under their binders.
+// compare both sides of an equation under their binders, where that form
+// is finite.
 //
 // A datatype D<ps> with constructors cs is two defs: D.arms(ps, t)
 // switches on the tag t and gives the Σ chain of that constructor's
@@ -136,6 +137,7 @@ type Safe = {
   grew: boolean;                        // this pass grew a group
   consts: Map<string, Name>;            // the root constants by place and type
   uses: WeakMap<O, Map<number, number>>; // each kernel term's live uses, kept once counted
+  fin: Map<string, boolean>;            // each call's verdict: whether it goes η-long (see eta_finite)
 };
 
 // a model search's fuel left, its round's depth, and whether that round
@@ -215,7 +217,7 @@ function safe_book(book: Book): Out {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): Out | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), log: [], groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap() };
+    todo: [], taken: new Set(), fail: new Map(), log: [], groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap(), fin: new Map() };
   const roots: Array<[Name, string[], string | null]> = [];
   for (const k of [...new Set([...book.order].reverse())].reverse().filter((k) => book.tlds[k].b !== true)) {
     const m = trail(e);
@@ -584,9 +586,10 @@ function model_by(e: Safe, T: HTerm, proj: boolean): HTerm | null {
 }
 
 // a datatype's key on the path: binders inside it count from d, so a
-// field under a ∀ meets the same datatype again
-function model_key(F: HTerm, d: number): string {
-  const at = (i: unknown): unknown => typeof i === "number" && i >= d ? "^" + (i - d) : i;
+// field under a ∀ meets the same datatype again. free, if given, stands
+// for every variable bound outside it
+function model_key(F: HTerm, d: number, free?: string): string {
+  const at = (i: unknown): unknown => typeof i !== "number" ? i : i >= d ? "^" + (i - d) : free ?? i;
   return JSON.stringify(B.term_lower(F, d), (k, v) => k === "s" ? undefined : k !== "i" ? v : Array.isArray(v) ? v.map(at) : at(v));
 }
 
@@ -769,10 +772,10 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     const [h, vs] = pick(e, x, v);
     return tree(e, { ...s, cols: [...vs, ...s.cols.slice(1)] }, h, fs);
   }
-  // a leaf of a function type goes η-long (see the header), and a chain
-  // splits its fields under λs
+  // a leaf of a function type goes η-long if finite (see the header),
+  // and a chain splits its fields under λs
   if (!node(x)) {
-    if (all !== null) {
+    if (all !== null && (top !== undefined || v !== null || eta_finite(e, T!, s.d))) {
       return tree(e, s, eta(t, all), fs);
     }
     return top === undefined ? term(e, s, t, true) : oos("a match arm with no known type");
@@ -947,6 +950,54 @@ function wnf(b: Book, T: HTerm): HTerm {
 function all_of(e: Safe, T: HTerm | null): Of<"All"> | null {
   const G = T === null ? null : wnf(e.book, T);
   return G?.$ === "All" ? G : null;
+}
+
+// whether T's η-long form is finite. A call (a type not headed by a ∀,
+// keyed by the variables it binds, the others alike) unfolds to the calls
+// in its ∀s, and goes whole if it embeds a call of its def it unfolds
+// from: it repeats or grows, and a path that never repeats grows so, so
+// the walk ends. Any other call goes η-long once the calls it unfolds to
+// are decided, so η-long calls never lead back to themselves. e.fin keeps
+// each verdict
+type Call = { r: string; x: B.LTerm; z: number };
+function eta_finite(e: Safe, T: HTerm, d: number, up: Call[] = []): boolean {
+  const h = open(unapply(T)[0])[0], k = h.$ === "All" ? "" : model_key(T, d, "_");
+  if (e.fin.has(k)) {
+    return e.fin.get(k)!;
+  }
+  const x = JSON.parse(k || "{}") as B.LTerm, c = { r: h.$ === "Ref" ? h.k : "", x, z: low_size(x) };
+  if (k && up.some((u) => u.r === c.r && u.z <= c.z && embeds(u.x, x))) {
+    e.fin.set(k, false);
+    return false;
+  }
+  const G = all_of(e, T), n = k ? up.push(c) : 0;
+  if (G !== null) {
+    eta_finite(e, G.A, d, up);
+    eta_finite(e, G.B(B.Var(G.k, d)), d + 1, up);
+  }
+  if (!k) {
+    return true;
+  }
+  up.length = n - 1;
+  e.fin.set(k, e.fin.get(k) ?? true);
+  return e.fin.get(k)!;
+}
+
+// a lowered term's subterms, and its size (a nat counts as its value)
+function low_kids(t: B.LTerm): B.LTerm[] {
+  return Object.values(t).flat().filter(is_o) as unknown[] as B.LTerm[];
+}
+function low_size(t: B.LTerm): number {
+  return B.nat_from_term(t) ?? low_kids(t).reduce((n, y) => n + low_size(y), 1);
+}
+
+// whether b is a with nodes added (homeomorphic embedding), so no smaller:
+// a variable meets any, a nat a no smaller one, a literal any of its kind
+function embeds(a: B.LTerm, b: B.LTerm): boolean {
+  const tag = (t: B.LTerm): string => t.$ === "Var" ? "" : [t.$, "k" in t ? t.k : "", "r" in t ? t.r : ""].join(" ");
+  const n = B.nat_from_term(a), m = B.nat_from_term(b), as = low_kids(a), bs = low_kids(b);
+  return n !== null && m !== null ? n <= m : bs.some((y) => embeds(a, y))
+    || tag(a) === tag(b) && as.length === bs.length && as.every((y, i) => embeds(y, bs[i]));
 }
 
 // λy => t(y), at t's type ∀y:A -> B
@@ -1319,14 +1370,15 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 
 // an argument at its domain A: an untyped λ or match (in a type) takes
 // A as its goal. Any other argument of a function type goes η-long at A
-// (a tree leaf does): it may reach a type, as a side of an equation
-// whose carrier only the call knows. A live self-call's argument stays
-// whole, as the live check reads it, unless its binders differ from A's
+// if finite (as a tree leaf): it may reach a type, as a side of an
+// equation whose carrier only the call knows. A live self-call's
+// argument stays whole, as the live check reads it, unless its binders
+// differ from A's (compared only at a finite A, whose ∀s end)
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
   const bare = node(y) || y.$ === "Ctr";
   const all = bare ? null : all_of(e, A);
-  if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
+  if (all !== null && eta_finite(e, A, s.d) && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
     return term(e, s, eta(x, all), live);
   }
   return term(e, s, T === null && bare ? B.Ann(x, A) : x, live);
