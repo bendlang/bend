@@ -343,6 +343,40 @@ def main() -> String:
     expect((await lint(fixture("import Base\ndef main() -> U32:\n  1\n"), [guard])).ok).toBe(true);
   });
 
+  test("the guard rejects changed imports instead of reusing their old declarations", async () => {
+    fixture("import Base\ndef value() -> U32: 1\n", "guard-first.bend");
+    fixture("import Base\ndef value() -> U32: 2\n", "guard-second.bend");
+    const imports = "import ./guard-first.bend as A\nimport ./guard-second.bend as B\n";
+    const source = "import Base\n" + imports + "def main() -> U32: A.value()\n";
+    const guard: LintRule = {
+      id: "test/import-guard",
+      run: (cx) => {
+        for (const changed of [
+          source.replace("guard-first.bend", "guard-second.bend"),
+          source.replace("as A", "as C"),
+          source.replace("import ./guard-first.bend as A\n", ""),
+          source.replace("import Base\n", ""),
+          source.replace("import Base\n", "import Base\nimport Base\n"),
+          source.replace(imports, imports.split("\n").slice(0, -1).reverse().join("\n") + "\n"),
+        ]) expect(cx.sameDeclarations(changed)).toBe(false);
+        const formatted = source.replace("import Base", "  import  Base # base")
+          .replace("as A", "as  A # first").replaceAll("\n", "\r\n");
+        expect(cx.sameDeclarations(formatted)).toBe(true);
+        return [];
+      },
+    };
+    expect((await lint(fixture(source), [guard])).ok).toBe(true);
+  });
+
+  test("the guard rejects adding Base to a file without it", async () => {
+    const source = "def main() -> Type: Type\n";
+    expect((await lint(fixture(source), [{ id: "test/base-import-guard", run: (cx) => {
+      expect(cx.sameDeclarations("import Base\n" + source)).toBe(false);
+      expect(cx.sameDeclarations(source)).toBe(true);
+      return [];
+    } }])).ok).toBe(true);
+  });
+
   test("indented declarations allow safe formatting", async () => {
     fixture("import Base\nlaw same:\n  for x: U32\n  {x == x : U32}\n", "INDENTED_LAWS.bend");
     for (const source of [
