@@ -142,6 +142,9 @@ Hints:
 
 Bend works best on the back-end, on Linux or macOS.
 
+If an IO program reaches the JavaScript run path's call-stack limit, compile
+it with `bend file.bend -o app` and run `./app` to use the native backend.
+
 # Examples
 
 ### Syntax == Python + dependent types
