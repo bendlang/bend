@@ -3828,9 +3828,23 @@ INLINE u32 a32_cmpx(DEV u32* p, u32 x, u32 v) {
 // Err
 // ===
 
+// A CUDA or HIP lane that posts stops at its next step: in the 4096 steps
+// err_spun waits, it would run on the HEAP_OFF a failed heap_alloc_miss hands
+// out, and AMD faults on the stray loads that follow. The flag is its group's
+// and plain, as a volatile one costs the hot loop up to 10x.
+#ifdef BEND_RTC
+__shared__ u32 err_halted;
+#define err_halt(v) (err_halted = (v))
+#define err_halts   err_halted
+#else
+#define err_halt(v) ((void)0)
+#define err_halts   0
+#endif
+
 #if DEVICE
 
 INLINE void err_post(DEV u64* H, u32 code) {
+  err_halt(1);
   a32_cmpx(a32_at(H, H_ERROR_CODE), 0, code);
 }
 
@@ -3871,7 +3885,7 @@ static void err_trap(int sig) {
 #endif
 
 #define err_seen(H)    (DEVICE && a32_load(a32_at(H, H_ERROR_CODE)) != 0)
-#define err_spun(H, n) ((++*(n) & 4095) == 0 && err_seen(H))
+#define err_spun(H, n) (err_halts || ((++*(n) & 4095) == 0 && err_seen(H)))
 
 #if __METAL_VERSION__ >= 320
 #define err_peek(H) *(volatile DEV u32*)a32_at(H, H_ERROR_CODE)
@@ -4760,6 +4774,7 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass, u32 at) {
     for (u32 i = 0; i < 3; i += 1) {
       a32_store(vote + i, 0);
     }
+    err_halt(0);
   }
   BAR();
   u32 put0      = a32_load(pass == 3 ? ring_held(H, rg) : ring_put(H, rg));
