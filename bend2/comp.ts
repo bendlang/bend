@@ -1572,8 +1572,8 @@ function facts_ctr(def: Name, c: Bend.Ctr, xs: HTerm[]): void {
   ds.filter(dom_live).forEach(([, , A]) => facts_hot(def, A, true, local));
 }
 
-function file_push(sc: Scope, line: string): void {
-  sc.seg.lines.push("  ".repeat(sc.seg.tab) + line);
+function file_push(sc: Scope, ...lines: string[]): void {
+  sc.seg.lines.push(...lines.map((l) => "  ".repeat(sc.seg.tab) + l));
 }
 
 function block(sc: Scope, open: string, go: () => void): void {
