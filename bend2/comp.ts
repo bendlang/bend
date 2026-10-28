@@ -496,6 +496,9 @@ function str_out(s) {
   return s.replace(/\uDC00[^]{3}/gu, "\uFFFD");
 }
 
+function str_in(s) {
+  return s.replace(/\p{Cs}/gu, "\uFFFD");
+}
 `.slice(1),
 };
 
