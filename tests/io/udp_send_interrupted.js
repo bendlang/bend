@@ -1,7 +1,10 @@
-let interrupted_stage;
-let interrupted_restore;
+let interrupted_fd = -1;
+let interrupted_stage = 0;
+let interrupted_real;
+let interrupted_errno;
+let interrupted_pending = false;
 
-function interrupted_arm(socket) {
+function interrupted_port(socket) {
   const sys = io_sys();
   const ffi = require("bun:ffi");
   const lib = ffi.dlopen(sys.mac ? "libSystem.dylib" : "libc.so.6", {
@@ -14,25 +17,31 @@ function interrupted_arm(socket) {
   if (got < 0) {
     throw new Error("getsockname failed");
   }
-  const send = sys.sendto;
-  const error = sys.errno;
-  let pending = false;
-  interrupted_stage = 0;
-  interrupted_restore = () => { sys.sendto = send; sys.errno = error; };
-  sys.errno = () => pending ? 4 : error();
-  sys.sendto = (fd, ...args) => {
-    pending = false;
-    if (fd === socket && interrupted_stage++ < 2) {
-      pending = true;
-      return -1;
-    }
-    return send(fd, ...args);
-  };
   return io_tup(socket, (addr[2] << 8) | addr[3]);
 }
 
+function interrupted_arm(socket) {
+  const sys = io_sys();
+  interrupted_fd = socket;
+  interrupted_stage = 0;
+  if (interrupted_real === undefined) {
+    interrupted_real = sys.sendto;
+    interrupted_errno = sys.errno;
+    sys.errno = () => interrupted_pending ? 4 : interrupted_errno();
+    sys.sendto = (fd, ...args) => {
+      interrupted_pending = false;
+      if (fd === interrupted_fd && interrupted_stage++ < 2) {
+        interrupted_pending = true;
+        return -1;
+      }
+      return interrupted_real(fd, ...args);
+    };
+  }
+  return socket;
+}
+
 function interrupted_check(socket) {
-  interrupted_restore();
+  interrupted_fd = -1;
   const sys = io_sys();
   const set = new Uint8Array((socket >> 6 << 3) + 8);
   set[socket >> 3] |= 1 << (socket & 7);
@@ -48,5 +57,6 @@ function interrupted_check(socket) {
   return socket;
 }
 
+io_eff(CID(Interrupted.port), interrupted_port);
 io_eff(CID(Interrupted.arm), interrupted_arm);
 io_eff(CID(Interrupted.check), interrupted_check);

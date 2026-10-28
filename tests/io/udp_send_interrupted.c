@@ -15,16 +15,20 @@ ssize_t sendto(int fd, const void* data, size_t size, int flags,
   return real(fd, data, size, flags, addr, len);
 }
 
-Term interrupted_arm_run(Env e, Term* f, IoWork* w) {
+Term interrupted_port_run(Env e, Term* f, IoWork* w) {
   int fd = (int)io_hand_v(f[0]);
   struct sockaddr_in addr;
   socklen_t len = sizeof(addr);
   if (getsockname(fd, (struct sockaddr*)&addr, &len)) {
     err_fail("getsockname failed");
   }
-  interrupted_fd = fd;
-  interrupted_stage = 0;
   return io_tup(e, f[0], ntohs(addr.sin_port));
+}
+
+Term interrupted_arm_run(Env e, Term* f, IoWork* w) {
+  interrupted_fd = (int)io_hand_v(f[0]);
+  interrupted_stage = 0;
+  return f[0];
 }
 
 Term interrupted_check_run(Env e, Term* f, IoWork* w) {
@@ -42,6 +46,7 @@ Term interrupted_check_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) interrupted_use(void) {
+  io_eff(CID(Interrupted.port), interrupted_port_run);
   io_eff(CID(Interrupted.arm), interrupted_arm_run);
   io_eff(CID(Interrupted.check), interrupted_check_run);
 }
