@@ -29,7 +29,14 @@ function interrupted_arm(listener) {
   if (interrupted_real === undefined) {
     interrupted_real = sys.connect;
     interrupted_errno = sys.errno;
-    sys.errno = () => interrupted_pending ? 4 : interrupted_errno();
+    // The faked EINTR answers only the errno read that follows the connect.
+    sys.errno = () => {
+      if (interrupted_pending) {
+        interrupted_pending = false;
+        return 4;
+      }
+      return interrupted_errno();
+    };
     sys.connect = (...args) => {
       interrupted_pending = false;
       const r = interrupted_real(...args);
