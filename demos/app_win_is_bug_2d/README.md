@@ -13,7 +13,8 @@ law you_cant_win:
   {Game.is_won(board) == False{} : Bool}
 ```
 
-If you ever see the win screen, the type checker is broken. File a bug.
+Recheck both laws after every edit. The flag law observes the drawn board;
+it does not trust the game's own answer about whether the player won.
 
 **Play it:** https://bend-lang.com/#lab
 
@@ -26,6 +27,10 @@ This demo is a working example of the intended division of labor:
 - [`LAWS.bend`](LAWS.bend) — the **claims**. The human's file: it
   imports the game and asserts what must be true about it. Asserts only;
   it proves nothing.
+- [`BOARD.bend`](BOARD.bend) — the specification's **board reader**. It
+  reads `grid(map_h() - 1)`, just as the page does, and uses Base to locate
+  the flag. Keep it fixed with `LAWS.bend` when rewriting the game or its
+  proofs: a claim must not rely on an editable helper to say what it means.
 - [`PROOF.bend`](PROOF.bend) — the **proofs**. The AI's file: it must fill
   every law it states — Bend rejects an unfilled law — so
   `bend PROOF.bend` is the whole verification, and it fails the moment a
