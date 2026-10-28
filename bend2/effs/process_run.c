@@ -13,80 +13,38 @@
 
 extern char** environ;
 
-typedef struct {
-  char** argv;
-  u32 argc;
-  char* input;
-  u64 input_len;
-  char* out;
-  char* err;
-  u64 out_len;
-  u64 err_len;
-  u64 out_cap;
-  u64 err_cap;
-  u32 max;
-  u32 timeout;
-  u32 status;
-  u32 code;
-} ProcessCall;
+#if defined(CID(Process.run)) || defined(CID(Process.open))
 
-static void process_free(ProcessCall* p) {
-  for (u32 i = 0; i < p->argc; i += 1) {
-    free(p->argv[i]);
+static void process_argv_free(char** argv, u32 argc) {
+  for (u32 i = 0; i < argc; i += 1) {
+    free(argv[i]);
   }
-  free(p->argv);
-  free(p->input);
-  free(p->out);
-  free(p->err);
-  free(p);
+  free(argv);
 }
 
-static void process_append(ProcessCall* p, bool error, const char* data,
-  u64 size) {
-  if (size > (u64)p->max - p->out_len - p->err_len) {
-    p->code = EFBIG;
-    return;
-  }
-  char** buf = error ? &p->err : &p->out;
-  u64* len  = error ? &p->err_len : &p->out_len;
-  u64* cap  = error ? &p->err_cap : &p->out_cap;
-  u64 need  = *len + size;
-  if (need > *cap) {
-    u64 next = *cap ? *cap : 4096;
-    while (next < need) {
-      next *= 2;
+static char** process_argv(Env e, Term program, Term args, u32* argc, u32* code) {
+  u64 len = 0;
+  char* command = io_cstr(e, program, &len);
+  *code = io_nul(command, len) ? EINVAL : 0;
+  u32 capacity = 8;
+  char** argv = io_mem(calloc(capacity, sizeof(char*)));
+  argv[(*argc)++] = command;
+  while (term_aux(args) == CID(Con)) {
+    Term pair[2];
+    spare_free(e, cls_fit(2), ctr_take(e, args, 2, pair));
+    char* arg = io_cstr(e, pair[0], &len);
+    if (io_nul(arg, len)) {
+      *code = EINVAL;
     }
-    if (next > p->max) {
-      next = p->max;
+    if (*argc + 1 >= capacity) {
+      capacity *= 2;
+      argv = io_mem(realloc(argv, capacity * sizeof(char*)));
     }
-    *buf = io_mem(realloc(*buf, next + 1));
-    *cap = next;
+    argv[(*argc)++] = arg;
+    args = pair[1];
   }
-  memcpy(*buf + *len, data, size);
-  *len = need;
-}
-
-// A descriptor that polls readable once the child exits.
-static int process_exitfd(pid_t child) {
-#ifdef __APPLE__
-  int kq = kqueue();
-  struct kevent ev;
-  EV_SET(&ev, child, EVFILT_PROC, EV_ADD | EV_ONESHOT, NOTE_EXIT, 0, NULL);
-  if (kq >= 0 && kevent(kq, &ev, 1, NULL, 0, NULL) != 0) {
-    close(kq);
-    kq = -1;
-  }
-  return kq;
-#elif defined(SYS_pidfd_open)
-  return (int)syscall(SYS_pidfd_open, child, 0);
-#else
-  return -1;
-#endif
-}
-
-static int process_nonblock(int fd) {
-  int flags = fcntl(fd, F_GETFL);
-  return flags < 0 ? -1 : fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+  argv[*argc] = NULL;
+  return argv;
 }
 
 static int process_pipe(int fds[2]) {
@@ -162,6 +120,137 @@ static int process_spawn(pid_t* child, char** argv,
 #endif
 }
 
+static int process_stdio(pid_t* child, char** argv, int input, int out, int err) {
+  posix_spawn_file_actions_t actions;
+  int code = posix_spawn_file_actions_init(&actions);
+  if (code != 0) {
+    return code;
+  }
+  code = posix_spawn_file_actions_adddup2(&actions, input, 0);
+  if (code == 0) {
+    code = posix_spawn_file_actions_adddup2(&actions, out, 1);
+  }
+  if (code == 0 && err >= 0) {
+    code = posix_spawn_file_actions_adddup2(&actions, err, 2);
+  }
+  posix_spawnattr_t attr;
+  posix_spawnattr_t* attrp = NULL;
+  if (code == 0) {
+    code = posix_spawnattr_init(&attr);
+    if (code == 0) {
+      attrp = &attr;
+      sigset_t defaults;
+      sigemptyset(&defaults);
+      sigaddset(&defaults, SIGPIPE);
+      code = posix_spawnattr_setsigdefault(&attr, &defaults);
+      if (code == 0) {
+        short flags = POSIX_SPAWN_SETSIGDEF;
+#ifdef __APPLE__
+        flags |= POSIX_SPAWN_CLOEXEC_DEFAULT;
+#endif
+        code = posix_spawnattr_setflags(&attr, flags);
+      }
+    }
+  }
+#ifndef __APPLE__
+  if (code == 0) {
+    code = posix_spawn_file_actions_addclosefrom_np(&actions, 3);
+  }
+#endif
+  if (code == 0) {
+    code = process_spawn(child, argv, &actions, attrp);
+  }
+  if (attrp != NULL) {
+    posix_spawnattr_destroy(attrp);
+  }
+  posix_spawn_file_actions_destroy(&actions);
+  return code;
+}
+
+#endif
+
+// A descriptor that polls readable once the child exits.
+static int process_exitfd(pid_t child) {
+#ifdef __APPLE__
+  int kq = kqueue();
+  struct kevent ev;
+  EV_SET(&ev, child, EVFILT_PROC, EV_ADD | EV_ONESHOT, NOTE_EXIT, 0, NULL);
+  if (kq >= 0 && kevent(kq, &ev, 1, NULL, 0, NULL) != 0) {
+    close(kq);
+    kq = -1;
+  }
+  return kq;
+#elif defined(SYS_pidfd_open)
+  return (int)syscall(SYS_pidfd_open, child, 0);
+#else
+  return -1;
+#endif
+}
+
+static u32 process_status(int status) {
+  return WIFEXITED(status) ? (u32)WEXITSTATUS(status)
+    : WIFSIGNALED(status) ? 128 + (u32)WTERMSIG(status) : 1;
+}
+
+#ifdef CID(Process.run)
+
+typedef struct {
+  char** argv;
+  u32 argc;
+  char* input;
+  u64 input_len;
+  char* out;
+  char* err;
+  u64 out_len;
+  u64 err_len;
+  u64 out_cap;
+  u64 err_cap;
+  u32 max;
+  u32 timeout;
+  u32 status;
+  u32 code;
+} ProcessCall;
+
+static void process_free(ProcessCall* p) {
+  process_argv_free(p->argv, p->argc);
+  free(p->input);
+  free(p->out);
+  free(p->err);
+  free(p);
+}
+
+static void process_append(ProcessCall* p, bool error, const char* data,
+  u64 size) {
+  if (size > (u64)p->max - p->out_len - p->err_len) {
+    p->code = EFBIG;
+    return;
+  }
+  char** buf = error ? &p->err : &p->out;
+  u64* len  = error ? &p->err_len : &p->out_len;
+  u64* cap  = error ? &p->err_cap : &p->out_cap;
+  u64 need  = *len + size;
+  if (need > *cap) {
+    u64 next = *cap ? *cap : 4096;
+    while (next < need) {
+      next *= 2;
+    }
+    if (next > p->max) {
+      next = p->max;
+    }
+    *buf = io_mem(realloc(*buf, next + 1));
+    *cap = next;
+  }
+  memcpy(*buf + *len, data, size);
+  *len = need;
+}
+
+
+static int process_nonblock(int fd) {
+  int flags = fcntl(fd, F_GETFL);
+  return flags < 0 ? -1 : fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+}
+
+
 static void process_call(IoWork* w) {
   ProcessCall* p = (ProcessCall*)w->data;
   int pipes[3][2] = {{-1, -1}, {-1, -1}, {-1, -1}};
@@ -180,49 +269,7 @@ static void process_call(IoWork* w) {
     p->code = errno;
     goto done;
   }
-  posix_spawn_file_actions_t actions;
-  p->code = posix_spawn_file_actions_init(&actions);
-  if (p->code != 0) {
-    goto done;
-  }
-  p->code = posix_spawn_file_actions_adddup2(&actions, pipes[0][0], 0);
-  if (p->code == 0) {
-    p->code = posix_spawn_file_actions_adddup2(&actions, pipes[1][1], 1);
-  }
-  if (p->code == 0) {
-    p->code = posix_spawn_file_actions_adddup2(&actions, pipes[2][1], 2);
-  }
-  posix_spawnattr_t attr;
-  posix_spawnattr_t* attrp = NULL;
-  if (p->code == 0) {
-    p->code = posix_spawnattr_init(&attr);
-    if (p->code == 0) {
-      attrp = &attr;
-      sigset_t defaults;
-      sigemptyset(&defaults);
-      sigaddset(&defaults, SIGPIPE);
-      p->code = posix_spawnattr_setsigdefault(&attr, &defaults);
-      if (p->code == 0) {
-        short flags = POSIX_SPAWN_SETSIGDEF;
-#ifdef __APPLE__
-        flags |= POSIX_SPAWN_CLOEXEC_DEFAULT;
-#endif
-        p->code = posix_spawnattr_setflags(&attr, flags);
-      }
-    }
-  }
-#ifndef __APPLE__
-  if (p->code == 0) {
-    p->code = posix_spawn_file_actions_addclosefrom_np(&actions, 3);
-  }
-#endif
-  if (p->code == 0) {
-    p->code = process_spawn(&child, p->argv, &actions, attrp);
-  }
-  if (attrp != NULL) {
-    posix_spawnattr_destroy(attrp);
-  }
-  posix_spawn_file_actions_destroy(&actions);
+  p->code = process_stdio(&child, p->argv, pipes[0][0], pipes[1][1], pipes[2][1]);
   if (p->code != 0) {
     child = -1;
     goto done;
@@ -306,8 +353,7 @@ static void process_call(IoWork* w) {
     }
   }
   if (p->code == 0) {
-    p->status = WIFEXITED(status) ? (u32)WEXITSTATUS(status)
-      : WIFSIGNALED(status) ? 128 + (u32)WTERMSIG(status) : 1;
+    p->status = process_status(status);
   }
 done:
   if (exitfd >= 0) {
@@ -338,28 +384,7 @@ static Term process_pack(Env e, IoWork* w) {
 
 Term process_run_run(Env e, Term* f, IoWork* w) {
   ProcessCall* p = io_mem(calloc(1, sizeof(ProcessCall)));
-  u64 len = 0;
-  char* command = io_cstr(e, f[0], &len);
-  p->code = io_nul(command, len) ? EINVAL : 0;
-  u32 capacity = 8;
-  p->argv = io_mem(calloc(capacity, sizeof(char*)));
-  p->argv[p->argc++] = command;
-  Term xs = f[1];
-  while (term_aux(xs) == CID(Con)) {
-    Term pair[2];
-    spare_free(e, cls_fit(2), ctr_take(e, xs, 2, pair));
-    char* arg = io_cstr(e, pair[0], &len);
-    if (io_nul(arg, len)) {
-      p->code = EINVAL;
-    }
-    if (p->argc + 1 >= capacity) {
-      capacity *= 2;
-      p->argv = io_mem(realloc(p->argv, capacity * sizeof(char*)));
-    }
-    p->argv[p->argc++] = arg;
-    xs = pair[1];
-  }
-  p->argv[p->argc] = NULL;
+  p->argv = process_argv(e, f[0], f[1], &p->argc, &p->code);
   p->input = io_cstr(e, f[2], &p->input_len);
   p->max = (u32)f[3];
   p->timeout = (u32)f[4];
@@ -374,3 +399,99 @@ Term process_run_run(Env e, Term* f, IoWork* w) {
 static void __attribute__((constructor)) process_run_use(void) {
   io_eff(CID(Process.run), process_run_run);
 }
+
+#endif
+
+#ifdef CID(Process.open)
+
+typedef struct {
+  char** argv;
+  u32 argc;
+  u32 code;
+  pid_t pid;
+  int input;
+  int output;
+} ProcessOpen;
+
+static void process_open_call(IoWork* w) {
+  ProcessOpen* p = (ProcessOpen*)w->data;
+  int pipes[2][2] = {{-1, -1}, {-1, -1}};
+  for (int i = 0; i < 2; i += 1) {
+    if (process_pipe(pipes[i]) != 0) {
+      p->code = errno;
+      goto done;
+    }
+  }
+  p->code = process_stdio(&p->pid, p->argv, pipes[0][0], pipes[1][1], -1);
+  if (p->code == 0) {
+    p->input = pipes[0][1]; pipes[0][1] = -1;
+    p->output = pipes[1][0]; pipes[1][0] = -1;
+  }
+done:
+  for (int i = 0; i < 2; i += 1) {
+    for (int j = 0; j < 2; j += 1) {
+      if (pipes[i][j] >= 0) {
+        close(pipes[i][j]);
+      }
+    }
+  }
+}
+
+static Term process_open_pack(Env e, IoWork* w) {
+  ProcessOpen* p = (ProcessOpen*)w->data;
+  Term result = p->code != 0 ? io_fail(e, p->code, NULL)
+    : io_done(e, io_tup(e, (u32)p->pid,
+      io_tup(e, io_hand(p->input), io_hand(p->output))));
+  process_argv_free(p->argv, p->argc);
+  free(p);
+  return result;
+}
+
+Term process_open_run(Env e, Term* f, IoWork* w) {
+  ProcessOpen* p = io_mem(calloc(1, sizeof(ProcessOpen)));
+  p->argv = process_argv(e, f[0], f[1], &p->argc, &p->code);
+  w->data = (char*)p;
+  return p->code != 0 ? process_open_pack(e, w)
+    : io_work(w, process_open_call, process_open_pack);
+}
+
+static void __attribute__((constructor)) process_open_use(void) {
+  io_eff(CID(Process.open), process_open_run);
+}
+
+#endif
+
+#ifdef CID(Process.wait)
+
+static Term process_wait_more(Env e, IoWork* w) {
+  int status = 0;
+  pid_t got;
+  do {
+    got = waitpid((pid_t)w->hand, &status, WNOHANG);
+  } while (got < 0 && errno == EINTR);
+  if (got == 0) {
+    return w->made >= 0
+      ? io_wait_on(w, (int)w->made, POLLIN, 0, process_wait_more)
+      : io_wait_on(w, 0, 0, io_tick() + 1000000ull, process_wait_more);
+  }
+  int code = got < 0 ? errno : 0;
+  if (w->made >= 0) {
+    close((int)w->made);
+  }
+  return code != 0 ? io_fail(e, code, NULL) : io_done(e, process_status(status));
+}
+
+Term process_wait_run(Env e, Term* f, IoWork* w) {
+  if (f[0] == 0 || f[0] > INT32_MAX) {
+    return io_fail(e, EINVAL, NULL);
+  }
+  w->hand = (intptr_t)f[0];
+  w->made = process_exitfd((pid_t)w->hand);
+  return process_wait_more(e, w);
+}
+
+static void __attribute__((constructor)) process_wait_use(void) {
+  io_eff(CID(Process.wait), process_wait_run);
+}
+
+#endif

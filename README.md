@@ -234,6 +234,8 @@ def add_zero(x):
 - Base is small: expect to write helpers other languages ship built in.
 - Effects are few: print, env, time, sleep, spawn, channels, files, TCP, UDP.
   UDP buffers fit IPv4's 65,507-byte payload limit.
+  Process.open gives interactive child pipes on C and Bun; Process.wait reaps
+  the child. File.stdin gives an owned stdin duplicate on those two backends.
 - No TLS, HTTP library, JSON or regex for now (you can add them as foreigns).
 - Targets are C, Metal, CUDA and JavaScript; Lua, Luau and Python are planned.
 - The JavaScript target runs on one core and has no graphics or audio.

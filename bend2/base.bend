@@ -238,6 +238,20 @@ def Process.run(program: String, args: List<String>, input: String,
   import "./effs/process_run.c"
   import "./effs/process_run.js"
 
+# Runs argv without a shell, answering (pid, (child stdin, child stdout)).
+# Stderr is inherited. Close stdin for EOF, close both Files, and wait for pid.
+# Native C or Bun JS; Node answers ENOSYS.
+def Process.open(program: String, args: List<String>) ->
+  IO(Result<&1, &1, U32 & String, U32 & (File & File)>):
+  import "./effs/process_run.c"
+  import "./effs/process_run.js"
+
+# Reaps one Process.open child: its exit code, or 128 + the terminating signal.
+# A pending wait parks; the caller still owns the child's File handles.
+def Process.wait(pid: U32) -> IO(Result<&1, &1, U32 & String, U32>):
+  import "./effs/process_run.c"
+  import "./effs/process_run.js"
+
 def IO.die(-A: Type, code: U32, msg: String) -> IO(A):
   R => k => Halt{code, msg}
 
@@ -329,6 +343,12 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
   both = IO.bind(Chan(Maybe<&1, A>), Chan(Maybe<&1, A>), IO.fork(Maybe<&1, A>, won),
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
+
+# An owned close-on-exec duplicate of stdin, sharing its read cursor.
+# Close the File when finished. Native C or Bun JS; Node answers ENOSYS.
+def File.stdin() -> IO(Result<&1, &1, U32 & String, File>):
+  import "./effs/file_stdin.c"
+  import "./effs/file_stdin.js"
 
 # Modes: "r" reads, "r+" reads and writes without creating or truncating,
 # "w" creates or truncates, "a" appends or creates, "x" creates exclusively.
