@@ -438,11 +438,10 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // template prefix, filled into its type; the tree takes them. A def with
 // no body goes out opaque, at a model of its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
-  const T = B.tele_fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[], B.ctx_nil());
+  const { s, xs, T } = tele_open(e, { ...scope_nil(), self: n }, tld.T, cols, tld.x);
   const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T)) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
-  const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
-  e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
+  e.out.push([n, To, t === null ? arm(e, s, k, xs, []) : tree(e, s, t, []), t !== null]);
 }
 
 // D.arms and D, at D's specialized arguments
@@ -468,9 +467,9 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   }
 }
 
-// the first n parameters of the telescope T (all, at most), from scope s on: one cols
-// specializes takes its argument, any other binds a kernel variable; the
-// binders, the arguments and the rest of T
+// Open up to n parameters of T from scope s. Supplied columns keep their
+// checked domains; substitute them into later domains. Bind other parameters
+// to kernel variables. Return the binders, arguments, scope and rest of T.
 function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Scope; ps: Binder[]; xs: HTerm[]; T: HTerm } {
   const r = { s, ps: [] as Binder[], xs: [] as HTerm[], T };
   for (let j = 0; j < n; j++) {
@@ -479,11 +478,12 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
       break;
     }
     const q = quant(F.q);
-    if (cols[j] == null) {
+    const v = cols[j];
+    if (v == null) {
       r.ps.push([q, r.s.D, term(e, r.s, F.A, false)]);
       r.s = scope_kq(scope_bind(r.s, { $: "Var", l: r.s.D }, F.A, true), r.s.D, q);
     }
-    r.xs.push(cols[j] ?? B.Var(F.k, r.s.d - 1));
+    r.xs.push(v == null ? B.Var(F.k, r.s.d - 1) : typed(v, F.A));
     r.T = F.B(r.xs[j]);
   }
   return r;
@@ -1304,17 +1304,10 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
 // Translate def k's checked tree at vs, including group variables.
 // Drop specialized parameters in cols. Bind each leading λ; apply remaining
 // arguments to its case tree. Bend checks each template once, with opaque
-// constants k~p for ~ parameters. Replace each constant with its argument at
-// its checked domain. Substitute earlier arguments into later domains.
+// constants k~p for ~ parameters. Replace them with the typed cols.
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
-  let T = tld.T;
-  const ps = tld.x === 0 ? null : new Map(cols.slice(0, tld.x).map((v) => {
-    const F = all_of(e, T)!;
-    const x = typed(v as HTerm, F.A);
-    T = F.B(x);
-    return [k + "~" + F.k, x];
-  }));
+  const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
   const t0 = B.term_higher(tld.e as B.LTerm);
   let t = ps === null ? B.term_higher(B.term_lower(t0)) : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
