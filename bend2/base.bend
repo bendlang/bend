@@ -1645,15 +1645,11 @@ def U32.log2.go(+k: Nat, +n: U32, b: Nat) -> Nat:
 def U32.log2(n: U32) -> Nat:
   U32.log2.go(5n, n, 0n)
 
-def U32.popcount.go(+k: Nat, +n: U32, c: Nat) -> Nat:
-  match k:
-    case 0n:
-      c
-    case 1n+p:
-      U32.popcount.go(p, U32.shr(n), Nat.add(c, U32.to_nat(U32.and(n, 1))))
-
-def U32.popcount(n: U32) -> Nat:
-  U32.popcount.go(32n, n, 0n)
+def U32.popcount(+n: U32) -> Nat:
+  +a = U32.sub(n, U32.and(U32.shrn(n, 1n), 1431655765))
+  +b = U32.add(U32.and(a, 858993459), U32.and(U32.shrn(a, 2n), 858993459))
+  c = U32.and(U32.add(b, U32.shrn(b, 4n)), 252645135)
+  U32.to_nat(U32.shrn(U32.mul(c, 16843009), 24n))
 
 # 32 at 0
 def U32.ctz(+n: U32) -> Nat:
