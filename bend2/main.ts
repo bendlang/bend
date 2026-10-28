@@ -361,9 +361,8 @@ async function cli_checkup(file: string): Promise<void> {
     cli_say(1, "--- " + m[1] + " ---\n");
     let code = 1;
     try {
-      const own = /^(?:[\t\r ]*(?:(?:#|import )[^\n]*)?\n)*[\t ]*import Base\s/
-        .test(fs.readFileSync(at, "utf8"));
-      code = book_run(await book_read(at, own ? base : undefined), [at]);
+      code = book_run(await book_read(at, imports_base(at) ? base : undefined),
+        [at]);
     } catch (e) {
       cli_say(2, book_err(e) + "\n");
     }
@@ -1048,6 +1047,12 @@ async function book_read(file: string, base?: Bend.Book,
   return book;
 }
 
+// whether file's header imports Base, so its book can start from Base's
+function imports_base(file: string): boolean {
+  return /^(?:[\t\r ]*(?:(?:#|import )[^\n]*)?\n)*[\t ]*import Base\s/
+    .test(fs.readFileSync(file, "utf8"));
+}
+
 // a failed check: bend2's reason, which book_err prints under FAIL
 class Check_Fail {
   constructor(readonly why: unknown) {}
@@ -1104,9 +1109,14 @@ function book_err(e: unknown): string {
 // Load
 // ====
 
+// Base, read and checked once for every .bend module this process loads
+let load_base: Promise<Bend.Book> | undefined;
+
 async function load_js(path: string): Promise<string> {
   try {
-    return Comp.js_lib(await book_read(path), true);
+    const base = imports_base(path) ? await (load_base ??= book_read(BASE))
+      : undefined;
+    return Comp.js_lib(await book_read(path, base), true);
   } catch (e) {
     throw new Error(book_err(e));
   }
