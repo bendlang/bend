@@ -905,14 +905,44 @@ export const BEND_HUB   = process.env.BEND_HUB ?? "https://hub.bend-lang.com";
 
 export const NAMED = /^([a-z][a-z0-9-]{0,63})@((?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){3})$/;
 
+async function hub_hash(src: string): Promise<string> {
+  return Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(src))).toString("hex");
+}
+
+function hub_match(sum: string, hash: string): boolean {
+  return hash.length >= 32 && sum.slice(0, hash.length) === hash;
+}
+
 async function hub_get(book: Book, sub: string, hash: string, spn?: Span): Promise<string> {
   const res = await fetch(BEND_HUB + "/" + sub, { signal: AbortSignal.timeout(30000) }).catch(() => null);
   const src = res?.ok ? await res.text().catch(() => "") : "";
-  const sum = Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(src))).toString("hex");
-  if (!res?.ok || hash.length < 32 || sum.slice(0, hash.length) !== hash || path.posix.normalize("/" + sub) !== "/" + sub) {
+  const sum = await hub_hash(src);
+  if (!res?.ok || !hub_match(sum, hash) || path.posix.normalize("/" + sub) !== "/" + sub) {
     throw Err(book, ctx_nil(), "a file at " + BEND_HUB + "/" + sub + " hashing to " + hash, undefined, spn);
   }
   return src;
+}
+
+// A finished download leaves BEND_LIB/0x<pin>.manifest (sibling of the
+// package dir). A hit re-checks that file against the pin and each listed
+// path against its line; a mismatch fails (no quiet re-download). A miss,
+// or a package dir with no saved manifest yet, still fetches.
+async function hub_check(book: Book, pkg: string, pin: string, man: string, spn?: Span): Promise<void> {
+  if (!hub_match(await hub_hash(man), pin)) {
+    throw Err(book, ctx_nil(), "a cached package at " + BEND_LIB + "/" + pkg + " hashing to " + pin, undefined, spn);
+  }
+  for (const line of man.trim().split("\n")) {
+    if (line === "") {
+      continue;
+    }
+    const [h, p] = line.split(" ");
+    const at = BEND_LIB + "/" + pkg + "/" + p;
+    const src = fs.existsSync(at) ? fs.readFileSync(at, "utf8") : "";
+    if (!fs.existsSync(at) || !hub_match(await hub_hash(src), h)
+      || path.posix.normalize("/" + p) !== "/" + p) {
+      throw Err(book, ctx_nil(), "a cached file at " + at + " hashing to " + h, undefined, spn);
+    }
+  }
 }
 
 async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
@@ -936,17 +966,26 @@ async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
 }
 
 async function book_file(book: Book, file: string, spn?: Span): Promise<string> {
-  if (file.startsWith(BEND_LIB + "/") && !fs.existsSync(file)) {
+  if (file.startsWith(BEND_LIB + "/")) {
     const pkg = file.slice(BEND_LIB.length + 1).split("/")[0];
-    const man = await hub_get(book, pkg + "/manifest", pkg.slice(2), spn);
-    const fls = man.trim().split("\n").map((l) => l.split(" "));
-    const srs = await Promise.all(fls.map(([h, p]) =>
-      hub_get(book, pkg + "/" + p, h, spn)));
-    fls.forEach(([, p], i) => {
-      const at = BEND_LIB + "/" + pkg + "/" + p;
-      fs.mkdirSync(path.dirname(at), { recursive: true });
-      fs.writeFileSync(at, srs[i]);
-    });
+    if (/^0x[0-9a-f]+$/.test(pkg)) {
+      const pin = pkg.slice(2);
+      const manAt = BEND_LIB + "/" + pkg + ".manifest";
+      if (!fs.existsSync(file) || !fs.existsSync(manAt)) {
+        const man = await hub_get(book, pkg + "/manifest", pin, spn);
+        const fls = man.trim().split("\n").map((l) => l.split(" "));
+        const srs = await Promise.all(fls.map(([h, p]) =>
+          hub_get(book, pkg + "/" + p, h, spn)));
+        fls.forEach(([, p], i) => {
+          const at = BEND_LIB + "/" + pkg + "/" + p;
+          fs.mkdirSync(path.dirname(at), { recursive: true });
+          fs.writeFileSync(at, srs[i]);
+        });
+        fs.writeFileSync(manAt, man);
+      } else {
+        await hub_check(book, pkg, pin, fs.readFileSync(manAt, "utf8"), spn);
+      }
+    }
   }
   if (!fs.existsSync(file)) {
     throw Err(book, ctx_nil(), "no such file: " + file, undefined, spn);

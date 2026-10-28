@@ -22,7 +22,9 @@
 // update runs the installer again; guide, base and a program run through
 // the executable; run in a project, it preloads none of its bunfig.toml
 // and reads none of its .env (its BEND_LIB would name a package and swap in
-// the project's copy); a tampered sha256 installs nothing; a Windows or a MIPS
+// the project's copy); a BEND_LIB cache hit re-checks the saved manifest and
+// refuses a tampered package file (#1837); a tampered sha256 installs
+// nothing; a Windows or a MIPS
 // uname is refused in one line; a 2.0.0-2.0.7 launcher's ping and its
 // latest.json fallback name the version, no sha256 and the move notice; the
 // formula carries the sum; --publish ships LICENSE files, names the license
@@ -642,6 +644,37 @@ try {
   check("a project's bunfig.toml and .env do nothing: " + own.out + own.err,
     !fs.existsSync(path.join(proj, "preloaded")) && own.code === 1
     && own.err.includes("a package named bend-ping-probe@1.0.0.0 on " + ORIGIN));
+  // #1837: a BEND_LIB hit must re-hash the saved manifest and each file.
+  const cache = path.join(TMP, "lib1837");
+  const body = "import Base\ndef five() -> Nat:\n  5n\n";
+  const sha = (t: string) => crypto.createHash("sha256").update(t).digest("hex");
+  const man = sha(body) + " x.bend\n";
+  const pin = "0x" + sha(man).slice(0, 32);
+  fs.mkdirSync(path.join(cache, pin), { recursive: true });
+  fs.writeFileSync(path.join(cache, pin, "x.bend"), body);
+  fs.writeFileSync(path.join(cache, pin + ".manifest"), man);
+  fs.writeFileSync(path.join(TMP, "hit1837.bend"), "import Base\nimport "
+    + pin + "/x.bend as X\ndef main() -> Nat:\n  X.five\n");
+  const dead = { BEND_LIB: cache, BEND_HUB: "http://127.0.0.1:9",
+    BEND_NO_TELEMETRY: "1" };
+  const hit = await bend([path.join(TMP, "hit1837.bend")], dead);
+  check("a verified BEND_LIB hit loads offline: " + hit.out + hit.err,
+    hit.code === 0 && hit.out === "5n\n");
+  fs.writeFileSync(path.join(cache, pin, "x.bend"),
+    "import Base\ndef five() -> Nat:\n  6n\n");
+  const bad = await bend([path.join(TMP, "hit1837.bend")], dead);
+  check("a tampered BEND_LIB file is refused on a hit: " + bad.out + bad.err,
+    bad.code === 1 && bad.err.includes("hashing to " + sha(body).slice(0, 32)));
+  const short = path.join(TMP, "lib1837s");
+  fs.mkdirSync(path.join(short, "0xab"), { recursive: true });
+  fs.writeFileSync(path.join(short, "0xab", "x.bend"), body);
+  fs.writeFileSync(path.join(short, "0xab.manifest"), "ab x.bend\n");
+  fs.writeFileSync(path.join(TMP, "short1837.bend"), "import Base\nimport"
+    + " 0xab/x.bend as X\ndef main() -> Nat:\n  X.five\n");
+  const sh = await bend([path.join(TMP, "short1837.bend")],
+    { ...dead, BEND_LIB: short });
+  check("a short pin fails on a BEND_LIB hit: " + sh.out + sh.err,
+    sh.code === 1 && sh.err.includes("hashing to ab"));
   script = script.replace(sum, "0".repeat(64));
   const fake = await install();
   script = script.replace("0".repeat(64), sum);

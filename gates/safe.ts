@@ -15,6 +15,7 @@
 //
 //   bun gates/safe.ts tests|hub <bendtt binary>
 import * as child from "node:child_process";
+import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { ROOT, node_pool, ssh } from "./_lib.ts";
@@ -38,10 +39,39 @@ if (corpus === "tests") {
   all = find("tests", ROOT);
   tar = child.spawnSync("tar", [...base, "-C", ROOT, "tests"], { maxBuffer: 1 << 28 }).stdout;
 } else if (corpus === "hub" && fs.existsSync(HUB)) {
-  all = find(".", HUB).map((f) => "lib/" + f.slice(2));
-  const lib = child.spawnSync("find", [".", "-name", "*.bend", "-o", "-path", "./names/*", "-type", "f"], { cwd: HUB, encoding: "utf8" })
+  // book_file verifies BEND_LIB/0x<pin>.manifest on a hit; stage sibling
+  // manifests (and ship .c/.js too) so the restored cache still checks.
+  const hub = fs.mkdtempSync("/tmp/bend-safe-hub-");
+  child.spawnSync("cp", ["-a", HUB + "/.", hub], { stdio: "ignore" });
+  const sha = (t: string | Buffer) =>
+    crypto.createHash("sha256").update(t).digest("hex");
+  for (const ent of fs.readdirSync(hub)) {
+    if (!/^0x[0-9a-f]+$/.test(ent)) {
+      continue;
+    }
+    const dir = path.join(hub, ent);
+    if (!fs.statSync(dir).isDirectory()) {
+      continue;
+    }
+    const manAt = path.join(hub, ent + ".manifest");
+    const inside = path.join(dir, "manifest");
+    if (fs.existsSync(inside)) {
+      fs.copyFileSync(inside, manAt);
+      continue;
+    }
+    const files = child.spawnSync("find", [".", "-type", "f"],
+      { cwd: dir, encoding: "utf8" }).stdout.split("\n")
+      .filter((f) => f !== "" && f !== "./manifest")
+      .map((f) => f.slice(2)).sort();
+    fs.writeFileSync(manAt, files.map((p) =>
+      sha(fs.readFileSync(path.join(dir, p))) + " " + p + "\n").join(""));
+  }
+  all = find(".", hub).map((f) => "lib/" + f.slice(2));
+  const lib = child.spawnSync("find", [".", "(", "-path", "./0x*", "-o",
+    "-path", "./names/*", ")", "-type", "f"], { cwd: hub, encoding: "utf8" })
     .stdout.split("\n").filter((l) => l !== "");
-  tar = child.spawnSync("tar", [...base, "-C", HUB, ...lib], { maxBuffer: 1 << 28 }).stdout;
+  tar = child.spawnSync("tar", [...base, "-C", hub, ...lib], { maxBuffer: 1 << 28 }).stdout;
+  fs.rmSync(hub, { recursive: true, force: true });
 } else {
   throw new Error("usage: [SAFE_HUB=<hub store>] bun gates/safe.ts tests|hub <bendtt binary>");
 }
