@@ -152,8 +152,9 @@ abbrev Parse := ReaderT ByteArray (StateT Nat (Except String))
 -- Constants
 -- =========
 
--- the step budget of each wnf, conv and check; a native build at -O3
--- runs it within a 4 GB stack (LEAN_STACK_SIZE_KB=4194304)
+-- the step budget of each wnf, conv and check (a comparison's rigid and
+-- full passes get one each); a native build at -O3 runs it within a 4 GB
+-- stack (LEAN_STACK_SIZE_KB=4194304)
 def FUEL : Nat := 400000000
 
 -- Quan
@@ -476,7 +477,7 @@ def Book.length (bk : Book) : Nat :=
 def Book.of (ds : List Def) : Book :=
   ⟨ds, Book.table 0 ds, rfl⟩
 
--- the empty book: every def in it is rigid
+-- the empty book: it unfolds no def
 def Book.nil : Book :=
   Book.of []
 
