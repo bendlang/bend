@@ -6422,9 +6422,9 @@ function io_run(m) {
   io_active = io;
   try {
     io_push(run_loop(m()), (x) => ({ $: "Emit", value: x }), true);
-    let look = 0;
+    let look = 0, next = [];
     for (let n = 0;; n += 1) {
-      if (io.runs.length === 0) {
+      if (io.runs.length + next.length === 0) {
         if (io.live === 0) {
           return 0;
         }
@@ -6442,7 +6442,8 @@ function io_run(m) {
           io_wait(io, false);
         }
       }
-      const s = io.runs.shift();
+      if (!next.length) next = io.runs.reverse(), io.runs = [];
+      const s = next.pop();
       let op = s.fun(s.arg);
       for (let left = 64; op !== undefined; left -= 1) {
         if (op.$ === "Emit") {
