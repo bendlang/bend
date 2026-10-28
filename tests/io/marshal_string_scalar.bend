@@ -1,8 +1,8 @@
-# io (io_marshal_string_scalar): an effect answers host text through
-# str_in, and the String it makes is walked by Char in every lane. The
-# boundary scalars (55295, 57344, 1114111) cross as one-Char strings, a
-# Char answer's code reads back exact, and a host's lone surrogate comes
-# in as U+FFFD: torn ("a" then D800) counts 2.
+# io (io_marshal_string_scalar): an effect's String answer is walked by
+# Char in every lane. Valid host text needs no str_in: the boundary
+# scalars (55295, 57344, 1114111) cross as one-Char strings, and a Char
+# answer's code reads back exact. A host's lone surrogate comes in as
+# U+FFFD through the effect's str_in: torn ("a" then D800) counts 2.
 import Base
 
 law low:

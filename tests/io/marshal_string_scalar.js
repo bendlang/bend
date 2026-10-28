@@ -1,14 +1,14 @@
 function low() {
-  return str_in("\uD7FF");
+  return "\uD7FF";
 }
 function high() {
-  return str_in("\uE000");
+  return "\uE000";
 }
 function apex() {
-  return str_in("\u{10FFFF}");
+  return "\u{10FFFF}";
 }
 function edge() {
-  return str_in("\uD7FF");
+  return "\uD7FF";
 }
 function torn() {
   return str_in("a\uD800");
