@@ -196,6 +196,15 @@ def add_zero(x):
       {==}
 ```
 
+### Native fatal cleanup
+
+A native C effect can set `err_cleanup = cleanup;` in its constructor,
+before runtime threads start. The first fatal handler calls this
+`void(void)` hook once, before flushing stdout or reporting the error.
+Use it for host cleanup such as restoring terminal state. It must be
+nonblocking and async-signal-safe, and must not reenter Bend. Returning
+continues the original fatal exit or signal; it does not resume execution.
+
 # References
 
 - Guide: [GUIDE.md](guide/GUIDE.md), also printed by `bend guide`.

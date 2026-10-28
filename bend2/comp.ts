@@ -3823,11 +3823,17 @@ INLINE void err_post(DEV u64* H, u32 code) {
 static const char* ERR_TEXT[] = { ${ERRS.map((s) =>
   JSON.stringify(s)).join(",\n  ")} };
 
+// Set in a native effect constructor; must be async-signal-safe.
+static void (*err_cleanup)(void);
+
 // First failure wins; others wait a second for it to terminate.
 FAR int err_claim(void) {
   static _Atomic uintptr_t first;
   uintptr_t self = (uintptr_t)pthread_self(), seen = 0;
-  if (atomic_compare_exchange_strong(&first, &seen, self)) return 1;
+  if (atomic_compare_exchange_strong(&first, &seen, self)) {
+    if (err_cleanup) err_cleanup();
+    return 1;
+  }
   struct timespec t = { seen != self, 0 };
   while (nanosleep(&t, &t)) {}
   return 0;
