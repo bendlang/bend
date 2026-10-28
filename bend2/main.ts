@@ -1047,7 +1047,6 @@ async function book_read(file: string, base?: Bend.Book,
   return book;
 }
 
-// whether file's header imports Base, so its book can start from Base's
 function imports_base(file: string): boolean {
   return /^(?:[\t\r ]*(?:(?:#|import )[^\n]*)?\n)*[\t ]*import Base\s/
     .test(fs.readFileSync(file, "utf8"));
@@ -1109,7 +1108,6 @@ function book_err(e: unknown): string {
 // Load
 // ====
 
-// Base, read and checked once for every .bend module this process loads
 let load_base: Promise<Bend.Book> | undefined;
 
 async function load_js(path: string): Promise<string> {
