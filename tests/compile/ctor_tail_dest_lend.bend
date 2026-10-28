@@ -1,7 +1,8 @@
 # A call built after its constructor leaves no frame, so it can't lend: copy
-# borrows its list (lend still reads xs after it), yet wrap, pair and wrap2
-# end in a copy past the list's last use. wrap2's other field owns the list
-# too, so it builds after the call. Build with
+# borrows its list (lend still reads xs after it), and wrap, pair and wrap2
+# end in a copy past the list's last use. Taking their owned list would make
+# copy own its list at every site, so they build after the call; copy's own
+# recursion lends its borrowed tail and still builds first. Build with
 # CCC_OVERRIDE_OPTIONS=+-DBEND_POISON to fail a read of a freed block.
 import Base
 

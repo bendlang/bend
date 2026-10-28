@@ -805,7 +805,7 @@ function intr_of(k: Name, js = false): Intr | undefined {
 function op_bare(t: HTerm, js = false): boolean {
   const s = term_strip(t);
   return s.$ === "Var" || term_const(s) && !(js && s.$ === "Ctr"
-    && (s.k in OPTIMIZED.Array || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
+    && (Object.hasOwn(OPTIMIZED.Array, s.k) || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
 }
 
 function op_name(k: Name): string {
@@ -2670,11 +2670,15 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   const calls = x.v.map(term_spine);
   const fork = calls.length > 1;
   const name = seg_name("j");
-  const holes = calls.map((c, i) => ctr_hole(sc, c, o.b, o.ps[i]));
+  const holes = calls.map((c, i) => ctr_hole(sc, c, o.b, o.ps[i],
+    i === calls.length - 1));
   const hole = fork ? -1 : holes[0];
   const tree = fork && !holes.includes(-1)
     && ![...sc.uses.keys()].some((p) => rest_use([o.b], p) > 0);
-  const spares = hole >= 0 ? sc.spares.splice(0) : [];
+  // the dest takes the spare its node fits; the call's arguments keep the rest
+  const fit = hole < 0 ? -1 : sc.spares.findIndex((s) => cls_fit(s.words)
+    === cls_fit(lay_node((term_strip(o.b) as Of<"Ctr">).k).ks.length));
+  const spares = fit < 0 ? [] : sc.spares.splice(fit, 1);
   let hold: Of<"Var">[] = [];
   if (fork) {
     if (!tree) {
@@ -2725,7 +2729,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       pnd = depth;
     }
     const to = !tree || last ? [] : i > 0
-      ? [`STK(${pnd - depth}) + ${holes[i]}`] : [nd, `${nd} + ${holes[0]}`];
+      ? [`STK(${pnd - depth + ws.length}) + ${holes[i]}`] : [nd, `${nd} + ${holes[0]}`];
     depth += to.length;
     const kn = tree && last ? "" : seg_name("k");
     const kf = kn && seg_fid(kn);
@@ -2783,15 +2787,21 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
 // A constructor tail boxing a call's result once is built before the call,
 // which fills that field (its word, or -1). The root goes to the stack's
 // destination, else under a Dst~put frame [root, field]. The other fields run
-// first, so none may share an owned value with the call. A fork of only such
+// first, so none may share an owned value with the call. A last call leaves
+// no frame, so one that would drop an owned value it could lend is not taken:
+// that would make the callee own it at every site. A fork of only such
 // fields builds before its first call, and an earlier call's frame holds
 // [node, field]: a dst segment, so WL_DEST fills it like a Dst~put.
-function ctr_hole(sc: Scope, c: Spine, b: HTerm, p: Probe): number {
+function ctr_hole(sc: Scope, c: Spine, b: HTerm, p: Probe, last: boolean):
+  number {
   const x = term_strip(b);
+  const brw = brw_of(c.k!);
   if (x.$ !== "Ctr" || fact("ctr", x.k) || rest_use([b], p) !== 1
-    || x.k in OPTIMIZED.Array || sc.seg.ret !== BOX
+    || Object.hasOwn(OPTIMIZED.Array, x.k) || sc.seg.ret !== BOX
     || fun_of(c.k!).ret !== BOX || [...sc.uses].some(([q, d]) =>
-      !val_brw(d.val) && rest_use(c.xs, q) > 0 && rest_use([b], q) > 0)) {
+      !val_brw(d.val) && rest_use(c.xs, q) > 0 && (rest_use([b], q) > 0
+        || last && c.xs.some((a, i) => brw[i] && rest_use([a], q) > 0
+          && term_strip(a).$ === "Var")))) {
     return -1;
   }
   const ls = lay_node(x.k).arms![x.k];
@@ -2805,7 +2815,7 @@ function emit_dest(sc: Scope, x: Of<"Let">, at: number): string {
   const { ps, b } = term_open(x);
   ps.forEach((p, i) => bind_uses(sc, p, val_new([""], BOX), [b],
     ty_ann(x.v[i])!));
-  const [r] = val_own(emit_expr(sc, b, null, BOX));
+  const r = emit_alias(sc, val_own(emit_expr(sc, b, null, BOX))[0], "r");
   if (ps.length === 1) {
     bind_dead(sc, []);
   }
@@ -3047,6 +3057,7 @@ function c_units(): Unit[] {
 
 function c_header(segs: Seg[], clos: string[]): string {
   const arg = val_new([""], W64);
+  // WL_DEST reads [Dst~put, FID_EXIT) as dst frames: they must come last
   const entries = [...segs.filter((s) => !s.dst), seg_new(IO_EMIT, BOX,
     [arg]), seg_new(CLO_APPLY, BOX, [arg, arg]), seg_new("Dst~put", BOX, [arg]),
   ...segs.filter((s) => s.dst)];
@@ -3619,7 +3630,7 @@ using namespace metal;
     err_post(e.mem, ERR_DEEP); \
     return 0; \
   }
-#define WL_DEST(R, J) \
+#define WL_DEST(R, J) do { \
   if ((u32)STK(-1) - FID(Dst~put) < FID_EXIT - FID(Dst~put)) { \
     e.mem[STK(-2)] = (R); \
   } else { \
@@ -3628,7 +3639,8 @@ using namespace metal;
     STK(2) = FID(Dst~put); \
     WL_PUSHN(3); \
   } \
-  STK(-2) = term_loc(R) + (J);
+  STK(-2) = term_loc(R) + (J); \
+} while (0)
 
 // Types
 // =====
