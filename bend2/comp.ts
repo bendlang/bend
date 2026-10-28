@@ -2769,7 +2769,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     // a tree's join is only the parallel arm's: what it holds, then each result
     const live: [Probe, Bind][] = !tree ? [...sc.uses]
       : [...[...sc.uses].filter(([p]) => hold.includes(p)), ...o.ps.map((p, i):
-        [Probe, Bind] => [p, { val: val_new([p.k], BOX), n: 1,
+        [Probe, Bind] => [p, { val: val_new([name_local(sc, p.k)], BOX), n: 1,
           A: ty_ann(x.v[i])! }])];
     if (!tree) {
       emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
