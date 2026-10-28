@@ -3475,7 +3475,7 @@ using namespace metal;
 #define OUTLINE FAR
 #define DEVICE  1
 #define CLZ(x)  (u32)__clz((int)(x))
-#define POPCNT(x) __popc(x)
+#define POPCNT(x) (u32)__popc(x)
 #define FENCE() __threadfence()
 #define BAR()   __syncthreads()
 #define BARD()  { __threadfence(); __syncthreads(); }
@@ -3489,7 +3489,7 @@ using namespace metal;
 #define OUTLINE FAR __attribute__((cold)) PRESERVE(preserve_most)
 #define DEVICE  0
 #define CLZ(x)  (u32)__builtin_clz(x)
-#define POPCNT(x) __builtin_popcount(x)
+#define POPCNT(x) (u32)__builtin_popcount(x)
 #define FENCE() ((void)0)
 #endif
 #endif
