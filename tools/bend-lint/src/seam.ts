@@ -845,18 +845,21 @@ const sameDeclarations = (m: Loaded, { book, sources, declarations }: Checked, t
   const dir = root.path.slice(0, root.path.lastIndexOf("/") + 1);
   const header = (s: string) => {
     const lines = s.split("\n");
-    const imports: [string, string][] = [];
+    const imports: [string, string | undefined][] = [];
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (line === "" || line.startsWith("#")) continue;
       const m = /^import\s+(\S+)(?:\s+as\s+([A-Za-z_]\w*))?\s*(?:#.*)?$/.exec(line);
       if (m === null || (m[2] === undefined && m[1] !== "Base")) break;
-      if (m[2] !== undefined) imports.push([m[1], m[2]]);
+      imports.push([m[1], m[2]]);
       lines[i] = "";
     }
     return { body: lines.join("\n"), imports };
   };
   const original = header(root.text);
+  const revised = header(text);
+  // The loaded imports can seed both parses only while their headers agree.
+  if (JSON.stringify(original.imports) !== JSON.stringify(revised.imports)) return false;
   const spanned = (): Record<Name, Name> => {
     for (const tld of Object.values(book.tlds)) {
       for (const t of [tld.T, ...(tld.$ === "Def" && tld.v ? [tld.v] : [])]) {
@@ -871,12 +874,13 @@ const sameDeclarations = (m: Loaded, { book, sources, declarations }: Checked, t
   };
   const aliases = original.imports.reduce<Record<Name, Name>>(
     (known, [at, alias]) => {
+      if (alias === undefined) return known;
       const imported = sources.find((s) => s.path === resolve(root.path, "..", at));
       return known[alias] !== undefined || imported === undefined
         ? known
         : { ...known, [alias]: FILES.get(imported)!.ns };
     },
-    original.imports.length ? spanned() : {},
+    original.imports.some(([, alias]) => alias !== undefined) ? spanned() : {},
   );
   const own = new Set(declarations);
   const seed = (): Book => {
@@ -899,7 +903,7 @@ const sameDeclarations = (m: Loaded, { book, sources, declarations }: Checked, t
     const held = hook.parsed;
     hook.parsed = undefined;
     try {
-      Bend.parse_book(parsed, dir, header(s).body, ns, aliases);
+      Bend.parse_book(parsed, dir, s, ns, aliases);
     } finally {
       hook.parsed = held;
     }
@@ -915,7 +919,7 @@ const sameDeclarations = (m: Loaded, { book, sources, declarations }: Checked, t
     );
   };
   try {
-    return snapshot(root.text) === snapshot(text);
+    return snapshot(original.body) === snapshot(revised.body);
   } catch {
     return false;
   }
