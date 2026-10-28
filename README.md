@@ -229,6 +229,10 @@ def add_zero(x):
 - Computed matches (`match f(x)`) aren't supported. Must split it manually.
 - There is no syntax for if-then-else: a branch is a match on True and False.
 - Numbers are Nat, U32 and F32 only: no U64, I64 or F64 (Metal has no f64).
+- File.size is U32; larger files need File.size64 and File.read_at64/
+  File.write_at64. Sizes and offsets use (hi, lo) U32 halves, offsets below 2^63.
+  Node writes beyond its safe-integer position range fail with EOVERFLOW;
+  native C and Bun use the full signed offset range.
 - F32 is axiomatic: nothing about floating point can be proven.
 - Strings are linked lists of characters, so text processing is slow.
 - Base is small: expect to write helpers other languages ship built in.

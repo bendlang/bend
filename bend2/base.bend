@@ -371,8 +371,21 @@ def File.read_at(file: File, offset: U32, max: U32) ->
   import "./effs/file_read.c"
   import "./effs/file_read.js"
 
+# The offset is hi * 2^32 + lo; offsets at or above 2^63 fail with EINVAL.
+# Positioned reads leave the sequential cursor unchanged.
+def File.read_at64(file: File, hi: U32, lo: U32, max: U32) ->
+  IO(File & Result<&1, &1, U32 & String, List<&2, U32>>):
+  import "./effs/file_read.c"
+  import "./effs/file_read.js"
+
 def File.size(file: File) ->
   IO(File & Result<&1, &1, U32 & String, U32>):
+  import "./effs/file_size.c"
+  import "./effs/file_size.js"
+
+# The size in bytes as (hi, lo), without File.size's 4 GiB limit.
+def File.size64(file: File) ->
+  IO(File & Result<&1, &1, U32 & String, U32 & U32>):
   import "./effs/file_size.c"
   import "./effs/file_size.js"
 
@@ -390,6 +403,14 @@ def File.write_bytes(file: File, data: List<&2, U32>) ->
 # value past 255 fails with EINVAL before any byte is written.
 # A Fail may leave a prefix of the bytes written.
 def File.write_at(file: File, offset: U32, data: List<&2, U32>) ->
+  IO(File & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/file_write.c"
+  import "./effs/file_write.js"
+
+# File.write_at's rules, with offset hi * 2^32 + lo below 2^63.
+# Node rejects nonempty writes crossing its host API's safe-integer
+# position range with EOVERFLOW; native C and Bun use the full signed offset.
+def File.write_at64(file: File, hi: U32, lo: U32, data: List<&2, U32>) ->
   IO(File & Result<&1, &1, U32 & String, Unit>):
   import "./effs/file_write.c"
   import "./effs/file_write.js"

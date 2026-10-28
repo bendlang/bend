@@ -77,7 +77,7 @@ static void __attribute__((constructor)) file_read_line_use(void) {
 
 #endif
 
-#if defined(CID(File.read_bytes)) || defined(CID(File.read_at))
+#if defined(CID(File.read_bytes)) || defined(CID(File.read_at)) || defined(CID(File.read_at64))
 
 static Term file_read_bytes_pack(Env e, IoWork* w) {
   Term r = io_res(e, w, io_list(e, w->data, w->size));
@@ -99,13 +99,17 @@ static void __attribute__((constructor)) file_read_bytes_use(void) {
 
 #endif
 
-#ifdef CID(File.read_at)
+#if defined(CID(File.read_at)) || defined(CID(File.read_at64))
 
 // The bytes at an offset, as file_read_bytes gives them; the position of
 // the file does not move.
 static void file_read_at_call(IoWork* w) {
   file_read_fill(w, 1, 0);
 }
+
+#endif
+
+#ifdef CID(File.read_at)
 
 Term file_read_at_run(Env e, Term* f, IoWork* w) {
   w->made = (intptr_t)f[1];
@@ -114,6 +118,26 @@ Term file_read_at_run(Env e, Term* f, IoWork* w) {
 
 static void __attribute__((constructor)) file_read_at_use(void) {
   io_eff(CID(File.read_at), file_read_at_run);
+}
+
+#endif
+
+#ifdef CID(File.read_at64)
+
+Term file_read_at64_run(Env e, Term* f, IoWork* w) {
+  if (f[1] > INT32_MAX) {
+    w->hand = (intptr_t)io_hand_v(f[0]);
+    w->data = NULL;
+    w->size = 0;
+    w->code = EINVAL;
+    return file_read_bytes_pack(e, w);
+  }
+  w->made = (intptr_t)(((u64)f[1] << 32) | f[2]);
+  return file_read_start(f[0], f[3], w, file_read_at_call, file_read_bytes_pack);
+}
+
+static void __attribute__((constructor)) file_read_at64_use(void) {
+  io_eff(CID(File.read_at64), file_read_at64_run);
 }
 
 #endif

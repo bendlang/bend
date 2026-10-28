@@ -59,24 +59,51 @@ static void __attribute__((constructor)) file_write_bytes_use(void) {
 
 #endif
 
-#ifdef CID(File.write_at)
+#if defined(CID(File.write_at)) || defined(CID(File.write_at64))
 
 static void file_write_at_call(IoWork* w) {
   file_write_fill(w, 1);
 }
 
-Term file_write_at_run(Env e, Term* f, IoWork* w) {
-  w->hand = (intptr_t)io_hand_v(f[0]);
-  w->made = (intptr_t)f[1];
-  w->data = io_cbuf(e, f[2], &w->size, CID(Con));
+static Term file_write_at_start(Env e, Term file, intptr_t offset, Term data, IoWork* w) {
+  w->hand = (intptr_t)io_hand_v(file);
+  w->made = offset;
+  w->data = io_cbuf(e, data, &w->size, CID(Con));
   int flags = fcntl((int)w->hand, F_GETFL);
   w->code = w->data == NULL || (flags >= 0 && (flags & O_APPEND)) ? EINVAL : 0;
   return w->code ? file_write_pack(e, w)
     : io_work(w, file_write_at_call, file_write_pack);
 }
 
+#endif
+
+#ifdef CID(File.write_at)
+
+Term file_write_at_run(Env e, Term* f, IoWork* w) {
+  return file_write_at_start(e, f[0], (intptr_t)f[1], f[2], w);
+}
+
 static void __attribute__((constructor)) file_write_at_use(void) {
   io_eff(CID(File.write_at), file_write_at_run);
+}
+
+#endif
+
+#ifdef CID(File.write_at64)
+
+Term file_write_at64_run(Env e, Term* f, IoWork* w) {
+  if (f[1] > INT32_MAX) {
+    w->hand = (intptr_t)io_hand_v(f[0]);
+    w->data = NULL;
+    w->code = EINVAL;
+    return file_write_pack(e, w);
+  }
+  intptr_t offset = (intptr_t)(((u64)f[1] << 32) | f[2]);
+  return file_write_at_start(e, f[0], offset, f[3], w);
+}
+
+static void __attribute__((constructor)) file_write_at64_use(void) {
+  io_eff(CID(File.write_at64), file_write_at64_run);
 }
 
 #endif
