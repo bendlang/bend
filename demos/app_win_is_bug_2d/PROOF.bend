@@ -1,10 +1,10 @@
 # Winning Is Impossible -- the certificate.
 #
-# The proofs. This file imports the game (as Game) and the claims (as
-# Laws) and fills every law they state -- an unfilled law is an
-# error, so `bend PROOF.bend` is the whole verification. Everything here
-# is AI-written scaffolding for two defs: Laws.you_cant_win and
-# Laws.never_on_flag.
+# The proofs. This file imports the game (as Game), the claims (as Laws)
+# and their board reader (as Board), and fills every law they state -- an
+# unfilled law is an error, so `bend PROOF.bend` is the whole
+# verification. Everything here is AI-written scaffolding for two defs:
+# Laws.you_cant_win and Laws.never_on_flag.
 #
 # The shape of the argument: an invariant ("the player stands on a safe
 # cell: on the map, not in the room, not on a wall") holds at the start

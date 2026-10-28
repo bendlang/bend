@@ -13,8 +13,11 @@ law you_cant_win:
   {Game.is_won(board) == False{} : Bool}
 ```
 
-Recheck both laws after every edit. The flag law observes the drawn board;
-it does not trust the game's own answer about whether the player won.
+If you ever see the win screen, the type checker is broken. File a bug.
+
+A second law, `never_on_flag`, says the player never stands on an 'F' of
+the board the page draws, as [`BOARD.bend`](BOARD.bend) reads it, not as
+the game reports it.
 
 **Play it:** https://bend-lang.com/#lab
 
