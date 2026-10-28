@@ -805,7 +805,8 @@ function intr_of(k: Name, js = false): Intr | undefined {
 function op_bare(t: HTerm, js = false): boolean {
   const s = term_strip(t);
   return s.$ === "Var" || term_const(s) && !(js && s.$ === "Ctr"
-    && (Object.hasOwn(OPTIMIZED.Array, s.k) || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
+    && (Object.hasOwn(OPTIMIZED.Array, s.k)
+      || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
 }
 
 function op_name(k: Name): string {
@@ -2729,7 +2730,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       pnd = depth;
     }
     const to = !tree || last ? [] : i > 0
-      ? [`STK(${pnd - depth + ws.length}) + ${holes[i]}`] : [nd, `${nd} + ${holes[0]}`];
+      ? [`STK(${pnd - depth + ws.length}) + ${holes[i]}`]
+      : [nd, `${nd} + ${holes[0]}`];
     depth += to.length;
     const kn = tree && last ? "" : seg_name("k");
     const kf = kn && seg_fid(kn);
@@ -2771,10 +2773,10 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   });
   if (fork) {
     // a tree's join is only the parallel arm's: what it holds, then each result
-    const live: [Probe, Bind][] = !tree ? [...sc.uses]
+    const live: [Of<"Var">, Bind][] = !tree ? [...sc.uses]
       : [...[...sc.uses].filter(([p]) => hold.includes(p)), ...o.ps.map((p, i):
-        [Probe, Bind] => [p, { val: val_new([name_local(sc, p.k)], BOX), n: 1,
-          A: ty_ann(x.v[i])! }])];
+        [Of<"Var">, Bind] => [p, { val: val_new([name_local(sc, p.k)], BOX),
+          n: 1, A: ty_ann(x.v[i])! }])];
     if (!tree) {
       emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
     }
@@ -2792,8 +2794,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
 // that would make the callee own it at every site. A fork of only such
 // fields builds before its first call, and an earlier call's frame holds
 // [node, field]: a dst segment, so WL_DEST fills it like a Dst~put.
-function ctr_hole(sc: Scope, c: Spine, b: HTerm, p: Probe, last: boolean):
-  number {
+function ctr_hole(sc: Scope, c: Spine, b: HTerm, p: Of<"Var">,
+  last: boolean): number {
   const x = term_strip(b);
   const brw = brw_of(c.k!);
   if (x.$ !== "Ctr" || fact("ctr", x.k) || rest_use([b], p) !== 1
