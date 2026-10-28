@@ -32,6 +32,10 @@ import * as Safe from "./safe.ts";
 
 const VERSION = "2.0.39";
 
+// BUILD tags a fork's bend after its version as semver build metadata:
+// "+win" prints bend <version>+win; upstream leaves it empty
+const BUILD = "";
+
 // the commands, one row each: [usage, what it does]; bend guide stays last
 const USAGE = [
   ["bend <file.bend> [args]", "check the file, then run main with args"],
@@ -50,7 +54,7 @@ const USAGE = [
 
 const USE_W = Math.max(...USAGE.map(([use]) => use.length));
 
-const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
+const HELP = `Bend ${VERSION}${BUILD}: check, run, build and publish Bend programs.
 
 usage:
 ${USAGE.map(([use, say]) => `  ${use.padEnd(USE_W)}  ${say}`).join("\n")}
@@ -129,7 +133,7 @@ const PLUGIN: BunPlugin = {
 async function cli(): Promise<void> {
   const args = process.argv.slice(2);
   if (args[0] === "version" && args.length === 1) {
-    return cli_say(1, "bend " + VERSION + "\n");
+    return cli_say(1, "bend " + VERSION + BUILD + "\n");
   }
   if (args[0] === "update" && args.length === 1) {
     return cli_update();
