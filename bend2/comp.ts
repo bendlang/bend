@@ -143,8 +143,8 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   u32_mul: { C: "U32_BIN($0, *, $1)", JS: "(Math.imul($0, $1) >>> 0)" },
   // C only: intr_of skips an op with no JS, so JS runs Base's
   u32_pow: { C: "u32_pow($0, $1)" },
-  u32_log2: { C: "(31 - CLZ((u32)$0 | 1))" },
-  u32_popcount: { C: "POPCNT((u32)$0)" },
+  u32_log2: { C: "(31 - clz((u32)$0 | 1))" },
+  u32_popcount: { C: "popcount((u32)$0)" },
   map_msb_u: { C: "map_msb_u($0, $1)" },
   map_bit: { C: ["$0", "map_bit(e, $0, $1)"] },
   u32_div: {
@@ -336,7 +336,7 @@ INLINE u64 nat_mul(Env e, u64 a, u64 b) {
 }
 
 INLINE u64 map_msb_u(u64 n, u32 x) {
-  u64 w = x ? 32 - CLZ(x) : 0;
+  u64 w = x ? 32 - clz(x) : 0;
   return n < w ? n : w;
 }
 
@@ -496,9 +496,6 @@ function str_out(s) {
   return s.replace(/\uDC00[^]{3}/gu, "\uFFFD");
 }
 
-function str_in(s) {
-  return s.replace(/\p{Cs}/gu, "\uFFFD");
-}
 `.slice(1),
 };
 
@@ -3462,8 +3459,6 @@ using namespace metal;
 #define OUTLINE static
 #define CONSTV  constant
 #define DEVICE  1
-#define CLZ(x)  clz(x)
-#define POPCNT(x) popcount(x)
 #define FENCE() atomic_thread_fence(mem_flags::mem_device, memory_order_seq_cst)
 #define BAR()   threadgroup_barrier(mem_flags::mem_threadgroup)
 #define BARD()  threadgroup_barrier(mem_flags::mem_device \
@@ -3477,8 +3472,8 @@ using namespace metal;
 #ifdef BEND_RTC
 #define OUTLINE FAR
 #define DEVICE  1
-#define CLZ(x)  (u32)__clz((int)(x))
-#define POPCNT(x) (u32)__popc(x)
+#define clz(x)  (u32)__clz((int)(x))
+#define popcount(x) (u32)__popc(x)
 #define FENCE() __threadfence()
 #define BAR()   __syncthreads()
 #define BARD()  { __threadfence(); __syncthreads(); }
@@ -3491,8 +3486,8 @@ using namespace metal;
 #endif
 #define OUTLINE FAR __attribute__((cold)) PRESERVE(preserve_most)
 #define DEVICE  0
-#define CLZ(x)  (u32)__builtin_clz(x)
-#define POPCNT(x) (u32)__builtin_popcount(x)
+#define clz(x)  (u32)__builtin_clz(x)
+#define popcount(x) (u32)__builtin_popcount(x)
 #define FENCE() ((void)0)
 #endif
 #endif
@@ -3917,7 +3912,7 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 #define KEEP(c)        (KEEP_WORDS >> (c) ? KEEP_WORDS >> (c) : 1)
 
 INLINE u32 cls_fit(u32 words) {
-  return words > 1 ? 32 - CLZ(words - 1) : 0;
+  return words > 1 ? 32 - clz(words - 1) : 0;
 }
 
 OUTLINE void heap_hand(Env e, u32 cls) {
@@ -4912,7 +4907,7 @@ static Term* pool_stack(void) {
 
 static u32 pool_step(u32 rows) {
   u32 per = rows * CUBE_T / (32 * pool_size);
-  return CUBE_T >> (31 - CLZ(per < LINE ? per | 1 : LINE));
+  return CUBE_T >> (31 - clz(per < LINE ? per | 1 : LINE));
 }
 
 static u32 pool_rows(Env e, DEV Term* stk) {
@@ -5208,7 +5203,7 @@ static const char* gpu_probe(void) {
   int l2 = 1 << 23;
   cuDeviceGetAttribute(&l2, CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, gpu_dev);
   int units = l2 >> 16;
-  CUBE_LOG  = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
+  CUBE_LOG  = 31 - clz(units < 16 ? 16 : units > 128 ? 128 : units);
   GPU_CHECK(cuDevicePrimaryCtxRetain, &ctx, gpu_dev);
   result = cuCtxSetCurrent(ctx);
   if (result != CUDA_SUCCESS) {
