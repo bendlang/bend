@@ -32,9 +32,25 @@ function file_write_bytes(file, data, k) {
   io_park_on(undefined, 0, k, () => file_write_buffer(file, b), 0);
 }
 
+// An fd can append without File.open's "a" (a shell's >> on stdout), so ask
+// the fd, as C does, after the handles File.open made with "a". A host
+// without bun:ffi (node) can't ask, and knows only those.
+function file_appends(file) {
+  if (io_file_append.has(file)) {
+    return true;
+  }
+  try {
+    const sys = io_sys();
+    const flags = sys.fcntl(file, 3, 0);
+    return flags >= 0 && (flags & (sys.mac ? 8 : 0x400)) !== 0;
+  } catch (_) {
+    return false;
+  }
+}
+
 function file_write_at(file, offset, data, k) {
   const b = io_unlist(data);
-  if (b === null || io_file_append.has(file)) {
+  if (b === null || file_appends(file)) {
     return io_tup(file, io_fail(22));
   }
   io_park_on(undefined, 0, k, () => file_write_buffer(file, b, offset), 0);

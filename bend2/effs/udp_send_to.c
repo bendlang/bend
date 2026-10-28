@@ -12,7 +12,9 @@ static Term udp_send_to_with(Env e, IoWork* w, IoPack more,
   ssize_t n  = -1;
   errno      = EINVAL;
   if (io_sys_addr(w->text, (u32)w->made, &at) == 0) {
-    n = sendto(fd, w->data, w->size, 0, (struct sockaddr*)&at, sizeof(at));
+    do {
+      n = sendto(fd, w->data, w->size, 0, (struct sockaddr*)&at, sizeof(at));
+    } while (n < 0 && errno == EINTR);
   }
   io_sys_end(w, n);
   if (io_again(w)) {
