@@ -144,6 +144,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   // C only: intr_of skips an op with no JS, so JS runs Base's
   u32_pow: { C: "u32_pow($0, $1)" },
   u32_log2: { C: "(31 - CLZ((u32)$0 | 1))" },
+  u32_popcount: { C: "POPCNT((u32)$0)" },
   map_msb_u: { C: "map_msb_u($0, $1)" },
   map_bit: { C: ["$0", "map_bit(e, $0, $1)"] },
   u32_div: {
@@ -3459,6 +3460,7 @@ using namespace metal;
 #define CONSTV  constant
 #define DEVICE  1
 #define CLZ(x)  clz(x)
+#define POPCNT(x) popcount(x)
 #define FENCE() atomic_thread_fence(mem_flags::mem_device, memory_order_seq_cst)
 #define BAR()   threadgroup_barrier(mem_flags::mem_threadgroup)
 #define BARD()  threadgroup_barrier(mem_flags::mem_device \
@@ -3473,6 +3475,7 @@ using namespace metal;
 #define OUTLINE FAR
 #define DEVICE  1
 #define CLZ(x)  (u32)__clz((int)(x))
+#define POPCNT(x) __popc(x)
 #define FENCE() __threadfence()
 #define BAR()   __syncthreads()
 #define BARD()  { __threadfence(); __syncthreads(); }
@@ -3486,6 +3489,7 @@ using namespace metal;
 #define OUTLINE FAR __attribute__((cold)) PRESERVE(preserve_most)
 #define DEVICE  0
 #define CLZ(x)  (u32)__builtin_clz(x)
+#define POPCNT(x) __builtin_popcount(x)
 #define FENCE() ((void)0)
 #endif
 #endif
