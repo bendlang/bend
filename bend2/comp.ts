@@ -5528,9 +5528,12 @@ static bool gpu_make(const char* path) {
   return ok;
 }
 
-// the twin is reserved whole: 1 GB, and --gpu 2GB asks for more
+// the twin is reserved whole, so it spans as Metal's corpus does: the
+// device's memory, at most 2 GB
 static u64 gpu_span(void) {
-  return 1ull << 30;
+  size_t span = 0;
+  hipDeviceTotalMem(&span, gpu_dev);
+  return span < (2ull << 30) ? span : 2ull << 30;
 }
 
 static void gpu_load(u64 bytes) {
