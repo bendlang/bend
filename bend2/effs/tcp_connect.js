@@ -29,7 +29,9 @@ function tcp_connect(host, port, k) {
   const set = sys.fcntl(fd, 4, sys.fcntl(fd, 3, 0) | (sys.mac ? 4 : 0x800));
   const ok = set >= 0 && sys.connect(fd, sys.ptr(at), 16) >= 0;
   const code = ok ? 0 : sys.errno();
-  if (code !== (sys.mac ? 36 : 115)) {
+  // An interrupted connect (EINTR, 4) goes on in the background, so it is
+  // waited on as EINPROGRESS is.
+  if (code !== (sys.mac ? 36 : 115) && !(set >= 0 && code === 4)) {
     return end(code);
   }
   io_park_on(fd, true, k, () => end(error()));
