@@ -1042,8 +1042,8 @@ function ctr_adt(x: Of<"Ctr">,
   if (ty === null && adt.x.length > 0) {
     die("a constructor outside a datatype");
   }
-  return [adt, WORDS[adt.k] === W32
-    ? Bend.u32_from_term(x, adt.k as "U32") : null];
+  return [adt, adt.k === "U32" || adt.k === "F32"
+    ? Bend.u32_from_term(x, adt.k) : null];
 }
 
 function ctr_tail(ctr: Bend.Ctr, xs?: HTerm[]): Dom[] {
@@ -1208,7 +1208,7 @@ function mat_rows(sc: Scope, x: HTerm, ty: HTerm | null, self: HTerm) {
     }
   }
   const rows = WORDS[adt.k] === W32 ? mat_lits(x, adt.k, self) : null;
-  if (rows === null || adt.k === "F32") {
+  if (rows === null || adt.k !== "U32") {
     return { adt, ret, rows, cells: null };
   }
   const hit = new Map(rows.flatMap(([a, b, v]) => b === 32 ? [[v, a]] : []));
@@ -2761,7 +2761,7 @@ function row_val(sc: Scope, s: HTerm, ty: HTerm | null): Cell | null {
   if (term_const(s)) {
     const c = term_strip(s) as Of<"Ctr">;
     const k = ty_adt(ty ?? tele_unbind(FL.book.ctrs[c.k].T).ret)?.k;
-    const u = WORDS[k!] === W32 ? Bend.u32_from_term(c, k as "U32") : null;
+    const u = k === "U32" || k === "F32" ? Bend.u32_from_term(c, k) : null;
     return u !== null ? k === "F32" ? Bend.f32_from_bits(u) : u
       : k === "Nat" ? nat_peel(c)[1] : k === "Bool" ? c.k === "True" : null;
   }
