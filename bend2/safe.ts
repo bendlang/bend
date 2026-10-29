@@ -685,7 +685,12 @@ function scope_bind(s: Scope, o: O, T: HTerm | null, v?: HTerm): Scope {
 // a kernel binder with no bend2 variable, at its tentative quantity q, if
 // known: a q=1 one may ride a convoy
 function scope_hide(s: Scope, q?: Q): Scope {
-  return { ...s, D: s.D + 1, kq: q === undefined ? s.kq : Object.assign(s.kq.slice(), { [s.D]: q }) };
+  if (q === undefined) {
+    return { ...s, D: s.D + 1 };
+  }
+  const kq = s.kq.slice();
+  kq[s.D] = q;
+  return { ...s, D: s.D + 1, kq };
 }
 
 // binds the next bend2 variable to a kernel binder
@@ -703,8 +708,12 @@ function scope_move(s: Scope, a: number, b: number): Scope {
 
 // binds the convoyed variables cv again, each at its quantity, then f
 function convoy_bind(e: Safe, s: Scope, cv: number[], f: (s: Scope) => O): O {
+  if (cv.length === 0) {
+    return f(s);
+  }
+  const l = s.D;
   const q = s.kq[cv[0]] ?? 1;
-  return cv.length === 0 ? f(s) : lams(e, [[q, s.D]], convoy_bind(e, scope_move(scope_hide(s, q), cv[0], s.D), cv.slice(1), f));
+  return lams(e, [[q, l]], convoy_bind(e, scope_move(scope_hide(s, q), cv[0], l), cv.slice(1), f));
 }
 
 // Open
@@ -825,8 +834,13 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     const js = ls.some((l) => us.has(l)) ? s.c.flatMap((x, j) => j < i && x !== undefined && [...o_uses(e, x.o).keys()].some((l) => vs.includes(l)) ? [j] : []) : [];
     return js.length > 0 && mentions(B.term_lower(b.T, s.d), (k) => js.includes(k)) ? [...vs, ...ls] : vs;
   }, cv1).sort((a, b) => a - b);
-  return s.dry ? apps({ $: "Efq" }, [...Array(s.D).keys()].filter((l) => us.has(l)).map((l) => [use(l) > 0 ? 1 : 0, vr(l)]))
-    : cv.length === 0 && !s.again ? o : mat(cv, false);
+  if (s.dry) {
+    return apps({ $: "Efq" }, [...Array(s.D).keys()].filter((l) => us.has(l)).map((l) => [use(l) > 0 ? 1 : 0, vr(l)]));
+  }
+  if (cv.length === 0 && !s.again) {
+    return o;
+  }
+  return mat(cv, false);
 }
 
 // the tag switch of a match chain on a scrutinee of goal T; an arm splits
@@ -901,7 +915,10 @@ function pick(e: Safe, t: HTerm, v: HTerm): [HTerm, HTerm[]] {
   while (m.$ === "Mat" && c.$ === "Ctr" && m.k !== c.k) {
     m = B.term_strip(m.m);
   }
-  return c.$ !== "Ctr" || m.$ === "Efq" ? oos("a specialized argument that is not a constructor") : m.$ === "Mat" ? [m.h, c.x] : [m, [c]];
+  if (c.$ !== "Ctr" || m.$ === "Efq") {
+    return oos("a specialized argument that is not a constructor");
+  }
+  return m.$ === "Mat" ? [m.h, c.x] : [m, [c]];
 }
 
 // λ{c: λfs => f(c{fs}); ..} for x = λy => f(y) at ∀y:A -> B, when every
@@ -946,8 +963,14 @@ function eta(t: HTerm, all: Of<"All">): HTerm {
 
 // whether a lowered term mentions a variable at a level p holds for
 function mentions(t: unknown, p: (i: number) => boolean): boolean {
+  if (typeof t !== "object" || t === null) {
+    return false;
+  }
   const o = t as Record<string, unknown>;
-  return typeof t === "object" && t !== null && (o.$ === "Var" && p(o.i as number) || Object.entries(o).some(([k, v]) => k !== "s" && mentions(v, p)));
+  if (o.$ === "Var" && p(o.i as number)) {
+    return true;
+  }
+  return Object.entries(o).some(([k, v]) => k !== "s" && mentions(v, p));
 }
 
 // whether T is a datatype with no constructor left
@@ -1178,8 +1201,10 @@ function group_new(e: Safe, k: Name, hs: Name[]): Group | null {
   }));
   const tld = e.book.tlds[k];
   const doms = B.tele_unbind(e.book, tld.T).doms.slice(0, lead);
-  return hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && (tld.$ !== "Def" || j >= tld.x)) ? null
-    : { k, ms: [k, ...hs], qs: doms.map(([q]) => quant(q)) };
+  if (hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && (tld.$ !== "Def" || j >= tld.x))) {
+    return null;
+  }
+  return { k, ms: [k, ...hs], qs: doms.map(([q]) => quant(q)) };
 }
 
 // the arguments of each call to k in the lowered term t
@@ -1218,7 +1243,11 @@ function put(e: Safe, x: Map<string, string> | Set<string>, k: string, v = ""): 
   if (!x.has(k)) {
     e.log.push([x, k]);
   }
-  x instanceof Map ? x.set(k, v) : x.add(k);
+  if (x instanceof Map) {
+    x.set(k, v);
+  } else {
+    x.add(k);
+  }
 }
 
 // a call to member m at the arguments ps (R its type): the group's at
@@ -1435,7 +1464,10 @@ function self_arg(o: O, k: string, l: number): boolean {
 
 // the def names o mentions
 function o_refs(o: O): string[] {
-  return o.$ === "Ref" ? [o.k] : Object.values(o).filter(is_o).flatMap(o_refs);
+  if (o.$ === "Ref") {
+    return [o.k];
+  }
+  return Object.values(o).filter(is_o).flatMap(o_refs);
 }
 
 function is_o(v: unknown): v is O {
