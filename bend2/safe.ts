@@ -81,8 +81,10 @@ type O =
   | { $: "Rfl" }
   | { $: "Rwt"; e: O; l: number; P: O; f: O };
 
-// the kernel variable at level l
+// the kernel variable at level l, def k and label k
 const vr = (l: number): O => ({ $: "Var", l });
+const ref = (k: string): O => ({ $: "Ref", k });
+const lab = (k: string): O => ({ $: "Lab", k });
 
 // a bend2 variable: the kernel term it stands for, its bend2 type, and
 // the term a specialized parameter or inlined let stands for (built at
@@ -162,7 +164,7 @@ const QS = ["Q0", "Q1", "Q2"];
 
 // the unit type and value
 const UT: O = { $: "Enu", ks: ["()"] };
-const UV: O = { $: "Lab", k: "()" };
+const UV = lab("()");
 
 // Errors
 // ======
@@ -287,9 +289,9 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
     const j = cs.length;
     const F = j === tld.n ? null : wnf(e, T);
     if (F?.$ !== "All") {
-      const x: O = { $: "Ref", k: item_try(e, k, cs) };
-      ns.push(x.k);
-      return G == null ? x : { $: "Ann", x, T: apps(vr(0), ps.map(([q], j) => [q, col(cs[j] as HTerm)])) };
+      const n = item_try(e, k, cs);
+      ns.push(n);
+      return G == null ? ref(n) : { $: "Ann", x: ref(n), T: apps(vr(0), ps.map(([q], j) => [q, col(cs[j] as HTerm)])) };
     }
     const at = (v: HTerm | null, d1 = d): O =>
       go(F.B(v ?? B.Var(F.k, j)), [...cs, v], d1);
@@ -307,7 +309,7 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
         try {
           const t = tele_open(e, scope_nil(), tld.T, [], tld.x);
           const b = term(e, t.s, t.T, false);
-          G = { $: "Ann", x: lams(e, t.ps, b), T: alls(t.ps, { $: "Typ", q: { $: "Lab", k: "Q1" } }) };
+          G = { $: "Ann", x: lams(e, t.ps, b), T: alls(t.ps, { $: "Typ", q: lab("Q1") }) };
           ps = t.ps;
         } catch (x) {
           if (!(x instanceof Open_Error)) {
@@ -463,7 +465,7 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const arms = mats(ks, (i) => fs(tld.c[i]));
   const Enu: O = { $: "Enu", ks };
   e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: G }), lams(e, ps, arms), false]);
-  const at = (k: string): O => apps({ $: "Ref", k }, ps.map(([q, l]) => [q, vr(l)]));
+  const at = (k: string): O => apps(ref(k), ps.map(([q, l]) => [q, vr(l)]));
   e.out.push([n, alls(ps, G), lams(e, ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: vr(t) } }), false]);
   if (tld.c.length === 0) {
     e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(e, ps, { $: "Prj", h: { $: "Efq" } }), false]);
@@ -735,6 +737,11 @@ function open(t: HTerm): [HTerm, HTerm | null] {
   return [x, T];
 }
 
+// whether x is a case tree's node: a λ, a match or a refutation
+function node(x: HTerm): boolean {
+  return x.$ === "Lam" || x.$ === "Mat" || x.$ === "Efq";
+}
+
 // a spine's head and arguments, through type wrappers
 function unapply(t: HTerm): [HTerm, HTerm[]] {
   const xs: HTerm[] = [];
@@ -768,13 +775,13 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, { $: "Efq" }, all?.A ?? null, v);
     return tree(e, s2, x.f(B.Var(x.k, s.d)), fs);
   }
-  if (v !== null && (x.$ === "Mat" || x.$ === "Efq")) {
+  if (v !== null && node(x) && x.$ !== "Lam") {
     const [h, vs] = pick(e, x, v);
     return tree(e, { ...s, cols: [...vs, ...s.cols.slice(1)] }, h, fs);
   }
   // a leaf of a function type goes η-long (see the header), and a chain
   // splits its fields under λs
-  if (x.$ !== "Lam" && x.$ !== "Mat" && x.$ !== "Efq") {
+  if (!node(x)) {
     if (all !== null) {
       return tree(e, s, eta(t, all), fs);
     }
@@ -1071,7 +1078,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return { $: "Enu", ks: QS };
     }
     case "Qua": {
-      return { $: "Lab", k: QS[quant(x.q)] };
+      return lab(QS[quant(x.q)]);
     }
     case "Min": {
       return { $: "Min", a: term(e, s, x.a, live), b: term(e, s, x.b, live) };
@@ -1138,8 +1145,18 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
       throw x;
     }
   }
+  return apps(n === null ? k as O : ref(n), pass(e, s, n, ps, live));
+}
+
+// the arguments ps of a call to the kernel def n but the specialized
+// ones, each at its quantity (or qs's); a live self-call's as the live
+// check reads them
+function pass(e: Safe, s: Scope, n: string | null, ps: Arg[], live: boolean, qs: Q[] = []): Array<[Q, O]> {
   const a = { ...s, sub: live && n === s.self };
-  return apps(n === null ? k as O : { $: "Ref", k: n }, ps.filter((p) => p[3] === null).map(([q, x, A]) => [q, arg_term(e, a, x, A, live && q > 0)]));
+  return ps.flatMap(([p, x, A, v], j): Array<[Q, O]> => {
+    const q = qs[j] ?? p;
+    return v !== null ? [] : [[q, arg_term(e, a, x, A, live && q > 0)]];
+  });
 }
 
 // Group
@@ -1256,12 +1273,9 @@ function group_call(e: Safe, s: Scope, g: Group, m: Name, ps: Arg[], R: HTerm, l
     oos("a partial or specialized call to " + m + ", mutually recursive");
   }
   const k = item_ref(e, "\t" + g.k, ps.slice(0, n).map((p) => p[3]), live);
-  const a = { ...s, sub: live && k === s.self };
-  const pass = (xs: Arg[], qs: Q[]): Array<[Q, O]> => xs.flatMap(([q, x, A, v], j): Array<[Q, O]> =>
-    v !== null ? [] : [[qs[j] ?? q, arg_term(e, a, x, A, live && (qs[j] ?? q) > 0)]]);
-  const sel = tup([[1, { $: "Lab", k: name_tt(g.k) }]]);
-  const x = apps({ $: "Ref", k }, [...pass(ps.slice(0, n), g.qs),
-    [1, m === g.k ? sel : tup([[1, { $: "Lab", k: name_tt(m) }], [1, sel]])], ...pass(ps.slice(n), [])]);
+  const sel = tup([[1, lab(name_tt(g.k))]]);
+  const x = apps(ref(k), [...pass(e, s, k, ps.slice(0, n), live, g.qs),
+    [1, m === g.k ? sel : tup([[1, lab(name_tt(m))], [1, sel]])], ...pass(e, s, k, ps.slice(n), live)]);
   return { $: "Ann", x, T: term(e, s, R, false) };
 }
 
@@ -1310,9 +1324,8 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
 // for its ~ argument, a column the tree drops
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
-  const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
-  const t0 = B.term_higher(tld.e as B.LTerm);
-  let t = ps === null ? B.term_higher(B.term_lower(t0)) : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
+  const ps = new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
+  let t = subst(B.term_higher(tld.e as B.LTerm), 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
@@ -1334,7 +1347,7 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 // whole, as the live check reads it, unless its binders differ from A's
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
-  const lam = y.$ === "Lam" || y.$ === "Mat" || y.$ === "Efq";
+  const lam = node(y);
   const all = lam || y.$ === "Ctr" ? null : all_of(e, A);
   if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
     return term(e, s, eta(x, all), live);
@@ -1370,7 +1383,7 @@ function ctr_term(e: Safe, s: Scope, x: Of<"Ctr">, T: HTerm | null, live: boolea
   const G = T === null || fam.n === 0 ? null : wnf(e, T);
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, (): HTerm => B.Var("_", -1));
   let F = fill(e, ctr.T, ps);
-  const fs: Array<[Q, O]> = [[1, { $: "Lab", k: name_tt(x.k) }]];
+  const fs: Array<[Q, O]> = [[1, lab(name_tt(x.k))]];
   for (const a of x.x) {
     const A = wnf(e, F);
     if (A.$ !== "All") {
@@ -1391,9 +1404,9 @@ function word_ref(e: Safe, T: Name, fam: Name, n: number): O {
     k = fresh(e, T + ".lit" + String(n));
     put(e, e.names, key, k);
     const v = term(e, { ...scope_nil(), sub: true }, B.Ctr(T, [B.word_to_term(n)]), true);
-    e.out.push([k, { $: "Ref", k: item_ref(e, fam, [], false) }, v, false]);
+    e.out.push([k, ref(item_ref(e, fam, [], false)), v, false]);
   }
-  return { $: "Ref", k };
+  return ref(k);
 }
 
 // parallel lets as nested kernel lets; a let of a variable is inlined,
@@ -1597,7 +1610,7 @@ function o_show(o: O, p: string): string {
     case "Prj": return "λ{(,): " + o_show(o.h, p) + "}";
     case "Enu": return "<" + o.ks.join(", ") + ">";
     case "Lab": return o.k === "()" ? "()" : "." + o.k;
-    case "Mat": return "λ{" + o_show({ $: "Lab", k: o.k }, p) + ": " + o_show(o.h, p) + "; " + o_show(o.m, p) + "}";
+    case "Mat": return "λ{" + o_show(lab(o.k), p) + ": " + o_show(o.h, p) + "; " + o_show(o.m, p) + "}";
     case "Efq": return "λ{}";
     case "Eql": return "{" + o_show(o.a, p) + " == " + o_show(o.b, p) + " : " + o_show(o.T, p) + "}";
     case "Rfl": return "{==}";
