@@ -3681,6 +3681,7 @@ static id<MTLComputeCommandEncoder> gpu_enc;
 static CUdevice   gpu_dev;
 static CUmodule   gpu_lib;
 static CUfunction gpu_pso;
+static CUdeviceptr gpu_front;
 #endif
 static bool io_gpu;
 static DEV Term*  io_stk;
@@ -3693,6 +3694,8 @@ static const char* CLI_HELP =
   "  --gpu-build       write the GPU program and exit\n"
   "  --help            show this text\n";
 
+#elif BEND_RTC
+__device__ u64 bend_front; // off the managed H: #1854
 #endif
 
 // Tables
@@ -4411,6 +4414,9 @@ INLINE u32 turn_groups(u64 f, u32 at) {
 
 INLINE void turn_set(DEV u64* H, u64 f) {
   H[H_FRONT] = f;
+#ifdef BEND_RTC
+  bend_front = f;
+#endif
   for (u32 i = 0; i < 15; i += 1) {
     ((DEV u32*)(H + H_GROUPS))[i] = i % 3 ? 1 : turn_groups(f, i / 3);
   }
@@ -4723,7 +4729,7 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass, u32 at) {
   u32 grids = gridDim.x;
   u32 row   = blockIdx.x;
   u32 lane  = threadIdx.x;
-  if (!turn_groups(H[H_FRONT], at)) {
+  if (!turn_groups(bend_front, at)) {
     return;
   }
 #endif
@@ -5306,7 +5312,9 @@ static void gpu_load(u64 bytes) {
     gpu_note(path);
     gpu_make(path);
   }
-  if (cuModuleGetFunction(&gpu_pso, gpu_lib, "bend_dev") != CUDA_SUCCESS) {
+  if (cuModuleGetFunction(&gpu_pso, gpu_lib, "bend_dev") != CUDA_SUCCESS
+    || cuModuleGetGlobal(&gpu_front, NULL, gpu_lib, "bend_front")
+    != CUDA_SUCCESS) {
     err_fail("cannot load the GPU program");
   }
 }
@@ -5321,6 +5329,9 @@ static void gpu_kernel(u32 pass, u32 at) {
 
 // A pass launched past an empty frontier returns at once.
 static void gpu_pass(u64* H) {
+  if (cuMemcpyHtoD(gpu_front, &H[H_FRONT], 8) != CUDA_SUCCESS) {
+    err_fail("device write failed");
+  }
   for (u32 n = 1; H[H_FRONT] != 0; n = n < 32 ? 2 * n : 64) {
     for (u32 i = 0; i < n; i += 1) {
       gpu_run();
