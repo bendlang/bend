@@ -4125,8 +4125,17 @@ INLINE Term blk_keep(Env e, u64 at) {
 }
 
 INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
-  for (u64 j = 0; j < n; j += 1) {
-    e.mem[dst + j] = keep ? blk_keep(e, src + j) : e.mem[src + j];
+  DEV u64* H = e.mem;
+  for (u64 j = 0; j != n; j += 1) {
+    H[dst + j] = H[src + j];
+  }
+  for (u64 j = 0, k; keep && j != n; j += k) {
+    Term w = H[dst + j], v;
+    for (k = 1; j + k != n && H[dst + j + k] == w; k += 1) {}
+    v = term_keep(e, w, (u32)k);
+    if (v != w) {
+      H[src + j] = H[dst + j] = v;
+    }
   }
 }
 
