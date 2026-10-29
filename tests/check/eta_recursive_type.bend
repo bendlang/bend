@@ -2,7 +2,7 @@
 # domain, H(A) = H(A) -> A) has no finite η-long form, so --verdict
 # sends a term of it whole instead of expanding it forever (#1164); a
 # finite function type still goes η-long, also when its unfolding calls
-# its def at other arguments (Endo, Fun, V, C)
+# its def at other arguments (Endo, Fun, V, C, Dn)
 import Base
 
 def F() -> Type:
@@ -110,6 +110,21 @@ def C(i: Nat, n: Nat) -> Type:
     case 1n+p: U32 -> C((1n + i : Nat), p)
 
 def same_c(f: C(0n, 2n)) -> {f == (x => f(x)) : C(0n, 2n)}:
+  {==}
+
+# C(0n, 60n) compares calls whose sizes never shrink: each comparison is
+# linear, not exponential in the chain's depth
+def same_c60(f: C(0n, 60n)) -> {f == (x => f(x)) : C(0n, 60n)}:
+  {==}
+
+# Dn counts down through a computed argument: Dn(3n) unfolds to
+# Dn(Nat.sub(3n, 1n)), which is Dn(2n), not a call that grew
+def Dn(n: Nat) -> Type:
+  match n:
+    case 0n: U32
+    case 1n+p: U32 -> Dn(Nat.sub(n, 1n))
+
+def same_dn(f: Dn(3n)) -> {f == (x => y => f(x, y)) : Dn(3n)}:
   {==}
 
 # MA and MB grow through each other
