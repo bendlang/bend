@@ -1,6 +1,5 @@
-// NOTE: Bend's runtime was designed by humans, but this file was mostly written
-// by AI's, as it includes a ton of optimizations. It works and tests pass, yet,
-// bugs ARE expected. It will take some time for the compiler to be stable.
+// Human-designed runtime; mostly AI-written optimizations. Tests pass, but
+// bugs are expected while the compiler stabilizes.
 
 // Comp
 // ====
@@ -90,10 +89,8 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // Constants
 // =========
 
-// CLO_APPLY and IO_EMIT are runtime segments (~ keeps a file from declaring
-// them). FOLD_FUEL caps the nodes unfolds add to a segment; a spin of
-// SPIN_FAR characters is a device call (DFAR); a node past WIDE pads to its
-// size class.
+// ~ reserves runtime segments. FOLD_FUEL bounds unfolding per segment;
+// SPIN_FAR characters selects DFAR; nodes past WIDE pad to their size class.
 
 const CLO_APPLY = "Clo~apply";
 
@@ -868,12 +865,9 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
   return adt;
 }
 
-// Whether A holds a type p seeks: a datatype p rejects is looked into,
-// but for the words; per instance, but with its value arguments unknown
-// once it re-enters its own family with one of them grown (a field stuck
-// on them holds). on keeps each family's shortest value keys on the path;
-// an answer is kept per file (p by its text: it captures nothing) if it
-// holds or met only instances opened under it: a new walk agrees.
+// Search non-word fields per instance. On recursive value growth, use
+// unknowns (stuck fields hold). on keeps shortest family keys. Cache
+// capture-free p by text when true or no earlier instance was met.
 function ty_holds(A: HTerm | null, p: Name | ((t: HTerm | null) => boolean),
   w = { seen: new Map<string, number>(), on: new Map<Name, number[]>(),
     low: Infinity }): boolean {
@@ -945,11 +939,9 @@ function ty_srcs(T: HTerm): void {
 // Lay
 // ===
 
-// An Array, an IO.OP and a datatype re-entering itself (maybe via a family)
-// are a box, as is a type former such as a function. A lay without arms is
-// W32, W64 or BOX. An Array cell takes its element type's open layout, so
-// callers agree; lay_el refuses an open one (a variable, hole, bodiless law
-// or family).
+// Arrays, IO.OP, recursive datatypes (including through families) and type
+// formers box. Armless layouts are W32/W64/BOX. Array cells use the element's
+// open layout; lay_el rejects variables, holes, bodiless laws and families.
 
 function lay_of(A: HTerm | null): Lay {
   const t = ty_adt(A);
@@ -1109,11 +1101,9 @@ function ctr_packed(t: HTerm): boolean {
 // Mat
 // ===
 
-// A Nat or word match's row holds the arm (a default's is ""), the low bits
-// known (32: a hit), their value and the fields bound; a Nat row binds the
-// scrutinee less its level (64). A default covers the deeper rows replaying
-// it. A U32 match reads a table if its hits cover over half of 0..max and
-// the rest share a body.
+// Rows: arm (default: ""), known low bits (32: exact), value, bound fields.
+// Nat binds scrutinee-level (64). Defaults cover deeper replays. U32 tables
+// require >half of 0..max exact and one common remaining body.
 
 function mat_head(t: HTerm): boolean {
   return t.$ === "Mat" || t.$ === "Efq";
@@ -2192,13 +2182,11 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
 // Emit
 // ====
 
-// A call emits its nested arguments, pops the owned ones, then reads the
-// borrowed ones (a read asks a lend). A closure moves its captures into a
-// node. A jump's returns agree or are one word, else it is a cut. A fork
-// runs a join task and a task per call; in sequence one frame serves each
-// step. A self-jump reads its parameters back, keeping them typed in the
-// device's loop. A foreign def short of its continuation is an IO action.
-// A C table's F32 row is its bits (a NaN payload has no JS number).
+// Calls emit nested args, pop owned ones, then read/lend borrows. Closures
+// move captures. Jumps need equal or single-word returns, else cut. Forks
+// use a join plus task per call; sequential steps share a frame. Self-jumps
+// reload typed parameters on device. Foreign defs missing their continuation
+// are IO actions. C tables store F32 bits; JS cannot hold NaN payloads.
 
 function emit_hold(sc: Scope, exprs: string[], k: string,
   ks?: Kind[]): string[] {
@@ -2846,32 +2834,46 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
     bind_dead(al, [h]);
     emit_body(al, h, null, [...fs(al), ...args.slice(1)], dst);
     spare_flush(al);
-  }]));
+  }]), dst !== null && adt.k === "U32" ? rows : null, sw);
   sc.spares.splice(0);
 }
 
 // Arms that each open with their one alloc, of one class and in no inner
 // block, share one allocation made first: their stores become selects.
-function emit_chain(sc: Scope, arms: [string, () => void][]): void {
+// A dense exact hit may precede the chain only if no earlier row covers it.
+function emit_chain(sc: Scope, arms: [string, () => void][],
+  rows: Row[] | null = null, word = ""): void {
   if (arms.length === 1) {
     return arms[0][1]();
   }
   const ls = sc.seg.lines;
   const at = ls.length;
-  const al = new Set(arms.map(([cond, body], i) => {
-    file_push(sc, i === arms.length - 1 ? "} else {"
-      : `${i === 0 ? "if" : "} else if"} (${cond}) {`);
-    const n = ls.length;
+  const chunks = arms.map(([, body]) => {
     sc.seg.tab += 1;
     body();
     sc.seg.tab -= 1;
-    if (FL.js) {
-      return;
-    }
-    return ls.slice(n).join("\n")
-      .match(/^ *u64 \w+ = (heap_alloc\(e, \d+\));(?![^]*(heap_alloc|\{))/)?.[1];
-  }));
-  file_push(sc, "}");
+    return ls.splice(at);
+  });
+  const hits = rows?.slice(0, -1).flatMap(([, b, n], i) => b === 32
+    && n < 4096 && rows.slice(0, i).every(([, b, v]) => (n & (2 ** b - 1)) !== v)
+    ? [i] : []) ?? [];
+  const sw = hits.length >= 8 && hits.every((i) => rows![i][2] < hits.length * 2);
+  const rest = [...arms.keys()].filter((i) => !sw || !hits.includes(i));
+  if (sw) {
+    hits.forEach((i, j) => {
+      file_push(sc, `${j ? "} break;" : `switch (${word}) {`} case ${rows![i][2]}: {`);
+      ls.push(...chunks[i]);
+    });
+    file_push(sc, "} break; default: {");
+  }
+  rest.forEach((i, j) => {
+    file_push(sc, rest.length === 1 ? "{" : j === rest.length - 1 ? "} else {"
+      : `${j === 0 ? "if" : "} else if"} (${arms[i][0]}) {`);
+    ls.push(...chunks[i]);
+  });
+  file_push(sc, sw ? "} } break; }" : "}");
+  const al = new Set(chunks.map((c) => !FL.js && c.join("\n")
+    .match(/^ *u64 \w+ = (heap_alloc\(e, \d+\));(?![^]*(heap_alloc|\{))/)?.[1]));
   const [a] = al;
   if (al.size === 1 && a) {
     const nd = name_local(sc, "nd");
@@ -2934,10 +2936,9 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 // C
 // -
 
-// A segment may fork if one it reaches does; Clo~apply reaches every
-// closure. The device holds what bangs reach (every closure, if a bang may
-// take one). rp pads the host's twelfth slot, freeing rax for the tail call.
-// WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
+// Forks propagate through calls (Clo~apply reaches all closures). Device
+// reachability includes closures a bang may take. rp pads host slot 12 for
+// tail-call rax. WL_LOAD avoids clang's quadratic fallthrough-switch work.
 
 function c_units(): Unit[] {
   for (const [k, tld] of [...done_defs().reverse(),
