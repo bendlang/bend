@@ -135,6 +135,7 @@ type Safe = {
   groups: Map<Name, Group>;             // the groups found, kept from pass to pass
   inst: Map<Name, [Name, HTerm[]]>;     // each template instance's template and ~ arguments (its key in book.tmps)
   stack: string[];                      // the items going out, outermost first
+  going: Set<string>;                   // the same, as a set
   grew: boolean;                        // this pass grew a group
   consts: Map<string, Name>;            // the root constants by place and type
   uses: WeakMap<O, Map<number, number>>; // each kernel term's live uses, kept once counted
@@ -216,7 +217,7 @@ function safe_book(book: Book): { text: string; oos: string[] } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: string[] } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), log: [], groups, inst, stack: [], grew: false, consts: new Map(), uses: new WeakMap() };
+    todo: [], taken: new Set(), fail: new Map(), log: [], groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap() };
   const roots: Array<[Name, string[], string | null]> = [];
   for (const k of [...new Set([...book.order].reverse())].reverse().filter((k) => book.tlds[k].b !== true)) {
     const m = trail(e);
@@ -287,7 +288,7 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
   // the check of k's instances after the columns cs of T, at depth d
   const go = (T: HTerm, cs: Cols, d: number): O => {
     const j = cs.length;
-    const F = j === tld.n ? null : wnf(e, T);
+    const F = j === tld.n ? null : wnf(e.book, T);
     if (F?.$ !== "All") {
       const n = item_try(e, k, cs);
       ns.push(n);
@@ -298,10 +299,10 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
     if (tld.$ !== "Def" || j >= tld.x) {
       return at(null);
     }
-    const A = wnf(e, F.A);
+    const A = wnf(e.book, F.A);
     const adt = A.$ === "ADT" && A.x.length === 0 ? e.book.tlds[A.k] as ADT : null;
     const vs: HTerm[] | null = A.$ === "Qnt" ? [B.None(), B.Lone(), B.Many()].map((q) => B.Qua(q))
-      : adt !== null && adt.c.every((c) => wnf(e, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
+      : adt !== null && adt.c.every((c) => wnf(e.book, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
     if (vs !== null) {
       if (G === undefined) {
         G = null;
@@ -403,6 +404,7 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
   if (m !== null) {
     put(e, e.seen, key);
     e.stack.push(key);
+    e.going.add(key);
     try {
       item_emit(e, k, cols, n);
     } catch (x) {
@@ -416,8 +418,9 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
       throw x;
     } finally {
       e.stack.pop();
+      e.going.delete(key);
     }
-  } else if (live && e.stack.includes(key) && e.stack.at(-1) !== key) {
+  } else if (live && e.going.has(key) && e.stack.at(-1) !== key) {
     regroup(e, key);
   }
   return n;
@@ -441,9 +444,9 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // template prefix, filled into its type; the tree takes them. A def with
 // no body goes out opaque (see the header)
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
-  const T = fill(e, tld.T, cols.slice(0, tld.x) as HTerm[]);
-  const why = "no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k);
-  const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T)) ?? oos(why);
+  const T = fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[]);
+  const why = () => "no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k);
+  const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T)) ?? oos(why());
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -452,7 +455,7 @@ function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
 // D.arms and D, at D's specialized arguments
 function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const { s, ps, xs, T } = tele_open(e, scope_nil(), tld.T, cols, tld.n);
-  const K = wnf(e, T);
+  const K = wnf(e.book, T);
   if (K.$ !== "Typ") {
     oos("a datatype kind");
   }
@@ -460,7 +463,7 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const am = fresh(e, n + ".arms");
   const t = s.D;
   // a constructor's fields as a Σ chain ending in <()>
-  const fs = (c: B.Ctr): O => alls(tele_open(e, s, fill(e, c.T, xs), [], Infinity).ps, UT, "Sig");
+  const fs = (c: B.Ctr): O => alls(tele_open(e, s, fill(e.book, c.T, xs), [], Infinity).ps, UT, "Sig");
   const ks = tld.c.map((c) => name_tt(c.k));
   const arms = mats(ks, (i) => fs(tld.c[i]));
   const Enu: O = { $: "Enu", ks };
@@ -478,7 +481,7 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
 function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Scope; ps: Binder[]; xs: HTerm[]; T: HTerm } {
   const r = { s, ps: [] as Binder[], xs: [] as HTerm[], T };
   for (let j = 0; j < n; j++) {
-    const F = wnf(e, r.T);
+    const F = wnf(e.book, r.T);
     if (F.$ !== "All") {
       break;
     }
@@ -557,7 +560,7 @@ function inst_pick(e: Safe, k: Name): HTerm[] | null {
     if (x === undefined) {
       return true;
     }
-    const F = B.term_wnf(e.mb, T);
+    const F = wnf(e.mb, T);
     return F.$ === "All" && fit(e, k, x, F.A) !== null && fits(F.B(x), xs);
   };
   return [...e.inst.values()].find(([t, xs]) => t === k && fits(e.book.tlds[k].T, xs))?.[1] ?? null;
@@ -602,7 +605,7 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
     return null;
   }
   probe.left -= 1;
-  const F = B.term_wnf(e.mb, T);
+  const F = wnf(e.mb, T);
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
     case "Typ": {
@@ -626,11 +629,11 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       const h = proj ? hyp() : null;
       for (const c of path.includes(key) || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
         const xs: HTerm[] = [];
-        let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
+        let U = wnf(e.mb, fill(e.mb, c.T, F.x));
         let x: HTerm | null = null;
         while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, key], [], proj, probe)) !== null) {
           xs.push(x);
-          U = B.term_wnf(e.mb, U.B(x));
+          U = wnf(e.mb, U.B(x));
         }
         if (U.$ !== "All") {
           return B.Ann(B.Ctr(c.k, xs), F);
@@ -799,7 +802,8 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     // bend2 checks a ~ argument dead, so its λ may use a linear variable
     // twice: it matches the variable once and rebuilds it at each use,
     // unless its type reduces to Data (a match-refined view): copied
-    if (q === 1 && all !== null && uses(e, f, l) > 1 && kind(e, s, all.A) === 1 && wnf(e, all.A).$ !== "Eql" && kind(e, s, wnf(e, all.A)) !== 2) {
+    const A = q === 1 && all !== null && uses(e, f, l) > 1 && kind(e, s, all.A) === 1 ? wnf(e.book, all.A) : null;
+    if (all !== null && A !== null && A.$ !== "Eql" && kind(e, s, A) !== 2) {
       return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
     }
     return wrap(lams(e, [[q, l]], f));
@@ -858,7 +862,9 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
         return { $: "Efq" };
       }
       // tags remain, but a live tag in scope is of the empty enum
-      return pair_lams(e, quant(all.q), s.D, convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]));
+      const q = quant(all.q);
+      const f = convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]);
+      return { $: "Lam", q, l: s.D, f: { $: "Lam", q, l: s.D + 1, f } };
     }
     case "Mat": {
       const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
@@ -887,22 +893,22 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
 
 // λt => λf => b, a default's tag and fields: both copy if b uses either twice
 function pair_lams(e: Safe, q: Q, l: number, b: O): O {
-  const r: Q = uses(e, b, l) > 1 || uses(e, b, l + 1) > 1 ? 2 : q;
+  const r = copies(e, q, b, [l, l + 1]);
   return { $: "Lam", q: r, l, f: { $: "Lam", q: r, l: l + 1, f: b } };
 }
 
 // the goals of a bare match of type all: c's arm at c's fields, then
 // all's codomain at c{fields}; the other arms at the datatype less c
 function goals(e: Safe, all: Of<"All"> | null, c: B.Ctr): [HTerm | null, HTerm | null] {
-  const A = all === null ? null : wnf(e, all.A);
+  const A = all === null ? null : wnf(e.book, all.A);
   if (all === null || A?.$ !== "ADT") {
     return [null, null];
   }
   const go = (U: HTerm, xs: HTerm[]): HTerm => {
-    const F = wnf(e, U);
+    const F = wnf(e.book, U);
     return F.$ === "All" ? B.All(F.q, F.k, F.i, F.A, (x: HTerm) => go(F.B(x), [...xs, x])) : all.B(B.Ctr(c.k, xs));
   };
-  return [go(fill(e, c.T, A.x), []), { ...all, A: { ...A, r: [...A.r, c.k] } }];
+  return [go(fill(e.book, c.T, A.x), []), { ...all, A: { ...A, r: [...A.r, c.k] } }];
 }
 
 // t at T, when bend2 left it bare
@@ -913,7 +919,7 @@ function typed(t: HTerm, T?: HTerm | null): HTerm {
 // the arm of the λ-match t that the closed constructor v takes, and
 // what it binds: v's fields (a default arm binds v whole)
 function pick(e: Safe, t: HTerm, v: HTerm): [HTerm, HTerm[]] {
-  const w = wnf(e, v);
+  const w = wnf(e.book, v);
   const c = w.$ === "Lit" ? B.term_higher(B.lit_step(w)) : w;
   let m = B.term_strip(t);
   while (m.$ === "Mat" && c.$ === "Ctr" && m.k !== c.k) {
@@ -928,35 +934,35 @@ function pick(e: Safe, t: HTerm, v: HTerm): [HTerm, HTerm[]] {
 // λ{c: λfs => f(c{fs}); ..} for x = λy => f(y) at ∀y:A -> B, when every
 // field of A's constructors is Data; else null
 function rebuild(e: Safe, s: Scope, x: Of<"Lam">, all: Of<"All">): HTerm | null {
-  const F = wnf(e, all.A);
+  const F = wnf(e.book, all.A);
   if (F.$ !== "ADT") {
     return null;
   }
   const data = (U: HTerm): boolean => {
-    const G = wnf(e, U);
-    return G.$ !== "All" || kind(e, s, wnf(e, G.A)) === 2 && data(G.B(B.Var(G.k, -1)));
+    const G = wnf(e.book, U);
+    return G.$ !== "All" || kind(e, s, wnf(e.book, G.A)) === 2 && data(G.B(B.Var(G.k, -1)));
   };
   const branch = (k: Name, U: HTerm, xs: HTerm[]): HTerm => {
-    const G = wnf(e, U);
+    const G = wnf(e.book, U);
     return G.$ !== "All" ? x.f(B.Ann(B.Ctr(k, xs), F)) : B.Lam(G.k, 0, (v: HTerm) => branch(k, G.B(v), [...xs, v]));
   };
-  const cs = (e.book.tlds[F.k] as ADT).c.filter((c) => !F.r.includes(c.k)).map((c): [Name, HTerm] => [c.k, fill(e, c.T, F.x)]);
+  const cs = (e.book.tlds[F.k] as ADT).c.filter((c) => !F.r.includes(c.k)).map((c): [Name, HTerm] => [c.k, fill(e.book, c.T, F.x)]);
   return cs.every(([, U]) => data(U)) ? B.Ann(cs.reduceRight<HTerm>((m, [k, U]) => B.Mat(k, branch(k, U, []), m), B.Efq()), all) : null;
 }
 
-// telescope T at the arguments xs
-function fill(e: Safe, T: HTerm, xs: HTerm[]): HTerm {
-  return B.tele_fill(e.book, T, xs, B.ctx_nil());
+// telescope T at the arguments xs, in book b
+function fill(b: Book, T: HTerm, xs: HTerm[]): HTerm {
+  return B.tele_fill(b, T, xs, B.ctx_nil());
 }
 
-// T's weak head
-function wnf(e: Safe, T: HTerm): HTerm {
-  return B.term_wnf(e.book, T);
+// T's weak head, in book b
+function wnf(b: Book, T: HTerm): HTerm {
+  return B.term_wnf(b, T);
 }
 
 // T's weak head, when a ∀
 function all_of(e: Safe, T: HTerm | null): Of<"All"> | null {
-  const G = T === null ? null : wnf(e, T);
+  const G = T === null ? null : wnf(e.book, T);
   return G?.$ === "All" ? G : null;
 }
 
@@ -979,7 +985,7 @@ function mentions(t: unknown, p: (i: number) => boolean): boolean {
 
 // whether T is a datatype with no constructor left
 function no_ctr(e: Safe, T: HTerm): boolean {
-  const x = wnf(e, T);
+  const x = wnf(e.book, T);
   const tld = x.$ === "ADT" ? e.book.tlds[x.k] : undefined;
   return x.$ === "ADT" && tld?.$ === "ADT" && tld.c.every((c) => x.r.includes(c.k));
 }
@@ -997,7 +1003,7 @@ function kind(e: Safe, s: Scope, T: HTerm): Q | null {
     return null;
   }
   try {
-    const K = wnf(e, fill(e, tld.T, xs));
+    const K = wnf(e.book, fill(e.book, tld.T, xs));
     const g = K.$ === "Typ" ? closed_val(e, s, K.g) : null;
     return g === null ? null : g.$ === "Qua" && g.q.$ === "Many" ? 2 : 1;
   } catch {
@@ -1113,7 +1119,7 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
   const ps: Arg[] = [];
   let U = T;
   xs.forEach((x, j) => {
-    const F = U === null ? U : wnf(e, U);
+    const F = U === null ? U : wnf(e.book, U);
     if (F?.$ !== "All") {
       return oos("an application past its head's known type");
     }
@@ -1322,7 +1328,7 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
-    const F = wnf(e, T);
+    const F = wnf(e.book, T);
     const v = si.cols[0] ?? null;
     if (F.$ !== "All" || v === null && j === vs.length) {
       break;
@@ -1352,8 +1358,8 @@ function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
 // down: the kernel's fit compares binders exactly, where bend2 lets a
 // function fit a domain whose binders differ
 function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
-  const F = wnf(e, T);
-  const G = wnf(e, A);
+  const F = wnf(e.book, T);
+  const G = wnf(e.book, A);
   if (F.$ !== "All" || G.$ !== "All") {
     return F.$ !== "All" && G.$ !== "All";
   }
@@ -1373,12 +1379,12 @@ function ctr_term(e: Safe, s: Scope, x: Of<"Ctr">, T: HTerm | null, live: boolea
     }
     return word_ref(e, x.k, f, w);
   }
-  const G = T === null || fam.n === 0 ? null : wnf(e, T);
+  const G = T === null || fam.n === 0 ? null : wnf(e.book, T);
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, (): HTerm => B.Var("_", -1));
-  let F = fill(e, ctr.T, ps);
+  let F = fill(e.book, ctr.T, ps);
   const fs: Array<[Q, O]> = [[1, lab(name_tt(x.k))]];
   for (const a of x.x) {
-    const A = wnf(e, F);
+    const A = wnf(e.book, F);
     if (A.$ !== "All") {
       oos("a constructor past its fields");
     }
@@ -1432,20 +1438,20 @@ function let_term(e: Safe, s: Scope, x: Of<"Let">, live: boolean, inl: Set<numbe
   if (more.length > 0) {
     return let_term(e, s, x, live, new Set([...inl, ...more]));
   }
-  return ls.reduceRight<O>((b, [q, l, v]) => ({ $: "Let", q: q === 1 && uses(e, b, l) > 1 ? 2 : q, l, v, f: b }), f);
+  return ls.reduceRight<O>((b, [q, l, v]) => ({ $: "Let", q: copies(e, q, b, [l]), l, v, f: b }), f);
 }
 
 // a rewrite: the kernel's J, whose motive binds the endpoint at l and
 // its evidence at l + 1
 function rwt_term(e: Safe, s: Scope, x: Of<"Rwt">, live: boolean): O {
   const E0 = open(x.e)[1];
-  const ev = ann(e, s, term(e, s, x.e, live), E0);
+  const ev = ann(e, s, term(e, s, x.e, live), E0, null);
   const p = B.term_strip(x.p);
   if (p.$ !== "Lam") {
     oos("a rewrite motive that is not a λ");
   }
   const l = s.D;
-  const Q = E0 === null ? null : wnf(e, E0);
+  const Q = E0 === null ? null : wnf(e.book, E0);
   const q = Q?.$ === "Eql" ? Q : null;
   const s2 = scope_var(s, q && q.T);
   const p2 = B.term_strip(p.f(B.Var(p.k, s.d)));
@@ -1515,13 +1521,19 @@ function unit(h: O): O {
 
 // λs over b, at the binders ps; one that uses its variable twice copies it
 function lams(e: Safe, ps: Array<[Q, number, ...unknown[]]>, b: O): O {
-  return ps.reduceRight<O>((f, [q, l]) => ({ $: "Lam", q: q === 1 && uses(e, f, l) > 1 ? 2 : q, l, f }), b);
+  return ps.reduceRight<O>((f, [q, l]) => ({ $: "Lam", q: copies(e, q, f, [l]), l, f }), b);
+}
+
+// q, or 2 if q = 1 and b uses one of the levels ls twice: its binder copies
+function copies(e: Safe, q: Q, b: O, ls: number[]): Q {
+  const u = q === 1 ? o_uses(e, b) : null;
+  return u !== null && ls.some((l) => (u.get(l) ?? 0) > 1) ? 2 : q;
 }
 
 // o, annotated at T unless the kernel infers it; with no T, why says
-// why it cannot go out (none: it goes bare)
-function ann(e: Safe, s: Scope, o: O, T: HTerm | null, why?: string): O {
-  return inferable(o) ? o : T !== null ? { $: "Ann", x: o, T: term(e, s, T, false) } : why === undefined ? o : oos(why);
+// why it cannot go out (null: it goes bare)
+function ann(e: Safe, s: Scope, o: O, T: HTerm | null, why: string | null): O {
+  return inferable(o) ? o : T !== null ? { $: "Ann", x: o, T: term(e, s, T, false) } : why === null ? o : oos(why);
 }
 
 function inferable(o: O): boolean {
@@ -1694,7 +1706,7 @@ function kernel_check(text: string): string | null {
     fs.writeFileSync(inp, text, { flag: "wx" });
     const [got, out] = run_read(kernel_bin(), [inp], { env });
     const o = out.trim();
-    if (got.error || got.signal || got.status === null || o !== "ALL PROOFS CHECK" && !out.startsWith("SOME PROOFS FAIL")) {
+    if (got.error || got.signal || got.status === null || o !== "ALL PROOFS CHECK" && !o.startsWith("SOME PROOFS FAIL")) {
       throw new Error("BendTT infrastructure: " + (got.error?.message
         ?? (got.signal ? "kernel terminated by " + got.signal : o || "kernel exited " + got.status + " without a verdict")));
     }
