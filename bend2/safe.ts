@@ -882,7 +882,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const q = quant(all.q);
       const l = s.D;
       const f = x.$ === "Lam" ? x : B.term_strip(eta(t, all)) as Of<"Lam">;
-      const empty: O[] = no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
+      const empty: O[] = q > 0 && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
       const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, l] };
       // the default's binder is the pair of the tag and the fields
       const pair: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
@@ -892,10 +892,9 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
   }
 }
 
-// λt => λf => b, a default's tag and fields: both copy if b uses either
-// twice, at any q
+// λt => λf => b, a default's tag and fields: both copy if b uses either twice
 function pair_lams(e: Safe, q: Q, l: number, b: O): O {
-  const r = copies(e, 1, b, [l, l + 1]) === 2 ? 2 : q;
+  const r = copies(e, q, b, [l, l + 1]);
   return { $: "Lam", q: r, l, f: { $: "Lam", q: r, l: l + 1, f: b } };
 }
 
@@ -1447,7 +1446,7 @@ function let_term(e: Safe, s: Scope, x: Of<"Let">, live: boolean, inl: Set<numbe
 // its evidence at l + 1
 function rwt_term(e: Safe, s: Scope, x: Of<"Rwt">, live: boolean): O {
   const E0 = open(x.e)[1];
-  const ev = ann(e, s, term(e, s, x.e, live), E0, null);
+  const ev = ann(e, s, term(e, s, x.e, live), E0, "a rewrite's evidence with no known type");
   const p = B.term_strip(x.p);
   if (p.$ !== "Lam") {
     oos("a rewrite motive that is not a λ");
@@ -1533,9 +1532,9 @@ function copies(e: Safe, q: Q, b: O, ls: number[]): Q {
 }
 
 // o, annotated at T unless the kernel infers it; with no T, why says
-// why it cannot go out (null: it goes bare)
-function ann(e: Safe, s: Scope, o: O, T: HTerm | null, why: string | null): O {
-  return inferable(o) ? o : T !== null ? { $: "Ann", x: o, T: term(e, s, T, false) } : why === null ? o : oos(why);
+// why it cannot go out
+function ann(e: Safe, s: Scope, o: O, T: HTerm | null, why: string): O {
+  return inferable(o) ? o : T !== null ? { $: "Ann", x: o, T: term(e, s, T, false) } : oos(why);
 }
 
 function inferable(o: O): boolean {
