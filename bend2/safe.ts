@@ -1316,8 +1316,9 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
 // for its ~ argument, a column the tree drops
 function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const tld = e.book.tlds[k] as Def;
-  const ps = new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
-  let t = subst(B.term_higher(tld.e as B.LTerm), 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
+  const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
+  const t0 = B.term_higher(tld.e as B.LTerm);
+  let t = ps === null ? B.term_higher(B.term_lower(t0)) : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
   let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
