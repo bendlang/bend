@@ -794,10 +794,8 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   let q = all === null ? 1 : quant(all.q);
   if (x.$ === "Lam") {
     const l = s.D;
-    let s2 = scope_var(s1, all?.A ?? null, q);
-    if (q > 0 && all !== null && no_ctr(e, all.A)) {
-      s2 = { ...s2, empty: [...s2.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: vr(l) }] };
-    }
+    const empty: O[] = q > 0 && all !== null && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: vr(l) }] : s.empty;
+    const s2 = scope_var({ ...s1, empty }, all?.A ?? null, q);
     const y: HTerm = B.Var(x.k, s.d);
     const f = tree(e, s2, typed(x.f(y), all?.B(y)), fs2);
     if (q === 1 && uses(e, f, l) > 1) {
@@ -805,7 +803,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
       // twice: it matches the variable once and rebuilds it at each use,
       // unless its type reduces to Data (a match-refined view): copied
       const A = all === null ? null : wnf(e, all.A);
-      if (all !== null && kind(e, s, all.A) === 1 && A!.$ !== "Eql" && kind(e, s, A!) !== 2) {
+      if (all !== null && A !== null && A.$ !== "Eql" && kind(e, s, all.A) === 1 && kind(e, s, A) !== 2) {
         return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
       }
       q = 2;
@@ -884,15 +882,13 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       }
       const q = quant(all.q);
       const [lt, la] = [s.D, s.D + 1];
-      const s2 = scope_hide(scope_hide(s, q), q);
       const f = x.$ === "Lam" ? x : B.term_strip(eta(t, all)) as Of<"Lam">;
+      const empty: O[] = no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(lt) }] : s.empty;
+      const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, lt] };
       // the default's binder is the pair of the tag and the fields
       const pair: O = { $: "Tup", q: 1, a: vr(lt), b: vr(la) };
-      const s2e = no_ctr(e, all.A) ? { ...s2, empty: [...s2.empty,
-        { $: "App", q: 1, f: { $: "Efq" }, x: vr(lt) } as O] } : s2;
-      const s3 = { ...s2e, tags: [...s2e.tags, lt] };
       const y: HTerm = B.Var(f.k, s.d);
-      const body = convoy_bind(e, scope_bind(s3, pair, all.A), cv, typed(f.f(y), all.B(y)), fs);
+      const body = convoy_bind(e, scope_bind(s2, pair, all.A), cv, typed(f.f(y), all.B(y)), fs);
       const r2: Q = uses(e, body, lt) > 1 || uses(e, body, la) > 1 ? 2 : q;
       return { $: "Lam", q: r2, l: lt, f: { $: "Lam", q: r2, l: la, f: body } };
     }
@@ -1446,8 +1442,7 @@ function let_term(e: Safe, s: Scope, x: Of<"Let">, live: boolean, inl: Set<numbe
 // its evidence at l + 1
 function rwt_term(e: Safe, s: Scope, x: Of<"Rwt">, live: boolean): O {
   const E0 = open(x.e)[1];
-  const e0 = term(e, s, x.e, live);
-  const ev = ann(e, s, e0, E0);
+  const ev = ann(e, s, term(e, s, x.e, live), E0);
   const p = B.term_strip(x.p);
   if (p.$ !== "Lam") {
     oos("a rewrite motive that is not a λ");
@@ -1545,30 +1540,38 @@ function uses(e: Safe, o: O, l: number): number {
 // where the kernel counts no use (a type, a q=0 argument) counts 0. A
 // term counted on its own keeps its counts, which a walk of a term built
 // around it reads
-function o_uses(e: Safe, o: O, live: boolean = true, out?: Map<number, number>): Map<number, number> {
-  if (out === undefined) {
-    return e.uses.get(o) ?? e.uses.set(o, o_uses(e, o, true, new Map())).get(o) as Map<number, number>;
-  }
+function o_uses(e: Safe, o: O): Map<number, number> {
   const kept = e.uses.get(o);
   if (kept !== undefined) {
-    kept.forEach((n, l) => out.set(l, (out.get(l) ?? 0) + (live ? n : 0)));
-    return out;
+    return kept;
   }
-  switch (o.$) {
-    case "Var": return out.set(o.l, (out.get(o.l) ?? 0) + (live ? 1 : 0));
-    case "Ann": return o_uses(e, o.T, false, o_uses(e, o.x, live, out));
-    case "Let": return o_uses(e, o.f, live, o_uses(e, o.v, live && o.q > 0, out));
-    case "All": case "Sig": return o_uses(e, o.B, false, o_uses(e, o.A, false, out));
-    case "Lam": return o_uses(e, o.f, live, out);
-    case "App": return o_uses(e, o.x, live && o.q > 0, o_uses(e, o.f, live, out));
-    case "Tup": return o_uses(e, o.b, live, o_uses(e, o.a, live && o.q > 0, out));
-    case "Prj": return o_uses(e, o.h, live, out);
-    case "Mat": return o_uses(e, o.m, live, o_uses(e, o.h, live, out));
-    case "Min": return o_uses(e, o.b, live, o_uses(e, o.a, live, out));
-    case "Eql": return o_uses(e, o.T, false, o_uses(e, o.b, false, o_uses(e, o.a, false, out)));
-    case "Rwt": return o_uses(e, o.f, live, o_uses(e, o.P, false, o_uses(e, o.e, live, out)));
-    default: return out;
-  }
+  const out = new Map<number, number>();
+  const add = (l: number, n: number): void => {
+    out.set(l, (out.get(l) ?? 0) + n);
+  };
+  const go = (o: O, live: boolean): void => {
+    const kept = e.uses.get(o);
+    if (kept !== undefined) {
+      return kept.forEach((n, l) => add(l, live ? n : 0));
+    }
+    switch (o.$) {
+      case "Var": return add(o.l, live ? 1 : 0);
+      case "Ann": go(o.x, live); return go(o.T, false);
+      case "Let": go(o.v, live && o.q > 0); return go(o.f, live);
+      case "All": case "Sig": go(o.A, false); return go(o.B, false);
+      case "Lam": return go(o.f, live);
+      case "App": go(o.f, live); return go(o.x, live && o.q > 0);
+      case "Tup": go(o.a, live && o.q > 0); return go(o.b, live);
+      case "Prj": return go(o.h, live);
+      case "Mat": go(o.h, live); return go(o.m, live);
+      case "Min": go(o.a, live); return go(o.b, live);
+      case "Eql": go(o.a, false); go(o.b, false); return go(o.T, false);
+      case "Rwt": go(o.e, live); go(o.P, false); return go(o.f, live);
+    }
+  };
+  go(o, true);
+  e.uses.set(o, out);
+  return out;
 }
 
 // Show
@@ -1588,34 +1591,37 @@ function mark(q: Q): string {
 
 function o_show(o: O, p: string): string {
   const nm = (l: number): string => p + String(l);
-  switch (o.$) {
-    case "Var": return nm(o.l);
-    case "Ref": return o.k;
-    case "Ann": return "{" + o_show(o.x, p) + " : " + o_show(o.T, p) + "}";
-    case "Let": return "!" + mark(o.q) + nm(o.l) + " = " + o_show(o.v, p) + "; " + o_show(o.f, p);
-    case "Typ": return "*(" + o_show(o.q, p) + ")";
-    case "Min": return "(" + o_show(o.a, p) + " <&> " + o_show(o.b, p) + ")";
-    case "All": case "Sig": return (o.$ === "All" ? "∀" : "Σ") + mark(o.q) + nm(o.l) + " : " + o_show(o.A, p) + " -> " + o_show(o.B, p);
-    case "Lam": return "λ" + mark(o.q) + nm(o.l) + " => " + o_show(o.f, p);
-    case "App": {
-      const xs: string[] = [];
-      let f: O = o;
-      while (f.$ === "App") {
-        xs.push(mark(f.q) + o_show(f.x, p));
-        f = f.f;
+  const go = (o: O): string => {
+    switch (o.$) {
+      case "Var": return nm(o.l);
+      case "Ref": return o.k;
+      case "Ann": return "{" + go(o.x) + " : " + go(o.T) + "}";
+      case "Let": return "!" + mark(o.q) + nm(o.l) + " = " + go(o.v) + "; " + go(o.f);
+      case "Typ": return "*(" + go(o.q) + ")";
+      case "Min": return "(" + go(o.a) + " <&> " + go(o.b) + ")";
+      case "All": case "Sig": return (o.$ === "All" ? "∀" : "Σ") + mark(o.q) + nm(o.l) + " : " + go(o.A) + " -> " + go(o.B);
+      case "Lam": return "λ" + mark(o.q) + nm(o.l) + " => " + go(o.f);
+      case "App": {
+        const xs: string[] = [];
+        let f: O = o;
+        while (f.$ === "App") {
+          xs.push(mark(f.q) + go(f.x));
+          f = f.f;
+        }
+        return "(" + go(f) + " " + xs.reverse().join(" ") + ")";
       }
-      return "(" + o_show(f, p) + " " + xs.reverse().join(" ") + ")";
+      case "Tup": return "(" + mark(o.q) + go(o.a) + ", " + go(o.b) + ")";
+      case "Prj": return "λ{(,): " + go(o.h) + "}";
+      case "Enu": return "<" + o.ks.join(", ") + ">";
+      case "Lab": return o.k === "()" ? "()" : "." + o.k;
+      case "Mat": return "λ{" + go(lab(o.k)) + ": " + go(o.h) + "; " + go(o.m) + "}";
+      case "Efq": return "λ{}";
+      case "Eql": return "{" + go(o.a) + " == " + go(o.b) + " : " + go(o.T) + "}";
+      case "Rfl": return "{==}";
+      case "Rwt": return "%" + go(o.e) + " : " + nm(o.l) + ", " + nm(o.l + 1) + " => " + go(o.P) + "; " + go(o.f);
     }
-    case "Tup": return "(" + mark(o.q) + o_show(o.a, p) + ", " + o_show(o.b, p) + ")";
-    case "Prj": return "λ{(,): " + o_show(o.h, p) + "}";
-    case "Enu": return "<" + o.ks.join(", ") + ">";
-    case "Lab": return o.k === "()" ? "()" : "." + o.k;
-    case "Mat": return "λ{" + o_show(lab(o.k), p) + ": " + o_show(o.h, p) + "; " + o_show(o.m, p) + "}";
-    case "Efq": return "λ{}";
-    case "Eql": return "{" + o_show(o.a, p) + " == " + o_show(o.b, p) + " : " + o_show(o.T, p) + "}";
-    case "Rfl": return "{==}";
-    case "Rwt": return "%" + o_show(o.e, p) + " : " + nm(o.l) + ", " + nm(o.l + 1) + " => " + o_show(o.P, p) + "; " + o_show(o.f, p);
-  }
+  };
+  return go(o);
 }
 
 // Kernel
