@@ -3164,14 +3164,12 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
         return true;
       }
       if (g.$ === "Min") {
-        const fa = compare_go("LE", book, Typ(g.a), b, dep);
-        const fb = compare_go("LE", book, Typ(g.b), b, dep);
-        return fa && fb;
+        return compare_go("LE", book, Typ(g.a), b, dep)
+            && compare_go("LE", book, Typ(g.b), b, dep);
       }
       if (h.$ === "Min") {
-        const fa = compare_go("LE", book, a, Typ(h.a), dep);
-        const fb = compare_go("LE", book, a, Typ(h.b), dep);
-        return fa || fb;
+        return compare_go("LE", book, a, Typ(h.a), dep)
+            || compare_go("LE", book, a, Typ(h.b), dep);
       }
       return compare_go("LE", book, g, h, dep);
     }
