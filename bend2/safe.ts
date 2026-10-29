@@ -137,7 +137,7 @@ type Safe = {
   grew: boolean;                        // this pass grew a group
   consts: Map<string, Name>;            // the root constants by place and type
   uses: WeakMap<O, Map<number, number>>; // each kernel term's live uses, kept once counted
-  fin: Map<string, boolean>;            // each call's verdict: whether it goes η-long (see eta_finite)
+  fin: Map<string, boolean>;            // each call's verdict: η-long or whole (see eta_finite)
   keys: WeakMap<HTerm, string[]>;       // each type's key there, by depth
 };
 
@@ -953,12 +953,11 @@ function all_of(e: Safe, T: HTerm | null): Of<"All"> | null {
   return G?.$ === "All" ? G : null;
 }
 
-// whether T's η-long form is finite. A call (a type not headed by a ∀,
-// at its arguments' data, keyed by its own binders, other variables
-// alike) goes whole if it embeds a call of its def it unfolds from: it
-// repeats or grows. Every endless path does, so the walk ends. Other
-// calls go η-long once the calls in their ∀s are decided, so they never
-// lead back to themselves; a ∀, walked once, is finite
+// whether T's η-long form is finite. A call (a type not headed by a ∀, at
+// its arguments' data, keyed by its own binders) goes whole if it embeds
+// a call of its def it unfolds from: it repeats or grows, as every endless
+// path does. Others go η-long once the calls in their ∀s are decided, so
+// never lead back to themselves; a ∀, walked once, is finite
 function eta_finite(e: Safe, T0: HTerm, d: number, up: Array<{ r: string; x: B.LTerm; z: number }> = []): boolean {
   const ks = e.keys.get(T0) ?? e.keys.set(T0, []).get(T0)!;
   const [f, xs] = unapply(T0);
@@ -984,8 +983,8 @@ function eta_finite(e: Safe, T0: HTerm, d: number, up: Array<{ r: string; x: B.L
   return e.fin.get(k)!;
 }
 
-// x with its data computed: constructors down to what is not one, a nat
-// as its literal, a datatype at its head
+// x with its data computed: constructors down, a nat as its literal, a
+// datatype at its head
 function datum(e: Safe, x: HTerm): HTerm {
   const w = wnf(e.book, x);
   const c = w.$ === "Ctr" ? B.Ctr(w.k, w.x.map((y) => datum(e, y))) : w.$ === "Lit" || w.$ === "ADT" ? w : x;
@@ -993,7 +992,7 @@ function datum(e: Safe, x: HTerm): HTerm {
   return n === null ? c : B.Lit("Nat", n);
 }
 
-// a lowered term's subterms, and its size (a nat counts as its value)
+// a nat's size is its value
 function kids(t: B.LTerm): B.LTerm[] {
   return Object.values(t).flat().filter(is_o) as unknown[] as B.LTerm[];
 }
@@ -1002,8 +1001,7 @@ function size(t: B.LTerm): number {
 }
 
 // whether b is a with nodes added (homeomorphic embedding), so no smaller:
-// a variable meets any, a nat a no smaller one, a literal any of its kind.
-// seen keeps each pair's answer
+// a variable meets any, a nat a no smaller one, a literal any of its kind
 function embeds(a: B.LTerm, b: B.LTerm, seen = new Map<B.LTerm, Map<B.LTerm, boolean>>()): boolean {
   const tag = (t: B.LTerm): string => t.$ === "Var" ? "" : [t.$, "k" in t ? t.k : "", "r" in t ? t.r : ""].join(" ");
   const m = seen.get(a) ?? seen.set(a, new Map()).get(a)!;
@@ -1015,7 +1013,6 @@ function embeds(a: B.LTerm, b: B.LTerm, seen = new Map<B.LTerm, Map<B.LTerm, boo
   return m.get(b)!;
 }
 
-// λy => t(y), at t's type ∀y:A -> B
 function eta(t: HTerm, all: Of<"All">): HTerm {
   return B.Ann(B.Lam(all.k, 0, (y: HTerm) => B.Ann(B.App(t, y), all.B(y))), all);
 }
