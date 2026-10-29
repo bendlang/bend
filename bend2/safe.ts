@@ -133,7 +133,6 @@ type Safe = {
   groups: Map<Name, Group>;             // the groups found, kept from pass to pass
   inst: Map<Name, [Name, HTerm[]]>;     // each template instance's template and ~ arguments (its key in book.tmps)
   stack: string[];                      // the items going out, outermost first
-  going: Set<string>;                   // the same, as a set
   grew: boolean;                        // this pass grew a group
   consts: Map<string, Name>;            // the root constants by place and type
   uses: WeakMap<O, Map<number, number>>; // each kernel term's live uses, kept once counted
@@ -215,7 +214,7 @@ function safe_book(book: Book): { text: string; oos: string[] } {
 function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): { text: string; oos: string[] } | null {
   const g0 = groups.size;
   const e: Safe = { book, mb: { ...book, tlds: Object.create(book.tlds) as Book["tlds"] }, out: [], names: new Map(), seen: new Set(),
-    todo: [], taken: new Set(), fail: new Map(), log: [], groups, inst, stack: [], going: new Set(), grew: false, consts: new Map(), uses: new WeakMap() };
+    todo: [], taken: new Set(), fail: new Map(), log: [], groups, inst, stack: [], grew: false, consts: new Map(), uses: new WeakMap() };
   const roots: Array<[Name, string[], string | null]> = [];
   for (const k of [...new Set([...book.order].reverse())].reverse().filter((k) => book.tlds[k].b !== true)) {
     const m = trail(e);
@@ -402,7 +401,6 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
   if (m !== null) {
     put(e, e.seen, key);
     e.stack.push(key);
-    e.going.add(key);
     try {
       item_emit(e, k, cols, n);
     } catch (x) {
@@ -416,9 +414,8 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
       throw x;
     } finally {
       e.stack.pop();
-      e.going.delete(key);
     }
-  } else if (live && e.going.has(key) && e.stack.at(-1) !== key) {
+  } else if (live && e.stack.includes(key) && e.stack.at(-1) !== key) {
     regroup(e, key);
   }
   return n;
@@ -486,7 +483,7 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
     const q = quant(F.q);
     if (cols[j] == null) {
       r.ps.push([q, r.s.D, term(e, r.s, F.A, false)]);
-      r.s = scope_kq(scope_bind(r.s, vr(r.s.D), F.A, true), r.s.D, q);
+      r.s = scope_var(r.s, F.A, q);
     }
     r.xs.push(cols[j] ?? B.Var(F.k, r.s.d - 1));
     r.T = F.B(r.xs[j]);
@@ -682,24 +679,26 @@ function scope_nil(): Scope {
 }
 
 // binds the next bend2 variable to o, or to its original term v when
-// specialized or inlined; a kernel binder when kb
-function scope_bind(s: Scope, o: O, T: HTerm | null, kb: boolean, v?: HTerm): Scope {
+// specialized or inlined
+function scope_bind(s: Scope, o: O, T: HTerm | null, v?: HTerm): Scope {
   const c = s.c.slice();
   c[s.d] = { o, T, v };
-  return { ...s, c, d: s.d + 1, D: s.D + (kb ? 1 : 0) };
+  return { ...s, c, d: s.d + 1 };
 }
 
-// a kernel binder with no bend2 variable
-function scope_hide(s: Scope): Scope {
-  return { ...s, D: s.D + 1 };
-}
-
-// the (tentative) quantity of the kernel binder at level l: a q=1 one
-// may ride a convoy
-function scope_kq(s: Scope, l: number, q: Q): Scope {
+// a kernel binder with no bend2 variable, at its tentative quantity q, if
+// known: a q=1 one may ride a convoy
+function scope_hide(s: Scope, q?: Q): Scope {
   const kq = s.kq.slice();
-  kq[l] = q;
-  return { ...s, kq };
+  if (q !== undefined) {
+    kq[s.D] = q;
+  }
+  return { ...s, D: s.D + 1, kq };
+}
+
+// binds the next bend2 variable to a kernel binder
+function scope_var(s: Scope, T: HTerm | null, q?: Q): Scope {
+  return scope_bind(scope_hide(s, q), vr(s.D), T);
 }
 
 // the kernel variable at level a stands at level b from here on
@@ -718,7 +717,7 @@ function convoy_bind(e: Safe, s: Scope, cv: number[], t: HTerm | ((s: Scope) => 
   }
   const l = s.D;
   const q = s.kq[cv[0]] ?? 1;
-  const f = convoy_bind(e, scope_move(scope_kq(scope_hide(s), l, q), cv[0], l), cv.slice(1), t, fs);
+  const f = convoy_bind(e, scope_move(scope_hide(s, q), cv[0], l), cv.slice(1), t, fs);
   return lams(e, [[q, l]], f);
 }
 
@@ -766,7 +765,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // binder), a match goes to the arm it takes, whose fields it binds so
   const v = top === undefined ? s.cols[0] ?? null : null;
   if (v !== null && x.$ === "Lam") {
-    const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, { $: "Efq" }, all?.A ?? null, false, v);
+    const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, { $: "Efq" }, all?.A ?? null, v);
     return tree(e, s2, x.f(B.Var(x.k, s.d)), fs);
   }
   if (v !== null && (x.$ === "Mat" || x.$ === "Efq")) {
@@ -788,7 +787,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   let q = all === null ? 1 : quant(all.q);
   if (x.$ === "Lam") {
     const l = s.D;
-    let s2 = scope_kq(scope_bind(s1, vr(l), all?.A ?? null, true), l, q);
+    let s2 = scope_var(s1, all?.A ?? null, q);
     if (q > 0 && all !== null && no_ctr(e, all.A)) {
       s2 = { ...s2, empty: [...s2.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: vr(l) }] };
     }
@@ -813,7 +812,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
       return wrap({ $: "Prj", h: swi(e, { ...s1, dry }, x, T, fs2, []) });
     }
     const l = s.D;
-    const sw = swi(e, scope_kq(scope_hide({ ...s1, dry, again: true }), l, q), x, T, fs2, cv);
+    const sw = swi(e, scope_hide({ ...s1, dry, again: true }, q), x, T, fs2, cv);
     return wrap({ $: "Lam", q, l, f: apps({ $: "Prj", h: sw }, [[q, vr(l)], ...cv.map((y): [Q, O] => [s.kq[y] ?? 1, vr(y)])]) });
   };
   // the arms, to count uses: dry inside a match being built again (an
@@ -878,15 +877,15 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       }
       const q = quant(all.q);
       const [lt, la] = [s.D, s.D + 1];
-      const s2 = scope_hide(scope_hide(s));
+      const s2 = scope_hide(scope_hide(s, q), q);
       const f = x.$ === "Lam" ? x : B.term_strip(eta(t, all)) as Of<"Lam">;
       // the default's binder is the pair of the tag and the fields
       const pair: O = { $: "Tup", q: 1, a: vr(lt), b: vr(la) };
       const s2e = no_ctr(e, all.A) ? { ...s2, empty: [...s2.empty,
         { $: "App", q: 1, f: { $: "Efq" }, x: vr(lt) } as O] } : s2;
-      const s3 = scope_kq(scope_kq({ ...s2e, tags: [...s2e.tags, lt] }, lt, q), la, q);
+      const s3 = { ...s2e, tags: [...s2e.tags, lt] };
       const y: HTerm = B.Var(f.k, s.d);
-      const body = convoy_bind(e, scope_bind(s3, pair, all.A, false), cv, typed(f.f(y), all.B(y)), fs);
+      const body = convoy_bind(e, scope_bind(s3, pair, all.A), cv, typed(f.f(y), all.B(y)), fs);
       const r2: Q = uses(e, body, lt) > 1 || uses(e, body, la) > 1 ? 2 : q;
       return { $: "Lam", q: r2, l: lt, f: { $: "Lam", q: r2, l: la, f: body } };
     }
@@ -1036,7 +1035,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     case "All": {
       const l = s.D;
       const A = term(e, s, x.A, false);
-      const Bo = term(e, scope_bind(s, vr(l), x.A, true), x.B(B.Var(x.k, s.d)), false);
+      const Bo = term(e, scope_var(s, x.A), x.B(B.Var(x.k, s.d)), false);
       return { $: "All", q: quant(x.q), l, A, B: Bo };
     }
     case "Lam":
@@ -1285,7 +1284,7 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   const sel = (f: (m: Name) => O): O => ({ $: "Prj", h: mats(tags, (i) => i === 0 ? unit(f(g.ms[i]))
     : { $: "Prj", h: { $: "Prj", h: mats([name_tt(g.k)], () => unit(unit(f(g.ms[i])))) } }) });
   const l0 = s.D;
-  const s0 = scope_kq(scope_hide(s), l0, 1);
+  const s0 = scope_hide(s, 1);
   const mode = sel((m) => {
     const r = rest(s0, m);
     return alls(r.ps, term(e, r.s, r.T, false));
@@ -1322,7 +1321,7 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
     if (F.$ !== "All" || v === null && j === vs.length) {
       break;
     }
-    si = scope_bind({ ...si, cols: si.cols.slice(1) }, v !== null ? { $: "Efq" } : vs[j++][1], F.A, false, v ?? undefined);
+    si = scope_bind({ ...si, cols: si.cols.slice(1) }, v !== null ? { $: "Efq" } : vs[j++][1], F.A, v ?? undefined);
     t = x.f(B.Var(x.k, si.d - 1));
   }
   return apps(tree(e, si, t, []), vs.slice(j));
@@ -1407,18 +1406,18 @@ function let_term(e: Safe, s: Scope, x: Of<"Let">, live: boolean, inl: Set<numbe
     const q = quant(x.q[j]);
     const V = open(x.v[j])[1];
     if (inl.has(j)) {
-      s2 = scope_bind(s2, { $: "Efq" }, V, false, x.v[j]);
+      s2 = scope_bind(s2, { $: "Efq" }, V, x.v[j]);
       continue;
     }
     // a parallel let's value sees s's variables, below the lets before it
     const at = { ...s, D: s2.D, kq: s2.kq };
     const v = term(e, at, x.v[j], live && q > 0);
     if (v.$ === "Var") {
-      s2 = scope_bind(s2, v, V, false);
+      s2 = scope_bind(s2, v, V);
     } else {
       const l = s2.D;
       ls.push([q, l, ann(e, at, v, V, "a let with no known type"), j]);
-      s2 = scope_kq(scope_bind(s2, vr(l), V, true), l, q);
+      s2 = scope_var(s2, V, q);
     }
   }
   const xs = x.k.map((k, j): HTerm => B.Var(k, s.d + j));
@@ -1443,12 +1442,12 @@ function rwt_term(e: Safe, s: Scope, x: Of<"Rwt">, live: boolean): O {
   const l = s.D;
   const Q = E0 === null ? null : wnf(e, E0);
   const q = Q?.$ === "Eql" ? Q : null;
-  const s2 = scope_bind(s, vr(l), q && q.T, true);
+  const s2 = scope_var(s, q && q.T);
   const p2 = B.term_strip(p.f(B.Var(p.k, s.d)));
   if (p2.$ !== "Lam") {
     oos("a rewrite motive that is not a λ over its evidence");
   }
-  const s3 = scope_bind(s2, vr(l + 1), q && B.Eql(q.a, B.Var(p.k, s.d), q.T), true);
+  const s3 = scope_var(s2, q && B.Eql(q.a, B.Var(p.k, s.d), q.T));
   const P = term(e, s3, p2.f(B.Var(p2.k, s2.d)), false);
   return { $: "Rwt", e: ev, l, P, f: term(e, s, x.f, live) };
 }
