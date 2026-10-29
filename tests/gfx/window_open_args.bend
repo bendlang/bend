@@ -2,9 +2,10 @@
 # lane: a NUL in the title is EILSEQ (92 on macOS, 84 on Linux), checked
 # first, and a side outside 1..16384 is EINVAL. The JS lane once answered
 # ENOTSUP (no display) for both. A Char that is no Unicode scalar leaves as
-# U+FFFD, no NUL, though Bend's own text for Chr{55296} holds zeros. A side of 1 or 16384 passes the checks: it
-# opens a window, or fails with ENOTSUP (45 on macOS, 95 on Linux) where no
-# display is, and either reads "accepted".
+# U+FFFD, no NUL, though Bend's own text for Chr{55296} holds zeros. A side
+# of 1 or 16384 passes the checks: it opens a window, or fails with ENOTSUP
+# (45 on macOS, 95 on Linux) where no display is, and either reads
+# "accepted".
 import Base
 
 def ilseq(yes: Bool, code: U32) -> String:

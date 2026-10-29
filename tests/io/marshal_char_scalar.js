@@ -7,4 +7,5 @@ function seen(c) {
 }
 
 io_eff(CID(echo), echo);
+io_eff(CID(echo_list), echo);
 io_eff(CID(seen), seen);

@@ -2,7 +2,9 @@
 // globalThis.BEND_LINT before it runs a rule, and removes it after. Bool
 // and U32 are native JS values here; a String is Bend's text, so host text
 // goes in with str_in and comes out with str_out; other data is
-// {$: CID(Name), ...}.
+// {$: CID(Name), ...}. A source's path and text were read as UTF-8, which
+// holds no lone surrogate, so they go in as they are: str_in would scan
+// every source's whole text on each rule run for no change.
 
 const LINT_SEVERITY = {
   [CID(Error)]: "error",
@@ -78,8 +80,8 @@ function lint_input() {
     sources: lint_list(
       sources.map((s) => ({
         $: CID(Source),
-        path: str_in(s.path),
-        text: str_in(s.text),
+        path: s.path,
+        text: s.text,
         root: s.root,
       })),
     ),

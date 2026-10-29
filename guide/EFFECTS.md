@@ -103,13 +103,27 @@ takes the def's arguments as JS values: a `U32` is a number, a `Nat` a
 number, a `String` or `Char` Bend's text, taken with `io_bytes(s)` (its
 UTF-8) or `str_out(s)` (a host string), a constructor
 `{$: CID(Name), field: value}`, a handle its host value (a descriptor).
-`CID(Name)` is the constructor's tag, read as on the C side. It returns
-the answer the same way: `io_done(v)`, `io_fail(code)`,
-`io_tup(handle, result)`, `{$: CID(Unit)}`, a `String` or `Char` as
-`str_in(s)` or `io_text(b, n)`. Text inside a constructor, in either
-direction, converts the same way. A `Nat` answer that is not a
-whole number from 0 to 2^53 stops the run; a `Nat` inside an answer goes
-unchecked, so the host keeps it in that range.
+`CID(Name)` is the constructor's tag, read as on the C side.
+
+Bend's text is not a host string. A `Char` that is no Unicode scalar (a
+surrogate code, or one past U+10FFFF) is four code units: `\uDC00`, then
+its code in three 11-bit parts, which may be 0. `Chr{55296}` is
+`"\uDC00\0\u001B\0"`. Test the converted text, not `s`, for a NUL, a
+length or a pattern: `window_open.js` checks `str_out(title)` for a NUL,
+as `window.c` checks what `io_cstr` wrote.
+
+It returns the answer the same way: `io_done(v)`, `io_fail(code)`,
+`io_tup(handle, result)`, `{$: CID(Unit)}`, a `String` as `str_in(s)` or
+`io_text(b, n)`, a `Char` as `char_new(code)` (any `U32` code). Host text
+that may hold a lone surrogate (a `JSON.parse` result, text built from
+code units) goes in through `str_in`, which writes U+FFFD for one: a lone
+`\uDC00` left in would read as the head of a packed `Char`, with no
+error. Text that cannot hold one goes in as it is: a literal, `io_text`'s
+decode, or `process.argv` and `process.env`, which Node and Bun decode as
+UTF-8. Text inside a constructor, in either direction, converts the same
+way. A `Nat` answer that is not a whole number from 0 to 2^53 stops the
+run; a `Nat` inside an answer goes unchecked, so the host keeps it in
+that range.
 
 A blocking effect takes one more argument, `k`, and parks with
 `io_park_on(fd, out, k, more)`: it returns `undefined`, and the loop calls
