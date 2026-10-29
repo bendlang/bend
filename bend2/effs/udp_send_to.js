@@ -12,11 +12,19 @@ function udp_send_to_with(socket, host, port, data, b, k, at) {
   if (to === null) {
     return fail(22);
   }
+  const again = sys.mac ? 35 : 11;
+  const intr = 4;
   const go = () => {
-    const sent = sys.sendto(fd, b.length ? sys.ptr(b) : null, b.length, 0, sys.ptr(to), 16);
-    if (Number(sent) < 0) {
+    while (true) {
+      const sent = sys.sendto(fd, b.length ? sys.ptr(b) : null, b.length, 0, sys.ptr(to), 16);
+      if (Number(sent) >= 0) {
+        return io_tup(socket, io_ready(at, io_done({ $: CID(Unit) })));
+      }
       const code = sys.errno();
-      if (code !== (sys.mac ? 35 : 11)) {
+      if (code === intr) {
+        continue;
+      }
+      if (code !== again) {
         return fail(code);
       }
       if (io_late(at)) {
@@ -25,7 +33,6 @@ function udp_send_to_with(socket, host, port, data, b, k, at) {
       io_park_on(fd, true, k, go, at);
       return undefined;
     }
-    return io_tup(socket, io_ready(at, io_done({ $: CID(Unit) })));
   };
   return go();
 }

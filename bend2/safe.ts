@@ -1,18 +1,14 @@
 // Safe
 // ====
-// `bend f.bend --verdict` checks f.bend twice: bend2 checks it, then
-// safe_book elaborates the checked book to BendTT (bend2/bendtt.lean,
-// the minimal kernel with a proof) and the kernel's CLI checks the text.
-// The elaborator reads bend2's checked terms (Def.e: every node of a
-// def's body wrapped in its type), so it needs no inference of its own;
-// the kernel trusts none of it. A term inside a type stays bare, so the
-// elaborator carries the type bend2 checked it at down to it: a λ's body
-// at the codomain, a match arm at its constructor's fields. A book bend2
-// rejects never reaches the kernel. bend2
-// converts functions up to η; the kernel does not, and unfolds a def
-// only when applied. So a term of a function type goes out η-long: an
-// equation bend2 closes by η has λs on both sides, which the kernel
-// compares under the binder.
+// `bend f.bend --verdict` elaborates bend2's checked book to BendTT, then
+// runs the kernel (bend2/bendtt.lean). The kernel trusts no elaboration.
+// A rejected book never reaches it. Checked bodies (Def.e) annotate each
+// node with its type; the elaborator needs no inference. For a bare term
+// inside a type, it carries down the type bend2 checked it at: a lambda's
+// codomain or a match arm's constructor fields.
+// bend2 converts functions up to η; the kernel does not, and unfolds
+// defs only at applications. Emit functions η-long so the kernel can
+// compare both sides of an equation under their binders.
 //
 // A datatype D<ps> with constructors cs is two defs: D.arms(ps, t)
 // switches on the tag t and gives the Σ chain of that constructor's
@@ -341,9 +337,7 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
     const m = f ?? model(e, F.A);
     const def: Def = { $: "Def", n: 0, x: 0, T: F.A, v: null };
     e.book.tlds[c] = def;
-    if (m !== null) {
-      e.mb.tlds[c] = { ...def, v: m };
-    }
+    e.mb.tlds[c] = { ...def, v: m };
     e.consts.set(key, c);
     return at(B.Ref(c));
   };
@@ -528,17 +522,27 @@ function subst(t: HTerm, d: number, f: (o: Record<string, unknown>) => HTerm | u
 
 // Model
 // -----
-// a model of type T: λs around a model of the codomain, a datatype's
-// first constructor whose fields all have one (none for a datatype
-// already on the path), Unit for a kind, {==} for an equation bend2
-// converts, else a live λ variable of type T (the codomain's own, so it
-// is used once); none for an empty type. A projection model takes that
-// variable first: a law like {a == sub(add(a, b), b)} holds of it, one
-// like {add(a, b) == add(b, a)} of a constant. It reads the model book,
-// where each opaque def is at its own model.
+// Build a model from lambdas, constructors, Unit, or reflexivity.
+// Constructor fields each need a model; skip datatypes on the path.
+// An empty type has no model. A live variable of the required type is
+// the codomain's own, used once. The projection pass tries it before
+// constructors: {a == sub(add(a, b), b)} needs it; commutativity can use
+// constants. Read opaque defs at their models. If both passes fail, use
+// a checked def of the same type: a body, no template parameters, and
+// no @unsafe flag. Normal emission makes the kernel check its body too.
 
 function model(e: Safe, T: HTerm): HTerm | null {
-  return model_by(e, T, false) ?? model_by(e, T, true);
+  const m = model_by(e, T, false) ?? model_by(e, T, true);
+  if (m !== null) {
+    return m;
+  }
+  for (const [k, d] of Object.entries(e.book.tlds)) {
+    if (d.$ === "Def" && d.e !== undefined && d.x === 0 && d.u !== true
+      && B.term_compare("EQ", e.mb, d.T, T, 0)) {
+      return B.Ref(k);
+    }
+  }
+  return null;
 }
 
 // the ~ arguments of k's first instance whose arguments all fit, each at

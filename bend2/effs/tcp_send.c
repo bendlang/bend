@@ -7,8 +7,16 @@ static Term tcp_send_more(Env e, IoWork* w) {
   int fd = (int)w->hand;
   w->code = 0;
   while (w->code == 0 && (u64)w->made < w->size) {
-    w->made += io_sys_end(w, send(fd, w->data + w->made,
-      w->size - (u64)w->made, 0));
+    ssize_t n;
+    do {
+      n = send(fd, w->data + w->made, w->size - (u64)w->made, 0);
+    } while (n < 0 && errno == EINTR);
+    // no progress would retry forever (#1445)
+    if (n == 0) {
+      w->code = EIO;
+      break;
+    }
+    w->made += io_sys_end(w, n);
     if (io_again(w)) {
       return io_wait_on(w, fd, POLLOUT, w->time, tcp_send_more);
     }

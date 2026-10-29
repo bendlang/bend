@@ -2,6 +2,7 @@
 
 import Base
 import ./main.bend as Game
+import ./BOARD.bend as Board
 
 # LAW: for any sequence of moves, replaying them
 # from the start can never lead to victory.
@@ -15,4 +16,4 @@ law you_cant_win:
 law never_on_flag:
   for moves: List<Game.Move>
   board = Game.replay(Game.start(), moves)
-  {Game.at_flag(board) == False{} : Bool}
+  {Board.at_flag(board) == False{} : Bool}

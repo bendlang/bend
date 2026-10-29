@@ -27,7 +27,8 @@
 // latest.json fallback name the version, no sha256 and the move notice; the
 // formula carries the sum; --publish ships LICENSE files, names the license
 // as the hub does, sends no leading byte order mark (a package published
-// from a file with one imports), refuses a License/ directory and a file
+// from a file with one imports), prints a usable alias for a hyphenated
+// entry, refuses a License/ directory and a file
 // leaving the entry's directory (a climb, even one back in, a link out, a
 // linked entry, LICENSE included) before mining, publishes a link inside
 // and a nested file's climb that stays inside, and every
@@ -546,17 +547,18 @@ try {
     && none.err.includes(TERMS + "License: MIT-0, the default (no LICENSE"
     + " file): https://bend-lang.com/bendai/terms#s18.4\nwarning: no file is"
     + " named exactly LICENSE"));
-  const bom  = { "lic_bom.bend": use("two.bend"), "two.bend": two,
+  const bom  = { "lic_bom--name.bend": use("two.bend"), "two.bend": two,
     "LICENSE": "SPDX-License-Identifier: MIT\n" };
-  const mark = await publish("bom",
+  const mark = await publish("bom--name",
     { ...bom, "LICENSE": "\uFEFF" + bom.LICENSE });
-  fs.writeFileSync(path.join(TMP, "bom.bend"), "import Base\nimport "
-    + pkg_hash(bom) + "/two.bend as T\ndef main() -> Nat:\n  T.two\n");
+  fs.writeFileSync(path.join(TMP, "bom.bend"), "import Base\n"
+    + mark.out.slice(mark.out.indexOf("\n") + 1)
+    + "def main() -> Nat:\n  Lic_bom__name.main()\n");
   const imp  = await bend([path.join(TMP, "bom.bend")], { BEND_HUB: ORIGIN });
-  check("a LICENSE opening with a byte order mark goes without it, so the"
-    + " package imports: " + mark.err + imp.err, mark.code === 0
-    && mark.out.startsWith(pkg_hash(bom) + "\n") && imp.code === 0
-    && imp.out === "2n\n");
+  check("a LICENSE opening with a byte order mark goes without it, and a"
+    + " hyphenated entry's printed import works: " + mark.err + imp.err,
+    mark.code === 0 && mark.out.startsWith(pkg_hash(bom) + "\n")
+    && imp.code === 0 && imp.out === "2n\n");
   const posts = seen.filter((s) => s.startsWith("POST / ")).length;
   const dir  = await publish("dir", { "lic_dir.bend": use("License/two.bend"),
     "License/two.bend": two });
