@@ -784,7 +784,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   const q = all === null ? 1 : quant(all.q);
   if (x.$ === "Lam") {
     const l = s.D;
-    const empty: O[] = q > 0 && all !== null && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: vr(l) }] : s.empty;
+    const empty: O[] = q > 0 && all !== null && no_ctr_left(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: vr(l) }] : s.empty;
     const s2 = scope_var({ ...s1, empty }, all?.A ?? null, q);
     const y: HTerm = B.Var(x.k, s.d);
     const f = tree(e, s2, typed(x.f(y), all?.B(y)), fs2);
@@ -847,7 +847,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
   const all = all_of(e, U ?? T);
   switch (x.$) {
     case "Efq": {
-      if (all === null || no_ctr(e, all.A) || s.empty.length === 0) {
+      if (all === null || no_ctr_left(e, all.A) || s.empty.length === 0) {
         return { $: "Efq" };
       }
       // tags remain, but a live tag in scope is of the empty enum
@@ -857,7 +857,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
       const [hT, mT] = goals(e, all, ctr);
       const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
-      const dead = mT?.$ === "All" && no_ctr(e, mT.A) && x.m.$ !== "Mat";
+      const dead = mT?.$ === "All" && no_ctr_left(e, mT.A) && x.m.$ !== "Mat";
       const m = swi(e, s, dead ? B.Efq() : x.m, mT, fs, cv);
       return { $: "Mat", k: name_tt(x.k), h, m };
     }
@@ -868,7 +868,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const q = quant(all.q);
       const l = s.D;
       const f = x.$ === "Lam" ? x : B.term_strip(eta(t, all)) as Of<"Lam">;
-      const empty: O[] = q > 0 && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
+      const empty: O[] = q > 0 && no_ctr_left(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
       const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, l] };
       // the default's binder is the pair of the tag and the fields
       const pair: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
@@ -954,7 +954,7 @@ function eta(t: HTerm, all: Of<"All">): HTerm {
   return B.Ann(B.Lam(all.k, 0, (y: HTerm) => B.Ann(B.App(t, y), all.B(y))), all);
 }
 
-function mentions(t: unknown, p: (i: number) => boolean): boolean {
+function mentions(t: B.LTerm, p: (i: number) => boolean): boolean {
   if (typeof t !== "object" || t === null) {
     return false;
   }
@@ -962,10 +962,10 @@ function mentions(t: unknown, p: (i: number) => boolean): boolean {
   if (o.$ === "Var" && p(o.i as number)) {
     return true;
   }
-  return Object.entries(o).some(([k, v]) => k !== "s" && mentions(v, p));
+  return Object.entries(o).some(([k, v]) => k !== "s" && mentions(v as B.LTerm, p));
 }
 
-function no_ctr(e: Safe, T: HTerm): boolean {
+function no_ctr_left(e: Safe, T: HTerm): boolean {
   const x = wnf(e.book, T);
   const tld = x.$ === "ADT" ? e.book.tlds[x.k] : undefined;
   return x.$ === "ADT" && tld?.$ === "ADT" && tld.c.every((c) => x.r.includes(c.k));
@@ -1480,6 +1480,7 @@ function alls(ps: Binder[], b: O, $: "All" | "Sig" = "All"): O {
   return ps.reduceRight<O>((B, [q, l, A]) => ({ $, q, l, A, B }), b);
 }
 
+// h runs from the last label to the first: what it names goes out in that order
 function mats(ks: string[], h: (i: number) => O): O {
   return ks.reduceRight<O>((m, k, i) => ({ $: "Mat", k, h: h(i), m }), { $: "Efq" });
 }
