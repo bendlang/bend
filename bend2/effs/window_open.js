@@ -3,7 +3,7 @@
 
 // As in window.c: a NUL in the title, then a bad size, before the display.
 function window_open(title, width, height) {
-  if (title.includes("\0")) {
+  if (str_out(title).includes("\0")) {
     return io_fail(process.platform === "darwin" ? 92 : 84);
   }
   if (width < 1 || height < 1 || width > 16384 || height > 16384) {

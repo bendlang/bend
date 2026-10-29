@@ -3281,9 +3281,8 @@ function js_def(k: Name, def: Bend.Def): void {
     if (def_foreign(def)) {
       const K = ty_wnf(tele_unbind(def.T).doms.at(-1)![2]);
       return file_push(sc, `return { $: ${JSON.stringify(k)
-        }, args: [${live.map(([, , A], i) => host(A, params[i], true))
-        }], kont: (x) => ${params.at(-1)}(${host(K?.$ === "All" ? K.A : null,
-        "x", false)}) };`);
+        }, args: [${params.slice(0, -1)}], kont: (x) => ${params.at(-1)}(${
+        host_in(K?.$ === "All" ? K.A : null, "x")}) };`);
     }
     if (loop.length === 0) {
       return js_func(sc, h!, def.T, params);
@@ -3305,13 +3304,11 @@ function js_def(k: Name, def: Bend.Def): void {
   file_push(sc, "");
 }
 
-// Across a host edge a Nat comes in as a number nat_in checks; text gets
-// U+FFFD for non-scalars.
-function host(A: HTerm | null, x: string, out: boolean): string {
+// A value in from a host, an effect's answer or an export's argument: a Nat
+// comes as a number, which nat_in checks, and an F32 is rounded to one.
+function host_in(A: HTerm | null, x: string): string {
   const k = ty_adt(A)?.k;
-  return k === "Char" || k === "String" ? `str_${out ? "out" : "in"}(${x})`
-    : k === "Nat" && !out ? `nat_in(${x})`
-    : k === "F32" && !out ? `Math.fround(${x})` : x;
+  return k === "Nat" ? `nat_in(${x})` : k === "F32" ? `Math.fround(${x})` : x;
 }
 
 // A module (the .bend loader, -o <out>.mjs) roots and exports each callable
@@ -3332,10 +3329,9 @@ export function js_lib(book: Bend.Book, mod = false): string {
   const lib = outs === null ? "" : `export default {\n${outs.map((k) => {
     const { live, lays } = fun_of(k);
     const ps = live.map((_, i) => "a" + i);
-    const xs = live.map(([, , A], i) => host(A, ps[i], false));
-    return `  ${js_key(k)}run_lib((${ps}) => ${host(tele_unbind(
-      FL.book.tlds[k].T).ret, `run_loop(${name_id("$", k)}(${xs}))`, true)
-    }, ${lays.length}),`;
+    const xs = live.map(([, , A], i) => host_in(A, ps[i]));
+    return `  ${js_key(k)}run_lib((${ps}) => run_loop(${name_id("$", k)
+    }(${xs})), ${lays.length}),`;
   }).join("\n")}\n};\n`;
   const jumps = graph_close(new Set([CLO_APPLY]), [...FL.tails]
     .flatMap(([k, ts]) => [...ts].map((t) => [t, k])));
@@ -6113,9 +6109,28 @@ function run_loop(r) {
   return r;
 }
 
+// An export's text is a host's at any depth (str_in in, str_out out, swapped
+// through a function); a value with none to change stays itself.
 function run_lib(f, n) {
   return (...a) => a.length < n ? run_lib((...b) => f(...a, ...b), n - a.length)
-    : run_loop(f(...a));
+    : host_text(run_loop(f(...host_text(a, str_in, str_out))), str_out, str_in);
+}
+
+function host_text(v, s, r, seen = new Map()) {
+  if (typeof v === "function") {
+    return (...a) => host_text(v(...host_text(a, r, s)), s, r);
+  }
+  if (v === null || typeof v !== "object") {
+    return typeof v === "string" ? s(v) : v;
+  }
+  if (!seen.has(v)) {
+    const go = (x) => host_text(x, s, r, seen);
+    const es = Array.isArray(v) ? null : Object.entries(v);
+    const xs = es ? es.map((e) => go(e[1])) : v.map(go);
+    seen.set(v, xs.every((x, i) => x === (es ? es[i][1] : v[i])) ? v
+      : es ? Object.fromEntries(es.map((e, i) => [e[0], xs[i]])) : xs);
+  }
+  return seen.get(v);
 }
 
 // Effect

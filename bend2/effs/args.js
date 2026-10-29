@@ -1,6 +1,9 @@
 // IO
 // ==
 
+// Node and Bun decode the arguments as UTF-8 before a program sees them,
+// a byte that isn't UTF-8 as U+FFFD, so they hold no lone surrogate and
+// need no str_in.
 function io_args() {
   let xs = { $: CID(Nil) };
   for (let i = cli_args.length; i > 0; i -= 1) {
@@ -9,8 +12,7 @@ function io_args() {
   return xs;
 }
 
-// Node and Bun decode the arguments before a program sees them, so here a
-// byte that isn't UTF-8 arrives as U+FFFD's UTF-8, EF BF BD.
+// So here a byte that isn't UTF-8 arrives as U+FFFD's UTF-8, EF BF BD.
 function io_args_bytes() {
   let xs = { $: CID(Nil) };
   for (let i = cli_args.length; i > 0; i -= 1) {

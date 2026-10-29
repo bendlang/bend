@@ -6,8 +6,10 @@ function io_get_env(name) {
   // Node cuts a name at a NUL; reject it like get_env.c (#1449).
   // Node's getenv may also read "A=B" as A's entry "A=B=C"; reject a "=" too.
   if (name.includes("\0") || name.includes("=")) return io_fail(2);
+  // process.env may be set from JS in this process, so a value may hold a
+  // lone surrogate, which str_in makes U+FFFD.
   const value = Object.hasOwn(process.env, name) ? process.env[name] : undefined;
-  return value === undefined ? io_fail(2) : io_done(value);
+  return value === undefined ? io_fail(2) : io_done(str_in(value));
 }
 
 io_eff(CID(IO.get_env), io_get_env);

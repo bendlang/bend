@@ -1,9 +1,11 @@
 # Window.open checks its arguments before it looks for a display, on every
 # lane: a NUL in the title is EILSEQ (92 on macOS, 84 on Linux), checked
 # first, and a side outside 1..16384 is EINVAL. The JS lane once answered
-# ENOTSUP (no display) for both. A side of 1 or 16384 passes the checks: it
-# opens a window, or fails with ENOTSUP (45 on macOS, 95 on Linux) where no
-# display is, and either reads "accepted".
+# ENOTSUP (no display) for both. A Char that is no Unicode scalar leaves as
+# U+FFFD, no NUL, though Bend's own text for Chr{55296} holds zeros. A side
+# of 1 or 16384 passes the checks: it opens a window, or fails with ENOTSUP
+# (45 on macOS, 95 on Linux) where no display is, and either reads
+# "accepted".
 import Base
 
 def ilseq(yes: Bool, code: U32) -> String:
@@ -48,6 +50,7 @@ def main() -> IO(Unit):
     check("too tall", "Bend", 64, 16385)
     check("nul title", SCon{Chr{66}, SCon{Chr{0}, SNil{}}}, 64, 48)
     check("nul title, zero size", SCon{Chr{0}, SNil{}}, 0, 0)
+    check("surrogate title", SCon{Chr{66}, SCon{Chr{55296}, SNil{}}}, 64, 48)
     check("smallest", "Bend", 1, 1)
     check("widest", "Bend", 16384, 1)
     check("tallest", "Bend", 1, 16384)
@@ -58,6 +61,7 @@ def main() -> IO(Unit):
 #|too tall: 22
 #|nul title: EILSEQ
 #|nul title, zero size: EILSEQ
+#|surrogate title: accepted
 #|smallest: accepted
 #|widest: accepted
 #|tallest: accepted
