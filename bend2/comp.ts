@@ -4365,8 +4365,10 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
     }
     v[j] = term_keep(e, v[j], (1u << d) - 1);
   }
-  for (u64 i = 0; i < (1ull << c); i += 1) {
-    blk_write(H, arr, l, (u32)i, i % (1u << lgs) < n ? v[i % (1u << lgs)] : 0);
+  for (u64 i = 0, w = 1ull << c; i != w; ) {
+    for (u32 j = 0; j < (1u << lgs); j += 1, i += 1) {
+      blk_write(H, arr, l, (u32)i, j < n ? v[j] : 0);
+    }
   }
   return term_blk(arr, c, l);
 }
