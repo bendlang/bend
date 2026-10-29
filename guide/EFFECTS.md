@@ -121,16 +121,16 @@ code units, a `process.env` value, which JS may have set) goes in through
 as the head of a packed `Char`, with no error. Text that cannot hold one
 goes in as it is: a literal of valid text, `io_text`'s decode, or
 `process.argv`, which Node and Bun decode as UTF-8. Text inside a
-constructor, in either direction, converts the same way. A `Nat` answer that is not a whole number from 0 to 2^53 stops the
-run; a `Nat` inside an answer goes unchecked, so the host keeps it in
-that range.
+constructor, in either direction, converts the same way. A `Nat` answer
+that is not a whole number from 0 to 2^53 stops the run; a `Nat` inside
+an answer goes unchecked, so the host keeps it in that range.
 
-A module export (`-o x.mjs`, or a `.bend` a JS file imports) passes text
-the same way: its caller gives and gets Bend's own text, at any depth, and
-converts what it knows to need it. Only the caller knows which strings
-are host text and which are Bend's. `str_out` is
-`s.replace(/\uDC00[^]{3}/gu, "\uFFFD")` and `str_in` is
-`s.replace(/\p{Cs}/gu, "\uFFFD")`.
+A module export (`-o x.mjs`, or a `.bend` a JS file imports) converts
+text itself, at any depth: its caller gives and gets host strings, with
+`str_in` on the way in and `str_out` on the way out, so a lone surrogate
+or a `Char` that is no scalar reaches the other side as U+FFFD. A
+function that crosses converts its own arguments and answer the same
+way, and a value with no text to change crosses as itself.
 
 A blocking effect takes one more argument, `k`, and parks with
 `io_park_on(fd, out, k, more)`: it returns `undefined`, and the loop calls

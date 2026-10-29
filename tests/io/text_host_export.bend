@@ -1,9 +1,11 @@
-# An exported def takes and answers Bend's own text, as an effect does: no
-# conversion either way, so the caller converts what it knows to need it.
-# Valid text, astral included, is the same either way and round-trips.
-# Chr{55296} is "\uDC00\0\u001B\0" (DC00, then its code in three 11-bit
-# parts) going out and coming in: odd answers it, count reads that text
-# plus "x" as 2 Chars, and code reads it back as 55296.
+# An exported def gives and takes host text at any depth: str_in on the
+# way in and str_out on the way out, whatever the declared type, so
+# Bend's packing of a non-scalar Char never reaches the caller. Valid
+# text, astral included, round-trips; a lone surrogate going in and
+# Chr{55296} coming out both read as U+FFFD, in a list, a tuple, an
+# array, through a polymorphic def, and through a closure either way.
+# A value with no text to change crosses as itself, so an Array
+# argument is still updated in place.
 import Base
 
 def Text.host_export() -> IO(U32):

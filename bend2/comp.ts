@@ -3328,8 +3328,6 @@ function js_def(k: Name, def: Bend.Def): void {
 
 // A value in from a host, an effect's answer or an export's argument: a Nat
 // comes as a number, which nat_in checks, and an F32 is rounded to one.
-// Text crosses as Bend's own, both ways: the host converts what it knows to
-// need it, at any depth.
 function host_in(A: HTerm | null, x: string): string {
   const k = ty_adt(A)?.k;
   return k === "Nat" ? `nat_in(${x})` : k === "F32" ? `Math.fround(${x})` : x;
@@ -6135,9 +6133,28 @@ function run_loop(r) {
   return r;
 }
 
+// An export's text is a host's at any depth (str_in in, str_out out, swapped
+// through a function); a value with none to change stays itself.
 function run_lib(f, n) {
   return (...a) => a.length < n ? run_lib((...b) => f(...a, ...b), n - a.length)
-    : run_loop(f(...a));
+    : host_text(run_loop(f(...host_text(a, str_in, str_out))), str_out, str_in);
+}
+
+function host_text(v, s, r, seen = new Map()) {
+  if (typeof v === "function") {
+    return (...a) => host_text(v(...host_text(a, r, s)), s, r);
+  }
+  if (v === null || typeof v !== "object") {
+    return typeof v === "string" ? s(v) : v;
+  }
+  if (!seen.has(v)) {
+    const go = (x) => host_text(x, s, r, seen);
+    const es = Array.isArray(v) ? null : Object.entries(v);
+    const xs = es ? es.map((e) => go(e[1])) : v.map(go);
+    seen.set(v, xs.every((x, i) => x === (es ? es[i][1] : v[i])) ? v
+      : es ? Object.fromEntries(es.map((e, i) => [e[0], xs[i]])) : xs);
+  }
+  return seen.get(v);
 }
 
 // Effect
