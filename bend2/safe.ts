@@ -858,9 +858,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
         return { $: "Efq" };
       }
       // tags remain, but a live tag in scope is of the empty enum
-      const q = quant(all.q);
-      const f = convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]);
-      return { $: "Lam", q, l: s.D, f: { $: "Lam", q, l: s.D + 1, f } };
+      return pair_lams(e, quant(all.q), s.D, convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]));
     }
     case "Mat": {
       const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
@@ -875,18 +873,22 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
         return oos("a default arm with no known type");
       }
       const q = quant(all.q);
-      const [lt, la] = [s.D, s.D + 1];
+      const l = s.D;
       const f = x.$ === "Lam" ? x : B.term_strip(eta(t, all)) as Of<"Lam">;
-      const empty: O[] = no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(lt) }] : s.empty;
-      const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, lt] };
+      const empty: O[] = no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
+      const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, l] };
       // the default's binder is the pair of the tag and the fields
-      const pair: O = { $: "Tup", q: 1, a: vr(lt), b: vr(la) };
+      const pair: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
       const y: HTerm = B.Var(f.k, s.d);
-      const body = convoy_bind(e, scope_bind(s2, pair, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs));
-      const r2: Q = uses(e, body, lt) > 1 || uses(e, body, la) > 1 ? 2 : q;
-      return { $: "Lam", q: r2, l: lt, f: { $: "Lam", q: r2, l: la, f: body } };
+      return pair_lams(e, q, l, convoy_bind(e, scope_bind(s2, pair, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs)));
     }
   }
+}
+
+// λt => λf => b, a default's tag and fields: both copy if b uses either twice
+function pair_lams(e: Safe, q: Q, l: number, b: O): O {
+  const r: Q = uses(e, b, l) > 1 || uses(e, b, l + 1) > 1 ? 2 : q;
+  return { $: "Lam", q: r, l, f: { $: "Lam", q: r, l: l + 1, f: b } };
 }
 
 // the goals of a bare match of type all: c's arm at c's fields, then
