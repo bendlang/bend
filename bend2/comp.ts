@@ -343,7 +343,7 @@ INLINE u64 u32_mac64(u32 k, u32 al, u32 ah, u32 bl, u32 bh, u32 cl, u32 ch,
   hi += lo < c;
   lo += d;
   hi += lo < d;
-  return (u32)(k == 0 ? lo : k == 1 ? lo >> 32 : k == 2 ? hi : hi >> 32);
+  return (u32)(k == 0 ? lo : k == 1 ? lo >> 32 : k == 2 ? hi : k == 3 ? hi >> 32 : 0);
 }
 
 INLINE u64 u32_pow(u32 a, u64 n) {
