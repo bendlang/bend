@@ -711,16 +711,14 @@ function scope_move(s: Scope, a: number, b: number): Scope {
     tags: s.tags.flatMap((t) => t === a ? [t, b] : [t]) };
 }
 
-// binds the convoyed variables cv again, each at its quantity, then the
-// tree t (or k's term)
-function convoy_bind(e: Safe, s: Scope, cv: number[], t: HTerm | ((s: Scope) => O), fs: Chain[]): O {
+// binds the convoyed variables cv again, each at its quantity, then f
+function convoy_bind(e: Safe, s: Scope, cv: number[], f: (s: Scope) => O): O {
   if (cv.length === 0) {
-    return typeof t === "function" ? t(s) : tree(e, s, t, fs);
+    return f(s);
   }
   const l = s.D;
   const q = s.kq[cv[0]] ?? 1;
-  const f = convoy_bind(e, scope_move(scope_hide(s, q), cv[0], l), cv.slice(1), t, fs);
-  return lams(e, [[q, l]], f);
+  return lams(e, [[q, l]], convoy_bind(e, scope_move(scope_hide(s, q), cv[0], l), cv.slice(1), f));
 }
 
 // Open
@@ -764,7 +762,7 @@ function unapply(t: HTerm): [HTerm, HTerm[]] {
 function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   const top = fs.at(-1);
   if (top !== undefined && top.n === 0) {
-    return unit(convoy_bind(e, s, top.cv, t, fs.slice(0, -1)));
+    return unit(convoy_bind(e, s, top.cv, (s2) => tree(e, s2, t, fs.slice(0, -1))));
   }
   const [x, T] = open(t);
   const all = all_of(e, T);
@@ -775,7 +773,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, { $: "Efq" }, all?.A ?? null, v);
     return tree(e, s2, x.f(B.Var(x.k, s.d)), fs);
   }
-  if (v !== null && node(x) && x.$ !== "Lam") {
+  if (v !== null && node(x)) {
     const [h, vs] = pick(e, x, v);
     return tree(e, { ...s, cols: [...vs, ...s.cols.slice(1)] }, h, fs);
   }
@@ -791,24 +789,20 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   const fs2 = top === undefined ? fs : [...fs.slice(0, -1), { ...top, n: top.n - 1 }];
   const wrap = (o: O): O => top === undefined ? o : { $: "Prj", h: o };
   const s1 = top === undefined ? { ...s, cols: s.cols.slice(1) } : s;
-  let q = all === null ? 1 : quant(all.q);
+  const q = all === null ? 1 : quant(all.q);
   if (x.$ === "Lam") {
     const l = s.D;
     const empty: O[] = q > 0 && all !== null && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: vr(l) }] : s.empty;
     const s2 = scope_var({ ...s1, empty }, all?.A ?? null, q);
     const y: HTerm = B.Var(x.k, s.d);
     const f = tree(e, s2, typed(x.f(y), all?.B(y)), fs2);
-    if (q === 1 && uses(e, f, l) > 1) {
-      // bend2 checks a ~ argument dead, so its λ may use a linear variable
-      // twice: it matches the variable once and rebuilds it at each use,
-      // unless its type reduces to Data (a match-refined view): copied
-      const A = all === null ? null : wnf(e, all.A);
-      if (all !== null && A !== null && A.$ !== "Eql" && kind(e, s, all.A) === 1 && kind(e, s, A) !== 2) {
-        return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
-      }
-      q = 2;
+    // bend2 checks a ~ argument dead, so its λ may use a linear variable
+    // twice: it matches the variable once and rebuilds it at each use,
+    // unless its type reduces to Data (a match-refined view): copied
+    if (q === 1 && all !== null && uses(e, f, l) > 1 && kind(e, s, all.A) === 1 && wnf(e, all.A).$ !== "Eql" && kind(e, s, wnf(e, all.A)) !== 2) {
+      return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
     }
-    return wrap({ $: "Lam", q, l, f });
+    return wrap(lams(e, [[q, l]], f));
   }
   // a match consumes the column, with the variables it convoys after it,
   // λx => (λ{..} x y..)
@@ -865,7 +859,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       }
       // tags remain, but a live tag in scope is of the empty enum
       const q = quant(all.q);
-      const f = convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2: Scope) => s2.empty[0], fs);
+      const f = convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]);
       return { $: "Lam", q, l: s.D, f: { $: "Lam", q, l: s.D + 1, f } };
     }
     case "Mat": {
@@ -888,7 +882,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       // the default's binder is the pair of the tag and the fields
       const pair: O = { $: "Tup", q: 1, a: vr(lt), b: vr(la) };
       const y: HTerm = B.Var(f.k, s.d);
-      const body = convoy_bind(e, scope_bind(s2, pair, all.A), cv, typed(f.f(y), all.B(y)), fs);
+      const body = convoy_bind(e, scope_bind(s2, pair, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs));
       const r2: Q = uses(e, body, lt) > 1 || uses(e, body, la) > 1 ? 2 : q;
       return { $: "Lam", q: r2, l: lt, f: { $: "Lam", q: r2, l: la, f: body } };
     }
@@ -1307,7 +1301,7 @@ function group_emit(e: Safe, g: Group, cols: Cols, n: string): void {
   const body = sel((m) => convoy_bind(e, s0, ks, (s2) => {
     const r = rest(s2, m);
     return lams(e, r.ps, arm(e, r.s, m, r.cs, r.vs));
-  }, []));
+  }));
   const v = apps(body, [l0, ...ks].map((l) => [1, vr(l)]));
   e.out.push([n, To, lams(e, [...ls, [1, l0]], v), false]);
 }
