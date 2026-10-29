@@ -476,7 +476,7 @@ and `Audio.open`, `Audio.write` and `Audio.close` for sound. See
 
 ### The Base Library
 
-Base is small, and its names follow a scheme, so you can guess most of it:
+Base's names follow a scheme:
 
 ```python
 import Base
@@ -498,6 +498,9 @@ are just sugar for these. Beyond numbers there are `Bool`, `Cmp`, `Maybe`,
 result), `Set` on top of it, the `Equal` lemmas, and the effects. `bend base`
 prints all of it, `bend base --types` only the types, and `bend base Map` one
 name and everything under it.
+
+`Text` belongs to Base's `Event`; call your own constructor `NodeText`.
+`bend base --types` shows the existing declarations.
 
 ### Modules
 
