@@ -92,8 +92,8 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
 // CLO_APPLY and IO_EMIT are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
-// is a device call (DFAR), and a host call too if it loops over F32 (to
-// prevent SLP vectorizer misjudgement); a node past WIDE pads to its size
+// is a device call (DFAR), and a host call too if it loops doing F32 math
+// (to prevent SLP vectorizer misjudgement); a node past WIDE pads to its size
 // class.
 
 const CLO_APPLY = "Clo~apply";
@@ -2327,11 +2327,12 @@ function emit_native(sc: Scope, k: Name): string {
     const body = [
       ...seg_text(["u32 wpoll = 0;", ...hs, ...seg_take(seg), "WL_SPIN"], 1),
       ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
-    const far = body.join("\n").length + 1 >= SPIN_FAR;
+    const text = body.join("\n");
+    const far = text.length + 1 >= SPIN_FAR;
     const ps = seg.ks.map((kd, i) => `, ${lay_c(kd)} r${i}`
       + (arr_q(kd) ? `, u64 q${i}` : "")).join("");
-    const q = !far ? "INLINE" : seg.spin && fun_of(k).live.some(([, , A]) =>
-      ty_adt(A)?.k === "F32") ? "FAR" : "DFAR";
+    const q = !far ? "INLINE"
+      : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
     const head = `${q} Term ${name}(Env e, THR Term* o${ps})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
   }));
@@ -3474,7 +3475,7 @@ using namespace metal;
 #define FAR static __attribute__((noinline))
 
 // The device inlines a spin once per caller, so a long one is a call there.
-// The host lets clang decide.
+// The host lets clang decide, but for a long F32 loop (emit_native).
 #if DEVICE
 #define DFAR       FAR
 #define LOCK(l)
