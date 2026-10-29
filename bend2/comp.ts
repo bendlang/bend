@@ -3330,11 +3330,11 @@ export function js_lib(book: Bend.Book, mod = false): string {
   const effs = [...FL.effs.values()]
     .map(([m, src]) => `(() => {\n${c_ids(src, m)}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) => {
-    const { live, lays } = fun_of(k);
+    const { n, live, lays } = fun_of(k);
     const ps = live.map((_, i) => "a" + i);
     const xs = live.map(([, , A], i) => host(A, ps[i], false));
-    return `  ${js_key(k)}run_lib((${ps}) => ${host(tele_unbind(
-      FL.book.tlds[k].T).ret, `run_loop(${name_id("$", k)}(${xs}))`, true)
+    return `  ${js_key(k)}run_lib((${ps}) => ${host(tele_fill(
+      FL.book.tlds[k].T, Array(n).fill(DUMMY)), `run_loop(${name_id("$", k)}(${xs}))`, true)
     }, ${lays.length}),`;
   }).join("\n")}\n};\n`;
   const jumps = graph_close(new Set([CLO_APPLY]), [...FL.tails]
