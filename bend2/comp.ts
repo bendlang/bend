@@ -37,6 +37,7 @@ type Seg = {
   fork: boolean;
   native: boolean;
   head?: string;
+  dst?: boolean;
 };
 
 type Spine = {
@@ -804,7 +805,8 @@ function intr_of(k: Name, js = false): Intr | undefined {
 function op_bare(t: HTerm, js = false): boolean {
   const s = term_strip(t);
   return s.$ === "Var" || term_const(s) && !(js && s.$ === "Ctr"
-    && (s.k in OPTIMIZED.Array || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
+    && (Object.hasOwn(OPTIMIZED.Array, s.k)
+      || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
 }
 
 function op_name(k: Name): string {
@@ -1570,8 +1572,8 @@ function facts_ctr(def: Name, c: Bend.Ctr, xs: HTerm[]): void {
   ds.filter(dom_live).forEach(([, , A]) => facts_hot(def, A, true, local));
 }
 
-function file_push(sc: Scope, line: string): void {
-  sc.seg.lines.push("  ".repeat(sc.seg.tab) + line);
+function file_push(sc: Scope, ...lines: string[]): void {
+  sc.seg.lines.push(...lines.map((l) => "  ".repeat(sc.seg.tab) + l));
 }
 
 function block(sc: Scope, open: string, go: () => void): void {
@@ -1659,9 +1661,8 @@ function seg_open(sc: Scope, name: string, ret: Lay, frame: Seg["frame"],
 function node_fill(sc: Scope, k: string, alloc: string,
   exprs: string[], seal = false): string {
   const nd = name_local(sc, k);
-  file_push(sc, `u64 ${nd} = ${alloc};`);
-  exprs.forEach((w, j) => file_push(sc,
-    `e.mem[${nd} + ${j}] = ${seal ? `rfc_seal(e, ${w})` : w};`));
+  file_push(sc, `u64 ${nd} = ${alloc};`, ...exprs.flatMap((w, j) => w
+    ? [`e.mem[${nd} + ${j}] = ${seal ? `rfc_seal(e, ${w})` : w};`] : []));
   return nd;
 }
 
@@ -2666,12 +2667,24 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   const calls = x.v.map(term_spine);
   const fork = calls.length > 1;
   const name = seg_name("j");
+  const holes = calls.map((c, i) => ctr_hole(sc, c, o.b, o.ps[i],
+    i === calls.length - 1));
+  const hole = fork ? -1 : holes[0];
+  const tree = fork && !holes.includes(-1)
+    && ![...sc.uses.keys()].some((p) => rest_use([o.b], p) > 0);
+  // the dest takes the spare its node fits; the call's arguments keep the rest
+  const fit = hole < 0 ? -1 : sc.spares.findIndex((s) => cls_fit(s.words)
+    === cls_fit(lay_node((term_strip(o.b) as Of<"Ctr">).k).ks.length));
+  const spares = fit < 0 ? [] : sc.spares.splice(fit, 1);
   let hold: Of<"Var">[] = [];
   if (fork) {
-    spare_flush(sc);
+    if (!tree) {
+      spare_flush(sc);
+    }
     sc.seg.fork = true;
-    const pl = { ...sc, uses: new Map(sc.uses) };
+    const pl = { ...sc, uses: new Map(sc.uses), spares: [...sc.spares] };
     block(pl, "if (!seq) {", () => {
+      spare_flush(pl);
       const margs = calls.map((c, j) => emit_args({ ...pl,
         rest: [...x.v.filter((_, i) => i !== j), o.b] }, c, false, true)
         .flatMap((v) => v.ws));
@@ -2697,26 +2710,48 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   }
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
+  let pnd = 0;
+  const nd = tree ? emit_dest(sc, x, holes.at(-1)!) : "";
   calls.forEach((c, i) => {
-    const cargs = emit_args({ ...sc, rest: [chain[i]] }, c)
-      .flatMap((v) => v.ws);
+    const last = i === calls.length - 1;
+    // a call that leaves no frame can't lend: what it borrows dies first
+    const cargs = emit_args({ ...sc, rest: [chain[i]] }, c,
+      hole >= 0 || (tree && last)).flatMap((v) => v.ws);
     const vs = [...sc.uses].filter(([p]) => i === 0 || p === o.ps[i - 1]);
-    const kn = seg_name("k");
     spare_flush(sc);
     const ws = vs.flatMap(([p, b]) =>
       (pos.set(p, depth), depth += b.val.ws.length, b.val.ws));
+    // the first frame holds [ws..., node, field] and pnd is the node's slot
+    if (i === 0) {
+      pnd = depth;
+    }
+    const to = !tree || last ? [] : i > 0
+      ? [`STK(${pnd - depth + ws.length}) + ${holes[i]}`]
+      : [nd, `${nd} + ${holes[0]}`];
+    depth += to.length;
+    const kn = tree && last ? "" : seg_name("k");
+    const kf = kn && seg_fid(kn);
     emit_chain(sc, [["seq", () => {
-      const fr = [...ws, seg_ref(sc, seg_fid(kn))];
-      file_push(sc, `WL_ROOM(${fr.length});`);
-      fr.forEach((w, j) => file_push(sc, `STK(${j}) = ${w};`));
-      file_push(sc, `WL_PUSHN(${fr.length});`);
+      if (hole >= 0) {
+        return void emit_dest({ ...sc, uses: new Map(sc.uses), spares:
+          spares.slice() }, x, hole);
+      }
+      if (tree && last) {
+        bind_dead({ ...sc, uses: new Map(sc.uses) }, []);
+        return file_push(sc, `WL_POPN(${depth});`);
+      }
+      const fr = [...ws, ...to, seg_ref(sc, kf)];
+      file_push(sc, `WL_ROOM(${fr.length});`,
+        ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
     }], ...fork ? [] : [["", () => {
-      file_push(sc, `WL_CONT = term_tsk(${seg_fid(kn)}, ${
-        emit_task(sc, seg_fid(kn), 1, ws)});`);
-      file_push(sc, `WL_IDX = ${ws.length};`);
+      spare_flush({ ...sc, spares });
+      file_push(sc, `WL_CONT = term_tsk(${kf}, ${emit_task(sc, kf, 1, ws)});`,
+        `WL_IDX = ${ws.length};`);
     }] as [string, () => void]]]);
     emit_jump(sc, cargs, c.k!, !fork && c.b);
-    const last = i === calls.length - 1;
+    if (kn === "") {
+      return;
+    }
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const at = held.flatMap(([p, b]) => b.val.ws.map((_, j) =>
       pos.get(p)! + j - (last ? 0 : depth)));
@@ -2725,15 +2760,66 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret);
     sc = seg_open(sc, kn, sc.seg.ret, { pop: last ? depth : 0, at }, held, rs,
       rest);
-    bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
+    if (to.length > 0) {
+      sc.seg.dst = true;
+      file_push(sc, `e.mem[STK(-1)] = ${rs.ws[0]};`);
+    } else if (!tree) {
+      bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
+    }
   });
   if (fork) {
-    const live = [...sc.uses];
-    emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
+    // a tree's join is only the parallel arm's: what it holds, then each result
+    const live: [Of<"Var">, Bind][] = !tree ? [...sc.uses]
+      : [...[...sc.uses].filter(([p]) => hold.includes(p)), ...o.ps.map((p, i):
+        [Of<"Var">, Bind] => [p, { val: val_new([name_local(sc, p.k)], BOX),
+          n: 1, A: ty_ann(x.v[i])! }])];
+    if (!tree) {
+      emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
+    }
     sc = seg_open(sc, name, sc.seg.ret, null, live, val_new([], lay_pack([])),
       [o.b]);
   }
   emit_body(sc, o.b, null, [], null);
+}
+
+// A constructor tail boxing a call's result once is built before the call,
+// which fills that field (its word, or -1). The root goes to the stack's
+// destination, else under a Dst~put frame [root, field]. The other fields run
+// first, so none may share an owned value with the call. A last call leaves
+// no frame, so one that would drop an owned value it could lend is not taken:
+// that would make the callee own it at every site. A fork of only such
+// fields builds before its first call, and an earlier call's frame holds
+// [node, field]: a dst segment, so WL_DEST fills it like a Dst~put.
+function ctr_hole(sc: Scope, c: Spine, b: HTerm, p: Of<"Var">,
+  last: boolean): number {
+  const x = term_strip(b);
+  const brw = brw_of(c.k!);
+  if (x.$ !== "Ctr" || fact("ctr", x.k) || rest_use([b], p) !== 1
+    || Object.hasOwn(OPTIMIZED.Array, x.k) || sc.seg.ret !== BOX
+    || fun_of(c.k!).ret !== BOX || [...sc.uses].some(([q, d]) =>
+      !val_brw(d.val) && rest_use(c.xs, q) > 0 && (rest_use([b], q) > 0
+        || last && c.xs.some((a, i) => brw[i] && rest_use([a], q) > 0
+          && term_strip(a).$ === "Var")))) {
+    return -1;
+  }
+  const ls = lay_node(x.k).arms![x.k];
+  const j = ctr_flds(x.k, x.x).findIndex((f) =>
+    term_strip(f).$ === "Var" && probe_of(term_strip(f)) === p);
+  return j < 0 || ls[j] !== BOX ? -1
+    : ls.slice(0, j).flatMap((l) => l.ks).length;
+}
+
+function emit_dest(sc: Scope, x: Of<"Let">, at: number): string {
+  const { ps, b } = term_open(x);
+  ps.forEach((p, i) => bind_uses(sc, p, val_new([""], BOX), [b],
+    ty_ann(x.v[i])!));
+  const r = emit_alias(sc, val_own(emit_expr(sc, b, null, BOX))[0], "r");
+  if (ps.length === 1) {
+    bind_dead(sc, []);
+  }
+  spare_flush(sc);
+  file_push(sc, `WL_DEST(${r}, ${at});`);
+  return `term_loc(${r})`;
 }
 
 function emit_row(sc: Scope, t: HTerm, ty: HTerm): number | null {
@@ -2969,8 +3055,10 @@ function c_units(): Unit[] {
 
 function c_header(segs: Seg[], clos: string[]): string {
   const arg = val_new([""], W64);
-  const entries = [...segs, seg_new(IO_EMIT, BOX, [arg]),
-    seg_new(CLO_APPLY, BOX, [arg, arg])];
+  // WL_DEST reads [Dst~put, FID_EXIT) as dst frames: they must come last
+  const entries = [...segs.filter((s) => !s.dst), seg_new(IO_EMIT, BOX,
+    [arg]), seg_new(CLO_APPLY, BOX, [arg, arg]), seg_new("Dst~put", BOX, [arg]),
+  ...segs.filter((s) => s.dst)];
   const cids = new Map<Name, number[]>();
   const cid = (k: Name, n: number, d = 0) =>
     cids.set(k, [n > WIDE ? 240 + Math.log2(n) : n, d]);
@@ -3540,6 +3628,17 @@ using namespace metal;
     err_post(e.mem, ERR_DEEP); \
     return 0; \
   }
+#define WL_DEST(R, J) do { \
+  if ((u32)STK(-1) - FID(Dst~put) < FID_EXIT - FID(Dst~put)) { \
+    e.mem[STK(-2)] = (R); \
+  } else { \
+    WL_ROOM(3) \
+    STK(0) = (R); \
+    STK(2) = FID(Dst~put); \
+    WL_PUSHN(3); \
+  } \
+  STK(-2) = term_loc(R) + (J); \
+} while (0)
 
 // Types
 // =====
@@ -4559,6 +4658,14 @@ ${segs}
     u64 l = heap_alloc(e, 0);
     e.mem[l] = x;
     r0 = term_ctr(CID(Emit), l);
+    WL_RETN(1);
+  }}
+
+  WL_CASE(FID(Dst~put))
+    WL_POPN(2);
+    e.mem[STK(1)] = r0;
+    WL_OPEN
+    r0 = STK(0);
     WL_RETN(1);
   }}
 
