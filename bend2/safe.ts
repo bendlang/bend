@@ -1684,24 +1684,32 @@ function kernel_bin(): string {
   const home = path.join(os.homedir(), ".elan", "toolchains", "leanprover--lean4---v" + LEAN_VERSION, "bin");
   const tool = (t: string): string => fs.existsSync(path.join(home, t)) ? path.join(home, t) : t;
   fs.mkdirSync(dir, { recursive: true });
+  // a build of its own, renamed into place whole: runs that start together
+  // share no bendtt.c, and bin is only ever a finished kernel
+  const tmp = fs.mkdtempSync(path.join(dir, "build-"));
   const fail = (why: string): never => {
     throw new Error("BendTT infrastructure: the kernel did not build (" + why
       + "); --verdict needs Lean v" + LEAN_VERSION + " (elan toolchain leanprover/lean4:v" + LEAN_VERSION + "), or $BENDTT set to a built kernel");
   };
   const run = (bin: string, args: string[]): string => {
-    const [got, text] = run_read(bin, args, { cwd: dir });
+    const [got, text] = run_read(bin, args, { cwd: tmp });
     if (got.status !== 0) {
       fail(bin + ": " + (got.error?.message ?? text.slice(0, 300)));
     }
     return text;
   };
-  const version = run(tool("lean"), ["--version"]);
-  if (version.match(/^Lean \(version ([^,\s)]+)/m)?.[1] !== LEAN_VERSION) {
-    fail("lean --version: " + version.trim().slice(0, 300));
+  try {
+    const version = run(tool("lean"), ["--version"]);
+    if (version.match(/^Lean \(version ([^,\s)]+)/m)?.[1] !== LEAN_VERSION) {
+      fail("lean --version: " + version.trim().slice(0, 300));
+    }
+    fs.copyFileSync(src, path.join(tmp, "bendtt.lean"));
+    run(tool("lean"), ["-c", "bendtt.c", "bendtt.lean"]);
+    run(tool("leanc"), ["-O3", "-DNDEBUG", "bendtt.c", "-o", "bendtt"]);
+    fs.renameSync(path.join(tmp, "bendtt"), bin);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
   }
-  fs.copyFileSync(src, path.join(dir, "bendtt.lean"));
-  run(tool("lean"), ["-c", "bendtt.c", "bendtt.lean"]);
-  run(tool("leanc"), ["-O3", "-DNDEBUG", "bendtt.c", "-o", "bendtt"]);
   return bin;
 }
 
