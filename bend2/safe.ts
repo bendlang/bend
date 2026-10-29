@@ -252,7 +252,7 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): Ou
   e.out = e.out.filter(([k]) => !bad.has(k));
   // a def is out at its instances' reasons, else at its λ-match's; with
   // neither, it reaches no kernel def
-  const why = (n: string): string[] => bad.has(n) ? [bad.get(n) as string] : [];
+  const why = (n: string): string[] => bad.has(n) ? [bad.get(n)!] : [];
   const gone = roots.flatMap(([k, ns, top]) => {
     const ws = ns.flatMap(why);
     const all = ws.length > 0 ? ws : top !== null ? why(top) : ns.length === 0 ? ["no kernel def"] : [];
@@ -462,9 +462,8 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   // a constructor's fields as a Σ chain ending in <()>
   const fs = (c: B.Ctr): O => alls(tele_open(e, s, fill(e.book, c.T, xs), [], Infinity).ps, UT, "Sig");
   const ks = tld.c.map((c) => name_tt(c.k));
-  const arms = mats(ks, (i) => fs(tld.c[i]));
   const Enu: O = { $: "Enu", ks };
-  e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: G }), lams(e, ps, arms), false]);
+  e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: G }), lams(e, ps, mats(ks, (i) => fs(tld.c[i]))), false]);
   const at = (k: string): O => apps(ref(k), ps.map(([q, l]) => [q, vr(l)]));
   e.out.push([n, alls(ps, G), lams(e, ps, { $: "Sig", q: 1, l: t, A: Enu, B: apps(at(am), [[1, vr(t)]]) }), false]);
   if (tld.c.length === 0) {
@@ -475,7 +474,7 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
 // T's first n parameters (or all it has), from scope s: one cols
 // specializes takes its argument, any other binds a kernel variable.
 // Returns the binders, the arguments and the rest of T
-function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Scope; ps: Binder[]; xs: HTerm[]; T: HTerm } {
+function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number) {
   const r = { s, ps: [] as Binder[], xs: [] as HTerm[], T };
   for (let j = 0; j < n; j++) {
     const F = wnf(e.book, r.T);
@@ -633,8 +632,12 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       }
       return hyp();
     }
-    case "Eql": return B.term_compare("EQ", e.mb, F.a, F.b, d) ? B.Ann(B.Rfl(), F) : null;
-    default: return hyp();
+    case "Eql": {
+      return B.term_compare("EQ", e.mb, F.a, F.b, d) ? B.Ann(B.Rfl(), F) : null;
+    }
+    default: {
+      return hyp();
+    }
   }
 }
 
@@ -898,10 +901,7 @@ function pick(e: Safe, t: HTerm, v: HTerm): [HTerm, HTerm[]] {
   while (m.$ === "Mat" && c.$ === "Ctr" && m.k !== c.k) {
     m = B.term_strip(m.m);
   }
-  if (c.$ !== "Ctr" || m.$ === "Efq") {
-    return oos("a specialized argument that is not a constructor");
-  }
-  return m.$ === "Mat" ? [m.h, c.x] : [m, [c]];
+  return c.$ !== "Ctr" || m.$ === "Efq" ? oos("a specialized argument that is not a constructor") : m.$ === "Mat" ? [m.h, c.x] : [m, [c]];
 }
 
 // λ{c: λfs => f(c{fs}); ..} for x = λy => f(y) at ∀y:A -> B, when every
@@ -991,7 +991,9 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return b.v !== undefined ? term(e, s0, typed(b.v, b.T), live) : b.o;
     }
     case "Ref":
-    case "App": return spine(e, s, t, live);
+    case "App": {
+      return spine(e, s, t, live);
+    }
     case "ADT": {
       const tld = e.book.tlds[x.k];
       if (tld?.$ !== "ADT") {
@@ -999,13 +1001,23 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       }
       return args(e, s, x.k, tld.T, x.x, live);
     }
-    case "Typ": return { $: "Typ", q: term(e, s, x.g, false) };
-    case "All": return { $: "All", q: quant(x.q), l: s.D, A: term(e, s, x.A, false), B: term(e, scope_var(s, x.A), x.B(B.Var(x.k, s.d)), false) };
+    case "Typ": {
+      return { $: "Typ", q: term(e, s, x.g, false) };
+    }
+    case "All": {
+      return { $: "All", q: quant(x.q), l: s.D, A: term(e, s, x.A, false), B: term(e, scope_var(s, x.A), x.B(B.Var(x.k, s.d)), false) };
+    }
     case "Lam":
     case "Mat":
-    case "Efq": return tree(e, { ...s, cols: [] }, t, []);
-    case "Let": return let_term(e, s, x, live);
-    case "Ctr": return ctr_term(e, s, x, T, live);
+    case "Efq": {
+      return tree(e, { ...s, cols: [] }, t, []);
+    }
+    case "Let": {
+      return let_term(e, s, x, live);
+    }
+    case "Ctr": {
+      return ctr_term(e, s, x, T, live);
+    }
     case "Lit": {
       if (x.k === "Nat" && x.v > NAT_MAX && e.book.tlds.Nat?.b === true) {
         // a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add
@@ -1015,14 +1027,30 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       }
       return term(e, s, B.term_higher(B.lit_step(x)), live);
     }
-    case "Eql": return { $: "Eql", a: arg_term(e, s, x.a, x.T, false), b: arg_term(e, s, x.b, x.T, false), T: term(e, s, x.T, false) };
-    case "Rfl": return { $: "Rfl" };
-    case "Rwt": return rwt_term(e, s, x, live);
-    case "Qnt": return { $: "Enu", ks: QS };
-    case "Qua": return lab(QS[quant(x.q)]);
-    case "Min": return { $: "Min", a: term(e, s, x.a, live), b: term(e, s, x.b, live) };
-    case "Hol": return oos("a hole");
-    default: return oos("a " + x.$ + " term");
+    case "Eql": {
+      return { $: "Eql", a: arg_term(e, s, x.a, x.T, false), b: arg_term(e, s, x.b, x.T, false), T: term(e, s, x.T, false) };
+    }
+    case "Rfl": {
+      return { $: "Rfl" };
+    }
+    case "Rwt": {
+      return rwt_term(e, s, x, live);
+    }
+    case "Qnt": {
+      return { $: "Enu", ks: QS };
+    }
+    case "Qua": {
+      return lab(QS[quant(x.q)]);
+    }
+    case "Min": {
+      return { $: "Min", a: term(e, s, x.a, live), b: term(e, s, x.b, live) };
+    }
+    case "Hol": {
+      return oos("a hole");
+    }
+    default: {
+      return oos("a " + x.$ + " term");
+    }
   }
 }
 
@@ -1150,10 +1178,8 @@ function group_new(e: Safe, k: Name, hs: Name[]): Group | null {
   }));
   const tld = e.book.tlds[k];
   const doms = B.tele_unbind(e.book, tld.T).doms.slice(0, lead);
-  if (hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && (tld.$ !== "Def" || j >= tld.x))) {
-    return null;
-  }
-  return { k, ms: [k, ...hs], qs: doms.map(([q]) => quant(q)) };
+  return hs.length === 0 || !doms.some(([q], j) => q.$ !== "None" && (tld.$ !== "Def" || j >= tld.x)) ? null
+    : { k, ms: [k, ...hs], qs: doms.map(([q]) => quant(q)) };
 }
 
 // the arguments of each call to k in the lowered term t
@@ -1363,8 +1389,7 @@ function let_term(e: Safe, s: Scope, x: Of<"Let">, live: boolean, inl: Set<numbe
       s2 = scope_var(s2, V, q);
     }
   }
-  const xs = x.k.map((k, j): HTerm => B.Var(k, s.d + j));
-  const f = term(e, s2, (x.f as (xs: HTerm[]) => HTerm)(xs), live);
+  const f = term(e, s2, (x.f as (xs: HTerm[]) => HTerm)(x.k.map((k, j) => B.Var(k, s.d + j))), live);
   const more = ls.filter(([, l, v]) => live && v.$ !== "App" && v.$ !== "Ref" && self_arg(f, s.self, l)).map(([, , , j]) => j);
   if (more.length > 0) {
     return let_term(e, s, x, live, new Set([...inl, ...more]));
@@ -1381,7 +1406,6 @@ function rwt_term(e: Safe, s: Scope, x: Of<"Rwt">, live: boolean): O {
   if (p.$ !== "Lam") {
     oos("a rewrite motive that is not a λ");
   }
-  const l = s.D;
   const Q = E0 === null ? null : wnf(e.book, E0);
   const q = Q?.$ === "Eql" ? Q : null;
   const s2 = scope_var(s, q && q.T);
@@ -1391,7 +1415,7 @@ function rwt_term(e: Safe, s: Scope, x: Of<"Rwt">, live: boolean): O {
   }
   const s3 = scope_var(s2, q && B.Eql(q.a, B.Var(p.k, s.d), q.T));
   const P = term(e, s3, p2.f(B.Var(p2.k, s2.d)), false);
-  return { $: "Rwt", e: ev, l, P, f: term(e, s, x.f, live) };
+  return { $: "Rwt", e: ev, l: s.D, P, f: term(e, s, x.f, live) };
 }
 
 // Kernel terms
@@ -1558,7 +1582,7 @@ function o_show(o: O, p: string): string {
 
 // the kernel's CLI: $BENDTT, else a build of bendtt.lean (in BEND_DIR,
 // beside base.bend) cached by source and Lean version, made once with
-// v4.34.0 (elan's toolchain, or lean and leanc on the PATH)
+// LEAN_VERSION's lean and leanc (elan's, or the PATH's)
 function kernel_bin(): string {
   if (process.env.BENDTT) {
     return process.env.BENDTT;
