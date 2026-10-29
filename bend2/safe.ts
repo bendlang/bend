@@ -1691,10 +1691,10 @@ function kernel_bin(): string {
     throw new Error("BendTT infrastructure: the kernel did not build (" + why
       + "); --verdict needs Lean v" + LEAN_VERSION + " (elan toolchain leanprover/lean4:v" + LEAN_VERSION + "), or $BENDTT set to a built kernel");
   };
-  const run = (bin: string, args: string[]): string => {
-    const [got, text] = run_read(bin, args, { cwd: tmp });
+  const run = (exe: string, args: string[]): string => {
+    const [got, text] = run_read(exe, args, { cwd: tmp });
     if (got.status !== 0) {
-      fail(bin + ": " + (got.error?.message ?? text.slice(0, 300)));
+      fail(exe + ": " + (got.error?.message ?? text.slice(0, 300)));
     }
     return text;
   };
