@@ -81,7 +81,6 @@ type O =
   | { $: "Rfl" }
   | { $: "Rwt"; e: O; l: number; P: O; f: O };
 
-// the kernel variable at level l, def k and label k
 const vr = (l: number): O => ({ $: "Var", l });
 const ref = (k: string): O => ({ $: "Ref", k });
 const lab = (k: string): O => ({ $: "Lab", k });
@@ -106,7 +105,6 @@ type Binder = [Q, number, O];
 // convoys, which the arm binds again after the chain
 type Chain = { n: number; cv: number[] };
 
-// a scope
 type Scope = {
   c: Bind[];     // bend2 variables by level
   d: number;     // bend2's depth
@@ -121,7 +119,6 @@ type Scope = {
   again: boolean; // the tree is built again for a convoy
 };
 
-// the elaboration
 type Safe = {
   book: Book;
   mb: Book;                             // the book models read: a root's constant at its model
@@ -160,7 +157,6 @@ const MODEL_DEPTH = 8;
 // only this compiler release may build a cached kernel
 const LEAN_VERSION = "4.34.0";
 
-// Quant's kernel labels, by quant
 const QS = ["Q0", "Q1", "Q2"];
 
 // the unit type and value
@@ -190,8 +186,8 @@ function oos(why: string, E = Scope_Error): never {
 // ====
 
 // the BendTT text of a checked book: every def and datatype not in base,
-// in bend2's fill order, and what they name; a def out of scope goes, as
-// does every def that names it, and oos says why, for each book name
+// in bend2's fill order, and what they name; oos says why each book name
+// is out of scope (see the header)
 type Out = { text: string; oos: string[] };
 
 function safe_book(book: Book): Out {
@@ -377,7 +373,6 @@ function item_key(k: Name, cols: Cols): string {
   return [k, ...cols.flatMap((v) => v === null ? [] : [tkey(v)])].join("\n");
 }
 
-// a closed term's key
 function tkey(t: HTerm): string {
   return B.term_key(B.term_lower(t));
 }
@@ -644,7 +639,6 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
 // Names
 // =====
 
-// a def name, taken here
 function fresh(e: Safe, n: string): string {
   let k = n;
   for (let i = 1; e.taken.has(k); i++) {
@@ -693,7 +687,6 @@ function scope_hide(s: Scope, q?: Q): Scope {
   return { ...s, D: s.D + 1, kq };
 }
 
-// binds the next bend2 variable to a kernel binder
 function scope_var(s: Scope, T: HTerm | null, q?: Q): Scope {
   return scope_bind(scope_hide(s, q), vr(s.D), T);
 }
@@ -730,7 +723,6 @@ function open(t: HTerm): [HTerm, HTerm | null] {
   return [x, T];
 }
 
-// whether x is a case tree's node: a λ, a match or a refutation
 function node(x: HTerm): x is Of<"Lam" | "Mat" | "Efq"> {
   return x.$ === "Lam" || x.$ === "Mat" || x.$ === "Efq";
 }
@@ -901,7 +893,6 @@ function goals(e: Safe, all: Of<"All"> | null, c: B.Ctr): [HTerm | null, HTerm |
   return [go(fill(e.book, c.T, A.x), []), { ...all, A: { ...A, r: [...A.r, c.k] } }];
 }
 
-// t at T, when bend2 left it bare
 function typed(t: HTerm, T?: HTerm | null): HTerm {
   return T == null || open(t)[1] !== null ? t : B.Ann(t, T);
 }
@@ -940,17 +931,14 @@ function rebuild(e: Safe, s: Scope, x: Of<"Lam">, all: Of<"All">): HTerm | null 
   return cs.every(([, U]) => data(U)) ? B.Ann(cs.reduceRight<HTerm>((m, [k, U]) => B.Mat(k, branch(k, U, []), m), B.Efq()), all) : null;
 }
 
-// telescope T at the arguments xs, in book b
 function fill(b: Book, T: HTerm, xs: HTerm[]): HTerm {
   return B.tele_fill(b, T, xs, B.ctx_nil());
 }
 
-// T's weak head, in book b
 function wnf(b: Book, T: HTerm): HTerm {
   return B.term_wnf(b, T);
 }
 
-// T's weak head, when a ∀
 function all_of(e: Safe, T: HTerm | null): Of<"All"> | null {
   const G = T === null ? null : wnf(e.book, T);
   return G?.$ === "All" ? G : null;
@@ -961,7 +949,6 @@ function eta(t: HTerm, all: Of<"All">): HTerm {
   return B.Ann(B.Lam(all.k, 0, (y: HTerm) => B.Ann(B.App(t, y), all.B(y))), all);
 }
 
-// whether a lowered term mentions a variable at a level p holds for
 function mentions(t: unknown, p: (i: number) => boolean): boolean {
   if (typeof t !== "object" || t === null) {
     return false;
@@ -973,7 +960,6 @@ function mentions(t: unknown, p: (i: number) => boolean): boolean {
   return Object.entries(o).some(([k, v]) => k !== "s" && mentions(v, p));
 }
 
-// whether T is a datatype with no constructor left
 function no_ctr(e: Safe, T: HTerm): boolean {
   const x = wnf(e.book, T);
   const tld = x.$ === "ADT" ? e.book.tlds[x.k] : undefined;
@@ -981,9 +967,9 @@ function no_ctr(e: Safe, T: HTerm): boolean {
 }
 
 // T's kind, Data (2) or Type (1), as the kernel infers it: a datatype's
-// declared kind, or the kind a type-valued def returns (never through
-// the def's body), when its quantity is closed; null when neither, or
-// when the quantity is open, which the kernel decides
+// declared kind, or the kind a type-valued def returns (never through its
+// body), when its quantity is closed; else null (an open quantity is the
+// kernel's to decide)
 function kind(e: Safe, s: Scope, T: HTerm): Q | null {
   const x = B.term_strip(T);
   const [h, xs] = x.$ === "ADT" ? [x, x.x] : unapply(x);
@@ -1353,7 +1339,6 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
   return F.q.$ === G.q.$ && qsig_eq(e, F.B(x), G.B(x), d + 1);
 }
 
-// a constructor as a tuple of its tag and fields
 function ctr_term(e: Safe, s: Scope, x: Of<"Ctr">, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
   const f = B.book_fam(e.book, x.k);
@@ -1462,7 +1447,6 @@ function self_arg(o: O, k: string, l: number): boolean {
     || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
-// the def names o mentions
 function o_refs(o: O): string[] {
   if (o.$ === "Ref") {
     return [o.k];
@@ -1474,7 +1458,6 @@ function is_o(v: unknown): v is O {
   return typeof v === "object" && v !== null && "$" in v;
 }
 
-// f applied to the arguments xs, each at its quantity
 function apps(f: O, xs: Array<[Q, O]>): O {
   return xs.reduce<O>((g, [q, x]) => ({ $: "App", q, f: g, x }), f);
 }
@@ -1485,12 +1468,10 @@ function tup(xs: Array<[Q, O]>): O {
   return xs.reduceRight<O>((b, [q, a]) => ({ $: "Tup", q, a, b }), UV);
 }
 
-// ∀s (or Σs) over b, at the binders ps
 function alls(ps: Binder[], b: O, $: "All" | "Sig" = "All"): O {
   return ps.reduceRight<O>((B, [q, l, A]) => ({ $, q, l, A, B }), b);
 }
 
-// a λ-match whose arm at the label ks[i] is h(i), made last to first
 function mats(ks: string[], h: (i: number) => O): O {
   return ks.reduceRight<O>((m, k, i) => ({ $: "Mat", k, h: h(i), m }), { $: "Efq" });
 }
@@ -1651,8 +1632,8 @@ function kernel_bin(): string {
   return bin;
 }
 
-// run_read runs a child to its end: its result, and its stdout and stderr
-// as one text. The text goes through a file, not a pipe: bun's spawnSync
+// a child run to its end: its result, and its stdout and stderr as one
+// text. The text goes through a file, not a pipe: bun's spawnSync
 // (1.3.14) can lose a pipe's bytes under load (status 0, stdout "")
 export function run_read(bin: string, args: string[],
   opts: child.SpawnSyncOptionsWithBufferEncoding = {}): [child.SpawnSyncReturns<Buffer>, string] {
