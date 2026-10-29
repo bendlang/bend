@@ -445,8 +445,8 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // no body goes out opaque (see the header)
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[]);
-  const why = () => "no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k);
-  const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T)) ?? oos(why());
+  const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T))
+    ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -469,7 +469,7 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const Enu: O = { $: "Enu", ks };
   e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: G }), lams(e, ps, arms), false]);
   const at = (k: string): O => apps(ref(k), ps.map(([q, l]) => [q, vr(l)]));
-  e.out.push([n, alls(ps, G), lams(e, ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: vr(t) } }), false]);
+  e.out.push([n, alls(ps, G), lams(e, ps, { $: "Sig", q: 1, l: t, A: Enu, B: apps(at(am), [[1, vr(t)]]) }), false]);
   if (tld.c.length === 0) {
     e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(e, ps, { $: "Prj", h: { $: "Efq" } }), false]);
   }
@@ -803,7 +803,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     // bend2 checks a ~ argument dead, so its λ may use a linear variable
     // twice: it matches the variable once and rebuilds it at each use,
     // unless its type reduces to Data (a match-refined view): copied
-    const A = q === 1 && all !== null && uses(e, f, l) > 1 && kind(e, s, all.A) === 1 ? wnf(e.book, all.A) : null;
+    const A = q === 1 && all !== null && (o_uses(e, f).get(l) ?? 0) > 1 && kind(e, s, all.A) === 1 ? wnf(e.book, all.A) : null;
     if (all !== null && A !== null && A.$ !== "Eql" && kind(e, s, A) !== 2) {
       return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
     }
@@ -863,9 +863,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
         return { $: "Efq" };
       }
       // tags remain, but a live tag in scope is of the empty enum
-      const q = quant(all.q);
-      const f = convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]);
-      return { $: "Lam", q, l: s.D, f: { $: "Lam", q, l: s.D + 1, f } };
+      return pair(quant(all.q), s.D, convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]));
     }
     case "Mat": {
       const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
@@ -885,17 +883,17 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const empty: O[] = q > 0 && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
       const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, l] };
       // the default's binder is the pair of the tag and the fields
-      const pair: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
+      const tp: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
       const y: HTerm = B.Var(f.k, s.d);
-      return pair_lams(e, q, l, convoy_bind(e, scope_bind(s2, pair, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs)));
+      const b = convoy_bind(e, scope_bind(s2, tp, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs));
+      return pair(copies(e, q, b, [l, l + 1]), l, b);
     }
   }
 }
 
-// λt => λf => b, a default's tag and fields: both copy if b uses either twice
-function pair_lams(e: Safe, q: Q, l: number, b: O): O {
-  const r = copies(e, q, b, [l, l + 1]);
-  return { $: "Lam", q: r, l, f: { $: "Lam", q: r, l: l + 1, f: b } };
+// λt => λf => b at q, a default's tag and fields
+function pair(q: Q, l: number, b: O): O {
+  return { $: "Lam", q, l, f: { $: "Lam", q, l: l + 1, f: b } };
 }
 
 // the goals of a bare match of type all: c's arm at c's fields, then
@@ -1539,11 +1537,6 @@ function ann(e: Safe, s: Scope, o: O, T: HTerm | null, why: string): O {
 
 function inferable(o: O): boolean {
   return o.$ === "App" ? inferable(o.f) : ["Var", "Ref", "Ann", "Typ", "Min", "All", "Enu", "Eql"].includes(o.$);
-}
-
-// the live uses of level l in o, as the kernel counts them
-function uses(e: Safe, o: O, l: number): number {
-  return o_uses(e, o).get(l) ?? 0;
 }
 
 // the live uses of each level o names, in one walk: a level named only
