@@ -1,10 +1,7 @@
-# a meet is the minimum, so its operands' order and grouping never change
-# a kind: each side splits its meets into leaves, and each leaf of one
-# side finds a leaf of the other. the search stops at its first match
-# (#1942): the issue's chains searched every leaf after the answer,
-# O(n^3) wnf steps. a leaf may match the first leaf (first), only the
-# last (last, rev), a repeat (rep), across groupings (nest), or past a
-# &2, the meet's identity (lit)
+# a meet is the minimum, so Kind(a) fits Kind(b) when every leaf of a's
+# meets fits some leaf of b's: order and grouping never matter. A leaf may
+# match the first leaf (first), only the last (last, rev), a repeat (rep),
+# across groupings (nest), or past &2, the meet's identity (lit)
 
 def swap(q: Quant, r: Quant, X: Kind(q <&> r)) -> Kind(r <&> q):
   X
