@@ -2341,8 +2341,8 @@ function emit_native(sc: Scope, k: Name): string {
     const hs = seg.ks.flatMap((kd, i) => arr_q(kd)
       ? [`Term h${i} = r${i};`] : []);
     const body = [
-      ...seg_text(["u32 wpoll = 0;", ...hs, ...seg_take(seg), "WL_SPIN"], 1),
-      ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
+      ...seg_text(["u32 wpoll = 0;", ...hs, ...seg_take(seg), "WL_NSPIN"], 1),
+      ...seg_text(seg.lines, 2), "  break;", "  WL_NSPUN", "  return 1;", "}"];
     const far = body.join("\n").length + 1 >= SPIN_FAR;
     const ps = seg.ks.map((kd, i) => `, ${lay_c(kd)} r${i}`
       + (arr_q(kd) ? `, u64 q${i}` : "")).join("");
@@ -3394,9 +3394,6 @@ const runtime_c = (tabs: string, spins: string, segs: string,
 // Imports
 // =======
 
-// The Objective-C headers take #include, not #import: a build
-// (-o) reads an #import as the framework of an effect.
-
 #pragma clang fp contract(off)
 
 #ifdef __CUDACC_RTC__
@@ -3519,6 +3516,14 @@ using namespace metal;
 #define WL_SPIN     for (;;) { if (err_spun(e.mem, &wpoll)) { return 0; }
 #define WL_SPUN     } break;
 #define WL_AGAIN(F) continue
+// The poll's period, 4096, is WL_NSPIN's loop and err_spun's mask (#1776).
+#if BEND_RTC
+#define WL_NSPIN  for (;;) { wpoll = 4096; do {
+#define WL_NSPUN  } while (--wpoll); if (wpoll) break; if (err_seen(e.mem)) return 0; }
+#else
+#define WL_NSPIN  WL_SPIN
+#define WL_NSPUN  }
+#endif
 
 #define LANE_STEP (DEVICE ? (long)CUBE : 1)
 #define STK(I)    sp[(long)(I) * LANE_STEP]
