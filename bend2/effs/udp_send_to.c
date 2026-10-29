@@ -1,12 +1,36 @@
 // UDP
 // ===
 
+// The datagram's bytes (a String's UTF-8, U+FFFD for what is no Unicode
+// scalar, or a List's bytes), read as io_cbuf does but without taking s:
+// w->item keeps the value itself, so a failed or late send hands back
+// exactly what it was given, as the JS lane does.
+static char* udp_send_buf(Env e, Term s, u64* len, u64 cons) {
+  u64   cap = 64, n = 0;
+  char* buf = io_mem(malloc(cap));
+  while (term_aux(s) == cons) {
+    u64 l = term_peek(e.mem, s);
+    if (n + 5 > cap) {
+      cap *= 2;
+      buf = io_mem(realloc(buf, cap));
+    }
+    if (cons == CID(SCon)) {
+      n += io_utf8(buf + n, e.mem[l]);
+    } else {
+      buf[n++] = (char)e.mem[l];
+    }
+    s = e.mem[l + 1];
+  }
+  buf[n] = 0;
+  *len = n;
+  return buf;
+}
+
 // A datagram goes whole or not at all; a full send buffer (non-blocking,
 // so EAGAIN) parks the computation on more until the socket is writable.
-// make hands the datagram back as it came: a String (io_str) or a List of
-// bytes (io_list).
-static Term udp_send_to_with(Env e, IoWork* w, IoPack more,
-  Term (*make)(Env, const char*, u64)) {
+// Fail and Wait hand the datagram back as it came (w->item); a sent one is
+// dropped.
+static Term udp_send_to_with(Env e, IoWork* w, IoPack more) {
   struct sockaddr_in at;
   int     fd = (int)w->hand;
   ssize_t n  = -1;
@@ -20,16 +44,19 @@ static Term udp_send_to_with(Env e, IoWork* w, IoPack more,
   if (io_again(w)) {
     return io_wait_on(w, fd, POLLOUT, w->time, more);
   }
-  Term r = io_poll_end(e, w, make(e, w->data, w->size), w->code == 0
+  if (w->code == 0) {
+    term_sink(e, w->item);
+  }
+  Term r = io_poll_end(e, w, w->item, w->code == 0
     ? io_done(e, term_pak(CID(Unit), 0)) : io_box(e, CID(Fail),
-      io_tup(e, io_err(e, w->code, NULL), make(e, w->data, w->size))));
+      io_tup(e, io_err(e, w->code, NULL), w->item)));
   free(w->text);
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
 
 static Term udp_send_to_more(Env e, IoWork* w) {
-  return udp_send_to_with(e, w, udp_send_to_more, io_str);
+  return udp_send_to_with(e, w, udp_send_to_more);
 }
 
 // at is the try_ deadline (past it, Wait{data}), 0 for the blocking twins.
@@ -47,14 +74,15 @@ static void udp_send_to_at(Env e, Term* f, IoWork* w, u64 at) {
 
 static Term udp_send_to_start(Env e, Term* f, IoWork* w, u64 at) {
   udp_send_to_at(e, f, w, at);
-  w->data = io_cstr(e, f[3], &w->size);
+  w->item = f[3];
+  w->data = udp_send_buf(e, f[3], &w->size, CID(SCon));
   return udp_send_to_more(e, w);
 }
 
 #ifdef CID(Con)
 
 static Term udp_send_bytes_to_more(Env e, IoWork* w) {
-  return udp_send_to_with(e, w, udp_send_bytes_to_more, io_list);
+  return udp_send_to_with(e, w, udp_send_bytes_to_more);
 }
 
 // A value past 255 fails with EINVAL before the datagram is sent, list kept.
@@ -70,7 +98,8 @@ static Term udp_send_bytes_to_start(Env e, Term* f, IoWork* w, u64 at) {
     }
     s = e.mem[l + 1];
   }
-  w->data = io_cbuf(e, f[3], &w->size, CID(Con));
+  w->item = f[3];
+  w->data = udp_send_buf(e, f[3], &w->size, CID(Con));
   return udp_send_bytes_to_more(e, w);
 }
 

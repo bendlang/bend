@@ -3326,20 +3326,13 @@ function js_def(k: Name, def: Bend.Def): void {
   file_push(sc, "");
 }
 
-// A value in from a host: a Nat comes as a number, which nat_in checks, and
-// an F32 is rounded to one. An effect answers Bend's own text; an export's
-// caller passes host strings, which text reads with str_in.
-function host_in(A: HTerm | null, x: string, text = false): string {
+// A value in from a host, an effect's answer or an export's argument: a Nat
+// comes as a number, which nat_in checks, and an F32 is rounded to one.
+// Text crosses as Bend's own, both ways: the host converts what it knows to
+// need it, at any depth.
+function host_in(A: HTerm | null, x: string): string {
   const k = ty_adt(A)?.k;
-  return k === "Nat" ? `nat_in(${x})` : k === "F32" ? `Math.fround(${x})`
-    : text && (k === "Char" || k === "String") ? `str_in(${x})` : x;
-}
-
-// An export's answer to its caller: text leaves as a host string, U+FFFD
-// for what is no Unicode scalar.
-function host_out(A: HTerm | null, x: string): string {
-  const k = ty_adt(A)?.k;
-  return k === "Char" || k === "String" ? `str_out(${x})` : x;
+  return k === "Nat" ? `nat_in(${x})` : k === "F32" ? `Math.fround(${x})` : x;
 }
 
 // A module (the .bend loader, -o <out>.mjs) roots and exports each callable
@@ -3360,10 +3353,9 @@ export function js_lib(book: Bend.Book, mod = false): string {
   const lib = outs === null ? "" : `export default {\n${outs.map((k) => {
     const { live, lays } = fun_of(k);
     const ps = live.map((_, i) => "a" + i);
-    const xs = live.map(([, , A], i) => host_in(A, ps[i], true));
-    return `  ${js_key(k)}run_lib((${ps}) => ${host_out(tele_unbind(
-      FL.book.tlds[k].T).ret, `run_loop(${name_id("$", k)}(${xs}))`)
-    }, ${lays.length}),`;
+    const xs = live.map(([, , A], i) => host_in(A, ps[i]));
+    return `  ${js_key(k)}run_lib((${ps}) => run_loop(${name_id("$", k)
+    }(${xs})), ${lays.length}),`;
   }).join("\n")}\n};\n`;
   const jumps = graph_close(new Set([CLO_APPLY]), [...FL.tails]
     .flatMap(([k, ts]) => [...ts].map((t) => [t, k])));

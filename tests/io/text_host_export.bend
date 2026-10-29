@@ -1,8 +1,9 @@
-# An exported def takes and answers host strings: its caller's text comes
-# in through str_in, so a lone surrogate is U+FFFD and a lone DC00 never
-# reads as the head of a packed Char ("a", DC00, "bcd" counts 5), and a
-# Char or String it answers leaves through str_out, so Chr{55296} reaches
-# the caller as U+FFFD. Valid text, astral included, round-trips.
+# An exported def takes and answers Bend's own text, as an effect does: no
+# conversion either way, so the caller converts what it knows to need it.
+# Valid text, astral included, is the same either way and round-trips.
+# Chr{55296} is "\uDC00\0\u001B\0" (DC00, then its code in three 11-bit
+# parts) going out and coming in: odd answers it, count reads that text
+# plus "x" as 2 Chars, and code reads it back as 55296.
 import Base
 
 def Text.host_export() -> IO(U32):

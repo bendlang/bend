@@ -36,14 +36,14 @@ def odd_char() -> Char:
       return 1;
     }
     const lib = require(output).default;
-    if (!["", "plain", "é", "\u{1F600}x"].every((s) => lib.identity(s) === s)) {
+    const odd = "\uDC00\0\u001B\0";
+    if (!["", "plain", "é", "\u{1F600}x", odd].every((s) => lib.identity(s) === s)) {
       return 2;
     }
-    if (lib.identity("a\uD800") !== "a�" || lib.count("a\uDC00bcd") !== 5
-      || lib.code("\uDC00") !== 0xFFFD) {
+    if (lib.count(odd + "x") !== 2 || lib.code(odd) !== 55296) {
       return 3;
     }
-    return lib.odd() === "�x" && lib.odd_char() === "�" ? 0 : 4;
+    return lib.odd() === odd + "x" && lib.odd_char() === odd ? 0 : 4;
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
