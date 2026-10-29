@@ -2,14 +2,21 @@
 # the GPU or every core. Prints 2147450880.
 #   bend demos/pure_par_sum/main.bend -o sum && ./sum
 import Base
-import ./SPEC.bend as Spec
+
+def pow2(d: Nat) -> Nat:
+  match d:
+    case 0n:
+      1n
+    case 1n+p:
+      +h = pow2(p)
+      Nat.add(h, h)
 
 def sum(d: Nat, +i: Nat) -> Nat:
   match d:
     case 0n:
       i
     case 1n++p:
-      a b = sum(p, i) sum(p, Nat.add(Spec.pow2(p), i))
+      a b = sum(p, i) sum(p, Nat.add(pow2(p), i))
       Nat.add(a, b)
 
 def main() -> IO(Unit):

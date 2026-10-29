@@ -31,11 +31,21 @@ def seq_add(n: Nat, +m: Nat, +i: Nat)
       %add_assoc(q, m, i) : {Nat.add(Spec.seq(m, i), Nat.add(Spec.seq(q, Nat.add(m, i)), Nat.add(q, Nat.add(m, i)))) == Nat.add(Nat.add(Spec.seq(m, i), Spec.seq(q, Nat.add(m, i))), _) : Nat}
       add_assoc(Spec.seq(m, i), Spec.seq(q, Nat.add(m, i)), Nat.add(q, Nat.add(m, i)))
 
+# sum splits its range with its own pow2, which agrees with the spec's
+def pow2_same(d: Nat) -> {Spec.pow2(d) == Par.pow2(d) : Nat}:
+  match d:
+    case 0n:
+      {==}
+    case 1n+p:
+      %pow2_same(p) : {Nat.add(Spec.pow2(p), Spec.pow2(p)) == Nat.add(_, _) : Nat}
+      {==}
+
 def Laws.tree_is_seq(d, i):
   match d:
     case 0n:
       {==}
     case 1n++p:
+      %pow2_same(p) : {Nat.add(Par.sum(p, i), Par.sum(p, Nat.add(_, i))) == Spec.seq(Spec.pow2(1n+p), i) : Nat}
       %seq_add(Spec.pow2(p), Spec.pow2(p), i) : {Nat.add(Par.sum(p, i), Par.sum(p, Nat.add(Spec.pow2(p), i))) == _ : Nat}
       %Laws.tree_is_seq(p, i) : {Nat.add(Par.sum(p, i), Par.sum(p, Nat.add(Spec.pow2(p), i))) == Nat.add(_, Spec.seq(Spec.pow2(p), Nat.add(Spec.pow2(p), i))) : Nat}
       %Laws.tree_is_seq(p, Nat.add(Spec.pow2(p), i)) : {Nat.add(Par.sum(p, i), Par.sum(p, Nat.add(Spec.pow2(p), i))) == Nat.add(Par.sum(p, i), _) : Nat}

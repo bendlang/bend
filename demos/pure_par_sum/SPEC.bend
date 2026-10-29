@@ -1,6 +1,5 @@
 # Specification helpers for LAWS.bend, not part of the editable program.
 # Keep this file and LAWS.bend unchanged when rewriting main.bend or PROOF.bend.
-# main.bend uses pow2 from here, and may not change it.
 
 import Base
 
