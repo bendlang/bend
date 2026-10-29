@@ -545,8 +545,8 @@ function model(e: Safe, T: HTerm): HTerm | null {
   if (m !== null) {
     return m;
   }
-  const k = Object.keys(e.book.tlds).find((k) => {
-    const d = e.book.tlds[k];
+  const k = Object.keys(e.book.tlds).find((n) => {
+    const d = e.book.tlds[n];
     return d.$ === "Def" && d.e !== undefined && d.x === 0 && d.u !== true && B.term_compare("EQ", e.mb, d.T, T, 0);
   });
   return k === undefined ? null : B.Ref(k);
@@ -673,7 +673,7 @@ function name_tt(k: Name): string {
 // =====
 
 function quant(q: Quant): Q {
-  return ({ None: 0, Lone: 1, Many: 2 } as const)[q.$];
+  return q.$ === "None" ? 0 : q.$ === "Lone" ? 1 : 2;
 }
 
 // Scope
@@ -694,10 +694,11 @@ function scope_bind(s: Scope, o: O, T: HTerm | null, v?: HTerm): Scope {
 // a kernel binder with no bend2 variable, at its tentative quantity q, if
 // known: a q=1 one may ride a convoy
 function scope_hide(s: Scope, q?: Q): Scope {
-  const kq = s.kq.slice();
-  if (q !== undefined) {
-    kq[s.D] = q;
+  if (q === undefined) {
+    return { ...s, D: s.D + 1 };
   }
+  const kq = s.kq.slice();
+  kq[s.D] = q;
   return { ...s, D: s.D + 1, kq };
 }
 
@@ -739,7 +740,7 @@ function open(t: HTerm): [HTerm, HTerm | null] {
 }
 
 // whether x is a case tree's node: a λ, a match or a refutation
-function node(x: HTerm): boolean {
+function node(x: HTerm): x is Of<"Lam" | "Mat" | "Efq"> {
   return x.$ === "Lam" || x.$ === "Mat" || x.$ === "Efq";
 }
 
@@ -891,9 +892,10 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
   }
 }
 
-// λt => λf => b, a default's tag and fields: both copy if b uses either twice
+// λt => λf => b, a default's tag and fields: both copy if b uses either
+// twice, at any q
 function pair_lams(e: Safe, q: Q, l: number, b: O): O {
-  const r = copies(e, q, b, [l, l + 1]);
+  const r = copies(e, 1, b, [l, l + 1]) === 2 ? 2 : q;
   return { $: "Lam", q: r, l, f: { $: "Lam", q: r, l: l + 1, f: b } };
 }
 
@@ -1346,12 +1348,12 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 // whole, as the live check reads it, unless its binders differ from A's
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
-  const lam = node(y);
-  const all = lam || y.$ === "Ctr" ? null : all_of(e, A);
+  const bare = node(y) || y.$ === "Ctr";
+  const all = bare ? null : all_of(e, A);
   if (all !== null && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
     return term(e, s, eta(x, all), live);
   }
-  return term(e, s, T === null && (lam || y.$ === "Ctr") ? B.Ann(x, A) : x, live);
+  return term(e, s, T === null && bare ? B.Ann(x, A) : x, live);
 }
 
 // whether two function types bind at the same quantities, all the way
@@ -1495,7 +1497,7 @@ function is_o(v: unknown): v is O {
 
 // f applied to the arguments xs, each at its quantity
 function apps(f: O, xs: Array<[Q, O]>): O {
-  return xs.reduce<O>((f, [q, x]) => ({ $: "App", q, f, x }), f);
+  return xs.reduce<O>((g, [q, x]) => ({ $: "App", q, f: g, x }), f);
 }
 
 // the tuple (x, y, .., ()), each at its quantity: a constructor's, or a
@@ -1559,9 +1561,9 @@ function o_uses(e: Safe, o: O): Map<number, number> {
     out.set(l, (out.get(l) ?? 0) + n);
   };
   const go = (o: O, live: boolean): void => {
-    const kept = e.uses.get(o);
-    if (kept !== undefined) {
-      return kept.forEach((n, l) => add(l, live ? n : 0));
+    const sub = e.uses.get(o);
+    if (sub !== undefined) {
+      return sub.forEach((n, l) => add(l, live ? n : 0));
     }
     switch (o.$) {
       case "Var": return add(o.l, live ? 1 : 0);
