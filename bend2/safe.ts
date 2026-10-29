@@ -173,9 +173,13 @@ class Scope_Error extends Error {}
 // argument there would not
 class Open_Error extends Scope_Error {}
 
-// a live cycle found below the item at key (its message), now a group:
-// the emission since key began is undone, and its caller retries (Reroute)
-class Regroup extends Error {}
+// a live cycle found below the item at key, now a group: the emission
+// since key began is undone, and its caller retries (Reroute)
+class Regroup extends Error {
+  constructor(readonly key: string) {
+    super(key);
+  }
+}
 class Reroute extends Error {}
 
 function oos(why: string, E = Scope_Error): never {
@@ -235,10 +239,11 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): Ou
   }
   // a def that names a def out of scope is out too
   const bad = new Map(e.fail);
+  const refs: string[][] = [];
   for (let more = bad.size > 0; more;) {
     more = false;
-    for (const [k, T, v] of e.out) {
-      const r = bad.has(k) ? undefined : [...o_refs(T), ...o_refs(v)].find((r) => bad.has(r));
+    for (const [i, [k, T, v]] of e.out.entries()) {
+      const r = bad.has(k) ? undefined : (refs[i] ??= [...o_refs(v, o_refs(T))]).find((r) => bad.has(r));
       if (r !== undefined) {
         bad.set(k, "names " + B.name_key(r) + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
         more = true;
@@ -404,7 +409,7 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
       if (x instanceof Scope_Error) {
         put(e, e.fail, n, x.message);
       }
-      if (x instanceof Regroup && x.message === key) {
+      if (x instanceof Regroup && x.key === key) {
         undo(e, m);
         throw new Reroute();
       }
@@ -438,8 +443,8 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // no body goes out opaque (see the header)
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[]);
-  const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T))
-    ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
+  const t = tld.e !== undefined ? null : ((Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T))
+    ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k)));
   const s = { ...scope_nil(), self: n };
   e.out.push([n, term(e, s, T, false), t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
 }
@@ -846,7 +851,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
         return { $: "Efq" };
       }
       // tags remain, but a live tag in scope is of the empty enum
-      return pair(quant(all.q), s.D, convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]));
+      return lams2(quant(all.q), s.D, convoy_bind(e, scope_hide(scope_hide(s)), cv, (s2) => s2.empty[0]));
     }
     case "Mat": {
       const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
@@ -866,16 +871,16 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const empty: O[] = q > 0 && no_ctr(e, all.A) ? [...s.empty, { $: "App", q: 1, f: { $: "Efq" }, x: vr(l) }] : s.empty;
       const s2 = { ...scope_hide(scope_hide(s, q), q), empty, tags: [...s.tags, l] };
       // the default's binder is the pair of the tag and the fields
-      const tp: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
+      const pair: O = { $: "Tup", q: 1, a: vr(l), b: vr(l + 1) };
       const y: HTerm = B.Var(f.k, s.d);
-      const b = convoy_bind(e, scope_bind(s2, tp, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs));
-      return pair(copies(e, q, b, [l, l + 1]), l, b);
+      const b = convoy_bind(e, scope_bind(s2, pair, all.A), cv, (s3) => tree(e, s3, typed(f.f(y), all.B(y)), fs));
+      return lams2(copies(e, q, b, [l, l + 1]), l, b);
     }
   }
 }
 
 // λt => λf => b at q, a default's tag and fields
-function pair(q: Q, l: number, b: O): O {
+function lams2(q: Q, l: number, b: O): O {
   return { $: "Lam", q, l, f: { $: "Lam", q, l: l + 1, f: b } };
 }
 
@@ -1447,11 +1452,14 @@ function self_arg(o: O, k: string, l: number): boolean {
     || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
-function o_refs(o: O): string[] {
+function o_refs(o: O, out: Set<string> = new Set()): Set<string> {
   if (o.$ === "Ref") {
-    return [o.k];
+    out.add(o.k);
   }
-  return Object.values(o).filter(is_o).flatMap(o_refs);
+  for (const v of Object.values(o).filter(is_o)) {
+    o_refs(v, out);
+  }
+  return out;
 }
 
 function is_o(v: unknown): v is O {
@@ -1634,7 +1642,8 @@ function kernel_bin(): string {
 
 // a child run to its end: its result, and its stdout and stderr as one
 // text. The text goes through a file, not a pipe: bun's spawnSync
-// (1.3.14) can lose a pipe's bytes under load (status 0, stdout "")
+// (1.3.14) can lose a pipe's bytes under load (status 0, stdout ""; seen
+// for the kernel, and for clang --version behind a tee that got its text)
 export function run_read(bin: string, args: string[],
   opts: child.SpawnSyncOptionsWithBufferEncoding = {}): [child.SpawnSyncReturns<Buffer>, string] {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-run-"));
