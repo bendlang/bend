@@ -6472,7 +6472,7 @@ function io_run(m) {
     }
   } catch (e) {
     throw e instanceof RangeError && /call stack/.test(e.message)
-      ? "bend: JS stack exhausted; compile with -o <binary> to run natively" : e;
+      ? "bend: JS stack exhausted; run: bend file.bend -o app && ./app" : e;
   } finally {
     io_sync();
     io.done = true;

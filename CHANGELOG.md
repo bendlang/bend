@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **JS run-stack exhaustion** names the JavaScript stack limit and gives
+  `bend file.bend -o app && ./app`. Other `RangeError`s pass through;
+  the recursion limit itself is unchanged (#1894, PR #1921).
+
 ## 2.0.39 (2026-10-23)
 
 - **`bend --publish` sends only files inside the entry's directory**: a
