@@ -1042,8 +1042,8 @@ function ctr_adt(x: Of<"Ctr">,
   if (ty === null && adt.x.length > 0) {
     die("a constructor outside a datatype");
   }
-  return [adt, adt.k === "U32" || adt.k === "F32"
-    ? Bend.u32_from_term(x, adt.k) : null];
+  return [adt, WORDS[adt.k] === W32
+    ? Bend.u32_from_term(x, adt.k as "U32") : null];
 }
 
 function ctr_tail(ctr: Bend.Ctr, xs?: HTerm[]): Dom[] {
@@ -1178,12 +1178,10 @@ function arm_self(arm: HTerm, n: number, self: HTerm,
     open &&= s.$ === "Ann";
     return s.$ === "Ctr" && ps.length && term_same(s, back(ps)) ? self : null;
   });
-  if (ps.length < n) {
-    return [out, n];
-  }
   const b = ps.reduce((t) => term_open(Bend.term_strip(t) as Of<"Lam">).b,
     out);
-  return ps.some((p) => term_use(term_uses(b), p) > 0) ? [out, n] : [b, 0];
+  return ps.length < n || ps.some((p) => term_use(term_uses(b), p) > 0)
+    ? [out, n] : [b, 0];
 }
 
 function mat_rows(sc: Scope, x: HTerm, ty: HTerm | null, self: HTerm) {
@@ -1210,7 +1208,7 @@ function mat_rows(sc: Scope, x: HTerm, ty: HTerm | null, self: HTerm) {
     }
   }
   const rows = WORDS[adt.k] === W32 ? mat_lits(x, adt.k, self) : null;
-  if (rows === null || adt.k !== "U32") {
+  if (rows === null || adt.k === "F32") {
     return { adt, ret, rows, cells: null };
   }
   const hit = new Map(rows.flatMap(([a, b, v]) => b === 32 ? [[v, a]] : []));
@@ -2353,11 +2351,10 @@ function emit_native(sc: Scope, k: Name): string {
   return seg_ref(sc, name);
 }
 
-function emit_intr(sc: Scope, k: Name, it: Intr, m: Spine,
-  ty: HTerm | null): Val {
+function emit_intr(sc: Scope, k: Name, m: Spine, ty: HTerm | null): Val {
   const args = emit_each(sc, m.args);
   const op = op_name(k);
-  const C = it.C!;
+  const C = intr_of(k)!.C!;
   if (/^array_(get|get_unchecked|new|clone)$/.test(op)
     && lay_el(m.all[0]).ks.includes("box")
     && !(op === "array_new" && ctr_packed(m.all[2]))) {
@@ -2551,9 +2548,8 @@ function emit_expr(sc: Scope, tm: HTerm, ty0: HTerm | null,
         return emit_expr(sc, y, ty, at);
       }
       const g = m.t as Of<"Ref">;
-      const intr = intr_of(g.k);
-      if (intr) {
-        return emit_intr(sc, g.k, intr, m, ty);
+      if (intr_of(g.k)) {
+        return emit_intr(sc, g.k, m, ty);
       }
       if (m.tld?.$ === "ADT") {
         return emit_zero(ty);
@@ -2765,7 +2761,7 @@ function row_val(sc: Scope, s: HTerm, ty: HTerm | null): Cell | null {
   if (term_const(s)) {
     const c = term_strip(s) as Of<"Ctr">;
     const k = ty_adt(ty ?? tele_unbind(FL.book.ctrs[c.k].T).ret)?.k;
-    const u = k === "U32" || k === "F32" ? Bend.u32_from_term(c, k) : null;
+    const u = WORDS[k!] === W32 ? Bend.u32_from_term(c, k as "U32") : null;
     return u !== null ? k === "F32" ? Bend.f32_from_bits(u) : u
       : k === "Nat" ? nat_peel(c)[1] : k === "Bool" ? c.k === "True" : null;
   }
