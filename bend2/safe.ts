@@ -953,49 +953,44 @@ function all_of(e: Safe, T: HTerm | null): Of<"All"> | null {
 }
 
 // whether T's η-long form is finite. A call (a type not headed by a ∀,
-// keyed by the variables it binds, the others alike) unfolds to the calls
-// in its ∀s, and goes whole if it embeds a call of its def it unfolds
-// from: it repeats or grows, and a path that never repeats grows so, so
-// the walk ends. Any other call goes η-long once the calls it unfolds to
-// are decided, so η-long calls never lead back to themselves. e.fin keeps
-// each verdict
-type Call = { r: string; x: B.LTerm; z: number };
-function eta_finite(e: Safe, T: HTerm, d: number, up: Call[] = []): boolean {
+// keyed by its own binders, other variables alike) goes whole if it
+// embeds a call of its def it unfolds from: it repeats or grows. Every
+// endless path does, so the walk ends. Other calls go η-long once the
+// calls in their ∀s are decided, so they never lead back to themselves
+function eta_finite(e: Safe, T: HTerm, d: number, up: Array<{ r: string; x: B.LTerm; z: number }> = []): boolean {
   const h = open(unapply(T)[0])[0], k = h.$ === "All" ? "" : model_key(T, d, "_");
   if (e.fin.has(k)) {
     return e.fin.get(k)!;
   }
-  const x = JSON.parse(k || "{}") as B.LTerm, c = { r: h.$ === "Ref" ? h.k : "", x, z: low_size(x) };
+  const x = JSON.parse(k || "{}") as B.LTerm, c = { r: h.$ === "Ref" ? h.k : "", x, z: size(x) };
   if (k && up.some((u) => u.r === c.r && u.z <= c.z && embeds(u.x, x))) {
     e.fin.set(k, false);
     return false;
   }
-  const G = all_of(e, T), n = k ? up.push(c) : 0;
+  const G = all_of(e, T), on = k ? [...up, c] : up;
   if (G !== null) {
-    eta_finite(e, G.A, d, up);
-    eta_finite(e, G.B(B.Var(G.k, d)), d + 1, up);
+    eta_finite(e, G.A, d, on);
+    eta_finite(e, G.B(B.Var(G.k, d)), d + 1, on);
   }
-  if (!k) {
-    return true;
+  if (k && !e.fin.has(k)) {
+    e.fin.set(k, true);
   }
-  up.length = n - 1;
-  e.fin.set(k, e.fin.get(k) ?? true);
-  return e.fin.get(k)!;
+  return e.fin.get(k) ?? true;
 }
 
 // a lowered term's subterms, and its size (a nat counts as its value)
-function low_kids(t: B.LTerm): B.LTerm[] {
+function kids(t: B.LTerm): B.LTerm[] {
   return Object.values(t).flat().filter(is_o) as unknown[] as B.LTerm[];
 }
-function low_size(t: B.LTerm): number {
-  return B.nat_from_term(t) ?? low_kids(t).reduce((n, y) => n + low_size(y), 1);
+function size(t: B.LTerm): number {
+  return B.nat_from_term(t) ?? kids(t).reduce((n, y) => n + size(y), 1);
 }
 
 // whether b is a with nodes added (homeomorphic embedding), so no smaller:
 // a variable meets any, a nat a no smaller one, a literal any of its kind
 function embeds(a: B.LTerm, b: B.LTerm): boolean {
   const tag = (t: B.LTerm): string => t.$ === "Var" ? "" : [t.$, "k" in t ? t.k : "", "r" in t ? t.r : ""].join(" ");
-  const n = B.nat_from_term(a), m = B.nat_from_term(b), as = low_kids(a), bs = low_kids(b);
+  const n = B.nat_from_term(a), m = B.nat_from_term(b), as = kids(a), bs = kids(b);
   return n !== null && m !== null ? n <= m : bs.some((y) => embeds(a, y))
     || tag(a) === tag(b) && as.length === bs.length && as.every((y, i) => embeds(y, bs[i]));
 }
