@@ -4038,7 +4038,20 @@ INLINE void term_sink(Env e, Term t) {
   }
 }
 
-OUTLINE void span_fade(Env e, Term t, u64 src, u32 n) {
+// A call on Metal: inlined into a taken match, the shader runs wrong on M1s
+// under macOS 27 (#1954).
+#ifdef __METAL_VERSION__
+FAR
+#else
+OUTLINE
+#endif
+u64 span_fade(Env e, Term t, u64 src, u32 n) {
+  DEV u32* c = a32_at(e.mem, term_loc(t));
+  if ((a32_load(c) & RFC_CNT) == 1) {
+    a32_acq(c);
+    heap_free(e, 0, term_loc(t));
+    return src;
+  }
   for (u32 j = 0; j < n; j += 1) {
     Term f = e.mem[src + j];
     if (term_rfc(f)) {
@@ -4048,25 +4061,15 @@ OUTLINE void span_fade(Env e, Term t, u64 src, u32 n) {
     }
   }
   term_drop(e, t);
+  return 0;
 }
 
 INLINE u64 ctr_take(Env e, Term t, u32 n, THR Term* out) {
-  DEV u64* H = e.mem;
-  u64 src = term_peek(H, t);
+  u64 src = term_peek(e.mem, t);
   for (u32 j = 0; j < n; j += 1) {
-    out[j] = H[src + j];
+    out[j] = e.mem[src + j];
   }
-  if (!term_rfc(t)) {
-    return src;
-  }
-  DEV u32* c = a32_at(H, term_loc(t));
-  if ((a32_load(c) & RFC_CNT) == 1) {
-    a32_acq(c);
-    heap_free(e, 0, term_loc(t));
-    return src;
-  }
-  span_fade(e, t, src, n);
-  return 0;
+  return term_rfc(t) ? span_fade(e, t, src, n) : src;
 }
 
 INLINE Term term_word(Env e, Term w) {
