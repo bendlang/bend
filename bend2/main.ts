@@ -322,15 +322,31 @@ async function cli_file(args: string[]): Promise<void> {
       if (output_conflicts(out, ins)) {
         cli_fail("-o " + out + " is a file the program reads, or a directory");
       }
-      // A binary's GPU build also writes <binary>.gpu.
+      // Preserve the input guard for a binary's possible GPU archive.
       if (!/\.(mjs|c?js|c|bendtt)$/.test(out)
         && output_conflicts(out + ".gpu", ins)) {
-        cli_fail("GPU output " + out + ".gpu is a file the program reads, or a"
-          + " directory");
+        cli_fail("GPU output " + out + ".gpu is a file the program reads, or a directory");
+      }
+    }
+    // Compile once to learn whether this build will actually write a GPU archive.
+    // With one output there can be no output-to-output collision.
+    const has_bin = outs.some((out) => !/\.(mjs|c?js|c|bendtt)$/.test(out));
+    const c = outs.length > 1 && has_bin && (process.platform === "darwin" || cuda_find() !== "")
+      ? Comp.compile_book(book) : undefined;
+    const gpu = c !== undefined && gpu_build(c, cuda_find());
+    const written = new Set<string>();
+    for (const out of outs) {
+      const paths = gpu && !/\.(mjs|c?js|c|bendtt)$/.test(out) ? [out, out + ".gpu"] : [out];
+      for (const p of paths) {
+        const at = output_path(p);
+        if (written.has(at) || [...written].some((prev) => same_file(at, prev))) {
+          cli_fail("output " + p + " conflicts with another output");
+        }
+        written.add(at);
       }
     }
     for (const out of outs) {
-      cli_emit(book, out);
+      cli_emit(book, out, c);
     }
   } catch (e) {
     cli_say(2, book_err(e) + "\n");
@@ -381,6 +397,23 @@ function path_real(p: string): string {
   return fs.existsSync(p) ? fs.realpathSync(p) : path.resolve(p);
 }
 
+// Resolve an output even when its final symlink points at a new file.
+function output_path(p: string): string {
+  let at = path.resolve(p);
+  for (let n = 0; n < 40; n += 1) {
+    const dir = path.dirname(at);
+    at = path.join(fs.existsSync(dir) ? fs.realpathSync(dir) : dir, path.basename(at));
+    try {
+      if (!fs.lstatSync(at).isSymbolicLink()) return at;
+      at = path.resolve(path.dirname(at), fs.readlinkSync(at));
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") return at;
+      throw e;
+    }
+  }
+  throw "Error: too many symbolic links in output " + p;
+}
+
 // same_file compares device and inode, so links to one file agree.
 function same_file(a: string, b: string): boolean {
   if (!fs.existsSync(a) || !fs.existsSync(b)) {
@@ -397,13 +430,13 @@ function output_conflicts(out: string, ins: Set<string>): boolean {
     || [...ins].some((input) => same_file(at, input))));
 }
 
-function cli_emit(book: Bend.Book, out: string): void {
+function cli_emit(book: Bend.Book, out: string, c_source?: string): void {
   if (out.endsWith(".mjs")) {
     fs.writeFileSync(out, Comp.js_lib(book, true));
   } else if (/\.c?js$/.test(out)) {
     fs.writeFileSync(out, Comp.js_book(book));
   } else if (out.endsWith(".c")) {
-    fs.writeFileSync(out, Comp.compile_book(book));
+    fs.writeFileSync(out, c_source ?? Comp.compile_book(book));
   } else if (out.endsWith(".bendtt")) {
     const oos = Safe.safe_emit(book, out);
     if (oos.length !== 0) {
@@ -413,7 +446,7 @@ function cli_emit(book: Bend.Book, out: string): void {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-"));
     try {
       const c = path.join(dir, path.basename(out) + ".c");
-      fs.writeFileSync(c, Comp.compile_book(book));
+      fs.writeFileSync(c, c_source ?? Comp.compile_book(book));
       Bun.gc(true);
       cli_build(out, c);
     } finally {
@@ -476,14 +509,21 @@ function cc_find(gpu: boolean): string {
 // on Linux it links the X11 (plus libdl, for dlopen before glibc 2.34) and
 // ALSA libraries it includes.
 // The GPU program's build runs without the user's $BENDRTS.
+function cuda_find(): string {
+  return [process.env.CUDA_HOME, process.env.CUDA_PATH, "/usr/local/cuda", "/opt/cuda"]
+    .find(d => d && fs.existsSync(d + "/include/nvrtc.h")) ?? "";
+}
+
+function gpu_build(c: string, cuda: string): boolean {
+  return !/^#define BANGS\s+0$/m.test(c) && (process.platform === "darwin" || cuda !== "");
+}
+
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
   const mac   = process.platform === "darwin";
-  const cuda  = [process.env.CUDA_HOME, process.env.CUDA_PATH,
-    "/usr/local/cuda", "/opt/cuda"]
-    .find(d => d && fs.existsSync(d + "/include/nvrtc.h")) ?? "";
+  const cuda  = cuda_find();
   const uses  = !/^#define BANGS\s+0$/m.test(c);
-  const bangs = uses && (mac || cuda !== "");
+  const bangs = gpu_build(c, cuda);
   if (uses && !bangs) {
     cli_say(2, "bend: no CUDA toolkit (include/nvrtc.h under $CUDA_HOME,"
       + " $CUDA_PATH, /usr/local/cuda or /opt/cuda), so ! runs on the CPU\n");

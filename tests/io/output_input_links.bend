@@ -1,4 +1,4 @@
-# Output files must not overwrite inputs through a path, symlink or hard link.
+# Outputs must not overwrite inputs or each other through paths or links.
 import Base
 
 def Output.input_links() -> IO(U32):
