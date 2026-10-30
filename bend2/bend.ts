@@ -570,15 +570,18 @@ export function pmap_to_array<T>(map: PMap<T>, acc: U32 = 0, scl: U32 = 1, out: 
   return out;
 }
 
+// visits by level, so an entry's cost follows its key, not the size of the subtree before it
 export function pmap_some<T>(map: PMap<T>, f: (x: T) => boolean): boolean {
-  switch (map.$) {
-    case "Emp": {
-      return false;
-    }
-    case "Bin": {
-      return map.v !== null && f(map.v) || pmap_some(map.l, f) || pmap_some(map.r, f);
+  const queue = [map];
+  for (const node of queue) {
+    if (node.$ === "Bin") {
+      if (node.v !== null && f(node.v)) {
+        return true;
+      }
+      queue.push(node.l, node.r);
     }
   }
+  return false;
 }
 
 // List
@@ -2738,12 +2741,11 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     const x   = vars[0];
     const scu = m.e[0];
     const c   = m.r.map((row) => row.p[0]).find((q): q is PCtr => q.$ === "PCtr") ?? null;
-    const v   = vars.find((w) => scu.$ === "Var" && w.i === scu.i);
-    if (v !== undefined && c === null && m.r.length > 0) {
+    const j   = vars.findIndex((w) => scu.$ === "Var" && w.i === scu.i);
+    if (j >= 0 && c === null && m.r.length > 0) {
       // the var columns that follow their binders in order go in one pass
-      const j  = vars.indexOf(v);
       const ws = vars.slice();
-      const fs = m.r.map((row) => row.f);
+      const bs = m.r.map((row) => row.f);
       let n = 0;
       while (n < m.e.length && j + n < vars.length) {
         const e = m.e[n];
@@ -2754,13 +2756,13 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         const w = { ...u, q: patt_mark(u, m.r, n) };
         ws[j + n] = w;
         m.r.forEach((row, i) => {
-          fs[i] = body_sub(fs[i], (row.p[n] as PVar).i, w);
+          bs[i] = body_sub(bs[i], (row.p[n] as PVar).i, w);
         });
         n++;
       }
-      const rs = m.r.map((row, i): Case => ({ p: row.p.slice(n), f: fs[i] }));
+      const rs = m.r.map((row, i): Case => ({ p: row.p.slice(n), f: bs[i] }));
       return match_flatten({ $: "Match", e: m.e.slice(n), r: rs, s: m.s }, ws, fr);
-    } else if (v === x) {
+    } else if (j === 0) {
       if (c === null) {
         return Efq(m.s);
       } else {
@@ -2798,8 +2800,8 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         return Mat(c.k, pt, dt, c.s);
       }
     } else {
-      const j = v === undefined ? vars.length : vars.indexOf(v);
-      return patt_lams(vars, j, match_flatten(m, vars.slice(j), fr));
+      const k = j < 0 ? vars.length : j;
+      return patt_lams(vars, k, match_flatten(m, vars.slice(k), fr));
     }
   }
 }
