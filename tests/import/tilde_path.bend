@@ -10,7 +10,7 @@ def main() -> U32:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)
+#|- expected : an import path of plain names (each starts with a letter or _, then letters, digits, _ and -; the hub's files import the hub's)
 #|- observed : './law.k~B.bend'
 #|Location:
 #|5 | import Base
