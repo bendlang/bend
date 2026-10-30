@@ -3100,30 +3100,48 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 
 const RIGID: Book = book_nil();
 
-// two copies of one term are equal: before either unfolds, two calls of
-// one def compare their arguments rigidly (the empty book unfolds no def
-// and fills no cell), as in lazy delta reduction; the rigid answer on two
-// cells is kept for the conversion, so a pair met again is not walked again
+// two copies of one term are equal before either unfolds: as in lazy
+// delta reduction, when both sides reduce with no def unfolded to calls
+// of one def, their arguments compare rigidly (the empty book unfolds no
+// def and fills no cell) first. Each rigid answer is kept for the
+// conversion, so a pair met again is not walked again: only EQ is rigid,
+// and a pair has no free var at the depth it is met, so no other depth
+// changes its answer
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
   SEEN = new Map();
   return compare_go(mode, book, lhs, rhs, dep);
 }
 
-// null when the sides are not both calls
-function same_call(lhs: HTerm, rhs: HTerm, dep: number): boolean | null {
-  let f = term_strip(lhs);
-  let g = term_strip(rhs);
-  while (f.$ === "App" && g.$ === "App") {
+// the head of a spine, past its applications
+function call_head(tm: HTerm): HTerm {
+  let f = term_strip(tm);
+  while (f.$ === "App") {
     f = term_strip(f.f);
-    g = term_strip(g.f);
   }
+  return f;
+}
+
+// a term reduced with no def unfolded: only a head that is a redex moves
+function call_core(tm: HTerm): HTerm {
+  const h = call_head(tm);
+  const redex = h.$ === "Let" || h.$ === "Rwt" || (h.$ === "Lam" || h.$ === "Mat") && term_strip(tm).$ === "App";
+  return redex ? term_wnf(RIGID, tm) : tm;
+}
+
+// whether two calls of one def have rigidly equal arguments; null when
+// the sides are not both calls
+function same_call(lhs: HTerm, rhs: HTerm, dep: number): boolean | null {
+  const a = call_core(lhs);
+  const b = call_core(rhs);
+  let f = call_head(a);
+  let g = call_head(b);
   if (f.$ !== "Ref" || g.$ !== "Ref") {
     return null;
   }
   if (f.k !== g.k) {
     return false;
   }
-  for (f = term_strip(lhs), g = term_strip(rhs); f.$ === "App" && g.$ === "App"; f = term_strip(f.f), g = term_strip(g.f)) {
+  for (f = term_strip(a), g = term_strip(b); f.$ === "App" && g.$ === "App"; f = term_strip(f.f), g = term_strip(g.f)) {
     if (!compare_go("EQ", RIGID, f.x, g.x, dep)) {
       return false;
     }
@@ -3131,18 +3149,22 @@ function same_call(lhs: HTerm, rhs: HTerm, dep: number): boolean | null {
   return true;
 }
 
-let SEEN: Map<HTerm, [HTerm, boolean]> = new Map();
+let SEEN: Map<HTerm, Map<HTerm, boolean>> = new Map();
 
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
-  if (book !== RIGID || lhs.$ !== "Var" || rhs.$ !== "Var") {
+  if (book !== RIGID) {
     return compare_one(mode, book, lhs, rhs, dep);
   }
-  const old = SEEN.get(lhs);
-  if (old?.[0] === rhs) {
-    return old[1];
+  let row = SEEN.get(lhs);
+  const old = row?.get(rhs);
+  if (old !== undefined) {
+    return old;
   }
   const same = compare_one(mode, book, lhs, rhs, dep);
-  SEEN.set(lhs, [rhs, same]);
+  if (row === undefined) {
+    SEEN.set(lhs, row = new Map());
+  }
+  row.set(rhs, same);
   return same;
 }
 
@@ -3151,7 +3173,7 @@ function compare_one(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep:
     return true;
   }
   const call = same_call(lhs, rhs, dep);
-  if (call === true || call === false && book === RIGID) {
+  if (call !== null && (call || book === RIGID)) {
     return call;
   }
   let a = term_wnf(book, lhs);
