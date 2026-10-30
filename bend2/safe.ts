@@ -92,8 +92,8 @@ const lab = (k: string): O => ({ $: "Lab", k });
 type Bind = { o: O; T: HTerm | null; v?: HTerm };
 
 // the argument of each parameter of an item, or of each column of a
-// tree, that is specialized; null at the rest
-type Cols = Array<HTerm | null>;
+// tree, that is specialized; null at the rest; caps: see closed_val
+type Cols = Array<HTerm | null> & { caps?: Array<[Bind, HTerm]> };
 
 // an argument: its binder's quantity, the argument, the binder's type,
 // and its value when the binder is specialized
@@ -118,6 +118,7 @@ type Scope = {
   tags: number[]; // the default tags (a tag's fields follow it)
   dry: boolean;  // the tree is built only to count its uses
   again: boolean; // the tree is built again for a convoy
+  cap?: Map<string, Bind>; // the captures (see closed_val); none in root_emit's G
 };
 
 type Safe = {
@@ -311,7 +312,7 @@ function root_emit(e: Safe, k: Name): [string[], string | null] {
         const m = trail(e);
         try {
           const t = tele_open(e, scope_nil(), tld.T, [], tld.x);
-          const b = term(e, t.s, t.T, false);
+          const b = term(e, { ...t.s, cap: undefined }, t.T, false);
           G = { $: "Ann", x: lams(e, t.ps, b), T: alls(t.ps, { $: "Typ", q: lab("Q1") }) };
           ps = t.ps;
         } catch (x) {
@@ -378,7 +379,7 @@ function item_try(e: Safe, k: Name, cols: Cols): string {
 // book name k at the arguments cols of its specialized parameters (a
 // tab and a def's name is the def's group)
 function item_key(k: Name, cols: Cols): string {
-  return [k, ...cols.flatMap((v) => v === null ? [] : [tkey(v)])].join("\n");
+  return [k, ...(cols.caps ?? []).map((c) => tkey(c[1])), ...cols.flatMap((v) => v === null ? [] : [tkey(v)])].join("\n");
 }
 
 function tkey(t: HTerm): string {
@@ -448,8 +449,13 @@ function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = fill(e.book, tld.T, cols.slice(0, tld.x) as HTerm[]);
   const t = tld.e !== undefined ? null : ((Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T))
     ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k)));
-  const s = { ...scope_nil(), self: n };
-  e.out.push([n, term(e, s, T, false), t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
+  let s: Scope = { ...scope_nil(), self: n };
+  const ps = (cols.caps ?? []).map(([, C], i): Binder => {
+    const p: Binder = [2, s.D, term(e, s, C, false)];
+    s = { ...scope_hide(s, 2), cap: new Map(s.cap).set("\0cap" + i, { o: vr(s.D), T: C }) };
+    return p;
+  });
+  e.out.push([n, alls(ps, term(e, s, T, false)), lams(e, ps, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, [])), t !== null]);
 }
 
 // D.arms and D, at D's specialized arguments
@@ -498,14 +504,36 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number) {
 // Specialize
 // ----------
 
-// x's normal form, when it is closed; null when it depends on a run-time value
-function closed_val(e: Safe, s: Scope, x: HTerm): HTerm | null {
+// x's normal form, when it is closed; null when it depends on a run-time
+// value. With cs, each run-time variable of a Data type (or capture) the
+// normal form names is a capture: the instance takes it first, at q=2, as
+// \0cap<j>
+function closed_val(e: Safe, s: Scope, x: HTerm, cs?: Array<[Bind, HTerm]>): HTerm | null {
   // bend2's annotations name a variable by its level
-  const v = B.term_snf(e.book, subst(x, s.d, (o) => {
+  const nf = (t: HTerm): HTerm => B.term_snf(e.book, subst(t, s.d, (o) => {
     const i = o.i as number;
     return o.$ === "Var" && i >= 0 && i < s.d ? s.c[i]?.v ?? B.Var(o.k as Name, i) : undefined;
   }));
-  return mentions(B.term_lower(v, s.d), (i) => i >= 0 && i < s.d) ? null : v;
+  let hit = 0;
+  const cap = (t: HTerm): HTerm => subst(t, s.d, (o) => {
+    const i = o.i as number;
+    const free = o.$ === "Var" && i >= 0 && i < s.d;
+    const b = o.$ === "Ref" ? s.cap?.get(o.k as string) : free ? s.c[i] : undefined;
+    let j = cs?.findIndex((c) => c[0] === b) ?? -1;
+    if (j < 0 && cs && s.cap && b?.T && kind(e, s, b.T) === 2) {
+      const T = cl(b.T);
+      j = cs.push([b, T]) - 1;
+    }
+    return j >= 0 ? (hit++, B.Ref("\0cap" + j)) : free ? B.Var(o.k as Name, i) : undefined;
+  });
+  // subst takes t out of its normal form: only a capture's is normalized again
+  const cl = (t: HTerm): HTerm => {
+    const [u, h] = [nf(t), hit];
+    const c = cap(u);
+    return hit > h ? B.term_snf(e.book, c) : u;
+  };
+  const v = cl(x);
+  return [v, ...(cs ?? []).map((c) => c[1])].some((t) => mentions(B.term_lower(t, s.d), (i) => i >= 0 && i < s.d)) ? null : v;
 }
 
 // t at depth d, with each node f maps replaced, through its lowered form
@@ -674,7 +702,7 @@ function quant(q: Quant): Q {
 // =====
 
 function scope_nil(): Scope {
-  return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false };
+  return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false, cap: new Map() };
 }
 
 // binds the next bend2 variable to o, or to its original term v when
@@ -1069,7 +1097,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     }
     case "Ref":
     case "App": {
-      return spine(e, s, t, live);
+      return x.$ === "Ref" && s.cap?.get(x.k)?.o || spine(e, s, t, live);
     }
     case "ADT": {
       const tld = e.book.tlds[x.k];
@@ -1158,15 +1186,17 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
   // a def's first x parameters, its ~ ones, are specialized
   const nx = tld?.$ === "Def" ? tld.x : 0;
   const ps: Arg[] = [];
+  const cs: Array<[Bind, HTerm]> = [];
   let U = T;
   xs.forEach((x, j) => {
     const F = U === null ? U : wnf(e.book, U);
     if (F?.$ !== "All") {
       return oos("an application past its head's known type");
     }
-    const v = j < nx ? closed_val(e, s, x) ?? oos("a template argument that depends on a run-time value", Open_Error) : null;
+    const v = j < nx ? closed_val(e, s, x, cs) ?? oos("a template argument that depends on a run-time value", Open_Error) : null;
     ps.push([quant(F.q), x, F.A, v]);
-    U = F.B(v ?? x);
+    // v names a capture by the callee's place
+    U = F.B(cs.length > 0 ? x : v ?? x);
   });
   // a call that closed a live cycle goes again, through its group
   let n: string | null = null;
@@ -1174,9 +1204,10 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
     try {
       const g = e.groups.get(k);
       if (g !== undefined) {
+        cs.length > 0 && oos("a template argument that depends on a run-time value", Open_Error);
         return group_call(e, s, g, k, ps, U as HTerm, live);
       }
-      n = item_ref(e, k, ps.map((p) => p[3]), live);
+      n = item_ref(e, k, Object.assign(ps.map((p) => p[3]), { caps: cs }), live);
     } catch (x) {
       if (x instanceof Reroute) {
         return args(e, s, k, T, xs, live);
@@ -1184,7 +1215,7 @@ function args(e: Safe, s: Scope, k: Name | O, T: HTerm | null, xs: HTerm[], live
       throw x;
     }
   }
-  return apps(n === null ? k as O : ref(n), pass(e, s, n, ps, live));
+  return apps(n === null ? k as O : ref(n), [...cs.map((c): [Q, O] => [2, c[0].o]), ...pass(e, s, n, ps, live)]);
 }
 
 // the arguments ps of a call to the kernel def n but the specialized
