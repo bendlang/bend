@@ -10,7 +10,7 @@ def main() -> U32:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : '=' (an operator takes spaces on both sides: x + y)
+#|- expected : '=' (an operator takes spaces on both sides and a type: (a + b : T))
 #|- observed : '+'
 #|Location:
 #|5 | def add(x: U32, +y: U32) -> U32:
