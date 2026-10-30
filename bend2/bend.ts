@@ -265,6 +265,9 @@ export type PMap<Item> =
 // List
 export type List<Item> = { k: U32; v: Item; n: List<Item> } | null;
 
+// Cons
+export type Cons<Item> = { v: Item; n: Cons<Item> } | null;
+
 // Quant
 export type Quant =
   | { $: "None" }
@@ -329,6 +332,9 @@ export type Patt  = PVar | PCtr;
 export type Case  = { p: Patt[]; f: Body };
 export type Rows  = Array<Case>;
 export type Match = { $: "Match"; e: LTerm[]; r: Rows; s?: Span };
+export type Row   = { p: Cons<Patt>; f: Body };
+export type Cols  = { e: Cons<LTerm>; r: Row[]; s?: Span };
+export type Vars  = { l: Cons<number>; m: PMap<PVar | null> };
 export type Local = { $: "Local"; k: Patt[]; q: Quant; v: LTerm[]; f: Body };
 export type Body  = Match | Local | LTerm
 
@@ -455,6 +461,13 @@ export function Emp<T>(): PMap<T> {
 
 export function Bin<T>(v: T | null, l: PMap<T>, r: PMap<T>): PMap<T> {
   return { $: "Bin", v, l, r };
+}
+
+// Cons
+// ----
+
+export function Cons<T>(v: T, n: Cons<T>): Cons<T> {
+  return { v, n };
 }
 
 // Quant
@@ -597,16 +610,31 @@ export function list_set<T>(list: List<T>, key: U32, val: T): List<T> {
   return { k: key, v: val, n: list };
 }
 
-// a growing list keys each item by its position, so adding one copies nothing
-// and a binder's closure, entered twice, still sees its own prefix
-export function list_push<T>(list: List<T>, val: T): List<T> {
-  return list_set(list, list === null ? 0 : list.k + 1, val);
+// Cons
+// ====
+// a list that shares its tail: adding an item copies nothing, and a binder's
+// closure, entered twice, still sees its own prefix
+
+export function cons_head<T>(list: Cons<T>): T {
+  return (list as NonNullable<Cons<T>>).v;
 }
 
-export function list_to_array<T>(list: List<T>): T[] {
-  const out = new Array<T>(list === null ? 0 : list.k + 1);
+export function cons_tail<T>(list: Cons<T>): Cons<T> {
+  return (list as NonNullable<Cons<T>>).n;
+}
+
+export function cons_from<T>(xs: T[], tail: Cons<T> = null): Cons<T> {
+  let out = tail;
+  for (let j = xs.length - 1; j >= 0; j--) {
+    out = Cons(xs[j], out);
+  }
+  return out;
+}
+
+export function cons_to_array<T>(list: Cons<T>): T[] {
+  const out: T[] = [];
   for (let l = list; l !== null; l = l.n) {
-    out[l.k] = l.v;
+    out.push(l.v);
   }
   return out;
 }
@@ -655,12 +683,12 @@ export function uses_add(a: Uses, b: Uses): Uses {
 // LHS
 // ===
 
-export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: List<HTerm> = null): HTerm {
+export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: Cons<HTerm> = null): HTerm {
   if (n === 0) {
-    return term_apply(lhs, Ctr(k, list_to_array(xs)));
+    return term_apply(lhs, Ctr(k, cons_to_array(xs).reverse()));
   } else {
     return Lam("_", 0, (x: HTerm) => {
-      return lhs_ext(lhs, k, n - 1, list_push(xs, x));
+      return lhs_ext(lhs, k, n - 1, Cons(x, xs));
     });
   }
 }
@@ -2235,7 +2263,7 @@ export function parse_term_tup(p: Parse, beg: number): LTerm {
     const rest = parse_term_tup(p, beg);
     return Ctr(parse_own(p, "Tuple", p.book.ctrs), [b, rest], parse_span(p, beg));
   }
-  const out = body_flatten(b, [], () => p.frs++);
+  const out = body_flatten(b, vars_from([]), () => p.frs++);
   if (parse_take(p, ":")) {
     parse_term_ns(p, out, parse_term(p));
   }
@@ -2425,7 +2453,7 @@ export function parse_more(p: Parse, col: number): boolean {
 export function parse_block(p: Parse): LTerm {
   parse_skip(p);
   const b = parse_body(p, parse_col(p.str, p.pos) - 1);
-  return body_flatten(b, [], () => p.frs++);
+  return body_flatten(b, vars_from([]), () => p.frs++);
 }
 
 export function parse_terms(p: Parse): LTerm[] {
@@ -2541,7 +2569,7 @@ export function parse_def(p: Parse, u: Bool): void {
     }
   } else {
     const vars = tele.map((cell): PVar => ({ $: "PVar", k: cell[1], i: cell[2], q: Lone(), s: cell[4] }));
-    def.v = term_higher(term_lower(term_higher(body_flatten(parse_body(p), vars, () => p.frs++))));
+    def.v = term_higher(term_lower(term_higher(body_flatten(parse_body(p), vars_from(vars), () => p.frs++))));
   }
   book.order.push(k);
 }
@@ -2691,13 +2719,28 @@ export function body_sub(b: Body, i: number, v: Patt): Body {
   }
 }
 
-export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
-  if (m.e.length === 0 && m.r.length > 0) {
+// the pending binders: their order, and each one by id (a var column marks its
+// binder wherever it sits; a closed binder is null)
+export function vars_from(xs: PVar[], rest: Vars = { l: null, m: Emp() }): Vars {
+  let { l, m } = rest;
+  for (let j = xs.length - 1; j >= 0; j--) {
+    l = Cons(xs[j].i, l);
+    m = pmap_set(m, xs[j].i, xs[j]);
+  }
+  return { l, m };
+}
+
+export function match_cols(m: Match): Cols {
+  return { e: cons_from(m.e), r: m.r.map((row) => ({ p: cons_from(row.p), f: row.f })), s: m.s };
+}
+
+export function match_flatten(m: Cols, vars: Vars, fr: () => number): LTerm {
+  if (m.e === null && m.r.length > 0) {
     return body_flatten(m.r[0].f, vars, fr);
-  } else if (m.e.length === 0) {
+  } else if (m.e === null) {
     throw Err(book_nil(), ctx_nil(), "a case (this match has no row to return)", undefined, m.s);
-  } else if (vars.length === 0) {
-    let e = m.e[0];
+  } else if (vars.l === null) {
+    let e = m.e.v;
     while (e.$ === "Sub") {
       e = e.f;
     }
@@ -2724,20 +2767,20 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       }
     }
   } else {
-    const x   = vars[0];
-    const scu = m.e[0];
-    const c   = m.r.map((row) => row.p[0]).find((q): q is PCtr => q.$ === "PCtr") ?? null;
-    const v   = vars.find((w) => scu.$ === "Var" && w.i === scu.i);
-    if (v !== undefined && c === null && m.r.length > 0) {
+    const x   = pmap_get(vars.m, vars.l.v) as PVar;
+    const scu = m.e.v;
+    const c   = m.r.map((row) => cons_head(row.p)).find((q): q is PCtr => q.$ === "PCtr") ?? null;
+    const v   = scu.$ === "Var" ? pmap_get(vars.m, scu.i) : null;
+    if (v !== null && c === null && m.r.length > 0) {
       const w  = { ...v, q: patt_mark(v, m.r) };
-      const rs = m.r.map((row): Case => {
-        const p0 = row.p[0];
+      const rs = m.r.map((row): Row => {
+        const p0 = cons_head(row.p);
         if (p0.$ !== "PVar") {
           throw Err(book_nil(), ctx_nil(), "a variable pattern (this column has no constructor row)", undefined, p0.s);
         }
-        return { p: row.p.slice(1), f: body_sub(row.f, p0.i, w) };
+        return { p: cons_tail(row.p), f: body_sub(row.f, p0.i, w) };
       });
-      return match_flatten({ $: "Match", e: m.e.slice(1), r: rs, s: m.s }, vars.map((u) => u === v ? w : u), fr);
+      return match_flatten({ e: m.e.n, r: rs, s: m.s }, { l: vars.l, m: pmap_set(vars.m, v.i, w) }, fr);
     } else if (v === x) {
       if (c === null) {
         return Efq(m.s);
@@ -2751,39 +2794,49 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
           return { $: "PVar", k: "_" + String(i), i, q: xq, s: q.s };
         });
         const kx: Patt = { $: "PCtr", k: c.k, x: xs, s: x.s };
-        const ps = m.r.flatMap((row): Rows => {
-          const p0 = row.p[0];
+        const ps = m.r.flatMap((row): Row[] => {
+          const p0 = cons_head(row.p);
           switch (p0.$) {
             case "PCtr": {
               if (p0.k !== c.k) {
                 return [];
               }
               const f = body_sub(row.f, x.i, kx);
-              return [{ p: [...p0.x, ...row.p.slice(1)], f }];
+              return [{ p: cons_from(p0.x, cons_tail(row.p)), f }];
             }
             case "PVar": {
               const g = body_sub(row.f, p0.i, x);
               const f = body_sub(g, x.i, kx);
-              return [{ p: [...xs, ...row.p.slice(1)], f }];
+              return [{ p: cons_from<Patt>(xs, cons_tail(row.p)), f }];
             }
           }
         });
-        const pe = xs.map((q) => patt_term(q)).concat(m.e.slice(1));
-        const pv = xs.concat(vars.slice(1));
-        const pt = match_flatten({ $: "Match", e: pe, r: ps, s: m.s }, pv, fr);
-        const ds = m.r.filter((row) => row.p[0].$ !== "PCtr" || row.p[0].k !== c.k);
-        const dt = match_flatten({ $: "Match", e: m.e, r: ds, s: m.s }, vars, fr);
+        const pe = cons_from(xs.map((q) => patt_term(q)), m.e.n);
+        const pv = vars_from(xs, { l: vars.l.n, m: pmap_set(vars.m, x.i, null) });
+        const pt = match_flatten({ e: pe, r: ps, s: m.s }, pv, fr);
+        const ds = m.r.filter((row) => {
+          const p0 = cons_head(row.p);
+          return p0.$ !== "PCtr" || p0.k !== c.k;
+        });
+        const dt = match_flatten({ e: m.e, r: ds, s: m.s }, vars, fr);
         return Mat(c.k, pt, dt, c.s);
       }
     } else {
-      const j = v === undefined ? vars.length : vars.indexOf(v);
-      return patt_lams(vars, j, match_flatten(m, vars.slice(j), fr));
+      const pre: PVar[] = [];
+      let l: Cons<number> = vars.l;
+      let open = vars.m;
+      while (l !== null && (v === null || l.v !== v.i)) {
+        pre.push(pmap_get(open, l.v) as PVar);
+        open = pmap_set(open, l.v, null);
+        l = l.n;
+      }
+      return patt_lams(pre, match_flatten(m, { l, m: open }, fr));
     }
   }
 }
 
-export function patt_mark(x: PVar, rows: Rows): Quant {
-  return rows.map((row) => row.p[0]).reduce((q, p) => p.$ === "PVar" ? quant_join(q, p.q) : q, x.q);
+export function patt_mark(x: PVar, rows: Row[]): Quant {
+  return rows.map((row) => cons_head(row.p)).reduce((q, p) => p.$ === "PVar" ? quant_join(q, p.q) : q, x.q);
 }
 
 export function patt_term(q: Patt, s?: Span): LTerm {
@@ -2798,23 +2851,23 @@ export function patt_term(q: Patt, s?: Span): LTerm {
   }
 }
 
-export function patt_lams(vars: PVar[], n: number, f: LTerm): LTerm {
-  for (let j = n - 1; j >= 0; j--) {
+export function patt_lams(vars: PVar[], f: LTerm): LTerm {
+  for (let j = vars.length - 1; j >= 0; j--) {
     const v = vars[j];
     f = Lam(v.k, v.i, f, v.s, v.q);
   }
   return f;
 }
 
-export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
+export function body_flatten(b: Body, vars: Vars, fr: () => number): LTerm {
   switch (b.$) {
     case "Local": {
       if (b.k.length === 1 && b.k[0].$ === "PCtr") {
         const r: Case = { p: [b.k[0]], f: b.f };
-        return match_flatten({ $: "Match", e: [b.v[0]], r: [r], s: b.v[0].s }, vars, fr);
+        return match_flatten(match_cols({ $: "Match", e: [b.v[0]], r: [r], s: b.v[0].s }), vars, fr);
       }
       const ws = b.k as PVar[];
-      let g = body_flatten(b.f, ws, fr);
+      let g = body_flatten(b.f, vars_from(ws), fr);
       for (const w of ws) {
         if (g.$ !== "Lam") {
           throw Err(book_nil(), ctx_nil(), "a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)", undefined, w.s);
@@ -2825,10 +2878,10 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       return body_flatten(x, vars, fr);
     }
     case "Match": {
-      return match_flatten(b, vars, fr);
+      return match_flatten(match_cols(b), vars, fr);
     }
     default: {
-      return patt_lams(vars, vars.length, b);
+      return patt_lams(cons_to_array(vars.l).map((i) => pmap_get(vars.m, i) as PVar), b);
     }
   }
 }
@@ -3335,7 +3388,7 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   }
 }
 
-export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: List<HTerm> = null): Infer {
+export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: Cons<HTerm> = null): Infer {
   switch (tm.$) {
     // Γ[x] = q A
     // where x is bound in Γ (a ~ argument checks in the empty context,
@@ -3461,7 +3514,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // --------------------------------------------------------------- infer-app
     // Γ ⊢ f(a) : B(a) ~ fu + au
     case "App": {
-      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, list_push(sp, tm.x));
+      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, Cons(tm.x, sp));
       if (f_inf.x) {
         return { ...f_inf, x: f_inf.x - 1 };
       }
@@ -3707,14 +3760,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
             throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
-          function term_check_mat_goal(cur: HTerm, n: number, xs: List<HTerm>): HTerm {
+          function term_check_mat_goal(cur: HTerm, n: number, xs: Cons<HTerm>): HTerm {
             if (n === 0) {
-              return t_all.B(Ctr(b.k, list_to_array(xs), b.s));
+              return t_all.B(Ctr(b.k, cons_to_array(xs).reverse(), b.s));
             } else {
               const c_all = tele_head(book, cur, ctx, lhs.def, b.s);
               const c_dem = c_all.q.$ === "None" ? None() : c_all.q.$ === "Lone" ? t_all.q : quant_add(t_all.q, t_all.q);
               return All(c_dem, c_all.k, c_all.i, c_all.A, (x: HTerm) => {
-                return term_check_mat_goal(c_all.B(x), n - 1, list_push(xs, x));
+                return term_check_mat_goal(c_all.B(x), n - 1, Cons(x, xs));
               }, b.s);
             }
           }
@@ -3806,8 +3859,7 @@ export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
   return term_check(gen, { t, n: def.n - def.x, def: k, qs, u: def.u, z }, v, Lone(), T, ctx_nil(), 0).tm;
 }
 
-export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, sp: HTerm[], ctx: Ctx, d: number): Name {
-  const xs = sp.slice(0, def.x);
+export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, xs: HTerm[], ctx: Ctx, d: number): Name {
   if (xs.length < def.x) {
     throw Err(book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
   }

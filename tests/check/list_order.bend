@@ -45,6 +45,11 @@ def absurd(x: U32, e: Empty) -> U32:
   y = {\{} : Unit -> U32};
   x
 
+# the Empty binder sits on the scope tree's right side here, not its left
+def absurd_late(x: U32, w: U32, e: Empty) -> U32:
+  y = {\{} : Unit -> U32};
+  x
+
 def tree() -> T:
   K{1, 2, K{3, 4, L{}}}
 
