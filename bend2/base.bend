@@ -2716,6 +2716,9 @@ law Array.atomic.fadd:
   for +v: F32
   Array<F32> & F32
 
+# An Array of depth d holds 2^d cells, each v: d is a depth, not a length
+# (14n holds 16384 cells, the first power of two >= 12288). Compiled, d plus
+# log2 of T's words per cell is at most 31, and a boxed v stops at depth 23.
 def Array.new(-T: Data, +d: Nat, +v: T) -> Array<T>:
   match d:
     case 0n:
