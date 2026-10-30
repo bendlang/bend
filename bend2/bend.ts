@@ -559,18 +559,29 @@ export function pmap_union<T>(a: PMap<T>, b: PMap<T>, f: (x: T, y: T) => T): PMa
   return Bin(v, l, r);
 }
 
-export function pmap_to_array<T>(map: PMap<T>, acc: U32 = 0, scl: U32 = 1): Array<[U32, T]> {
-  switch (map.$) {
-    case "Emp": {
-      return [];
+export function pmap_to_array<T>(map: PMap<T>, acc: U32 = 0, scl: U32 = 1, out: Array<[U32, T]> = []): Array<[U32, T]> {
+  if (map.$ === "Bin") {
+    if (map.v !== null) {
+      out.push([acc, map.v]);
     }
-    case "Bin": {
-      const v: Array<[U32, T]> = map.v === null ? [] : [[acc, map.v]];
-      const l = pmap_to_array(map.l, acc + scl * 1, scl * 2);
-      const r = pmap_to_array(map.r, acc + scl * 2, scl * 2);
-      return v.concat(l, r);
+    pmap_to_array(map.l, acc + scl * 1, scl * 2, out);
+    pmap_to_array(map.r, acc + scl * 2, scl * 2, out);
+  }
+  return out;
+}
+
+// visits by level, so an entry's cost follows its key, not the size of the subtree before it
+export function pmap_some<T>(map: PMap<T>, f: (x: T) => boolean): boolean {
+  const queue = [map];
+  for (const node of queue) {
+    if (node.$ === "Bin") {
+      if (node.v !== null && f(node.v)) {
+        return true;
+      }
+      queue.push(node.l, node.r);
     }
   }
+  return false;
 }
 
 // List
@@ -587,6 +598,14 @@ export function list_get<T>(list: List<T>, key: U32): T | null {
 
 export function list_set<T>(list: List<T>, key: U32, val: T): List<T> {
   return { k: key, v: val, n: list };
+}
+
+export function list_to_array<T>(list: List<T>): T[] {
+  const out: T[] = [];
+  for (let l = list; l !== null; l = l.n) {
+    out.push(l.v);
+  }
+  return out;
 }
 
 // Quant
@@ -633,12 +652,12 @@ export function uses_add(a: Uses, b: Uses): Uses {
 // LHS
 // ===
 
-export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: HTerm[] = []): HTerm {
+export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: List<HTerm> = null): HTerm {
   if (n === 0) {
-    return term_apply(lhs, Ctr(k, xs));
+    return term_apply(lhs, Ctr(k, list_to_array(xs).reverse()));
   } else {
     return Lam("_", 0, (x: HTerm) => {
-      return lhs_ext(lhs, k, n - 1, [...xs, x]);
+      return lhs_ext(lhs, k, n - 1, list_set(xs, 0, x));
     });
   }
 }
@@ -840,16 +859,13 @@ export function ctx_bind(ctx: Ctx, i: number, q: Quant, k: Name, T: HTerm): Ctx 
 }
 
 export function ctx_dead(book: Book, ctx: Ctx): boolean {
-  for (const [, a] of pmap_to_array(ctx)) {
+  return pmap_some(ctx, (a) => {
     if (a.q.$ === "None") {
-      continue;
+      return false;
     }
     const t = term_wnf(book, a.T);
-    if (t.$ === "ADT" && book_adt(book, t, ctx).c.length === 0) {
-      return true;
-    }
-  }
-  return false;
+    return t.$ === "ADT" && book_adt(book, t, ctx).c.length === 0;
+  });
 }
 
 export function ctx_scope(ctx: Ctx): Name[] {
@@ -2725,18 +2741,28 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     const x   = vars[0];
     const scu = m.e[0];
     const c   = m.r.map((row) => row.p[0]).find((q): q is PCtr => q.$ === "PCtr") ?? null;
-    const v   = vars.find((w) => scu.$ === "Var" && w.i === scu.i);
-    if (v !== undefined && c === null && m.r.length > 0) {
-      const w  = { ...v, q: patt_mark(v, m.r) };
-      const rs = m.r.map((row): Case => {
-        const p0 = row.p[0];
-        if (p0.$ !== "PVar") {
-          throw Err(book_nil(), ctx_nil(), "a variable pattern (this column has no constructor row)", undefined, p0.s);
+    const j   = vars.findIndex((w) => scu.$ === "Var" && w.i === scu.i);
+    if (j >= 0 && c === null && m.r.length > 0) {
+      // the var columns that follow their binders in order go in one pass
+      const ws = vars.slice();
+      const bs = m.r.map((row) => row.f);
+      let n = 0;
+      while (n < m.e.length && j + n < vars.length) {
+        const e = m.e[n];
+        const u = vars[j + n];
+        if (e.$ !== "Var" || e.i !== u.i || m.r.some((row) => row.p[n].$ !== "PVar")) {
+          break;
         }
-        return { p: row.p.slice(1), f: body_sub(row.f, p0.i, w) };
-      });
-      return match_flatten({ $: "Match", e: m.e.slice(1), r: rs, s: m.s }, vars.map((u) => u === v ? w : u), fr);
-    } else if (v === x) {
+        const w = { ...u, q: patt_mark(u, m.r, n) };
+        ws[j + n] = w;
+        m.r.forEach((row, i) => {
+          bs[i] = body_sub(bs[i], (row.p[n] as PVar).i, w);
+        });
+        n++;
+      }
+      const rs = m.r.map((row, i): Case => ({ p: row.p.slice(n), f: bs[i] }));
+      return match_flatten({ $: "Match", e: m.e.slice(n), r: rs, s: m.s }, ws, fr);
+    } else if (j === 0) {
       if (c === null) {
         return Efq(m.s);
       } else {
@@ -2774,14 +2800,14 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         return Mat(c.k, pt, dt, c.s);
       }
     } else {
-      const t = match_flatten(m, vars.slice(1), fr);
-      return Lam(x.k, x.i, t, x.s, x.q);
+      const k = j < 0 ? vars.length : j;
+      return patt_lams(vars, k, match_flatten(m, vars.slice(k), fr));
     }
   }
 }
 
-export function patt_mark(x: PVar, rows: Rows): Quant {
-  return rows.map((row) => row.p[0]).reduce((q, p) => p.$ === "PVar" ? quant_join(q, p.q) : q, x.q);
+export function patt_mark(x: PVar, rows: Rows, j: number = 0): Quant {
+  return rows.map((row) => row.p[j]).reduce((q, p) => p.$ === "PVar" ? quant_join(q, p.q) : q, x.q);
 }
 
 export function patt_term(q: Patt, s?: Span): LTerm {
@@ -2794,6 +2820,14 @@ export function patt_term(q: Patt, s?: Span): LTerm {
       return Ctr(q.k, xs, s ?? q.s);
     }
   }
+}
+
+export function patt_lams(vars: PVar[], n: number, f: LTerm): LTerm {
+  for (let j = n - 1; j >= 0; j--) {
+    const v = vars[j];
+    f = Lam(v.k, v.i, f, v.s, v.q);
+  }
+  return f;
 }
 
 export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
@@ -2818,13 +2852,7 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       return match_flatten(b, vars, fr);
     }
     default: {
-      if (vars.length === 0) {
-        return b;
-      } else {
-        const v = vars[0];
-        const f = body_flatten(b, vars.slice(1), fr);
-        return Lam(v.k, v.i, f, v.s, v.q);
-      }
+      return patt_lams(vars, vars.length, b);
     }
   }
 }
@@ -3329,7 +3357,7 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   }
 }
 
-export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {
+export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: List<HTerm> = null): Infer {
   switch (tm.$) {
     // Γ[x] = q A
     // where x is bound in Γ (a ~ argument checks in the empty context,
@@ -3381,15 +3409,20 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
           throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
-          k  = def_inst(book, lhs, tm, gen, sp, ctx, d);
-          x  = gen.x;
-          sp = sp.slice(x);
+          const xs: HTerm[] = [];
+          while (sp !== null && xs.length < gen.x) {
+            xs.push(sp.v);
+            sp = sp.n;
+          }
+          k = def_inst(book, lhs, tm, gen, xs, ctx, d);
+          x = gen.x;
         }
         if (k === lhs.def && lhs.u !== true) {
           const cols = term_unapply(lhs.t)[1];
           let ord: Cmp = "EQ";
-          for (let j = 0; j < cols.length && j < sp.length && ord === "EQ"; j++) {
-            ord = term_descend(lhs.qs[j], sp[j], cols[j]);
+          let a = sp;
+          for (let j = 0; j < cols.length && a !== null && ord === "EQ"; j++, a = a.n) {
+            ord = term_descend(lhs.qs[j], a.v, cols[j]);
           }
           if (ord !== "LT") {
             throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
@@ -3450,7 +3483,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // --------------------------------------------------------------- infer-app
     // Γ ⊢ f(a) : B(a) ~ fu + au
     case "App": {
-      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, [tm.x, ...sp]);
+      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, list_set(sp, 0, tm.x));
       if (f_inf.x) {
         return { ...f_inf, x: f_inf.x - 1 };
       }
@@ -3696,14 +3729,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
             throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
-          function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
+          function term_check_mat_goal(cur: HTerm, n: number, xs: List<HTerm>): HTerm {
             if (n === 0) {
-              return t_all.B(Ctr(b.k, xs, b.s));
+              return t_all.B(Ctr(b.k, list_to_array(xs).reverse(), b.s));
             } else {
               const c_all = tele_head(book, cur, ctx, lhs.def, b.s);
               const c_dem = c_all.q.$ === "None" ? None() : c_all.q.$ === "Lone" ? t_all.q : quant_add(t_all.q, t_all.q);
               return All(c_dem, c_all.k, c_all.i, c_all.A, (x: HTerm) => {
-                return term_check_mat_goal(c_all.B(x), n - 1, xs.concat([x]));
+                return term_check_mat_goal(c_all.B(x), n - 1, list_set(xs, 0, x));
               }, b.s);
             }
           }
@@ -3711,7 +3744,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           if (lhs.n > 0) {
             h_lhs = { ...lhs, t: lhs_ext(lhs.t, tm.k, ctr.n), n: lhs.n - 1 + ctr.n };
           }
-          const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, []), ctx, d);
+          const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, null), ctx, d);
           const m_gol = All(t_wnf.q, t_wnf.k, t_wnf.i, ADT(a_wnf.k, a_wnf.x, tm.s, a_wnf.r.concat([ctr.k])), t_wnf.B, tm.s);
           const m_chk = rem.length === 1 && tm.m.$ !== "Mat" ? Check(Efq(tm.s), m_gol, uses_nil()) : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
           return Check(Mat(tm.k, h_chk.tm, m_chk.tm, tm.s), ty, pmap_union(h_chk.us, m_chk.us, quant_join));
@@ -3795,8 +3828,7 @@ export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
   return term_check(gen, { t, n: def.n - def.x, def: k, qs, u: def.u, z }, v, Lone(), T, ctx_nil(), 0).tm;
 }
 
-export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, sp: HTerm[], ctx: Ctx, d: number): Name {
-  const xs = sp.slice(0, def.x);
+export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>, def: Def, xs: HTerm[], ctx: Ctx, d: number): Name {
   if (xs.length < def.x) {
     throw Err(book, ctx, "a template applied to closed ~ arguments (a def parameter is not comptime)", tm, tm.s, lhs.def);
   }
