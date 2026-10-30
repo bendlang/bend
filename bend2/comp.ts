@@ -92,9 +92,8 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
 // CLO_APPLY and IO_EMIT are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
-// is a device call (DFAR), and a host call too if it loops doing F32 math
-// (to prevent SLP vectorizer misjudgement); a node past WIDE pads to its size
-// class.
+// is a device call (DFAR), and a host call too if it loops on F32 math (SLP
+// misjudges it); a node past WIDE pads to its size class.
 
 const CLO_APPLY = "Clo~apply";
 
@@ -124,7 +123,7 @@ const WIDE = 247;
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " +RTS --gpu 8GB|a function the device does not hold|a Nat past the"
   + " largest immediate 2^48-1|*|memory fault (machine stack overflow?)|an"
-  + " array past the deepest block class 31 (depth plus log2 of words per"
+  + " array past the deepest block class 31 (depth + log2 words per"
   + " cell)|a value has more than 2^24-1 live copies: keep fewer alive at"
   + " once, or build it again for some of them (each build counts its own"
   + " copies)|expected a Nat host number: an integer from 0 to 2^53")
@@ -3372,8 +3371,8 @@ const runtime_c = (tabs: string, spins: string, segs: string,
 // Imports
 // =======
 
-// The Objective-C headers take #include, not #import: a build
-// (-o) reads an #import as the framework of an effect.
+// The Objective-C headers take #include: a build (-o) reads an
+// #import as the framework of an effect.
 
 #pragma clang fp contract(off)
 
