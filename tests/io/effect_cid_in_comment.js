@@ -3,4 +3,4 @@ function answer(n) {
   return (n + 2) >>> 0;
 }
 
-io_eff(CID(answer), answer);
+// U+2028 ends a JS comment: io_eff(CID(answer), answer);
