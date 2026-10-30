@@ -603,7 +603,7 @@ export function list_push<T>(list: List<T>, val: T): List<T> {
   return list_set(list, list === null ? 0 : list.k + 1, val);
 }
 
-export function list_array<T>(list: List<T>): T[] {
+export function list_to_array<T>(list: List<T>): T[] {
   const out = new Array<T>(list === null ? 0 : list.k + 1);
   for (let l = list; l !== null; l = l.n) {
     out[l.k] = l.v;
@@ -657,7 +657,7 @@ export function uses_add(a: Uses, b: Uses): Uses {
 
 export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: List<HTerm> = null): HTerm {
   if (n === 0) {
-    return term_apply(lhs, Ctr(k, list_array(xs)));
+    return term_apply(lhs, Ctr(k, list_to_array(xs)));
   } else {
     return Lam("_", 0, (x: HTerm) => {
       return lhs_ext(lhs, k, n - 1, list_push(xs, x));
@@ -2777,17 +2777,9 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       }
     } else {
       const j = v === undefined ? vars.length : vars.indexOf(v);
-      return vars_lams(vars, j, match_flatten(m, vars.slice(j), fr));
+      return patt_lams(vars, j, match_flatten(m, vars.slice(j), fr));
     }
   }
-}
-
-export function vars_lams(vars: PVar[], n: number, f: LTerm): LTerm {
-  for (let j = n - 1; j >= 0; j--) {
-    const v = vars[j];
-    f = Lam(v.k, v.i, f, v.s, v.q);
-  }
-  return f;
 }
 
 export function patt_mark(x: PVar, rows: Rows): Quant {
@@ -2804,6 +2796,14 @@ export function patt_term(q: Patt, s?: Span): LTerm {
       return Ctr(q.k, xs, s ?? q.s);
     }
   }
+}
+
+export function patt_lams(vars: PVar[], n: number, f: LTerm): LTerm {
+  for (let j = n - 1; j >= 0; j--) {
+    const v = vars[j];
+    f = Lam(v.k, v.i, f, v.s, v.q);
+  }
+  return f;
 }
 
 export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
@@ -2828,7 +2828,7 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       return match_flatten(b, vars, fr);
     }
     default: {
-      return vars_lams(vars, vars.length, b);
+      return patt_lams(vars, vars.length, b);
     }
   }
 }
@@ -3709,7 +3709,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
           function term_check_mat_goal(cur: HTerm, n: number, xs: List<HTerm>): HTerm {
             if (n === 0) {
-              return t_all.B(Ctr(b.k, list_array(xs), b.s));
+              return t_all.B(Ctr(b.k, list_to_array(xs), b.s));
             } else {
               const c_all = tele_head(book, cur, ctx, lhs.def, b.s);
               const c_dem = c_all.q.$ === "None" ? None() : c_all.q.$ === "Lone" ? t_all.q : quant_add(t_all.q, t_all.q);
