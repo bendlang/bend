@@ -32,5 +32,5 @@ def main.go(r):
 def main():
   main.go(Array.get(U32, [7 : U32^32n], 5))
 
-#|bend: an array past the deepest block class 31
+#|bend: an array past the deepest block class 31 (a depth d holds 2^d cells)
 #|exit 1
