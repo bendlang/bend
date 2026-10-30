@@ -3105,8 +3105,8 @@ const RIGID: Book = book_nil();
 // empty book unfolds none and fills no cell), and two calls of one def,
 // or two terms stuck on one, compare rigidly before either unfolds. Each
 // rigid EQ answer is kept for the conversion, so a pair met again is not
-// walked again (a pair has no free var at the depth it is met, so no
-// other depth changes its answer)
+// walked again (a var is a level, and a pair met at one depth holds only
+// levels below it, so a fresh var at another depth never meets it)
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
   SEEN = null;
   const same = compare_go(mode, book, lhs, rhs, dep);
@@ -3125,13 +3125,14 @@ function redex(tm: HTerm): boolean {
   return h.$ === "Let" || h.$ === "Rwt" || (app && (h.$ === "Lam" || h.$ === "Mat"));
 }
 
-// whether two sides, reduced with no def unfolded, are rigidly equal
-// before either unfolds: two calls of one def on as many arguments
-// compare those arguments; two terms still stuck on a redex (a match on a
-// call) compare whole, in the full pass. null when neither applies
+// whether two sides, reduced with no def unfolded (the rigid pass reduces
+// them itself), are rigidly equal before either unfolds: two calls of one
+// def on as many arguments compare those arguments; two terms still stuck
+// on a redex (a match on a call) compare whole, in the full pass. null
+// when neither applies
 function same_call(book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean | null {
-  const a = redex(lhs) ? term_wnf(RIGID, lhs) : lhs;
-  const b = redex(rhs) ? term_wnf(RIGID, rhs) : rhs;
+  const a = book !== RIGID && redex(lhs) ? term_wnf(RIGID, lhs) : lhs;
+  const b = book !== RIGID && redex(rhs) ? term_wnf(RIGID, rhs) : rhs;
   let f = term_strip(a);
   let g = term_strip(b);
   while (f.$ === "App" && g.$ === "App") {
