@@ -124,10 +124,10 @@ const WIDE = 247;
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " +RTS --gpu 8GB|a function the device does not hold|a Nat past the"
   + " largest immediate 2^48-1|*|memory fault (machine stack overflow?)|an"
-  + " array past the deepest block class 31|a value has more than 2^24-1 live"
-  + " copies: keep fewer alive at once, or build it again for some of them"
-  + " (each build counts its own copies)|expected a Nat host number: an"
-  + " integer from 0 to 2^53").replaceAll("*",
+  + " array past the deepest block class 31 (a depth d holds 2^d cells)|a"
+  + " value has more than 2^24-1 live copies: keep fewer alive at once, or"
+  + " build it again for some of them (each build counts its own copies)|"
+  + "expected a Nat host number: an integer from 0 to 2^53").replaceAll("*",
   "runtime fail-stop").split("|");
 
 // Operations

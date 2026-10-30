@@ -2716,6 +2716,8 @@ law Array.atomic.fadd:
   for +v: F32
   Array<F32> & F32
 
+# An Array of depth d holds 2^d cells, each v: d is a depth, not a length
+# (14n for 12288 cells), and at most 31.
 def Array.new(-T: Data, +d: Nat, +v: T) -> Array<T>:
   match d:
     case 0n:
