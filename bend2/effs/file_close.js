@@ -7,6 +7,7 @@ function file_close(file) {
     fs.closeSync(file);
   } catch (e) {
   }
+  io_file_append.delete(file);
   return { $: CID(Unit) };
 }
 

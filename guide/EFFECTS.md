@@ -132,7 +132,7 @@ def Clock.now() -> IO(U32):
 def main() -> IO(Unit):
   do IO<Unit>:
     t : U32 <- Clock.now()
-    IO.print("ms since boot: " ++ U32.show(t))
+    IO.print("ms: " ++ U32.show(t))
 ```
 
 `clock.c`:
@@ -159,7 +159,10 @@ io_eff(CID(Clock.now), clock_now);
 
 `bend main.bend -o main && ./main` prints a line; so do `bend main.bend -o
 main.js && bun main.js` and `bend main.bend`. The output name must not be
-one of the effect's files.
+one of the effect's files. The two sides count from different zeros:
+`io_tick()` reads `CLOCK_MONOTONIC`, whose zero the OS picks (on Linux,
+boot), and `performance.now()` starts with the process. Only the
+difference between two reads means the same on every lane.
 
 ## Compatibility
 

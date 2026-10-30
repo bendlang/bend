@@ -2,9 +2,10 @@
 // =======
 
 const PROCESS_WORKER = `
-const { errno, signals } = require("node:os").constants;
-const { parentPort } = require("node:worker_threads");
-const { spawn } = require("node:child_process");
+// Eval workers may inherit module mode, where require is undefined.
+const { errno, signals } = process.getBuiltinModule("node:os").constants;
+const { parentPort } = process.getBuiltinModule("node:worker_threads");
+const { spawn } = process.getBuiltinModule("node:child_process");
 let port;
 let flag;
 
@@ -78,7 +79,7 @@ function run({ argv, input, env, max, ms }) {
 
 let process_worker = null;
 
-function process_run(program, args, input, maxOutput, timeoutMs) {
+function process_run_now(program, args, input, maxOutput, timeoutMs) {
   const argv = [str_out(program)];
   for (let xs = args; xs.$ === CID(Con); xs = xs.tail) {
     argv.push(str_out(xs.head));
@@ -86,6 +87,10 @@ function process_run(program, args, input, maxOutput, timeoutMs) {
   if (maxOutput === 0 || timeoutMs === 0
     || argv.some((arg) => arg.includes("\0"))) {
     return io_fail(22);
+  }
+  if (argv[0] === "") {
+    // spawn("") throws with no errno; C's posix_spawnp("") answers ENOENT.
+    return io_fail(2);
   }
   if (process_worker === null) {
     const { Worker, MessageChannel, receiveMessageOnPort } = require("node:worker_threads");
@@ -108,6 +113,11 @@ function process_run(program, args, input, maxOutput, timeoutMs) {
   const got = receive(port).message;
   return got.fail !== undefined ? io_fail(got.fail)
     : io_done(io_tup(got.code, got.out, got.err));
+}
+
+function process_run(program, args, input, maxOutput, timeoutMs, k) {
+  io_park_on(undefined, 0, k,
+    () => process_run_now(program, args, input, maxOutput, timeoutMs), 0);
 }
 
 io_eff(CID(Process.run), process_run);

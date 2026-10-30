@@ -1,6 +1,6 @@
 # gfx (gfx_clicks): the reporter's program of #857. On a display it opens a
-# window and prints a line per Mouse event; click another app, then click the
-# window once: that click prints "mouse down=True" then "mouse down=False"
+# window and prints a line per Press event; click another app, then click the
+# window once: that click prints "press down=True" then "press down=False"
 # (a view that refuses the first mouse would drop both). Without a display
 # Window.open Fails with one line.
 import Base
@@ -11,9 +11,9 @@ def tick(events: List<Event>, n: U32) -> IO(Maybe<U32>):
       IO.pure(Maybe<U32>, Some{n})
     case Con{Close{}, rest}:
       IO.pure(Maybe<U32>, None{})
-    case Con{Mouse{x, y, b, d}, rest}:
+    case Con{Press{i, t, x, y, ms, b, d}, rest}:
       do IO<Maybe<U32>>:
-        IO.print("mouse down=" ++ Bool.show(d))
+        IO.print("press down=" ++ Bool.show(d))
         tick(rest, n)
     case Con{e, rest}:
       tick(rest, n)

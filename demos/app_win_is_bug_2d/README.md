@@ -15,6 +15,10 @@ law you_cant_win:
 
 If you ever see the win screen, the type checker is broken. File a bug.
 
+A second law, `never_on_flag`, says the player never stands on an 'F' of
+the board the page draws, as [`BOARD.bend`](BOARD.bend) reads it, not as
+the game reports it.
+
 **Play it:** https://bend-lang.com/#lab
 
 ## How to work with Bend
@@ -26,6 +30,10 @@ This demo is a working example of the intended division of labor:
 - [`LAWS.bend`](LAWS.bend) — the **claims**. The human's file: it
   imports the game and asserts what must be true about it. Asserts only;
   it proves nothing.
+- [`BOARD.bend`](BOARD.bend) — the specification's **board reader**. It
+  reads `grid(map_h() - 1)`, just as the page does, and uses Base to locate
+  the flag. Keep it fixed with `LAWS.bend` when rewriting the game or its
+  proofs: a claim must not rely on an editable helper to say what it means.
 - [`PROOF.bend`](PROOF.bend) — the **proofs**. The AI's file: it must fill
   every law it states — Bend rejects an unfilled law — so
   `bend PROOF.bend` is the whole verification, and it fails the moment a

@@ -30,7 +30,11 @@ import * as Safe from "./safe.ts";
 // Constants
 // =========
 
-const VERSION = "2.0.38";
+const VERSION = "2.0.39";
+
+// BUILD tags a fork's bend after its version as semver build metadata:
+// "+win" prints bend <version>+win; upstream leaves it empty
+const BUILD = "";
 
 // the commands, one row each: [usage, what it does]; bend guide stays last
 const USAGE = [
@@ -50,7 +54,7 @@ const USAGE = [
 
 const USE_W = Math.max(...USAGE.map(([use]) => use.length));
 
-const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
+const HELP = `Bend ${VERSION}${BUILD}: check, run, build and publish Bend programs.
 
 usage:
 ${USAGE.map(([use, say]) => `  ${use.padEnd(USE_W)}  ${say}`).join("\n")}
@@ -129,7 +133,7 @@ const PLUGIN: BunPlugin = {
 async function cli(): Promise<void> {
   const args = process.argv.slice(2);
   if (args[0] === "version" && args.length === 1) {
-    return cli_say(1, "bend " + VERSION + "\n");
+    return cli_say(1, "bend " + VERSION + BUILD + "\n");
   }
   if (args[0] === "update" && args.length === 1) {
     return cli_update();
@@ -467,9 +471,10 @@ function cc_find(gpu: boolean): string {
 // builds with the GPU lane and writes its GPU program too (on Linux only with
 // CUDA at the first of $CUDA_HOME, $CUDA_PATH, /usr/local/cuda and /opt/cuda
 // (Arch's) that holds nvrtc.h, its libraries in lib64 or, as nix lays them,
-// lib; else the ! runs on the cores). On macOS a program with a framework
-// (#import: a window, audio) builds as Objective-C; on Linux it links the X11
-// (plus libdl, for dlopen before glibc 2.34) and ALSA libraries it includes.
+// lib; else the ! runs on the cores, and the build says so). On macOS a
+// program with a framework (#import: a window, audio) builds as Objective-C;
+// on Linux it links the X11 (plus libdl, for dlopen before glibc 2.34) and
+// ALSA libraries it includes.
 // The GPU program's build runs without the user's $BENDRTS.
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
@@ -477,7 +482,12 @@ function cli_build(bin: string, file: string): void {
   const cuda  = [process.env.CUDA_HOME, process.env.CUDA_PATH,
     "/usr/local/cuda", "/opt/cuda"]
     .find(d => d && fs.existsSync(d + "/include/nvrtc.h")) ?? "";
-  const bangs = !/^#define BANGS\s+0$/m.test(c) && (mac || cuda !== "");
+  const uses  = !/^#define BANGS\s+0$/m.test(c);
+  const bangs = uses && (mac || cuda !== "");
+  if (uses && !bangs) {
+    cli_say(2, "bend: no CUDA toolkit (include/nvrtc.h under $CUDA_HOME,"
+      + " $CUDA_PATH, /usr/local/cuda or /opt/cuda), so ! runs on the CPU\n");
+  }
   const cc    = cc_find(bangs);
   const objc  = mac && (bangs || /^#import /m.test(c))
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
@@ -652,7 +662,7 @@ async function cli_publish(file: string, named?: string): Promise<void> {
   const book = await book_read(file, undefined, seen);
   const files = pkg_files(file, book, seen);
   const entry = Object.keys(files)[0];
-  const name  = path.basename(entry, ".bend");
+  const name  = path.basename(entry, ".bend").replaceAll("-", "_");
   if (name === "") {
     cli_fail("a published file needs a name before .bend");
   }
@@ -805,46 +815,67 @@ async function cli_login(): Promise<string> {
 // pkg_files is the package the loader read for this file, the entry first:
 // every .bend file at its namespace (the entry at its name), every foreign
 // .c or .js file at its path from the entry's directory; base and the
-// store's packages stay out. A path that climbs above the entry's directory
-// takes the entry's ancestor directories along, as many as the deepest climb.
+// store's packages stay out. The entry's directory is the one the loader
+// roots namespaces at, so an entry linked from another directory, or one
+// at the file system's root, is refused.
 // A LICENSE beside a published file goes along; a license/ directory, in
 // any case, is refused (it clashes with LICENSE on a case-blind disk).
-// A leading byte order mark is dropped: the hub stores the text as sent,
-// and an importer's fetch drops the mark, so a file sent with one would
-// never match its hash.
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
-  const dir  = fs.realpathSync(path.dirname(file)) + "/";
+  const ent = fs.realpathSync(file);
+  const dir = path.join(path.dirname(ent), "/");
+  if (dir !== path.join(fs.realpathSync(path.dirname(file)), "/")) {
+    throw "Error: " + file + " cannot be published: it links to " + ent
+      + ", in another directory; publish that file";
+  }
+  if (dir === "/") {
+    throw "Error: " + file + " cannot be published: it is at the file"
+      + " system's root; move it into a directory";
+  }
   const raws = [...[...seen].flatMap(([real, ns]): [string, string][] =>
     real === BASE || ns === null || ns.startsWith("0x") ? []
       : [[ns === "" ? path.basename(file) : ns + ".bend", real]]),
   ...Object.entries(book.tlds).flatMap(([k, tld]): [string, string][] =>
     tld.$ !== "Def" || tld.i === undefined || tld.b === true
       || k.startsWith("0x") ? [] : tld.i.map((f) =>
-      [f.startsWith(dir) ? f.slice(dir.length) : f, f]))];
-  const ups = raws.map(([p]) => path.posix.normalize(p).split("/")
-    .filter((s) => s === "..").length);
-  const anc = fs.realpathSync(path.dirname(file)).split("/")
-    .slice(-Math.max(0, ...ups) || Infinity);
+      [path.posix.normalize(f.slice(dir.length)), f]))];
+  // .bend files come first, so a foreign file's .bend, its directory a
+  // prefix of the file's path, is checked inside dir before its path is cut
   const files: Record<string, string> = {};
-  for (const [raw, real] of raws) {
-    const p = path.posix.join(...anc, raw);
-    if (p.startsWith("/") || p.startsWith("..")) {
-      throw "Error: " + real + " cannot be published (an absolute import,"
-        + " or a climb above the file system)";
-    }
+  for (const [p, src] of raws) {
     if (p.split("/").slice(0, -1).some((s) => s.toLowerCase() === "license")) {
-      throw "Error: " + real + " cannot be published: it is in a directory"
+      throw "Error: " + src + " cannot be published: it is in a directory"
         + " named license, which clashes with a LICENSE file; rename it";
     }
-    files[p] = fs.readFileSync(real, "utf8").replace(/^\uFEFF/, "");
-    if (fs.readdirSync(path.dirname(real)).includes("LICENSE")) {
-      files[path.posix.join(path.posix.dirname(p), "LICENSE")] =
-        fs.readFileSync(path.join(path.dirname(real), "LICENSE"), "utf8")
-          .replace(/^\uFEFF/, "");
+    files[p] = pkg_read(p, src, dir, "move it");
+    if (fs.readdirSync(path.dirname(src)).includes("LICENSE")) {
+      const lic = path.posix.join(path.posix.dirname(p), "LICENSE");
+      files[lic] = pkg_read(lic, path.join(path.dirname(src), "LICENSE"), dir,
+        "it is the LICENSE beside " + src + "; copy it");
     }
   }
   return files;
+}
+
+// pkg_read is the text of src, published at p: p and src's real path stay
+// inside dir, the entry's directory. p is the import's own path, normalized
+// as text, since an importer resolves it inside the package that way; one
+// that climbs out and back in names a file the package lacks. A leading
+// byte order mark is dropped: the hub stores the text as sent, and an
+// importer's fetch drops the mark, so a file sent with one would never
+// match its hash.
+function pkg_read(p: string, src: string, dir: string, fix: string): string {
+  const real = fs.realpathSync(src);
+  if (!real.startsWith(dir)) {
+    throw "Error: " + src + " cannot be published: it is outside " + dir
+      + " (the entry's directory); " + fix + " inside";
+  }
+  if (p.startsWith("../") || p.startsWith("/")) {
+    throw "Error: " + src + " cannot be published: its import climbs out of"
+      + " the package (" + p + "); import it by a path that stays inside "
+      + dir;
+  }
+  return fs.readFileSync(real, "utf8").replace(/^\uFEFF/, "");
 }
 
 function sha256(text: string): string {

@@ -82,17 +82,46 @@ type Image is Data:
   Pix{color: U32}
   Qua{tl: Image, tr: Image, bl: Image, br: Image}
 
+# A pointer's tool and what it measures, as W3C Pointer Events name it: a
+# force from 0 to 1, a contact's size in pixels, a pen's tilts (-90 to 90)
+# and twist (0 to 359, clockwise) in degrees and its barrel's pressure
+# (-1 to 1). A force is 0 unless pressed. A value its device does not
+# report is that standard's default: a force of 0.5, a size of 1, an angle 0.
+type Tool is Data:
+  Tool.Mouse{}
+  Tool.Finger{force: F32, width: F32, height: F32}
+  Tool.Pen{force: F32, tangential: F32, tilt_x: F32, tilt_y: F32, twist: F32}
+
 # Key is a key, pressed or let go. Text is what the keys typed, after
 # Shift, Caps Lock, the layout and any input method: never a control
 # character, so Enter or Backspace come only as Keys. A long input method
 # commit can come as several Texts.
+# Press is a pointer's button pressed or let go, and Move its motion, in
+# pixels from the window's top left (past its edge while a button holds
+# it), at the system's time in ms (it wraps: only the difference of two
+# counts): a Move with no button down is a hover. The mouse is id 0; a finger
+# or a pen takes the least free id, free again once it lifts (a finger),
+# leaves or is lost. Buttons are W3C's: 0 the main one (a finger's or a
+# pen's contact), 1 the middle, 2 the right (a pen's barrel), 3 back, 4
+# forward and 5 a pen's eraser. Leave is a pointer with no button down gone off
+# the window or out of a pen's range (W3C's pointerleave): the mouse comes
+# back as id 0. Lost is a pointer pressed taken away (W3C's pointercancel):
+# what it held ends with no Press up.
+# A window losing the focus loses its pointers pressed and lets go of its
+# keys held, then sends Focus{False}. Look is the mouse's motion while
+# Window.grab holds it, in Move's units. Scroll is a wheel or trackpad
+# under the pointer: its deltas scroll toward a page's top and left (a
+# notch is 1 on X11).
 type Event is Data:
   Key{code: U32, down: Bool}
   Text{text: String}
-  Mouse{x: U32, y: U32, button: U32, down: Bool}
-  Move{x: U32, y: U32}
+  Press{id: U32, tool: Tool, x: F32, y: F32, time: U32, button: U32, down: Bool}
+  Move{id: U32, tool: Tool, x: F32, y: F32, time: U32}
+  Leave{id: U32}
+  Lost{id: U32}
   Look{dx: F32, dy: F32}
-  Scroll{x: U32, y: U32, dx: F32, dy: F32}
+  Scroll{x: F32, y: F32, dx: F32, dy: F32}
+  Focus{on: Bool}
   Close{}
 
 type Map<a, -V: Kind(a)> is Kind(a):
@@ -301,6 +330,8 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
 
+# Modes: "r" reads, "r+" reads and writes without creating or truncating,
+# "w" creates or truncates, "a" appends or creates, "x" creates exclusively.
 def File.open(path: String, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):
   import "./effs/file_open.c"
@@ -309,12 +340,23 @@ def File.open(path: String, mode: String) ->
 # The path as its bytes (0..255), with no UTF-8 encoding, so a name that
 # isn't UTF-8, as IO.args_bytes gives it, opens. A value past 255 fails
 # with EINVAL, and a 0 with EILSEQ, as a NUL in File.open's path does.
+# Modes are the same as File.open's.
 def File.open_bytes(path: List<&2, U32>, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):
   import "./effs/file_open.c"
   import "./effs/file_open.js"
 
+# Up to max bytes. A short read or a pipe does not stop it before max
+# unless the file ends first; EINTR is retried.
 def File.read(file: File, max: U32) ->
+  IO(File & Result<&1, &1, U32 & String, String>):
+  import "./effs/file_read.c"
+  import "./effs/file_read.js"
+
+# The next line with its "\n", up to max bytes, so a terminal or a pipe
+# answers each line as it comes; "" at the end of the file, or when max
+# is 0.
+def File.read_line(file: File, max: U32) ->
   IO(File & Result<&1, &1, U32 & String, String>):
   import "./effs/file_read.c"
   import "./effs/file_read.js"
@@ -340,6 +382,14 @@ def File.write(file: File, data: String) ->
   import "./effs/file_write.js"
 
 def File.write_bytes(file: File, data: List<&2, U32>) ->
+  IO(File & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/file_write.c"
+  import "./effs/file_write.js"
+
+# Write bytes at offset without moving the position. An append handle or a
+# value past 255 fails with EINVAL before any byte is written.
+# A Fail may leave a prefix of the bytes written.
+def File.write_at(file: File, offset: U32, data: List<&2, U32>) ->
   IO(File & Result<&1, &1, U32 & String, Unit>):
   import "./effs/file_write.c"
   import "./effs/file_write.js"
@@ -499,6 +549,16 @@ def Window.set_title(window: Window, title: String) -> IO(Window):
 def Window.grab(window: Window, on: Bool) -> IO(Window):
   import "./effs/window.c"
   import "./effs/window_grab.js"
+
+# Request fullscreen without changing the logical drawing resolution or
+# pointer coordinates. The desktop applies the request asynchronously;
+# the handle comes back either way. A desktop without fullscreen (no
+# window manager, or no XRender) fails with ENOTSUP, and the Mac with
+# EAGAIN while the window is hidden or minimized.
+def Window.fullscreen(window: Window, on: Bool) ->
+  IO(Window & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/window.c"
+  import "./effs/window_fullscreen.js"
 
 def Window.close(window: Window) -> IO(Unit):
   import "./effs/window.c"
@@ -1585,6 +1645,18 @@ def U32.log2.go(+k: Nat, +n: U32, b: Nat) -> Nat:
 def U32.log2(n: U32) -> Nat:
   U32.log2.go(5n, n, 0n)
 
+def U32.popcount(n: U32) -> Nat:
+  +m = n
+  +a = U32.sub(m, U32.and(U32.shrn(m, 1n), 1431655765))
+  +b = U32.add(U32.and(a, 858993459), U32.and(U32.shrn(a, 2n), 858993459))
+  c = U32.and(U32.add(b, U32.shrn(b, 4n)), 252645135)
+  U32.to_nat(U32.shrn(U32.mul(c, 16843009), 24n))
+
+# 32 at 0
+def U32.ctz(n: U32) -> Nat:
+  +m = n
+  U32.popcount(U32.and(U32.not(m), U32.sub(m, 1)))
+
 def U32.divmod.go.fin(-p: Nat, q: Word(p), s: U32, b: U32, g: Bool) ->
   Word(1n+p) & U32:
   match g:
@@ -1906,8 +1978,10 @@ def F32.round(a: F32) -> F32:
 def F32.pi() -> F32:
   3.14159265
 
-def F32.from_nat(n: Nat) -> F32:
-  U32.to_f32(U32.from_nat(n))
+# The full Nat conversion is intrinsic on every backend, like U32.to_f32.
+law F32.from_nat:
+  for n: Nat
+  F32
 
 # Preserve the direct cast below 2^32; wider Nats need both word halves.
 # Past 2^48-1 no Nat fits, so the direct cast gives 0.
@@ -2406,6 +2480,81 @@ def U32.read(s: String) -> Maybe<&2, U32>:
     case SCon{h, t}:
       U32.read.go(SCon{h, t}, 0)
 
+law U32.hex.go:
+  for f   : Nat
+  for +n  : U32
+  for acc : String
+  String
+
+def U32.hex.fin(g: Nat, acc: String, +n: U32, z: Bool) -> String:
+  match z:
+    case True{}:
+      acc
+    case False{}:
+      +d = U32.and(n, 15)
+      U32.hex.go(g, U32.shrn(n, 4n),
+        SCon{Chr{(d + 48 + Bool.to_u32((d > 9 : U32)) * 39 : U32)}, acc})
+
+def U32.hex.go(f, n, acc):
+  match f:
+    case 0n:
+      acc
+    case 1n+g:
+      U32.hex.fin(g, acc, n, U32.is_zero(n))
+
+# a's hex digits, none for 0
+def U32.hex(a: U32) -> String:
+  U32.hex.go(8n, a, SNil{})
+
+def Char.quote.at(+x: U32, k: U32, plain: Bool, raw: Bool) -> String:
+  match plain raw:
+    case False{} _:
+      SCon{Chr{92}, SCon{Chr{k}, SNil{}}}
+    case True{} True{}:
+      "\\u{" ++ U32.hex(x) ++ "}"
+    case True{} False{}:
+      SCon{Chr{x}, SNil{}}
+
+# c as a quote q holds it: \n \t \r \0 \\ and q escaped; a control, a
+# surrogate or a code past Unicode as \u{hex}
+def Char.quote(+q: U32, c: Char) -> String:
+  match c:
+    case Chr{+x}:
+      +k = (Bool.to_u32(U32.is_eq(x, 10)) * 110 + Bool.to_u32(U32.is_eq(x, 9))
+        * 116 + Bool.to_u32(U32.is_eq(x, 13)) * 114 + Bool.to_u32(
+        U32.is_eq(x, 0)) * 48 + Bool.to_u32(U32.is_eq(x, 92)
+        || U32.is_eq(x, q)) * x : U32)
+      Char.quote.at(x, k, U32.is_zero(k), (x < 32 : U32) || U32.is_eq(x, 127)
+        || (x >= 55296 : U32) && (x <= 57343 : U32) || (x > 1114111 : U32))
+
+def String.quote.go(s: String, acc: String) -> String:
+  match s:
+    case SNil{}:
+      String.reverse(SCon{Chr{34}, acc})
+    case SCon{c, t}:
+      String.quote.go(t, String.reverse.go(Char.quote(34, c), acc))
+
+def String.quote(s: String) -> String:
+  String.quote.go(s, "\"")
+
+# F32.show with a point before an e, or at the end, when it has none
+def F32.show.dot(s: String) -> String:
+  match s:
+    case SNil{}:
+      ".0"
+    case SCon{Chr{+c}, t}:
+      F32.show.dot.at(c, t, U32.is_eq(c, 46) || U32.is_eq(c, 110)
+        || U32.is_eq(c, 105), U32.is_eq(c, 101))
+
+def F32.show.dot.at(+c: U32, t: String, stop: Bool, e: Bool) -> String:
+  match stop e:
+    case True{} _:
+      SCon{Chr{c}, t}
+    case False{} True{}:
+      ".0" ++ SCon{Chr{c}, t}
+    case False{} False{}:
+      SCon{Chr{c}, F32.show.dot(t)}
+
 def Bool.show(b: Bool) -> String:
   match b:
     case False{}:
@@ -2601,6 +2750,12 @@ def Array.get.at(-T: Data, i: U32, an: Array<T> & U32) -> Array<T> & T:
 def Array.get(-T: Data, a: Array<T>, +i: U32) -> Array<T> & T:
   Array.get.at(T, i, Array.size(T, a))
 
+# A read at an index the caller promises is below the block's capacity: it
+# skips the wrap mask. @unsafe, like Array.fork; only reads.
+@unsafe
+def Array.get_unchecked(-T: Data, a: Array<T>, +i: U32) -> Array<T> & T:
+  Array.get(T, a, i)
+
 def Array.to_list.go(~T: Type, a: Array<T>, acc: List<T>) -> List<T>:
   match a:
     case ALeaf{x}:
@@ -2610,6 +2765,60 @@ def Array.to_list.go(~T: Type, a: Array<T>, acc: List<T>) -> List<T>:
 
 def Array.to_list(~T: Type, a: Array<T>) -> List<T>:
   Array.to_list.go(~T, a, Nil{})
+
+# Array.write writes [x0, x1, ...], reading the array in place by index:
+# f(s, x) writes s, then x, so each element is one write. Array.show
+# returns that text, f(s, x) being s followed by x's text. A pure main
+# prints an Array with them.
+def Array.write.go(
+  ~T: Data, ~f: String -> T -> IO(Unit), n: Nat, +i: U32, s: String,
+  r: Array<T> & T
+) -> IO(Unit):
+  match n:
+    case 0n:
+      (a, x) = r
+      do IO<Unit>:
+        Unit <- f(s, x)
+        IO.write("]")
+    case 1n+p:
+      (a, x) = r
+      +j = U32.inc(i)
+      do IO<Unit>:
+        Unit <- f(s, x)
+        Array.write.go(~T, ~f, p, j, ", ", Array.get(T, a, j))
+
+def Array.write.at(
+  ~T: Data, ~f: String -> T -> IO(Unit), an: Array<T> & U32
+) -> IO(Unit):
+  (a, +n) = an
+  Array.write.go(~T, ~f, U32.to_nat(U32.sub(n, 1)), 0, "[",
+    Array.get(T, a, 0))
+
+def Array.write(~T: Data, ~f: String -> T -> IO(Unit), a: Array<T>) -> IO(Unit):
+  Array.write.at(~T, ~f, Array.size(T, a))
+
+def Array.show.go(
+  ~T: Data, ~f: String -> T -> String, n: Nat, +i: U32, s: String,
+  r: Array<T> & T
+) -> String:
+  match n:
+    case 0n:
+      (a, x) = r
+      f(s, x) ++ "]"
+    case 1n+p:
+      (a, x) = r
+      +j = U32.inc(i)
+      Array.show.go(~T, ~f, p, j, f(s, x) ++ ", ", Array.get(T, a, j))
+
+def Array.show.at(
+  ~T: Data, ~f: String -> T -> String, an: Array<T> & U32
+) -> String:
+  (a, +n) = an
+  Array.show.go(~T, ~f, U32.to_nat(U32.sub(n, 1)), 0, "[",
+    Array.get(T, a, 0))
+
+def Array.show(~T: Data, ~f: String -> T -> String, a: Array<T>) -> String:
+  Array.show.at(~T, ~f, Array.size(T, a))
 
 def Array.map.go(
   ~T: Data, ~U: Data, ~f: T -> U, +n: Nat, +i: U32, b: Array<U>,

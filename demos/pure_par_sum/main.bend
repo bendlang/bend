@@ -19,13 +19,5 @@ def sum(d: Nat, +i: Nat) -> Nat:
       a b = sum(p, i) sum(p, Nat.add(pow2(p), i))
       Nat.add(a, b)
 
-# spec for LAWS.bend only
-def seq(n: Nat, +i: Nat) -> Nat:
-  match n:
-    case 0n:
-      0n
-    case 1n++m:
-      Nat.add(seq(m, i), Nat.add(m, i))
-
 def main() -> IO(Unit):
   IO.print(Nat.show(sum!(16n, 0n)))

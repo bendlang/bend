@@ -16,10 +16,14 @@ function udp_recv_from_with(socket, max, k, read, at) {
   const b = new Uint8Array(size);
   const peer = new Uint8Array(16);
   const len = new Uint32Array([16]);
+  const intr = 4;
   const go = () => {
-    const got = sys.recvfrom(fd, sys.ptr(b), size, 0, sys.ptr(peer),
-      sys.ptr(len));
-    const n = Number(got);
+    let n = Number(sys.recvfrom(fd, sys.ptr(b), size, 0, sys.ptr(peer),
+      sys.ptr(len)));
+    while (n < 0 && sys.errno() === intr) {
+      n = Number(sys.recvfrom(fd, sys.ptr(b), size, 0, sys.ptr(peer),
+        sys.ptr(len)));
+    }
     if (n < 0) {
       const code = sys.errno();
       if (code !== (sys.mac ? 35 : 11)) {

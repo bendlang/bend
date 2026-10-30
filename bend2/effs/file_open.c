@@ -5,6 +5,9 @@ static int file_open_mode(const char* mode) {
   if (strcmp(mode, "r") == 0) {
     return O_RDONLY;
   }
+  if (strcmp(mode, "r+") == 0) {
+    return O_RDWR;
+  }
   if (strcmp(mode, "w") == 0) {
     return O_WRONLY | O_CREAT | O_TRUNC;
   }
@@ -19,7 +22,11 @@ static int file_open_mode(const char* mode) {
 }
 
 static void file_open_call(IoWork* w) {
-  w->made = (intptr_t)io_sys_end(w, open(w->data, (int)w->word, 0644));
+  int fd;
+  do {
+    fd = open(w->data, (int)w->word, 0644);
+  } while (fd < 0 && errno == EINTR);
+  w->made = (intptr_t)io_sys_end(w, fd);
 }
 
 static Term file_open_pack(Env e, IoWork* w) {
