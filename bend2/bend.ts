@@ -559,16 +559,24 @@ export function pmap_union<T>(a: PMap<T>, b: PMap<T>, f: (x: T, y: T) => T): PMa
   return Bin(v, l, r);
 }
 
-export function pmap_to_array<T>(map: PMap<T>, acc: U32 = 0, scl: U32 = 1): Array<[U32, T]> {
+export function pmap_to_array<T>(map: PMap<T>, acc: U32 = 0, scl: U32 = 1, out: Array<[U32, T]> = []): Array<[U32, T]> {
+  if (map.$ === "Bin") {
+    if (map.v !== null) {
+      out.push([acc, map.v]);
+    }
+    pmap_to_array(map.l, acc + scl * 1, scl * 2, out);
+    pmap_to_array(map.r, acc + scl * 2, scl * 2, out);
+  }
+  return out;
+}
+
+export function pmap_some<T>(map: PMap<T>, f: (x: T) => boolean): boolean {
   switch (map.$) {
     case "Emp": {
-      return [];
+      return false;
     }
     case "Bin": {
-      const v: Array<[U32, T]> = map.v === null ? [] : [[acc, map.v]];
-      const l = pmap_to_array(map.l, acc + scl * 1, scl * 2);
-      const r = pmap_to_array(map.r, acc + scl * 2, scl * 2);
-      return v.concat(l, r);
+      return map.v !== null && f(map.v) || pmap_some(map.l, f) || pmap_some(map.r, f);
     }
   }
 }
@@ -587,6 +595,20 @@ export function list_get<T>(list: List<T>, key: U32): T | null {
 
 export function list_set<T>(list: List<T>, key: U32, val: T): List<T> {
   return { k: key, v: val, n: list };
+}
+
+// a growing list keys each item by its position, so adding one copies nothing
+// and a binder's closure, entered twice, still sees its own prefix
+export function list_push<T>(list: List<T>, val: T): List<T> {
+  return list_set(list, list === null ? 0 : list.k + 1, val);
+}
+
+export function list_array<T>(list: List<T>): T[] {
+  const out = new Array<T>(list === null ? 0 : list.k + 1);
+  for (let l = list; l !== null; l = l.n) {
+    out[l.k] = l.v;
+  }
+  return out;
 }
 
 // Quant
@@ -633,12 +655,12 @@ export function uses_add(a: Uses, b: Uses): Uses {
 // LHS
 // ===
 
-export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: HTerm[] = []): HTerm {
+export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: List<HTerm> = null): HTerm {
   if (n === 0) {
-    return term_apply(lhs, Ctr(k, xs));
+    return term_apply(lhs, Ctr(k, list_array(xs)));
   } else {
     return Lam("_", 0, (x: HTerm) => {
-      return lhs_ext(lhs, k, n - 1, [...xs, x]);
+      return lhs_ext(lhs, k, n - 1, list_push(xs, x));
     });
   }
 }
@@ -840,16 +862,13 @@ export function ctx_bind(ctx: Ctx, i: number, q: Quant, k: Name, T: HTerm): Ctx 
 }
 
 export function ctx_dead(book: Book, ctx: Ctx): boolean {
-  for (const [, a] of pmap_to_array(ctx)) {
+  return pmap_some(ctx, (a) => {
     if (a.q.$ === "None") {
-      continue;
+      return false;
     }
     const t = term_wnf(book, a.T);
-    if (t.$ === "ADT" && book_adt(book, t, ctx).c.length === 0) {
-      return true;
-    }
-  }
-  return false;
+    return t.$ === "ADT" && book_adt(book, t, ctx).c.length === 0;
+  });
 }
 
 export function ctx_scope(ctx: Ctx): Name[] {
@@ -2757,10 +2776,18 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         return Mat(c.k, pt, dt, c.s);
       }
     } else {
-      const t = match_flatten(m, vars.slice(1), fr);
-      return Lam(x.k, x.i, t, x.s, x.q);
+      const j = v === undefined ? vars.length : vars.indexOf(v);
+      return vars_lams(vars, j, match_flatten(m, vars.slice(j), fr));
     }
   }
+}
+
+export function vars_lams(vars: PVar[], n: number, f: LTerm): LTerm {
+  for (let j = n - 1; j >= 0; j--) {
+    const v = vars[j];
+    f = Lam(v.k, v.i, f, v.s, v.q);
+  }
+  return f;
 }
 
 export function patt_mark(x: PVar, rows: Rows): Quant {
@@ -2801,13 +2828,7 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       return match_flatten(b, vars, fr);
     }
     default: {
-      if (vars.length === 0) {
-        return b;
-      } else {
-        const v = vars[0];
-        const f = body_flatten(b, vars.slice(1), fr);
-        return Lam(v.k, v.i, f, v.s, v.q);
-      }
+      return vars_lams(vars, vars.length, b);
     }
   }
 }
@@ -3314,7 +3335,7 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   }
 }
 
-export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {
+export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: List<HTerm> = null): Infer {
   switch (tm.$) {
     // Γ[x] = q A
     // where x is bound in Γ (a ~ argument checks in the empty context,
@@ -3366,15 +3387,20 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
           throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
-          k  = def_inst(book, lhs, tm, gen, sp, ctx, d);
-          x  = gen.x;
-          sp = sp.slice(x);
+          const xs: HTerm[] = [];
+          while (sp !== null && xs.length < gen.x) {
+            xs.push(sp.v);
+            sp = sp.n;
+          }
+          k = def_inst(book, lhs, tm, gen, xs, ctx, d);
+          x = gen.x;
         }
         if (k === lhs.def && lhs.u !== true) {
           const cols = term_unapply(lhs.t)[1];
           let ord: Cmp = "EQ";
-          for (let j = 0; j < cols.length && j < sp.length && ord === "EQ"; j++) {
-            ord = term_descend(lhs.qs[j], sp[j], cols[j]);
+          let a = sp;
+          for (let j = 0; j < cols.length && a !== null && ord === "EQ"; j++, a = a.n) {
+            ord = term_descend(lhs.qs[j], a.v, cols[j]);
           }
           if (ord !== "LT") {
             throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
@@ -3435,7 +3461,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // --------------------------------------------------------------- infer-app
     // Γ ⊢ f(a) : B(a) ~ fu + au
     case "App": {
-      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, [tm.x, ...sp]);
+      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, list_push(sp, tm.x));
       if (f_inf.x) {
         return { ...f_inf, x: f_inf.x - 1 };
       }
@@ -3681,14 +3707,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
             throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
-          function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
+          function term_check_mat_goal(cur: HTerm, n: number, xs: List<HTerm>): HTerm {
             if (n === 0) {
-              return t_all.B(Ctr(b.k, xs, b.s));
+              return t_all.B(Ctr(b.k, list_array(xs), b.s));
             } else {
               const c_all = tele_head(book, cur, ctx, lhs.def, b.s);
               const c_dem = c_all.q.$ === "None" ? None() : c_all.q.$ === "Lone" ? t_all.q : quant_add(t_all.q, t_all.q);
               return All(c_dem, c_all.k, c_all.i, c_all.A, (x: HTerm) => {
-                return term_check_mat_goal(c_all.B(x), n - 1, xs.concat([x]));
+                return term_check_mat_goal(c_all.B(x), n - 1, list_push(xs, x));
               }, b.s);
             }
           }
@@ -3696,7 +3722,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           if (lhs.n > 0) {
             h_lhs = { ...lhs, t: lhs_ext(lhs.t, tm.k, ctr.n), n: lhs.n - 1 + ctr.n };
           }
-          const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, []), ctx, d);
+          const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, null), ctx, d);
           const m_gol = All(t_wnf.q, t_wnf.k, t_wnf.i, ADT(a_wnf.k, a_wnf.x, tm.s, a_wnf.r.concat([ctr.k])), t_wnf.B, tm.s);
           const m_chk = rem.length === 1 && tm.m.$ !== "Mat" ? Check(Efq(tm.s), m_gol, uses_nil()) : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
           return Check(Mat(tm.k, h_chk.tm, m_chk.tm, tm.s), ty, pmap_union(h_chk.us, m_chk.us, quant_join));
