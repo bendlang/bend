@@ -499,6 +499,22 @@ try {
   const two  = "import Base\ndef two() -> Nat:\n  2n\n";
   const use  = (at: string) => "import Base\nimport ./" + at
     + " as T\ndef main() -> Nat:\n  T.two\n";
+  // a store file that imports the store's root or climbs out of it is
+  // refused for crossing the hub's edge, though each name is plain (#1961)
+  const edge = "0x" + "e".repeat(32);
+  fs.mkdirSync(path.join(BEND, "lib", edge), { recursive: true });
+  fs.writeFileSync(path.join(BEND, "lib", "stray.bend"), two);
+  fs.writeFileSync(path.join(BEND, "out.bend"), two);
+  for (const [file, at] of [["root", "../stray.bend"], ["climb", "../../out.bend"]]) {
+    fs.writeFileSync(path.join(BEND, "lib", edge, file + ".bend"),
+      "import Base\nimport " + at + " as T\ndef main() -> Nat:\n  T.two\n");
+    fs.writeFileSync(path.join(TMP, "edge.bend"), "import Base\nimport " + edge
+      + "/" + file + ".bend as E\ndef main() -> Nat:\n  E.main\n");
+    const crossed = await bend([path.join(TMP, "edge.bend")]);
+    check("a store file importing " + at + " names the hub's edge: " + crossed.err,
+      crossed.code === 1 && crossed.err.includes("- expected : an import on its"
+      + " side of the hub") && crossed.err.includes("- observed : '" + at + "'"));
+  }
   const lics = { "lic_spdx.bend": use("sub/two.bend"), "sub/two.bend": two,
     "LICENSE": "SPDX-License-Identifier: MIT\n",
     "sub/LICENSE": "SPDX-License-Identifier: Apache-2.0\n" };
