@@ -1,8 +1,7 @@
-# an Array parameter that nothing owns is lent, like any other boxed one, and
-# a lend leaves the array whole: peek lends a handle twice and first still
-# reads 12 (7 + 12), poke writes through the handle after a lend (7 + 18), a
-# read after a write sees it through the other handle (18 + 18), and go lends
-# one array down a loop of five calls without using it up (5)
+# an Array parameter passed to a def that ignores it stays whole: peek takes a
+# handle twice and first still reads 12 (7 + 12), poke writes through the
+# handle afterwards (7 + 18), a read after a write sees it through the other
+# handle (18 + 18), and go passes one array down a loop of five calls (5)
 import Base
 
 @unsafe

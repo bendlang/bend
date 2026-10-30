@@ -1044,10 +1044,10 @@ function fun_of(k: Name): Fun {
 }
 
 function brw_of(k: Name): boolean[] {
-  const { lays } = fun_of(k);
+  const { live, lays } = fun_of(k);
   const done = done_live(tld_of(k));
   return lays.map((l, i) => done && l.ks.includes("box")
-    && !fact("own", arg_key(k, i)));
+    && ty_adt(live[i][2])?.k !== "Array" && !fact("own", arg_key(k, i)));
 }
 
 function def_raise(t: HTerm, left: number): number {
@@ -1228,8 +1228,11 @@ function file_book(roots: Name[]): void {
   roots.forEach(src_add);
   for (const d of FL.srcs.keys()) {
     const tld = tld_of(d);
-    for (const x of FL.js ? [] : tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
-      ty_srcs(x.T);
+    // ty_srcs only finds ADTs, and only the C lane reads those
+    if (!FL.js) {
+      for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
+        ty_srcs(x.T);
+      }
     }
     if (def_foreign(tld)) {
       effect_src(d, tld);
@@ -1550,7 +1553,7 @@ function val_box(sc: Scope, v: Val): string {
   if (arms.length <= 1) {
     return arms.length === 0 ? "0" : build(sc, arms[0]);
   }
-  const out = emit_alias(sc, "0", "b");
+  const out = emit_hold(sc, ["0"], "b")[0];
   const tag = emit_alias(sc, v.ws[0], "t");
   emit_chain(sc, arms.map((k, i) => [`${tag} == ${i}`, () =>
     file_push(sc, `${out} = ${build({ ...sc, spares: [] }, k)};`)]));
