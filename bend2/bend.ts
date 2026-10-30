@@ -997,7 +997,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     if (m[2] in al) {
       throw Err(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
     }
-    const bad = () => Err(book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
+    const bad = () => Err(book, ctx_nil(), "an import path of plain names (each starts with a letter or _, then letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
     const nv  = /^([^/]*@[^/]*)\//.exec(m[1]);
     const as  = nv === null ? m[1] : await name_hash(book, nv[1], sp) + m[1].slice(nv[1].length);
     const rel = path.posix.normalize(as);

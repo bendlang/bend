@@ -521,10 +521,10 @@ def main() -> U32:
 ```
 
 The alias is local to the importing file, and dots inside a name are just
-characters: `U32.show` needs no module. A module's path is plain names
-(letters, digits, `_` and `-`): `math.bend` is a module, `math.extra.bend` is
-refused. A law left open in one file may be filled in another as
-`def M.name(..)`, so a proof can ship separately from its claim.
+characters: `U32.show` needs no module. A module's path is plain names (a
+letter or `_`, then letters, digits, `_` and `-`): `math.bend` is a module,
+`math.extra.bend` is refused. A law left open in one file may be filled in
+another as `def M.name(..)`, so a proof can ship separately from its claim.
 `import 0x<hash>/main.bend as P` imports a package by content hash, fetched
 from the hub and checked against it; `bend main.bend --publish` uploads a file
 with everything it imports and prints that line.
