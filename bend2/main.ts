@@ -595,7 +595,8 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
               let name: string;
               let id: string;
               do {
-                name = "." + path.basename(a.path) + ".bend-inline-" + serial++ + ".js";
+                name = "." + encodeURIComponent(path.basename(a.path))
+                  + ".bend-inline-" + serial++ + ".js";
                 id = path.join(path.dirname(a.path), name);
               } while (fs.existsSync(id));
               mod = { id, page: a.path, text: "" };
