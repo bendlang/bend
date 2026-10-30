@@ -77,6 +77,7 @@ function chan_wake(row, x) {
   const w = chan_head(row);
   q_pull(row.wait);
   w.gone = true;
+  w.io.cleanups.delete(w.cleanup);
   if (w.late !== undefined) {
     const ws = w.io.waits;
     const i = chan_timer(ws, w.timer);
@@ -104,13 +105,14 @@ function chan_shut(row) {
   }
 }
 
-// A late w stays in the queue, gone and holding nothing, for chan_head to
-// drop when it comes first. Once the gone outnumber the live by 64, the
+// A timed out or abandoned w stays in the queue, gone and holding nothing,
+// for chan_head to drop when it comes first. Once the gone outnumber the live by 64, the
 // queue sheds them all, so a timeout costs O(1) and the gone stay under
 // live+64, even behind a waiter that is never woken.
 function chan_late(row, w) {
   w.gone = true;
-  w.io = w.cont = w.item = w.late = w.timer = undefined;
+  w.io.cleanups.delete(w.cleanup);
+  w.io = w.cont = w.item = w.late = w.timer = w.cleanup = undefined;
   row.dead += 1;
   const q = row.wait;
   if (row.dead > q_size(q) - row.dead + 64) {
@@ -121,9 +123,12 @@ function chan_late(row, w) {
 }
 
 // Parks k on row with item; with ms, a timer too, whose late answers Wait:
-// the first of the two to come cuts the other.
+// the first of the two to come cuts the other. If its IO ends while parked,
+// its cleanup releases the item even behind another live waiter.
 function chan_park(row, k, item, ms) {
   const w = { io: io_active, cont: k, item: item, gone: false };
+  w.cleanup = () => chan_late(row, w);
+  w.io.cleanups.add(w.cleanup);
   if (ms !== undefined) {
     w.late = () => {
       // An earlier callback of the same ready batch may have woken w.
