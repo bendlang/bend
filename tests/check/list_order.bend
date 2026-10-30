@@ -50,10 +50,16 @@ def absurd_late(x: U32, w: U32, e: Empty) -> U32:
   y = {\{} : Unit -> U32};
   x
 
+# the second column's binder is c: b, between them, stays out of it
+def skip(a: U32, b: U32, c: U32) -> U32:
+  match a, c:
+    case x, y:
+      (100 * x + y : U32)
+
 def tree() -> T:
   K{1, 2, K{3, 4, L{}}}
 
 def main() -> U32:
-  (apply3(join3, 1, 2, 3) + 1000 * digits(tree()) + 1000000 * walk(5, 3, tree()) + 1000000000 * rep(inc, 1, 2n) : U32)
+  (apply3(join3, 1, 2, 3) + 1000 * digits(tree()) + 1000000 * walk(5, 3, tree()) + 1000000000 * rep(inc, 1, 2n) + skip(1, 2, 3) : U32)
 
-#|3040460123
+#|3040460226
