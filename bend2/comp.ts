@@ -1170,7 +1170,9 @@ function file_new(book: Bend.Book, js: boolean) {
     names: new Map<number, string>(),
     facts: new Set<string>(),
     heat: new Set<string>(),
-    when: new Map<string, (() => void)[]>(),
+    when: new Map<string, Set<Unit | (() => void)>>(),
+    lazy: new Map<string, () => void>(),
+    stale: new Set<Unit>(),
     units: new Map<string, Unit>(),
     unit: null as Unit | null,
     tabs: new Map<string, number>(),
@@ -1264,7 +1266,12 @@ function file_book(roots: Name[]): void {
 }
 
 function fact(kind: string, k = ""): boolean {
-  return FL.facts.has(kind + " " + k);
+  const key = kind + " " + k;
+  const has = FL.facts.has(key);
+  if (FL.unit && !has) {
+    memo(FL.when, key, () => new Set()).add(FL.unit);
+  }
+  return has;
 }
 
 function fact_add(kind: string, k = ""): boolean {
@@ -1273,7 +1280,9 @@ function fact_add(kind: string, k = ""): boolean {
     return false;
   }
   FL.facts.add(key);
-  FL.when.get(key)?.splice(0).forEach((f) => f());
+  const ws = FL.when.get(key);
+  FL.when.delete(key);
+  ws?.forEach((w) => typeof w === "function" ? w() : FL.stale.add(w));
   return true;
 }
 
@@ -1282,7 +1291,7 @@ function fact_when(kind: string, k: string, f: () => void): void {
   if (FL.facts.has(key)) {
     f();
   } else {
-    memo(FL.when, key, () => []).push(f);
+    memo(FL.when, key, () => new Set()).add(f);
   }
 }
 
@@ -1406,6 +1415,7 @@ function seg_text(lines: string[], tab: number): string[] {
 
 function seg_ref(sc: Scope, fid: string): string {
   sc.seg.refs.add(fid);
+  FL.lazy.get(fid)?.();
   return fid;
 }
 
@@ -1710,10 +1720,12 @@ function unit_new(name: string, emit: () => void): Unit {
   // unit_emit fills the rest
   const u = { name, emit } as Unit;
   FL.units.set(name, u);
+  FL.stale.add(u);
   return u;
 }
 
 function unit_emit(u: Unit): void {
+  FL.stale.delete(u);
   FL.folds.clear();
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
@@ -2711,9 +2723,8 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 // WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
 
 function c_units(): Unit[] {
-  for (const [k, tld] of [...done_defs().reverse(),
-    ...done_defs(def_foreign)]) {
-    unit_new(k, () => {
+  for (const [k, tld] of [...done_defs(), ...done_defs(def_foreign)]) {
+    const unit = () => memo(FL.units, k, () => unit_new(k, () => {
       const [dl, vals] = emit_open(k);
       FL.unit!.segs.push(dl.seg);
       if (def_foreign(tld)) {
@@ -2721,20 +2732,27 @@ function c_units(): Unit[] {
       } else {
         emit_body(dl, fun_of(k).h!, tld.T, vals, null);
       }
-    });
+    }));
+    k === "main" || FL.bangs.has(k) || FL.fids.has(k) ? unit()
+      : FL.lazy.set(seg_fid(k), unit);
   }
-  let was;
   do {
-    was = FL.facts.size;
-    FL.units.forEach(unit_emit);
+    // forward finds the callees, backward lets a fact climb a chain at once
+    while (FL.stale.size > 0) {
+      const run = (u: Unit) => FL.stale.has(u) && unit_emit(u);
+      FL.units.forEach(run);
+      [...FL.units.values()].reverse().forEach(run);
+    }
     const us = [...FL.units.values()];
     const lent = graph_close(new Set(us.flatMap((u) => [...u.lent])),
       us.flatMap((u) => u.lends.map(([at, r]) => [r, at])));
-    for (const [k] of done_defs()) {
-      brw_of(k).forEach((b, i) => b && !lent.has(arg_key(k, i))
-        && fact_add("own", arg_key(k, i)));
+    // a borrowed parameter some unit read, as only those have an own reader
+    for (const key of FL.when.keys()) {
+      if (key.startsWith("own ") && !lent.has(key.slice(4))) {
+        fact_add("own", key.slice(4));
+      }
     }
-  } while (was !== FL.facts.size);
+  } while (FL.stale.size > 0);
   return [...FL.units.values()];
 }
 
