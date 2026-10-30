@@ -3109,9 +3109,7 @@ const RIGID: Book = book_nil();
 // levels below it, so a fresh var at another depth never meets it)
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
   SEEN = null;
-  const same = compare_go(mode, book, lhs, rhs, dep);
-  SEEN = null;
-  return same;
+  return compare_go(mode, book, lhs, rhs, dep);
 }
 
 // a term whose head reduces with no def unfolded: a let, a rewrite, or
