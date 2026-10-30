@@ -573,6 +573,17 @@ export function pmap_to_array<T>(map: PMap<T>, acc: U32 = 0, scl: U32 = 1): Arra
   }
 }
 
+export function pmap_any<T>(map: PMap<T>, f: (x: T) => boolean): boolean {
+  switch (map.$) {
+    case "Emp": {
+      return false;
+    }
+    case "Bin": {
+      return (map.v !== null && f(map.v)) || pmap_any(map.l, f) || pmap_any(map.r, f);
+    }
+  }
+}
+
 // List
 // =====
 
@@ -840,16 +851,13 @@ export function ctx_bind(ctx: Ctx, i: number, q: Quant, k: Name, T: HTerm): Ctx 
 }
 
 export function ctx_dead(book: Book, ctx: Ctx): boolean {
-  for (const [, a] of pmap_to_array(ctx)) {
+  return pmap_any(ctx, (a: Ann) => {
     if (a.q.$ === "None") {
-      continue;
+      return false;
     }
     const t = term_wnf(book, a.T);
-    if (t.$ === "ADT" && book_adt(book, t, ctx).c.length === 0) {
-      return true;
-    }
-  }
-  return false;
+    return t.$ === "ADT" && book_adt(book, t, ctx).c.length === 0;
+  });
 }
 
 export function ctx_scope(ctx: Ctx): Name[] {
