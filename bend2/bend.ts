@@ -1760,6 +1760,9 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       return parse_patt(p, lit_step(t));
     }
     default: {
+      if (t.$ === "App" && t.f.$ === "App" && t.f.f.$ === "Ref" && t.f.f.k === ".add" && t.f.x.$ === "Lit" && t.f.x.k === "Nat") {
+        throw Err(book, ctx_nil(), "a pattern (a successor takes no spaces: " + String(t.f.x.v) + "n+p)", undefined, t.s);
+      }
       throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
     }
   }
@@ -2371,6 +2374,10 @@ export function parse_body(p: Parse, col: number = 0): Body {
     vs.push(ts[0]);
     ts = [w];
   } else {
+    const g = ts.length > 1 ? ts[1].s!.beg : -1;
+    if (p.str[g] === "+" && /\S/.test(p.str[g - 1]) && !parse_at(p, "=")) {
+      parse_fail(p, "'=' (an operator takes spaces on both sides: x + y)", g, g + 1);
+    }
     parse_eat(p, "=");
     T !== null && vs.push(Ann(parse_term(p), T, parse_span(p, beg)));
   }

@@ -604,6 +604,7 @@ D<A>  +D<A>  D<&2, A>                    # a datatype; + makes it reusable
 ```python
 # Terms
 42  1.5  3n  'c'  "s"                    # U32, F32, Nat, Char, String
+3n+e                                     # e plus 3, a Nat; no spaces around +
 [a, b]  h <> t  (a, b)                   # a list, a cons, a tuple
 K{a, b}  x => e  +x => e                 # a constructor, a lambda
 f(a, b)  f!(a)  t(~g, a)                 # a call, on the GPU, of a template
