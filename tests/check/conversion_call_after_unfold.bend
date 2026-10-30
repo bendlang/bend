@@ -1,7 +1,7 @@
 # a call met only after a def unfolds converts before either copy
-# unfolds: the rigid pass, asked again at that step, finds both copies
-# the same. big() is 2^30, a chain of Succ the full pass would walk on
-# both sides (a stack overflow)
+# unfolds: both are calls of one def, on rigidly equal arguments. big()
+# is 2^30, a chain of Succ the full pass would walk on both sides (a
+# stack overflow)
 import Base
 
 type Box is Data:

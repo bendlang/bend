@@ -2843,7 +2843,7 @@ export function term_wnf(book: Book, term: HTerm): HTerm {
         if (tm.v === undefined) {
           break focus;
         } else {
-          if (tm.i === -1) {
+          if (tm.i === -1 && book !== RIGID) {
             frs.push({ $: "VAR", l: tm, a: tm.v.$ === "Ann" ? tm.v : undefined });
           }
           lhs = null;
@@ -3100,19 +3100,59 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 
 const RIGID: Book = book_nil();
 
-// two copies of one term are equal: each step of a conversion first
-// compares both sides with every def rigid (the empty book unfolds
-// none), then as usual, so a copy met past an unfold is not evaluated
+// two copies of one term are equal: before either unfolds, two calls of
+// one def compare their arguments rigidly (the empty book unfolds no def
+// and fills no cell), as in lazy delta reduction; the rigid answer on two
+// cells is kept for the conversion, so a pair met again is not walked again
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
+  SEEN = new Map();
   return compare_go(mode, book, lhs, rhs, dep);
 }
 
+// null when the sides are not both calls
+function same_call(lhs: HTerm, rhs: HTerm, dep: number): boolean | null {
+  let f = term_strip(lhs);
+  let g = term_strip(rhs);
+  while (f.$ === "App" && g.$ === "App") {
+    f = term_strip(f.f);
+    g = term_strip(g.f);
+  }
+  if (f.$ !== "Ref" || g.$ !== "Ref") {
+    return null;
+  }
+  if (f.k !== g.k) {
+    return false;
+  }
+  for (f = term_strip(lhs), g = term_strip(rhs); f.$ === "App" && g.$ === "App"; f = term_strip(f.f), g = term_strip(g.f)) {
+    if (!compare_go("EQ", RIGID, f.x, g.x, dep)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+let SEEN: Map<HTerm, [HTerm, boolean]> = new Map();
+
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
+  if (book !== RIGID || lhs.$ !== "Var" || rhs.$ !== "Var") {
+    return compare_one(mode, book, lhs, rhs, dep);
+  }
+  const old = SEEN.get(lhs);
+  if (old?.[0] === rhs) {
+    return old[1];
+  }
+  const same = compare_one(mode, book, lhs, rhs, dep);
+  SEEN.set(lhs, [rhs, same]);
+  return same;
+}
+
+function compare_one(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
   if (lhs === rhs) {
     return true;
   }
-  if (book !== RIGID && compare_go(mode, RIGID, lhs, rhs, dep)) {
-    return true;
+  const call = same_call(lhs, rhs, dep);
+  if (call === true || call === false && book === RIGID) {
+    return call;
   }
   let a = term_wnf(book, lhs);
   let b = term_wnf(book, rhs);

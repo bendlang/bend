@@ -1,8 +1,7 @@
 # copies that agree only after a few steps convert without evaluating
-# them: each step of the conversion asks the rigid pass first, so once
-# both sides evaluate to the same text, the walk stops there. mid() is
-# 2^16, a chain of Succ the full pass would walk on both sides (a stack
-# overflow)
+# them: once both sides are calls of one def on rigidly equal arguments,
+# the walk stops there, before either unfolds. mid() is 2^16, a chain
+# of Succ the full pass would walk on both sides (a stack overflow)
 import Base
 
 type Box is Data:
