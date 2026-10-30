@@ -3453,6 +3453,14 @@ static CUdeviceptr gpu_front;
 static bool io_gpu;
 static DEV Term*  io_stk;
 
+static const char* CLI_HELP =
+  "usage: %s [+RTS options -RTS] [arguments]\n"
+  "  --threads N       worker threads, 1 to 128 (default: the CPU count)\n"
+  "  --gpu on|off|4GB  run ! calls on the GPU, over this much of its memory\n"
+  "                    (default: on if present, over 2GB on Metal)\n"
+  "  --gpu-build       write the GPU program and exit\n"
+  "  --help            show this text\n";
+
 #endif
 
 // Tables
@@ -5928,12 +5936,7 @@ int main(int argc, char** argv) {
     if (a == NULL) {
       continue;
     } else if (!strcmp(a, "--help")) {
-      printf("usage: %s [+RTS options -RTS] [arguments]\n"
-        "  --threads N       worker threads, 1 to 128 (default: the CPU count)\n"
-        "  --gpu on|off|4GB  run ! calls on the GPU, over this much of its memory\n"
-        "                    (default: on if present, over 2GB on Metal)\n"
-        "  --gpu-build       write the GPU program and exit\n"
-        "  --help            show this text\n", argv[0]);
+      printf(CLI_HELP, argv[0]);
       return 0;
     } else if (!strcmp(a, "--gpu-build")) {
       if (gpu_probe() == NULL && !gpu_make(gpu_path())) {
