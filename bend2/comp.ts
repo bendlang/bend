@@ -431,7 +431,8 @@ function let_open(ps: Of<"Var">[], vs: HTerm[], b: HTerm): Of<"Let"> {
 
 function let_live(t: Of<"Let">): boolean[] {
   const o = term_open(t);
-  return o.ps.map((p) => term_use(term_uses(o.b), p) > 0);
+  const u = term_uses(o.b);
+  return o.ps.map((p) => term_use(u, p) > 0);
 }
 
 function term_spine(tm: HTerm): Spine {
@@ -650,9 +651,8 @@ function adt_of(A: HTerm | null): Of<"ADT"> {
 // words, is looked into per instance; once it re-enters its own family with
 // one of its value arguments grown, those arguments count as unknown (a
 // field stuck on them holds). on keeps each family's shortest value keys on
-// the current path. An answer is cached per file (p keyed by its text, as it
-// captures nothing) when it holds or met only instances opened under it,
-// since a new walk would then agree.
+// the current path. An answer is cached per file when it holds or met only
+// instances opened under it, since a new walk would then agree.
 function ty_holds(A: HTerm | null, p: Name | { tags: string; not: boolean },
   w = { seen: new Map<string, number>(), on: new Map<Name, number[]>(),
     low: Infinity }): boolean {
@@ -783,7 +783,8 @@ function lay_node(k: Name): Lay {
 
 // An open type takes its value's layout.
 function lay_at(A: HTerm | null, v: Val): Lay {
-  return A && ty_holds(A, { tags: "Var App", not: false }) ? v.lay : lay_of(A);
+  return A && memo(FL.ty_opens, ty_key(A), () =>
+    ty_holds(A, { tags: "Var App", not: false })) ? v.lay : lay_of(A);
 }
 
 function lay_eq(a: Lay, b: Lay, seen = new Map<Lay, Lay>()): boolean {
@@ -1043,7 +1044,7 @@ function fun_of(k: Name): Fun {
 }
 
 function brw_of(k: Name): boolean[] {
-  const { live, lays } = fun_of(k);
+  const { lays } = fun_of(k);
   const done = done_live(tld_of(k));
   return lays.map((l, i) => done && l.ks.includes("box")
     && !fact("own", arg_key(k, i)));
@@ -1185,6 +1186,7 @@ function file_new(book: Bend.Book, js: boolean) {
     spines: new Map<HTerm, Spine>(),
     ground: new Map<HTerm, boolean>(),
     steps: new Map<string, HTerm>(),
+    ty_opens: new Map<string, boolean>(),
     ops: new Map<Name, string>(),
     holds: new Map<string, Lay>(),
     fids: new Set<Name>(),
@@ -1339,8 +1341,8 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
 
 function facts_ctr(def: Name, c: Bend.Ctr, xs: HTerm[]): void {
   const ds = ctr_tail(c, xs);
-  ds.filter(dom_live).forEach(([, , A]) =>
-    facts_hot(def, A, true, !ds.every(dom_live)));
+  const local = !ds.every(dom_live);
+  ds.filter(dom_live).forEach(([, , A]) => facts_hot(def, A, true, local));
 }
 
 function file_push(sc: Scope, ...lines: string[]): void {
