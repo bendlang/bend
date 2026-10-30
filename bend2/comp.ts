@@ -213,14 +213,14 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   string_length: { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
     new: "array_new($0, $1, $2)", set: "($0[$1 % $0.length] = $2, $0)",
-    get: "array_pair($0, $0[$1 % $0.length])",
-    get_unchecked: "array_pair($0, $0[$1])",
+    get: "tup_new($0, $0[$1 % $0.length])",
+    get_unchecked: "tup_new($0, $0[$1])",
     swap: "array_rmw($0, $1, () => ($2))",
-    size: "array_pair($0, $0.length)",
+    size: "tup_new($0, $0.length)",
   }).map(([k, JS]) => ["array_" + k, { C: null, JS }])),
   array_clone: {
     C:  ["$0", "blk_copy(e, $0)"],
-    JS: "array_pair($0, $0.slice())",
+    JS: "tup_new($0, $0.slice())",
   },
   ...Object.fromEntries(Object.entries({
     add: "(o + $2) >>> 0", min: "Math.min(o, $2)", max: "Math.max(o, $2)",
@@ -4130,9 +4130,9 @@ INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
     H[dst + j] = H[src + j];
   }
   for (u64 j = 0, k; keep && j != n; j += k) {
-    Term w = H[dst + j], v;
+    Term w = H[dst + j];
     for (k = 1; j + k != n && H[dst + j + k] == w; k += 1) {}
-    v = term_keep(e, w, (u32)k);
+    Term v = term_keep(e, w, k);
     if (v != w) {
       H[src + j] = H[dst + j] = v;
     }
@@ -6021,9 +6021,12 @@ function cmp_new(a, b) {
   return {$: a < b ? "LT" : a === b ? "EQ" : "GT"};
 }
 
+function tup_new(a, b) {
+  return {$: "Tuple", fst: a, snd: b};
+}
+
 function nat_divmod(a, b) {
-  return b === 0 ? {$: "Tuple", fst: 0, snd: a}
-    : {$: "Tuple", fst: Math.trunc(a / b), snd: a % b};
+  return b === 0 ? tup_new(0, a) : tup_new(Math.trunc(a / b), a % b);
 }
 
 function nat_chk(n) {
@@ -6113,11 +6116,7 @@ function array_node(a, b) {
 function array_rmw(a, i, f) {
   const old = a[i %= a.length];
   a[i] = f(old);
-  return array_pair(a, old);
-}
-
-function array_pair(a, x) {
-  return {$: "Tuple", fst: a, snd: x};
+  return tup_new(a, old);
 }
 
 // Run
@@ -6327,7 +6326,7 @@ function io_ready(at, r) {
 }
 
 function io_tup(...xs) {
-  return xs.reduceRight((snd, fst) => ({ $: "Tuple", fst, snd }));
+  return xs.reduceRight((b, a) => tup_new(a, b));
 }
 
 const io_enc = new TextEncoder();
