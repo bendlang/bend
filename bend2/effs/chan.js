@@ -111,7 +111,8 @@ function chan_shut(row) {
 }
 
 // Drops the waiters that will never wake, with their items, in one pass.
-// keep is how many were left, less those woken since.
+// keep is how many were left; each wake lowers it, so it may fall under the
+// live ones, but never rises until the next shed.
 function chan_shed(row) {
   const q = row.wait;
   let n = 0;
@@ -138,9 +139,10 @@ function chan_late(row, w) {
 
 // Parks k on row with item; with ms, a timer too, whose late answers Wait:
 // the first of the two to come cuts the other. A waiter whose IO returns is
-// not counted dead, so a park sheds once the queue passes twice keep + 64:
-// behind a live waiter, those stay under that, at O(1) a park, and go at the
-// next park on row.
+// not counted dead, so a park sheds once the queue passes twice keep + 64,
+// at O(1) a park. Behind a live waiter, those stay under twice the waiters
+// live at the last shed + 64 (not the live now: a waiter kept there may have
+// lost its IO since), and go only at a later park on row.
 function chan_park(row, k, item, ms) {
   if (q_size(row.wait) > row.keep * 2 + 64) chan_shed(row);
   const w = { io: io_active, cont: k, item: item, gone: false };
