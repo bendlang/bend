@@ -2818,13 +2818,12 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
       return match_flatten(b, vars, fr);
     }
     default: {
-      if (vars.length === 0) {
-        return b;
-      } else {
-        const v = vars[0];
-        const f = body_flatten(b, vars.slice(1), fr);
-        return Lam(v.k, v.i, f, v.s, v.q);
+      let f: LTerm = b;
+      for (let j = vars.length - 1; j >= 0; j--) {
+        const v = vars[j];
+        f = Lam(v.k, v.i, f, v.s, v.q);
       }
+      return f;
     }
   }
 }
@@ -3329,7 +3328,7 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   }
 }
 
-export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: HTerm[] = []): Infer {
+export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx, d: number, sp: List<HTerm> = null): Infer {
   switch (tm.$) {
     // Γ[x] = q A
     // where x is bound in Γ (a ~ argument checks in the empty context,
@@ -3376,20 +3375,24 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       let k = tm.k;
       let x = 0;
       if (qt.$ !== "None") {
+        let xs: HTerm[] = [];
+        for (let l = sp; l !== null; l = l.n) {
+          xs.push(l.v);
+        }
         const gen = tld.$ === "Def" && tld.x > 0 && !(book.tlds[lhs.def] as Def).x ? tld : null;
         if (tld.$ === "Def" && tld.v === null && !tld.i && (tld.b !== true && lhs.u !== true || gen !== null) && k !== lhs.def) {
           throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
-          k  = def_inst(book, lhs, tm, gen, sp, ctx, d);
+          k  = def_inst(book, lhs, tm, gen, xs, ctx, d);
           x  = gen.x;
-          sp = sp.slice(x);
+          xs = xs.slice(x);
         }
         if (k === lhs.def && lhs.u !== true) {
           const cols = term_unapply(lhs.t)[1];
           let ord: Cmp = "EQ";
-          for (let j = 0; j < cols.length && j < sp.length && ord === "EQ"; j++) {
-            ord = term_descend(lhs.qs[j], sp[j], cols[j]);
+          for (let j = 0; j < cols.length && j < xs.length && ord === "EQ"; j++) {
+            ord = term_descend(lhs.qs[j], xs[j], cols[j]);
           }
           if (ord !== "LT") {
             throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
@@ -3450,7 +3453,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // --------------------------------------------------------------- infer-app
     // Γ ⊢ f(a) : B(a) ~ fu + au
     case "App": {
-      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, [tm.x, ...sp]);
+      const f_inf = term_infer(book, lhs, tm.f, qt, ctx, d, list_set(sp, 0, tm.x));
       if (f_inf.x) {
         return { ...f_inf, x: f_inf.x - 1 };
       }
