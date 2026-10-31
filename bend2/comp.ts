@@ -2657,14 +2657,13 @@ function emit_chain(sc: Scope, arms: [string, () => void][]): void {
 
 // Hand-written C and JS name ids as CID(k) and FID(k): k in the source's
 // namespace, else as is. effect_src first splices C backslash-newlines, as
-// C does in comments, which end at a newline only.
+// C does in comments, which end at a line break.
 
 const ID_WORDS = /\/\/.*|\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CF]ID)\(([\w./~-]+)\)/gu;
+const ID_C = RegExp(ID_WORDS.source.replace(".", "[^\\r\\n]"), "gu");
 
 function c_ids(src: string, m = "", use?: (p: string, k: Name) => void): string {
-  const re = FL.js ? ID_WORDS
-    : RegExp(ID_WORDS.source.replace(".", "[^\\r\\n]"), "gu");
-  return src.replace(re, (t, p, k, at) => {
+  return src.replace(FL.js ? ID_WORDS : ID_C, (t, p, k, at) => {
     // '#' starts a private JS name; C's ## may paste an ID macro.
     if (!p || !k || (FL.js && src[at - 1] === "#")) {
       return t;
@@ -2692,7 +2691,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
   }
   if (!seen) {
     const raw = fs.readFileSync(path, "utf8");
-    const src = FL.js ? raw : raw.replace(/\\[ \t]*\r?\n/g, "");
+    const src = FL.js ? raw : raw.replace(/\\[ \t]*(\r\n?|\n)/g, "");
     FL.effs.set(path, [m, src]);
     if (!FL.js) c_ids(src, m, (p, q) => {
       if (p === "CID" && q in FL.book.ctrs) src_add(Bend.book_fam(FL.book, q));
