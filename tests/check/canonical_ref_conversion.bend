@@ -1,7 +1,7 @@
-# conversion is CANONICAL at the ref head: two distinct defs with
-# byte-identical case trees do NOT convert applied to an opaque var --
-# a stuck dispatch keeps its own ref spelling.
-# ported from bend3
+# conversion is CANONICAL at the ref head: a stuck dispatch keeps its own
+# ref spelling, and two of distinct defs compare by their bodies, once
+# on their arguments. So two defs with byte-identical case trees convert
+# applied to an opaque var (bend3, where this was ported from, refused)
 import Base
 
 type Nc is Data:
@@ -42,15 +42,4 @@ law main:
 
 def main(): 0
 
-#|SOME PROOFS FAIL
-#|Error:
-#|- expected : f(t)
-#|- observed : g(t)
-#|Context:
-#|- t : Nc
-#|Location: eq
-#|37 | def eq(t):
-#|38>|   {==}
-#|   |   ^^^^
-#|39 |
-#|exit 1
+#|0
