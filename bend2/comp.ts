@@ -212,15 +212,15 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   string_contains: { JS: "string_contains($0, $1)" },
   string_length: { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
-    new: "array_new($0, $1)", set: "($0[$1 % $0.length] = $2, $0)",
-    get: "{$: \"Tuple\", fst: $0, snd: $0[$1 % $0.length]}",
-    get_unchecked: "{$: \"Tuple\", fst: $0, snd: $0[$1]}",
+    new: "array_new($0, $1, $2)", set: "($0[$1 % $0.length] = $2, $0)",
+    get: "tup_new($0, $0[$1 % $0.length])",
+    get_unchecked: "tup_new($0, $0[$1])",
     swap: "array_rmw($0, $1, () => ($2))",
-    size: "{$: \"Tuple\", fst: $0, snd: $0.length}",
+    size: "tup_new($0, $0.length)",
   }).map(([k, JS]) => ["array_" + k, { C: null, JS }])),
   array_clone: {
     C:  ["$0", "blk_copy(e, $0)"],
-    JS: "{$: \"Tuple\", fst: $0, snd: $0.slice()}",
+    JS: "tup_new($0, $0.slice())",
   },
   ...Object.fromEntries(Object.entries({
     add: "(o + $2) >>> 0", min: "Math.min(o, $2)", max: "Math.max(o, $2)",
@@ -808,7 +808,7 @@ function lay_packed(lay: Lay): boolean {
 
 function lay_arr(lay: Lay) {
   return { arr: Number(lay.ks.some((k) => k !== "w32")),
-    lgs: cls_fit(Math.max(1, lay.ks.length)) };
+    lgs: cls_fit(lay.ks.length || 1) };
 }
 
 // Ctr
@@ -1582,7 +1582,7 @@ function arr_new(sc: Scope, d: string, v: Val, el: Lay): string {
   const { arr, lgs } = lay_arr(el);
   const ws = val_own(val_to(sc, v, el));
   const fv = name_local(sc, "fv");
-  file_push(sc, `Term ${fv}[${Math.max(1, ws.length)}];`,
+  file_push(sc, `Term ${fv}[${ws.length || 1}];`,
     ...ws.map((w, j) => `${fv}[${j}] = ${w};`));
   return `blk_new(e, ${arr}, ${d}, ${lgs}, ${ws.length}, ${fv})`;
 }
@@ -2841,7 +2841,8 @@ export function compile_book(book: Bend.Book): string {
 // run_loop only if its callee's tail calls reach one: it calls the callee's
 // entry $$k, declared after every def as run_loop over the def, or the def.
 
-function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
+function js_call(sc: Scope, k: Name, args: HTerm[], tail = false,
+  lgs = 0): string {
   if (tail) {
     memo(FL.tails, sc.seg.def, () => new Set()).add(k);
   }
@@ -2856,8 +2857,8 @@ function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
   }
   const intr = intr_of(k, true);
   if (intr) {
-    return tpl(intr.JS!, exprs.map((e, i) => op_bare(args[i], true) ? e
-      : emit_hold(sc, [e], "x")[0]));
+    return tpl(intr.JS!, [...exprs.map((e, i) => op_bare(args[i], true) ? e
+      : emit_hold(sc, [e], "x")[0]), String(lgs)]);
   }
   if (!fun_runs(tld)) {
     die("a live call into the law " + Bend.name_key(k));
@@ -2925,10 +2926,8 @@ function js_expr(sc: Scope, tm: HTerm, ty0: HTerm | null = null): string {
       if (m.t.$ !== "Ref") {
         return js_expr(sc, m.h, ty);
       }
-      if (intr_of(m.t.k)?.C === null) {
-        lay_el(m.all[0]);
-      }
-      return js_call(sc, m.t.k, m.args);
+      return js_call(sc, m.t.k, m.args, false, intr_of(m.t.k)?.C === null
+        ? lay_arr(lay_el(m.all[0])).lgs : 0);
     }
     case "Ctr": {
       const [adt, u] = ctr_adt(x, ty);
@@ -4126,8 +4125,17 @@ INLINE Term blk_keep(Env e, u64 at) {
 }
 
 INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
-  for (u64 j = 0; j < n; j += 1) {
-    e.mem[dst + j] = keep ? blk_keep(e, src + j) : e.mem[src + j];
+  DEV u64* H = e.mem;
+  for (u64 j = 0; j != n; j += 1) {
+    H[dst + j] = H[src + j];
+  }
+  for (u64 j = 0, k; keep && j != n; j += k) {
+    Term w = H[dst + j];
+    for (k = 1; j + k != n && H[dst + j + k] == w; k += 1) {}
+    Term v = term_keep(e, w, k);
+    if (v != w) {
+      H[src + j] = H[dst + j] = v;
+    }
   }
 }
 
@@ -4191,7 +4199,7 @@ INLINE Term blk_half(Env e, Term a, u32 hi) {
 
 INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
   DEV u64* H = e.mem;
-  if (d + lgs > 31) {
+  if (d > 31 - lgs) {
     err_post(H, ERR_ARRS);
     d = 0;
   }
@@ -4200,11 +4208,14 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
   for (u32 j = 0; arr && d > 0 && j < n; j += 1) {
     if (d >= 24 && !term_triv(v[j])) {
       err_post(H, ERR_CNTS);
+      continue;
     }
     v[j] = term_keep(e, v[j], (1u << d) - 1);
   }
-  for (u64 i = 0, w = 1ull << c; i != w; i += 1) {
-    blk_write(H, arr, l, (u32)i, i % (1u << lgs) < n ? v[i % (1u << lgs)] : 0);
+  for (u32 i = 0, w = 1u << c; i != w; i += 1u << lgs) {
+    for (u32 j = 0; j != 1u << lgs; j += 1) {
+      blk_write(H, arr, l, i + j, j < n ? v[j] : 0);
+    }
   }
   return term_blk(arr, c, l);
 }
@@ -6010,9 +6021,12 @@ function cmp_new(a, b) {
   return {$: a < b ? "LT" : a === b ? "EQ" : "GT"};
 }
 
+function tup_new(a, b) {
+  return {$: "Tuple", fst: a, snd: b};
+}
+
 function nat_divmod(a, b) {
-  return b === 0 ? {$: "Tuple", fst: 0, snd: a}
-    : {$: "Tuple", fst: Math.trunc(a / b), snd: a % b};
+  return b === 0 ? tup_new(0, a) : tup_new(Math.trunc(a / b), a % b);
 }
 
 function nat_chk(n) {
@@ -6085,8 +6099,8 @@ function str_in(s) {
 // Array
 // =====
 
-function array_new(d, v) {
-  if (d > 31) {
+function array_new(d, v, lgs) {
+  if (d > 31 - lgs) {
     throw "bend: ${ERRS[8]}";
   }
   return Array(2 ** d).fill(v);
@@ -6100,10 +6114,9 @@ function array_node(a, b) {
 }
 
 function array_rmw(a, i, f) {
-  const at = i % a.length;
-  const old = a[at];
-  a[at] = f(old);
-  return {$: "Tuple", fst: a, snd: old};
+  const old = a[i %= a.length];
+  a[i] = f(old);
+  return tup_new(a, old);
 }
 
 // Run
@@ -6313,7 +6326,7 @@ function io_ready(at, r) {
 }
 
 function io_tup(...xs) {
-  return xs.reduceRight((snd, fst) => ({ $: "Tuple", fst, snd }));
+  return xs.reduceRight((b, a) => tup_new(a, b));
 }
 
 const io_enc = new TextEncoder();
