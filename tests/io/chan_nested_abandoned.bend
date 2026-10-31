@@ -1,7 +1,11 @@
 # A nested IO may exit while its sender is parked behind a live sender.
-# Repeated exits must release those senders without waiting for the head.
+# Repeated exits must release those senders without waiting for the head,
+# also after many live senders were parked and woken (Host.drain).
 # JS-only: the host runs nested IO and inspects the channel queue.
 import Base
+
+def Host.drain(c: Chan(U32)) -> IO(Unit):
+  import "./chan_nested_abandoned.js"
 
 def Host.abandon(c: Chan(U32)) -> IO(U32):
   import "./chan_nested_abandoned.js"
@@ -20,6 +24,7 @@ def bounded(+n: U32) -> String:
 def main() -> IO(Unit):
   do IO<Unit>:
     +c : Chan(U32) <- Chan.new(U32, 0)
+    Unit <- Host.drain(c)
     Unit <- IO.spawn(Unit, blocked(c))
     Unit <- IO.sleep(1)
     n : U32 <- Host.abandon(c)
