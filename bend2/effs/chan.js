@@ -77,7 +77,6 @@ function chan_wake(row, x) {
   const w = chan_head(row);
   q_pull(row.wait);
   w.gone = true;
-  w.io.cleanups.delete(w.cleanup);
   if (w.late !== undefined) {
     const ws = w.io.waits;
     const i = chan_timer(ws, w.timer);
@@ -105,30 +104,34 @@ function chan_shut(row) {
   }
 }
 
-// A timed out or abandoned w stays in the queue, gone and holding nothing,
-// for chan_head to drop when it comes first. Once the gone outnumber the live by 64, the
+// Drops the waiters that will never wake: the gone, and those whose IO has
+// returned, with their items. keep is how many were left.
+function chan_shed(row) {
+  const q = row.wait;
+  q.xs = q.xs.slice(q.head).filter((x) => !x.gone && !x.io.done);
+  q.head = 0;
+  row.dead = 0;
+  row.keep = q.xs.length;
+}
+
+// A late w stays in the queue, gone and holding nothing, for chan_head to
+// drop when it comes first. Once the gone outnumber the live by 64, the
 // queue sheds them all, so a timeout costs O(1) and the gone stay under
 // live+64, even behind a waiter that is never woken.
 function chan_late(row, w) {
   w.gone = true;
-  w.io.cleanups.delete(w.cleanup);
-  w.io = w.cont = w.item = w.late = w.timer = w.cleanup = undefined;
+  w.io = w.cont = w.item = w.late = w.timer = undefined;
   row.dead += 1;
-  const q = row.wait;
-  if (row.dead > q_size(q) - row.dead + 64) {
-    q.xs = q.xs.slice(q.head).filter((x) => !x.gone);
-    q.head = 0;
-    row.dead = 0;
-  }
+  if (row.dead > q_size(row.wait) - row.dead + 64) chan_shed(row);
 }
 
 // Parks k on row with item; with ms, a timer too, whose late answers Wait:
-// the first of the two to come cuts the other. If its IO ends while parked,
-// its cleanup releases the item even behind another live waiter.
+// the first of the two to come cuts the other. A waiter whose IO returns is
+// not counted dead, so a park sheds once the queue passes twice what the last
+// shed kept + 64: behind a live waiter, those stay O(live) at O(1) a park.
 function chan_park(row, k, item, ms) {
+  if (q_size(row.wait) > row.keep * 2 + 64) chan_shed(row);
   const w = { io: io_active, cont: k, item: item, gone: false };
-  w.cleanup = () => chan_late(row, w);
-  w.io.cleanups.add(w.cleanup);
   if (ms !== undefined) {
     w.late = () => {
       // An earlier callback of the same ready batch may have woken w.
@@ -186,7 +189,7 @@ function chan_try(row, x, item, ms, k) {
 
 function chan_new(room) {
   return { room: Number(room), ring: q_new(), wait: q_new(), dead: 0,
-    shut: false };
+    keep: 0, shut: false };
 }
 
 function chan_send(row, value, k) {

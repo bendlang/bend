@@ -15,7 +15,7 @@ def bounded_go(n: U32, ok: Bool) -> String:
     case False{}: "piled up: " ++ U32.show(n)
 
 def bounded(+n: U32) -> String:
-  bounded_go(n, U32.is_le(n, 66))
+  bounded_go(n, U32.is_le(n, 67))
 
 def main() -> IO(Unit):
   do IO<Unit>:

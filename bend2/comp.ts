@@ -6407,7 +6407,7 @@ function io_park_on(fd, out, k, more, at = Infinity) {
 }
 
 function io_run(m) {
-  const io = { runs: [], live: 0, waits: [], cleanups: new Set() };
+  const io = { runs: [], live: 0, waits: [] };
   const parent = io_active;
   io_active = io;
   try {
@@ -6467,7 +6467,6 @@ function io_run(m) {
   } finally {
     io_sync();
     io.done = true;
-    for (const cleanup of io.cleanups) cleanup();
     io_active = parent;
   }
 }

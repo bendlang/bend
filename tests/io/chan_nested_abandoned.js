@@ -19,10 +19,9 @@ function host_abandon(c) {
       throw new Error("nested IO ended unexpectedly");
     }
   }
-  const entries = c.wait.xs.slice(c.wait.head);
-  // The first entry is the live sender; every abandoned entry releases its item.
-  if (entries.slice(1).some((w) => !w.gone || w.item !== undefined)) return 999;
-  return entries.length;
+  // The first entry is the live sender; a park sheds the abandoned ones once
+  // the queue passes 2 * 1 + 64.
+  return c.wait.xs.length - c.wait.head;
 }
 
 io_eff(CID(Host.abandon), host_abandon);
