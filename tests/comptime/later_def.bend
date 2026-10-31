@@ -1,6 +1,6 @@
 # a compile-time argument naming a def declared later: the argument
 # checks dead, but the instance calls the def live, and a def below is
-# a bodiless claim there, as for any forward call
+# refused by the ordering rule (#1782)
 import Base
 
 def app(~f: Nat -> Nat, x: Nat) -> Nat:
@@ -14,7 +14,7 @@ def later(n: Nat) -> Nat:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a filled definition (an unfilled law is a dead claim: live code cannot use it)
+#|- expected : a def written above app~0 (move later above its first caller)
 #|- observed : later
 #|Context:
 #|- x : Nat
