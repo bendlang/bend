@@ -2657,14 +2657,14 @@ function emit_chain(sc: Scope, arms: [string, () => void][]): void {
 
 // Hand-written C and JS name ids as CID(k) and FID(k): k in the source's
 // namespace, else as is. effect_src first splices C backslash-newlines, as
-// C does in comments.
+// C does in comments, which end at a newline only.
 
-// Unicode separators end only JS line comments.
-const ID_WORDS = ["//[^\\r\\n]*|", "//.*|"].map((line) =>
-  new RegExp(line + /\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CF]ID)\(([\w./~-]+)\)/u.source, "gu"));
+const ID_WORDS = /\/\/.*|\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CF]ID)\(([\w./~-]+)\)/gu;
 
 function c_ids(src: string, m = "", use?: (p: string, k: Name) => void): string {
-  return src.replace(ID_WORDS[+FL.js], (t, p, k, at) => {
+  const re = FL.js ? ID_WORDS
+    : RegExp(ID_WORDS.source.replace(".", "[^\\r\\n]"), "gu");
+  return src.replace(re, (t, p, k, at) => {
     // '#' starts a private JS name; C's ## may paste an ID macro.
     if (!p || !k || (FL.js && src[at - 1] === "#")) {
       return t;
