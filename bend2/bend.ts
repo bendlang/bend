@@ -2860,7 +2860,7 @@ export function term_wnf(book: Book, term: HTerm): HTerm {
         if (tm.v === undefined) {
           break focus;
         } else {
-          if (tm.i === -1) {
+          if (tm.i === -1 && book !== RIGID) {
             frs.push({ $: "VAR", l: tm, a: tm.v.$ === "Ann" ? tm.v : undefined });
           }
           lhs = null;
@@ -3117,15 +3117,87 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 
 const RIGID: Book = book_nil();
 
-// two copies of one term are equal: a conversion first compares both
-// sides with every def rigid (the empty book unfolds none), then as usual
+// two copies of one term are equal before either unfolds: as in lazy
+// delta reduction, both sides first reduce with no def unfolded (the
+// empty book unfolds none and fills no cell), and two calls of one def,
+// or two terms stuck on one, compare rigidly before either unfolds. Each
+// rigid EQ answer is kept for the conversion, so a pair met again is not
+// walked again (a var is a level, and a pair met at one depth holds only
+// levels below it, so a fresh var at another depth never meets it)
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
-  return compare_go(mode, RIGID, lhs, rhs, dep) || compare_go(mode, book, lhs, rhs, dep);
+  SEEN = null;
+  return compare_go(mode, book, lhs, rhs, dep);
 }
 
+// a term whose head reduces with no def unfolded: a let, a rewrite, or
+// an applied lambda or match
+function redex(tm: HTerm): boolean {
+  let h = term_strip(tm);
+  const app = h.$ === "App";
+  while (h.$ === "App") {
+    h = term_strip(h.f);
+  }
+  return h.$ === "Let" || h.$ === "Rwt" || (app && (h.$ === "Lam" || h.$ === "Mat"));
+}
+
+// whether two sides, reduced with no def unfolded (the rigid pass reduces
+// them itself), are rigidly equal before either unfolds: two calls of one
+// def on as many arguments compare those arguments; two terms still stuck
+// on a redex (a match on a call) compare whole, in the full pass. null
+// when neither applies
+function same_call(book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean | null {
+  const a = book !== RIGID && redex(lhs) ? term_wnf(RIGID, lhs) : lhs;
+  const b = book !== RIGID && redex(rhs) ? term_wnf(RIGID, rhs) : rhs;
+  let f = term_strip(a);
+  let g = term_strip(b);
+  while (f.$ === "App" && g.$ === "App") {
+    f = term_strip(f.f);
+    g = term_strip(g.f);
+  }
+  if (f.$ === "Ref" && g.$ === "Ref") {
+    if (f.k !== g.k) {
+      return false;
+    }
+    for (f = term_strip(a), g = term_strip(b); f.$ === "App" && g.$ === "App"; f = term_strip(f.f), g = term_strip(g.f)) {
+      if (!compare_go("EQ", RIGID, f.x, g.x, dep)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  if (book === RIGID || !redex(a) || !redex(b)) {
+    return null;
+  }
+  return compare_go("EQ", RIGID, a, b, dep);
+}
+
+let SEEN: Map<HTerm, Map<HTerm, boolean>> | null = null;
+
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
+  if (book !== RIGID || mode !== "EQ") {
+    return compare_one(mode, book, lhs, rhs, dep);
+  }
+  SEEN ??= new Map();
+  let row = SEEN.get(lhs);
+  const old = row?.get(rhs);
+  if (old !== undefined) {
+    return old;
+  }
+  const same = compare_one(mode, book, lhs, rhs, dep);
+  if (row === undefined) {
+    SEEN.set(lhs, row = new Map());
+  }
+  row.set(rhs, same);
+  return same;
+}
+
+function compare_one(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
   if (lhs === rhs) {
     return true;
+  }
+  const call = same_call(book, lhs, rhs, dep);
+  if (call !== null && (call || book === RIGID)) {
+    return call;
   }
   let a = term_wnf(book, lhs);
   let b = term_wnf(book, rhs);
