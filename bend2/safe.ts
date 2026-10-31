@@ -637,7 +637,52 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       return hyp();
     }
     case "Eql": {
-      return B.term_compare("EQ", e.mb, F.a, F.b, d) ? B.Ann(B.Rfl(), F) : null;
+      if (B.term_compare("EQ", e.mb, F.a, F.b, d)) {
+        return B.Ann(B.Rfl(), F);
+      }
+      const evidence = hyp();
+      if (evidence !== null) {
+        return B.Ann(evidence, F);
+      }
+      for (const [h, A] of hs) {
+        if (probe.left <= 0) {
+          probe.cut = true;
+          break;
+        }
+        probe.left -= 1;
+        const H = B.term_wnf(e.mb, A);
+        if (H.$ !== "Eql") {
+          continue;
+        }
+        const a = B.term_wnf(e.mb, H.a);
+        const b = B.term_wnf(e.mb, H.b);
+        const S = B.term_wnf(e.mb, H.T);
+        if (a.$ !== "Ctr" || b.$ !== "Ctr" || a.k !== b.k || a.x.length !== b.x.length || S.$ !== "ADT") {
+          continue;
+        }
+        if (path.length + d + 2 + a.x.length > probe.depth || probe.left < a.x.length) {
+          probe.cut = true;
+          continue;
+        }
+        probe.left -= a.x.length;
+        let U = B.term_wnf(e.mb, B.tele_fill(e.mb, e.mb.ctrs[a.k].T, S.x, B.ctx_nil()));
+        for (let j = 0; j < a.x.length && U.$ === "All"; j += 1) {
+          if (B.term_compare("EQ", e.mb, a.x[j], F.a, d)
+            && B.term_compare("EQ", e.mb, b.x[j], F.b, d)
+            && B.term_compare("EQ", e.mb, U.A, F.T, d + 2 + j)) {
+            const field = (i: number, value: HTerm): HTerm => i === a.x.length ? value
+              : B.Lam("field", d + 2 + i, (x: HTerm) => field(i + 1, i === j ? x : value));
+            // The other constructors can return any value of the field's type.
+            const get = B.Ann(B.Mat(a.k, field(0, F.a), B.Lam("other", d + 2, () => F.a)),
+              B.All(B.Lone(), "value", d + 2, H.T, () => F.T));
+            const motive = B.Lam("value", d, (x: HTerm) =>
+              B.Lam("evidence", d + 1, () => B.Eql(F.a, B.App(get, x), F.T)));
+            return B.Ann(B.Rwt(B.Ann(h, H), motive, B.Rfl()), F);
+          }
+          U = B.term_wnf(e.mb, U.B(B.Var(U.k, d + 2 + j)));
+        }
+      }
+      return null;
     }
     default: {
       return hyp();

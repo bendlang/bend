@@ -248,6 +248,9 @@ def add_zero(x):
 - The checker has no proof and may have bugs; `--verdict` uses a proven kernel.
 - Laws are proven about Bend's semantics. The backends can still differ, for example in F32 NaN. See WONTFIX.
 - `--verdict` checks the translated terms, the parser and translation into the kernel are not proven.
+- `--verdict` needs closed models for `~` arguments. It can derive a field's
+  equality from an equality of the same constructor when the field's type
+  does not depend on other fields.
 - A binary needs clang 14+; ! needs 19+, Metal or CUDA 12.
 - No Windows (WSL works); on Linux, Window and Audio need X11 and ALSA headers.
 - A hub package is a hash, unless its author names and versions it after `bend login`.
