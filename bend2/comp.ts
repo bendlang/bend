@@ -4038,14 +4038,8 @@ INLINE void term_sink(Env e, Term t) {
   }
 }
 
-// A call on Metal: inlined into a taken match, the shader runs wrong on M1s
-// under macOS 27 (#1954).
-#ifdef __METAL_VERSION__
-FAR
-#else
-OUTLINE
-#endif
-u64 span_fade(Env e, Term t, u64 src, u32 n) {
+// Inlined, M1 Metal runs wrong (#1954).
+FAR u64 span_fade(Env e, Term t, u64 src, u32 n) {
   DEV u32* c = a32_at(e.mem, term_loc(t));
   if ((a32_load(c) & RFC_CNT) == 1) {
     a32_acq(c);
