@@ -9,13 +9,33 @@
 // already given them up). readvSync makes the syscall even for 0 bytes
 // (Bun's readSync skips it), so a 0-byte read of a bad handle fails as C
 // does, and it needs no bun:ffi, which node lacks.
+// max is a cap, not a size: the buffer starts at what a regular file holds
+// (one byte more, to see its end) or 64 KiB, and doubles up to max as bytes
+// arrive, so a read capped far above the file commits only what it reads
+// (#1983).
+function file_read_room(fs, file, len) {
+  let room = 65536;
+  try {
+    const st = fs.fstatSync(file);
+    if (st.isFile()) {
+      room = Math.max(room, st.size + 1);
+    }
+  } catch {}
+  return Math.max(Math.min(len, room), 1);
+}
+
 function file_read_with(file, max, offset, pack, line = false) {
   const fs = require("fs");
   const len = Math.min(max, 2147483647);
-  const b = new Uint8Array(Math.max(len, 1));
+  let b = new Uint8Array(file_read_room(fs, file, len));
   let got = 0;
   do {
-    const want = line && got < len ? 1 : len - got;
+    if (got === b.length) {
+      const c = new Uint8Array(Math.min(len, b.length * 2));
+      c.set(b);
+      b = c;
+    }
+    const want = line && got < len ? 1 : Math.min(b.length, len) - got;
     let n;
     try {
       n = fs.readvSync(file, [b.subarray(got, got + want)],
