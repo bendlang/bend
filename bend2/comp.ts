@@ -21,7 +21,7 @@ type Lay = { ks: Kind[]; arms: Record<Name, Lay[]> | null };
 
 type Val = { ws: string[]; lay: Lay; stat: boolean; rs: (string | null)[] };
 
-type Bind = { val: Val; n: number; A: HTerm };
+type Bind = { val: Val; n: number; A: HTerm; pk?: [Of<"Var">, Bind][] };
 
 type Seg = {
   fid: string;
@@ -1191,6 +1191,7 @@ function file_new(book: Bend.Book, js: boolean) {
     fids: new Set<Name>(),
     effs: new Map<string, [string, string]>(),
     hold: new Map<string, boolean>(),
+    packs: new Set<number>(),
   };
 }
 
@@ -1426,8 +1427,34 @@ function seg_open(sc: Scope, name: string, ret: Lay, frame: Seg["frame"],
   const seg = seg_new(name, ret, [...vals, res], frame);
   FL.unit!.segs.push(seg);
   sc = { ...sc, seg, spares: [], uses: new Map() };
-  live.forEach(([p, b], i) => bind_uses(sc, p, vals[i], rest, b.A));
+  live.forEach(([p, b], i) => {
+    const w = vals[i].ws[0];
+    let j = 0;
+    b.pk?.forEach(([q, c]) => bind_uses(sc, q, val_new(c.val.ws.map((x, k) =>
+      emit_hold(sc, [`e.mem[term_loc(${w}) + ${j++}]`], FL.locals.get(x)!,
+        c.val.lay.ks.slice(k))[0]), c.val.lay, c.val.rs), rest, c.A));
+    b.pk ? file_push(sc, `heap_free(e, ${cls_fit(j + 1)}, term_loc(${w}));`)
+      : bind_uses(sc, p, vals[i], rest, b.A);
+  });
   return sc;
+}
+
+// A segment entered through registers gets its live words past WIDE in a
+// ~pack node of 2^c words, which its entry reads and frees.
+function seg_pack(sc: Scope, live: [Of<"Var">, Bind][],
+  n: number): [Of<"Var">, Bind][] {
+  if (live.reduce((n, [, b]) => n + b.val.ws.length, n) <= WIDE) {
+    return live;
+  }
+  const at = live.findIndex(([, b]) => (n += b.val.ws.length) >= WIDE);
+  const pk = live.slice(at), ws = pk.flatMap(([, b]) => b.val.ws);
+  const c = cls_fit(ws.length + 1);
+  FL.packs.add(1 << c);
+  const nd = node_fill(sc, "pk", `heap_alloc(e, ${c})`, [...ws,
+    ...Array((1 << c) - ws.length).fill("0")]);
+  return [...live.slice(0, at), [DUMMY, { val: val_new(emit_hold(sc,
+    [`term_ctr(${cid_mac("~pack" + (1 << c))}, ${nd})`], "pk"), BOX), n: 1,
+    A: DUMMY, pk }]];
 }
 
 // Node
@@ -2154,11 +2181,12 @@ function emit_clo(sc: Scope, x: HTerm, ty: HTerm | null): Val {
     sc.uses.set(p, { ...b, n: b.n - term_use(u, p) + 1 });
     bind_pop(sc, p);
   });
-  const words = live.flatMap(([, b]) => val_own(b.val));
+  live.forEach(([, b]) => val_own(b.val));
+  const caps = seg_pack(sc, live, 1);
   const name = seg_name("c");
-  const clo = seg_clo(sc, seg_fid(name), words);
+  const clo = seg_clo(sc, seg_fid(name), caps.flatMap(([, b]) => b.val.ws));
   const arg = val_new([name_local(sc, "x")], BOX);
-  emit_body(seg_open(sc, name, BOX, null, live, arg, [x]), x, ty, [arg], null);
+  emit_body(seg_open(sc, name, BOX, null, caps, arg, [x]), x, ty, [arg], null);
   return val_new([clo], BOX);
 }
 
@@ -2439,6 +2467,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   const o = term_open(x);
   const calls = x.v.map(term_spine);
   const fork = calls.length > 1;
+  const res = calls.reduce((n, c) => n + fun_of(c.k!).ret.ks.length, 0);
   const name = seg_name("j");
   let hold: Of<"Var">[] = [];
   if (fork) {
@@ -2452,7 +2481,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       const live = [...pl.uses].filter(([p, b]) =>
         !val_brw(b.val) || rest_use([o.b], p) > 0);
       hold = live.map(([p]) => p);
-      const caps = live.flatMap(([, b]) => b.val.ws);
+      const caps = seg_pack(pl, live, res).flatMap(([, b]) => b.val.ws);
       const jn = emit_task(pl, seg_fid(name), calls.length, caps);
       const jt = `term_tsk(${seg_fid(name)}, ${jn})`;
       let idx = caps.length;
@@ -2501,7 +2530,9 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
-    const live = [...sc.uses];
+    const all = [...sc.uses], rs = all.filter(([p]) => o.ps.includes(p));
+    const live = [...seg_pack(sc, all.filter((u) => !rs.includes(u)), res),
+      ...rs];
     emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
     sc = seg_open(sc, name, sc.seg.ret, null, live, val_new([], lay_pack([])),
       [o.b]);
@@ -2754,11 +2785,12 @@ function c_header(segs: Seg[], clos: string[]): string {
     }
   }
   done_defs(def_foreign).forEach(([k]) => cid(k, fun_of(k).lays.length));
+  FL.packs.forEach((m) => cid("~pack" + m, m));
   const callers = [...segs.flatMap((s) => [...s.refs].map((r) =>
     [r, s.fid])), ...clos.map((c) => [c, seg_fid(CLO_APPLY)])];
   const forky = graph_close(new Set(segs.filter((s) => s.fork)
     .map((s) => s.fid)), callers);
-  if (entries.some((s) => s.params.length > WIDE)
+  if (entries.some((s) => s.params.length > (s.frame ? 65535 : WIDE))
     || [...cids.values()].some(([n]) => n > 255)) {
     die("an arity over " + WIDE);
   }
@@ -2775,7 +2807,9 @@ function c_header(segs: Seg[], clos: string[]): string {
   if (n > 6) {
     ws.splice(6, 0, "rp");
   }
-  defs.push(`CONSTV Fid FID_T[] = { ${entries.map((s) => `{ ${[s.params.length,
+  defs.push(`typedef struct { ${entries.some((s) => s.params.length > 255)
+    ? "u16" : "u8"} ar, resw, bangs, nofk; } Fid;`,
+  `CONSTV Fid FID_T[] = { ${entries.map((s) => `{ ${[s.params.length,
     s.frame === null ? 0 : s.params.length - s.frame.at.length,
     FL.bangs.has(s.def), !forky.has(s.fid)].map(Number).join(", ")} }`)
     .join(", ")} };`,
@@ -3471,7 +3505,6 @@ static const char* CLI_HELP =
 // Tables
 // ======
 
-typedef struct { u8 ar, resw, bangs, nofk; } Fid;
 typedef struct { u8 ar, hot; u16 spine; } Cid;
 
 ${tabs}
@@ -3974,7 +4007,7 @@ FAR void term_drop(Env e, Term t) {
         u32 n = tag == TAG_ARR ? 0 : tag == TAG_CTR ? cid_arity(aux)
           : fid_arity(aux) - (tag == TAG_CLO),
           cls = tag == TAG_ARR ? 64 | blk_cls(t)
-          : n > ${WIDE} ? 64 | (n - 240)
+          : tag == TAG_CTR && n > ${WIDE} ? 64 | (n - 240)
           : cls_fit(tag == TAG_TSK ? n + 2 : n),
           w = cls < 64 ? n : 1u << (cls & 63),
           d = tag == TAG_CTR ? CID_T[aux].spine : 0, m = w;
