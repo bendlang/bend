@@ -1,7 +1,8 @@
 # Echo server: binds port 7777 and sends every connection back what
 # it says. Each accepted socket goes to a computation of its own
-# (IO.spawn) that echoes each recv until the peer closes; the accept
-# loop is @unsafe: it runs until killed. Try it:
+# (IO.spawn) that echoes each recv until the peer closes. The accept
+# loop and each handler count down a fuel of 4294967295, so both
+# terminate and every def here checks. Try it:
 #
 #   bend demos/io_tcp_echos/main.bend -o echos && ./echos
 #   nc 127.0.0.1 7777
@@ -38,28 +39,34 @@ def echo_back(m: Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>, next:
   (s, r) = m
   echo_move(s, echo_step(r), next)
 
-@unsafe
-def echo_conn(s: Socket) -> IO(Unit):
-  do IO<Unit>:
-    rm : Socket & Result<&1, &1, U32 & String, Maybe<&1, String>> <- TCP.recv(s, 4096)
-    echo_back(rm, s2 => echo_conn(s2))
+def echo_conn(fuel: Nat, s: Socket) -> IO(Unit):
+  match fuel:
+    case 0n:
+      Socket.close(s)
+    case 1n+fuel2:
+      do IO<Unit>:
+        rm : Socket & Result<&1, &1, U32 & String, Maybe<&1, String>> <- TCP.recv(s, 4096)
+        echo_back(rm, s2 => echo_conn(fuel2, s2))
 
 def serve_next(m: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Listener):
   (l, r) = m
   do IO<Listener>:
     s : Socket <- IO.pass(Socket, r)
-    IO.spawn(Unit, echo_conn(s))
+    IO.spawn(Unit, echo_conn(4294967295n, s))
     return l
 
-@unsafe
-def serve(l: Listener) -> IO(Unit):
-  do IO<Unit>:
-    m  : Listener & Result<&1, &1, U32 & String, Socket> <- TCP.accept(l)
-    l2 : Listener <- serve_next(m)
-    serve(l2)
+def serve(fuel: Nat, l: Listener) -> IO(Unit):
+  match fuel:
+    case 0n:
+      Listener.close(l)
+    case 1n+fuel2:
+      do IO<Unit>:
+        m  : Listener & Result<&1, &1, U32 & String, Socket> <- TCP.accept(l)
+        l2 : Listener <- serve_next(m)
+        serve(fuel2, l2)
 
 def main() -> IO(Unit):
   do IO<Unit>:
     l : Listener <- IO.try(Listener, TCP.listen("127.0.0.1", 7777))
     IO.print("echoing on 127.0.0.1:7777")
-    serve(l)
+    serve(4294967295n, l)
