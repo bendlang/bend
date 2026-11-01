@@ -3355,8 +3355,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     //       is an error, so a self-reference never escapes as a value
     //       k has a body in a live region, unless base declared it, it
     //       is a template's ~ parameter, or the def is @unsafe (an
-    //       unfilled law is a dead claim; base's are native, a ~
-    //       parameter an opaque constant, and an unsafe body trusts it)
+    //       unfilled law is a dead claim; a def written below is named
+    //       as an ordering error; base's are native, a ~ parameter an
+    //       opaque constant, and an unsafe body trusts it)
     //       a template k in a live region outside a template's own text
     //       takes its x ~ arguments here: the call is k~n, the instance
     //       at them (def_inst), and the x applications above pass
@@ -3378,7 +3379,12 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       if (qt.$ !== "None") {
         const gen = tld.$ === "Def" && tld.x > 0 && !(book.tlds[lhs.def] as Def).x ? tld : null;
         if (tld.$ === "Def" && tld.v === null && !tld.i && (tld.b !== true && lhs.u !== true || gen !== null) && k !== lhs.def) {
-          throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
+          if (tld.l === true) {
+            throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
+          }
+          const below = name_show(tm.s?.file, k);
+          const above = name_show(tm.s?.file, lhs.def);
+          throw Err(book, ctx, "a def written above " + above + " (move " + below + " above its first caller)", tm, tm.s, lhs.def);
         }
         if (gen !== null) {
           k  = def_inst(book, lhs, tm, gen, sp, ctx, d);
