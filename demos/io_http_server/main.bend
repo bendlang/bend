@@ -2,7 +2,8 @@
 # hello world page. Each accepted socket goes to a computation of its
 # own (IO.spawn) that reads the request, sends the response and
 # closes. The accept loop counts down a fuel of 4294967295
-# connections, so it terminates and every def here checks. Try it:
+# connections, so every def here checks; in practice it runs until
+# killed. Try it:
 #
 #   bend demos/io_http_server/main.bend -o http_server && ./http_server
 #   curl http://127.0.0.1:8080

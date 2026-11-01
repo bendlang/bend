@@ -1,8 +1,9 @@
 # Echo server: binds port 7777 and sends every connection back what
 # it says. Each accepted socket goes to a computation of its own
 # (IO.spawn) that echoes each recv until the peer closes. The accept
-# loop and each handler count down a fuel of 4294967295, so both
-# terminate and every def here checks. Try it:
+# loop and each handler count down a fuel of 4294967295 (connections,
+# recvs), so every def here checks; in practice the server runs until
+# killed. Try it:
 #
 #   bend demos/io_tcp_echos/main.bend -o echos && ./echos
 #   nc 127.0.0.1 7777
