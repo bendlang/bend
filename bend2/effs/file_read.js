@@ -12,12 +12,12 @@
 // max is a cap, not a size: the buffer starts at what a regular file holds
 // (one byte more, to see its end) or 64 KiB, and doubles up to max as bytes
 // arrive, so a read capped far above the file commits only what it reads
-// (#1983).
-function file_read_room(fs, file, len) {
+// (#1983). A line stops early, so it starts at 64 KiB whatever the file.
+function file_read_room(fs, file, len, line) {
   let room = 65536;
   try {
-    const st = fs.fstatSync(file);
-    if (st.isFile()) {
+    const st = line ? null : fs.fstatSync(file);
+    if (st?.isFile()) {
       room = Math.max(room, st.size + 1);
     }
   } catch {}
@@ -27,7 +27,7 @@ function file_read_room(fs, file, len) {
 function file_read_with(file, max, offset, pack, line = false) {
   const fs = require("fs");
   const len = Math.min(max, 2147483647);
-  let b = new Uint8Array(file_read_room(fs, file, len));
+  let b = new Uint8Array(file_read_room(fs, file, len, line));
   let got = 0;
   do {
     if (got === b.length) {

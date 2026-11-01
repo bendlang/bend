@@ -1,7 +1,7 @@
 # io (io_file_read_cap): a read's max is a cap, not a buffer size (#1983).
-# A 5-byte file is read forty times with File.read_bytes capped at 1 GiB;
-# the JS lane once allocated the whole cap per read, about 12 s and 3 GB
-# for this loop, past the 5 s alarm. /dev/zero has no size, so a read of
+# A 5-byte file is read a thousand times with File.read_bytes capped at
+# 1 GiB; the JS lane once allocated the whole cap per read, about 8 s and
+# 6 GB for this loop, past the 5 s alarm. /dev/zero has no size, so a read of
 # 300000 bytes from it grows its buffer until the cap and answers them all.
 import Base
 
@@ -78,11 +78,11 @@ def main():
     f : File <- IO.try(File, File.open(path(), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá\n")
     x : Unit <- write_go(w)
-    t : U32 <- reads(40n, 0)
+    t : U32 <- reads(1000n, 0)
     p : Unit <- IO.print(U32.show(t))
     z : U32 <- count("/dev/zero", 300000)
     q : Unit <- IO.print(U32.show(z))
     return 0
 
-#|200
+#|5000
 #|300000
