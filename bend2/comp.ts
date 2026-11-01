@@ -6173,10 +6173,10 @@ function cli(argv) {
       process.exit(0);
     } else {
       const re = a === "--threads" ? /^0*[1-9]\d*$/ : a === "--gpu"
-        ? /^(on|off|(\d*\.?\d*)([GM])B)$/ : undefined;
+        ? /^(on|off|(\d*(?:\.\d*)?)([GM])B)$/ : undefined;
       const m  = re?.exec(argv[++i]);
       if (!m || m[3]
-        && !(m[2] * (m[3] === "G" ? 2 ** 30 : 2 ** 20) >= 16384)) {
+        && !(m[2] * 2 ** (m[3] === "G" ? 30 : 20) >= 16384)) {
         io_errs("bend: " + (re === undefined ? "unknown runtime option " + a
           : a === "--gpu" ? "expected on, off or a size like 4GB after --gpu"
           : "expected a thread count of 1 or more after --threads"));
