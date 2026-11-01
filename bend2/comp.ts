@@ -1159,6 +1159,7 @@ function file_new(book: Bend.Book, js: boolean) {
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
+    recs: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
@@ -1694,6 +1695,27 @@ function die(m: string): never {
 // Memo
 // ====
 
+function mat_one(l: HTerm): l is Of<"Mat"> {
+  return l.$ === "Mat" && !WORDS[l.k] && term_strip(l.m).$ === "Efq";
+}
+
+// f maps the body under a def's j-th binder; a match binds its fields
+function def_at(t: HTerm, j: number, f: (t: HTerm) => HTerm): HTerm {
+  const s = term_force(t);
+  return j === 0 ? f(s) : s.$ === "Ann" ? { ...s, x: def_at(s.x, j, f) }
+    : s.$ === "Lam" ? { ...s, f: (x: HTerm) => def_at(s.f(x), j - 1, f) }
+    : s.$ === "Mat" ? { ...s, m: def_at(s.m, j, f),
+      h: def_at(s.h, j - 1 + FL.book.ctrs[s.k].n, f) } : s;
+}
+
+function def_rec(k: Name): boolean {
+  const seen = new Set<Name>();
+  const go = (d: Name): boolean => !seen.has(d) && !!seen.add(d)
+    && term_any(fun_of(d).h ?? DUMMY, (s) =>
+      s.$ === "Ref" && (s.k === k || go(s.k)));
+  return memo(FL.recs, k, go);
+}
+
 function memo<K, V>(m: { get(k: K): V | undefined; set(k: K, v: V): void },
   k: K, f: (k: K) => V): V {
   let v = m.get(k);
@@ -1905,6 +1927,33 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
       case "Ref":
       case "App": {
         const m = term_spine(s);
+        const tld = m.tld as Bend.Def;
+        const cb = (x: HTerm) => term_strip(x).$ === "Lam";
+        const U = m.t.$ === "Lam" ? ty_ann(m.h) : m.k !== null && !FL.js
+          && m.k !== CLO_APPLY && !def_foreign(tld) && m.all.length === tld.n
+          && fun_of(m.k).n === tld.n && m.args.some(cb) && !def_rec(m.k)
+          ? tld.T : null;
+        if (U) {
+          const lets: [Of<"Var">, HTerm][] = [];
+          const ys: HTerm[] = [];
+          let b = m.t.$ === "Lam" ? m.h : fun_of(m.k!).h!;
+          for (let [i, x] of m.all.entries()) {
+            if (m.args.includes(x) && !cb(x)) {
+              lets.push([probe("a"),
+                Bend.Ann(x, tele_unbind(U).doms[i][2])]);
+              x = lets[lets.length - 1][0];
+            }
+            const l = term_strip(b);
+            b = !ys.length && l.$ === "Lam" ? l.f(x) : cb(x)
+              ? def_at(b, ys.length, (l) => (term_strip(l) as Of<"Lam">).f(x))
+              : (ys.push(x), Bend.Ann(b, tele_fill(U, m.all.slice(0, i))));
+          }
+          if (!ys[1] && (!ys[0] || mat_one(term_strip(b)))) {
+            return go(lets.reduceRight((t, [p, v]) => let_open([p], [v], t),
+              Bend.Ann(ys[0] ? Bend.App(b, ys[0]) : b, tele_fill(U, m.all))),
+              top, T);
+          }
+        }
         const spine = (v: HTerm): HTerm => {
           const f = term_force(v);
           if (f.$ === "Ann") {
@@ -2397,6 +2446,15 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       return emit_match(sc, x, ty, args, dst);
     }
     case "Let": {
+      const c = term_spine(x.v[0]);
+      if (mat_one(c.t) && x.k.length === 1) {
+        // a matched value's let moves into its one arm
+        const o = term_open(x);
+        const h = def_at(c.h, c.all.length,
+          (t) => let_open(o.ps, [Bend.Ann(t, ty_ann(x.v[0])!)], o.b));
+        return emit_body(sc, c.all.reduce((f, y) => Bend.App(f, y), h),
+          ty, args, dst);
+      }
       if (x.k.length >= 2
         || (term_spine(x.v[0]).k !== null && !flat_call(x.v[0]))) {
         return emit_fork(sc, x);
@@ -2412,6 +2470,9 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       }
       sc = { ...sc, rest: [] };
       const ck = term_spine(x);
+      if (mat_one(ck.t)) {
+        return emit_body(sc, ck.h, null, emit_each(sc, ck.args), dst);
+      }
       if (ck.k === null) {
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
       }
