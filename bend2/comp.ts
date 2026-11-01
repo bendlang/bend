@@ -2449,6 +2449,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       const margs = calls.map((c, j) => emit_args({ ...pl,
         rest: [...x.v.filter((_, i) => i !== j), o.b] }, c, false, true)
         .flatMap((v) => v.ws));
+      bind_dead(pl, [...calls.flatMap((c) => c.xs.filter((a, i) =>
+        brw_of(c.k!)[i] && term_strip(a).$ === "Var")), o.b]);
       const live = [...pl.uses].filter(([p, b]) =>
         !val_brw(b.val) || rest_use([o.b], p) > 0);
       hold = live.map(([p]) => p);
