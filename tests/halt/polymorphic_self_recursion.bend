@@ -15,8 +15,8 @@ def main(): loop(Nat)
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : loop
+#|- expected : a call smaller than loop (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : loop(a)
 #|Context:
 #|- a : Type
 #|Location: loop

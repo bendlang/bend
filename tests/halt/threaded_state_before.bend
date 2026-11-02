@@ -24,8 +24,8 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : go
+#|- expected : a call smaller than go(acc, 1n+p) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : go(U32.add(acc, 1), p)
 #|Context:
 #|- acc : U32
 #|- p   : Nat

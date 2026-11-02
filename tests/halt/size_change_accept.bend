@@ -23,8 +23,8 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : interleave
+#|- expected : a call smaller than interleave(h <> t, ys) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : interleave(ys, t)
 #|Context:
 #|- h  : U32
 #|- t  : List<&2, U32>

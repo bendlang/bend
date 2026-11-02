@@ -32,8 +32,8 @@ def main(): N{}
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : loop
+#|- expected : a call smaller than loop(C{f}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : loop(f(y))
 #|Context:
 #|- f : @_:T -> T
 #|- y : T

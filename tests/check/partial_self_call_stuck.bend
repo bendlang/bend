@@ -23,8 +23,8 @@ def main(): part(2n, 1n)
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : part
+#|- expected : a call smaller than part(1n+p, b) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : part(1n+p)
 #|Context:
 #|- p : Nat
 #|- b : Nat

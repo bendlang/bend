@@ -39,8 +39,8 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : loop
+#|- expected : a call smaller than loop(P9{a, b}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : loop(a(b))
 #|Context:
 #|- a : @_:T9j -> T9j
 #|- b : T9j

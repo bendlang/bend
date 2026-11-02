@@ -23,7 +23,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
+#|- expected : a call smaller than head9(1n+p, x) (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : head9
 #|Context:
 #|- p : Nat

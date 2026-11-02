@@ -24,8 +24,8 @@ def main(): 0n
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : rec
+#|- expected : a call smaller than rec(Sup{g}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : rec(g(0n))
 #|Context:
 #|- g : @_:Nat -> Ord
 #|Location: rec
