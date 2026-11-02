@@ -36,8 +36,8 @@ def main(): go(S{Z{}}, S{Z{}})
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : go
+#|- expected : a call smaller than go(Z{}, S{q}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : go(S{Z{}}, q)
 #|Context:
 #|- q : N
 #|Location: go

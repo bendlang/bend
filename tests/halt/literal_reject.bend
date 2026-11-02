@@ -22,8 +22,8 @@ def main(): f(3n)
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : f
+#|- expected : a call smaller than f(5n) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : f(7n)
 #|Location: f
 #|13 |     case 5n:
 #|14>|       f(7n)

@@ -18,8 +18,8 @@ def main(): 0n
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : f
+#|- expected : a call smaller than f(d) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : f(Nat.sub(d, 1n))
 #|Context:
 #|- d : Nat
 #|Location: f

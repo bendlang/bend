@@ -3412,7 +3412,9 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
             ord = term_descend(lhs.qs[j], xs[j], cols[j]);
           }
           if (ord !== "LT") {
-            throw Err(book, ctx, "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)", tm, tm.s, lhs.def);
+            const bnd = ctx_scope(ctx);
+            const src = (x: HTerm) => term_show(term_lower(x, bnd.length), -1, bnd, tm.s?.file);
+            throw Err(book, ctx, "a call smaller than " + src(lhs.t) + " (arguments are read left to right: each passed unchanged until one shrinks)", src(xs.reduce((f, a) => term_apply(f, a), Ref(k, tm.s) as HTerm)), tm.s, lhs.def);
           }
         }
       }

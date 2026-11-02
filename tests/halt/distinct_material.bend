@@ -29,8 +29,8 @@ def main(): Num{}
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : wnf
+#|- expected : a call smaller than wnf(Cal{Lam{bod}, a2}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : wnf(bod(a2))
 #|Context:
 #|- bod : @_:Term -> Term
 #|- a2  : Term

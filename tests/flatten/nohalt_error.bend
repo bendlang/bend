@@ -34,8 +34,8 @@ def main(): Fx4{}
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : bad
+#|- expected : a call smaller than bad(Tx4{}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : bad(flip(Tx4{}))
 #|Location: bad
 #|25 |     case Tx4{}:
 #|26>|       bad(flip(Tx4{}))

@@ -44,8 +44,8 @@ def main(): loop(Z{}, More{Z{}}, S{Z{}})
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : loop
+#|- expected : a call smaller than loop(a, More{x}, b) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : loop(x, grow(a, More{Z{}}, b), Z{})
 #|Context:
 #|- a : T
 #|- x : T

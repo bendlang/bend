@@ -40,8 +40,8 @@ def main(): Z{}
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : swapped
+#|- expected : a call smaller than swapped(Z{}, b) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : swapped(b, Z{})
 #|Context:
 #|- b : N
 #|Location: swapped

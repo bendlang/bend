@@ -25,8 +25,8 @@ def main(): sw(S{Z{}}, S{Z{}})
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : sw
+#|- expected : a call smaller than sw(S{p}, b) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : sw(b, S{p})
 #|Context:
 #|- p : N
 #|- b : N

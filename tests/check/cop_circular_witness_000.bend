@@ -19,8 +19,8 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : Forge
+#|- expected : a call smaller than Forge(T) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : Forge(T)
 #|Context:
 #|- T : Type
 #|Location: Forge

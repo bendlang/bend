@@ -22,8 +22,8 @@ def main(): down(3n)
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : down
+#|- expected : a call smaller than down(64n) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : down(65n)
 #|Location: down
 #|13 |     case 64n:
 #|14>|       down(65n)

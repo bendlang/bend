@@ -24,8 +24,8 @@ def main(): Z{}
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : mk
+#|- expected : a call smaller than mk(Sup{f}) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : mk(x)
 #|Context:
 #|- f : @_:Ord -> Ord
 #|- x : Ord

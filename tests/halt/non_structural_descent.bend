@@ -38,8 +38,8 @@ def main(): fold(10n)
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
-#|- observed : fold
+#|- expected : a call smaller than fold(n) (arguments are read left to right: each passed unchanged until one shrinks)
+#|- observed : fold(ndiv(n, 2n))
 #|Context:
 #|- n : Nat<> - Zero{}
 #|Location: fold
