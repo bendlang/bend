@@ -5,7 +5,7 @@
 // the loop from its timers; a recv that still finds no datagram (the socket
 // is non-blocking) parks again on more. The datagram, read makes a String
 // (io_str) or a List of bytes (io_list).
-static Term udp_recv_from_with(Env e, IoWork* w, IoPack more,
+static Term HID(udp_recv_from_with)(Env e, IoWork* w, IoPack more,
   Term (*read)(Env, const char*, u64)) {
   struct sockaddr_in at = { 0 };
   socklen_t alen = sizeof(at);
@@ -29,7 +29,7 @@ static Term udp_recv_from_with(Env e, IoWork* w, IoPack more,
 }
 
 // at is the try_ deadline (past it, Wait{}), 0 for the blocking twins.
-static Term udp_recv_from_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
+static Term HID(udp_recv_from_start)(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->time = at;
   if (f[1] == 0) {
@@ -43,63 +43,65 @@ static Term udp_recv_from_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) 
   return io_wait_on(w, (int)w->hand, POLLIN, at, more);
 }
 
-static Term udp_recv_from_more(Env e, IoWork* w) {
-  return udp_recv_from_with(e, w, udp_recv_from_more, io_str);
+static Term HID(udp_recv_from_more)(Env e, IoWork* w) {
+  return HID(udp_recv_from_with)(e, w, HID(udp_recv_from_more), io_str);
 }
 
 #ifdef CID(Con)
 
-static Term udp_recv_bytes_from_more(Env e, IoWork* w) {
-  return udp_recv_from_with(e, w, udp_recv_bytes_from_more, io_list);
+static Term HID(udp_recv_bytes_from_more)(Env e, IoWork* w) {
+  return HID(udp_recv_from_with)(e, w, HID(udp_recv_bytes_from_more), io_list);
 }
 
 #endif
 
 #ifdef CID(UDP.recv_from)
 
-Term udp_recv_from_run(Env e, Term* f, IoWork* w) {
-  return udp_recv_from_start(e, f, w, udp_recv_from_more, 0);
+Term HID(udp_recv_from_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_recv_from_start)(e, f, w, HID(udp_recv_from_more), 0);
 }
 
-static void __attribute__((constructor)) udp_recv_from_use(void) {
-  io_eff(CID(UDP.recv_from), udp_recv_from_run);
+static void __attribute__((constructor)) HID(udp_recv_from_use)(void) {
+  io_eff(CID(UDP.recv_from), HID(udp_recv_from_run));
 }
 
 #endif
 
 #ifdef CID(UDP.try_recv_from)
 
-Term udp_try_recv_from_run(Env e, Term* f, IoWork* w) {
-  return udp_recv_from_start(e, f, w, udp_recv_from_more, io_until(f[2]));
+Term HID(udp_try_recv_from_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_recv_from_start)(e, f, w, HID(udp_recv_from_more),
+    io_until(f[2]));
 }
 
-static void __attribute__((constructor)) udp_try_recv_from_use(void) {
-  io_eff(CID(UDP.try_recv_from), udp_try_recv_from_run);
+static void __attribute__((constructor)) HID(udp_try_recv_from_use)(void) {
+  io_eff(CID(UDP.try_recv_from), HID(udp_try_recv_from_run));
 }
 
 #endif
 
 #ifdef CID(UDP.recv_bytes_from)
 
-Term udp_recv_bytes_from_run(Env e, Term* f, IoWork* w) {
-  return udp_recv_from_start(e, f, w, udp_recv_bytes_from_more, 0);
+Term HID(udp_recv_bytes_from_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_recv_from_start)(e, f, w, HID(udp_recv_bytes_from_more), 0);
 }
 
-static void __attribute__((constructor)) udp_recv_bytes_from_use(void) {
-  io_eff(CID(UDP.recv_bytes_from), udp_recv_bytes_from_run);
+static void __attribute__((constructor)) HID(udp_recv_bytes_from_use)(void) {
+  io_eff(CID(UDP.recv_bytes_from), HID(udp_recv_bytes_from_run));
 }
 
 #endif
 
 #ifdef CID(UDP.try_recv_bytes_from)
 
-Term udp_try_recv_bytes_from_run(Env e, Term* f, IoWork* w) {
-  return udp_recv_from_start(e, f, w, udp_recv_bytes_from_more,
+Term HID(udp_try_recv_bytes_from_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_recv_from_start)(e, f, w, HID(udp_recv_bytes_from_more),
     io_until(f[2]));
 }
 
-static void __attribute__((constructor)) udp_try_recv_bytes_from_use(void) {
-  io_eff(CID(UDP.try_recv_bytes_from), udp_try_recv_bytes_from_run);
+static void __attribute__((constructor))
+  HID(udp_try_recv_bytes_from_use)(void) {
+  io_eff(CID(UDP.try_recv_bytes_from), HID(udp_try_recv_bytes_from_run));
 }
 
 #endif

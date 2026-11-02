@@ -24,11 +24,11 @@ typedef struct {
   pthread_t    pump;
   _Atomic(u32) done;
 #endif
-} IoRing;
+} HID(IoRing);
 
 // n frames queued after the write; a write past the ring's room is
 // dropped and the queue answered as it is.
-static u64 io_ring_write(IoRing* p, const float* pcm, u32 n) {
+static u64 HID(io_ring_write)(HID(IoRing)* p, const float* pcm, u32 n) {
   u64 w = atomic_load_explicit(&p->written, memory_order_relaxed);
   u64 r = atomic_load_explicit(&p->read, memory_order_acquire);
   if (w - r + n <= IO_RING) {
@@ -42,7 +42,7 @@ static u64 io_ring_write(IoRing* p, const float* pcm, u32 n) {
   return w - r;
 }
 
-static void io_ring_pull(IoRing* p, float* out, u32 frames) {
+static void HID(io_ring_pull)(HID(IoRing)* p, float* out, u32 frames) {
   u64 r     = atomic_load_explicit(&p->read, memory_order_relaxed);
   u64 w     = atomic_load_explicit(&p->written, memory_order_acquire);
   u32 n     = (u32)(w - r < frames ? w - r : frames);
@@ -56,20 +56,20 @@ static void io_ring_pull(IoRing* p, float* out, u32 frames) {
 
 #ifdef __OBJC__
 
-static OSStatus io_ring_pump(void* ctx, AudioUnitRenderActionFlags* flags,
+static OSStatus HID(io_ring_pump)(void* ctx, AudioUnitRenderActionFlags* flags,
   const AudioTimeStamp* when, UInt32 bus, UInt32 frames,
   AudioBufferList* bl) {
   if (bl->mNumberBuffers != 1 || bl->mBuffers[0].mNumberChannels != 2
       || bl->mBuffers[0].mDataByteSize < frames * 8) {
     return kAudio_ParamError;
   }
-  io_ring_pull(ctx, bl->mBuffers[0].mData, frames);
+  HID(io_ring_pull)(ctx, bl->mBuffers[0].mData, frames);
   return noErr;
 }
 
 // The default output unit fed float32 stereo at the asked rate (the
 // unit converts to the device's own).
-static u32 io_ring_start(IoRing* p, u32 rate) {
+static u32 HID(io_ring_start)(HID(IoRing)* p, u32 rate) {
   AudioComponentDescription desc = { kAudioUnitType_Output,
     kAudioUnitSubType_DefaultOutput, kAudioUnitManufacturer_Apple, 0, 0 };
   AudioComponent comp = AudioComponentFindNext(NULL, &desc);
@@ -85,7 +85,7 @@ static u32 io_ring_start(IoRing* p, u32 rate) {
   fmt.mBytesPerFrame    = 8;
   fmt.mChannelsPerFrame = 2;
   fmt.mBitsPerChannel   = 32;
-  AURenderCallbackStruct cb = { io_ring_pump, p };
+  AURenderCallbackStruct cb = { HID(io_ring_pump), p };
   bool ok = AudioUnitSetProperty(p->unit, kAudioUnitProperty_StreamFormat,
       kAudioUnitScope_Input, 0, &fmt, sizeof fmt) == noErr
     && AudioUnitSetProperty(p->unit, kAudioUnitProperty_SetRenderCallback,
@@ -95,7 +95,7 @@ static u32 io_ring_start(IoRing* p, u32 rate) {
   return ok ? 0 : ENODEV;
 }
 
-static void io_ring_free(IoRing* p) {
+static void HID(io_ring_free)(HID(IoRing)* p) {
   if (p->unit != NULL) {
     AudioOutputUnitStop(p->unit);
     AudioUnitUninitialize(p->unit);
@@ -111,13 +111,13 @@ static void io_ring_free(IoRing* p) {
 // device's clock). A chunk stays until the device has taken all of it;
 // an error ALSA can't recover stops the thread, and the ring fills as
 // with a stalled device.
-static void* io_ring_pump(void* ctx) {
-  IoRing* p  = ctx;
-  float   out[256 * 2];
-  u32     at = 256;
+static void* HID(io_ring_pump)(void* ctx) {
+  HID(IoRing)* p  = ctx;
+  float        out[256 * 2];
+  u32          at = 256;
   while (atomic_load_explicit(&p->done, memory_order_relaxed) == 0) {
     if (at == 256) {
-      io_ring_pull(p, out, 256);
+      HID(io_ring_pull)(p, out, 256);
       at = 0;
     }
     snd_pcm_sframes_t n = snd_pcm_writei(p->unit, out + at * 2, 256 - at);
@@ -130,24 +130,24 @@ static void* io_ring_pump(void* ctx) {
   return NULL;
 }
 
-static void io_ring_hush(const char* file, int line, const char* fn, int err,
-  const char* fmt, ...) {
+static void HID(io_ring_hush)(const char* file, int line, const char* fn,
+  int err, const char* fmt, ...) {
 }
 
-static u32 io_ring_start(IoRing* p, u32 rate) {
-  snd_lib_error_set_handler(io_ring_hush);
+static u32 HID(io_ring_start)(HID(IoRing)* p, u32 rate) {
+  snd_lib_error_set_handler(HID(io_ring_hush));
   if (snd_pcm_open(&p->unit, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
     return ENODEV;
   }
   if (snd_pcm_set_params(p->unit, SND_PCM_FORMAT_FLOAT_LE,
     SND_PCM_ACCESS_RW_INTERLEAVED, 2, rate, 1, 20000) < 0
-    || pthread_create(&p->pump, NULL, io_ring_pump, p) != 0) {
+    || pthread_create(&p->pump, NULL, HID(io_ring_pump), p) != 0) {
     return ENODEV;
   }
   return 0;
 }
 
-static void io_ring_free(IoRing* p) {
+static void HID(io_ring_free)(HID(IoRing)* p) {
   if (p->unit != NULL) {
     atomic_store_explicit(&p->done, 1, memory_order_relaxed);
     if (p->pump != 0) {
@@ -160,11 +160,11 @@ static void io_ring_free(IoRing* p) {
 
 #else
 
-static u32 io_ring_start(IoRing* p, u32 rate) {
+static u32 HID(io_ring_start)(HID(IoRing)* p, u32 rate) {
   return ENOTSUP;
 }
 
-static void io_ring_free(IoRing* p) {
+static void HID(io_ring_free)(HID(IoRing)* p) {
   free(p);
 }
 
@@ -172,19 +172,20 @@ static void io_ring_free(IoRing* p) {
 #endif
 
 #ifdef CID(Audio.open)
-Term audio_open_run(Env e, Term* f, IoWork* w) {
-  u32     rate = (u32)f[0];
-  IoRing* p    = io_mem(calloc(1, sizeof *p));
-  u32     code = rate < 8000 || rate > 192000 ? EINVAL : io_ring_start(p, rate);
+Term HID(audio_open_run)(Env e, Term* f, IoWork* w) {
+  u32       rate = (u32)f[0];
+  HID(IoRing)* p = io_mem(calloc(1, sizeof *p));
+  u32       code = rate < 8000 || rate > 192000 ? EINVAL : HID(io_ring_start)(p,
+    rate);
   if (code != 0) {
-    io_ring_free(p);
+    HID(io_ring_free)(p);
     return io_fail(e, code, code == EINVAL ? NULL : "Audio.open: no audio output");
   }
   return io_done(e, io_hand((intptr_t)p));
 }
 
-static void __attribute__((constructor)) audio_open_use(void) {
-  io_eff(CID(Audio.open), audio_open_run);
+static void __attribute__((constructor)) HID(audio_open_use)(void) {
+  io_eff(CID(Audio.open), HID(audio_open_run));
 }
 #endif
 
@@ -192,11 +193,11 @@ static void __attribute__((constructor)) audio_open_use(void) {
 // The samples (interleaved L R ...) into the ring; the frames queued
 // after the write. Past the ring's room, the samples are dropped and
 // the queue answered as it is.
-Term audio_write_run(Env e, Term* f, IoWork* w) {
-  IoRing* p   = (IoRing*)(uintptr_t)io_hand_v(f[0]);
-  float   pcm[IO_RING * 2];
-  u32     n   = 0;
-  Term    s   = f[1];
+Term HID(audio_write_run)(Env e, Term* f, IoWork* w) {
+  HID(IoRing)* p   = (HID(IoRing)*)(uintptr_t)io_hand_v(f[0]);
+  float        pcm[IO_RING * 2];
+  u32          n   = 0;
+  Term         s   = f[1];
   while (term_aux(s) == CID(Con)) {
     Term fb[2];
     spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
@@ -206,22 +207,22 @@ Term audio_write_run(Env e, Term* f, IoWork* w) {
     n += 1;
     s  = fb[1];
   }
-  u64 q = io_ring_write(p, pcm, n > IO_RING * 2 ? 0 : n / 2);
+  u64 q = HID(io_ring_write)(p, pcm, n > IO_RING * 2 ? 0 : n / 2);
   return io_tup(e, f[0], q);
 }
 
-static void __attribute__((constructor)) audio_write_use(void) {
-  io_eff(CID(Audio.write), audio_write_run);
+static void __attribute__((constructor)) HID(audio_write_use)(void) {
+  io_eff(CID(Audio.write), HID(audio_write_run));
 }
 #endif
 
 #ifdef CID(Audio.close)
-Term audio_close_run(Env e, Term* f, IoWork* w) {
-  io_ring_free((IoRing*)(uintptr_t)io_hand_v(f[0]));
+Term HID(audio_close_run)(Env e, Term* f, IoWork* w) {
+  HID(io_ring_free)((HID(IoRing)*)(uintptr_t)io_hand_v(f[0]));
   return term_pak(CID(Unit), 0);
 }
 
-static void __attribute__((constructor)) audio_close_use(void) {
-  io_eff(CID(Audio.close), audio_close_run);
+static void __attribute__((constructor)) HID(audio_close_use)(void) {
+  io_eff(CID(Audio.close), HID(audio_close_run));
 }
 #endif

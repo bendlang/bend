@@ -11,10 +11,10 @@ static NSEvent* fake_mouse(NSWindow* w, NSEventType type, NSPoint p, u32 k) {
 }
 
 Term fake_run(Env e, Term* f, IoWork* w) {
-  NSWindow* win     = (__bridge NSWindow*)(void*)(uintptr_t)io_hand_v(f[0]);
-  BendView* view    = (BendView*)win.contentView;
-  NSSize    size    = view.frame.size;
-  NSString* gravity = view.layer.contentsGravity;
+  NSWindow* win       = (__bridge NSWindow*)(void*)(uintptr_t)io_hand_v(f[0]);
+  HID(BendView)* view = (HID(BendView)*)win.contentView;
+  NSSize    size      = view.frame.size;
+  NSString* gravity   = view.layer.contentsGravity;
   [view setFrameSize:NSMakeSize(256, 256)];
   view.layer.contentsGravity = kCAGravityResizeAspect;
 #define FAKE_AT(x, y) [view convertPoint:NSMakePoint(x, y) toView:nil]
@@ -42,54 +42,54 @@ Term fake_run(Env e, Term* f, IoWork* w) {
 #define FAKE_T 4000000000u
 
 // Devices 31 to 33: a mouse, a touch screen and a pen.
-static WinXIClass  fake_touch = { XITouchClass, 32, XIDirectTouch };
-static WinXIClass  fake_force;
-static WinXIClass* fake_of[2] = { &fake_touch, &fake_force };
-static WinXIDevice fake_devs[3];
+static HID(WinXIClass)  fake_touch = { XITouchClass, 32, XIDirectTouch };
+static HID(WinXIClass)  fake_force;
+static HID(WinXIClass)* fake_of[2] = { &fake_touch, &fake_force };
+static HID(WinXIDevice) fake_devs[3];
 
-static WinXIDevice* fake_query(Display* dpy, int id, int* n) {
+static HID(WinXIDevice)* fake_query(Display* dpy, int id, int* n) {
   *n = id >= 31 && id <= 33;
   return *n ? &fake_devs[id - 31] : NULL;
 }
 
-static void fake_free(WinXIDevice* d) {
+static void fake_free(HID(WinXIDevice)* d) {
 }
 
-static void fake_transform(Display* dpy, XID p, BendRenderTransform* t) {
+static void fake_transform(Display* dpy, XID p, HID(BendRenderTransform)* t) {
 }
 
-static void fake_xi(BendWin* win, int type, int dev, int detail, double x,
+static void fake_xi(HID(BendWin)* win, int type, int dev, int detail, double x,
   double y, u32 ms, f32* dx, f32* dy) {
   unsigned char mask = 0;
-  WinXIEvent ev = { .h = { .evtype = type, .serial = 1, .time = ms,
+  HID(WinXIEvent) ev = { .h = { .evtype = type, .serial = 1, .time = ms,
     .sourceid = dev, .detail = detail, .event_x = x, .event_y = y },
     .vals = { 1, &mask, NULL } };
   XGenericEventCookie c = { .evtype = type, .data = &ev };
-  window_xi_event(win, &c, dx, dy);
+  HID(window_xi_event)(win, &c, dx, dy);
 }
 
 Term fake_run(Env e, Term* f, IoWork* w) {
-  BendWin* win = (BendWin*)(uintptr_t)io_hand_v(f[0]);
-  BendWin  was = *win;
-  WinXIDevice* (*query)(Display*, int, int*) = window_xi_query;
-  void         (*drop)(WinXIDevice*)          = window_xi_free;
-  void (*transform)(Display*, XID, BendRenderTransform*) =
-    window_render.transform;
+  HID(BendWin)* win = (HID(BendWin)*)(uintptr_t)io_hand_v(f[0]);
+  HID(BendWin)  was = *win;
+  HID(WinXIDevice)* (*query)(Display*, int, int*) = HID(window_xi_query);
+  void              (*drop)(HID(WinXIDevice)*)    = HID(window_xi_free);
+  void (*transform)(Display*, XID, HID(BendRenderTransform)*) =
+    HID(window_render).transform;
   f32      dx  = 0, dy = 0;
-  fake_force   = (WinXIClass){ XIValuatorClass, 33, 2,
+  fake_force   = (HID(WinXIClass)){ XIValuatorClass, 33, 2,
     XInternAtom(win->dpy, "Abs Pressure", False), 0, 1000 };
-  fake_devs[0] = (WinXIDevice){ 31, "fake", 0, 0, True, 0, NULL };
-  fake_devs[1] = (WinXIDevice){ 32, "fake", 0, 0, True, 1, fake_of };
-  fake_devs[2] = (WinXIDevice){ 33, "fake", 0, 0, True, 1, fake_of + 1 };
-  window_xi_query         = fake_query;
-  window_xi_free          = fake_free;
-  window_render.transform = fake_transform;
+  fake_devs[0] = (HID(WinXIDevice)){ 31, "fake", 0, 0, True, 0, NULL };
+  fake_devs[1] = (HID(WinXIDevice)){ 32, "fake", 0, 0, True, 1, fake_of };
+  fake_devs[2] = (HID(WinXIDevice)){ 33, "fake", 0, 0, True, 1, fake_of + 1 };
+  HID(window_xi_query)         = fake_query;
+  HID(window_xi_free)          = fake_free;
+  HID(window_render).transform = fake_transform;
   win->nd       = 0;
   win->width    = 256;
   win->height   = 256;
   win->full_now = true;
   win->source   = 1;
-  window_viewport(win);
+  HID(window_viewport)(win);
   fake_xi(win, XI_Motion, 31, 0, 128, 160, FAKE_T + 1, &dx, &dy);
   fake_xi(win, XI_Motion, 31, 0, 128, 10, FAKE_T + 2, &dx, &dy);
   fake_xi(win, XI_ButtonPress, 31, 1, 128, 10, FAKE_T + 3, &dx, &dy);
@@ -108,13 +108,13 @@ Term fake_run(Env e, Term* f, IoWork* w) {
   win->warp_serial = 0;
   win->warp_floor  = 0;
   fake_xi(win, XI_Motion, 31, 0, 168, 108, FAKE_T + 13, &dx, &dy);
-  window_look_push(win, dx, dy);
-  WinQueue q = win->q;
+  HID(window_look_push)(win, dx, dy);
+  HID(WinQueue) q = win->q;
   *win = was;
   win->q = q;
-  window_xi_query         = query;
-  window_xi_free          = drop;
-  window_render.transform = transform;
+  HID(window_xi_query)         = query;
+  HID(window_xi_free)          = drop;
+  HID(window_render).transform = transform;
   return io_tup(e, f[0], io_str(e, "x11", 3));
 }
 

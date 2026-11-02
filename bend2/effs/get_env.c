@@ -1,7 +1,7 @@
 // IO
 // ==
 
-Term io_get_env_run(Env e, Term* f, IoWork* w) {
+Term HID(io_get_env_run)(Env e, Term* f, IoWork* w) {
   uint64_t n = 0;
   char* name = io_cstr(e, f[0], &n);
   // getenv("A=B") may match the entry "A=B=C" and answer part of A's value.
@@ -12,6 +12,6 @@ Term io_get_env_run(Env e, Term* f, IoWork* w) {
     : io_done(e, io_str(e, got, strlen(got)));
 }
 
-static void __attribute__((constructor)) io_get_env_use(void) {
-  io_eff(CID(IO.get_env), io_get_env_run);
+static void __attribute__((constructor)) HID(io_get_env_use)(void) {
+  io_eff(CID(IO.get_env), HID(io_get_env_run));
 }

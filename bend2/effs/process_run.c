@@ -28,9 +28,9 @@ typedef struct {
   u32 timeout;
   u32 status;
   u32 code;
-} ProcessCall;
+} HID(ProcessCall);
 
-static void process_free(ProcessCall* p) {
+static void HID(process_free)(HID(ProcessCall)* p) {
   for (u32 i = 0; i < p->argc; i += 1) {
     free(p->argv[i]);
   }
@@ -41,8 +41,8 @@ static void process_free(ProcessCall* p) {
   free(p);
 }
 
-static void process_append(ProcessCall* p, bool error, const char* data,
-  u64 size) {
+static void HID(process_append)(HID(ProcessCall)* p, bool error,
+  const char* data, u64 size) {
   if (size > (u64)p->max - p->out_len - p->err_len) {
     p->code = EFBIG;
     return;
@@ -67,7 +67,7 @@ static void process_append(ProcessCall* p, bool error, const char* data,
 }
 
 // A descriptor that polls readable once the child exits.
-static int process_exitfd(pid_t child) {
+static int HID(process_exitfd)(pid_t child) {
 #ifdef __APPLE__
   int kq = kqueue();
   struct kevent ev;
@@ -84,12 +84,12 @@ static int process_exitfd(pid_t child) {
 #endif
 }
 
-static int process_nonblock(int fd) {
+static int HID(process_nonblock)(int fd) {
   int flags = fcntl(fd, F_GETFL);
   return flags < 0 ? -1 : fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 }
 
-static int process_pipe(int fds[2]) {
+static int HID(process_pipe)(int fds[2]) {
   if (pipe(fds) != 0) {
     return -1;
   }
@@ -117,7 +117,7 @@ static int process_pipe(int fds[2]) {
 // rather than a skip to another program, and an error from a candidate that
 // stat can't see (behind a locked directory, say) moves on, as EACCES from
 // one it can does once no later entry runs.
-static int process_spawn(pid_t* child, char** argv,
+static int HID(process_spawn)(pid_t* child, char** argv,
   posix_spawn_file_actions_t* actions, posix_spawnattr_t* attrp) {
 #ifdef __APPLE__
   const char* name = argv[0];
@@ -162,21 +162,21 @@ static int process_spawn(pid_t* child, char** argv,
 #endif
 }
 
-static void process_call(IoWork* w) {
-  ProcessCall* p = (ProcessCall*)w->data;
+static void HID(process_call)(IoWork* w) {
+  HID(ProcessCall)* p = (HID(ProcessCall)*)w->data;
   int pipes[3][2] = {{-1, -1}, {-1, -1}, {-1, -1}};
   pid_t child = -1;
   int status = 0;
   int exitfd = -1;
   for (int i = 0; i < 3; i += 1) {
-    if (process_pipe(pipes[i]) != 0) {
+    if (HID(process_pipe)(pipes[i]) != 0) {
       p->code = errno;
       goto done;
     }
   }
-  if (process_nonblock(pipes[0][1]) != 0
-    || process_nonblock(pipes[1][0]) != 0
-    || process_nonblock(pipes[2][0]) != 0) {
+  if (HID(process_nonblock)(pipes[0][1]) != 0
+    || HID(process_nonblock)(pipes[1][0]) != 0
+    || HID(process_nonblock)(pipes[2][0]) != 0) {
     p->code = errno;
     goto done;
   }
@@ -217,7 +217,7 @@ static void process_call(IoWork* w) {
   }
 #endif
   if (p->code == 0) {
-    p->code = process_spawn(&child, p->argv, &actions, attrp);
+    p->code = HID(process_spawn)(&child, p->argv, &actions, attrp);
   }
   if (attrp != NULL) {
     posix_spawnattr_destroy(attrp);
@@ -233,7 +233,7 @@ static void process_call(IoWork* w) {
   if (p->input_len == 0) {
     close(pipes[0][1]); pipes[0][1] = -1;
   }
-  exitfd = process_exitfd(child);
+  exitfd = HID(process_exitfd)(child);
   u64 deadline = io_tick() + (u64)p->timeout * 1000000ull;
   u64 written  = 0;
   while (p->code == 0) {
@@ -289,7 +289,7 @@ static void process_call(IoWork* w) {
         char buf[8192];
         ssize_t n = read(pipes[i][0], buf, sizeof buf);
         if (n > 0) {
-          process_append(p, i == 2, buf, (u64)n);
+          HID(process_append)(p, i == 2, buf, (u64)n);
         } else if (n == 0) {
           close(pipes[i][0]); pipes[i][0] = -1;
         } else if (errno != EAGAIN && errno != EINTR) {
@@ -322,8 +322,8 @@ done:
   }
 }
 
-static Term process_pack(Env e, IoWork* w) {
-  ProcessCall* p = (ProcessCall*)w->data;
+static Term HID(process_pack)(Env e, IoWork* w) {
+  HID(ProcessCall)* p = (HID(ProcessCall)*)w->data;
   Term result;
   if (p->code != 0) {
     result = io_fail(e, p->code, NULL);
@@ -332,12 +332,12 @@ static Term process_pack(Env e, IoWork* w) {
     Term err = io_str(e, p->err == NULL ? "" : p->err, p->err_len);
     result = io_done(e, io_tup(e, p->status, io_tup(e, out, err)));
   }
-  process_free(p);
+  HID(process_free)(p);
   return result;
 }
 
-Term process_run_run(Env e, Term* f, IoWork* w) {
-  ProcessCall* p = io_mem(calloc(1, sizeof(ProcessCall)));
+Term HID(process_run_run)(Env e, Term* f, IoWork* w) {
+  HID(ProcessCall)* p = io_mem(calloc(1, sizeof(HID(ProcessCall))));
   u64 len = 0;
   char* command = io_cstr(e, f[0], &len);
   p->code = io_nul(command, len) ? EINVAL : 0;
@@ -367,10 +367,10 @@ Term process_run_run(Env e, Term* f, IoWork* w) {
     p->code = EINVAL;
   }
   w->data = (char*)p;
-  return p->code != 0 ? process_pack(e, w)
-    : io_work(w, process_call, process_pack);
+  return p->code != 0 ? HID(process_pack)(e, w)
+    : io_work(w, HID(process_call), HID(process_pack));
 }
 
-static void __attribute__((constructor)) process_run_use(void) {
-  io_eff(CID(Process.run), process_run_run);
+static void __attribute__((constructor)) HID(process_run_use)(void) {
+  io_eff(CID(Process.run), HID(process_run_run));
 }

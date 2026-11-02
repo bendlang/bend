@@ -3,7 +3,7 @@
 
 // Sends what is left; a full socket (non-blocking, so EAGAIN) parks the
 // computation until the socket is writable, and the loop resumes here.
-static Term tcp_send_more(Env e, IoWork* w) {
+static Term HID(tcp_send_more)(Env e, IoWork* w) {
   int fd = (int)w->hand;
   w->code = 0;
   while (w->code == 0 && (u64)w->made < w->size) {
@@ -18,7 +18,7 @@ static Term tcp_send_more(Env e, IoWork* w) {
     }
     w->made += io_sys_end(w, n);
     if (io_again(w)) {
-      return io_wait_on(w, fd, POLLOUT, w->time, tcp_send_more);
+      return io_wait_on(w, fd, POLLOUT, w->time, HID(tcp_send_more));
     }
   }
   u64  left = w->size - (u64)w->made;
@@ -30,17 +30,17 @@ static Term tcp_send_more(Env e, IoWork* w) {
 }
 
 // at is the try_ deadline (past it, Wait{rest}), 0 for the blocking twins.
-static Term tcp_send_start(Env e, Term* f, IoWork* w, u64 at) {
+static Term HID(tcp_send_start)(Env e, Term* f, IoWork* w, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cstr(e, f[1], &w->size);
   w->made = 0;
   w->code = 0;
   w->time = at;
-  return tcp_send_more(e, w);
+  return HID(tcp_send_more)(e, w);
 }
 
 // A value past 255 fails with EINVAL before any byte is sent, list kept.
-static Term tcp_send_bytes_start(Env e, Term* f, IoWork* w, u64 at) {
+static Term HID(tcp_send_bytes_start)(Env e, Term* f, IoWork* w, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   for (Term s = f[1]; term_aux(s) == CID(Con);) {
     u64 l = term_peek(e.mem, s);
@@ -56,53 +56,53 @@ static Term tcp_send_bytes_start(Env e, Term* f, IoWork* w, u64 at) {
   w->made = 0;
   w->code = 0;
   w->time = at;
-  return tcp_send_more(e, w);
+  return HID(tcp_send_more)(e, w);
 }
 
 #ifdef CID(TCP.send)
 
-Term tcp_send_run(Env e, Term* f, IoWork* w) {
-  return tcp_send_start(e, f, w, 0);
+Term HID(tcp_send_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_send_start)(e, f, w, 0);
 }
 
-static void __attribute__((constructor)) tcp_send_use(void) {
-  io_eff(CID(TCP.send), tcp_send_run);
+static void __attribute__((constructor)) HID(tcp_send_use)(void) {
+  io_eff(CID(TCP.send), HID(tcp_send_run));
 }
 
 #endif
 
 #ifdef CID(TCP.send_bytes)
 
-Term tcp_send_bytes_run(Env e, Term* f, IoWork* w) {
-  return tcp_send_bytes_start(e, f, w, 0);
+Term HID(tcp_send_bytes_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_send_bytes_start)(e, f, w, 0);
 }
 
-static void __attribute__((constructor)) tcp_send_bytes_use(void) {
-  io_eff(CID(TCP.send_bytes), tcp_send_bytes_run);
+static void __attribute__((constructor)) HID(tcp_send_bytes_use)(void) {
+  io_eff(CID(TCP.send_bytes), HID(tcp_send_bytes_run));
 }
 
 #endif
 
 #ifdef CID(TCP.try_send)
 
-Term tcp_try_send_run(Env e, Term* f, IoWork* w) {
-  return tcp_send_start(e, f, w, io_until(f[2]));
+Term HID(tcp_try_send_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_send_start)(e, f, w, io_until(f[2]));
 }
 
-static void __attribute__((constructor)) tcp_try_send_use(void) {
-  io_eff(CID(TCP.try_send), tcp_try_send_run);
+static void __attribute__((constructor)) HID(tcp_try_send_use)(void) {
+  io_eff(CID(TCP.try_send), HID(tcp_try_send_run));
 }
 
 #endif
 
 #ifdef CID(TCP.try_send_bytes)
 
-Term tcp_try_send_bytes_run(Env e, Term* f, IoWork* w) {
-  return tcp_send_bytes_start(e, f, w, io_until(f[2]));
+Term HID(tcp_try_send_bytes_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_send_bytes_start)(e, f, w, io_until(f[2]));
 }
 
-static void __attribute__((constructor)) tcp_try_send_bytes_use(void) {
-  io_eff(CID(TCP.try_send_bytes), tcp_try_send_bytes_run);
+static void __attribute__((constructor)) HID(tcp_try_send_bytes_use)(void) {
+  io_eff(CID(TCP.try_send_bytes), HID(tcp_try_send_bytes_run));
 }
 
 #endif

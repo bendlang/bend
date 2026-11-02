@@ -7,7 +7,7 @@
 // line stops after its '\n', read a byte at a time so nothing past it
 // leaves the file. An error after some bytes answers them (a pipe has
 // already given them up); at reads at w->made and leaves the position.
-static void file_read_fill(IoWork* w, int at, int line) {
+static void HID(file_read_fill)(IoWork* w, int at, int line) {
   int fd  = (int)w->hand;
   u64 got = 0;
   w->code = 0;
@@ -27,11 +27,11 @@ static void file_read_fill(IoWork* w, int at, int line) {
   w->size = got;
 }
 
-static void file_read_call(IoWork* w) {
-  file_read_fill(w, 0, 0);
+static void HID(file_read_call)(IoWork* w) {
+  HID(file_read_fill)(w, 0, 0);
 }
 
-static Term file_read_start(Term file, u64 max, IoWork* w,
+static Term HID(file_read_start)(Term file, u64 max, IoWork* w,
   IoCall call, IoPack pack) {
   w->hand = (intptr_t)io_hand_v(file);
   w->word = max < INT32_MAX ? max : INT32_MAX;
@@ -41,7 +41,7 @@ static Term file_read_start(Term file, u64 max, IoWork* w,
 
 #if defined(CID(File.read)) || defined(CID(File.read_line))
 
-static Term file_read_pack(Env e, IoWork* w) {
+static Term HID(file_read_pack)(Env e, IoWork* w) {
   Term r = io_res(e, w, io_str(e, w->data, w->size));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
@@ -51,35 +51,37 @@ static Term file_read_pack(Env e, IoWork* w) {
 
 #ifdef CID(File.read)
 
-Term file_read_run(Env e, Term* f, IoWork* w) {
-  return file_read_start(f[0], f[1], w, file_read_call, file_read_pack);
+Term HID(file_read_run)(Env e, Term* f, IoWork* w) {
+  return HID(file_read_start)(f[0], f[1], w, HID(file_read_call),
+    HID(file_read_pack));
 }
 
-static void __attribute__((constructor)) file_read_use(void) {
-  io_eff(CID(File.read), file_read_run);
+static void __attribute__((constructor)) HID(file_read_use)(void) {
+  io_eff(CID(File.read), HID(file_read_run));
 }
 
 #endif
 
 #ifdef CID(File.read_line)
 
-static void file_read_line_call(IoWork* w) {
-  file_read_fill(w, 0, 1);
+static void HID(file_read_line_call)(IoWork* w) {
+  HID(file_read_fill)(w, 0, 1);
 }
 
-Term file_read_line_run(Env e, Term* f, IoWork* w) {
-  return file_read_start(f[0], f[1], w, file_read_line_call, file_read_pack);
+Term HID(file_read_line_run)(Env e, Term* f, IoWork* w) {
+  return HID(file_read_start)(f[0], f[1], w, HID(file_read_line_call),
+    HID(file_read_pack));
 }
 
-static void __attribute__((constructor)) file_read_line_use(void) {
-  io_eff(CID(File.read_line), file_read_line_run);
+static void __attribute__((constructor)) HID(file_read_line_use)(void) {
+  io_eff(CID(File.read_line), HID(file_read_line_run));
 }
 
 #endif
 
 #if defined(CID(File.read_bytes)) || defined(CID(File.read_at))
 
-static Term file_read_bytes_pack(Env e, IoWork* w) {
+static Term HID(file_read_bytes_pack)(Env e, IoWork* w) {
   Term r = io_res(e, w, io_list(e, w->data, w->size));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
@@ -89,12 +91,13 @@ static Term file_read_bytes_pack(Env e, IoWork* w) {
 
 #ifdef CID(File.read_bytes)
 
-Term file_read_bytes_run(Env e, Term* f, IoWork* w) {
-  return file_read_start(f[0], f[1], w, file_read_call, file_read_bytes_pack);
+Term HID(file_read_bytes_run)(Env e, Term* f, IoWork* w) {
+  return HID(file_read_start)(f[0], f[1], w, HID(file_read_call),
+    HID(file_read_bytes_pack));
 }
 
-static void __attribute__((constructor)) file_read_bytes_use(void) {
-  io_eff(CID(File.read_bytes), file_read_bytes_run);
+static void __attribute__((constructor)) HID(file_read_bytes_use)(void) {
+  io_eff(CID(File.read_bytes), HID(file_read_bytes_run));
 }
 
 #endif
@@ -103,17 +106,17 @@ static void __attribute__((constructor)) file_read_bytes_use(void) {
 
 // The bytes at an offset, as file_read_bytes gives them; the position of
 // the file does not move.
-static void file_read_at_call(IoWork* w) {
-  file_read_fill(w, 1, 0);
+static void HID(file_read_at_call)(IoWork* w) {
+  HID(file_read_fill)(w, 1, 0);
 }
 
-Term file_read_at_run(Env e, Term* f, IoWork* w) {
+Term HID(file_read_at_run)(Env e, Term* f, IoWork* w) {
   w->made = (intptr_t)f[1];
-  return file_read_start(f[0], f[2], w, file_read_at_call, file_read_bytes_pack);
+  return HID(file_read_start)(f[0], f[2], w, HID(file_read_at_call), HID(file_read_bytes_pack));
 }
 
-static void __attribute__((constructor)) file_read_at_use(void) {
-  io_eff(CID(File.read_at), file_read_at_run);
+static void __attribute__((constructor)) HID(file_read_at_use)(void) {
+  io_eff(CID(File.read_at), HID(file_read_at_run));
 }
 
 #endif
