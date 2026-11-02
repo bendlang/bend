@@ -3786,13 +3786,17 @@ OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
   u32 n = got ? KEEP(cls) : cls < NCLS ? QUANTUM >> cls : 1;
   if (!got) {
     u32 pages = (n << cls) >> PAGE_BITS;
-    u32 p     = a32_add(a32_at(H, H_BUMP), pages);
-    if ((u64)p + pages > a32_load_acq(a32_at(H, H_CAP))
-      && !corpus_grow(H, (u64)p + pages)) {
+    u64 m = !DEVICE && cls >= NCLS ? (1ull << cls) - 1 : 0;
+    u32 p = m ? a32_load(a32_at(H, H_BUMP)) : a32_add(a32_at(H, H_BUMP), pages), q;
+    do {
+      got = (HEAP_OFF + ((u64)p << PAGE_BITS) + m) & ~m;
+      q   = (u32)((got - HEAP_OFF) >> PAGE_BITS);
+    } while (m && !a32_cas(a32_at(H, H_BUMP), &p, q + pages));
+    if ((u64)q + pages > a32_load_acq(a32_at(H, H_CAP))
+      && !corpus_grow(H, (u64)q + pages)) {
       err_post(H, ERR_HEAP);
       return HEAP_OFF;
     }
-    got = HEAP_OFF + ((u64)p << PAGE_BITS);
     for (u32 i = 1; i <= n; i += 1) {
       H[got + ((u64)(i - 1) << cls)] = i < n ? got + ((u64)i << cls) : 0;
     }
@@ -3945,6 +3949,38 @@ INLINE u32 blk_span(Term t) {
   return blk_wcls(term_tag(t) == TAG_ARR, blk_cls(t));
 }
 
+#if !DEVICE
+static void* view_map(u64 bytes) {
+  void* p = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
+    MAP_PRIVATE | MAP_ANON | MAP_NORESERVE, -1, 0);
+  if (p == MAP_FAILED) { abort(); }
+  return p;
+}
+#endif
+#define blk_view(t) (!DEVICE && (term_aux(t) & 32))
+#if !DEVICE
+static _Atomic u64* VIEW_BITS;
+__attribute__((constructor)) static void view_init(void) {
+  VIEW_BITS = view_map(1ull << 37);
+}
+#endif
+// a view's sibling sets its parent's midpoint bit; the second to die climbs
+INLINE void view_free(Env e, Term t) {
+#if !DEVICE
+  u32 s = blk_span(t), r = (term_aux(t) >> 6) & 31;
+  u64 loc = term_loc(t);
+  while (s < r) {
+    u64 up = loc & ~((2ull << s) - 1), mid = up + (1ull << s), bit = 1ull << (mid & 63);
+    if (!(atomic_fetch_xor_explicit(&VIEW_BITS[mid >> 6], bit, memory_order_acq_rel) & bit)) {
+      return;
+    }
+    loc = up;
+    s += 1;
+  }
+  heap_free(e, r, loc);
+#endif
+}
+
 // A node is freed before its last live child, its spine swapped last. An end
 // over 255 goes in its trivial last cell.
 FAR void term_drop(Env e, Term t) {
@@ -3967,7 +4003,15 @@ FAR void term_drop(Env e, Term t) {
     if (!term_triv(t)) {
       u64 tag = term_tag(t);
       if (tag == TAG_BUF) {
-        heap_free(e, blk_span(t), term_loc(t));
+        blk_view(t) ? view_free(e, t) : heap_free(e, blk_span(t), term_loc(t));
+#if !DEVICE
+      } else if (tag == TAG_ARR && blk_view(t)) {
+        u64 at = term_loc(t);
+        for (u64 j = 0; j < 1ull << blk_cls(t); j += 1) {
+          if (!term_triv(H[at + j])) { term_drop(e, H[at + j]); }
+        }
+        view_free(e, t);
+#endif
       } else {
         u32 aux = term_aux(t);
         u64 loc = term_loc(t);
@@ -4130,7 +4174,7 @@ INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
 }
 
 INLINE void blk_free(Env e, Term t) {
-  blk_shr(t) ? term_drop(e, t) : heap_free(e, blk_span(t), term_loc(t));
+  blk_shr(t) ? term_drop(e, t) : blk_view(t) ? view_free(e, t) : heap_free(e, blk_span(t), term_loc(t));
 }
 
 OUTLINE Term blk_copy(Env e, Term a) {
@@ -4164,7 +4208,19 @@ INLINE Term blk_node(Env e, Term l, Term r) {
   return term_blk(arr, c + 1, n);
 }
 
-INLINE Term blk_half(Env e, Term a, u32 hi) {
+FAR Term blk_part(Env e, Term a, u32 hi, u32 c, u32 cw) {
+  DEV u64* H = e.mem;
+  bool arr = term_tag(a) == TAG_ARR;
+  u64 src = blk_loc(H, a);
+  BLK_ALLOC(n, cw)
+  blk_fill(e, n, src + ((u64)hi << cw), 1ull << cw, arr && blk_shr(a));
+  if (hi) {
+    blk_free(e, a);
+  }
+  return term_blk(arr, c, n);
+}
+
+__attribute__((always_inline)) INLINE Term blk_half(Env e, Term a, u32 hi) {
   DEV u64* H = e.mem;
   bool arr = term_tag(a) == TAG_ARR;
   u32 c = blk_cls(a);
@@ -4174,13 +4230,18 @@ INLINE Term blk_half(Env e, Term a, u32 hi) {
   }
   c -= 1;
   u32 cw = blk_wcls(arr, c);
+  if (arr || c > 0) {
+#if !DEVICE
+    u32 r = blk_view(a) ? (term_aux(a) >> 6) & 31 : blk_span(a);
+    if (!blk_shr(a) && (r - cw <= 4 || cw < 3)) {
+      return term_make(arr ? TAG_ARR : TAG_BUF, c | 32 | (r << 6), term_loc(a) + ((u64)hi << cw));
+    }
+#endif
+    return blk_part(e, a, hi, c, cw);
+  }
   u64 src = blk_loc(H, a);
   BLK_ALLOC(n, cw)
-  if (!arr && c == 0) {
-    H[n] = (u64)*blk_ptr(H, src, hi);
-  } else {
-    blk_fill(e, n, src + ((u64)hi << cw), 1ull << cw, arr && blk_shr(a));
-  }
+  H[n] = (u64)*blk_ptr(H, src, hi);
   if (hi) {
     blk_free(e, a);
   }
