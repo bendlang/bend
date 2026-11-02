@@ -1013,7 +1013,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
       throw Err(book, ctx_nil(), "an import on its side of the hub (a hub file imports only hub files, and a local path stays out of the hub's store)", "'" + m[1] + "'", sp);
     }
     if (!ok(sub, in_lib)) {
-      throw bad(" (resolves to '" + path.posix.relative(dir, got) + "')");
+      throw bad(" (resolves to '" + (in_lib ? got.slice(lib.length) : path.posix.relative(dir, got)) + "')");
     }
     al[m[2]] = sub;
     await book_load(book, got, sub, seen, sp, top);
