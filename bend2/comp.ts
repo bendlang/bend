@@ -4876,6 +4876,7 @@ static void gpu_note(const char* path) {
 
 #if !BEND_CUDA
 #define gpu_map pool_mmap
+#define gpu_near(p)
 #endif
 
 #if BEND_METAL || BEND_CUDA
@@ -5162,12 +5163,26 @@ static void gpu_kernel(u32 pass, u32 at) {
   }
 }
 
-// A pass with no frontier returns at once.
+// Moves the page the host just touched to the device before a kernel faults
+// on it.
+static void gpu_near(void* p) {
+  CUdeviceptr at = (uintptr_t)p & ~4095ull;
+#if CUDA_VERSION >= 13000
+  cuMemPrefetchAsync(at, 4096,
+    (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
+#else
+  cuMemPrefetchAsync(at, 4096, gpu_dev, NULL);
+#endif
+}
+
+// A pass with no frontier returns at once. Reading H_FRONT pulls the header
+// back to the host, so each batch sends it to the device again.
 static void gpu_pass(u64* H) {
   if (cuMemcpyHtoD(gpu_front, &H[H_FRONT], 8) != CUDA_SUCCESS) {
     err_fail("device fault");
   }
   for (u32 n = 1; H[H_FRONT] != 0; n = n < 32 ? 2 * n : 64) {
+    gpu_near(H);
     for (u32 i = 0; i < n; i += 1) {
       gpu_run();
     }
@@ -5221,6 +5236,9 @@ static void cube_run(u64* H, bool gpu) {
   u32 f = turn_take(H);
   if (gpu) {
     turn_set(H, f);
+    gpu_near(ring_get(H, 0));
+    gpu_near(ring_put(H, 0));
+    gpu_near(ring_slot(H, 0, *ring_put(H, 0) - 1));
   }
   while (!root_done(H)) {
     if (f == 0) {
@@ -5342,6 +5360,7 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
       Term cont = H[tl];
       u32  idx  = (u32)(H[tl + 1] >> 32) & 0xFFFF;
       H[tl]     = TERM_HOLE;
+      gpu_near(H + tl);
       a32_store(a32_at(H, H_CURSOR), 1);
       ring_push(H, 0, t);
       cube_run(H, true);
