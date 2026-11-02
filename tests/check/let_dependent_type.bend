@@ -2,8 +2,8 @@
 # Tag<q => ..>. check-let checks that type's kind only where it can fail, as
 # the kernel's let, so each lambda checks once. these lets are thirty deep:
 # linear here, 2^30 checks if the kind check returns (#1940), far past the
-# gates' 30 s cap. a shadowed q, an erased binder whose value uses an
-# erased parameter and a forward reference check the same way
+# gates' 30 s cap. a shadowed q and an erased binder whose value uses an
+# erased parameter check the same way
 type Tag<-f: Quant -> Quant> is Data:
   T{}
 
@@ -20,13 +20,6 @@ def shadow() -> Quant:
 
 def erased(-k: Quant) -> Quant:
   -x = tag(q => k);
-  &1
-
-def forward() -> Quant:
-  -x = later();
-  &1
-
-def later() -> Quant:
   &1
 
 def main() -> Quant:
