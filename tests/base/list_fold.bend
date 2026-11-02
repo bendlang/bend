@@ -18,6 +18,10 @@ def cons(h: U32, t: List<&2, U32>) -> List<&2, U32>:
 def is_odd(x: U32) -> Bool:
   Bool.not(U32.is_even(x))
 
+# The last digit identifies an item; only the tens take part in ordering.
+def key_le(a: U32, b: U32) -> Bool:
+  U32.is_le(U32.div(a, 10), U32.div(b, 10))
+
 def main() -> IO(Unit):
   do IO<Unit>:
     IO.print(u32s(List.filter(~U32, ~is_odd, [1, 2, 3, 4, 5])))
@@ -35,6 +39,10 @@ def main() -> IO(Unit):
     IO.print(u32s(List.sort(~U32, ~U32.is_le, [])))
     IO.print(u32s(List.sort(~U32, ~U32.is_ge, [2, 1, 3])))
     IO.print(strs(List.sort(~String, ~String.is_le, ["pear", "apple", "fig"])))
+    IO.print(u32s(List.sort(~U32, ~U32.is_le, [7])))
+    IO.print(u32s(List.sort(~U32, ~U32.is_le, [2, 1])))
+    IO.print(u32s(List.sort(~U32, ~U32.is_le, [2, 1, 0])))
+    IO.print(u32s(List.sort(~U32, ~key_le, [21, 22, 11, 23, 12, 24, 13])))
     List.for_each(~&2, ~U32, ~(x => IO.print(U32.show(x))), [1, 2])
 
 #|[1, 3, 5]
@@ -52,5 +60,9 @@ def main() -> IO(Unit):
 #|[]
 #|[3, 2, 1]
 #|[apple, fig, pear]
+#|[7]
+#|[1, 2]
+#|[0, 1, 2]
+#|[11, 12, 13, 21, 22, 23, 24]
 #|1
 #|2
