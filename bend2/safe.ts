@@ -473,10 +473,10 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   }
 }
 
-// Open up to n parameters of T from scope s. Supplied columns keep their
-// checked domains; substitute them into later domains. Bind other parameters
-// to kernel variables. Return the binders, arguments, scope and rest of T.
-function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Scope; ps: Binder[]; xs: HTerm[]; T: HTerm } {
+// T's first n parameters, from scope s: a column takes its checked domain
+// (a λ goes on bare, to β-reduce), any other binds a kernel variable.
+// Returns the binders, the arguments, the scope and the rest of T
+function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number) {
   const r = { s, ps: [] as Binder[], xs: [] as HTerm[], T };
   for (let j = 0; j < n; j++) {
     const F = wnf(e.book, r.T);
@@ -489,8 +489,8 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
       r.ps.push([q, r.s.D, term(e, r.s, F.A, false)]);
       r.s = scope_var(r.s, F.A, q);
     }
-    r.xs.push(v == null ? B.Var(F.k, r.s.d - 1) : typed(v, F.A));
-    r.T = F.B(r.xs[j]);
+    r.xs.push(v == null ? B.Var(F.k, r.s.d - 1) : v.$ === "Var" ? v : typed(v, F.A));
+    r.T = F.B(v?.$ === "Lam" ? v : r.xs[j]);
   }
   return r;
 }
