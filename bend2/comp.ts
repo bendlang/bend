@@ -4877,6 +4877,7 @@ static void gpu_note(const char* path) {
 #if !BEND_CUDA
 #define gpu_map pool_mmap
 #define gpu_near(p)
+#define gpu_bang(beg)
 #endif
 
 #if BEND_METAL || BEND_CUDA
@@ -5068,7 +5069,92 @@ fail:;
 
 #undef GPU_CHECK
 
+// EXPERIMENT #1992, to remove before any merge: BEND_NEAR=0 turns the
+// prefetches off, and a line at exit gives medians over the second half of
+// the bangs, when the weights are already resident.
+static bool near_off;
+static u64  near_calls, near_ns, near_fails, bang_at;
+static u32  bang_n, bang_cap;
+static u32* bang_us;
+static u32* host_us;
+
+static u64 near_now(void) {
+  struct timespec t;
+  clock_gettime(CLOCK_MONOTONIC, &t);
+  return t.tv_sec * 1000000000ull + t.tv_nsec;
+}
+
+static int near_cmp(const void* a, const void* b) {
+  u32 x = *(const u32*)a, y = *(const u32*)b;
+  return x < y ? -1 : x > y;
+}
+
+static u32 near_med(u32* xs) {
+  u32 n = bang_n - bang_n / 2;
+  qsort(xs + bang_n / 2, n, sizeof(u32), near_cmp);
+  return xs[bang_n / 2 + n / 2];
+}
+
+static void near_report(void) {
+  if (bang_n == 0) {
+    return;
+  }
+  u32 bang = near_med(bang_us);
+  u32 host = near_med(host_us);
+  fprintf(stderr, "bend: near=%s bangs=%u cycle_us=%u bang_us=%u host_us=%u"
+    " prefetches_per_bang=%.1f prefetch_us=%.1f failed=%llu corpus=0x%llx"
+    " ring_off=%llu stak_off=%llu heap_off=%llu\n",
+    near_off ? "off" : "on", bang_n, bang + host, bang, host,
+    (double)near_calls / bang_n,
+    near_calls ? near_ns / 1e3 / near_calls : 0.0,
+    (unsigned long long)near_fails, (unsigned long long)(uintptr_t)CORPUS,
+    (unsigned long long)(RING_OFF * 8), (unsigned long long)(STAK_OFF * 8),
+    (unsigned long long)(HEAP_OFF * 8));
+}
+
+static void gpu_bang(bool beg) {
+  u64 now = near_now();
+  if (beg) {
+    if (bang_n == bang_cap) {
+      bang_cap = bang_cap ? 2 * bang_cap : 1024;
+      bang_us  = realloc(bang_us, bang_cap * sizeof(u32));
+      host_us  = realloc(host_us, bang_cap * sizeof(u32));
+    }
+    host_us[bang_n] = bang_at ? (now - bang_at) / 1000 : 0;
+    bang_at = now;
+  } else {
+    bang_us[bang_n++] = (now - bang_at) / 1000;
+    bang_at = now;
+  }
+}
+
+// Moves the page the host just touched to the device before a kernel faults
+// on it.
+static void gpu_near(void* p) {
+  if (near_off) {
+    return;
+  }
+  CUdeviceptr at = (uintptr_t)p & ~4095ull;
+  u64 beg = near_now();
+#if CUDA_VERSION >= 13000
+  CUresult r = cuMemPrefetchAsync(at, 4096,
+    (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
+#else
+  CUresult r = cuMemPrefetchAsync(at, 4096, gpu_dev, NULL);
+#endif
+  near_ns += near_now() - beg;
+  near_calls += 1;
+  if (r != CUDA_SUCCESS && near_fails++ == 0) {
+    const char* name = "unknown CUDA error";
+    cuGetErrorName(r, &name);
+    fprintf(stderr, "bend: cuMemPrefetchAsync failed: %s\n", name);
+  }
+}
+
 static u64* gpu_map(u64 bytes) {
+  const char* near = getenv("BEND_NEAR");
+  near_off = near != NULL && !strcmp(near, "0");
+  atexit(near_report);
   CUdeviceptr p = 0;
   if (cuMemAllocManaged(&p, bytes, CU_MEM_ATTACH_GLOBAL) != CUDA_SUCCESS) {
     err_fail("corpus reservation failed");
@@ -5163,18 +5249,6 @@ static void gpu_kernel(u32 pass, u32 at) {
   }
 }
 
-// Moves the page the host just touched to the device before a kernel faults
-// on it.
-static void gpu_near(void* p) {
-  CUdeviceptr at = (uintptr_t)p & ~4095ull;
-#if CUDA_VERSION >= 13000
-  cuMemPrefetchAsync(at, 4096,
-    (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
-#else
-  cuMemPrefetchAsync(at, 4096, gpu_dev, NULL);
-#endif
-}
-
 // A pass with no frontier returns at once. Reading H_FRONT pulls the header
 // back to the host, so each batch sends it to the device again.
 static void gpu_pass(u64* H) {
@@ -5235,6 +5309,7 @@ static void ring_rewind(u64* H, u32 rows) {
 static void cube_run(u64* H, bool gpu) {
   u32 f = turn_take(H);
   if (gpu) {
+    gpu_bang(true);
     turn_set(H, f);
     gpu_near(ring_get(H, 0));
     gpu_near(ring_put(H, 0));
@@ -5269,6 +5344,9 @@ static void cube_run(u64* H, bool gpu) {
     }
   }
   a32_store(a32_at(H, H_CURSOR), 0);
+  if (gpu) {
+    gpu_bang(false);
+  }
 }
 
 // Corpus
