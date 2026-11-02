@@ -3779,7 +3779,9 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
   if (term_compare("LE", book, x_inf.ty, ty, d)) {
     return x_inf;
   }
-  throw Err(book, ctx, ty, x_inf.ty, tm.s, lhs.def);
+  const sigma = (x: HTerm) => x.$ === "ADT" && x.k === "Sigma";
+  const nte = expr_show(book, ty) === "Data" && sigma(term_wnf(book, tm)) ? "Note: A & B is Type. A pair that is Data is +Sigma<A, _ => B>." : undefined;
+  throw Err(book, ctx, ty, x_inf.ty, tm.s, lhs.def, nte);
 }
 
 export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
