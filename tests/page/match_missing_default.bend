@@ -11,11 +11,11 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : cases for U32
-#|- observed : \{}
+#|- message  : this match doesn't cover U32
 #|Location: main
 #| 9 | def main():
 #|10>|   \{}
 #|   |   ^^^
 #|11 |
+#|Note: add the missing cases, or a catch-all case.
 #|exit 1

@@ -3688,7 +3688,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       switch (tm.$) {
         case "Efq": {
           if (rem.length !== 0 && !ctx_dead(book, ctx)) {
-            throw Err(book, ctx, "cases for " + rem.map((c) => name_key(c.k)).join(", "), tm, tm.s, lhs.def);
+            throw Err(book, ctx, "this match doesn't cover " + rem.map((c) => name_key(c.k)).join(", "),
+              undefined, tm.s, lhs.def, "Note: add the missing cases, or a catch-all case.");
           }
           return Check(tm, ty, uses_nil());
         }

@@ -14,11 +14,11 @@ def L.holds_when_gx(w):
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : cases for where_own_exists_lib.Tup
-#|- observed : \{}
+#|- message  : this match doesn't cover where_own_exists_lib.Tup
 #|Location: L.holds_when_gx
 #|12 | def L.holds_when_gx(w):
 #|13>|   match w:
 #|   |   ^^^^^^^^
 #|14 | 
+#|Note: add the missing cases, or a catch-all case.
 #|exit 1
