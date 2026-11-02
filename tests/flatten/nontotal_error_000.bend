@@ -23,11 +23,11 @@ def main(): f(Sx6{Zx6{}})
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : cases for Zx6
-#|- observed : \{}
+#|- message  : this match doesn't cover Zx6
 #|Location: f
 #|14 | def f(a):
 #|15>|   match a:
 #|   |   ^^^^^^^^
 #|16 |     case Sx6{a}:
+#|Note: add the missing cases, or a catch-all case.
 #|exit 1
