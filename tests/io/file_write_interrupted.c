@@ -19,6 +19,19 @@ ssize_t write(int fd, const void* data, size_t size) {
   return real(fd, data, size);
 }
 
+ssize_t pwrite(int fd, const void* data, size_t size, off_t offset) {
+  ssize_t (*real)(int, const void*, size_t, off_t) = dlsym(RTLD_NEXT, "pwrite");
+  if (fd == interrupted_fd && size > 0) {
+    u32 stage = interrupted_stage++;
+    if (stage == 0 || stage == 2) {
+      errno = EINTR;
+      return -1;
+    }
+    if (stage == 1 && size > 2) size = 2;
+  }
+  return real(fd, data, size, offset);
+}
+
 Term interrupted_arm_run(Env e, Term* f, IoWork* w) {
   interrupted_fd = (int)io_hand_v(f[0]);
   interrupted_stage = 0;

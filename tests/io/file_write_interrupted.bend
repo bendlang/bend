@@ -33,6 +33,16 @@ def main() -> IO(Unit):
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 32)
     f : File <- T.read(p, [0, 255, 13, 10, 65, 0, 255], "bytes written once")
     File.close(f)
+    f : File <- IO.try(File, File.open("/tmp/bend_io_write_interrupted", "r+"))
+    f : File <- Interrupted.arm(f)
+    p : File & Result<&1, &1, U32 & String, Unit> <-
+      File.write_at(f, 2, [11, 12, 13, 14])
+    f : File <- T.wrote(p)
+    f : File <- Interrupted.check(f)
+    p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 32)
+    f : File <- T.read(p, [0, 255, 11, 12, 13, 14, 255], "positioned bytes written once")
+    File.close(f)
 
 #|text written once
 #|bytes written once
+#|positioned bytes written once
