@@ -3797,8 +3797,11 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
   if (term_compare("LE", book, x_inf.ty, ty, d)) {
     return x_inf;
   }
+  const head = term_strip(term_unapply(term_strip(x_inf.tm))[0]);
+  const def = head.$ === "Ref" ? book.tlds[head.k] : undefined;
   const sigma = (x: HTerm) => x.$ === "ADT" && x.k === "Sigma";
-  const nte = expr_show(book, ty) === "Data" && sigma(term_wnf(book, tm)) ? "Note: A & B is Type. A pair that is Data is +Sigma<A, _ => B>." : undefined;
+  const nte = def?.$ === "Def" && def.i === undefined && term_wnf(book, x_inf.ty).$ === "All" && term_wnf(book, ty).$ !== "All" ? "Note: this call is missing arguments."
+    : expr_show(book, ty) === "Data" && sigma(term_wnf(book, tm)) ? "Note: A & B is Type. A pair that is Data is +Sigma<A, _ => B>." : undefined;
   throw Err(book, ctx, ty, x_inf.ty, tm.s, lhs.def, nte);
 }
 

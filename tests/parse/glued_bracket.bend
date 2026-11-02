@@ -25,4 +25,5 @@ def main(): id2
 #|17>| def main(): id2
 #|   |             ^^^
 #|18 |
+#|Note: this call is missing arguments.
 #|exit 1
