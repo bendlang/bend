@@ -18,4 +18,5 @@ def main() -> Nat:
 #| 9>|   {==}
 #|   |   ^^^^
 #|10 |
+#|Note: expected is the left side, quad(x), observed the right, x.
 #|exit 1

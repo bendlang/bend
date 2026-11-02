@@ -3732,7 +3732,9 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
         throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (!term_compare("EQ", book, t_wnf.a, t_wnf.b, d)) {
-        throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
+        const bnd = ctx_scope(ctx);
+        const src = (x: HTerm) => term_show(term_lower(x, bnd.length), -1, bnd, tm.s?.file);
+        throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def, "Note: expected is the left side, " + src(t_wnf.a) + ", observed the right, " + src(t_wnf.b) + ".");
       }
       return Check(tm, ty, uses_nil());
     }

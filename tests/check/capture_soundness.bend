@@ -55,4 +55,5 @@ def main():
 #|37>|   f(a => b => b, a => b => {==})
 #|   |                            ^^^^
 #|38 |
+#|Note: expected is the left side, b, observed the right, a.
 #|exit 1

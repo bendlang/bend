@@ -52,4 +52,5 @@ def rot_x(p):
 #|42>|   {==}
 #|   |   ^^^^
 #|43 |
+#|Note: expected is the left side, getx(rot(p)), observed the right, gety(p).
 #|exit 1

@@ -26,4 +26,5 @@ def f(x):
 #|15>|   x => {==}
 #|   |        ^^^^
 #|16 |
+#|Note: expected is the left side, x^0, observed the right, NS{x^0}.
 #|exit 1

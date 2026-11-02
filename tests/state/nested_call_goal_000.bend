@@ -54,4 +54,5 @@ def turn_turn(d):
 #|44>|   {==}
 #|   |   ^^^^
 #|45 |
+#|Note: expected is the left side, turn(turn(d)), observed the right, back(d).
 #|exit 1

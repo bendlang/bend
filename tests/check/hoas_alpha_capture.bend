@@ -22,4 +22,5 @@ def main(): 0
 #| 9>| def bad(): {==}
 #|   |            ^^^^
 #|10 |
+#|Note: expected is the left side, x => y => x, observed the right, x => y => y.
 #|exit 1

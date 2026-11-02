@@ -70,4 +70,5 @@ def add_comm(a, b):
 #|59>|       {==}
 #|   |       ^^^^
 #|60 |
+#|Note: expected is the left side, S{add(p, b)}, observed the right, S{add(b, p)}.
 #|exit 1

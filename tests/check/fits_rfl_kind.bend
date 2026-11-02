@@ -16,4 +16,5 @@ def data_type(): {==}
 #|8>| def data_type(): {==}
 #|  |                  ^^^^
 #|9 |
+#|Note: expected is the left side, Data, observed the right, Type.
 #|exit 1

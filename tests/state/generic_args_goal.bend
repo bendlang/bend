@@ -31,4 +31,5 @@ def swap_swap(p):
 #|21>|   {==}
 #|   |   ^^^^
 #|22 |
+#|Note: expected is the left side, swap(Nat, Nat, swap(Nat, Nat, p)), observed the right, p.
 #|exit 1

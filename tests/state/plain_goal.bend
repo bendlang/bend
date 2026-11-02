@@ -47,4 +47,5 @@ def ones_twos(n):
 #|37>|   {==}
 #|   |   ^^^^
 #|38 |
+#|Note: expected is the left side, ones(n), observed the right, twos(n).
 #|exit 1

@@ -30,4 +30,5 @@ def main(): Ua{}
 #|17>| def q(): {==}
 #|   |          ^^^^
 #|18 |
+#|Note: expected is the left side, Mka{Unit10, Ua{}}, observed the right, Mka{Empty10, Ua{}}.
 #|exit 1
