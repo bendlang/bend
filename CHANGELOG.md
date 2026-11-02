@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **`List.map` keeps the list's quantity** (#1994). Pass `~&1` before the
+  type arguments for an affine list, or `~&2` for a reusable list. Both
+  element types must have that kind; the output keeps the same quantity.
+
 ## 2.0.39 (2026-10-23)
 
 - **`bend --publish` sends only files inside the entry's directory**: a

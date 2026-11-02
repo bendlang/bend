@@ -19,9 +19,9 @@ def flat(xs: List<List<Nat>>) -> Nat:
       Nat.add(sum(h), flat(t))
 
 def main() -> IO(Unit):
-  a = sum(List.map(~Nat, ~Nat, ~(x => Nat.mul(x, 2n)), [1n, 2n, 3n]))
-  b = flat(List.map(~Nat, ~List<Nat>, ~(x => [x]), [1n, 2n]))
-  c = sum(List.map(~Nat, ~Nat, ~Nat.add(10n), [1n, 2n]))
+  a = sum(List.map(~&1, ~Nat, ~Nat, ~(x => Nat.mul(x, 2n)), [1n, 2n, 3n]))
+  b = flat(List.map(~&1, ~Nat, ~List<Nat>, ~(x => [x]), [1n, 2n]))
+  c = sum(List.map(~&1, ~Nat, ~Nat, ~Nat.add(10n), [1n, 2n]))
   IO.print(Nat.show(Nat.add(a, Nat.add(b, c))))
 
 #|38

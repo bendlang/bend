@@ -15,10 +15,10 @@ def sum(xs: List<Nat>) -> Nat:
       Nat.add(h, sum(t))
 
 def map2(~f: Nat -> Nat, xs: List<Nat>) -> List<Nat>:
-  List.map(~Nat, ~Nat, ~f, List.map(~Nat, ~Nat, ~f, xs))
+  List.map(~&1, ~Nat, ~Nat, ~f, List.map(~&1, ~Nat, ~Nat, ~f, xs))
 
 def incs(~f: Nat -> Nat, xs: List<Nat>) -> List<Nat>:
-  List.map(~Nat, ~Nat, ~inc, List.map(~Nat, ~Nat, ~f, xs))
+  List.map(~&1, ~Nat, ~Nat, ~inc, List.map(~&1, ~Nat, ~Nat, ~f, xs))
 
 def app(~f: Nat -> Nat, x: Nat) -> Nat:
   f(x)
