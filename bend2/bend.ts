@@ -535,9 +535,10 @@ export function pmap_set<T>(map: PMap<T>, key: U32, val: T): PMap<T> {
   if (key === 0) {
     return Bin(val, l, r);
   }
-  return key % 2 === 1
-    ? Bin(v, pmap_set(l, (key - 1) / 2, val), r)
-    : Bin(v, l, pmap_set(r, (key - 2) / 2, val));
+  if (key % 2 === 1) {
+    return Bin(v, pmap_set(l, (key - 1) / 2, val), r);
+  }
+  return Bin(v, l, pmap_set(r, (key - 2) / 2, val));
 }
 
 export function pmap_union<T>(a: PMap<T>, b: PMap<T>, f: (x: T, y: T) => T): PMap<T> {
