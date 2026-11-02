@@ -600,6 +600,14 @@ export function list_set<T>(list: List<T>, key: U32, val: T): List<T> {
   return { k: key, v: val, n: list };
 }
 
+export function list_to_array<T>(list: List<T>): T[] {
+  const out: T[] = [];
+  for (let l = list; l !== null; l = l.n) {
+    out.push(l.v);
+  }
+  return out;
+}
+
 // Quant
 // =====
 
@@ -644,12 +652,12 @@ export function uses_add(a: Uses, b: Uses): Uses {
 // LHS
 // ===
 
-export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: HTerm[] = []): HTerm {
+export function lhs_ext(lhs: HTerm, k: Name, n: number, xs: List<HTerm> = null): HTerm {
   if (n === 0) {
-    return term_apply(lhs, Ctr(k, xs));
+    return term_apply(lhs, Ctr(k, list_to_array(xs).reverse()));
   } else {
     return Lam("_", 0, (x: HTerm) => {
-      return lhs_ext(lhs, k, n - 1, [...xs, x]);
+      return lhs_ext(lhs, k, n - 1, list_set(xs, 0, x));
     });
   }
 }
@@ -3387,10 +3395,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       let k = tm.k;
       let x = 0;
       if (qt.$ !== "None") {
-        let xs: HTerm[] = [];
-        for (let l = sp; l !== null; l = l.n) {
-          xs.push(l.v);
-        }
+        let xs = list_to_array(sp);
         const gen = tld.$ === "Def" && tld.x > 0 && !(book.tlds[lhs.def] as Def).x ? tld : null;
         if (tld.$ === "Def" && tld.v === null && !tld.i && (tld.b !== true && lhs.u !== true || gen !== null) && k !== lhs.def) {
           throw Err(book, ctx, "a filled definition (an unfilled law is a dead claim: live code cannot use it)", tm, tm.s, lhs.def);
@@ -3712,14 +3717,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
             throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
-          function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
+          function term_check_mat_goal(cur: HTerm, n: number, xs: List<HTerm>): HTerm {
             if (n === 0) {
-              return t_all.B(Ctr(b.k, xs, b.s));
+              return t_all.B(Ctr(b.k, list_to_array(xs).reverse(), b.s));
             } else {
               const c_all = tele_head(book, cur, ctx, lhs.def, b.s);
               const c_dem = c_all.q.$ === "None" ? None() : c_all.q.$ === "Lone" ? t_all.q : quant_add(t_all.q, t_all.q);
               return All(c_dem, c_all.k, c_all.i, c_all.A, (x: HTerm) => {
-                return term_check_mat_goal(c_all.B(x), n - 1, xs.concat([x]));
+                return term_check_mat_goal(c_all.B(x), n - 1, list_set(xs, 0, x));
               }, b.s);
             }
           }
@@ -3727,7 +3732,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           if (lhs.n > 0) {
             h_lhs = { ...lhs, t: lhs_ext(lhs.t, tm.k, ctr.n), n: lhs.n - 1 + ctr.n };
           }
-          const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, []), ctx, d);
+          const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, null), ctx, d);
           const m_gol = All(t_wnf.q, t_wnf.k, t_wnf.i, ADT(a_wnf.k, a_wnf.x, tm.s, a_wnf.r.concat([ctr.k])), t_wnf.B, tm.s);
           const m_chk = rem.length === 1 && tm.m.$ !== "Mat" ? Check(Efq(tm.s), m_gol, uses_nil()) : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
           return Check(Mat(tm.k, h_chk.tm, m_chk.tm, tm.s), ty, pmap_union(h_chk.us, m_chk.us, quant_join));
