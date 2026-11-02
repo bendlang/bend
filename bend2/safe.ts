@@ -474,9 +474,10 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   }
 }
 
-// T's first n parameters, from scope s: a column takes its checked domain
-// (a λ, see lam_typed), any other binds a kernel variable. Returns the
-// binders, the arguments, the scope and the rest of T
+// T's first n parameters, from scope s: a column goes to xs at its checked
+// domain, and to later domains so too (a λ, see lam_typed); any other binds
+// a kernel variable. Returns the binders, the arguments, the scope and the
+// rest of T
 function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number) {
   const r = { s, ps: [] as Binder[], xs: [] as HTerm[], T };
   for (let j = 0; j < n; j++) {
@@ -499,7 +500,7 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number) {
 // a λ column at A, bare so it β-reduces, its body typed at A's codomain
 function lam_typed(e: Safe, v: HTerm, A: HTerm): HTerm {
   const G = wnf(e.book, A);
-  return v.$ === "Lam" && G.$ === "All" ? B.Lam(v.k, v.i, (x: HTerm) => lam_typed(e, v.f(x), G.B(x))) : typed(v, A);
+  return v.$ === "Lam" && G.$ === "All" ? B.Lam(v.k, v.i, (x: HTerm) => lam_typed(e, v.f(x), G.B(x)), v.s, v.q) : typed(v, A);
 }
 
 // Specialize
@@ -695,10 +696,11 @@ function scope_bind(s: Scope, o: O, T: HTerm | null, v?: HTerm): Scope {
 // a kernel binder with no bend2 variable, at its tentative quantity q, if
 // known: a q=1 one may ride a convoy
 function scope_hide(s: Scope, q?: Q): Scope {
-  const kq = s.kq.slice();
-  if (q !== undefined) {
-    kq[s.D] = q;
+  if (q === undefined) {
+    return { ...s, D: s.D + 1 };
   }
+  const kq = s.kq.slice();
+  kq[s.D] = q;
   return { ...s, D: s.D + 1, kq };
 }
 
