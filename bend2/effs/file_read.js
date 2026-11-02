@@ -10,15 +10,15 @@
 // (Bun's readSync skips it), so a 0-byte read of a bad handle fails as C
 // does, and it needs no bun:ffi, which node lacks.
 // max is a cap, not a size: the buffer starts at what a regular file holds
-// (one byte more, to see its end) or 64 KiB, and doubles up to max as bytes
-// arrive, so a read capped far above the file commits only what it reads
-// (#1983). A line stops early, so it starts at 64 KiB whatever the file.
-function file_read_room(fs, file, len, line) {
+// past the given offset (one byte more, to see its end) or 64 KiB. It doubles
+// up to max as bytes arrive, so a read capped far above the available data
+// commits only what it reads (#1983). A line starts at 64 KiB whatever the file.
+function file_read_room(fs, file, len, line, offset) {
   let room = 65536;
   try {
     const st = line ? null : fs.fstatSync(file);
     if (st?.isFile()) {
-      room = Math.max(room, st.size + 1);
+      room = Math.max(room, st.size - (offset ?? 0) + 1);
     }
   } catch {}
   return Math.max(Math.min(len, room), 1);
@@ -27,7 +27,7 @@ function file_read_room(fs, file, len, line) {
 function file_read_with(file, max, offset, pack, line = false) {
   const fs = require("fs");
   const len = Math.min(max, 2147483647);
-  let b = new Uint8Array(file_read_room(fs, file, len, line));
+  let b = new Uint8Array(file_read_room(fs, file, len, line, offset));
   let got = 0;
   do {
     if (got === b.length) {
