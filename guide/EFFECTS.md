@@ -44,6 +44,20 @@ same way. `f` holds the def's arguments in order: a `U32` is the word
 calls the effect at once; an effect that waits (for a handle, or for time)
 parks itself, as below.
 
+A package's `.c` should name what it defines `HID(name)`: functions,
+globals, types and tags, the effect and its constructor included. The
+compiler makes `HID(name)` a C id of the module that imports the `.c`, so
+two versions of one package, which a program may import together, define
+different names. An imported module whose C says `HID` is held to it: the
+compiler pastes its C twice, the second copy dead (its constructors and
+destructors never run), so a name defined without `HID` fails its own build
+(`redefinition`, or, with clang 21 and newer, `duplicate declaration` for a
+global without an initializer). Its macros and include guards need no `HID`:
+each copy restores the macros it defines as they were before it. Such a
+module's constructors take no priority, and its C pastes after other
+modules'. C without `HID` builds as before, but two versions of it in one
+program clash. The JS twin needs none of this: each runs in its own closure.
+
 The effect returns a Term: a `U32` is `(Term)n`, `Unit` is
 `term_pak(CID(Unit), 0)`, a `String` is `io_str(e, p, n)`, a two-field
 constructor is `io_node(e, CID(K), a, b)`. A `Result` is `io_done(e, v)`

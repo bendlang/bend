@@ -1121,7 +1121,7 @@ function file_new(book: Bend.Book, js: boolean) {
     folds: new Map<HTerm, HTerm | null>(), spines: new Map<HTerm, Spine>(),
     ground: new Map<HTerm, boolean>(), steps: new Map<string, HTerm>(),
     ty_opens: new Map<string, boolean>(), ops: new Map<Name, string>(),
-    holds: new Map<string, Lay>(), fids: new Set<Name>(),
+    holds: new Map<string, Lay>(), fids: new Set<Name>(), hids: new Set<string>(),
     effs: new Map<string, [string, string]>(), hold: new Map<string, boolean>(),
   };
 }
@@ -2541,17 +2541,22 @@ function emit_chain(sc: Scope, arms: [string, () => void][]): void {
 // =======
 
 // Hand-written C and JS name ids as CID(k) and FID(k): k in the source's
-// namespace, else as is. effect_src first splices C backslash-newlines, as
-// C does in comments, which end at a line break.
+// namespace, else as is; HID(k), any name k, is h + k in its namespace.
+// effect_src first splices C backslash-newlines, as C does in comments,
+// which end at a line break.
 
-const ID_WORDS = /\/\/.*|\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CF]ID)\(([\w./~-]+)\)/gu;
+const ID_WORDS = /\/\/.*|\/\*[^]*?\*\/|"(?:\\[^]|[^"\\\n])*"|'(?:\\[^]|[^'\\\n])*'|`(?:\\[^]|[^`\\])*`|(?<![$\u200c\u200d\p{ID_Continue}])([CFH]ID)\(([\w./~-]+)\)/gu;
 const ID_C = RegExp(ID_WORDS.source.replace(".", "[^\\r\\n]"), "gu");
 
-function c_ids(src: string, m = "", use?: (p: string, k: Name) => void): string {
+function c_ids(src: string, m = "", use?: (p: string, k: Name) => void,
+  h = "HID_"): string {
   return src.replace(FL.js ? ID_WORDS : ID_C, (t, p, k, at) => {
     // '#' starts a private JS name; C's ## may paste an ID macro.
     if (!p || !k || (FL.js && src[at - 1] === "#")) {
       return t;
+    }
+    if (p === "HID") {
+      return use ? (use(p, k), t) : name_id(h, m + ":" + k);
     }
     const q = [m === "" ? k : m + ":" + k, k].find((q) => q in FL.book.ctrs
       || q in FL.book.tlds || FL.ids.has(p + "_" + q));
@@ -2579,6 +2584,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
     const src = FL.js ? raw : raw.replace(/\\[ \t]*(\r\n?|\n)/g, "");
     FL.effs.set(path, [m, src]);
     if (!FL.js) c_ids(src, m, (p, q) => {
+      if (p === "HID" && m) FL.hids.add(m);
       if (p === "CID" && q in FL.book.ctrs) src_add(Bend.book_fam(FL.book, q));
       if (p === "FID" && fun_runs(tld_of(q))) {
         src_add(q);
@@ -2706,7 +2712,23 @@ export function compile_book(book: Bend.Book): string {
     return (dev.has(seg.fid) ? out : ["#if !DEVICE", ...out, "#endif"])
       .join("\n");
   }).join("\n\n");
-  const reqs = [...FL.effs.values()].map(([m, src]) => c_ids(src, m)).join("");
+  // An imported module whose C says HID pastes it twice, the second dead
+  // (no constructor or destructor), so a name defined without HID clashes
+  // in its own build; each copy keeps its macros.
+  const effs = [...FL.effs.values()];
+  const reqs = effs.map(([m, s]) => FL.hids.has(m) ? "" : c_ids(s, m)).join("")
+    + [...FL.hids].map((m) => {
+      const src = effs.filter((e) => e[0] === m).map((e) => e[1]).join("\n");
+      const dead = "constructor destructor __constructor__ __destructor__";
+      const at = (d: string) => [...dead.split(" "),
+        ...src.match(/^[ \t]*#[ \t]*(define|undef)[ \t]+\w+/gm) ?? []]
+        .map((x) => `\n#pragma ${d}_macro("${x.split(/\s/).pop()}")`)
+        .join("") + `\n#pragma clang diagnostic ${d}\n`;
+      return at("push") + c_ids(src, m) + at("pop") + at("push")
+        + dead.replace(/\S+/g, "#define $& __unused__\n")
+        + `#pragma clang diagnostic error "-Wtentative-definition-compat"\n`
+        + c_ids(src, m, undefined, "HID2_") + at("pop");
+    }).join("");
   // emitted C names no ids, so only the runtime is scanned
   const raw = c_ids(runtime_c("\0", "\0", "\0", "\0")).split("\0");
   const c = String.raw({ raw }, tabs, img, text, reqs);
