@@ -19,5 +19,5 @@ def quad_id(x: Nat) -> {M.quad(x) == x : Nat}:
 #| 9>|   {==}
 #|   |   ^^^^
 #|10 |
-#|Note: expected is the left side, M.quad(x), observed the right, x.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

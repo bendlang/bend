@@ -58,5 +58,5 @@ def spec_thm(n, x):
 #|47>|       {==}
 #|   |       ^^^^
 #|48 |
-#|Note: expected is the left side, S{plus1(p, x)}, observed the right, plus1(p, S{x}).
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

@@ -23,5 +23,5 @@ def main():
 #| 9>|   {==}
 #|   |   ^^^^
 #|10 |
-#|Note: expected is the left side, 1.5, observed the right, 2.5.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

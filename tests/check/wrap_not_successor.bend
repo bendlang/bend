@@ -40,5 +40,5 @@ def main():
 #|24>|   {==}
 #|   |   ^^^^
 #|25 |
-#|Note: expected is the left side, f(U32.add(1, x)), observed the right, 0.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

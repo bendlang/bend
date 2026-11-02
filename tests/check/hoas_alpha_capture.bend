@@ -22,5 +22,5 @@ def main(): 0
 #| 9>| def bad(): {==}
 #|   |            ^^^^
 #|10 |
-#|Note: expected is the left side, x => y => x, observed the right, x => y => y.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

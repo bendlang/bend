@@ -39,5 +39,5 @@ def add_zero(a):
 #|29>|       {==}
 #|   |       ^^^^
 #|30 |
-#|Note: expected is the left side, add(Sh{p}, Zh{}), observed the right, Sh{p}.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

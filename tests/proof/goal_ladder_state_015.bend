@@ -70,5 +70,5 @@ def add_comm(a, b):
 #|59>|       {==}
 #|   |       ^^^^
 #|60 |
-#|Note: expected is the left side, S{add(p, b)}, observed the right, S{add(b, p)}.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

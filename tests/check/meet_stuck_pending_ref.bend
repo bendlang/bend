@@ -27,5 +27,5 @@ def q():
 #|16>|   {==}
 #|   |   ^^^^
 #|17 |
-#|Note: expected is the left side, q <&> &1, observed the right, &1.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

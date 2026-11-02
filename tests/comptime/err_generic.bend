@@ -19,5 +19,5 @@ def main() -> {Nat.add(3n, 0n) == 3n : Nat}:
 #|8>|   {==}
 #|  |   ^^^^
 #|9 |
-#|Note: expected is the left side, Nat.add(add0~n, 0n), observed the right, add0~n.
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

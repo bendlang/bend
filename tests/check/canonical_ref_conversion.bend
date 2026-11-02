@@ -53,5 +53,5 @@ def main(): 0
 #|38>|   {==}
 #|   |   ^^^^
 #|39 |
-#|Note: expected is the left side, f(t), observed the right, g(t).
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1
