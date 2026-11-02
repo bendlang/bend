@@ -3603,7 +3603,9 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       return Check(Lam(tm.k, d, f_chk.tm, tm.s), ty, uses_close(book, ctx, f_chk.us, d, tm.k, q, tm.s, lhs.def));
     }
     // Γ ⊢ vj : Aj ~ vuj  (each value in Γ: the binders are parallel)
-    // Γ ⊢ Aj : Kind(+)  (each + binder: an inferred Aj is already a type)
+    // Γ ⊢ Aj : Kind(qj)  (if Kind(qj) is Data or vj's head has no body, so
+    //                    its signature may be unchecked: any other inferred
+    //                    Aj is already a type)
     // Γ , x1 : q1A1 , .. , xn : qnAn ⊢ f(x1, .., xn) : T ~ fu
     // where vj is dead if qj is -
     //       fu[xj] <= qj
@@ -3617,7 +3619,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       for (let j = 0; j < n; j++) {
         const v_dem = quant_dem(tm.q[j], qt);
         const v_inf = term_infer(book, lhs, tm.v[j], v_dem, ctx, d);
-        if (tm.q[j].$ === "Many") {
+        const h = term_unapply(term_strip(tm.v[j]))[0];
+        if (lhs_kind(lhs, tm.q[j]).$ === "Many" || h.$ === "Ref" && !(book.tlds[h.k] as Def).v) {
           term_check_kind(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
         }
         vx.push(v_inf.tm);
