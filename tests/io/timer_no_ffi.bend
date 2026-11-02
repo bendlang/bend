@@ -14,6 +14,8 @@ def main() -> IO(Unit):
     Timer.hide()
     n : U32 <- Order.main()
     Within.main()
+    # Within's late sleep outlives its main; keep FFI hidden until it fires.
+    u : Unit <- IO.sleep(400)
     Timer.restore()
 
 #|a
