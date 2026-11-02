@@ -51,6 +51,26 @@ function output_input_links() {
       || fs.existsSync(ok)) return code;
     fs.unlinkSync(link);
     code++;
+    const binary = path.join(dir, "collision");
+    const sentinel = "unchanged\n";
+    const existing = [link, binary, binary + ".gpu"];
+    for (const out of existing) fs.writeFileSync(out, sentinel);
+    const alias = path.join(dir, "alias");
+    fs.symlinkSync(dir, alias);
+    const fresh = path.join(dir, "fresh.js");
+    const normalized = dir + "/./out.js";
+    for (const outs of [[link, normalized],
+      [fresh, path.join(alias, "fresh.js")],
+      [binary, binary + ".gpu"], [binary + ".gpu", binary]]) {
+      const got = build(ok, ...outs);
+      if (!rejects(got, "conflicts with -o")
+        || !outs.every((out) => got.stderr.includes("-o " + out + " "))
+        || fs.existsSync(ok) || fs.existsSync(fresh)
+        || !existing.every((out) => fs.readFileSync(out, "utf8") === sentinel)) {
+        return code;
+      }
+      code++;
+    }
     if (build(ok).status !== 0 || !intact()) return code;
     const run = child.spawnSync(process.execPath, [ok], options);
     if (run.status !== 0 || run.stdout.trim() !== "42") return code;
