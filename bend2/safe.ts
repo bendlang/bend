@@ -446,9 +446,9 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // no body goes out opaque (see the header)
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const { s, xs, T } = tele_open(e, { ...scope_nil(), self: n }, tld.T, cols, tld.x);
-  const t = tld.e !== undefined ? null : (Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T)) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
-  const To = term(e, s, T, false);
-  e.out.push([n, To, t === null ? arm(e, s, k, xs, []) : tree(e, s, t, []), t !== null]);
+  const t = tld.e !== undefined ? null : ((Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : model(e, T))
+    ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k)));
+  e.out.push([n, term(e, s, T, false), t === null ? arm(e, s, k, xs, []) : tree(e, s, t, []), t !== null]);
 }
 
 // D.arms and D, at D's specialized arguments
@@ -489,10 +489,16 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number) {
       r.ps.push([q, r.s.D, term(e, r.s, F.A, false)]);
       r.s = scope_var(r.s, F.A, q);
     }
-    r.xs.push(v == null ? B.Var(F.k, r.s.d - 1) : v.$ === "Var" ? v : typed(v, F.A));
-    r.T = F.B(v?.$ === "Lam" ? v : r.xs[j]);
+    r.xs.push(v == null ? B.Var(F.k, r.s.d - 1) : typed(v, F.A));
+    r.T = F.B(v?.$ === "Lam" ? lam_typed(e, B.term_higher(B.term_lower(v)), F.A) : r.xs[j]);
   }
   return r;
+}
+
+// a λ column at A, bare so it β-reduces, its body typed at A's codomain
+function lam_typed(e: Safe, v: HTerm, A: HTerm): HTerm {
+  const G = wnf(e.book, A);
+  return v.$ === "Lam" && G.$ === "All" ? B.Lam(v.k, v.i, (x: HTerm) => lam_typed(e, v.f(x), G.B(x))) : typed(v, A);
 }
 
 // Specialize
