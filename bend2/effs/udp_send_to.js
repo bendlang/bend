@@ -6,12 +6,12 @@
 // datagram's bytes, data the value a failed or late send hands back.
 function udp_send_to_with(socket, host, port, data, b, k, at) {
   const fail = (code) => io_tup(socket, io_ready(at, io_fail(code, data)));
-  const sys = io_sys();
-  const fd = socket;
   const to = io_addr(host, Number(port));
   if (to === null) {
     return fail(22);
   }
+  const sys = io_sys();
+  const fd = socket;
   const again = sys.mac ? 35 : 11;
   const intr = 4;
   const go = () => {

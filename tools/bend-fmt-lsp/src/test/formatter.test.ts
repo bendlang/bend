@@ -242,6 +242,39 @@ test("preserves escaped quotes and hashes inside literals", () => {
   }
 });
 
+test("preserves raw apostrophes as character payloads", () => {
+  for (const value of ["'''", "[''',''']", String.raw`[''','#','\'','"','😀',''']`]) {
+    const type = value.startsWith("[") ? "List<&2, Char>" : "Char";
+    const source = "def main()->" + type + ":\n    " + value + "# exact";
+    const expected = "def main() -> " + type + ":\n  " + value.replaceAll(",", ", ") + "  # exact";
+    assert.equal(formatBend(source), expected);
+    assert.equal(formatBend(expected), expected);
+  }
+});
+
+test("raw apostrophe programs run the same after formatting", { skip: !runnable && "needs bun and bend2/main.ts" }, () => {
+  const directory = mkdtempSync(join(tmpdir(), "bend-fmt-apostrophe-"));
+  const file = join(directory, "main.bend");
+  const run = (text: string) => {
+    writeFileSync(file, text);
+    const result = spawnSync(bun, [compiler, file], { encoding: "utf8", timeout: 60_000 });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return result.stdout;
+  };
+  try {
+    const source = "import Base\ndef main()->List<&2,Char>:\n    [''','#',''']# exact\n";
+    const before = run(source);
+    for (const options of [{}, { tabSize: 4 }, { insertSpaces: false }]) {
+      const formatted = formatBend(source, options);
+      assert.notEqual(formatted, source);
+      assert.equal(run(formatted), before);
+      assert.equal(formatBend(formatted, options), formatted);
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("preserves angle spacing because Bend uses it to disambiguate syntax", () => {
   assert.equal(formatBend("import Base\ndef main()->Bool:\n    (2 >=1:U32)\n"), "import Base\ndef main() -> Bool:\n  (2 >= 1: U32)\n");
   assert.equal(formatBend("import Base\ndef main()->Bool:\n    (2\n     >=1:U32)\n"), "import Base\ndef main() -> Bool:\n  (2\n   >= 1: U32)\n");

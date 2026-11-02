@@ -1,7 +1,10 @@
 // The peer: echo the first line to the real stdout, write "hi" into the
-// FIFO ($1) and remove it, then copy the rest through.
-const PEER_SH = `IFS= read -r l; printf '%s\\n' "$l"; printf hi > "$1";`
-  + ` rm -f "$1"; exec cat`;
+// FIFO ($1) and remove it, then copy the rest through. A run that dies
+// first must not leave it holding stdout: no line, it exits; a FIFO still
+// unread after 10 s, a watchdog removes it and kills the peer.
+const PEER_SH = `IFS= read -r l || { rm -f "$1"; exit 1; };`
+  + ` printf '%s\\n' "$l"; (sleep 10; [ -p "$1" ] && rm -f "$1" && kill $$)`
+  + ` >/dev/null 2>&1 & printf hi > "$1"; rm -f "$1"; exec cat`;
 
 let peer_out = -1;
 

@@ -2,9 +2,10 @@
 # sequential loop seq. PROOF.bend proves it by induction on the depth.
 import Base
 import ./main.bend as Par
+import ./SPEC.bend as Spec
 
 # LAW: the tree of depth d at i adds i, i + 1, .., i + 2^d - 1, for any d and i
 law tree_is_seq:
   for +d: Nat
   for +i: Nat
-  {Par.sum(d, i) == Par.seq(Par.pow2(d), i) : Nat}
+  {Par.sum(d, i) == Spec.seq(Spec.pow2(d), i) : Nat}

@@ -7,7 +7,11 @@
 static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   Term (*read)(Env, const char*, u64)) {
   int fd  = (int)w->hand;
-  w->size = io_sys_end(w, recv(fd, w->data, (size_t)w->made, 0));
+  ssize_t n;
+  do {
+    n = recv(fd, w->data, (size_t)w->made, 0);
+  } while (n < 0 && errno == EINTR);
+  w->size = io_sys_end(w, n);
   if (io_again(w)) {
     return io_wait_on(w, fd, POLLIN, w->time, more);
   }

@@ -1534,6 +1534,9 @@ const KEYWORDS = new Set([
 
 const QUAS: Record<string, Quant> = { "0": None(), "1": Lone(), "2": Many() };
 
+// A + glued to a name heads a binder, so x+y and x +y end up here.
+const OP_SPACES = "an operator takes spaces on both sides and a type: (a + b : T)";
+
 export function parse_col(src: string, pos: number): number {
   return pos - src.lastIndexOf("\n", pos - 1);
 }
@@ -1760,6 +1763,14 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       return parse_patt(p, lit_step(t));
     }
     default: {
+      const [h, [a]] = term_unapply(t);
+      const op = h.$ === "Ref" ? h.k : "";
+      if ((op === ".add" || op === "Nat.add") && a?.$ === "Lit" && a.k === "Nat") {
+        throw Err(book, ctx_nil(), "a pattern (a successor takes no spaces: " + String(a.v) + "n+p)", undefined, t.s);
+      }
+      if (op.lastIndexOf(".") === 0) {
+        throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", undefined, t.s);
+      }
       throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
     }
   }
@@ -1851,7 +1862,8 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         return Var(t.k, -1, s);
       }
       if (tld === undefined || tld.$ !== "ADT" || tld.g === 0 || tld.g < tld.n && t.$ !== "ADT") {
-        parse_fail(p, "a quantified datatype after + (+D<..> sets D's leading quantities to &2)");
+        const gl = /[\w)\]}"']/.test(p.str[beg - 1] ?? "");
+        parse_fail(p, "a quantified datatype after + (" + (gl ? OP_SPACES : "+D<..> sets D's leading quantities to &2") + ")", beg, beg + 1);
       }
       const xs = t.$ === "ADT" ? t.x : Array.from({ length: tld.n }, (): LTerm => Qua(Lone(), s));
       return ADT(k, xs.map((x, i) => i < tld.g ? Qua(Many(), s) : x), s);
@@ -2339,7 +2351,8 @@ export function parse_body(p: Parse, col: number = 0): Body {
       const qbeg = p.pos;
       const qs = parse_terms(p);
       if (qs.length !== es.length) {
-        parse_fail(p, String(es.length) + " patterns (one per scrutinee)", qbeg, p.pos - 1);
+        const lit = qs.find((q, i) => q.$ === "Lit" && q.k === "Nat" && i + 1 < qs.length && p.str[qs[i + 1].s!.beg] === "+");
+        parse_fail(p, String(es.length) + " patterns (one per scrutinee" + (lit?.$ === "Lit" ? "; a successor takes no spaces: " + String(lit.v) + "n+p" : "") + ")", qbeg, p.pos - 1);
       }
       const n0 = p.stk.length;
       const pp = qs.map((q) => parse_patt(p, q));
@@ -2371,6 +2384,10 @@ export function parse_body(p: Parse, col: number = 0): Body {
     vs.push(ts[0]);
     ts = [w];
   } else {
+    const g = ts.slice(1).find((x) => p.str[x.s!.beg] === "+");
+    if (g !== undefined && (!parse_at(p, "=") || parse_at(p, "=="))) {
+      parse_fail(p, "'=' (" + OP_SPACES + ")", g.s!.beg, g.s!.beg + 1);
+    }
     parse_eat(p, "=");
     T !== null && vs.push(Ann(parse_term(p), T, parse_span(p, beg)));
   }
@@ -3164,14 +3181,12 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
         return true;
       }
       if (g.$ === "Min") {
-        const fa = compare_go("LE", book, Typ(g.a), b, dep);
-        const fb = compare_go("LE", book, Typ(g.b), b, dep);
-        return fa && fb;
+        return compare_go("LE", book, Typ(g.a), b, dep)
+            && compare_go("LE", book, Typ(g.b), b, dep);
       }
       if (h.$ === "Min") {
-        const fa = compare_go("LE", book, a, Typ(h.a), dep);
-        const fb = compare_go("LE", book, a, Typ(h.b), dep);
-        return fa || fb;
+        return compare_go("LE", book, a, Typ(h.a), dep)
+            || compare_go("LE", book, a, Typ(h.b), dep);
       }
       return compare_go("LE", book, g, h, dep);
     }

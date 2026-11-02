@@ -3,15 +3,16 @@
 
 import Base
 import ./main.bend as Sort
+import ./SPEC.bend as Spec
 
 # LAW: the output of sort is sorted: it ascends, starting at 0n
 law sort_sorted:
   for +xs: List<&2, Nat>
-  Sort.Sorted(Sort.sort(xs))
+  Spec.Sorted(Sort.sort(xs))
 
 # LAW: sort permutes its input: every value x occurs in sort(xs) as
 # often as it occurs in xs
 law sort_perm:
   for +x  : Nat
   for +xs : List<&2, Nat>
-  {Sort.count(x, Sort.sort(xs)) == Sort.count(x, xs) : Nat}
+  {Spec.count(x, Sort.sort(xs)) == Spec.count(x, xs) : Nat}

@@ -14,8 +14,12 @@ function tcp_recv_with(socket, max, k, read, at) {
   const len = Math.min(Number(max), 2147483647);
   const b = new Uint8Array(len);
   const again = sys.mac ? 35 : 11;
+  const intr = 4;
   const go = () => {
-    const n = Number(sys.recv(fd, sys.ptr(b), len, 0));
+    let n = Number(sys.recv(fd, sys.ptr(b), len, 0));
+    while (n < 0 && sys.errno() === intr) {
+      n = Number(sys.recv(fd, sys.ptr(b), len, 0));
+    }
     if (n < 0) {
       const code = sys.errno();
       if (code !== again) {

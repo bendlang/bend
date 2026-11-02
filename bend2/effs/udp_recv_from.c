@@ -11,8 +11,12 @@ static Term udp_recv_from_with(Env e, IoWork* w, IoPack more,
   socklen_t alen = sizeof(at);
   char      host[16];
   int       fd = (int)w->hand;
-  w->size = io_sys_end(w, recvfrom(fd, w->data, (size_t)w->made, 0,
-    (struct sockaddr*)&at, &alen));
+  ssize_t   n;
+  do {
+    n = recvfrom(fd, w->data, (size_t)w->made, 0, (struct sockaddr*)&at,
+      &alen);
+  } while (n < 0 && errno == EINTR);
+  w->size = io_sys_end(w, n);
   if (io_again(w)) {
     return io_wait_on(w, fd, POLLIN, w->time, more);
   }

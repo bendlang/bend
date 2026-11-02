@@ -32,6 +32,11 @@ Term tcp_connect_run(Env e, Term* f, IoWork* w) {
   }
   w->made = fd;
   io_sys_end(w, fd < 0 ? fd : connect(fd, (struct sockaddr*)&at, sizeof(at)));
+  // An interrupted connect goes on in the background, so it is waited on
+  // as EINPROGRESS is; calling connect again would answer EALREADY.
+  if (fd >= 0 && w->code == EINTR) {
+    w->code = EINPROGRESS;
+  }
   return w->code == EINPROGRESS
     ? io_wait_on(w, fd, POLLOUT, 0, tcp_connect_more) : tcp_connect_more(e, w);
 }

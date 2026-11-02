@@ -1,10 +1,10 @@
 # Winning Is Impossible -- the certificate.
 #
-# The proofs. This file imports the game (as Game) and the claims (as
-# Laws) and fills every law they state -- an unfilled law is an
-# error, so `bend PROOF.bend` is the whole verification. Everything here
-# is AI-written scaffolding for two defs: Laws.you_cant_win and
-# Laws.never_on_flag.
+# The proofs. This file imports the game (as Game), the claims (as Laws)
+# and their board reader (as Board), and fills every law they state -- an
+# unfilled law is an error, so `bend PROOF.bend` is the whole
+# verification. Everything here is AI-written scaffolding for two defs:
+# Laws.you_cant_win and Laws.never_on_flag.
 #
 # The shape of the argument: an invariant ("the player stands on a safe
 # cell: on the map, not in the room, not on a wall") holds at the start
@@ -18,6 +18,7 @@
 import Base
 import ./main.bend as Game
 import ./LAWS.bend as Laws
+import ./BOARD.bend as Board
 
 # Proof kit
 # ---------
@@ -279,7 +280,7 @@ def no_flag(+x: Nat, +y: Nat, +hp: T(okpos(x, y)),
 # passed in, so it is computed once for the whole walk.
 
 def fchk(+s: String, +x: Nat, +y: Nat) -> Bool:
-  imp(okpos(x, y), Bool.not(Game.flag_at(y, x, s)))
+  imp(okpos(x, y), Bool.not(Board.flag_at(y, x, s)))
 
 def fchk_row(+s: String, +x: Nat, y: Nat) -> Bool:
   match y:
@@ -341,19 +342,19 @@ def fcert(+s: String, +x: Nat, +y: Nat, ca: T(fchk_all(s, 11n)),
 
 # on a safe cell the page draws no flag: the certificate says so
 def off_F(+x: Nat, +y: Nat, +hp: T(okpos(x, y)))
-  -> {False{} == Game.flag_at(y, x, Game.drawn()) : Bool}:
+  -> {False{} == Board.flag_at(y, x, Board.drawn()) : Bool}:
   and_split(Game.nat_le(x, 11n) && Game.nat_le(y, 7n),
     Bool.not(room(x, y)) && Bool.not(Game.wall(x, y)), hp,
-    {False{} == Game.flag_at(y, x, Game.drawn()) : Bool},
+    {False{} == Board.flag_at(y, x, Board.drawn()) : Bool},
     wb => wnr =>
       and_split(Game.nat_le(x, 11n), Game.nat_le(y, 7n), wb,
-        {False{} == Game.flag_at(y, x, Game.drawn()) : Bool},
+        {False{} == Board.flag_at(y, x, Board.drawn()) : Bool},
         lx => ly =>
-          bool_case(Game.flag_at(y, x, Game.drawn()), z => {False{} == z : Bool},
+          bool_case(Board.flag_at(y, x, Board.drawn()), z => {False{} == z : Bool},
             et => Empty.absurd({False{} == True{} : Bool},
-              not_elim(Game.flag_at(y, x, Game.drawn()),
-                imp_elim(okpos(x, y), Bool.not(Game.flag_at(y, x, Game.drawn())),
-                  fcert(Game.drawn(), x, y, Unit{}, lx, ly), hp),
+              not_elim(Board.flag_at(y, x, Board.drawn()),
+                imp_elim(okpos(x, y), Bool.not(Board.flag_at(y, x, Board.drawn())),
+                  fcert(Board.drawn(), x, y, Unit{}, lx, ly), hp),
                 %et : T(_)
                 Unit{})),
             ef => {==})))
@@ -476,9 +477,9 @@ def Laws.you_cant_win(moves):
 def Laws.never_on_flag(moves):
   use_safe(moves, Game.start_x(), Game.start_y(),
     run_safe(moves, Game.start_x(), Game.start_y(), Unit{}),
-    {Game.at_flag(Game.replay(Game.start(), moves)) == False{} : Bool},
+    {Board.at_flag(Game.replay(Game.start(), moves)) == False{} : Bool},
     nx => ny => hq => eq =>
       %sym(Game.Game, Game.run(moves, Game.Game{Game.start_x(), Game.start_y(), False{}}),
-        Game.Game{nx, ny, False{}}, eq) : {Game.at_flag(_) == False{} : Bool}
+        Game.Game{nx, ny, False{}}, eq) : {Board.at_flag(_) == False{} : Bool}
       %off_F(nx, ny, hq) : {_ == False{} : Bool}
       {==})

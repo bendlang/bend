@@ -13,11 +13,11 @@ static void file_read_fill(IoWork* w, int at, int line) {
   w->code = 0;
   do {
     u64     want = line && got < w->word ? 1 : w->word - got;
-    ssize_t n    = at ? pread(fd, w->data + got, want, (off_t)(w->made + got))
-                      : read(fd, w->data + got, want);
-    if (n < 0 && errno == EINTR) {
-      continue;
-    }
+    ssize_t n;
+    do {
+      n = at ? pread(fd, w->data + got, want, (off_t)(w->made + got))
+             : read(fd, w->data + got, want);
+    } while (n < 0 && errno == EINTR);
     if (n <= 0) {
       w->size = got > 0 ? got : io_sys_end(w, n);
       return;

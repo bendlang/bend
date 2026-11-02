@@ -67,14 +67,5 @@ def ascending(d: Nat, +i: Nat, t: Tree(d)) -> Bool:
       (x, y) = t
       Bool.and(ascending(p, Nat.double(i), x), ascending(p, 1n+Nat.double(i), y))
 
-# spec for LAWS.bend only
-def sum(d: Nat, t: Tree(d)) -> Nat:
-  match d:
-    case 0n:
-      t
-    case 1n++p:
-      (x, y) = t
-      Nat.add(sum(p, x), sum(p, y))
-
 def main() -> IO(Unit):
   IO.print(pick(String, ascending(16n, 0n, sort!(16n, True{}, gen(16n, 0n))), "sorted", "unsorted"))

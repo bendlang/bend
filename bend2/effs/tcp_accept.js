@@ -8,8 +8,12 @@
 function tcp_accept_with(listener, k, at) {
   const sys = io_sys();
   const lfd = listener;
+  const intr = 4;
   const go = () => {
-    const fd = sys.accept(lfd, null, null);
+    let fd = sys.accept(lfd, null, null);
+    while (fd < 0 && sys.errno() === intr) {
+      fd = sys.accept(lfd, null, null);
+    }
     if (fd < 0) {
       const code = sys.errno();
       if (code !== (sys.mac ? 35 : 11)) {

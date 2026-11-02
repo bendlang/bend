@@ -46,6 +46,8 @@ function splitLine(text: string): Line {
       kind = "literal";
       const quote = char;
       i++;
+      // In ''', the first apostrophe after the opener is the character.
+      if (quote === "'" && code[i] === "'") i++;
       let escaped = false;
       let closed = false;
       while (i < code.length) {

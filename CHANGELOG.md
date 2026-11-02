@@ -62,7 +62,10 @@ latest one; the GitHub release carries the same notes.
   UTF-8 character loses nothing (#1764, PR #1765 by oxura). **Breaking**
   for code that read the residue as a String.
 - **Native windows emit `Text` events** with the typed characters on
-  Linux and macOS (#1019, PR #1441 by oxura).
+  Linux and macOS (#1019, PR #1441 by oxura). **Breaking:** Base's `Event`
+  now declares the bare constructor name `Text`. A program importing Base
+  cannot also declare its own `Text` constructor; rename it, for example
+  to `NodeText` (#1913).
 - **A `Char` holds any u32 on every lane**; a non-scalar becomes U+FFFD
   only where text leaves Bend (#1080, PR #1411 by oxura).
 - **`--verdict`**:
