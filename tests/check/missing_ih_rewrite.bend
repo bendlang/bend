@@ -39,4 +39,5 @@ def add_zero(a):
 #|29>|       {==}
 #|   |       ^^^^
 #|30 |
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

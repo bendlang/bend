@@ -40,4 +40,5 @@ def main():
 #|24>|   {==}
 #|   |   ^^^^
 #|25 |
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

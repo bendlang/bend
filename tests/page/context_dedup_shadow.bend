@@ -26,4 +26,5 @@ def f(x):
 #|15>|   x => {==}
 #|   |        ^^^^
 #|16 |
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

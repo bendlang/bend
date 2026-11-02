@@ -3743,7 +3743,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
         throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (!term_compare("EQ", book, t_wnf.a, t_wnf.b, d)) {
-        throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
+        throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def, "Note: the left side of the equality is the expected, the right side is the observed.");
       }
       return Check(tm, ty, uses_nil());
     }

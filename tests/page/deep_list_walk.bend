@@ -38,4 +38,5 @@ def thm():
 #|30>|   {==}
 #|   |   ^^^^
 #|31 | 
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1

@@ -31,4 +31,5 @@ def swap_swap(p):
 #|21>|   {==}
 #|   |   ^^^^
 #|22 |
+#|Note: the left side of the equality is the expected, the right side is the observed.
 #|exit 1
