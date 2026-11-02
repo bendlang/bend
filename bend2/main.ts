@@ -318,13 +318,23 @@ async function cli_file(args: string[]): Promise<void> {
     }
     const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
+    const outputs = new Map<string, string>();
     for (const out of outs) {
+      const binary = !/\.(mjs|c?js|c|bendtt)$/.test(out);
+      const full = path.resolve(out);
+      const at = path.join(path_real(path.dirname(full)), path.basename(full));
+      for (const key of binary ? [at, at + ".gpu"] : [at]) {
+        const other = outputs.get(key);
+        if (other !== undefined) {
+          cli_fail("-o " + out + " conflicts with -o " + other);
+        }
+        outputs.set(key, out);
+      }
       if (output_conflicts(out, ins)) {
         cli_fail("-o " + out + " is a file the program reads, or a directory");
       }
       // A binary's GPU build also writes <binary>.gpu.
-      if (!/\.(mjs|c?js|c|bendtt)$/.test(out)
-        && output_conflicts(out + ".gpu", ins)) {
+      if (binary && output_conflicts(out + ".gpu", ins)) {
         cli_fail("GPU output " + out + ".gpu is a file the program reads, or a"
           + " directory");
       }
