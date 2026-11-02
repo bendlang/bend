@@ -528,22 +528,16 @@ export function pmap_get<T>(map: PMap<T>, key: U32): T | null {
 }
 
 export function pmap_set<T>(map: PMap<T>, key: U32, val: T): PMap<T> {
-  switch (map.$) {
-    case "Emp": {
-      return pmap_set(Bin<T>(null, map, map), key, val);
-    }
-    case "Bin": {
-      if (key === 0) {
-        return Bin(val, map.l, map.r);
-      }
-      if (key % 2 === 1) {
-        const l = pmap_set(map.l, (key - 1) / 2, val);
-        return Bin(map.v, l, map.r);
-      }
-      const r = pmap_set(map.r, (key - 2) / 2, val);
-      return Bin(map.v, map.l, r);
-    }
+  const bin = map.$ === "Bin";
+  const v = bin ? map.v : null;
+  const l = bin ? map.l : map;
+  const r = bin ? map.r : map;
+  if (key === 0) {
+    return Bin(val, l, r);
   }
+  return key % 2 === 1
+    ? Bin(v, pmap_set(l, (key - 1) / 2, val), r)
+    : Bin(v, l, pmap_set(r, (key - 2) / 2, val));
 }
 
 export function pmap_union<T>(a: PMap<T>, b: PMap<T>, f: (x: T, y: T) => T): PMap<T> {
@@ -3557,7 +3551,8 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
 }
 
 export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Quant, s: Span | undefined, def?: Name): Uses {
-  const u = pmap_get(us, i) ?? None();
+  const o = pmap_get(us, i);
+  const u = o ?? None();
   if (quant_join(u, q).$ !== q.$) {
     let obs = quant_show(u) + k;
     if (u.$ === "Many") {
@@ -3565,7 +3560,7 @@ export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Q
     }
     throw Err(book, ctx, quant_show(q) + k, obs, s, def);
   }
-  return pmap_set(us, i, None());
+  return o === null ? us : pmap_set(us, i, None());
 }
 
 export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm, ctx: Ctx, d: number): Check {
