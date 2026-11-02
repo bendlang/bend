@@ -665,10 +665,10 @@ function fresh(e: Safe, n: string): string {
   return k;
 }
 
-// a bend2 name spelled with BendTT's name characters: any other one is
-// _hex_
+// a bend2 key in BendTT's name characters, injectively: _ is __, any
+// other one _hex_
 function name_tt(k: Name): string {
-  return B.name_key(k).replace(/[^A-Za-z0-9_.]|^[.0-9]/g, (c) => "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
+  return k.replace(/_|[^A-Za-z0-9.]|^[.0-9]/gu, (c) => c === "_" ? "__" : "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
 }
 
 // Quant
