@@ -5,9 +5,11 @@ latest one; the GitHub release carries the same notes.
 
 ## Unreleased
 
-- **`List.map` keeps the list's quantity** (#1994). Pass `~&1` before the
-  type arguments for an affine list, or `~&2` for a reusable list. Both
-  element types must have that kind; the output keeps the same quantity.
+- **`List.map` takes the quantity of each list** (#1994), so it maps over
+  a `List<&2, A>` and can change quantity. This breaks every existing call:
+  `List.map(~A, ~B, ~f, xs)` becomes `List.map(~&1, ~&1, ~A, ~B, ~f, xs)`.
+  `A` must have the input list's kind and `B` the output list's, so `~&2`
+  needs a `Data` element type.
 
 ## 2.0.39 (2026-10-23)
 
