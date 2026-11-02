@@ -997,12 +997,12 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     if (m[2] in al) {
       throw Err(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
     }
-    const bad = (p: string) => Err(book, ctx_nil(), "an import path of plain names (each starts with a letter or _, then letters, digits, _ and -)", "'" + p + "'", sp);
+    const bad = (to = "") => Err(book, ctx_nil(), "an import path of plain names (each starts with a letter or _, then letters, digits, _ and -)", "'" + m[1] + "'" + to, sp);
     const nv  = /^([^/]*@[^/]*)\//.exec(m[1]);
     const as  = nv === null ? m[1] : await name_hash(book, nv[1], sp) + m[1].slice(nv[1].length);
     const rel = path.posix.normalize(as);
     if (!ok(as.replace(/^\.\//, "").slice(0, -5), hub(as))) {
-      throw bad(m[1]);
+      throw bad();
     }
     const got = await book_file(book, hub(as) ? BEND_LIB + "/" + rel : path.posix.resolve(dir, rel), sp);
     const lib = fs.existsSync(BEND_LIB) ? fs.realpathSync(BEND_LIB) + "/" : "\0";
@@ -1013,7 +1013,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
       throw Err(book, ctx_nil(), "an import on its side of the hub (a hub file imports only hub files, and a local path stays out of the hub's store)", "'" + m[1] + "'", sp);
     }
     if (!ok(sub, in_lib)) {
-      throw bad(sub + ".bend");
+      throw bad(" (resolves to '" + path.posix.relative(dir, got) + "')");
     }
     al[m[2]] = sub;
     await book_load(book, got, sub, seen, sp, top);
