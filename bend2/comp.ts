@@ -4035,7 +4035,7 @@ FAR u64 span_fade(Env e, Term t, u64 src, u32 n) {
   return 0;
 }
 
-#define COPY(D, S, N) for (u64 i_ = 0; i_ != (N); i_ += 1) (D)[i_] = (S)[i_]
+#define COPY(D, S, N) for (u64 i_ = 0, n_ = (N); i_ != n_; i_ += 1) (D)[i_] = (S)[i_]
 
 INLINE u64 ctr_take(Env e, Term t, u32 n, THR Term* out) {
   u64 src = term_peek(e.mem, t);
@@ -4179,7 +4179,7 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
   for (u32 j = 0; arr && d > 0 && j < n; j += 1) {
     if (d >= 24 && !term_triv(v[j])) {
       err_post(H, ERR_CNTS);
-      continue;
+      n = 0;
     }
     v[j] = term_keep(e, v[j], (1u << d) - 1);
   }
