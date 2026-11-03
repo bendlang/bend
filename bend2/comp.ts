@@ -4876,7 +4876,7 @@ static void gpu_note(const char* path) {
 
 #if !BEND_CUDA
 #define gpu_map pool_mmap
-#define gpu_near(p)
+#define gpu_near(p, k)
 #define gpu_bang(beg)
 #endif
 
@@ -5069,11 +5069,14 @@ fail:;
 
 #undef GPU_CHECK
 
-// EXPERIMENT #1992, to remove before any merge: BEND_NEAR=0 turns the
-// prefetches off, and a line at exit gives medians over the second half of
-// the bangs, when the weights are already resident.
-static bool near_off;
-static u64  near_calls, near_ns, near_fails, bang_at;
+// EXPERIMENT #1992, to remove before any merge. BEND_NEAR picks the
+// prefetches by letter: h the header, r ring row 0's get and put words, s the
+// ring slot, t the task's tail block, and w widens each to its aligned 64 KB.
+// Unset or 1 means hrst, 0 means none. A line at exit gives medians over the
+// second half of the bangs, when the weights are already resident.
+static char near_on[8];
+static u64  near_calls, near_ns, near_fails, bang_at, near_lo, near_hi;
+static u64  tail_off, tail_moves;
 static u32  bang_n, bang_cap;
 static u32* bang_us;
 static u32* host_us;
@@ -5103,13 +5106,15 @@ static void near_report(void) {
   u32 host = near_med(host_us);
   fprintf(stderr, "bend: near=%s bangs=%u cycle_us=%u bang_us=%u host_us=%u"
     " prefetches_per_bang=%.1f prefetch_us=%.1f failed=%llu corpus=0x%llx"
-    " ring_off=%llu stak_off=%llu heap_off=%llu\n",
-    near_off ? "off" : "on", bang_n, bang + host, bang, host,
+    " ring_off=%llu stak_off=%llu heap_off=%llu tail_off=%llu"
+    " tail_moves=%llu\n",
+    near_on[0] ? near_on : "off", bang_n, bang + host, bang, host,
     (double)near_calls / bang_n,
     near_calls ? near_ns / 1e3 / near_calls : 0.0,
     (unsigned long long)near_fails, (unsigned long long)(uintptr_t)CORPUS,
     (unsigned long long)(RING_OFF * 8), (unsigned long long)(STAK_OFF * 8),
-    (unsigned long long)(HEAP_OFF * 8));
+    (unsigned long long)(HEAP_OFF * 8), (unsigned long long)tail_off,
+    (unsigned long long)tail_moves);
 }
 
 static void gpu_bang(bool beg) {
@@ -5129,18 +5134,27 @@ static void gpu_bang(bool beg) {
 }
 
 // Moves the page the host just touched to the device before a kernel faults
-// on it.
-static void gpu_near(void* p) {
-  if (near_off) {
+// on it, if BEND_NEAR has the letter k.
+static void gpu_near(void* p, char k) {
+  if (k == 't') {
+    u64 off = (u64)((uintptr_t)p - (uintptr_t)CORPUS);
+    tail_moves += tail_off != 0 && (off & ~4095ull) != (tail_off & ~4095ull);
+    tail_off = off;
+  }
+  if (!strchr(near_on, k)) {
     return;
   }
-  CUdeviceptr at = (uintptr_t)p & ~4095ull;
+  u64 size = strchr(near_on, 'w') ? 65536 : 4096;
+  u64 at   = (uintptr_t)p & ~(size - 1);
+  u64 end  = at + size;
+  at  = at < near_lo ? near_lo : at;
+  end = end > near_hi ? near_hi : end;
   u64 beg = near_now();
 #if CUDA_VERSION >= 13000
-  CUresult r = cuMemPrefetchAsync(at, 4096,
+  CUresult r = cuMemPrefetchAsync(at, end - at,
     (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
 #else
-  CUresult r = cuMemPrefetchAsync(at, 4096, gpu_dev, NULL);
+  CUresult r = cuMemPrefetchAsync(at, end - at, gpu_dev, NULL);
 #endif
   near_ns += near_now() - beg;
   near_calls += 1;
@@ -5153,7 +5167,12 @@ static void gpu_near(void* p) {
 
 static u64* gpu_map(u64 bytes) {
   const char* near = getenv("BEND_NEAR");
-  near_off = near != NULL && !strcmp(near, "0");
+  near = near == NULL || !strcmp(near, "1") ? "hrst" : near;
+  for (u32 i = 0, n = 0; near[i] && n < 7; i += 1) {
+    if (strchr("hrstw", near[i]) && !strchr(near_on, near[i])) {
+      near_on[n++] = near[i];
+    }
+  }
   atexit(near_report);
   CUdeviceptr p = 0;
   if (cuMemAllocManaged(&p, bytes, CU_MEM_ATTACH_GLOBAL) != CUDA_SUCCESS) {
@@ -5167,6 +5186,8 @@ static u64* gpu_map(u64 bytes) {
 #endif
   cuMemsetD8(p, 0, STAK_OFF * 8);
   cuCtxSynchronize();
+  near_lo = p;
+  near_hi = p + bytes;
   return (u64*)(uintptr_t)p;
 }
 
@@ -5256,7 +5277,7 @@ static void gpu_pass(u64* H) {
     err_fail("device fault");
   }
   for (u32 n = 1; H[H_FRONT] != 0; n = n < 32 ? 2 * n : 64) {
-    gpu_near(H);
+    gpu_near(H, 'h');
     for (u32 i = 0; i < n; i += 1) {
       gpu_run();
     }
@@ -5311,9 +5332,9 @@ static void cube_run(u64* H, bool gpu) {
   if (gpu) {
     gpu_bang(true);
     turn_set(H, f);
-    gpu_near(ring_get(H, 0));
-    gpu_near(ring_put(H, 0));
-    gpu_near(ring_slot(H, 0, *ring_put(H, 0) - 1));
+    gpu_near(ring_get(H, 0), 'r');
+    gpu_near(ring_put(H, 0), 'r');
+    gpu_near(ring_slot(H, 0, *ring_put(H, 0) - 1), 's');
   }
   while (!root_done(H)) {
     if (f == 0) {
@@ -5438,7 +5459,7 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
       Term cont = H[tl];
       u32  idx  = (u32)(H[tl + 1] >> 32) & 0xFFFF;
       H[tl]     = TERM_HOLE;
-      gpu_near(H + tl);
+      gpu_near(H + tl, 't');
       a32_store(a32_at(H, H_CURSOR), 1);
       ring_push(H, 0, t);
       cube_run(H, true);
