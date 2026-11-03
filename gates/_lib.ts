@@ -64,6 +64,8 @@ const UP = "@@up";
 
 const FIRST = 20_000;
 
+const SILENT = "no answer from the node in ";
+
 let held = "";
 
 const staged = new Map<string, Promise<Exec>>();
@@ -83,17 +85,23 @@ export function exec(bin: string, args: string[], input?: Buffer | string,
       ...env }, stdio: ["pipe", "pipe", "pipe"] });
     const outs: Buffer[] = [];
     const errs: Buffer[] = [];
-    const bomb = setTimeout(() => kid.kill("SIGKILL"), timeout);
-    // A mux client hands its fds to the master, so the pipes outlive the
-    // killed client: a silent child answers at once, not at their close.
-    const mute = up === "" ? undefined : setTimeout(() => {
+    // A mux client hands its fds to the master, so the pipes outlive a
+    // killed client: a child cut short answers at once, not at their close,
+    // with what it said so far.
+    const cut = (code: number, why: string): void => {
       clearTimeout(bomb);
+      clearTimeout(mute);
       kid.kill("SIGKILL");
       kid.stdout.destroy();
       kid.stderr.destroy();
-      resolve({ out: "", err: "no answer from the node in "
-        + String(FIRST / 1000) + " s", code: 255 });
-    }, FIRST);
+      const err = Buffer.concat(errs).toString();
+      const last = err.trim().split("\n").pop() ?? "";
+      resolve({ out: Buffer.concat(outs).toString(), code, err: why === ""
+        ? err : err + why + (last === "" ? "" : " (" + last + ")") + "\n" });
+    };
+    const bomb = setTimeout(() => cut(1, ""), timeout);
+    const mute = up === "" ? undefined : setTimeout(() => cut(255, SILENT
+      + String(FIRST / 1000) + " s"), FIRST);
     // up may span two chunks, so the check keeps the end of stderr so far
     let heard = up === "";
     let tail = "";
@@ -139,7 +147,8 @@ export async function ssh(node: number, script: string,
       ? await node_exec([...SSH, node_name(node), said], input, timeout)
       : await hoc_ssh(node, said, input, timeout);
     got.err = got.err.replace(UP + "\n", "");
-    if (hop >= 2 || got.code !== 255 || !DROP.test(got.err)) {
+    if (hop >= 2 || got.code !== 255 || !DROP.test(got.err)
+      || got.err.includes(SILENT)) {
       return got;
     }
     await sleep(500 + Math.random() * 1500);
