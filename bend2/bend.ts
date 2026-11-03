@@ -1068,6 +1068,23 @@ export function tele_fill(book: Book, tel: HTerm, xs: HTerm[], ctx: Ctx, def?: N
   return out;
 }
 
+// a constructor's telescope filled with its datatype's arguments. The
+// parser builds ctr.T as plain binders (parse_book), so filling them only
+// substitutes and depends on nothing but ctr.T and xs. A chain like
+// S{S{Z{}}} checks every value against the same argument objects, so the
+// last fill is kept per constructor and reused while they match
+const CTR_FIELDS = new WeakMap<object, { xs: HTerm[]; tel: HTerm }>();
+
+export function ctr_fields(book: Book, ctr: { T: HTerm }, xs: HTerm[], ctx: Ctx, def?: Name, s?: Span): HTerm {
+  const last = CTR_FIELDS.get(ctr);
+  if (last !== undefined && last.xs.length === xs.length && last.xs.every((x, j) => x === xs[j])) {
+    return last.tel;
+  }
+  const tel = tele_fill(book, ctr.T, xs, ctx, def, s);
+  CTR_FIELDS.set(ctr, { xs, tel });
+  return tel;
+}
+
 export function tele_unbind(book: Book, T: HTerm): { doms: Array<[Quant, Name, HTerm]>; ret: HTerm } {
   const doms: Array<[Quant, Name, HTerm]> = [];
   let tel = T;
@@ -3524,16 +3541,17 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
   }
 }
 
-export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: HTerm } {
+export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span, need_tel: boolean = true): { xs: LTerm[]; us: Uses; tel: HTerm } {
   const out: LTerm[] = [];
   let us = uses_nil();
-  for (const x of xs) {
+  for (let i = 0; i < xs.length; i++) {
+    const x = xs[i];
     const t_all = tele_head(book, tel, ctx, lhs.def, s);
     const t_dem = quant_dem(t_all.q, qt);
     const x_chk = term_check(book, lhs, x, t_dem, t_all.A, ctx, d);
     out.push(x_chk.tm);
     us  = uses_add(us, x_chk.us);
-    tel = t_all.B(x);
+    if (need_tel || i + 1 < xs.length) tel = t_all.B(x);
   }
   return { xs: out, us, tel };
 }
@@ -3652,8 +3670,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (tm.x.length !== ctr.n) {
         throw Err(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
       }
-      const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
-      const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
+      const tel = ctr_fields(book, ctr, t_wnf.x, ctx, lhs.def, tm.s);
+      const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s, false);
       return Check(Ctr(tm.k, xs, tm.s), ty, us);
     }
     // T == Base's type k of the literal, no constructor removed
