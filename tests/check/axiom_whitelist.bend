@@ -21,7 +21,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a filled definition (an unfilled law is a dead claim: live code cannot use it)
+#|- expected : a def whose body is implemented before the def is used
 #|- observed : U32.magic_hom
 #|Location: use
 #|13 | def use():

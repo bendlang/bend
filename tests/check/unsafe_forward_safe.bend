@@ -17,7 +17,7 @@ def main() -> Nat:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a def written above its use (defs are checked in file order)
+#|- expected : a def whose body is implemented before the def is used
 #|- observed : g
 #|Context:
 #|- x : Nat

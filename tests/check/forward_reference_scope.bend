@@ -24,7 +24,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a def written above its use (defs are checked in file order)
+#|- expected : a def whose body is implemented before the def is used
 #|- observed : foo
 #|Location: bar
 #|13 | def bar():
