@@ -54,8 +54,9 @@ import Game from "../main.bend";
 The loader in [bend2/main.ts](../../bend2/main.ts) compiles `.bend`
 imports on the fly — under bun (dev server and bundler) and under node
 (`node --import`). Every def becomes a function on
-`Game`; the UI asks `Game.grid` for the level and sends every keypress
-through `Game.replay`. The browser never decides anything.
+`Game`; the UI asks `Game.grid` for the level and, on every keypress,
+shows `Game.replay(Game.start(), moves)` over the moves played so far: the
+very term the laws are stated on. The browser never decides anything.
 
 ```bash
 cd web

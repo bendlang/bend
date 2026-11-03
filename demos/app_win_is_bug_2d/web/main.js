@@ -1,8 +1,8 @@
 // Winning Is Impossible: the visual half. The game itself is main.bend,
 // imported as a module: the bend loader compiles it on the fly, and every def
 // becomes a function on Game. The map is asked from Game.grid, so the level has
-// one author. Every move goes through Game.replay; this file only draws the
-// state that comes back.
+// one author. Every key replays the whole game through Game.replay; this file
+// only draws the state that comes back.
 
 import Game from "../main.bend";
 
@@ -27,12 +27,16 @@ for (let y = 0; y < H; y++) {
 // The conventions: a constructor is {$: "Name", field: value, ...} (live
 // fields only), Nat is a number, Bool is a plain boolean. Stepping onto the
 // flag's cell is the win: the game sets `won` itself.
+//
+// The page keeps the moves played and shows replay(start(), moves), the term
+// LAWS.bend states its laws on. Stepping from the current board instead would
+// rely on replay composing, which no law asks for, so a game that treats a
+// mid-game board differently from the opening one could be won here.
 
-const one  = (act) => ({ $: "Con", head: { $: act }, tail: { $: "Nil" } });
-const send = (act, g) => Game.replay(g, one(act));
+const list = (acts) => acts.reduceRight((tail, act) => ({ $: "Con", head: { $: act }, tail }), { $: "Nil" });
 
-let st    = Game.start();
-let moves = 0;
+const played = [];
+let st = Game.start();
 
 // Render
 // ======
@@ -139,11 +143,11 @@ const DELTA = { Up: [0, -1], Down: [0, 1], Left: [-1, 0], Right: [1, 0] };
 function act(name) {
   const fx = Number(st.x);
   const fy = Number(st.y);
-  st = send(name, st);
+  played.push(name);
+  st = Game.replay(Game.start(), list(played));
   const tx = Number(st.x);
   const ty = Number(st.y);
-  moves++;
-  document.getElementById("moves").textContent = moves;
+  document.getElementById("moves").textContent = played.length;
   const [dx, dy] = DELTA[name];
   if (tx === fx && ty === fy) {
     bump = { dx, dy, t0: performance.now() };            // a wall said no
