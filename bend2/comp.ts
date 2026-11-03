@@ -702,7 +702,7 @@ function ty_key(T: HTerm): string {
 }
 
 function tld_of(k: Name): Bend.TLD {
-  return FL.book.tlds[k];
+  return FL.book.tlds[k] ?? FL.made[k];
 }
 
 function ty_tag(t: HTerm | null, tags: string): boolean {
@@ -1027,7 +1027,9 @@ function fun_of(k: Name): Fun {
       return { n: 0, h: null, live: [], lays: [BOX, BOX], ret: BOX };
     }
     const doms = tele_unbind(tld.T).doms;
-    const h = tld.e ? Bend.term_higher(tld.e) : null;
+    const h = !tld.e ? null : lt_any(tld.e, (t) => t.$ === "App"
+      && !!fuse_pair(t.f, t.x))
+      ? def_fuse(Bend.term_higher(tld.e)) : Bend.term_higher(tld.e);
     const n = tld.n + (h === null ? 0
       : Math.min(def_raise(h, tld.n), doms.length - tld.n));
     const live = doms.slice(0, n).filter(dom_live);
@@ -1039,6 +1041,138 @@ function fun_of(k: Name): Fun {
     const wide = lays.flatMap((l) => l.ks).length > WIDE;
     return { n, h, live, lays: lays.map((l) => wide && l.ks.length > 1 ? BOX
       : l), ret: ret.ks.length === 0 ? BOX : ret };
+  });
+}
+
+// A consumer c called on what a producer p builds, c(p(xs), ys), runs as
+// one def c<p(xs, ys): p's body with c applied at each result, where a
+// constructor meets c's match and is never built, and c called on a call
+// of p is c<p again. Both call themselves and take live closed datatypes;
+// a lone let of a producer, or a result's let of a constructor, forwards.
+
+function lt_any(t: any, p: (t: any) => boolean): boolean {
+  return !!t && typeof t === "object" && (p(t)
+    || Object.entries(t).some(([j, x]) => j !== "s" && j !== "T"
+      && lt_any(x, p)));
+}
+
+function term_head(t: HTerm): [HTerm, HTerm[]] {
+  const xs: HTerm[] = [];
+  let c = Bend.term_strip(t);
+  for (; c.$ === "App"; c = Bend.term_strip(c.f)) {
+    xs.push(c.x);
+  }
+  return [c, xs.reverse()];
+}
+
+function term_under(t: HTerm, n: number, f: (t: HTerm) => HTerm): HTerm {
+  const s = term_force(t);
+  return n === 0 ? f(s) : s.$ === "Ann" ? Bend.Ann(term_under(s.x, n, f), s.T)
+    : s.$ === "Lam" ? Bend.Lam(s.k, s.i, (x: HTerm) =>
+      term_under(s.f(x), n - 1, f), s.s, s.q)
+    : s.$ === "Mat" ? Bend.Mat(s.k, term_under(s.h, n - 1
+      + FL.book.ctrs[s.k].n, f), term_under(s.m, n, f)) : s;
+}
+
+function let_end(t: HTerm): HTerm {
+  const s = term_strip(t);
+  return s.$ === "Let" ? let_end(term_open(s).b) : t;
+}
+
+function tele_of(ds: Dom[], R: HTerm): HTerm {
+  return ds.reduceRight((B, [q, k, A]) => Bend.All(q, k, 0, A, () => B), R);
+}
+
+function fuse_pair(f: HTerm, x: HTerm): Name | null {
+  const [c, p] = [Bend.term_strip(f), term_head(x)[0]];
+  return c.$ === "Ref" && p.$ === "Ref" && !c.b && !p.b && !/(<.*){3}/.test(c.k)
+    && fuse_def(c.k) && fuse_def(p.k) ? fuse_of(c.k, p.k) : null;
+}
+
+function fuse_def(k: Name): Bend.Def | null {
+  return memo(FL.fusable, k, () => {
+    const d = tld_of(k);
+    if (d?.$ !== "Def" || !d.v || d.x || def_foreign(d) || intr_of(k)) {
+      return null;
+    }
+    const { doms, ret } = tele_unbind(d.T);
+    return doms.length === d.n && [...doms.map((x) => x[2]), ret].every(ty_adt)
+      && doms.every(dom_live)
+      && (FL.made[k] || lt_any(d.e, (t) => t.$ === "Ref" && t.k === k)) ? d
+      : null;
+  });
+}
+
+function fuse_of(c: Name, p: Name): Name | null {
+  return memo(FL.fuses, c + "<" + p, (k) => {
+    const [dc, dp] = [fuse_def(c)!, fuse_def(p)!];
+    const [tc, tp] = [tele_unbind(dc.T), tele_unbind(dp.T)];
+    const ys = tc.doms.slice(1);
+    if (WORDS[ty_adt(tp.ret)!.k]) {
+      return null;
+    }
+    FL.fuses.set(k, k);
+    let hit = false;
+    const call = (xs: HTerm[]) => Bend.Ann(xs.reduce((f, x) => Bend.App(f, x),
+      Bend.Ref(c)), tc.ret);
+    const leaf = (r: HTerm, zs: HTerm[]): HTerm => {
+      const s = term_strip(r);
+      if (s.$ === "Let") {
+        return s.q.every((q) => q.$ === "Lone")
+          && term_strip(let_end(s)).$ === "Ctr" ? leaf(s.f(s.v), zs)
+          : Bend.Let(s.k, s.i, s.v, (vs: HTerm[]) => leaf(s.f(vs), zs), s.s, s.q);
+      }
+      let b = Bend.term_higher(dc.e!);
+      for (let xs = [s, ...zs], w = term_strip(b); xs.length > 0;
+        w = term_strip(b)) {
+        const x = term_strip(xs[0]);
+        if (w.$ === "Lam" && (w.q?.$ !== "Many" || term_const(x)
+          || x.$ === "Var")) {
+          b = w.f(xs[0]);
+          xs = xs.slice(1);
+          continue;
+        }
+        if (w.$ !== "Mat" || x.$ !== "Ctr") {
+          return call([s, ...zs]);
+        }
+        const { arms, end } = mat_arms(w);
+        const arm = arms.find(([n]) => n === x.k);
+        [b, xs] = arm ? [arm[1], [...ctr_flds(x.k, x.x), ...xs.slice(1)]]
+          : [end, xs];
+      }
+      hit = true;
+      return Bend.Ann(b, tc.ret);
+    };
+    const lams = (r: HTerm, zs: HTerm[]): HTerm => zs.length === ys.length
+      ? leaf(r, zs) : Bend.Lam(ys[zs.length][1], 0, (z: HTerm) =>
+        lams(r, [...zs, z]), undefined, ys[zs.length][0]);
+    const v = term_under(Bend.term_higher(dp.e!), dp.n, (r) =>
+      Bend.Ann(lams(r, []), tele_of(ys, tc.ret)));
+    const d: Bend.Def = { $: "Def", n: dp.n + ys.length, x: 0,
+      T: tele_of([...tp.doms, ...ys], tc.ret), v, e: Bend.term_lower(v) };
+    if (!hit) {
+      return null;
+    }
+    FL.made[k] = d;
+    d.e = Bend.term_lower(def_fuse(v));
+    return k;
+  });
+}
+
+function def_fuse(t: HTerm): HTerm {
+  return term_map(t, (s) => {
+    const [p] = s.$ === "Let" ? term_head(s.v[0]) : [s];
+    if (p.$ === "Ref" && s.$ === "Let" && s.q[0].$ === "Lone" && !s.v[1]
+      && fuse_def(p.k)) {
+      return def_fuse(s.f(s.v));
+    }
+    const [c, [x, ...ys]] = term_head(s);
+    const [q, zs] = x ? term_head(x) : [c, []];
+    const k = s.$ === "App" && c.$ === "Ref" && q.$ === "Ref"
+      && ys.length + 1 === fuse_def(c.k)?.n && zs.length === fuse_def(q.k)?.n
+      && fuse_pair(c, x);
+    return k ? def_fuse([...zs, ...ys].reduce((f, y) => Bend.App(f, y),
+      Bend.Ref(k))) : null;
   });
 }
 
@@ -1160,6 +1294,9 @@ function file_new(book: Bend.Book, js: boolean) {
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
+    fusable: new Map<Name, Bend.Def | null>(),
+    fuses: new Map<string, Name | null>(),
+    made: Object.create(null) as Record<Name, Bend.Def>,
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
     teles: new Map<HTerm, { doms: Dom[]; ret: HTerm }>(),
