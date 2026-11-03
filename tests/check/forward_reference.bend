@@ -16,7 +16,7 @@ def later(): 0
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a def whose body is implemented before the def is used
+#|- expected : a def whose body is implemented before the def is used (defs are checked in file order, and an unfilled law has none)
 #|- observed : later
 #|Location: main
 #| 9 | 

@@ -21,7 +21,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a def whose body is implemented before the def is used
+#|- expected : a def whose body is implemented before the def is used (defs are checked in file order, and an unfilled law has none)
 #|- observed : U32.magic_hom
 #|Location: use
 #|13 | def use():
