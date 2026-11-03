@@ -496,7 +496,8 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   const s = term_force(t);
   const kids = term_kids(s);
   return p(s, tail) || kids.some((x, i) => term_any(x, p, tail && (s.$
-    === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
+    === "Let" ? i === kids.length - 1 : s.$ === "App" ? !i && !!mat_app(s)
+    : "Ann Lam Mat Rwt".includes(s.$))));
 }
 
 function term_map(t: HTerm, f: (s: HTerm) => HTerm | null): HTerm {
@@ -1027,7 +1028,9 @@ function fun_of(k: Name): Fun {
       return { n: 0, h: null, live: [], lays: [BOX, BOX], ret: BOX };
     }
     const doms = tele_unbind(tld.T).doms;
-    const h = tld.e ? Bend.term_higher(tld.e) : null;
+    const h = !tld.e ? null : lt_any(tld.e, (t) => t.$ === "App"
+      && (term_lam(t.f) || term_lam(t.x)) || t.$ === "Let" && term_lam(t.v[0]))
+      ? def_simp(Bend.term_higher(tld.e)) : Bend.term_higher(tld.e);
     const n = tld.n + (h === null ? 0
       : Math.min(def_raise(h, tld.n), doms.length - tld.n));
     const live = doms.slice(0, n).filter(dom_live);
@@ -1040,6 +1043,106 @@ function fun_of(k: Name): Fun {
     return { n, h, live, lays: lays.map((l) => wide && l.ks.length > 1 ? BOX
       : l), ret: ret.ks.length === 0 ? BOX : ret };
   });
+}
+
+// def_simp reduces a lambda applied in place, and inlines a call passing
+// one to a def that cannot reach itself, so neither builds a closure. An
+// argument that is no value is bound first; a match the callee opens on a
+// runtime value takes the arguments left, and a let's rest, into its arms.
+
+function lt_any(t: any, p: (t: any) => boolean): boolean {
+  return !!t && typeof t === "object" && (p(t) || Object.entries(t)
+    .some(([j, x]) => j !== "s" && j !== "T" && lt_any(x, p)));
+}
+
+function term_lam(t: any): boolean {
+  return Bend.term_strip(t).$ === "Lam";
+}
+
+function def_rec(k: Name): boolean {
+  const seen = new Set<Name>();
+  const go = (d: Name): boolean => lt_any((tld_of(d) as Bend.Def)?.e, (t) =>
+    t.$ === "Ref" && (t.k === k || !seen.has(t.k) && !!seen.add(t.k) && go(t.k)));
+  return memo(FL.recs, k, go);
+}
+
+function term_under(t: HTerm, n: number, f: (t: HTerm) => HTerm): HTerm {
+  const s = term_force(t);
+  return n === 0 ? f(s) : s.$ === "Ann" ? Bend.Ann(term_under(s.x, n, f), s.T)
+    : s.$ === "Lam" ? Bend.Lam(s.k, s.i, (x: HTerm) =>
+      term_under(s.f(x), n - 1, f), s.s, s.q)
+    : s.$ === "Mat" ? Bend.Mat(s.k, term_under(s.h, n - 1
+      + FL.book.ctrs[s.k].n, f), term_under(s.m, n, f)) : s;
+}
+
+function mat_app(t: HTerm): Of<"App"> | null {
+  const s = term_strip(t);
+  return s.$ === "App" && term_strip(s.f).$ === "Mat" ? s : null;
+}
+
+function mat_ty(A: HTerm, R: HTerm): HTerm {
+  return Bend.All(Bend.Many(), "s", 0, A, () => R);
+}
+
+function let_end(t: HTerm): HTerm {
+  const s = term_strip(t);
+  return s.$ === "Let" ? let_end(term_open(s).b) : t;
+}
+
+// b, of type T, applied to xs
+function term_inst(b: HTerm, T: HTerm, xs: HTerm[]): HTerm {
+  const s = term_strip(b);
+  const all = xs.length > 0 && ty_all(T);
+  if (!all) {
+    return xs.reduce((f, x) => Bend.App(f, x), Bend.Ann(b, T));
+  }
+  const [B, ys] = [all.B(xs[0]), xs.slice(1)];
+  return s.$ === "Lam" ? term_inst(s.f(xs[0]), B, ys)
+    : s.$ === "Mat" ? Bend.App(Bend.Ann(term_under(s, 1, (u) => term_inst(u,
+      B, ys)), mat_ty(all.A, ys.reduce((U, x) => ty_all(U).B(x), B))), xs[0])
+    : term_inst(Bend.App(Bend.Ann(b, T), xs[0]), B, ys);
+}
+
+function def_simp(t: HTerm): HTerm {
+  return term_map(t, (s) => memo(FL.simps, s, () => {
+    if (s.$ === "Let" && !s.v[1]) {
+      const v = def_simp(s.v[0]);
+      const sink = (x: HTerm): HTerm => {
+        const [l, m] = [term_strip(x), mat_app(x)];
+        return l.$ === "Let" ? Bend.Let(l.k, l.i, l.v, (ys: HTerm[]) =>
+          sink(l.f(ys)), l.s, l.q) : m ? Bend.App(Bend.Ann(term_under(term_strip(
+            m.f), 1, sink), mat_ty(ty_all(ty_ann(m.f)).A, DUMMY)), m.x)
+          : def_simp(Bend.Let(s.k, s.i, [Bend.Ann(x, ty_ann(s.v[0])!)], s.f,
+            s.s, s.q));
+      };
+      return term_lam(v) && s.q[0].$ === "Lone" ? def_simp(s.f([v]))
+        : mat_app(let_end(v)) ? sink(v) : null;
+    }
+    let [c, T]: [HTerm, HTerm | null] = [s, null];
+    const xs: HTerm[] = [];
+    for (; c.$ === "App" || c.$ === "Ann";
+      c = term_force(c.$ === "App" ? c.f : c.x)) {
+      T = c.$ === "Ann" ? c.T : (xs.unshift(c.x), null);
+      c !== s && FL.simps.set(c, null);
+    }
+    const k = c.$ === "Ref" && !c.b ? c.k : "";
+    const d = tld_of(k);
+    const e = d?.$ === "Def" && d.e && !d.x && !def_foreign(d)
+      && xs.some((x, i) => term_lam(x) && tele_unbind(d.T).doms[i]?.[0].$
+        !== "None") && !intr_of(k) && !def_rec(k) && Bend.term_higher(d.e);
+    const [b, U] = e && xs.length >= d.n + def_raise(e, d.n) ? [e, d.T]
+      : c.$ === "Lam" ? [c, T] : [];
+    const As = !b || !U ? [] : xs.map((x, i) => !term_lam(x) && !term_const(x)
+      && term_strip(x).$ !== "Var" && tele_unbind(U).doms[i]?.[0].$ !== "None"
+      ? ty_ann(x) : DUMMY);
+    const bind = (i: number, ys: HTerm[]): HTerm => i === xs.length
+      ? def_simp(term_inst(b!, U!, ys)) : As[i] === DUMMY
+      ? bind(i + 1, [...ys, xs[i]])
+      : Bend.Let(["a"], [0], [Bend.Ann(xs[i], As[i]!)], (zs: HTerm[]) =>
+        bind(i + 1, [...ys, zs[0]]), undefined, [Bend.Many()]);
+    return xs.length && As.length && !As.includes(null) ? def_simp(bind(0, []))
+      : null;
+  }));
 }
 
 function brw_of(k: Name): boolean[] {
@@ -1160,6 +1263,8 @@ function file_new(book: Bend.Book, js: boolean) {
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
+    recs: new Map<Name, boolean>(),
+    simps: new Map<HTerm, HTerm | null>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
     teles: new Map<HTerm, { doms: Dom[]; ret: HTerm }>(),
@@ -1252,7 +1357,7 @@ function file_book(roots: Name[]): void {
         }
       }
       const ck = term_spine(s);
-      if (ck.k !== null && ck.k !== d) {
+      if (ck.k !== null && ck.k !== d && !(tail && mat_app(s))) {
         deps.add(ck.k);
       }
       flat &&= !((s.$ === "Let" && s.k.length >= 2)
@@ -2412,6 +2517,9 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       }
       sc = { ...sc, rest: [] };
       const ck = term_spine(x);
+      if (mat_app(x)) {
+        return emit_body(sc, ck.h, null, emit_each(sc, ck.args), dst);
+      }
       if (ck.k === null) {
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
       }
