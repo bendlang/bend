@@ -5,7 +5,7 @@
 // so EAGAIN) parks the computation on more until the socket is writable.
 // make hands the datagram back as it came: a String (io_str) or a List of
 // bytes (io_list).
-static Term udp_send_to_with(Env e, IoWork* w, IoPack more,
+static Term HID(udp_send_to_with)(Env e, IoWork* w, IoPack more,
   Term (*make)(Env, const char*, u64)) {
   struct sockaddr_in at;
   int     fd = (int)w->hand;
@@ -28,13 +28,13 @@ static Term udp_send_to_with(Env e, IoWork* w, IoPack more,
   return io_tup(e, io_hand(w->hand), r);
 }
 
-static Term udp_send_to_more(Env e, IoWork* w) {
-  return udp_send_to_with(e, w, udp_send_to_more, io_str);
+static Term HID(udp_send_to_more)(Env e, IoWork* w) {
+  return HID(udp_send_to_with)(e, w, HID(udp_send_to_more), io_str);
 }
 
 // at is the try_ deadline (past it, Wait{data}), 0 for the blocking twins.
 // A host with a NUL in it reads as empty: no address, so EINVAL.
-static void udp_send_to_at(Env e, Term* f, IoWork* w, u64 at) {
+static void HID(udp_send_to_at)(Env e, Term* f, IoWork* w, u64 at) {
   uint64_t hn = 0;
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->text = io_cstr(e, f[1], &hn);
@@ -45,21 +45,21 @@ static void udp_send_to_at(Env e, Term* f, IoWork* w, u64 at) {
   }
 }
 
-static Term udp_send_to_start(Env e, Term* f, IoWork* w, u64 at) {
-  udp_send_to_at(e, f, w, at);
+static Term HID(udp_send_to_start)(Env e, Term* f, IoWork* w, u64 at) {
+  HID(udp_send_to_at)(e, f, w, at);
   w->data = io_cstr(e, f[3], &w->size);
-  return udp_send_to_more(e, w);
+  return HID(udp_send_to_more)(e, w);
 }
 
 #ifdef CID(Con)
 
-static Term udp_send_bytes_to_more(Env e, IoWork* w) {
-  return udp_send_to_with(e, w, udp_send_bytes_to_more, io_list);
+static Term HID(udp_send_bytes_to_more)(Env e, IoWork* w) {
+  return HID(udp_send_to_with)(e, w, HID(udp_send_bytes_to_more), io_list);
 }
 
 // A value past 255 fails with EINVAL before the datagram is sent, list kept.
-static Term udp_send_bytes_to_start(Env e, Term* f, IoWork* w, u64 at) {
-  udp_send_to_at(e, f, w, at);
+static Term HID(udp_send_bytes_to_start)(Env e, Term* f, IoWork* w, u64 at) {
+  HID(udp_send_to_at)(e, f, w, at);
   for (Term s = f[3]; term_aux(s) == CID(Con);) {
     u64 l = term_peek(e.mem, s);
     if (e.mem[l] > 255) {
@@ -71,55 +71,55 @@ static Term udp_send_bytes_to_start(Env e, Term* f, IoWork* w, u64 at) {
     s = e.mem[l + 1];
   }
   w->data = io_cbuf(e, f[3], &w->size, CID(Con));
-  return udp_send_bytes_to_more(e, w);
+  return HID(udp_send_bytes_to_more)(e, w);
 }
 
 #endif
 
 #ifdef CID(UDP.send_to)
 
-Term udp_send_to_run(Env e, Term* f, IoWork* w) {
-  return udp_send_to_start(e, f, w, 0);
+Term HID(udp_send_to_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_send_to_start)(e, f, w, 0);
 }
 
-static void __attribute__((constructor)) udp_send_to_use(void) {
-  io_eff(CID(UDP.send_to), udp_send_to_run);
+static void __attribute__((constructor)) HID(udp_send_to_use)(void) {
+  io_eff(CID(UDP.send_to), HID(udp_send_to_run));
 }
 
 #endif
 
 #ifdef CID(UDP.try_send_to)
 
-Term udp_try_send_to_run(Env e, Term* f, IoWork* w) {
-  return udp_send_to_start(e, f, w, io_until(f[4]));
+Term HID(udp_try_send_to_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_send_to_start)(e, f, w, io_until(f[4]));
 }
 
-static void __attribute__((constructor)) udp_try_send_to_use(void) {
-  io_eff(CID(UDP.try_send_to), udp_try_send_to_run);
+static void __attribute__((constructor)) HID(udp_try_send_to_use)(void) {
+  io_eff(CID(UDP.try_send_to), HID(udp_try_send_to_run));
 }
 
 #endif
 
 #ifdef CID(UDP.send_bytes_to)
 
-Term udp_send_bytes_to_run(Env e, Term* f, IoWork* w) {
-  return udp_send_bytes_to_start(e, f, w, 0);
+Term HID(udp_send_bytes_to_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_send_bytes_to_start)(e, f, w, 0);
 }
 
-static void __attribute__((constructor)) udp_send_bytes_to_use(void) {
-  io_eff(CID(UDP.send_bytes_to), udp_send_bytes_to_run);
+static void __attribute__((constructor)) HID(udp_send_bytes_to_use)(void) {
+  io_eff(CID(UDP.send_bytes_to), HID(udp_send_bytes_to_run));
 }
 
 #endif
 
 #ifdef CID(UDP.try_send_bytes_to)
 
-Term udp_try_send_bytes_to_run(Env e, Term* f, IoWork* w) {
-  return udp_send_bytes_to_start(e, f, w, io_until(f[4]));
+Term HID(udp_try_send_bytes_to_run)(Env e, Term* f, IoWork* w) {
+  return HID(udp_send_bytes_to_start)(e, f, w, io_until(f[4]));
 }
 
-static void __attribute__((constructor)) udp_try_send_bytes_to_use(void) {
-  io_eff(CID(UDP.try_send_bytes_to), udp_try_send_bytes_to_run);
+static void __attribute__((constructor)) HID(udp_try_send_bytes_to_use)(void) {
+  io_eff(CID(UDP.try_send_bytes_to), HID(udp_try_send_bytes_to_run));
 }
 
 #endif

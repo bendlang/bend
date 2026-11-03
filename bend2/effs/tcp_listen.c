@@ -1,7 +1,7 @@
 // TCP
 // ===
 
-Term tcp_listen_run(Env e, Term* f, IoWork* w) {
+Term HID(tcp_listen_run)(Env e, Term* f, IoWork* w) {
   struct sockaddr_in at;
   u64 len;
   char* host = io_cstr(e, f[0], &len);
@@ -26,6 +26,6 @@ Term tcp_listen_run(Env e, Term* f, IoWork* w) {
   return io_done(e, io_hand(fd));
 }
 
-static void __attribute__((constructor)) tcp_listen_use(void) {
-  io_eff(CID(TCP.listen), tcp_listen_run);
+static void __attribute__((constructor)) HID(tcp_listen_use)(void) {
+  io_eff(CID(TCP.listen), HID(tcp_listen_run));
 }

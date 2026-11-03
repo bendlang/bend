@@ -4,7 +4,7 @@
 // A recv that finds nothing (the socket is non-blocking) parks on more
 // until the socket is readable. What it finds, read makes a String (io_str)
 // or a List of bytes (io_list).
-static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
+static Term HID(tcp_recv_with)(Env e, IoWork* w, IoPack more,
   Term (*read)(Env, const char*, u64)) {
   int fd  = (int)w->hand;
   ssize_t n;
@@ -23,7 +23,8 @@ static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
 }
 
 // at is the try_ deadline (past it, Wait{}), 0 for the blocking twins.
-static Term tcp_recv_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
+static Term HID(tcp_recv_start)(Env e, Term* f, IoWork* w, IoPack more,
+  u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->time = at;
   if (f[1] == 0) {
@@ -36,62 +37,62 @@ static Term tcp_recv_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
   return more(e, w);
 }
 
-static Term tcp_recv_more(Env e, IoWork* w) {
-  return tcp_recv_with(e, w, tcp_recv_more, io_str);
+static Term HID(tcp_recv_more)(Env e, IoWork* w) {
+  return HID(tcp_recv_with)(e, w, HID(tcp_recv_more), io_str);
 }
 
 #ifdef CID(Con)
 
-static Term tcp_recv_bytes_more(Env e, IoWork* w) {
-  return tcp_recv_with(e, w, tcp_recv_bytes_more, io_list);
+static Term HID(tcp_recv_bytes_more)(Env e, IoWork* w) {
+  return HID(tcp_recv_with)(e, w, HID(tcp_recv_bytes_more), io_list);
 }
 
 #endif
 
 #ifdef CID(TCP.recv)
 
-Term tcp_recv_run(Env e, Term* f, IoWork* w) {
-  return tcp_recv_start(e, f, w, tcp_recv_more, 0);
+Term HID(tcp_recv_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_recv_start)(e, f, w, HID(tcp_recv_more), 0);
 }
 
-static void __attribute__((constructor)) tcp_recv_use(void) {
-  io_eff(CID(TCP.recv), tcp_recv_run);
+static void __attribute__((constructor)) HID(tcp_recv_use)(void) {
+  io_eff(CID(TCP.recv), HID(tcp_recv_run));
 }
 
 #endif
 
 #ifdef CID(TCP.recv_bytes)
 
-Term tcp_recv_bytes_run(Env e, Term* f, IoWork* w) {
-  return tcp_recv_start(e, f, w, tcp_recv_bytes_more, 0);
+Term HID(tcp_recv_bytes_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_recv_start)(e, f, w, HID(tcp_recv_bytes_more), 0);
 }
 
-static void __attribute__((constructor)) tcp_recv_bytes_use(void) {
-  io_eff(CID(TCP.recv_bytes), tcp_recv_bytes_run);
+static void __attribute__((constructor)) HID(tcp_recv_bytes_use)(void) {
+  io_eff(CID(TCP.recv_bytes), HID(tcp_recv_bytes_run));
 }
 
 #endif
 
 #ifdef CID(TCP.try_recv)
 
-Term tcp_try_recv_run(Env e, Term* f, IoWork* w) {
-  return tcp_recv_start(e, f, w, tcp_recv_more, io_until(f[2]));
+Term HID(tcp_try_recv_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_recv_start)(e, f, w, HID(tcp_recv_more), io_until(f[2]));
 }
 
-static void __attribute__((constructor)) tcp_try_recv_use(void) {
-  io_eff(CID(TCP.try_recv), tcp_try_recv_run);
+static void __attribute__((constructor)) HID(tcp_try_recv_use)(void) {
+  io_eff(CID(TCP.try_recv), HID(tcp_try_recv_run));
 }
 
 #endif
 
 #ifdef CID(TCP.try_recv_bytes)
 
-Term tcp_try_recv_bytes_run(Env e, Term* f, IoWork* w) {
-  return tcp_recv_start(e, f, w, tcp_recv_bytes_more, io_until(f[2]));
+Term HID(tcp_try_recv_bytes_run)(Env e, Term* f, IoWork* w) {
+  return HID(tcp_recv_start)(e, f, w, HID(tcp_recv_bytes_more), io_until(f[2]));
 }
 
-static void __attribute__((constructor)) tcp_try_recv_bytes_use(void) {
-  io_eff(CID(TCP.try_recv_bytes), tcp_try_recv_bytes_run);
+static void __attribute__((constructor)) HID(tcp_try_recv_bytes_use)(void) {
+  io_eff(CID(TCP.try_recv_bytes), HID(tcp_try_recv_bytes_run));
 }
 
 #endif

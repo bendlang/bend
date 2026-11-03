@@ -4,7 +4,7 @@
 // The socket is non-blocking for life. The connect's outcome is w->code:
 // EINPROGRESS parked the computation until the socket was writable, and
 // then SO_ERROR says how it ended.
-static Term tcp_connect_more(Env e, IoWork* w) {
+static Term HID(tcp_connect_more)(Env e, IoWork* w) {
   int       fd  = (int)w->made;
   int       err = (int)w->code;
   socklen_t len = sizeof(err);
@@ -18,7 +18,7 @@ static Term tcp_connect_more(Env e, IoWork* w) {
   return err != 0 ? io_fail(e, (u32)err, NULL) : io_done(e, io_hand(fd));
 }
 
-Term tcp_connect_run(Env e, Term* f, IoWork* w) {
+Term HID(tcp_connect_run)(Env e, Term* f, IoWork* w) {
   struct sockaddr_in at;
   w->data = io_cstr(e, f[0], &w->size);
   int fd  = -1;
@@ -38,9 +38,10 @@ Term tcp_connect_run(Env e, Term* f, IoWork* w) {
     w->code = EINPROGRESS;
   }
   return w->code == EINPROGRESS
-    ? io_wait_on(w, fd, POLLOUT, 0, tcp_connect_more) : tcp_connect_more(e, w);
+    ? io_wait_on(w, fd, POLLOUT, 0, HID(tcp_connect_more))
+      : HID(tcp_connect_more)(e, w);
 }
 
-static void __attribute__((constructor)) tcp_connect_use(void) {
-  io_eff(CID(TCP.connect), tcp_connect_run);
+static void __attribute__((constructor)) HID(tcp_connect_use)(void) {
+  io_eff(CID(TCP.connect), HID(tcp_connect_run));
 }

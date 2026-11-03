@@ -9,15 +9,15 @@
 #define WIN_EV 13
 
 // a Press's words
-enum { WIN_TAG = 2, WIN_BUTTON = 11, WIN_DOWN = 12 };
+enum { HID(WIN_TAG) = 2, HID(WIN_BUTTON) = 11, HID(WIN_DOWN) = 12 };
 
 // A Tool's tag
-enum { WIN_MOUSE, WIN_FINGER, WIN_PEN };
+enum { HID(WIN_MOUSE), HID(WIN_FINGER), HID(WIN_PEN) };
 
 typedef struct {
   u32 tag;
   f32 v[5];
-} WinTool;
+} HID(WinTool);
 
 // A window's events since its last frame, and what they leave held: per pointer id (the mouse 0, the
 // others 1 to 15) its system name and buttons down, the ids live (the
@@ -32,7 +32,7 @@ typedef struct {
   u32   keys[32];
   u32   nk;
   bool  focus;
-} WinQueue;
+} HID(WinQueue);
 
 #ifdef __OBJC__
 
@@ -59,7 +59,7 @@ typedef struct {
     short red, redMask, green, greenMask, blue, blueMask, alpha, alphaMask;
   } direct;
   Colormap colormap;
-} BendRenderFormat;
+} HID(BendRenderFormat);
 
 typedef struct {
   int repeat;
@@ -70,16 +70,16 @@ typedef struct {
   int subwindow_mode, poly_edge, poly_mode;
   Atom dither;
   Bool component_alpha;
-} BendRenderAttrs;
+} HID(BendRenderAttrs);
 
 typedef struct {
   int matrix[3][3];
-} BendRenderTransform;
+} HID(BendRenderTransform);
 
 enum {
-  BEND_RENDER_SRC = 1,
-  BEND_RENDER_REPEAT = 1,
-  BEND_RENDER_PAD = 2
+  HID(BEND_RENDER_SRC) = 1,
+  HID(BEND_RENDER_REPEAT) = 1,
+  HID(BEND_RENDER_PAD) = 2
 };
 #endif
 
@@ -107,7 +107,7 @@ typedef struct {
   int            deviceid;
   int            mask_len;
   unsigned char* mask;
-} WinXIMask;
+} HID(WinXIMask);
 
 typedef struct {
   int            type;
@@ -127,25 +127,25 @@ typedef struct {
   double         root_y;
   double         event_x;
   double         event_y;
-} WinXIHead;
+} HID(WinXIHead);
 
 typedef struct {
   int            len;
   unsigned char* mask;
-} WinXIBits;
+} HID(WinXIBits);
 
 typedef struct {
   int            len;
   unsigned char* mask;
   double*        values;
-} WinXIVals;
+} HID(WinXIVals);
 
 typedef struct {
-  WinXIHead      h;
-  int            flags;
-  WinXIBits      buttons;
-  WinXIVals      vals;
-} WinXIEvent;
+  HID(WinXIHead)  h;
+  int             flags;
+  HID(WinXIBits)  buttons;
+  HID(WinXIVals)  vals;
+} HID(WinXIEvent);
 
 // A device's class: a valuator's, whose number stands at a touch class's
 // mode.
@@ -155,30 +155,31 @@ typedef struct {
   int            number;
   Atom           label;
   double         min, max, value;
-} WinXIClass;
+} HID(WinXIClass);
 
 typedef struct {
-  int            deviceid;
-  char*          name;
-  int            use, attachment;
-  Bool           enabled;
-  int            num_classes;
-  WinXIClass**   classes;
-} WinXIDevice;
+  int                deviceid;
+  char*              name;
+  int                use, attachment;
+  Bool               enabled;
+  int                num_classes;
+  HID(WinXIClass)**  classes;
+} HID(WinXIDevice);
 
 // A device met: its tool (a pen's contact is button 5 at its eraser),
 // each axis's valuator (-1: none), range and last value (events carry only
 // changes), and a touch screen's pixels per unit of position.
-enum { WIN_FORCE, WIN_TILT_X, WIN_TILT_Y, WIN_MAJOR, WIN_MINOR, WIN_AXES };
+enum { HID(WIN_FORCE), HID(WIN_TILT_X), HID(WIN_TILT_Y), HID(WIN_MAJOR),
+  HID(WIN_MINOR), HID(WIN_AXES) };
 
 typedef struct {
   int    id;
   u32    tool;
   bool   eraser;
-  int    ax[WIN_AXES];
-  double lo[WIN_AXES], hi[WIN_AXES], at[WIN_AXES];
+  int    ax[HID(WIN_AXES)];
+  double lo[HID(WIN_AXES)], hi[HID(WIN_AXES)], at[HID(WIN_AXES)];
   double px;
-} WinDev;
+} HID(WinDev);
 
 // The X11 window: its own connection (so its queue holds only its
 // events), its input method and context (NULL if none opened), the
@@ -187,44 +188,44 @@ typedef struct {
 // display's refresh period in ns, XInput2's opcode (0 if none) and the
 // devices met.
 typedef struct {
-  Display* dpy;
-  Window   win;
-  XIM      im;
-  XIC      ic;
-  Time     kt;
-  u32      kc;
-  Atom     del;
+  Display*      dpy;
+  Window        win;
+  XIM           im;
+  XIC           ic;
+  Time          kt;
+  u32           kc;
+  Atom          del;
 #ifdef CID(Window.fullscreen)
-  Atom     state;
-  Atom     full;
-  bool     full_supported;
-  bool     mapped;
-  bool     full_sent;
-  u64      full_due;
-  Pixmap   pix;
-  XID      source;
-  XID      target;
-  u32      vx, vy, vw, vh;
-  f32      sx, sy;
-  bool     full_now;
-  bool     full_want;
-  bool     full_wait;
+  Atom          state;
+  Atom          full;
+  bool          full_supported;
+  bool          mapped;
+  bool          full_sent;
+  u64           full_due;
+  Pixmap        pix;
+  XID           source;
+  XID           target;
+  u32           vx, vy, vw, vh;
+  f32           sx, sy;
+  bool          full_now;
+  bool          full_want;
+  bool          full_wait;
 #endif
-  XImage*  img;
-  u32      width;
-  u32      height;
-  WinQueue q;
-  u32      grab;
+  XImage*       img;
+  u32           width;
+  u32           height;
+  HID(WinQueue) q;
+  u32           grab;
   unsigned long warp_serial, warp_floor;
-  int      mouse_x, mouse_y;
-  u64      period;
-  int      xi;
-  u32      nd;
-  WinDev   devs[8];
-} BendWin;
+  int           mouse_x, mouse_y;
+  u64           period;
+  int           xi;
+  u32           nd;
+  HID(WinDev)   devs[8];
+} HID(BendWin);
 
 // A grab or resize changes the basis; an ordinary recenter preserves queued input.
-static void window_warp(BendWin* win, int x, int y, bool reset) {
+static void HID(window_warp)(HID(BendWin)* win, int x, int y, bool reset) {
   if (!reset && win->warp_serial) {
     return;
   }
@@ -237,7 +238,7 @@ static void window_warp(BendWin* win, int x, int y, bool reset) {
   XWarpPointer(win->dpy, None, win->win, 0, 0, 0, 0, x, y);
 }
 
-static void window_limits(BendWin* win, bool on) {
+static void HID(window_limits)(HID(BendWin)* win, bool on) {
   u32 w = win->img->width, h = win->img->height;
   XSizeHints hints = { .flags = PMinSize | PMaxSize, .min_width = w,
     .min_height = h, .max_width = w, .max_height = h };
@@ -251,37 +252,38 @@ static void window_limits(BendWin* win, bool on) {
 #ifdef CID(Window.fullscreen)
 static struct {
   bool tried;
-  BendRenderFormat* (*format)(Display*, Visual*);
-  XID (*create)(Display*, Drawable, BendRenderFormat*, unsigned long,
-    const BendRenderAttrs*);
+  HID(BendRenderFormat)* (*format)(Display*, Visual*);
+  XID (*create)(Display*, Drawable, HID(BendRenderFormat)*, unsigned long,
+    const HID(BendRenderAttrs)*);
   void (*destroy)(Display*, XID);
-  void (*transform)(Display*, XID, BendRenderTransform*);
+  void (*transform)(Display*, XID, HID(BendRenderTransform)*);
   void (*filter)(Display*, XID, const char*, int*, int);
   void (*composite)(Display*, int, XID, XID, XID,
     int, int, int, int, int, int, unsigned int, unsigned int);
-} window_render;
+} HID(window_render);
 
-static bool window_renderer(Display* dpy) {
-  if (!window_render.tried) {
-    window_render.tried = true;
+static bool HID(window_renderer)(Display* dpy) {
+  if (!HID(window_render).tried) {
+    HID(window_render).tried = true;
     void* lib = dlopen("libXrender.so.1", RTLD_LAZY | RTLD_LOCAL);
     if (lib != NULL) {
-      window_render.format = (__typeof__(window_render.format))dlsym(lib, "XRenderFindVisualFormat");
-      window_render.create = (__typeof__(window_render.create))dlsym(lib, "XRenderCreatePicture");
-      window_render.destroy = (__typeof__(window_render.destroy))dlsym(lib, "XRenderFreePicture");
-      window_render.transform = (__typeof__(window_render.transform))dlsym(lib, "XRenderSetPictureTransform");
-      window_render.filter = (__typeof__(window_render.filter))dlsym(lib, "XRenderSetPictureFilter");
-      window_render.composite = (__typeof__(window_render.composite))dlsym(lib, "XRenderComposite");
+      HID(window_render).format = (__typeof__(HID(window_render).format))dlsym(lib, "XRenderFindVisualFormat");
+      HID(window_render).create = (__typeof__(HID(window_render).create))dlsym(lib, "XRenderCreatePicture");
+      HID(window_render).destroy = (__typeof__(HID(window_render).destroy))dlsym(lib, "XRenderFreePicture");
+      HID(window_render).transform = (__typeof__(HID(window_render).transform))dlsym(lib, "XRenderSetPictureTransform");
+      HID(window_render).filter = (__typeof__(HID(window_render).filter))dlsym(lib, "XRenderSetPictureFilter");
+      HID(window_render).composite = (__typeof__(HID(window_render).composite))dlsym(lib, "XRenderComposite");
     }
   }
   int op, ev, er;
-  return window_render.format && window_render.create && window_render.destroy
-    && window_render.transform && window_render.filter && window_render.composite
+  return HID(window_render).format && HID(window_render).create
+    && HID(window_render).destroy
+    && HID(window_render).transform && HID(window_render).filter && HID(window_render).composite
     && XQueryExtension(dpy, "RENDER", &op, &ev, &er);
 }
 
-static bool window_has_value(Display* dpy, Window at, Atom property, Atom kind,
-  unsigned long value) {
+static bool HID(window_has_value)(Display* dpy, Window at, Atom property,
+  Atom kind, unsigned long value) {
   Atom type;
   int format;
   unsigned long n, rest;
@@ -297,7 +299,7 @@ static bool window_has_value(Display* dpy, Window at, Atom property, Atom kind,
   return found;
 }
 
-static void window_viewport(BendWin* win) {
+static void HID(window_viewport)(HID(BendWin)* win) {
   u32 w = win->img->width, h = win->img->height;
   u32 vw = w, vh = h;
   bool full = win->full_now && win->source;
@@ -319,14 +321,15 @@ static void window_viewport(BendWin* win) {
   win->sx = (f32)w / vw;
   win->sy = (f32)h / vh;
   if (full) {
-    BendRenderTransform transform = {{{ (int)((double)w / vw * 65536), 0, 0 },
+    HID(BendRenderTransform) transform = {{{ (int)((double)w / vw * 65536), 0,
+      0 },
       { 0, (int)((double)h / vh * 65536), 0 }, { 0, 0, 65536 }}};
-    window_render.transform(win->dpy, win->source, &transform);
+    HID(window_render).transform(win->dpy, win->source, &transform);
     XClearWindow(win->dpy, win->win);
   }
 }
 
-static bool window_surface(BendWin* win) {
+static bool HID(window_surface)(HID(BendWin)* win) {
   if (win->source) {
     return true;
   }
@@ -335,21 +338,22 @@ static bool window_surface(BendWin* win) {
   }
   Display* dpy = win->dpy;
   int scr = DefaultScreen(dpy);
-  BendRenderFormat* format = window_render.format(dpy, DefaultVisual(dpy, scr));
+  HID(BendRenderFormat)* format = HID(window_render).format(dpy,
+    DefaultVisual(dpy, scr));
   if (format == NULL) {
     win->full_supported = false;
     return false;
   }
   win->pix = XCreatePixmap(dpy, win->win, win->img->width, win->img->height,
     DefaultDepth(dpy, scr));
-  BendRenderAttrs attrs = { .repeat = BEND_RENDER_PAD };
-  win->source = window_render.create(dpy, win->pix, format, BEND_RENDER_REPEAT, &attrs);
-  win->target = window_render.create(dpy, win->win, format, 0, NULL);
-  window_render.filter(dpy, win->source, "nearest", NULL, 0);
+  HID(BendRenderAttrs) attrs = { .repeat = HID(BEND_RENDER_PAD) };
+  win->source = HID(window_render).create(dpy, win->pix, format, HID(BEND_RENDER_REPEAT), &attrs);
+  win->target = HID(window_render).create(dpy, win->win, format, 0, NULL);
+  HID(window_render).filter(dpy, win->source, "nearest", NULL, 0);
   return true;
 }
 
-static void window_full_request(BendWin* win) {
+static void HID(window_full_request)(HID(BendWin)* win) {
   if (!win->full_wait || !win->mapped) {
     return;
   }
@@ -371,7 +375,7 @@ static void window_full_request(BendWin* win) {
 
 // Names the window in UTF-8: _NET_WM_NAME, which window managers show,
 // and WM_NAME, which XStoreName types Latin-1, for those that read only it.
-static inline void window_x_title(Display* dpy, Window w, const char* text,
+static inline void HID(window_x_title)(Display* dpy, Window w, const char* text,
   u64 n) {
   XStoreName(dpy, w, text);
   XChangeProperty(dpy, w, XInternAtom(dpy, "_NET_WM_NAME", False),
@@ -389,7 +393,7 @@ static inline void window_x_title(Display* dpy, Window w, const char* text,
 // UTF-8 in its four words, cut between characters, so a long input
 // method commit comes as several. Control characters and the Mac's
 // function-key characters (U+F700 on) are keys, not text: dropped.
-static inline bool window_chunk(const char* s, u64 n, u64* at,
+static inline bool HID(window_chunk)(const char* s, u64 n, u64* at,
   u32 ev[WIN_EV]) {
   char b[16] = { 0 };
   u32  k = 0;
@@ -420,7 +424,7 @@ static inline bool window_chunk(const char* s, u64 n, u64* at,
 
 // The id of the pointer the system names name: the one it holds, else (if
 // make) the least free, else 16 (none). The mouse's is 0, by its lane.
-static inline u32 window_id(WinQueue* q, u64 name, bool make) {
+static inline u32 HID(window_id)(HID(WinQueue)* q, u64 name, bool make) {
   u32 free = 16;
   for (u32 i = 15; i > 0; i -= 1) {
     if (!(q->live >> i & 1)) {
@@ -441,7 +445,7 @@ static inline u32 window_id(WinQueue* q, u64 name, bool make) {
 // an event of an id not live (or none) and a Focus that changes nothing do
 // not. A Press or Move makes its id live, a finger's last Press up, a
 // Leave or a Lost frees it.
-static inline bool window_keep(WinQueue* q, const u32* ev) {
+static inline bool HID(window_keep)(HID(WinQueue)* q, const u32* ev) {
   u32 c = ev[0];
   u32 a = ev[1];
   if (c == CID(Key)) {
@@ -471,18 +475,18 @@ static inline bool window_keep(WinQueue* q, const u32* ev) {
     return false;
   }
   u32 m = 1u << a;
-  u32 b = c == CID(Press) ? 1u << (ev[WIN_BUTTON] & 31) : 0;
+  u32 b = c == CID(Press) ? 1u << (ev[HID(WIN_BUTTON)] & 31) : 0;
   if (gone) {
     q->live &= ~m;
     q->down[a] = 0;
     return true;
   }
-  if (c == CID(Press) && !ev[WIN_DOWN]) {
+  if (c == CID(Press) && !ev[HID(WIN_DOWN)]) {
     if (!(q->down[a] & b)) {
       return false;
     }
     q->down[a] &= ~b;
-    if (ev[WIN_TAG] == WIN_FINGER && q->down[a] == 0) {
+    if (ev[HID(WIN_TAG)] == HID(WIN_FINGER) && q->down[a] == 0) {
       q->live &= ~m;
     }
     return true;
@@ -492,8 +496,8 @@ static inline bool window_keep(WinQueue* q, const u32* ev) {
   return true;
 }
 
-static inline void window_put(WinQueue* q, const u32* ev) {
-  if (!window_keep(q, ev)) {
+static inline void HID(window_put)(HID(WinQueue)* q, const u32* ev) {
+  if (!HID(window_keep)(q, ev)) {
     return;
   }
   if (q->n == q->cap) {
@@ -504,33 +508,33 @@ static inline void window_put(WinQueue* q, const u32* ev) {
   q->n += 1;
 }
 
-static inline void window_push(WinQueue* q, u32 cid, u32 a, u32 b, u32 c,
-  u32 d) {
+static inline void HID(window_push)(HID(WinQueue)* q, u32 cid, u32 a, u32 b,
+  u32 c, u32 d) {
   u32 ev[WIN_EV] = { cid, a, b, c, d };
-  window_put(q, ev);
+  HID(window_put)(q, ev);
 }
 
 // A Press, or a Move (which ends before b), at ms.
-static inline void window_point(WinQueue* q, u32 cid, u32 id, WinTool t,
-  f32 x, f32 y, u32 ms, u32 b, bool down) {
+static inline void HID(window_point)(HID(WinQueue)* q, u32 cid, u32 id,
+  HID(WinTool) t, f32 x, f32 y, u32 ms, u32 b, bool down) {
   u32 ev[WIN_EV] = { cid, id, t.tag, f32_rewrap(t.v[0]), f32_rewrap(t.v[1]),
     f32_rewrap(t.v[2]), f32_rewrap(t.v[3]), f32_rewrap(t.v[4]),
     f32_rewrap(x), f32_rewrap(y), ms, b, down };
-  window_put(q, ev);
+  HID(window_put)(q, ev);
 }
 
 // The focus come, or gone: then it first loses the pointers pressed and
 // lets go of the keys held.
-static inline void window_focus(WinQueue* q, bool on) {
+static inline void HID(window_focus)(HID(WinQueue)* q, bool on) {
   for (u32 i = 0; !on && i < 16; i += 1) {
     if (q->down[i] != 0) {
-      window_push(q, CID(Lost), i, 0, 0, 0);
+      HID(window_push)(q, CID(Lost), i, 0, 0, 0);
     }
   }
   while (!on && q->nk > 0) {
-    window_push(q, CID(Key), q->keys[q->nk - 1], false, 0, 0);
+    HID(window_push)(q, CID(Key), q->keys[q->nk - 1], false, 0, 0);
   }
-  window_push(q, CID(Focus), on, 0, 0, 0);
+  HID(window_push)(q, CID(Focus), on, 0, 0, 0);
 }
 
 #endif
@@ -540,9 +544,9 @@ static inline void window_focus(WinQueue* q, bool on) {
 // The view takes typed text as the Mac's text input client: keys go
 // through the input method, and its commits come to insertText as Text.
 // It draws no composition: marked holds it only so the method can work.
-@interface BendView : NSView <NSWindowDelegate, NSTextInputClient> {
+@interface HID(BendView) : NSView <NSWindowDelegate, NSTextInputClient> {
   @public
-  WinQueue       q;
+  HID(WinQueue)  q;
   u64            flags;
   BOOL           grab;
   BOOL           eraser;
@@ -562,7 +566,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 }
 @end
 
-@implementation BendView
+@implementation HID(BendView)
 
 - (CALayer*)makeBackingLayer {
   return [CAMetalLayer layer];
@@ -599,7 +603,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 - (void)key:(NSEvent*)ev down:(BOOL)down {
   NSString* s = [ev.charactersIgnoringModifiers lowercaseString];
   u32 code = s.length > 0 ? [s characterAtIndex:0] : 65536 + ev.keyCode;
-  window_push(&q, CID(Key), code, down, 0, 0);
+  HID(window_push)(&q, CID(Key), code, down, 0, 0);
 }
 
 - (void)keyDown:(NSEvent*)ev {
@@ -639,8 +643,8 @@ static inline void window_focus(WinQueue* q, bool on) {
   u64 n  = strlen(t);
   u64 at = 0;
   u32 ev[WIN_EV];
-  while (window_chunk(t, n, &at, ev)) {
-    window_put(&q, ev);
+  while (HID(window_chunk)(t, n, &at, ev)) {
+    HID(window_put)(&q, ev);
   }
 }
 
@@ -700,7 +704,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 
 - (void)flagsChanged:(NSEvent*)ev {
   u64 now = ev.modifierFlags;
-  window_push(&q, CID(Key), 65536 + ev.keyCode, (now & ~flags) != 0, 0, 0);
+  HID(window_push)(&q, CID(Key), 65536 + ev.keyCode, (now & ~flags) != 0, 0, 0);
   flags = now;
 }
 
@@ -734,34 +738,34 @@ static inline void window_focus(WinQueue* q, bool on) {
 
 // A tablet's pen moves the cursor, but is its own pointer: one off the
 // image takes no id (if make is NO) but the one it holds.
-- (u32)pointer:(NSEvent*)ev tool:(WinTool*)t make:(BOOL)make {
+- (u32)pointer:(NSEvent*)ev tool:(HID(WinTool)*)t make:(BOOL)make {
   if (ev.subtype != NSEventSubtypeTabletPoint) {
-    *t = (WinTool){ WIN_MOUSE };
+    *t = (HID(WinTool)){ HID(WIN_MOUSE) };
     return 0;
   }
-  *t = (WinTool){ WIN_PEN, { ev.pressure, ev.tangentialPressure,
+  *t = (HID(WinTool)){ HID(WIN_PEN), { ev.pressure, ev.tangentialPressure,
     ev.tilt.x * 90, ev.tilt.y * 90, fmod(ev.rotation + 360, 360) } };
-  return window_id(&q, ev.deviceID, make);
+  return HID(window_id)(&q, ev.deviceID, make);
 }
 
 // The Mac's buttons 1 and 2 are W3C's 2 and 1; an eraser's contact is 5.
 // Let go past the image, the pointer leaves; fullscreen, a press on the
 // bars is off the window.
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
-  WinTool t;
-  NSPoint p  = [self at:ev];
-  NSPoint i  = [self px:p];
-  BOOL    on = NSPointInRect(p, [self imageRect]);
-  u32     id = [self pointer:ev tool:&t make:on || !down];
-  u32     n  = (u32)ev.buttonNumber;
+  HID(WinTool) t;
+  NSPoint      p  = [self at:ev];
+  NSPoint      i  = [self px:p];
+  BOOL         on = NSPointInRect(p, [self imageRect]);
+  u32          id = [self pointer:ev tool:&t make:on || !down];
+  u32          n  = (u32)ev.buttonNumber;
   if (down && !on && (id >= 16 || q.down[id] == 0)) {
     return;
   }
-  window_point(&q, CID(Press), id, t, i.x, i.y, [self ms:ev],
-    t.tag == WIN_PEN && eraser && n == 0 ? 5 : n == 1 ? 2 : n == 2 ? 1 : n,
+  HID(window_point)(&q, CID(Press), id, t, i.x, i.y, [self ms:ev],
+    t.tag == HID(WIN_PEN) && eraser && n == 0 ? 5 : n == 1 ? 2 : n == 2 ? 1 : n,
     down);
   if (!down && id < 16 && q.down[id] == 0 && !on) {
-    window_push(&q, CID(Leave), id, 0, 0, 0);
+    HID(window_push)(&q, CID(Leave), id, 0, 0, 0);
   }
 }
 
@@ -770,7 +774,7 @@ static inline void window_focus(WinQueue* q, bool on) {
 - (void)move:(NSEvent*)ev {
   if (grab) {
     NSSize s = [self imageRect].size;
-    window_push(&q, CID(Look), f32_rewrap(ev.deltaX * draw_size.width / s.width),
+    HID(window_push)(&q, CID(Look), f32_rewrap(ev.deltaX * draw_size.width / s.width),
       f32_rewrap(ev.deltaY * draw_size.height / s.height), 0, 0);
     return;
   }
@@ -778,15 +782,15 @@ static inline void window_focus(WinQueue* q, bool on) {
     [self tabletProximity:ev];
     return;
   }
-  WinTool t;
-  NSPoint p  = [self at:ev];
-  BOOL    on = NSPointInRect(p, [self imageRect]);
-  u32     id = [self pointer:ev tool:&t make:on];
+  HID(WinTool) t;
+  NSPoint      p  = [self at:ev];
+  BOOL         on = NSPointInRect(p, [self imageRect]);
+  u32          id = [self pointer:ev tool:&t make:on];
   if (id < 16 && (q.down[id] != 0 || on)) {
     NSPoint i = [self px:p];
-    window_point(&q, CID(Move), id, t, i.x, i.y, [self ms:ev], 0, 0);
+    HID(window_point)(&q, CID(Move), id, t, i.x, i.y, [self ms:ev], 0, 0);
   } else if (id < 16 && NSPointInRect(p, self.bounds)) {
-    window_push(&q, CID(Leave), id, 0, 0, 0);
+    HID(window_push)(&q, CID(Leave), id, 0, 0, 0);
   }
 }
 
@@ -794,15 +798,15 @@ static inline void window_focus(WinQueue* q, bool on) {
   if (ev.enteringProximity) {
     eraser = ev.pointingDeviceType == NSPointingDeviceTypeEraser;
   } else {
-    u32 id = window_id(&q, ev.deviceID, NO);
-    window_push(&q, id < 16 && q.down[id] != 0 ? CID(Lost) : CID(Leave), id,
-      0, 0, 0);
+    u32 id = HID(window_id)(&q, ev.deviceID, NO);
+    HID(window_push)(&q, id < 16 && q.down[id] != 0 ? CID(Lost) : CID(Leave),
+      id, 0, 0, 0);
   }
 }
 
 - (void)mouseExited:(NSEvent*)ev {
   if (q.down[0] == 0) {
-    window_push(&q, CID(Leave), 0, 0, 0, 0);
+    HID(window_push)(&q, CID(Leave), 0, 0, 0, 0);
   }
 }
 
@@ -812,7 +816,7 @@ static inline void window_focus(WinQueue* q, bool on) {
     return;
   }
   NSPoint p = [self px:v];
-  window_push(&q, CID(Scroll), f32_rewrap(p.x), f32_rewrap(p.y),
+  HID(window_push)(&q, CID(Scroll), f32_rewrap(p.x), f32_rewrap(p.y),
     f32_rewrap(ev.scrollingDeltaX), f32_rewrap(ev.scrollingDeltaY));
 }
 
@@ -836,11 +840,11 @@ static inline void window_focus(WinQueue* q, bool on) {
 
 - (void)windowDidResignKey:(NSNotification*)note {
   [self setGrab:NO];
-  window_focus(&q, false);
+  HID(window_focus)(&q, false);
 }
 
 - (void)windowDidBecomeKey:(NSNotification*)note {
-  window_focus(&q, true);
+  HID(window_focus)(&q, true);
 }
 
 #ifdef CID(Window.fullscreen)
@@ -963,15 +967,15 @@ static inline void window_focus(WinQueue* q, bool on) {
 }
 
 - (BOOL)windowShouldClose:(NSWindow*)sender {
-  window_push(&q, CID(Close), 0, 0, 0, 0);
+  HID(window_push)(&q, CID(Close), 0, 0, 0, 0);
   return NO;
 }
 
 @end
 
-static id<MTLDevice> window_dev;
+static id<MTLDevice> HID(window_dev);
 
-static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
+static u32 HID(window_make)(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
     return EINVAL;
@@ -980,10 +984,10 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     *why = "Window.open: no display (build a native binary with bend <file> -o <out> and run it from a desktop session)";
     return ENOTSUP;
   }
-  if (window_dev == nil) {
-    window_dev = gpu_buf != nil ? gpu_dev : MTLCreateSystemDefaultDevice();
+  if (HID(window_dev) == nil) {
+    HID(window_dev) = gpu_buf != nil ? gpu_dev : MTLCreateSystemDefaultDevice();
   }
-  if (window_dev == nil) {
+  if (HID(window_dev) == nil) {
     *why = "Window.open: no Metal device";
     return ENXIO;
   }
@@ -1002,7 +1006,8 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     win.acceptsMouseMovedEvents = YES;
     win.title = [NSString stringWithUTF8String:title];
     [win setContentSize:NSMakeSize(w, h)];
-    BendView* view = [[BendView alloc] initWithFrame:win.contentLayoutRect];
+    HID(BendView)* view = [[HID(BendView) alloc]
+      initWithFrame:win.contentLayoutRect];
     view->flags = NSEvent.modifierFlags;
     view->draw_size = CGSizeMake(w, h);
 #ifdef CID(Window.fullscreen)
@@ -1011,7 +1016,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 #endif
     view.wantsLayer = YES;
     CAMetalLayer* layer = (CAMetalLayer*)view.layer;
-    layer.device = window_dev;
+    layer.device = HID(window_dev);
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     layer.framebufferOnly = NO;
     layer.drawableSize = CGSizeMake(w, h);
@@ -1044,7 +1049,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 // 60 Hz, as under a display that reports none or has no RandR (asked
 // first: libXrandr faults on a server without it). The library stays
 // loaded: it hooks the connection's close.
-static u64 window_period(Display* dpy) {
+static u64 HID(window_period)(Display* dpy) {
   int op, ev, er;
   void* xrr = XQueryExtension(dpy, "RANDR", &op, &ev, &er)
     ? dlopen("libXrandr.so.2", RTLD_LAZY | RTLD_LOCAL) : NULL;
@@ -1068,7 +1073,7 @@ static u64 window_period(Display* dpy) {
 // characters are not UTF-8 (Xlib mangles composed text there). Xlib
 // takes the locale here; the program's stays as it was. With no method,
 // Text comes from the key's symbol.
-static void window_ime(BendWin* win) {
+static void HID(window_ime)(HID(BendWin)* win) {
   char* was = io_mem(strdup(setlocale(LC_CTYPE, NULL)));
   setlocale(LC_CTYPE, "");
   if (strcmp(nl_langinfo(CODESET), "UTF-8") != 0) {
@@ -1096,10 +1101,10 @@ static void window_ime(BendWin* win) {
 // XInput2, through a libXi loaded at run time as libXrandr is: the
 // pointers on the window, devices plugged or unplugged on the root. Its opcode, or 0 (no libXi or XInput
 // 2.2: core events then stand for the mouse alone).
-static WinXIDevice* (*window_xi_query)(Display*, int, int*);
-static void         (*window_xi_free)(WinXIDevice*);
+static HID(WinXIDevice)* (*HID(window_xi_query))(Display*, int, int*);
+static void              (*HID(window_xi_free))(HID(WinXIDevice)*);
 
-static int window_xi(Display* dpy, Window w) {
+static int HID(window_xi)(Display* dpy, Window w) {
   int   op, ev, er;
   void* xi = XQueryExtension(dpy, "XInputExtension", &op, &ev, &er)
     ? dlopen("libXi.so.6", RTLD_LAZY | RTLD_LOCAL) : NULL;
@@ -1108,14 +1113,16 @@ static int window_xi(Display* dpy, Window w) {
   }
   Status (*version)(Display*, int*, int*) =
     (Status (*)(Display*, int*, int*))dlsym(xi, "XIQueryVersion");
-  int (*select)(Display*, Window, WinXIMask*, int) =
-    (int (*)(Display*, Window, WinXIMask*, int))dlsym(xi, "XISelectEvents");
-  window_xi_query = (WinXIDevice* (*)(Display*, int, int*))dlsym(xi,
+  int (*select)(Display*, Window, HID(WinXIMask)*, int) =
+    (int (*)(Display*, Window, HID(WinXIMask)*, int))dlsym(xi,
+      "XISelectEvents");
+  HID(window_xi_query) = (HID(WinXIDevice)* (*)(Display*, int, int*))dlsym(xi,
     "XIQueryDevice");
-  window_xi_free = (void (*)(WinXIDevice*))dlsym(xi, "XIFreeDeviceInfo");
+  HID(window_xi_free) = (void (*)(HID(WinXIDevice)*))dlsym(xi,
+    "XIFreeDeviceInfo");
   int major = 2;
   int minor = 2;
-  if (!version || !select || !window_xi_query || !window_xi_free
+  if (!version || !select || !HID(window_xi_query) || !HID(window_xi_free)
     || version(dpy, &major, &minor) != Success || major * 10 + minor < 22) {
     return 0;
   }
@@ -1127,14 +1134,14 @@ static int window_xi(Display* dpy, Window w) {
     XISetMask(on, evs[i]);
   }
   XISetMask(plug, XI_HierarchyChanged);
-  WinXIMask m[2] = { { XIAllMasterDevices, sizeof on, on },
+  HID(WinXIMask) m[2] = { { XIAllMasterDevices, sizeof on, on },
     { XIAllDevices, sizeof plug, plug } };
   select(dpy, w, &m[0], 1);
   select(dpy, DefaultRootWindow(dpy), &m[1], 1);
   return op;
 }
 
-static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
+static u32 HID(window_make)(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
     return EINVAL;
@@ -1150,14 +1157,14 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
     *why = "Window.open: the display has no 24-bit visual";
     return ENOTSUP;
   }
-  BendWin* win = io_mem(calloc(1, sizeof *win));
+  HID(BendWin)* win = io_mem(calloc(1, sizeof *win));
   win->dpy = dpy;
-  win->period = window_period(dpy);
+  win->period = HID(window_period)(dpy);
   win->width = w;
   win->height = h;
   win->win = XCreateSimpleWindow(dpy, RootWindow(dpy, scr), 0, 0, w, h, 0, 0,
     BlackPixel(dpy, scr));
-  window_ime(win);
+  HID(window_ime)(win);
   long im_evs = 0;
   if (win->ic != NULL) {
     XGetICValues(win->ic, XNFilterEvents, &im_evs, NULL);
@@ -1167,19 +1174,19 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   win->state = XInternAtom(dpy, "_NET_WM_STATE", False);
   win->full = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
   Atom have = XInternAtom(dpy, "_NET_SUPPORTED", False);
-  win->full_supported = window_has_value(dpy, DefaultRootWindow(dpy), have,
-    XA_ATOM, win->full) && window_renderer(dpy);
+  win->full_supported = HID(window_has_value)(dpy, DefaultRootWindow(dpy), have,
+    XA_ATOM, win->full) && HID(window_renderer)(dpy);
 #endif
   win->img = XCreateImage(dpy, DefaultVisual(dpy, scr), DefaultDepth(dpy, scr),
     ZPixmap, 0, io_mem(calloc(w * h, 4)), w, h, 32, w * 4);
   win->img->byte_order = LSBFirst;
-  window_limits(win, false);
+  HID(window_limits)(win, false);
 #ifdef CID(Window.fullscreen)
-  window_viewport(win);
+  HID(window_viewport)(win);
 #endif
   XSetWMProtocols(dpy, win->win, &win->del, 1);
-  window_x_title(dpy, win->win, title, strlen(title));
-  win->xi = window_xi(dpy, win->win);
+  HID(window_x_title)(dpy, win->win, title, strlen(title));
+  win->xi = HID(window_xi)(dpy, win->win);
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | FocusChangeMask
     | im_evs | (win->xi ? 0 : ButtonPressMask | ButtonReleaseMask
       | PointerMotionMask | LeaveWindowMask)
@@ -1195,7 +1202,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 
 #else
 
-static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
+static u32 HID(window_make)(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {
   *why = "Window.open: no display (build a native binary with bend <file> -o <out> and run it from a desktop session)";
   return ENOTSUP;
@@ -1203,13 +1210,13 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 
 #endif
 
-Term window_open_run(Env e, Term* f, IoWork* w) {
+Term HID(window_open_run)(Env e, Term* f, IoWork* w) {
   uint64_t n = 0;
   char* title = io_cstr(e, f[0], &n);
   intptr_t out;
   const char* why = NULL;
   u32 q = io_nul(title, n) ? EILSEQ
-    : window_make(title, (u32)f[1], (u32)f[2], &out, &why);
+    : HID(window_make)(title, (u32)f[1], (u32)f[2], &out, &why);
   free(title);
   if (q != 0) {
     return io_fail(e, q, why);
@@ -1217,8 +1224,8 @@ Term window_open_run(Env e, Term* f, IoWork* w) {
   return io_done(e, io_hand(out));
 }
 
-static void __attribute__((constructor)) window_open_use(void) {
-  io_eff(CID(Window.open), window_open_run);
+static void __attribute__((constructor)) HID(window_open_use)(void) {
+  io_eff(CID(Window.open), HID(window_open_run));
 }
 
 #endif
@@ -1229,7 +1236,7 @@ static void __attribute__((constructor)) window_open_use(void) {
 // one word packs it in its term, as the compiler builds it.
 #if defined(__OBJC__) || defined(__linux__)
 
-static Term window_node(Env e, const u32* ev) {
+static Term HID(window_node)(Env e, const u32* ev) {
   if (ev[0] == CID(Text)) {
     const char* s = (const char*)(ev + 1);
     return io_box(e, CID(Text), io_str(e, s, strnlen(s, 16)));
@@ -1246,10 +1253,10 @@ static Term window_node(Env e, const u32* ev) {
 }
 
 // The queue's events, which it then forgets.
-static Term window_list(Env e, WinQueue* q) {
+static Term HID(window_list)(Env e, HID(WinQueue)* q) {
   Term list = term_pak(CID(Nil), 0);
   for (u64 i = q->n; i > 0; i -= 1) {
-    list = io_node(e, CID(Con), window_node(e, q->evs + WIN_EV * (i - 1)),
+    list = io_node(e, CID(Con), HID(window_node)(e, q->evs + WIN_EV * (i - 1)),
       list);
   }
   q->n = 0;
@@ -1269,14 +1276,14 @@ typedef struct {
   u32 w;
   u32 h;
   u32 k;
-} WinArgs;
+} HID(WinArgs);
 
-static id<MTLCommandQueue>         window_que;
-static id<MTLBuffer>               window_buf;
-static id<MTLComputePipelineState> window_pso;
-static u64                         window_len;
+static id<MTLCommandQueue>         HID(window_que);
+static id<MTLBuffer>               HID(window_buf);
+static id<MTLComputePipelineState> HID(window_pso);
+static u64                         HID(window_len);
 
-static const char* window_msl =
+static const char* HID(window_msl) =
   "#include <metal_stdlib>\n"
   "using namespace metal;\n"
   WIN_DEF(TAG_CTR)
@@ -1303,21 +1310,21 @@ static const char* window_msl =
   "  out.write(float4(c.zyx, 1.0), p);\n"
   "}\n";
 
-static void window_pipe(id<MTLDevice> dev) {
-  if (window_pso != nil) {
+static void HID(window_pipe)(id<MTLDevice> dev) {
+  if (HID(window_pso) != nil) {
     return;
   }
-  window_que = gpu_buf != nil ? gpu_que : [dev newCommandQueue];
+  HID(window_que) = gpu_buf != nil ? gpu_que : [dev newCommandQueue];
   NSError* err = nil;
   id<MTLLibrary> lib = [dev
-    newLibraryWithSource:[NSString stringWithUTF8String:window_msl]
+    newLibraryWithSource:[NSString stringWithUTF8String:HID(window_msl)]
     options:nil error:&err];
   if (lib == nil) {
     err_fail(err.localizedDescription.UTF8String);
   }
-  window_pso = [dev newComputePipelineStateWithFunction:
+  HID(window_pso) = [dev newComputePipelineStateWithFunction:
     [lib newFunctionWithName:@"window_dev"] error:&err];
-  if (window_pso == nil) {
+  if (HID(window_pso) == nil) {
     err_fail(err.localizedDescription.UTF8String);
   }
 }
@@ -1325,7 +1332,7 @@ static void window_pipe(id<MTLDevice> dev) {
 // Waits for done inside the run loop, dispatching the events as they
 // come: the window server's work on this thread (a title-bar drag) runs
 // while the frame waits, not a frame later.
-static void window_wait(bool* done) {
+static void HID(window_wait)(bool* done) {
   for (;;) {
     @autoreleasepool {
       NSEvent* ev = [NSApp nextEventMatchingMask:NSEventMaskAny
@@ -1342,55 +1349,56 @@ static void window_wait(bool* done) {
   }
 }
 
-static id<MTLBuffer> window_corpus(Env e, id<MTLDevice> dev) {
+static id<MTLBuffer> HID(window_corpus)(Env e, id<MTLDevice> dev) {
   if (gpu_buf != nil) {
     return gpu_buf;
   }
   u64 bump = a32_load(a32_at(e.mem, H_BUMP));
   u64 need = ((HEAP_OFF + (bump << PAGE_BITS)) * 8 + 16383) & ~16383ull;
-  if (need > window_len) {
+  if (need > HID(window_len)) {
     u64 most = [dev maxBufferLength] & ~16383ull;
     if (need > most) {
       err_fail("the frame's memory is past the Metal buffer limit");
     }
-    u64 len = window_len * 2 > need ? window_len * 2 : need;
+    u64 len = HID(window_len) * 2 > need ? HID(window_len) * 2 : need;
     len = len < most ? len : most;
-    window_buf = [dev newBufferWithBytesNoCopy:e.mem length:len
+    HID(window_buf) = [dev newBufferWithBytesNoCopy:e.mem length:len
       options:MTLResourceStorageModeShared
         | MTLResourceHazardTrackingModeUntracked deallocator:nil];
-    if (window_buf == nil) {
+    if (HID(window_buf) == nil) {
       err_fail("the corpus prefix does not map as a Metal buffer");
     }
-    window_len = len;
+    HID(window_len) = len;
   }
-  return window_buf;
+  return HID(window_buf);
 }
 
-static void window_show(Env e, CAMetalLayer* layer, Term image, CGSize size) {
+static void HID(window_show)(Env e, CAMetalLayer* layer, Term image,
+  CGSize size) {
   id<MTLDevice> dev = layer.device;
-  window_pipe(dev);
-  id<MTLBuffer> buf = window_corpus(e, dev);
-  WinArgs args = { image, size.width, size.height, 0 };
+  HID(window_pipe)(dev);
+  id<MTLBuffer> buf = HID(window_corpus)(e, dev);
+  HID(WinArgs) args = { image, size.width, size.height, 0 };
   if (!CGSizeEqualToSize(layer.drawableSize, size)) {
     layer.drawableSize = size;
   }
   args.k = cls_fit(args.w > args.h ? args.w : args.h);
   __block bool done = false;
-  id<MTLCommandBuffer> cb = [window_que commandBuffer];
+  id<MTLCommandBuffer> cb = [HID(window_que) commandBuffer];
   // nextDrawable blocks until the display frees one: on a helper thread
   dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
     @autoreleasepool {
       id<CAMetalDrawable> d = [layer nextDrawable];
       if (d != nil) {
         id<MTLComputeCommandEncoder> enc = [cb computeCommandEncoder];
-        NSUInteger tw = window_pso.threadExecutionWidth;
-        [enc setComputePipelineState:window_pso];
+        NSUInteger tw = HID(window_pso).threadExecutionWidth;
+        [enc setComputePipelineState:HID(window_pso)];
         [enc setBuffer:buf offset:0 atIndex:0];
         [enc setBytes:&args length:sizeof(args) atIndex:1];
         [enc setTexture:d.texture atIndex:0];
         [enc dispatchThreads:MTLSizeMake(args.w, args.h, 1)
           threadsPerThreadgroup:MTLSizeMake(tw,
-            window_pso.maxTotalThreadsPerThreadgroup / tw, 1)];
+            HID(window_pso).maxTotalThreadsPerThreadgroup / tw, 1)];
         [enc endEncoding];
         [cb presentDrawable:d];
         [cb commit];
@@ -1402,20 +1410,21 @@ static void window_show(Env e, CAMetalLayer* layer, Term image, CGSize size) {
       });
     }
   });
-  window_wait(&done);
+  HID(window_wait)(&done);
   if (cb.error != nil) {
     err_fail(cb.error.localizedDescription.UTF8String);
   }
 }
 
-static Term window_frame(Env e, intptr_t at, Term image) {
-  BendView* view = (BendView*)((__bridge NSWindow*)(void*)at).contentView;
+static Term HID(window_frame)(Env e, intptr_t at, Term image) {
+  HID(BendView)* view =
+    (HID(BendView)*)((__bridge NSWindow*)(void*)at).contentView;
   io_sync();
 #ifdef CID(Window.fullscreen)
   [view fullTick];
 #endif
-  window_show(e, (CAMetalLayer*)view.layer, image, view->draw_size);
-  return window_list(e, &view->q);
+  HID(window_show)(e, (CAMetalLayer*)view.layer, image, view->draw_size);
+  return HID(window_list)(e, &view->q);
 }
 
 #elif defined(__linux__)
@@ -1423,7 +1432,7 @@ static Term window_frame(Env e, intptr_t at, Term image) {
 // The Mac's key codes: a key's character in lower case (Escape, Return
 // and Tab are theirs), the function keys' private-use characters (the
 // arrows at 63232), a modifier's 65536 + its key code.
-static const u32 window_keys[][2] = {
+static const u32 HID(window_keys)[][2] = {
   { XK_BackSpace, 127 },   { XK_Up,        63232 }, { XK_Down,      63233 },
   { XK_Left,      63234 }, { XK_Right,     63235 }, { XK_Insert,    63271 },
   { XK_Delete,    63272 }, { XK_Home,      63273 }, { XK_End,       63275 },
@@ -1433,14 +1442,15 @@ static const u32 window_keys[][2] = {
   { XK_Alt_R,     65597 }, { XK_Control_R, 65598 }, { XK_ISO_Left_Tab, 25 },
 };
 
-static u32 window_key(XKeyEvent* ev) {
+static u32 HID(window_key)(XKeyEvent* ev) {
   char   c[8];
   KeySym ks = 0;
   ev->state &= ShiftMask | LockMask;
   int n = XLookupString(ev, c, sizeof c, &ks, NULL);
-  for (u32 i = 0; i < sizeof window_keys / sizeof *window_keys; i += 1) {
-    if (window_keys[i][0] == ks) {
-      return window_keys[i][1];
+  for (u32 i = 0; i < sizeof HID(window_keys) / sizeof *HID(window_keys);
+    i += 1) {
+    if (HID(window_keys)[i][0] == ks) {
+      return HID(window_keys)[i][1];
     }
   }
   if (ks >= XK_F1 && ks <= XK_F12) {
@@ -1454,7 +1464,7 @@ static u32 window_key(XKeyEvent* ev) {
 
 // A key press's text: what the input method commits, else (no method)
 // the character of the key's symbol, unless Control is held.
-static void window_text(BendWin* win, XKeyEvent* key) {
+static void HID(window_text)(HID(BendWin)* win, XKeyEvent* key) {
   char   buf[64];
   char*  s  = buf;
   int    n  = 0;
@@ -1482,8 +1492,8 @@ static void window_text(BendWin* win, XKeyEvent* key) {
   }
   u64 at = 0;
   u32 ev[WIN_EV];
-  while (window_chunk(s, n, &at, ev)) {
-    window_put(&win->q, ev);
+  while (HID(window_chunk)(s, n, &at, ev)) {
+    HID(window_put)(&win->q, ev);
   }
   if (s != buf) {
     free(s);
@@ -1492,7 +1502,7 @@ static void window_text(BendWin* win, XKeyEvent* key) {
 
 // A window position (at), or a size or motion, in the image's units:
 // fullscreen scales it out of the letterbox.
-static void window_px(BendWin* win, f32* x, f32* y, bool at) {
+static void HID(window_px)(HID(BendWin)* win, f32* x, f32* y, bool at) {
 #ifdef CID(Window.fullscreen)
   if (win->full_now && win->source) {
     *x = (*x - (at ? (f32)win->vx : 0)) * win->sx;
@@ -1504,7 +1514,7 @@ static void window_px(BendWin* win, f32* x, f32* y, bool at) {
 // Fullscreen, the bars are off the image: a pointer there with no button
 // held is off the window, as one past its edge. A grab holds the mouse in
 // the window, bars and all, between warps: nothing is off.
-static bool window_off(BendWin* win, u32 id, f32 x, f32 y) {
+static bool HID(window_off)(HID(BendWin)* win, u32 id, f32 x, f32 y) {
 #ifdef CID(Window.fullscreen)
   return win->full_now && win->source && !win->grab
     && (id >= 16 || win->q.down[id] == 0)
@@ -1515,16 +1525,16 @@ static bool window_off(BendWin* win, u32 id, f32 x, f32 y) {
 }
 
 // The frame's grabbed motion, as one Look in the image's units.
-static void window_look_push(BendWin* win, f32 dx, f32 dy) {
-  window_px(win, &dx, &dy, false);
-  window_push(&win->q, CID(Look), f32_rewrap(dx), f32_rewrap(dy), 0, 0);
+static void HID(window_look_push)(HID(BendWin)* win, f32 dx, f32 dy) {
+  HID(window_px)(win, &dx, &dy, false);
+  HID(window_push)(&win->q, CID(Look), f32_rewrap(dx), f32_rewrap(dy), 0, 0);
 }
 
 // A grabbed motion to (x, y): its move from the last position, counted past
 // the warp back to the centre, not the warp itself. Motion queued before a
 // grab or resize reset the basis is dropped.
-static void window_look(BendWin* win, unsigned long serial, int x, int y,
-  f32* dx, f32* dy) {
+static void HID(window_look)(HID(BendWin)* win, unsigned long serial, int x,
+  int y, f32* dx, f32* dy) {
   if (serial < win->warp_floor) {
     return;
   }
@@ -1541,14 +1551,14 @@ static void window_look(BendWin* win, unsigned long serial, int x, int y,
 
 // X buttons: 1 to 3 left, middle, right; 4 to 7 the wheel (up, down, left,
 // right; a notch is 1, up and left positive); 8 and 9 back, forward.
-static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
-  u32 ms, u32 b, bool down, bool eraser) {
+static void HID(window_button)(HID(BendWin)* win, u32 id, HID(WinTool) t, f32 x,
+  f32 y, u32 ms, u32 b, bool down, bool eraser) {
   f32 s = b % 2 ? -1 : 1;
   if (b >= 4 && b <= 7 && down) {
-    window_push(&win->q, CID(Scroll), f32_rewrap(x), f32_rewrap(y),
+    HID(window_push)(&win->q, CID(Scroll), f32_rewrap(x), f32_rewrap(y),
       f32_rewrap(b > 5 ? s : 0), f32_rewrap(b > 5 ? 0 : s));
   } else if (b <= 3 || b == 8 || b == 9) {
-    window_point(&win->q, CID(Press), id, t, x, y, ms,
+    HID(window_point)(&win->q, CID(Press), id, t, x, y, ms,
       eraser && b == 1 ? 5 : b <= 3 ? b - 1 : b - 5, down);
   }
 }
@@ -1556,21 +1566,22 @@ static void window_button(BendWin* win, u32 id, WinTool t, f32 x, f32 y,
 // Off the window, a pointer leaves unless a button holds it; a grab
 // elsewhere takes only a held one, which is lost (its release then goes
 // there).
-static void window_leave(BendWin* win, u32 id, int mode) {
+static void HID(window_leave)(HID(BendWin)* win, u32 id, int mode) {
   bool held = id < 16 && win->q.down[id] != 0;
   bool took = mode == NotifyGrab || mode == XINotifyPassiveGrab;
   if (held == took) {
-    window_push(&win->q, held ? CID(Lost) : CID(Leave), id, 0, 0, 0);
+    HID(window_push)(&win->q, held ? CID(Lost) : CID(Leave), id, 0, 0, 0);
   }
 }
 
 static const struct {
   const char* label;
   int         ax;
-} window_axes[] = {
-  { "Abs Pressure", WIN_FORCE }, { "Abs MT Pressure", WIN_FORCE },
-  { "Abs Tilt X", WIN_TILT_X }, { "Abs Tilt Y", WIN_TILT_Y },
-  { "Abs MT Touch Major", WIN_MAJOR }, { "Abs MT Touch Minor", WIN_MINOR },
+} HID(window_axes)[] = {
+  { "Abs Pressure", HID(WIN_FORCE) }, { "Abs MT Pressure", HID(WIN_FORCE) },
+  { "Abs Tilt X", HID(WIN_TILT_X) }, { "Abs Tilt Y", HID(WIN_TILT_Y) },
+  { "Abs MT Touch Major", HID(WIN_MAJOR) }, { "Abs MT Touch Minor",
+    HID(WIN_MINOR) },
 };
 
 // A device as first met: a touch screen if it has a direct touch class, a
@@ -1578,29 +1589,30 @@ static const struct {
 // device, by name), else a mouse. A finger's size is in the screen's width
 // over its position's range. The table empties when full, or when devices
 // come or go.
-static WinDev* window_dev(BendWin* win, int id) {
+static HID(WinDev)* HID(window_dev)(HID(BendWin)* win, int id) {
   for (u32 i = 0; i < win->nd; i += 1) {
     if (win->devs[i].id == id) {
       return &win->devs[i];
     }
   }
   win->nd = win->nd == 8 ? 0 : win->nd;
-  WinDev* d = &win->devs[win->nd++];
-  *d = (WinDev){ .id = id, .ax = { -1, -1, -1, -1, -1 } };
-  int          n     = 0;
-  int          touch = 0;
-  WinXIDevice* info  = window_xi_query(win->dpy, id, &n);
+  HID(WinDev)* d = &win->devs[win->nd++];
+  *d = (HID(WinDev)){ .id = id, .ax = { -1, -1, -1, -1, -1 } };
+  int               n     = 0;
+  int               touch = 0;
+  HID(WinXIDevice)* info  = HID(window_xi_query)(win->dpy, id, &n);
   for (int k = 0; info != NULL && k < info->num_classes; k += 1) {
-    WinXIClass* c = info->classes[k];
-    char*       s = c->type == XIValuatorClass && c->label != None
+    HID(WinXIClass)* c = info->classes[k];
+    char*            s = c->type == XIValuatorClass && c->label != None
       ? XGetAtomName(win->dpy, c->label) : NULL;
     touch = c->type == XITouchClass ? c->number : touch;
-    for (u32 j = 0; s != NULL && j < sizeof window_axes / sizeof *window_axes;
+    for (u32 j = 0; s != NULL
+      && j < sizeof HID(window_axes) / sizeof *HID(window_axes);
       j += 1) {
-      if (strcmp(s, window_axes[j].label) == 0) {
-        d->ax[window_axes[j].ax] = c->number;
-        d->lo[window_axes[j].ax] = c->min;
-        d->hi[window_axes[j].ax] = c->max;
+      if (strcmp(s, HID(window_axes)[j].label) == 0) {
+        d->ax[HID(window_axes)[j].ax] = c->number;
+        d->lo[HID(window_axes)[j].ax] = c->min;
+        d->hi[HID(window_axes)[j].ax] = c->max;
       }
     }
     if (s != NULL && strcmp(s, "Abs MT Position X") == 0 && c->max > c->min) {
@@ -1611,21 +1623,21 @@ static WinDev* window_dev(BendWin* win, int id) {
       XFree(s);
     }
   }
-  d->tool   = touch == XIDirectTouch ? WIN_FINGER
-    : touch || d->ax[WIN_FORCE] < 0 ? WIN_MOUSE : WIN_PEN;
-  d->eraser = d->tool == WIN_PEN && info != NULL
+  d->tool   = touch == XIDirectTouch ? HID(WIN_FINGER)
+    : touch || d->ax[HID(WIN_FORCE)] < 0 ? HID(WIN_MOUSE) : HID(WIN_PEN);
+  d->eraser = d->tool == HID(WIN_PEN) && info != NULL
     && (strstr(info->name, "eraser") || strstr(info->name, "Eraser"));
   if (info != NULL) {
-    window_xi_free(info);
+    HID(window_xi_free)(info);
   }
   return d;
 }
 
-static void window_vals(WinDev* d, const WinXIVals* v) {
+static void HID(window_vals)(HID(WinDev)* d, const HID(WinXIVals)* v) {
   const double* p = v->values;
   for (int k = 0; k < v->len * 8; k += 1) {
     if (v->mask[k >> 3] >> (k & 7) & 1) {
-      for (u32 j = 0; j < WIN_AXES; j += 1) {
+      for (u32 j = 0; j < HID(WIN_AXES); j += 1) {
         d->at[j] = d->ax[j] == k ? *p : d->at[j];
       }
       p += 1;
@@ -1634,91 +1646,92 @@ static void window_vals(WinDev* d, const WinXIVals* v) {
 }
 
 // Axis a's value (from 0 to 1 if norm), else none if it has no valuator.
-static f32 window_axis(const WinDev* d, int a, bool norm, f32 none) {
+static f32 HID(window_axis)(const HID(WinDev)* d, int a, bool norm, f32 none) {
   return d->ax[a] < 0 || (norm && d->hi[a] <= d->lo[a]) ? none
     : (f32)(norm ? (d->at[a] - d->lo[a]) / (d->hi[a] - d->lo[a]) : d->at[a]);
 }
 
-static WinTool window_tool(const WinDev* d, bool down) {
-  f32 force = down ? window_axis(d, WIN_FORCE, true, 0.5f) : 0;
-  if (d->tool == WIN_FINGER) {
-    f32 w = (f32)d->px * window_axis(d, WIN_MAJOR, false, 0);
-    f32 h = (f32)d->px * window_axis(d, WIN_MINOR, false, 0);
-    return (WinTool){ WIN_FINGER, { force, w > 0 ? w : 1,
+static HID(WinTool) HID(window_tool)(const HID(WinDev)* d, bool down) {
+  f32 force = down ? HID(window_axis)(d, HID(WIN_FORCE), true, 0.5f) : 0;
+  if (d->tool == HID(WIN_FINGER)) {
+    f32 w = (f32)d->px * HID(window_axis)(d, HID(WIN_MAJOR), false, 0);
+    f32 h = (f32)d->px * HID(window_axis)(d, HID(WIN_MINOR), false, 0);
+    return (HID(WinTool)){ HID(WIN_FINGER), { force, w > 0 ? w : 1,
       h > 0 ? h : w > 0 ? w : 1 } };
   }
-  if (d->tool == WIN_PEN) {
-    return (WinTool){ WIN_PEN, { force, 0,
-      fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_X, false, 0))),
-      fmaxf(-90, fminf(90, window_axis(d, WIN_TILT_Y, false, 0))), 0 } };
+  if (d->tool == HID(WIN_PEN)) {
+    return (HID(WinTool)){ HID(WIN_PEN), { force, 0,
+      fmaxf(-90, fminf(90, HID(window_axis)(d, HID(WIN_TILT_X), false, 0))),
+      fmaxf(-90, fminf(90, HID(window_axis)(d, HID(WIN_TILT_Y), false, 0))),
+        0 } };
   }
-  return (WinTool){ WIN_MOUSE };
+  return (HID(WinTool)){ HID(WIN_MOUSE) };
 }
 
 // Each finger of a touch screen is its own pointer (its pointer events,
 // which repeat them, are dropped), a pen one per device. Under the window's
 // grab a motion only adds to the look (dx, dy), as a core one does.
-static void window_xi_event(BendWin* win, XGenericEventCookie* c, f32* dx,
-  f32* dy) {
-  const WinXIEvent* xe = c->data;
-  int               t  = c->evtype;
+static void HID(window_xi_event)(HID(BendWin)* win, XGenericEventCookie* c,
+  f32* dx, f32* dy) {
+  const HID(WinXIEvent)* xe = c->data;
+  int                    t  = c->evtype;
   if (t == XI_HierarchyChanged) {
     win->nd = 0;
     return;
   }
   f32 x = (f32)xe->h.event_x;
   f32 y = (f32)xe->h.event_y;
-  window_px(win, &x, &y, true);
-  WinDev* d     = window_dev(win, xe->h.sourceid);
-  u64     name  = (u64)(u32)d->id << 32;
-  bool    touch = t >= XI_TouchBegin && t <= XI_TouchEnd;
-  if (touch && d->tool == WIN_FINGER) {
-    window_vals(d, &xe->vals);
-    WinTool tool = window_tool(d, t != XI_TouchEnd);
-    window_px(win, &tool.v[1], &tool.v[2], false);
-    if (t != XI_TouchBegin || !window_off(win, 16, x, y)) {
-      window_point(&win->q, t == XI_TouchUpdate ? CID(Move) : CID(Press),
-        window_id(&win->q, name | (u32)xe->h.detail, t == XI_TouchBegin),
+  HID(window_px)(win, &x, &y, true);
+  HID(WinDev)* d     = HID(window_dev)(win, xe->h.sourceid);
+  u64          name  = (u64)(u32)d->id << 32;
+  bool         touch = t >= XI_TouchBegin && t <= XI_TouchEnd;
+  if (touch && d->tool == HID(WIN_FINGER)) {
+    HID(window_vals)(d, &xe->vals);
+    HID(WinTool) tool = HID(window_tool)(d, t != XI_TouchEnd);
+    HID(window_px)(win, &tool.v[1], &tool.v[2], false);
+    if (t != XI_TouchBegin || !HID(window_off)(win, 16, x, y)) {
+      HID(window_point)(&win->q, t == XI_TouchUpdate ? CID(Move) : CID(Press),
+        HID(window_id)(&win->q, name | (u32)xe->h.detail, t == XI_TouchBegin),
         tool, x, y, (u32)xe->h.time, 0, t == XI_TouchBegin);
     }
   }
-  if (touch || d->tool == WIN_FINGER) {
+  if (touch || d->tool == HID(WIN_FINGER)) {
     return;
   }
   // a pen takes an id on the image, not on the bars
-  u32 id = d->tool == WIN_MOUSE ? 0 : window_id(&win->q, name | 0xFFFFFFFF,
-    false);
+  u32 id = d->tool == HID(WIN_MOUSE) ? 0 : HID(window_id)(&win->q,
+    name | 0xFFFFFFFF, false);
   if (t == XI_Leave) {
-    window_leave(win, id, xe->flags);
+    HID(window_leave)(win, id, xe->flags);
     return;
   }
   if (t == XI_Motion && win->grab) {
-    window_look(win, xe->h.serial, (int)xe->h.event_x, (int)xe->h.event_y, dx,
-      dy);
+    HID(window_look)(win, xe->h.serial, (int)xe->h.event_x, (int)xe->h.event_y,
+      dx, dy);
     return;
   }
-  window_vals(d, &xe->vals);
-  if (window_off(win, id, x, y)) {
+  HID(window_vals)(d, &xe->vals);
+  if (HID(window_off)(win, id, x, y)) {
     if (t == XI_Motion) {
-      window_leave(win, id, NotifyNormal);
+      HID(window_leave)(win, id, NotifyNormal);
     }
     return;
   }
-  id = id < 16 || d->tool == WIN_MOUSE ? id
-    : window_id(&win->q, name | 0xFFFFFFFF, true);
+  id = id < 16 || d->tool == HID(WIN_MOUSE) ? id
+    : HID(window_id)(&win->q, name | 0xFFFFFFFF, true);
   bool    pressed = t == XI_ButtonPress
     || (t != XI_ButtonRelease && id < 16 && win->q.down[id] != 0);
-  WinTool tool    = window_tool(d, pressed);
+  HID(WinTool) tool    = HID(window_tool)(d, pressed);
   if (t == XI_Motion) {
-    window_point(&win->q, CID(Move), id, tool, x, y, (u32)xe->h.time, 0,
+    HID(window_point)(&win->q, CID(Move), id, tool, x, y, (u32)xe->h.time, 0,
       false);
   } else {
-    window_button(win, id, tool, x, y, (u32)xe->h.time, xe->h.detail,
+    HID(window_button)(win, id, tool, x, y, (u32)xe->h.time, xe->h.detail,
       t == XI_ButtonPress, d->eraser);
   }
 }
 
-static void window_pump(BendWin* win) {
+static void HID(window_pump)(HID(BendWin)* win) {
   u32 pw = win->width;
   u32 ph = win->height;
   int cx = pw / 2;
@@ -1737,15 +1750,15 @@ static void window_pump(BendWin* win) {
         cy = ph / 2;
         dx = dy = 0;
         if (win->grab) {
-          window_warp(win, cx, cy, true);
+          HID(window_warp)(win, cx, cy, true);
         }
 #ifdef CID(Window.fullscreen)
-        window_viewport(win);
+        HID(window_viewport)(win);
 #endif
       }
 #ifdef CID(Window.fullscreen)
     } else if (ev.type == PropertyNotify && ev.xproperty.atom == win->state) {
-      bool full = window_has_value(win->dpy, win->win, win->state, XA_ATOM,
+      bool full = HID(window_has_value)(win->dpy, win->win, win->state, XA_ATOM,
         win->full);
       if (full == win->full_want) {
         win->full_wait = win->full_sent = false;
@@ -1756,17 +1769,17 @@ static void window_pump(BendWin* win) {
       if (win->full_now != full) {
         win->full_now = full;
         if (full) {
-          window_surface(win);
+          HID(window_surface)(win);
         }
-        window_limits(win, full || win->full_want);
-        window_viewport(win);
+        HID(window_limits)(win, full || win->full_want);
+        HID(window_viewport)(win);
       }
     } else if (ev.type == MapNotify || ev.type == UnmapNotify) {
       // a request waits for the window to show, and goes again (its clock
       // with it) if the window hid before the window manager answered
       win->mapped = ev.type == MapNotify;
       win->full_sent &= win->mapped;
-      window_full_request(win);
+      HID(window_full_request)(win);
 #endif
     } else if (ev.type == KeyPress || ev.type == KeyRelease) {
       // Each key is a Key, even one the input method took (the event as
@@ -1775,40 +1788,41 @@ static void window_pump(BendWin* win) {
       u32 code = key.keycode << 1 | (ev.type == KeyPress);
       if (key.keycode != 0
         && (took || key.time != win->kt || code != win->kc)) {
-        window_push(&win->q, CID(Key), window_key(&key), ev.type == KeyPress,
-          0, 0);
+        HID(window_push)(&win->q, CID(Key), HID(window_key)(&key),
+          ev.type == KeyPress, 0, 0);
       }
       if (took) {
         win->kt = key.time;
         win->kc = code;
       } else if (ev.type == KeyPress) {
-        window_text(win, &ev.xkey);
+        HID(window_text)(win, &ev.xkey);
       }
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
       f32 x = ev.xbutton.x, y = ev.xbutton.y;
-      window_px(win, &x, &y, true);
-      if (!window_off(win, 0, x, y)) {
-        window_button(win, 0, (WinTool){ WIN_MOUSE }, x, y,
+      HID(window_px)(win, &x, &y, true);
+      if (!HID(window_off)(win, 0, x, y)) {
+        HID(window_button)(win, 0, (HID(WinTool)){ HID(WIN_MOUSE) }, x, y,
           (u32)ev.xbutton.time, ev.xbutton.button, ev.type == ButtonPress,
           false);
       }
     } else if (ev.type == MotionNotify) {
       f32 x = ev.xmotion.x, y = ev.xmotion.y;
-      window_px(win, &x, &y, true);
+      HID(window_px)(win, &x, &y, true);
       if (win->grab) {
-        window_look(win, ev.xmotion.serial, ev.xmotion.x, ev.xmotion.y, &dx,
-          &dy);
-      } else if (window_off(win, 0, x, y)) {
-        window_leave(win, 0, NotifyNormal);
+        HID(window_look)(win, ev.xmotion.serial, ev.xmotion.x, ev.xmotion.y,
+          &dx, &dy);
+      } else if (HID(window_off)(win, 0, x, y)) {
+        HID(window_leave)(win, 0, NotifyNormal);
       } else {
-        window_point(&win->q, CID(Move), 0, (WinTool){ WIN_MOUSE }, x, y,
+        HID(window_point)(&win->q, CID(Move), 0,
+          (HID(WinTool)){ HID(WIN_MOUSE) }, x, y,
           (u32)ev.xmotion.time, 0, false);
       }
     } else if (ev.type == LeaveNotify) {
-      window_leave(win, 0, ev.xcrossing.mode);
+      HID(window_leave)(win, 0, ev.xcrossing.mode);
     } else if (ev.type == GenericEvent && ev.xcookie.extension == win->xi
       && XGetEventData(win->dpy, &ev.xcookie)) {
-      window_xi_event(win, &ev.xcookie, &dx, &dy);
+      HID(window_xi_event)(win, &ev.xcookie, &dx, &dy);
       XFreeEventData(win->dpy, &ev.xcookie);
     } else if (ev.type == FocusIn || ev.type == FocusOut) {
       bool on = ev.type == FocusIn;
@@ -1824,41 +1838,41 @@ static void window_pump(BendWin* win) {
       bool follows = ev.xfocus.detail == NotifyPointer
         || ev.xfocus.detail == NotifyInferior;
       if (!follows) {
-        window_focus(&win->q, on);
+        HID(window_focus)(&win->q, on);
       }
     } else if (ev.type == ClientMessage
       && (Atom)ev.xclient.data.l[0] == win->del) {
-      window_push(&win->q, CID(Close), 0, 0, 0, 0);
+      HID(window_push)(&win->q, CID(Close), 0, 0, 0, 0);
     }
   }
 #ifdef CID(Window.fullscreen)
   if (win->full_wait && win->full_sent && io_tick() >= win->full_due) {
-    win->full_now = window_has_value(win->dpy, win->win, win->state, XA_ATOM,
-      win->full);
+    win->full_now = HID(window_has_value)(win->dpy, win->win, win->state,
+      XA_ATOM, win->full);
     win->full_wait = win->full_sent = false;
     win->full_want = win->full_now;
-    window_limits(win, win->full_now);
-    window_viewport(win);
+    HID(window_limits)(win, win->full_now);
+    HID(window_viewport)(win);
   }
 #endif
   // grabbed, the frame's motion is one look, in the image's units
   if (win->grab && (dx != 0 || dy != 0)) {
-    window_look_push(win, dx, dy);
+    HID(window_look_push)(win, dx, dy);
   }
   if (win->grab && (win->mouse_x != cx || win->mouse_y != cy)) {
-    window_warp(win, cx, cy, false);
+    HID(window_warp)(win, cx, cy, false);
   }
 }
 
 #if BEND_CUDA
-static CUfunction  window_pso;
-static CUdeviceptr window_buf;
-static u64         window_len;
+static CUfunction  HID(window_pso);
+static CUdeviceptr HID(window_buf);
+static u64         HID(window_len);
 #endif
 
 // The s x s square of t at (x, y) of the frame: a Qua by quarters,
 // else the color window_pix reads at its corner.
-static void window_sq(u64* H, u32* pix, u32 w, u32 h, Term t, u32 s, u32 x,
+static void HID(window_sq)(u64* H, u32* pix, u32 w, u32 h, Term t, u32 s, u32 x,
   u32 y) {
   if (x >= w || y >= h) {
     return;
@@ -1867,7 +1881,7 @@ static void window_sq(u64* H, u32* pix, u32 w, u32 h, Term t, u32 s, u32 x,
     u64 l = term_peek(H, t);
     s /= 2;
     for (u32 j = 0; j < 4; j += 1) {
-      window_sq(H, pix, w, h, H[l + j], s, x + j % 2 * s, y + j / 2 * s);
+      HID(window_sq)(H, pix, w, h, H[l + j], s, x + j % 2 * s, y + j / 2 * s);
     }
     return;
   }
@@ -1881,38 +1895,38 @@ static void window_sq(u64* H, u32* pix, u32 w, u32 h, Term t, u32 s, u32 x,
 
 // The frame's pixels: window_dev on the device while the corpus is
 // there (the tree's pages never leave it), else window_sq from the root.
-static void window_fill(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
+static void HID(window_fill)(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
 #if BEND_CUDA
   if (io_gpu) {
     u64*   H    = e.mem;
     u64    len  = (u64)w * h * 4;
-    void*  args[] = { &H, &image, &w, &h, &k, &window_buf };
-    if (window_pso == NULL && cuModuleGetFunction(&window_pso, gpu_lib,
-      "window_dev") != CUDA_SUCCESS) {
+    void*  args[] = { &H, &image, &w, &h, &k, &HID(window_buf) };
+    if (HID(window_pso) == NULL && cuModuleGetFunction(&HID(window_pso),
+      gpu_lib, "window_dev") != CUDA_SUCCESS) {
       err_fail("cannot load the window kernel");
     }
-    if (len > window_len) {
-      if (window_buf != 0) {
-        cuMemFree(window_buf);
+    if (len > HID(window_len)) {
+      if (HID(window_buf) != 0) {
+        cuMemFree(HID(window_buf));
       }
-      if (cuMemAlloc(&window_buf, len) != CUDA_SUCCESS) {
+      if (cuMemAlloc(&HID(window_buf), len) != CUDA_SUCCESS) {
         err_fail("the frame's device buffer failed");
       }
-      window_len = len;
+      HID(window_len) = len;
     }
-    if (cuLaunchKernel(window_pso, (w + 31) / 32, (h + 7) / 8, 1, 32, 8, 1, 0,
-      NULL, args, NULL) != CUDA_SUCCESS
-      || cuMemcpyDtoH(pix, window_buf, len) != CUDA_SUCCESS) {
+    if (cuLaunchKernel(HID(window_pso), (w + 31) / 32, (h + 7) / 8, 1, 32, 8, 1,
+      0, NULL, args, NULL) != CUDA_SUCCESS
+      || cuMemcpyDtoH(pix, HID(window_buf), len) != CUDA_SUCCESS) {
       err_fail("the frame's device fill failed");
     }
     return;
   }
 #endif
-  window_sq(e.mem, pix, w, h, image, 1u << k, 0, 0);
+  HID(window_sq)(e.mem, pix, w, h, image, 1u << k, 0, 0);
 }
 
 // A frame waits for the display's next tick, as the Mac's display sync.
-static void window_pace(u64 period) {
+static void HID(window_pace)(u64 period) {
   static u64 due;
   u64 now = io_tick();
   if (due > now) {
@@ -1922,17 +1936,17 @@ static void window_pace(u64 period) {
   due = (due > now ? due : now) + period;
 }
 
-static void window_show(Env e, BendWin* win, Term image) {
+static void HID(window_show)(Env e, HID(BendWin)* win, Term image) {
   u32 w = win->img->width;
   u32 h = win->img->height;
   u32 k = cls_fit(w > h ? w : h);
-  window_fill(e, (u32*)win->img->data, w, h, image, k);
-  window_pace(win->period);
+  HID(window_fill)(e, (u32*)win->img->data, w, h, image, k);
+  HID(window_pace)(win->period);
 #ifdef CID(Window.fullscreen)
   if (win->full_now && win->source) {
     XPutImage(win->dpy, win->pix, DefaultGC(win->dpy, DefaultScreen(win->dpy)),
       win->img, 0, 0, 0, 0, w, h);
-    window_render.composite(win->dpy, BEND_RENDER_SRC, win->source, None, win->target,
+    HID(window_render).composite(win->dpy, HID(BEND_RENDER_SRC), win->source, None, win->target,
       0, 0, 0, 0, win->vx, win->vy, win->vw, win->vh);
   } else
 #endif
@@ -1943,29 +1957,29 @@ static void window_show(Env e, BendWin* win, Term image) {
   XFlush(win->dpy);
 }
 
-static Term window_frame(Env e, intptr_t at, Term image) {
-  BendWin* win = (BendWin*)at;
+static Term HID(window_frame)(Env e, intptr_t at, Term image) {
+  HID(BendWin)* win = (HID(BendWin)*)at;
   io_sync();
-  window_pump(win);
-  window_show(e, win, image);
-  return window_list(e, &win->q);
+  HID(window_pump)(win);
+  HID(window_show)(e, win, image);
+  return HID(window_list)(e, &win->q);
 }
 
 #else
 
-static Term window_frame(Env e, intptr_t at, Term image) {
+static Term HID(window_frame)(Env e, intptr_t at, Term image) {
   return term_pak(CID(Nil), 0);
 }
 
 #endif
 
-Term window_frame_run(Env e, Term* f, IoWork* w) {
-  Term events = window_frame(e, (intptr_t)io_hand_v(f[0]), f[1]);
+Term HID(window_frame_run)(Env e, Term* f, IoWork* w) {
+  Term events = HID(window_frame)(e, (intptr_t)io_hand_v(f[0]), f[1]);
   return io_tup(e, f[0], io_tup(e, f[1], events));
 }
 
-static void __attribute__((constructor)) window_frame_use(void) {
-  io_eff(CID(Window.frame), window_frame_run);
+static void __attribute__((constructor)) HID(window_frame_use)(void) {
+  io_eff(CID(Window.frame), HID(window_frame_run));
 }
 
 #endif
@@ -1974,7 +1988,7 @@ static void __attribute__((constructor)) window_frame_use(void) {
 
 #ifdef __OBJC__
 
-static void window_set_title(intptr_t at, const char* text, u64 n) {
+static void HID(window_set_title)(intptr_t at, const char* text, u64 n) {
   NSWindow* win = (__bridge NSWindow*)(void*)at;
   win.title = [[NSString alloc] initWithBytes:text length:n
     encoding:NSUTF8StringEncoding];
@@ -1982,29 +1996,29 @@ static void window_set_title(intptr_t at, const char* text, u64 n) {
 
 #elif defined(__linux__)
 
-static void window_set_title(intptr_t at, const char* text, u64 n) {
-  BendWin* win = (BendWin*)at;
-  window_x_title(win->dpy, win->win, text, n);
+static void HID(window_set_title)(intptr_t at, const char* text, u64 n) {
+  HID(BendWin)* win = (HID(BendWin)*)at;
+  HID(window_x_title)(win->dpy, win->win, text, n);
   XFlush(win->dpy);
 }
 
 #else
 
-static void window_set_title(intptr_t at, const char* text, u64 n) {
+static void HID(window_set_title)(intptr_t at, const char* text, u64 n) {
 }
 
 #endif
 
-Term window_set_title_run(Env e, Term* f, IoWork* w) {
+Term HID(window_set_title_run)(Env e, Term* f, IoWork* w) {
   u64   n    = 0;
   char* text = io_cstr(e, f[1], &n);
-  window_set_title((intptr_t)io_hand_v(f[0]), text, n);
+  HID(window_set_title)((intptr_t)io_hand_v(f[0]), text, n);
   free(text);
   return f[0];
 }
 
-static void __attribute__((constructor)) window_set_title_use(void) {
-  io_eff(CID(Window.set_title), window_set_title_run);
+static void __attribute__((constructor)) HID(window_set_title_use)(void) {
+  io_eff(CID(Window.set_title), HID(window_set_title_run));
 }
 
 #endif
@@ -2013,7 +2027,7 @@ static void __attribute__((constructor)) window_set_title_use(void) {
 
 #ifdef __OBJC__
 
-static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
+static u32 HID(window_fullscreen)(intptr_t at, bool on, const char** why) {
   NSWindow* win = (__bridge NSWindow*)(void*)at;
   if (!win.isVisible || win.isMiniaturized || win.screen == nil) {
     *why = "Window.fullscreen: window is not on screen";
@@ -2025,13 +2039,13 @@ static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
 
 #elif defined(__linux__)
 
-static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
-  BendWin* win = (BendWin*)at;
+static u32 HID(window_fullscreen)(intptr_t at, bool on, const char** why) {
+  HID(BendWin)* win = (HID(BendWin)*)at;
   if (!win->full_supported) {
     *why = "Window.fullscreen: desktop has no EWMH/XRender fullscreen support";
     return ENOTSUP;
   }
-  if (on && !window_surface(win)) {
+  if (on && !HID(window_surface)(win)) {
     *why = "Window.fullscreen: XRender has no format for this display";
     return ENOTSUP;
   }
@@ -2041,35 +2055,35 @@ static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
   win->full_want = on;
   if (!win->full_sent && win->full_now == on) {
     win->full_wait = false;
-    window_limits(win, on);
+    HID(window_limits)(win, on);
     return 0;
   }
   win->full_wait = true;
-  window_limits(win, true);
-  window_full_request(win);
+  HID(window_limits)(win, true);
+  HID(window_full_request)(win);
   return 0;
 }
 
 #else
 
-static u32 window_fullscreen(intptr_t at, bool on, const char** why) {
+static u32 HID(window_fullscreen)(intptr_t at, bool on, const char** why) {
   *why = "Window.fullscreen: native window support is unavailable";
   return ENOTSUP;
 }
 
 #endif
 
-Term window_fullscreen_run(Env e, Term* f, IoWork* w) {
+Term HID(window_fullscreen_run)(Env e, Term* f, IoWork* w) {
   const char* why = NULL;
-  u32 q = window_fullscreen((intptr_t)io_hand_v(f[0]),
+  u32 q = HID(window_fullscreen)((intptr_t)io_hand_v(f[0]),
     term_aux(f[1]) == CID(True), &why);
   Term result = q ? io_fail(e, q, why)
     : io_done(e, term_pak(CID(Unit), 0));
   return io_tup(e, f[0], result);
 }
 
-static void __attribute__((constructor)) window_fullscreen_use(void) {
-  io_eff(CID(Window.fullscreen), window_fullscreen_run);
+static void __attribute__((constructor)) HID(window_fullscreen_use)(void) {
+  io_eff(CID(Window.fullscreen), HID(window_fullscreen_run));
 }
 
 #endif
@@ -2078,7 +2092,7 @@ static void __attribute__((constructor)) window_fullscreen_use(void) {
 
 #ifdef __OBJC__
 
-static void window_grab(intptr_t at, bool on) {
+static void HID(window_grab)(intptr_t at, bool on) {
   NSWindow* win = (__bridge NSWindow*)(void*)at;
   [win.contentView setValue:@(on) forKey:@"grab"];
 }
@@ -2088,10 +2102,10 @@ static void window_grab(intptr_t at, bool on) {
 // The pointer is confined to the window under a blank cursor and warped
 // to its centre, where each frame puts it back; only a focused window
 // takes it.
-static void window_grab(intptr_t at, bool on) {
-  BendWin* win = (BendWin*)at;
-  Window   focus;
-  int      revert;
+static void HID(window_grab)(intptr_t at, bool on) {
+  HID(BendWin)* win = (HID(BendWin)*)at;
+  Window        focus;
+  int           revert;
   XGetInputFocus(win->dpy, &focus, &revert);
   if (on && !win->grab && focus == win->win) {
     char   zero = 0;
@@ -2104,7 +2118,7 @@ static void window_grab(intptr_t at, bool on) {
     XFreeCursor(win->dpy, cur);
     XFreePixmap(win->dpy, pix);
     if (win->grab) {
-      window_warp(win, win->width / 2, win->height / 2, true);
+      HID(window_warp)(win, win->width / 2, win->height / 2, true);
     }
   } else if (!on && win->grab) {
     XUngrabPointer(win->dpy, CurrentTime);
@@ -2115,18 +2129,18 @@ static void window_grab(intptr_t at, bool on) {
 
 #else
 
-static void window_grab(intptr_t at, bool on) {
+static void HID(window_grab)(intptr_t at, bool on) {
 }
 
 #endif
 
-Term window_grab_run(Env e, Term* f, IoWork* w) {
-  window_grab((intptr_t)io_hand_v(f[0]), term_aux(f[1]) == CID(True));
+Term HID(window_grab_run)(Env e, Term* f, IoWork* w) {
+  HID(window_grab)((intptr_t)io_hand_v(f[0]), term_aux(f[1]) == CID(True));
   return f[0];
 }
 
-static void __attribute__((constructor)) window_grab_use(void) {
-  io_eff(CID(Window.grab), window_grab_run);
+static void __attribute__((constructor)) HID(window_grab_use)(void) {
+  io_eff(CID(Window.grab), HID(window_grab_run));
 }
 
 #endif
@@ -2135,14 +2149,14 @@ static void __attribute__((constructor)) window_grab_use(void) {
 
 #ifdef __OBJC__
 
-static void window_close(intptr_t at) {
+static void HID(window_close)(intptr_t at) {
   NSWindow* win = CFBridgingRelease((void*)at);
   [win.contentView setValue:@NO forKey:@"grab"];
 #ifdef CID(Window.fullscreen)
   // it leaves fullscreen first, after any transition under way; one AppKit
   // never finishes (the display slept) waits 5 s at most
-  BendView* view = (BendView*)win.contentView;
-  u64       end  = io_tick() + 5000000000ull;
+  HID(BendView)* view = (HID(BendView)*)win.contentView;
+  u64            end  = io_tick() + 5000000000ull;
   [view setFullscreen:NO];
   while ((view->full_busy || view->full_dirty) && io_tick() < end) {
     @autoreleasepool {
@@ -2163,8 +2177,8 @@ static void window_close(intptr_t at) {
 
 #elif defined(__linux__)
 
-static void window_close(intptr_t at) {
-  BendWin* win = (BendWin*)at;
+static void HID(window_close)(intptr_t at) {
+  HID(BendWin)* win = (HID(BendWin)*)at;
   if (win->ic != NULL) {
     XDestroyIC(win->ic);
     XCloseIM(win->im);
@@ -2172,8 +2186,8 @@ static void window_close(intptr_t at) {
   XDestroyImage(win->img);
 #ifdef CID(Window.fullscreen)
   if (win->source) {
-    window_render.destroy(win->dpy, win->source);
-    window_render.destroy(win->dpy, win->target);
+    HID(window_render).destroy(win->dpy, win->source);
+    HID(window_render).destroy(win->dpy, win->target);
     XFreePixmap(win->dpy, win->pix);
   }
 #endif
@@ -2184,18 +2198,18 @@ static void window_close(intptr_t at) {
 
 #else
 
-static void window_close(intptr_t at) {
+static void HID(window_close)(intptr_t at) {
 }
 
 #endif
 
-Term window_close_run(Env e, Term* f, IoWork* w) {
-  window_close((intptr_t)io_hand_v(f[0]));
+Term HID(window_close_run)(Env e, Term* f, IoWork* w) {
+  HID(window_close)((intptr_t)io_hand_v(f[0]));
   return term_pak(CID(Unit), 0);
 }
 
-static void __attribute__((constructor)) window_close_use(void) {
-  io_eff(CID(Window.close), window_close_run);
+static void __attribute__((constructor)) HID(window_close_use)(void) {
+  io_eff(CID(Window.close), HID(window_close_run));
 }
 
 #endif

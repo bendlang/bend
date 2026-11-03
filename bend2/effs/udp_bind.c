@@ -1,7 +1,7 @@
 // UDP
 // ===
 
-Term udp_bind_run(Env e, Term* f, IoWork* w) {
+Term HID(udp_bind_run)(Env e, Term* f, IoWork* w) {
   struct sockaddr_in at;
   u64 len;
   char* host = io_cstr(e, f[0], &len);
@@ -23,6 +23,6 @@ Term udp_bind_run(Env e, Term* f, IoWork* w) {
   return io_done(e, io_hand(fd));
 }
 
-static void __attribute__((constructor)) udp_bind_use(void) {
-  io_eff(CID(UDP.bind), udp_bind_run);
+static void __attribute__((constructor)) HID(udp_bind_use)(void) {
+  io_eff(CID(UDP.bind), HID(udp_bind_run));
 }

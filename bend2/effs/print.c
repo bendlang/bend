@@ -1,7 +1,7 @@
 // IO
 // ==
 
-Term io_print_run(Env e, Term* f, IoWork* w) {
+Term HID(io_print_run)(Env e, Term* f, IoWork* w) {
   uint64_t n = 0;
   char* text = io_cstr(e, f[0], &n);
   text[n] = '\n';
@@ -10,6 +10,6 @@ Term io_print_run(Env e, Term* f, IoWork* w) {
   return term_pak(CID(Unit), 0);
 }
 
-static void __attribute__((constructor)) io_print_use(void) {
-  io_eff(CID(IO.print), io_print_run);
+static void __attribute__((constructor)) HID(io_print_use)(void) {
+  io_eff(CID(IO.print), HID(io_print_run));
 }

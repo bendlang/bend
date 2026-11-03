@@ -26,10 +26,10 @@ runtime, so every runtime symbol is in scope. Define the effect and
 register it in a constructor:
 
 ```c
-Term clock_now_run(Env e, Term* f, IoWork* w);
+Term HID(clock_now_run)(Env e, Term* f, IoWork* w);
 
-static void __attribute__((constructor)) clock_now_use(void) {
-  io_eff(CID(Clock.now), clock_now_run);
+static void __attribute__((constructor)) HID(clock_now_use)(void) {
+  io_eff(CID(Clock.now), HID(clock_now_run));
 }
 ```
 
@@ -43,6 +43,24 @@ same way. `f` holds the def's arguments in order: a `U32` is the word
 `malloc`ed copy you free), a packed handle with `io_hand_v(f[0])`. The loop
 calls the effect at once; an effect that waits (for a handle, or for time)
 parks itself, as below.
+
+A package's `.c` should name what it defines `HID(name)`, as Base's do:
+functions, globals, types and tags, the effect and its constructor included,
+but not macros. The compiler makes `HID(name)` a C id of the module that
+imports the `.c`, so two versions of one package, which a program may import
+together, define different names. An imported module whose C says `HID` is
+held to it: the compiler pastes its C twice, the second copy dead (its
+constructors and destructors never run), so a name defined without `HID`
+fails its own build (`redefinition`, or, with clang 21 and newer, `duplicate
+declaration` for a global without an initializer). Its macros and include
+guards need no `HID`: each copy restores the macros it defines as they were
+before it. Such a module's constructors take no priority, and its C pastes
+after other modules'. C without `HID` builds as before, but two versions of
+it in one program clash. The JS twin needs none of this: each runs in its
+own closure. Base and the program's own file share one namespace: there
+`HID(name)` is Base's own name if Base defines it, so the program's C can
+reach Base's effects as `HID(BendWin)`, and must not define a name Base
+does; a module imported `as X` has its own.
 
 The effect returns a Term: a `U32` is `(Term)n`, `Unit` is
 `term_pak(CID(Unit), 0)`, a `String` is `io_str(e, p, n)`, a two-field
@@ -138,12 +156,12 @@ def main() -> IO(Unit):
 `clock.c`:
 
 ```c
-Term clock_now_run(Env e, Term* f, IoWork* w) {
+Term HID(clock_now_run)(Env e, Term* f, IoWork* w) {
   return (Term)(uint32_t)(io_tick() / 1000000ull);
 }
 
-static void __attribute__((constructor)) clock_now_use(void) {
-  io_eff(CID(Clock.now), clock_now_run);
+static void __attribute__((constructor)) HID(clock_now_use)(void) {
+  io_eff(CID(Clock.now), HID(clock_now_run));
 }
 ```
 

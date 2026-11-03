@@ -4,7 +4,7 @@ Term title_run(Env e, Term* f, IoWork* w) {
   const char* text = win.title.UTF8String;
   return io_tup(e, f[0], io_str(e, text, strlen(text)));
 #elif defined(__linux__)
-  BendWin* win = (BendWin*)(uintptr_t)io_hand_v(f[0]);
+  HID(BendWin)* win = (HID(BendWin)*)(uintptr_t)io_hand_v(f[0]);
   Atom           type;
   int            fmt;
   unsigned long  n = 0, left;
