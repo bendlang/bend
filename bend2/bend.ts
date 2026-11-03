@@ -3551,6 +3551,22 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
   }
 }
 
+// a binder's T is checked at its source, so only Data is left to show, and a
+// family's signature says that without checking its arguments again
+export function term_check_bound(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Name, ctx: Ctx, d: number, s?: Span): void {
+  if (lhs_kind(lhs, q).$ !== "Many") {
+    return;
+  }
+  const h = term_strip(T);
+  if (h.$ === "ADT") {
+    const adt = book_adt(book, h, ctx, lhs.def);
+    if (h.x.length === adt.n && term_compare("LE", book, tele_fill(book, adt.T, h.x, ctx, lhs.def, s), Typ(Qua(Many())), d)) {
+      return;
+    }
+  }
+  term_check_kind(book, lhs, T, q, k, ctx, d, s);
+}
+
 export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Quant, s: Span | undefined, def?: Name): Uses {
   const o = pmap_get(us, i);
   const u = o ?? None();
@@ -3592,7 +3608,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       let q = t_wnf.q;
       if (tm.q?.$ === "Many" && q.$ === "Lone") {
         q = tm.q;
-        term_check_kind(book, lhs, t_wnf.A, q, tm.k, ctx, d, tm.s);
+        term_check_bound(book, lhs, t_wnf.A, q, tm.k, ctx, d, tm.s);
       }
       const f_ctx = ctx_bind(ctx, d, q, tm.k, t_wnf.A);
       const f_chk = term_check(book, f_lhs, tm.f(x), qt, t_wnf.B(x), f_ctx, d+1);
@@ -3613,9 +3629,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       for (let j = 0; j < n; j++) {
         const v_dem = quant_dem(tm.q[j], qt);
         const v_inf = term_infer(book, lhs, tm.v[j], v_dem, ctx, d);
-        if (lhs_kind(lhs, tm.q[j]).$ === "Many") {
-          term_check_kind(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
-        }
+        term_check_bound(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
         vx.push(v_inf.tm);
         us = uses_add(us, v_inf.us);
         f_ctx = ctx_bind(f_ctx, d + j, tm.q[j], tm.k[j], v_inf.ty);
