@@ -483,3 +483,16 @@ def Laws.never_on_flag(moves):
         Game.Game{nx, ny, False{}}, eq) : {Board.at_flag(_) == False{} : Bool}
       %off_F(nx, ny, hq) : {_ == False{} : Bool}
       {==})
+
+# run is a fold over the list, so running `a` then `b` is running their
+# append; induction on `a`, with the board moving forward each step.
+def run_append(a: List<Game.Move>, -b: List<Game.Move>, -g: Game.Game)
+  -> {Game.run(b, Game.run(a, g)) == Game.run(List.append(&1, Game.Move, a, b), g) : Game.Game}:
+  match a:
+    case Nil{}:
+      {==}
+    case m <> ms:
+      run_append(ms, b, Game.step(m, g))
+
+def Laws.replay_composes(g, a, b):
+  run_append(a, b, g)

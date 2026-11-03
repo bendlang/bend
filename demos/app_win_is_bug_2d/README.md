@@ -19,6 +19,11 @@ A second law, `never_on_flag`, says the player never stands on an 'F' of
 the board the page draws, as [`BOARD.bend`](BOARD.bend) reads it, not as
 the game reports it.
 
+A third, `replay_composes`, says replaying `a` and then `b` from where it
+ends is replaying `a` then `b` from the start. The page plays one move at a
+time from its current board, so without it the first two laws, stated from
+the start, would not cover the game the page shows.
+
 **Play it:** https://bend-lang.com/#lab
 
 ## How to work with Bend
