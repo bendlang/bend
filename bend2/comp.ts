@@ -83,7 +83,8 @@ type Intr = { C?: string | string[] | null; JS?: string };
 type Dom = [Bend.Quant, Name, HTerm];
 
 type Unit = { name: string; segs: Seg[]; n: number; lent: Set<string>;
-  lends: [string, string][]; clos: Set<string>; emit: () => void };
+  lends: [string, string][]; clos: Set<string>; emit: () => void;
+  wake: () => unknown };
 
 type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
@@ -1159,7 +1160,7 @@ function file_new(book: Bend.Book, js: boolean) {
     names: new Map<number, string>(),
     facts: new Set<string>(),
     heat: new Set<string>(),
-    when: new Map<string, Set<Unit | (() => void)>>(),
+    when: new Map<string, Set<() => unknown>>(),
     lazy: new Map<string, () => void>(),
     stale: new Set<Unit>(),
     units: new Map<string, Unit>(),
@@ -1253,11 +1254,11 @@ function file_book(roots: Name[]): void {
   }
 }
 
-function fact(kind: string, k = ""): boolean {
+function fact(kind: string, k = "", w = FL.unit?.wake): boolean {
   const key = kind + " " + k;
   const has = FL.facts.has(key);
-  if (FL.unit && !has) {
-    memo(FL.when, key, () => new Set()).add(FL.unit);
+  if (w && !has) {
+    memo(FL.when, key, () => new Set()).add(w);
   }
   return has;
 }
@@ -1268,17 +1269,13 @@ function fact_add(kind: string, k = ""): boolean {
     return false;
   }
   FL.facts.add(key);
-  const ws = FL.when.get(key);
-  FL.when.delete(key);
-  ws?.forEach((w) => typeof w === "function" ? w() : FL.stale.add(w));
+  FL.when.get(key)?.forEach((w) => w());
   return true;
 }
 
 function fact_when(kind: string, k: string, f: () => void): void {
-  if (fact(kind, k)) {
+  if (fact(kind, k, f)) {
     f();
-  } else {
-    memo(FL.when, kind + " " + k, () => new Set()).add(f);
   }
 }
 
@@ -1709,9 +1706,9 @@ function memo<K, V>(m: { get(k: K): V | undefined; set(k: K, v: V): void },
 
 function unit_new(name: string, emit: () => void): Unit {
   // unit_emit fills the rest
-  const u = { name, emit } as Unit;
+  const u = { name, emit, wake: () => FL.stale.add(u) } as Unit;
   FL.units.set(name, u);
-  FL.stale.add(u);
+  u.wake();
   return u;
 }
 
@@ -2710,7 +2707,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 
 function c_units(): Unit[] {
   for (const [k, tld] of [...done_defs(), ...done_defs(def_foreign)]) {
-    const unit = () => memo(FL.units, k, () => unit_new(k, () => {
+    const unit = () => FL.units.get(k) ?? unit_new(k, () => {
       const [dl, vals] = emit_open(k);
       FL.unit!.segs.push(dl.seg);
       if (def_foreign(tld)) {
@@ -2718,7 +2715,7 @@ function c_units(): Unit[] {
       } else {
         emit_body(dl, fun_of(k).h!, tld.T, vals, null);
       }
-    }));
+    });
     k === "main" || FL.bangs.has(k) || FL.fids.has(k) ? unit()
       : FL.lazy.set(seg_fid(k), unit);
   }
