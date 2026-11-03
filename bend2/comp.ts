@@ -1793,7 +1793,8 @@ function main_pure(book: Bend.Book, whole = false): Bend.Book {
       ? tld.c.map((c) => {
         const fs: number[] = [];
         let tel = tele_fill(c.T, adt!.x);
-        for (let a = ty_all(tel); a; a = ty_all(tel)) {
+        for (let a = Bend.tele_open(book, tel); a;
+          a = Bend.tele_open(book, tel)) {
           const m = MARK + fields.size;
           fs.push(m);
           fields.set(m, [a.q, a.k, a.A]);
@@ -1899,7 +1900,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
           if (f.$ !== "App") {
             return f;
           }
-          const on = term_spine(s).args.includes(f.x);
+          const on = m.args.includes(f.x);
           const g = on ? cut(spine(f.f), ty_ann(f.f)) : spine(f.f);
           const x = on ? go(f.x, false, null) : f.x;
           return g === f.f && x === f.x ? f : Bend.App(g, x, f.s);
@@ -2061,6 +2062,7 @@ function emit_spin(sc: Scope, ck: Spine): Val {
   const k = ck.k!;
   const { lays, ret } = fun_of(k);
   const ws = emit_args(sc, ck).flatMap((v) => v.ws);
+  const name = emit_native(sc, k);
   const o = name_local(sc, "o");
   const out = val_new(ret.ks.map((kd, j) =>
     `${kd === "w32" ? "(u32)" : ""}${o}[${j}]`), ret);
@@ -2069,8 +2071,8 @@ function emit_spin(sc: Scope, ck: Spine): Val {
   const ks = lays.flatMap((l) => l.ks);
   const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
     : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
-  block(sc, `if (${emit_native(sc, k)}(${["e", o, ...xs].join(", ")}) == 0) {`,
-    () => file_push(sc, "return 0;"));
+  block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
+    file_push(sc, "return 0;"));
   bind_dead(sc, sc.rest,
     ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
   return out;
@@ -2119,7 +2121,8 @@ function emit_intr(sc: Scope, k: Name, m: Spine, ty: HTerm | null): Val {
   if (C === null) {
     return arr_op(sc, op, lay_el(m.all[0]), args);
   }
-  const as = args.map((v, i) => val_to(sc, v, fun_of(k).lays[i])).map((v, i) =>
+  const lays = fun_of(k).lays;
+  const as = args.map((v, i) => val_to(sc, v, lays[i])).map((v, i) =>
     op_bare(m.args[i]) ? val_own(v)[0] : emit_alias(sc, val_own(v)[0], "a"));
   const lay = lay_of(ty);
   return Array.isArray(C)
@@ -2134,9 +2137,9 @@ function emit_clo(sc: Scope, x: HTerm, ty: HTerm | null): Val {
     sc.uses.set(p, { ...b, n: b.n - term_use(u, p) + 1 });
     bind_pop(sc, p);
   });
+  const words = live.flatMap(([, b]) => val_own(b.val));
   const name = seg_name("c");
-  const clo = seg_clo(sc, seg_fid(name), live.flatMap(([, b]) =>
-    val_own(b.val)));
+  const clo = seg_clo(sc, seg_fid(name), words);
   const arg = val_new([name_local(sc, "x")], BOX);
   emit_body(seg_open(sc, name, BOX, null, live, arg, [x]), x, ty, [arg], null);
   return val_new([clo], BOX);
@@ -3091,12 +3094,15 @@ export function js_lib(book: Bend.Book, mod = false): string {
   for (const [k, def] of done_defs(fun_runs)) {
     unit_emit(unit_new(k, () => js_def(k, def)));
   }
+  const effs = [...FL.effs.values()]
+    .map(([m, src]) => `(() => {\n${c_ids(src, m)}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) => {
     const { live, lays } = fun_of(k);
     const ps = live.map((_, i) => "a" + i);
+    const xs = live.map(([, , A], i) => host(A, ps[i], false));
     return `  ${js_key(k)}run_lib((${ps}) => ${host(tele_unbind(
-      tld_of(k).T).ret, `run_loop(${name_id("$", k)}(${live.map(([, , A], i) =>
-      host(A, ps[i], false))}))`, true)}, ${lays.length}),`;
+      tld_of(k).T).ret, `run_loop(${name_id("$", k)}(${xs}))`, true)
+    }, ${lays.length}),`;
   }).join("\n")}\n};\n`;
   const jumps = graph_close(new Set([CLO_APPLY]), [...FL.tails]
     .flatMap(([k, ts]) => [...ts].map((t) => [t, k])));
@@ -3109,9 +3115,7 @@ export function js_lib(book: Bend.Book, mod = false): string {
       : f};`;
   });
   PROBES.length = 1;
-  const js = RUNTIME + [...FL.effs.values()]
-    .map(([m, src]) => `(() => {\n${c_ids(src, m)}\n})();\n\n`).join("")
-    + "// Program\n// =======\n\n" + [...funs,
+  const js = RUNTIME + effs + "// Program\n// =======\n\n" + [...funs,
     ...entries, ...[...FL.tabs].map(([r, i]) => `const TAB_${i} = [${r}];`)].join("\n")
     + lib;
   // a module's host outlives its book
