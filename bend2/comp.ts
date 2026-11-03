@@ -1421,32 +1421,38 @@ function seg_open(sc: Scope, name: string, ret: Lay, frame: Seg["frame"],
   FL.unit!.segs.push(seg);
   sc = { ...sc, seg, spares: [], uses: new Map() };
   live.forEach(([p, b], i) => {
-    const w = vals[i].ws[0];
+    if (!b.pk) {
+      return bind_uses(sc, p, vals[i], rest, b.A);
+    }
+    const at = `term_loc(${vals[i].ws[0]})`;
     let j = 0;
-    b.pk?.forEach(([q, c]) => bind_uses(sc, q, val_new(c.val.ws.map((x, k) =>
-      emit_hold(sc, [`e.mem[term_loc(${w}) + ${j++}]`], FL.locals.get(x)!,
-        c.val.lay.ks.slice(k))[0]), c.val.lay, c.val.rs), rest, c.A));
-    b.pk ? file_push(sc, `heap_free(e, ${cls_fit(j + 1)}, term_loc(${w}));`)
-      : bind_uses(sc, p, vals[i], rest, b.A);
+    for (const [q, c] of b.pk) {
+      const ws = c.val.ws.map((w, k) => emit_hold(sc,
+        [`e.mem[${at} + ${j++}]`], FL.locals.get(w)!, [c.val.lay.ks[k]])[0]);
+      bind_uses(sc, q, val_new(ws, c.val.lay, c.val.rs), rest, c.A);
+    }
+    file_push(sc, `heap_free(e, ${cls_fit(j)}, ${at});`);
   });
   return sc;
 }
 
 // A segment entered through registers gets its live words past WIDE in a
-// ~pack node of 2^c words, which its entry reads and frees.
+// ~pack node, which its entry reads and frees.
 function seg_pack(sc: Scope, live: [Of<"Var">, Bind][],
-  n: number): [Of<"Var">, Bind][] {
-  if (live.reduce((n, [, b]) => n + b.val.ws.length, n) <= WIDE) {
+  res: number): [Of<"Var">, Bind][] {
+  let n = res;
+  const ns = live.map(([, b]) => n += b.val.ws.length);
+  if (n <= WIDE) {
     return live;
   }
-  const at = live.findIndex(([, b]) => (n += b.val.ws.length) >= WIDE);
+  const at = ns.findIndex((m) => m >= WIDE);
   const pk = live.slice(at), ws = pk.flatMap(([, b]) => b.val.ws);
-  const c = cls_fit(ws.length + 1);
-  FL.packs.add(1 << c);
-  const nd = node_fill(sc, "pk", `heap_alloc(e, ${c})`, [...ws,
-    ...Array((1 << c) - ws.length).fill("0")]);
+  const m = ws.length > WIDE ? 1 << cls_fit(ws.length) : ws.length;
+  FL.packs.add(m);
+  const nd = node_fill(sc, "pk", `heap_alloc(e, ${cls_fit(m)})`,
+    [...ws, ...Array(m - ws.length).fill("0")]);
   return [...live.slice(0, at), [DUMMY, { val: val_new(emit_hold(sc,
-    [`term_ctr(${cid_mac("~pack" + (1 << c))}, ${nd})`], "pk"), BOX), n: 1,
+    [`term_ctr(${cid_mac("~pack" + m)}, ${nd})`], "pk"), BOX), n: 1,
     A: DUMMY, pk }]];
 }
 
@@ -2510,9 +2516,9 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
-    const all = [...sc.uses], rs = all.filter(([p]) => o.ps.includes(p));
-    const live = [...seg_pack(sc, all.filter((u) => !rs.includes(u)), res),
-      ...rs];
+    const held = [...sc.uses].filter(([p]) => !o.ps.includes(p));
+    const rs = [...sc.uses].filter(([p]) => o.ps.includes(p));
+    const live = [...seg_pack(sc, held, res), ...rs];
     emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
     sc = seg_open(sc, name, sc.seg.ret, null, live, val_new([], lay_pack([])),
       [o.b]);
