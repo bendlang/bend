@@ -52,15 +52,17 @@ const HOC_HUB = ["-p", "22022", HOC.includes("@") ? HOC : HOC
 const DROP = new RegExp("Connection reset|closed by remote host"
   + "|Broken pipe|kex_exchange_identification|mux_client|timed out");
 
-// A node session says UP on stderr as soon as its shell runs. One that says
-// nothing in FIRST ms has a dead node behind it: hoc-ssh sets no
-// ConnectTimeout, so a node with no route can hold the dial for the 75 s of
-// a TCP connect. Live sessions say it within 6.5 s even 96 at once (the
-// bastion starts them one by one). Its message is not a DROP: the job goes
-// back to the pool and the node leaves it.
-const UP = "@@up\n";
+// A node session prints UP on stderr as soon as its shell runs. One that has
+// not in FIRST ms has a dead node behind it: hoc-ssh sets no ConnectTimeout,
+// so a node with no route can hold the dial for the 75 s of a TCP connect.
+// The bastion starts sessions one by one: 96 at once all print UP within
+// 6.5 s, so FIRST leaves room for two people's gates side by side. Its error
+// is not a DROP, and not retried, since a retry could run the script twice
+// on a node that was only slow: the job goes back to the pool and the node
+// leaves it.
+const UP = "@@up";
 
-const FIRST = 10_000;
+const FIRST = 20_000;
 
 let held = "";
 
@@ -71,11 +73,11 @@ const opened = new Map<number, Promise<Exec>>();
 // Exec
 // ====
 
-// With first, a child that prints nothing in first ms is killed and answers
-// code 255.
+// With up, a child whose stderr has not printed up in FIRST ms is killed and
+// answers code 255.
 export function exec(bin: string, args: string[], input?: Buffer | string,
   timeout = 600_000, env?: Record<string, string>, cwd = ROOT,
-  first = 0): Promise<Exec> {
+  up = ""): Promise<Exec> {
   return new Promise((resolve) => {
     const kid = child.spawn(bin, args, { cwd, env: { ...process.env,
       ...env }, stdio: ["pipe", "pipe", "pipe"] });
@@ -84,21 +86,27 @@ export function exec(bin: string, args: string[], input?: Buffer | string,
     const bomb = setTimeout(() => kid.kill("SIGKILL"), timeout);
     // A mux client hands its fds to the master, so the pipes outlive the
     // killed client: a silent child answers at once, not at their close.
-    const mute = first > 0 ? setTimeout(() => {
+    const mute = up === "" ? undefined : setTimeout(() => {
       clearTimeout(bomb);
       kid.kill("SIGKILL");
       kid.stdout.destroy();
       kid.stderr.destroy();
       resolve({ out: "", err: "no answer from the node in "
-        + String(first / 1000) + " s", code: 255 });
-    }, first) : undefined;
-    kid.stdout.on("data", (d: Buffer) => {
-      clearTimeout(mute);
-      outs.push(d);
-    });
+        + String(FIRST / 1000) + " s", code: 255 });
+    }, FIRST);
+    // up may span two chunks, so the check keeps the end of stderr so far
+    let heard = up === "";
+    let tail = "";
+    kid.stdout.on("data", (d: Buffer) => outs.push(d));
     kid.stderr.on("data", (d: Buffer) => {
-      clearTimeout(mute);
       errs.push(d);
+      if (!heard) {
+        tail = (tail + d.toString()).slice(-4 * up.length);
+        heard = tail.includes(up);
+        if (heard) {
+          clearTimeout(mute);
+        }
+      }
     });
     kid.stdin.on("error", () => {});
     kid.on("error", (e) => {
@@ -125,13 +133,12 @@ export function node_name(node: number): string {
 // twice; a node the bastion cannot reach (channel refused) fails at once.
 export async function ssh(node: number, script: string,
   input?: Buffer | string, timeout?: number): Promise<Exec> {
-  const said = `printf '${UP.trim()}\\n' >&2; ` + script;
+  const said = `printf '${UP}\\n' >&2; ` + script;
   for (let hop = 0; ; hop += 1) {
     const got = HOC === ""
-      ? await exec("ssh", [...SSH, node_name(node), said], input, timeout,
-        undefined, ROOT, FIRST)
+      ? await node_exec([...SSH, node_name(node), said], input, timeout)
       : await hoc_ssh(node, said, input, timeout);
-    got.err = got.err.replace(UP, "");
+    got.err = got.err.replace(UP + "\n", "");
     if (hop >= 2 || got.code !== 255 || !DROP.test(got.err)) {
       return got;
     }
@@ -164,10 +171,14 @@ async function hoc_ssh(node: number, script: string,
     }
     from = " < $HOME/.bend-gate/" + sum;
   }
-  return exec("ssh", [...hoc_mux(node), ...HOC_HUB, "sudo -n"
+  return node_exec([...hoc_mux(node), ...HOC_HUB, "sudo -n"
     + " /usr/local/bin/hoc-ssh " + String(node) + " '"
-    + script.replaceAll("'", "'\\''") + "'" + from], undefined, timeout,
-  undefined, ROOT, FIRST);
+    + script.replaceAll("'", "'\\''") + "'" + from], undefined, timeout);
+}
+
+function node_exec(args: string[], input?: Buffer | string,
+  timeout?: number): Promise<Exec> {
+  return exec("ssh", args, input, timeout, undefined, ROOT, UP);
 }
 
 // The bastion opens at most 10 sessions on one connection, so the hoc way
