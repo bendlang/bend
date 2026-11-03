@@ -3,10 +3,13 @@
 // shard per live mini; each shard is an aggregator that imports its tests,
 // sent to its mini, which checks and interprets every module through `bend
 // main.bend --checkup`, builds each runnable test alone (`bend t.bend -o t.js
-// -o t`: clang -O3, Metal; ten at a time), runs each binary with a `!` once
-// untimed (the first launch compiles its Metal shader, which the node then
-// caches by source), then runs each program once natively and once under
-// bun, each under a 5 s alarm. A test passes when its check, its interpreted
+// -o t`: clang -O3, Metal; ten at a time) and launches each binary once with
+// `+RTS --help` as it is built (macOS vets a new executable inside its first
+// exec, 0.1-0.3 s, which the timed runs below would pay one after another),
+// runs each binary with a `!` once untimed (the first launch compiles its
+// Metal shader, which the node then caches by source), then runs each
+// program once natively and once under bun, each under a 5 s alarm. A test
+// passes when its check, its interpreted
 // run, its JS run and its C run all print its `#|` lines; a test whose main
 // the compiler refuses to print (a function, a Type, an erased or dependent
 // field) is checked and interpreted only; a foreign def with no twin for a
@@ -145,7 +148,9 @@ function shard_script(shard: Test[], tag: number): string {
     + file("main.bend", main) + file("build.txt", build)
     + ` echo "${MARK} checkup"; ${BUN} bend2/main.ts main.bend --checkup 2>&1;`
     + ` xargs -P 10 -L 1 sh -c 'm=$1; shift; ${BUN} bend2/main.ts "$@"`
-    + ` > $m.left 2>&1 && rm $m.left' -- < build.txt; echo "${MARK} built";`
+    + ` > $m.left 2>&1 && rm $m.left; [ ! -x $m ] || perl -e "alarm 5; exec`
+    + ` @ARGV" ./$m +RTS --help >/dev/null 2>&1' -- < build.txt;`
+    + ` echo "${MARK} built";`
     + ` for m in ${bangs.join(" ")}; do perl -e 'alarm 60; exec @ARGV' ./$m`
     + ` >/dev/null 2>&1; done; for m in ${runs.map((t) => t.name).join(" ")};`
     + ` do if [ -f $m.left ]; then echo "${MARK} left $m"; cat $m.left;`
