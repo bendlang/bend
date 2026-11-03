@@ -1,7 +1,7 @@
 # io (io_udp_try): the try_ twins of UDP.recv_from and UDP.send_to. A
 # receive with ms 0 on a quiet socket answers Wait{} at once; one bounded
 # by 1000 ms answers Ready{Done{datagram}} when a spawned sender sends it
-# 10 ms later; one bounded by 20 ms on a quiet socket answers Wait{}
+# 10 ms later; one bounded by 5 ms on a quiet socket answers Wait{}
 # after its deadline. try_send_to answers Ready{Done{}}, and its datagram
 # arrives. A send to a malformed address fails and hands the datagram
 # back, through Ready for the try_ twin. Handles thread back OUTSIDE the
@@ -75,7 +75,7 @@ def run(s1: Socket, s2: Socket, s3: Socket, +p2: U32) -> IO(U32):
       UDP.try_recv_from(r1, 64, 1000)
     r2 : Socket <- show_recv(m2)
     m3 : Socket & Poll<&1, &1, Result<&1, &1, U32 & String, String & U32 & String>, Unit> <-
-      UDP.try_recv_from(r2, 64, 20)
+      UDP.try_recv_from(r2, 64, 5)
     r3 : Socket <- show_recv(m3)
     m4 : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String) & String, Unit>, String> <-
       UDP.try_send_to(s3, "127.0.0.1", p2, "now", 50)

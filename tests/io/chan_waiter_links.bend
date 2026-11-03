@@ -90,8 +90,8 @@ def wake(c: Chan(U32), senders: Bool, +n: U32) -> IO(Unit):
 # Remove the head twice. The second timeout needs the new head's prev.
 def head(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(Unit):
   do IO<Unit>:
-    a : Chan(U32) <- launch(c, ready, senders, 1, 20)
-    b : Chan(U32) <- launch(c, ready, senders, 2, 20)
+    a : Chan(U32) <- launch(c, ready, senders, 1, 10)
+    b : Chan(U32) <- launch(c, ready, senders, 2, 10)
     d : Chan(U32) <- launch(c, ready, senders, 3, 0)
     Unit <- join(a, 200)
     Unit <- join(b, 200)
@@ -103,11 +103,11 @@ def head(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(Unit):
 def middle(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(Unit):
   do IO<Unit>:
     a : Chan(U32) <- launch(c, ready, senders, 1, 0)
-    b : Chan(U32) <- launch(c, ready, senders, 2, 20)
-    d : Chan(U32) <- launch(c, ready, senders, 3, 20)
+    b : Chan(U32) <- launch(c, ready, senders, 2, 10)
+    d : Chan(U32) <- launch(c, ready, senders, 3, 10)
     Unit <- join(b, 200)
     Unit <- join(d, 200)
-    e : Chan(U32) <- launch(c, ready, senders, 4, 20)
+    e : Chan(U32) <- launch(c, ready, senders, 4, 10)
     Unit <- join(e, 200)
     Unit <- wake(c, senders, 1)
     Unit <- join(a, 1)
@@ -117,7 +117,7 @@ def middle(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(Unit):
 def after_wake(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(Unit):
   do IO<Unit>:
     a : Chan(U32) <- launch(c, ready, senders, 1, 0)
-    b : Chan(U32) <- launch(c, ready, senders, 2, 20)
+    b : Chan(U32) <- launch(c, ready, senders, 2, 10)
     d : Chan(U32) <- launch(c, ready, senders, 3, 0)
     Unit <- wake(c, senders, 1)
     Unit <- join(a, 1)
@@ -132,9 +132,9 @@ def again(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(U32):
   do IO<U32>:
     got : U32 <- worker(c, ready, senders, 1, 0)
     Unit <- check(got, 1)
-    late : U32 <- worker(c, ready, senders, 2, 20)
+    late : U32 <- worker(c, ready, senders, 2, 10)
     Unit <- check(late, 200)
-    worker(c, ready, senders, 3, 20)
+    worker(c, ready, senders, 3, 10)
 
 def reuse(+c: Chan(U32), +ready: Chan(Unit), +senders: Bool) -> IO(Unit):
   do IO<Unit>:

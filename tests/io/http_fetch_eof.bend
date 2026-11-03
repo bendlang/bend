@@ -153,7 +153,7 @@ def serve(parts: List<&2, List<&2, U32>>, s: Socket) -> IO(Unit):
       do IO<Unit>:
         sent : Socket & Result<&1, &1, (U32 & String) & List<&2, U32>, Unit> <- TCP.send_bytes(s, part)
         next : Socket <- send_done(sent)
-        IO.sleep(30)
+        IO.sleep(10)
         serve(rest, next)
 
 def listen_done(port: U32, r: Result<&1, &1, U32 & String, Listener>,

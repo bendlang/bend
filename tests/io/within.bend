@@ -1,6 +1,6 @@
 # io (io_within): IO.within races an action against a deadline. A sleep of
-# 300 ms loses to a deadline of 10 ms, and IO.within answers None{} while
-# the sleep still runs; a sleep of 10 ms wins against 300 ms and answers
+# 150 ms loses to a deadline of 10 ms, and IO.within answers None{} while
+# the sleep still runs; a sleep of 10 ms wins against 150 ms and answers
 # its value. The losers are not cancelled, so "late" still prints before
 # the program exits.
 import Base
@@ -20,9 +20,9 @@ def show(got: Maybe<&1, String>) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    a : Maybe<&1, String> <- IO.within(String, 10, nap(300, "late"))
+    a : Maybe<&1, String> <- IO.within(String, 10, nap(150, "late"))
     u : Unit <- show(a)
-    b : Maybe<&1, String> <- IO.within(String, 300, nap(10, "fast"))
+    b : Maybe<&1, String> <- IO.within(String, 150, nap(10, "fast"))
     show(b)
 
 #|timeout

@@ -58,7 +58,7 @@ def run(a: Socket & U32, b: Socket & U32) -> IO(U32):
     t2 : Socket <- told("recv_from: ", got(m1))
     m2 : Socket & Result<&1, &1, (U32 & String) & String, Unit> <- UDP.send_to(s1, "127.0.0.1", p2, "hello")
     u1 : Socket <- sent(m2)
-    Unit <- IO.sleep(20)
+    Unit <- IO.sleep(5)
     m3 : Socket & Result<&1, &1, U32 & String, String & U32 & String> <- UDP.recv_from(t2, 0)
     t3 : Socket <- told("queued: ", got(m3))
     m4 : Socket & Result<&1, &1, U32 & String, String & U32 & String> <- UDP.recv_from(t3, 64)

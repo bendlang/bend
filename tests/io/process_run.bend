@@ -79,17 +79,17 @@ def main() -> IO(Unit):
         "", 128, 2000)
     o : Unit <- IO.print("sigpipe default: " ++ answer(n, 0, "default", ""))
     p : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/sh", ["-c", "sleep 3 & echo hi"], "", 128, 300)
+      Process.run("/bin/sh", ["-c", "sleep 3 & echo hi"], "", 128, 50)
     IO.print("inherited pipe: " ++ timeout(p))
     q : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/sh", ["-c", "printf A; (sleep 0.2; printf B) & exit 0"],
+      Process.run("/bin/sh", ["-c", "printf A; (sleep 0.05; printf B) & exit 0"],
         "", 128, 2000)
     IO.print("descendant output: " ++ answer(q, 0, "AB", ""))
     r : Result<&1, &1, U32 & String, U32 & (String & String)> <-
       Process.run("/bin/sh", ["-c", "yes & echo hi"], "", 4096, 2000)
     IO.print("runaway descendant: " ++ failure(r, 27))
     r0 : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/sh", ["-c", "exec >&- 2>&-; sleep 3"], "", 128, 300)
+      Process.run("/bin/sh", ["-c", "exec >&- 2>&-; sleep 3"], "", 128, 50)
     IO.print("closed stdio: " ++ timeout(r0))
     r1 : Result<&1, &1, U32 & String, U32 & (String & String)> <-
       Process.run("/bin/echo", ["hi"], "", 128, 4294967295)
@@ -107,7 +107,7 @@ def main() -> IO(Unit):
         String.repeat(String.repeat("z", 256n), 1200n), 128, 500)
     IO.print("descendant stdin: " ++ answer(held, 4, "", ""))
     late : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/sh", ["-c", "(sleep 0.2; cat) <&0 & exit 0"],
+      Process.run("/bin/sh", ["-c", "(sleep 0.05; cat) <&0 & exit 0"],
         String.repeat(String.repeat("z", 128n), 1000n), 200000, 3000)
     IO.print("late stdin reader: " ++ answer(late, 0,
       String.repeat(String.repeat("z", 128n), 1000n), ""))
