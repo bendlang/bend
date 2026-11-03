@@ -2821,8 +2821,7 @@ export function compile_book(book: Bend.Book): string {
 // run_loop only if its callee's tail calls reach one: it calls the callee's
 // entry $$k, declared after every def as run_loop over the def, or the def.
 
-function js_call(sc: Scope, k: Name, args: HTerm[], tail = false,
-  lgs = 0): string {
+function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
   if (tail) {
     memo(FL.tails, sc.seg.def, () => new Set()).add(k);
   }
@@ -2837,8 +2836,8 @@ function js_call(sc: Scope, k: Name, args: HTerm[], tail = false,
   }
   const intr = intr_of(k, true);
   if (intr) {
-    return tpl(intr.JS!, [...exprs.map((e, i) => op_bare(args[i], true) ? e
-      : emit_hold(sc, [e], "x")[0]), String(lgs)]);
+    return tpl(intr.JS!, exprs.map((e, i) => op_bare(args[i], true) ? e
+      : emit_hold(sc, [e], "x")[0]));
   }
   if (!fun_runs(tld)) {
     die("a live call into the law " + Bend.name_key(k));
@@ -2906,8 +2905,8 @@ function js_expr(sc: Scope, tm: HTerm, ty0: HTerm | null = null): string {
       if (m.t.$ !== "Ref") {
         return js_expr(sc, m.h, ty);
       }
-      return js_call(sc, m.t.k, m.args, false, intr_of(m.t.k)?.C === null
-        ? lay_arr(lay_el(m.all[0])).lgs : 0);
+      return js_call(sc, m.t.k, intr_of(m.t.k)?.C === null ? [...m.args,
+        Bend.Lit("U32", lay_arr(lay_el(m.all[0])).lgs)] : m.args);
     }
     case "Ctr": {
       const [adt, u] = ctr_adt(x, ty);
@@ -4101,16 +4100,14 @@ INLINE Term blk_keep(Env e, u64 at) {
 }
 
 INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
-  DEV u64* H = e.mem;
   for (u64 j = 0; j != n; j += 1) {
-    H[dst + j] = H[src + j];
+    e.mem[dst + j] = e.mem[src + j];
   }
   for (u64 j = 0, k; keep && j != n; j += k) {
-    Term w = H[dst + j];
-    for (k = 1; j + k != n && H[dst + j + k] == w; k += 1) {}
-    Term v = term_keep(e, w, k);
-    if (v != w) {
-      H[src + j] = H[dst + j] = v;
+    Term w = e.mem[dst + j];
+    for (k = 1; j + k != n && e.mem[dst + j + k] == w; k += 1) {}
+    if ((e.mem[dst + j] = term_keep(e, w, k)) != w) {
+      e.mem[src + j] = e.mem[dst + j];
     }
   }
 }
@@ -4188,7 +4185,7 @@ INLINE Term blk_new(Env e, bool arr, u64 d, u32 lgs, u32 n, THR Term* v) {
     }
     v[j] = term_keep(e, v[j], (1u << d) - 1);
   }
-  for (u32 i = 0, w = 1u << c; i != w; i += 1u << lgs) {
+  for (u32 i = 0; i != 1u << c; i += 1u << lgs) {
     for (u32 j = 0; j != 1u << lgs; j += 1) {
       blk_write(H, arr, l, i + j, j < n ? v[j] : 0);
     }
@@ -6002,7 +5999,7 @@ function tup_new(a, b) {
 }
 
 function nat_divmod(a, b) {
-  return b === 0 ? tup_new(0, a) : tup_new(Math.trunc(a / b), a % b);
+  return tup_new(b && Math.trunc(a / b), b ? a % b : a);
 }
 
 function nat_chk(n) {
