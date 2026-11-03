@@ -1424,14 +1424,14 @@ function seg_open(sc: Scope, name: string, ret: Lay, frame: Seg["frame"],
     if (!b.pk) {
       return bind_uses(sc, p, vals[i], rest, b.A);
     }
-    const at = `term_loc(${vals[i].ws[0]})`;
+    const at = emit_hold(sc, [`term_loc(${vals[i].ws[0]})`], "sp")[0];
     let j = 0;
     for (const [q, c] of b.pk) {
       const ws = c.val.ws.map((w, k) => emit_hold(sc,
         [`e.mem[${at} + ${j++}]`], FL.locals.get(w)!, [c.val.lay.ks[k]])[0]);
       bind_uses(sc, q, val_new(ws, c.val.lay, c.val.rs), rest, c.A);
     }
-    file_push(sc, `heap_free(e, ${cls_fit(j)}, ${at});`);
+    sc.spares.push({ words: j, name: at, taken: false });
   });
   return sc;
 }
@@ -2775,9 +2775,10 @@ function c_header(segs: Seg[], clos: string[]): string {
   const forky = graph_close(new Set(segs.filter((s) => s.fork)
     .map((s) => s.fid)), [...segs.flatMap((s) => [...s.refs].map((r) =>
     [r, s.fid])), ...clos.map((c) => [c, seg_fid(CLO_APPLY)])]);
-  if (entries.some((s) => s.params.length > (s.frame ? 65535 : WIDE))
-    || [...cids.values()].some(([n]) => n > 255)) {
-    die("an arity over " + WIDE);
+  const top = (s: Seg) => s.frame ? 65535 : WIDE;
+  const big = entries.find((s) => s.params.length > top(s));
+  if (big || [...cids.values()].some(([n]) => n > 255)) {
+    die("an arity over " + (big ? top(big) : 32768));
   }
   const defs = [[...cids.keys()].map(cid_mac),
     [...entries.map((s) => s.fid), "FID_EXIT", "FID_ENTER"]].flatMap((ms) =>
@@ -3325,6 +3326,7 @@ using namespace metal;
   STK(2) = FID_EXIT; \
   WL_PUSHN(3);
 #define WL_ARGS(A, N) \
+  WL_ROOM(N) \
   for (u32 wi = 0; wi < (N); wi += 1) { \
     STK(wi) = e.mem[(A) + wi]; \
   } \
@@ -4005,8 +4007,12 @@ FAR void term_drop(Env e, Term t) {
         if (m < 256) {
           n   = m;
           cls &= 63;
-        } else if (m < w) {
-          H[loc + w - 1] = m;
+        } else {
+          cls |= 64;
+          w = 1u << (cls & 63);
+          if (m < w) {
+            H[loc + w - 1] = m;
+          }
         }
         c0 = m ? H[loc] : 0;
         H[loc] = cur;
