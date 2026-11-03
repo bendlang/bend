@@ -3,14 +3,12 @@
 // shard per live mini; each shard is an aggregator that imports its tests,
 // sent to its mini, which checks and interprets every module through `bend
 // main.bend --checkup`, builds each runnable test alone (`bend t.bend -o t.js
-// -o t`: clang -O3, Metal; ten at a time) and launches each binary once with
-// `+RTS --help` as it is built (macOS vets a new executable inside its first
-// exec, 0.1-0.3 s, which the timed runs below would pay one after another;
-// a `!` build, which leaves t.gpu, has already run its binary for that),
-// runs each binary with a `!` once untimed (the first launch compiles its
-// Metal shader, which the node then caches by source), then runs each
-// program once natively and once under bun, each under a 5 s alarm. A test
-// passes when its check, its interpreted
+// -o t`: clang -O3, Metal; ten at a time), launches each new binary once
+// (`+RTS --help`, unless its `!` build left t.gpu) so the timed runs skip
+// macOS's first-exec check, runs each binary with a `!` once
+// untimed (the first launch compiles its Metal shader, which the node then
+// caches by source), then runs each program once natively and once under
+// bun, each under a 5 s alarm. A test passes when its check, its interpreted
 // run, its JS run and its C run all print its `#|` lines; a test whose main
 // the compiler refuses to print (a function, a Type, an erased or dependent
 // field) is checked and interpreted only; a foreign def with no twin for a

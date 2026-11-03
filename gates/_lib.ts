@@ -52,14 +52,9 @@ const HOC_HUB = ["-p", "22022", HOC.includes("@") ? HOC : HOC
 const DROP = new RegExp("Connection reset|closed by remote host"
   + "|Broken pipe|kex_exchange_identification|mux_client|timed out");
 
-// A node session prints UP on stderr as soon as its shell runs. One that has
-// not in FIRST ms has a dead node behind it: hoc-ssh sets no ConnectTimeout,
-// so a node with no route can hold the dial for the 75 s of a TCP connect.
-// The bastion starts sessions one by one: 96 at once all print UP within
-// 6.5 s, so FIRST leaves room for two people's gates side by side. Its error
-// is not a DROP, and not retried, since a retry could run the script twice
-// on a node that was only slow: the job goes back to the pool and the node
-// leaves it.
+// A node session prints UP on stderr once its shell runs; one silent for
+// FIRST ms is a dead node (hoc-ssh sets no ConnectTimeout: a dial can hang
+// 75 s). It is not retried, since a retry could run the script twice.
 const UP = "@@up";
 
 const FIRST = 20_000;
@@ -75,8 +70,7 @@ const opened = new Map<number, Promise<Exec>>();
 // Exec
 // ====
 
-// With up, a child whose stderr has not printed up in FIRST ms is killed and
-// answers code 255.
+// With up, a child that has not printed up on stderr in FIRST ms answers 255.
 export function exec(bin: string, args: string[], input?: Buffer | string,
   timeout = 600_000, env?: Record<string, string>, cwd = ROOT,
   up = ""): Promise<Exec> {
@@ -85,9 +79,7 @@ export function exec(bin: string, args: string[], input?: Buffer | string,
       ...env }, stdio: ["pipe", "pipe", "pipe"] });
     const outs: Buffer[] = [];
     const errs: Buffer[] = [];
-    // A mux client hands its fds to the master, so the pipes outlive a
-    // killed client: a child cut short answers at once, not at their close,
-    // with what it said so far.
+    // the mux master keeps the pipes open after the client dies
     const cut = (code: number, why: string): void => {
       clearTimeout(bomb);
       clearTimeout(mute);
@@ -102,7 +94,7 @@ export function exec(bin: string, args: string[], input?: Buffer | string,
     const bomb = setTimeout(() => cut(1, ""), timeout);
     const mute = up === "" ? undefined : setTimeout(() => cut(255, SILENT
       + String(FIRST / 1000) + " s"), FIRST);
-    // up may span two chunks, so the check keeps the end of stderr so far
+    // up may span two chunks
     let heard = up === "";
     let tail = "";
     kid.stdout.on("data", (d: Buffer) => outs.push(d));
