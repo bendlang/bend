@@ -3603,7 +3603,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       return Check(Lam(tm.k, d, f_chk.tm, tm.s), ty, uses_close(book, ctx, f_chk.us, d, tm.k, q, tm.s, lhs.def));
     }
     // Γ ⊢ vj : Aj ~ vuj  (each value in Γ: the binders are parallel)
-    // Γ ⊢ Aj : Kind(+)  (each + binder: an inferred Aj is already a type)
+    // Γ ⊢ Aj : Data  (if Kind(qj) is Data: any other Aj is checked at its source)
     // Γ , x1 : q1A1 , .. , xn : qnAn ⊢ f(x1, .., xn) : T ~ fu
     // where vj is dead if qj is -
     //       fu[xj] <= qj
