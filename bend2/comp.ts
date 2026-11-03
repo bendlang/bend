@@ -4035,11 +4035,11 @@ FAR u64 span_fade(Env e, Term t, u64 src, u32 n) {
   return 0;
 }
 
+#define COPY(D, S, N) for (u64 i_ = 0; i_ != (N); i_ += 1) (D)[i_] = (S)[i_]
+
 INLINE u64 ctr_take(Env e, Term t, u32 n, THR Term* out) {
   u64 src = term_peek(e.mem, t);
-  for (u32 j = 0; j < n; j += 1) {
-    out[j] = e.mem[src + j];
-  }
+  COPY(out, e.mem + src, n);
   return term_rfc(t) ? span_fade(e, t, src, n) : src;
 }
 
@@ -4100,9 +4100,7 @@ INLINE Term blk_keep(Env e, u64 at) {
 }
 
 INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
-  for (u64 j = 0; j != n; j += 1) {
-    e.mem[dst + j] = e.mem[src + j];
-  }
+  COPY(e.mem + dst, e.mem + src, n);
   for (u64 j = 0, k; keep && j != n; j += k) {
     Term w = e.mem[dst + j];
     for (k = 1; j + k != n && e.mem[dst + j + k] == w; k += 1) {}
@@ -4309,9 +4307,7 @@ INLINE bool root_done(DEV u64* H) {
 
 static u32 root_take(DEV u64* H, THR Term* v) {
   u32 n = a32_load_acq(a32_at(H, H_ROOT_DONE)) - 1;
-  for (u32 j = 0; j < n; j += 1) {
-    v[j] = H[H_ROOT_WORD + j];
-  }
+  COPY(v, H + H_ROOT_WORD, n);
   a32_store(a32_at(H, H_ROOT_DONE), 0);
   return n;
 }
