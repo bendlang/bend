@@ -477,6 +477,29 @@ function cc_find(gpu: boolean): string {
     + " --install";
 }
 
+// Capture clang without a fixed output buffer limit. Keep diagnostics separate
+// from the active, expanded include directives printed by -E -dI.
+function cli_clang(cc: string, file: string, args: string[]): [boolean, string, string] {
+  const out = file + ".out";
+  const fd = fs.openSync(out, "w");
+  try {
+    const err = fs.openSync(file + ".err", "w");
+    try {
+      const got = child.spawnSync(cc, args,
+        { stdio: ["ignore", fd, err], env: { ...process.env, BENDRTS: "" } });
+      if (got.error || got.signal) {
+        throw got.error ?? new Error(cc + " stopped: " + got.signal);
+      }
+      return [got.status === 0, fs.readFileSync(out, "utf8"),
+        fs.readFileSync(file + ".err", "utf8")];
+    } finally {
+      fs.closeSync(err);
+    }
+  } finally {
+    fs.closeSync(fd);
+  }
+}
+
 // cli_build builds the C file at `file` into the binary `bin`. A `!` program
 // builds with the GPU lane and writes its GPU program too (on Linux only with
 // CUDA at the first of $CUDA_HOME, $CUDA_PATH, /usr/local/cuda and /opt/cuda
@@ -499,15 +522,46 @@ function cli_build(bin: string, file: string): void {
       + " $CUDA_PATH, /usr/local/cuda or /opt/cuda), so ! runs on the CPU\n");
   }
   const cc    = cc_find(bangs);
-  const objc  = mac && (bangs || /^#import /m.test(c))
-    ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
+  const lane  = mac ? ["-DBEND_METAL=1"]
+    : ["-DBEND_CUDA=1", "-I" + cuda + "/include", "-L" + cuda + "/lib64",
+      "-L" + cuda + "/lib"];
+  const mode  = ["-x", "objective-c", "-fobjc-arc", "-fmodules"];
+  const probe = ["-E", "-dI", "-ferror-limit=0"];
+  const [ok, inc, why] = mac && bangs ? [true, "", ""] : cli_clang(cc, file,
+    [...probe, ...bangs ? lane : [], "-std=c11", "-O3", file]);
+  // clang's -E can reject extensions its compiler accepts. On a failed probe
+  // keep the original canonical signals; never widen unprocessed text matching.
+  const objc  = mac && (bangs || (ok ? /(?:^|[\r\n])#import /.test(inc)
+    : /^#import /m.test(c))) ? mode : [];
+  if (!ok && inc === "") {
+    throw new Error(why || cc + " failed to preprocess " + file);
+  }
   const libs  = [["X11", "X11", "dl"], ["alsa", "asound"]].flatMap(([h, ...ls]) =>
-    !mac && c.includes("#include <" + h + "/") ? ls.map((l) => "-l" + l) : []);
+    !mac && (ok ? new RegExp("(?:^|[\\r\\n])#(?:include(?:_next)?|import) [<\"]" + h + "/")
+      .test(inc) : c.includes("#include <" + h + "/"))
+      ? ls.map((l) => "-l" + l) : []);
   const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];
-  const gpu = mac ? ["-DBEND_METAL=1", ...cpu]
-    : ["-DBEND_CUDA=1", "-I" + cuda + "/include", "-L" + cuda + "/lib64",
-      "-L" + cuda + "/lib", ...cpu, "-lcuda", "-lnvrtc"];
+  // An import guarded by __OBJC__ is invisible to a C probe. Keep valid C in
+  // C mode; on failure, recover only with a successful Objective-C probe that
+  // names an active import. Report the original errors if it cannot recover.
+  if (mac && !bangs && objc.length === 0) {
+    const [built, out, err] = cli_clang(cc, file, cpu);
+    if (built) {
+      cli_say(1, out);
+      cli_say(2, err);
+      return;
+    }
+    const [yes, text] = cli_clang(cc, file,
+      [...probe, ...mode, "-std=c11", "-O3", file]);
+    if (!yes || !/(?:^|[\r\n])#import /.test(text)) {
+      cli_say(1, out);
+      cli_say(2, err);
+      throw "Error: " + path.basename(cc) + " failed to build " + bin;
+    }
+    cpu.unshift(...mode);
+  }
+  const gpu = [...lane, ...cpu, ...mac ? [] : ["-lcuda", "-lnvrtc"]];
   const steps: [string, string[]][] = bangs
     ? [[cc, gpu], [path.resolve(bin), ["+RTS", "--gpu-build"]]] : [[cc, cpu]];
   for (const [cmd, args] of steps) {
