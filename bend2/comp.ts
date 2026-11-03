@@ -6376,12 +6376,12 @@ function io_wait(io, block) {
   const tv = new BigInt64Array([BigInt(ms / 1000 | 0),
     BigInt(ms % 1000 * 1000)]);
   io_sync();
+  const sys = fds.length > 0 ? io_sys() : null;
   // Timers need no FFI.
-  if (fds.length === 0 && ms !== 0) {
+  if (!sys && ms !== 0) {
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0,
       ms < 0 ? Infinity : ms);
   }
-  const sys = fds.length > 0 ? io_sys() : null;
   if (sys?.select(top + 1, sys.ptr(set), sys.ptr(set, len), null,
     ms < 0 ? null : sys.ptr(tv)) < 0) {
     if (sys.errno() !== 4) {
