@@ -1229,13 +1229,6 @@ def List.merge.go(
           List.merge.go(~A, ~le, f,
             List.merge.step(A, acc, x, xt, y, yt, le(x, y)))
 
-def List.sort.runs(-A: Data, xs: List<&2, A>) -> List<&2, List<&2, A>>:
-  match xs:
-    case Nil{}:
-      Nil{}
-    case h <> t:
-      [h] <> List.sort.runs(A, t)
-
 def List.sort.pair(-A: Data, x: A, y: A, le: Bool) -> List<&2, A>:
   match le:
     case True{}:
