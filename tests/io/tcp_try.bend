@@ -4,7 +4,7 @@
 # try_recv with nothing sent answers Wait{} and leaves the stream as it
 # was, so a recv after the peer sends "late" reads it whole; once the
 # peer closes, a recv answers None{}. On a second connection whose peer
-# never reads, try_send of 64 KiB chunks with a 20 ms limit goes until
+# never reads, try_send of 64 KiB chunks with a 5 ms limit goes until
 # the kernel's buffers fill, then answers Wait{rest}: rest is the part of
 # the chunk the kernel did not take, never empty. Handles thread back
 # OUTSIDE the Poll, and the listener retries upward from a base port.
@@ -92,7 +92,7 @@ def fill(k: Nat, s: Socket) -> IO(Socket):
         return s
     case 1n+p:
       do IO<Socket>:
-        m : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>, List<&2, U32>> <- TCP.try_send(s, chunk(1024n, ""), 20)
+        m : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>, List<&2, U32>> <- TCP.try_send(s, chunk(1024n, ""), 5)
         fill.got(s2 => fill(p, s2), m)
 
 def fill_go(c: Socket, m: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Unit):

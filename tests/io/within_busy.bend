@@ -2,7 +2,7 @@
 # computations pass 500k values over a channel, so a step is always
 # runnable; IO.within's 1 ms deadline still answers None{} before the
 # pipeline ends, as the loop also looks at its waits while busy (#1122).
-# The loser, a 50 ms sleep, runs to its end before the program exits.
+# The loser, a 15 ms sleep, runs to its end before the program exits.
 import Base
 
 def produce(+c: Chan(Nat), n: Nat) -> IO(Unit):
@@ -39,7 +39,7 @@ def show(r: Maybe<&1, Unit>) -> IO(Unit):
       IO.print("slept")
 
 def race() -> IO(Unit):
-  IO.bind(Maybe<&1, Unit>, Unit, IO.within(Unit, 1, IO.sleep(50)), show)
+  IO.bind(Maybe<&1, Unit>, Unit, IO.within(Unit, 1, IO.sleep(15)), show)
 
 def run(+ch: Chan(Nat)) -> IO(Unit):
   do IO<Unit>:
