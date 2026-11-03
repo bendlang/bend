@@ -1229,12 +1229,23 @@ def List.merge.go(
           List.merge.go(~A, ~le, f,
             List.merge.step(A, acc, x, xt, y, yt, le(x, y)))
 
-def List.sort.runs(-A: Data, xs: List<&2, A>) -> List<&2, List<&2, A>>:
+def List.sort.pair(-A: Data, x: A, y: A, le: Bool) -> List<&2, A>:
+  match le:
+    case True{}:
+      [x, y]
+    case False{}:
+      [y, x]
+
+# Start with the first pass's sorted pairs, without building singleton runs.
+def List.sort.pairs(~A: Data, ~le: A -> A -> Bool, xs: List<&2, A>) ->
+  List<&2, List<&2, A>>:
   match xs:
     case Nil{}:
       Nil{}
-    case h <> t:
-      [h] <> List.sort.runs(A, t)
+    case x <> Nil{}:
+      [[x]]
+    case +x <> +y <> t:
+      List.sort.pair(A, x, y, le(x, y)) <> List.sort.pairs(~A, ~le, t)
 
 def List.sort.pass(
   ~A: Data, ~le: A -> A -> Bool, +n: Nat, runs: List<&2, List<&2, A>>
@@ -1271,7 +1282,7 @@ def List.sort(~A: Data, ~le: A -> A -> Bool, xs: List<&2, A>) -> List<&2, A>:
     case h <> t:
       +ys = {h <> t : List<&2, A>}
       +n = List.length(&2, A, ys)
-      List.sort.go(~A, ~le, n, n, List.sort.runs(A, ys))
+      List.sort.go(~A, ~le, n, n, List.sort.pairs(~A, ~le, ys))
 
 def List.for_each(
   ~a: Quant, ~A: Kind(a), ~f: A -> IO(Unit), xs: List<a, A>
