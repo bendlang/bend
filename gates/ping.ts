@@ -25,7 +25,8 @@
 // the project's copy); a tampered sha256 installs nothing; a Windows or a MIPS
 // uname is refused in one line; a 2.0.0-2.0.7 launcher's ping and its
 // latest.json fallback name the version, no sha256 and the move notice; the
-// formula carries the sum; --publish ships LICENSE files, names the license
+// formula carries the sum; --publish ships LICENSE files and the entry's
+// README.md (refusing one over 64 KB), names the license
 // as the hub does, sends no leading byte order mark (a package published
 // from a file with one imports), prints a usable alias for a hyphenated
 // entry, refuses a License/ directory and a file
@@ -510,6 +511,20 @@ try {
     && got.ok && await got.text() === lics["sub/LICENSE"]);
   check("the notice names the terms and the shallowest LICENSE's SPDX id",
     spdx.err.includes(TERMS + "License: MIT (LICENSE)\n"));
+  const docs = { "lic_docs.bend": use("sub/two.bend"), "sub/two.bend": two,
+    "README.md": "# Two\n\nReturns two.\n", "sub/README.md": "left out\n" };
+  const readme = await publish("docs", docs);
+  const sent = { ...docs } as Record<string, string>;
+  delete sent["sub/README.md"];
+  const shown = await fetch(ORIGIN + "/" + pkg_hash(sent) + "/README.md");
+  check("the README.md beside the entry goes along, in the hash, and one"
+    + " beside another file stays out: " + readme.err, readme.code === 0
+    && readme.out.startsWith(pkg_hash(sent) + "\n") && shown.ok
+    && await shown.text() === docs["README.md"]);
+  const big = await publish("big", { "lic_big.bend": two,
+    "README.md": "x".repeat(65537) });
+  check("a README.md over 64 KB is refused before mining: " + big.err,
+    big.code === 1 && big.err.includes("is over 65536 bytes"));
   for (const flags of [["--verdict", "--publish"], ["--publish", "--verdict"]]) {
     const count = seen.length;
     const run = await bend([path.join(TMP, "sum.bend"), ...flags],
