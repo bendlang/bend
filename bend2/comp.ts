@@ -2169,8 +2169,8 @@ function emit_clo(sc: Scope, x: HTerm, ty: HTerm | null): Val {
   live.forEach(([p, b]) => {
     sc.uses.set(p, { ...b, n: b.n - term_use(u, p) + 1 });
     bind_pop(sc, p);
+    val_own(b.val);
   });
-  live.forEach(([, b]) => val_own(b.val));
   const caps = seg_pack(sc, live, 1);
   const name = seg_name("c");
   const clo = seg_clo(sc, seg_fid(name), caps.flatMap(([, b]) => b.val.ws));
