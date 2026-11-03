@@ -6227,8 +6227,7 @@ function io_out(fd, data) {
   }
 }
 
-// Stdout off a terminal is buffered, as C's: io_sync writes it before a
-// wait, an error and an exit, or at 64 KiB.
+// Non-TTY stdout flushes before waits, errors, exits, or at 64 KiB.
 
 let io_held = null;
 
@@ -6284,7 +6283,7 @@ function io_sys() {
   return globalThis.BEND_SYS;
 }
 
-// strerror needs bun:ffi; a host without it (node) gets the bare errno.
+// Without bun:ffi, errors use bare errno.
 function io_fail(code, ...rest) {
   let text = "errno " + code;
   try {
@@ -6324,8 +6323,6 @@ function io_text(b, n) {
   return new TextDecoder("utf-8", { ignoreBOM: true }).decode(b.subarray(0, n));
 }
 
-// Bytes cross as they are (0..255), one List cell each, with no UTF-8 in
-// either direction.
 function io_list(b, n) {
   let xs = { $: "Nil" };
   while (n > 0) {
@@ -6376,7 +6373,12 @@ function io_wait(io, block) {
   const tv = new BigInt64Array([BigInt(ms / 1000 | 0),
     BigInt(ms % 1000 * 1000)]);
   io_sync();
-  const sys = fds.length > 0 || ms !== 0 ? io_sys() : null;
+  const sys = fds.length > 0 ? io_sys() : null;
+  // Timers need no FFI.
+  if (!sys && ms !== 0) {
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0,
+      ms < 0 ? Infinity : ms);
+  }
   if (sys?.select(top + 1, sys.ptr(set), sys.ptr(set, len), null,
     ms < 0 ? null : sys.ptr(tv)) < 0) {
     if (sys.errno() !== 4) {
