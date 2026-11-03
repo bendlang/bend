@@ -37,7 +37,7 @@ def main() -> IO(Unit):
     +c : Chan(U32) <- Chan.new(U32, 0)
     a : Unit <- IO.spawn(Unit, first(c))
     b : Unit <- spawn_all(5000n, c)
-    s : Unit <- IO.sleep(20)
+    s : Unit <- IO.sleep(60)
     n : U32 <- Peek.waiters(c)
     p : Unit <- IO.print(bounded(n))
     r : Result<&1, &1, U32, Unit> <- Chan.send(U32, c, 0)

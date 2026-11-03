@@ -76,7 +76,7 @@ def main() -> IO(Unit):
     +c : Chan(U32) <- Chan.new(U32, 0)
     a : Unit <- IO.spawn(Unit, first(c))
     b : Unit <- spawn_all(800n, c, 1)
-    s : Unit <- IO.sleep(20)
+    s : Unit <- IO.sleep(60)
     d : Unit <- send_all(201n, c, 0)
     IO.print("ok")
 
