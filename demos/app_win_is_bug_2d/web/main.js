@@ -144,7 +144,12 @@ function act(name) {
   const fx = Number(st.x);
   const fy = Number(st.y);
   played.push(name);
-  st = Game.replay(Game.start(), list(played));
+  try {
+    st = Game.replay(Game.start(), list(played));
+  } catch (e) {
+    played.pop();                                        // a throw plays no move
+    throw e;
+  }
   const tx = Number(st.x);
   const ty = Number(st.y);
   document.getElementById("moves").textContent = played.length;
@@ -154,7 +159,7 @@ function act(name) {
   } else if (Math.abs(tx - fx) <= 1 && Math.abs(ty - fy) <= 1) {
     anim = { fx, fy, tx, ty, t0: performance.now() };    // a plain step
   }                                                      // else: the wrap
-  if (st.won) {
+  if (Game.is_won(st)) {                                 // the law's own reading
     document.getElementById("status").textContent = "YOU WON?!";
     toast("YOU WON?! please file a bug: this is mathematically impossible");
   }
