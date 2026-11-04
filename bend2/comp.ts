@@ -1499,6 +1499,10 @@ function val_sink(sc: Scope, v: Val): void {
   val_owned(v).forEach((w) => file_push(sc, `term_sink(e, ${w});`));
 }
 
+function lay_lazy(v: Val, lay: Lay): boolean {
+  return v.lay === BOX && lay.ks.length > 1 && !lay.ks.includes("box");
+}
+
 function val_to(sc: Scope, v: Val, lay: Lay): Val {
   return lay_eq(v.lay, lay) ? v : lay === BOX ? val_new([val_box(sc, v)], BOX)
     : v.lay === BOX ? val_unbox(sc, v, lay)
@@ -1619,9 +1623,10 @@ function arr_leaf(sc: Scope, s: string, el: Lay): Val {
 // ====
 
 // A binding counts its uses: the last takes the value, others share it; a
-// frame slot of a shared word takes the wrapped one.
+// frame slot of a shared word takes the wrapped one. A lazy record stays
+// boxed: a read that needs its words peeks them, as a borrowed root would.
 
-function bind_pop(sc: Scope, x: HTerm): Val {
+function bind_pop(sc: Scope, x: HTerm, at: Lay | null): Val {
   const p = probe_of(x);
   const b = sc.uses.get(p)!;
   if (b.n <= 1) {
@@ -1629,6 +1634,10 @@ function bind_pop(sc: Scope, x: HTerm): Val {
     return b.val;
   }
   bind_set(sc, p, b, b.n - 1);
+  const lay = lay_at(b.A, b.val);
+  if (at !== BOX && lay_lazy(b.val, lay)) {
+    return val_unbox(sc, { ...b.val, rs: [p.k] }, lay);
+  }
   const fr = sc.seg.frame;
   const owned = val_owned(b.val);
   file_push(sc, ...owned.map((w) => {
@@ -2004,7 +2013,7 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): Val[] {
   const vs = ck.xs.map((a, i) => xs[i].$ === "Var" ? null
     : emit_expr({ ...sc, rest: [...xs.slice(i + 1).filter((x) =>
       x.$ !== "Var"), ...vars, ...sc.rest] }, a, null, lays[i]));
-  xs.forEach((x, i) => vs[i] ??= brw[i] ? null : bind_pop(sc, x));
+  xs.forEach((x, i) => vs[i] ??= brw[i] ? null : bind_pop(sc, x, lays[i]));
   return xs.map((x, i) => {
     const at = arg_key(k, i);
     let b = vs[i];
@@ -2129,7 +2138,7 @@ function emit_clo(sc: Scope, x: HTerm, ty: HTerm | null): Val {
   const live = [...sc.uses].filter(([p]) => rest_use([x], p) > 0);
   live.forEach(([p, b]) => {
     sc.uses.set(p, { ...b, n: b.n - rest_use([x], p) + 1 });
-    bind_pop(sc, p);
+    bind_pop(sc, p, BOX);
   });
   const words = live.flatMap(([, b]) => val_own(b.val));
   const name = seg_name("c");
@@ -2281,7 +2290,7 @@ function emit_expr(sc: Scope, tm: HTerm, ty0: HTerm | null,
   const [x, ty] = ty_peel(tm, ty0);
   switch (x.$) {
     case "Var": {
-      return bind_pop(sc, x);
+      return bind_pop(sc, x, at);
     }
     case "Ref":
     case "App": {
@@ -2365,8 +2374,10 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_body(sc, x.f(t), all.B(t), args, dst);
       }
       const o = term_open(x);
-      bind_uses(sc, o.ps[0], val_hold(sc, val_to(sc, args[0],
-        lay_at(all.A, args[0])), x.k), [o.b], all.A);
+      const at = lay_at(all.A, args[0]);
+      const lay = lay_lazy(args[0], at) ? BOX : at;
+      bind_uses(sc, o.ps[0], val_hold(sc, val_to(sc, args[0], lay), x.k),
+        [o.b], all.A);
       return emit_body(sc, o.b, all.B(DUMMY), args.slice(1), dst);
     }
     case "Mat":
@@ -2545,7 +2556,8 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   const self = probe("s");
   const { adt, ret, rows, cells } = mat_rows(sc, x, ty, self);
   const word = WORDS[adt.k] === W32;
-  const lay = word ? lay_node(adt.k) : lay_at(adt, args[0]);
+  const at = lay_at(adt, args[0]);
+  const lay = word ? lay_node(adt.k) : lay_lazy(args[0], at) ? BOX : at;
   const u = val_hold(sc, val_to(sc, args[0], word ? W32 : lay), "s");
   if (rows !== null) {
     bind_uses(sc, self, u, rows.map(([a]) => a), adt);
