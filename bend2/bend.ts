@@ -3239,8 +3239,10 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
       if (mode === "EQ" && a.r.length !== b.r.length) {
         return false;
       }
-      return b.r.every((c) => a.r.includes(c))
-          && a.x.every((x, j) => compare_go("EQ", book, x, b.x[j], dep));
+      // a fit weakens a quantity slot its datatype only passes along
+      return b.r.every((c) => a.r.includes(c)) && a.x.every((x, j) => mode === "LE" && adt_weakens(book, a.k, j, [])
+        ? compare_go("LE", book, Typ(x), Typ(b.x[j]), dep)
+        : compare_go("EQ", book, x, b.x[j], dep));
     }
     case "Ctr": {
       return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length
@@ -3273,6 +3275,46 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
       return false;
     }
   }
+}
+
+// Weakening
+// =========
+// whether a fit may compare quantity parameter j of datatype k by the
+// quantity order, so List<&2, A> fits List<&1, A> and not back: its
+// fields may only pass it, bare and outside any domain, to a quantity
+// slot that weakens too, ks holding the slots being asked (assumed to)
+
+function adt_weakens(book: Book, k: Name, j: number, ks: string[]): boolean {
+  const t = book.tlds[k];
+  if (ks.includes(k + " " + j)) {
+    return true;
+  }
+  if (t?.$ !== "ADT") {
+    return false;
+  }
+  let T = term_strip(term_lower(t.T));
+  for (let d = 0; d < j && T.$ === "All"; d++) {
+    T = term_strip(T.B);
+  }
+  if (T.$ !== "All" || term_strip(T.A).$ !== "Qnt") {
+    return false;
+  }
+  const me = [...ks, k + " " + j];
+  const has = (o: unknown): boolean => typeof o === "object" && o !== null
+    && ((o as LTerm).$ === "Var" && (o as { i: number }).i === j
+      || Object.entries(o).some(([k, x]) => k !== "s" && has(x)));
+  const ok = (t: LTerm, p: boolean): boolean => t.$ === "All" ? ok(t.A, !p) && ok(t.B, p)
+    : t.$ === "ADT" ? t.x.every((x, s) => !has(x) || x.$ === "Var" && p && adt_weakens(book, t.k, s, me))
+    : !has(t);
+  return t.c.every((c) => {
+    let tel = term_strip(term_lower(c.T));
+    for (let d = 0; tel.$ === "All"; d++, tel = term_strip(tel.B)) {
+      if (d >= t.n && !ok(tel.A, true)) {
+        return false;
+      }
+    }
+    return true;
+  });
 }
 
 // Check
