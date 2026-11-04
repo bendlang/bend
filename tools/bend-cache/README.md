@@ -15,6 +15,7 @@ bend-cache <file.bend> [--cache <file.json>] [--bend <bend2 dir>] [--min-ms <ms>
 - `--cache` (or `BEND_CACHE`): the traces, one JSON file. Default:
   `$XDG_CACHE_HOME/bend-cache/traces.json` (`~/.cache/...`). One file serves
   every project: ten files that import the same library share its traces.
+  A cache it cannot write is a warning: the verdict stands.
 - `--bend` (or `BEND_DIR`): the bend2 sources to run. Default: this repo's
   `bend2/`.
 - `--min-ms`: only a check slower than this keeps a trace (0.2). A cheap

@@ -111,10 +111,12 @@ const PATCHES: Record<string, Patch> = {
     tail: "\nexport const CACHE_HOOK = {\n"
       + "  valid: (book: Bend.Book, done: number): void => Bend.book_valid(book, done),\n"
       + "  refs: new WeakMap<object, string[]>(),\n"
-      + "};\n"
-      + "export { book_read, book_err, cli_verdict, term_refs };\n",
+      + "};\n",
   },
 };
+
+// main.ts functions bend-cache calls: the tail exports those it does not
+const EXPORTS = ["book_read", "book_err", "cli_verdict", "term_refs", "check"];
 
 // the Book fields the checker reads: a new one would read state the
 // traces do not see
@@ -126,6 +128,7 @@ type Main = {
   book_err(e: unknown): string;
   cli_verdict(book: any, kernel: boolean): number;
   term_refs(t: object, out: Set<string>): void;
+  check(): Promise<void>;
   CACHE_HOOK: { valid: (book: any, done: number) => void; refs: WeakMap<object, string[]> };
 };
 
@@ -143,20 +146,30 @@ async function load(dir: string): Promise<{ B: Bend; M: Main; ver: string }> {
       }
       src = src.split(from).join(to);
     }
-    patched.set(fs.realpathSync(at), src + p.tail);
+    const missing = f !== "main.ts" ? [] : EXPORTS.filter((n) => {
+      const decl = (pre: string) => new RegExp("^" + pre + "(?:async function|function|const|let) " + n + "\\b", "m");
+      return decl("(?:export )?").test(src) ? !decl("export ").test(src) : fail("drift: bend2/main.ts has no " + n, 2);
+    });
+    const named = missing.length === 0 ? "" : "export { " + missing.join(", ") + " };\n";
+    patched.set(fs.realpathSync(at), src + p.tail + named + "export const BEND_CACHE_PATCH = 1;\n");
   }
+  // only this bend2's own files
+  const real = fs.realpathSync(dir).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   Bun.plugin({
     name: "bend-cache",
     setup: (build) => {
-      build.onLoad({ filter: /[\\/](bend|main)\.ts$/ }, (args) => {
+      build.onLoad({ filter: new RegExp("^" + real + "[\\\\/](bend|main)\\.ts$") }, (args) => {
         const contents = patched.get(fs.realpathSync(args.path));
-        return contents === undefined ? undefined as never : { contents, loader: "ts" };
+        return contents === undefined ? fail("drift: matched " + args.path + " but did not patch it", 2) : { contents, loader: "ts" };
       });
     },
   });
-  const B: Bend = await import(url.pathToFileURL(path.join(dir, "bend.ts")).href);
-  const M: Main = await import(url.pathToFileURL(path.join(dir, "main.ts")).href);
-  if (Object.keys(B.book_nil()).join(",") !== FIELDS || M.CACHE_HOOK === undefined) {
+  const B: Bend = await import(url.pathToFileURL(path.join(fs.realpathSync(dir), "bend.ts")).href);
+  const M: Main = await import(url.pathToFileURL(path.join(fs.realpathSync(dir), "main.ts")).href);
+  if ((B as any).BEND_CACHE_PATCH !== 1 || (M as any).BEND_CACHE_PATCH !== 1) {
+    fail("drift: bend2 was loaded before bend-cache could patch it", 2);
+  }
+  if (Object.keys(B.book_nil()).join(",") !== FIELDS) {
     fail("drift: bend2's Book changed (" + Object.keys(B.book_nil()).join(",") + ")", 2);
   }
   // what a trace depends on: the checker, Base, the verdict's refs, this tool
@@ -180,7 +193,7 @@ type Store = { ver: string; traces: Record<string, Trace> };
 
 type Stats = { checked: number; skipped: number; kept: number };
 
-function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, st: Stats): void {
+function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, st: Stats, made: Array<[string, Trace]>): void {
   const db = read_store(opts.cache, ver).traces;
   // a def's hash: Base's by name (no file redeclares one), the rest lowered
   // without spans; an instance carries no b, so it hashes by its content
@@ -249,13 +262,15 @@ function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, st
   };
   // only a check slower than --min-ms keeps a trace: a cheap one checks
   // again faster than its trace hashes
-  const made: Array<[string, Trace]> = [];
   let at = -1;
   let t0 = 0;
   const close = () => {
     if (seen !== null && performance.now() - t0 >= opts.min) {
       const d = [...seen].map(([k, v]): [string, string] => [k, hash(k.slice(1), v)]);
-      made.push([keys[at], { d, r: [...refs(tabs.o[order[at]], new Set())] }]);
+      // an instance's name is the order it was minted in, which a skip
+      // changes: keep what it refers to (the walk above), not its name
+      const r = [...refs(tabs.o[order[at]], new Set())].filter((x) => !x.includes("~"));
+      made.push([keys[at], { d, r }]);
     }
     seen = null;
   };
@@ -287,14 +302,6 @@ function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, st
     Object.defineProperty(book, "tlds", { value: tabs.t ?? tabs.o, writable: true, configurable: true, enumerable: true });
     Object.assign(book, { ctrs: tabs.c, tmps: tabs.m });
     st.kept = made.length;
-    if (made.length > 0) {
-      // read again: another run may have written since
-      const now = read_store(opts.cache, ver);
-      for (const [k, tr] of made) {
-        now.traces[k] = tr;
-      }
-      write_store(opts.cache, now);
-    }
   }
 }
 
@@ -308,7 +315,13 @@ function read_store(file: string, ver: string): Store {
   }
 }
 
-function write_store(file: string, store: Store): void {
+// the traces made, merged into the store as it is now (another run may
+// have written since)
+function write_store(file: string, ver: string, made: Array<[string, Trace]>): void {
+  const store = read_store(file, ver);
+  for (const [k, tr] of made) {
+    store.traces[k] = tr;
+  }
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const tmp = file + "." + String(process.pid);
   fs.writeFileSync(tmp, JSON.stringify(store));
@@ -322,13 +335,23 @@ async function main(): Promise<void> {
   const opts = options(process.argv.slice(2));
   const { B, M, ver } = await load(opts.bend);
   const st: Stats = { checked: 0, skipped: 0, kept: 0 };
-  M.CACHE_HOOK.valid = (book) => trace_valid(B, M, opts, ver, book, st);
+  const made: Array<[string, Trace]> = [];
+  M.CACHE_HOOK.valid = (book) => trace_valid(B, M, opts, ver, book, st, made);
   try {
     process.exitCode = M.cli_verdict(await M.book_read(opts.file), false);
   } catch (e) {
     process.stderr.write(M.book_err(e) + "\n");
     process.exitCode = 1;
   }
+  // a cache it cannot write costs the next run its skips, not this verdict
+  try {
+    if (made.length > 0) {
+      write_store(opts.cache, ver, made);
+    }
+  } catch (e) {
+    process.stderr.write("bend-cache: cannot write " + opts.cache + ": " + (e instanceof Error ? e.message : String(e)) + "\n");
+  }
+  await M.check().catch(() => {});
   if (opts.stats) {
     process.stderr.write("bend-cache: checked " + String(st.checked) + ", skipped " + String(st.skipped)
       + ", traces kept " + String(st.kept) + "\n");

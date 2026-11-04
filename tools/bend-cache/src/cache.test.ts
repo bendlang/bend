@@ -29,7 +29,7 @@ function book(files: Files): { dir: string; cache: string } {
 }
 
 function run(cmd: string[], dir: string): string {
-  const p = spawnSync("bun", cmd, { cwd: dir, encoding: "utf8" });
+  const p = spawnSync("bun", cmd, { cwd: dir, encoding: "utf8", env: { ...process.env, BEND_NO_TELEMETRY: "1" } });
   return "exit " + String(p.status) + "\n" + p.stdout + p.stderr;
 }
 
@@ -128,9 +128,24 @@ test("a skipped def that calls an @unsafe template's instance still fails", () =
   warm(b, "m.bend");
 });
 
+// an instance is named by the order it was minted in: a skipped def mints
+// none, so c's instance takes the name a's had
+test("a skipped def's instance name does not follow it", () => {
+  same({
+    "m.bend": "import Base\n\n@unsafe\ndef u(n: Nat) -> Nat:\n  n\n\ndef app(~f: Nat -> Nat, x: Nat) -> Nat:\n  f(x)\n\n"
+      + "def a() -> Nat:\n  app(~(n => 1n+n), 1n)\n\ndef c() -> Nat:\n  app(~(n => u(n)), 2n)\n",
+  }, "m.bend", [["m.bend", "2n)", "3n)"]]);
+});
+
+test("a cache it cannot write warns, and the verdict stands", () => {
+  const b = book({ "m.bend": "import Base\n\ndef p() -> {1n == 1n : Nat}:\n  {==}\n" });
+  const out = run([TOOL, "m.bend", "--cache", "/dev/null/traces.json", "--bend", BEND2, "--min-ms", "0"], b.dir);
+  expect(out.replace(/bend-cache: cannot write .*\n/, "")).toBe(plain(b, "m.bend"));
+});
+
 test("a bend2 that changed where the seam patches stops with drift", () => {
   const dir = path.join(TMP, "drift");
-  fs.cpSync(BEND2, dir, { recursive: true, filter: (s) => !s.includes("node_modules") });
+  fs.cpSync(BEND2, dir, { recursive: true, filter: (s) => !/node_modules|[\\/]docs\b/.test(s) });
   const at = path.join(dir, "main.ts");
   fs.writeFileSync(at, fs.readFileSync(at, "utf8").replace("    Bend.book_valid(book, base?.order.length ?? 0);\n", "    Bend.book_valid(book);\n"));
   const b = book({ "m.bend": "import Base\n\ndef p() -> {1n == 1n : Nat}:\n  {==}\n" });
