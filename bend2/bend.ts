@@ -279,7 +279,7 @@ export type BodyOf<B> = B extends [infer T] ? T : B;
 export type LetsOf<B> = BodyOf<B> extends Function ? (xs: TermOf<B>[]) => TermOf<B> : BodyOf<B>;
 export type SubsOf<B> = BodyOf<B> extends Function ? TermOf<NoInfer<B>> : HTerm;
 export type TermOf<B> = (
-  | { $: "Var"; k: Name; i: number; v?: SubsOf<B> }                                // x
+  | { $: "Var"; k: Name; i: number; v?: SubsOf<B>; c?: Cell }                      // x
   | { $: "Ref"; k: Name; b?: Bool }                                                // x
   | { $: "Sub"; i: number; v: Patt; f: TermOf<B> }                                 // x <- v; f
   | { $: "Let"; k: Name[]; i: number[]; q: Quant[]; v: TermOf<B>[]; f: LetsOf<B> } // x y = v w; f
@@ -306,6 +306,7 @@ export type TermOf<B> = (
 export type LTerm = TermOf<[LTerm]>;
 export type HBody = (x: HTerm) => HTerm;
 export type HTerm = TermOf<HBody>;
+type Cell = Extract<HTerm, { $: "Var" }>;
 
 // Env
 export type Env = List<HTerm | ((s?: Span) => HTerm)>;
@@ -361,7 +362,8 @@ export type Err  = { $: "Err"; bok: Book; exp: Expr; obs?: Expr; ctx: Ctx; def?:
 // ----
 
 export function Var<X>(k: Name, i: number, s?: Span, v?: SubsOf<X>): TermOf<X> {
-  return { $: "Var", k, i, s, v };
+  // c from the start: linking a cell's class later keeps its shape
+  return { $: "Var", k, i, s, v, c: undefined };
 }
 
 export function Ref<X>(k: Name, s?: Span, b?: Bool): TermOf<X> {
@@ -3146,6 +3148,14 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
   return compare_go(mode, RIGID, lhs, rhs, dep) || compare_go(mode, book, lhs, rhs, dep);
 }
 
+// the class of a share cell: the cell its c links end at
+function cell_class(t: Cell): Cell {
+  while (t.c !== undefined) {
+    t = t.c;
+  }
+  return t;
+}
+
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
   if (lhs === rhs) {
     return true;
@@ -3155,12 +3165,19 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
   if (a === b) {
     return true;
   }
-  // two share cells found equal become one: rhs points at lhs, so a
-  // shared graph is compared once, not walked as a tree
+  // two share cells found equal join one class, so a shared graph is
+  // compared once, not walked as a tree. a class is its c links alone:
+  // no value moves, since lhs's value may name rhs (Hd(D) <> Tl(D) == D),
+  // and rhs holding it would name itself
   if (mode === "EQ" && lhs.$ === "Var" && lhs.i === -2 && rhs.$ === "Var" && rhs.i === -2) {
+    if (cell_class(lhs) === cell_class(rhs)) {
+      return true;
+    }
     const same = compare_go(mode, book, a, b, dep);
-    if (same) {
-      rhs.v = lhs.v;
+    const l = cell_class(lhs);
+    const r = cell_class(rhs);
+    if (same && l !== r) {
+      r.c = l;
     }
     return same;
   }
