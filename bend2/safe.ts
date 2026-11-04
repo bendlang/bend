@@ -1391,14 +1391,16 @@ function ctr_term(e: Safe, s: Scope, x: Of<"Ctr">, T: HTerm | null, live: boolea
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, (): HTerm => B.Var("_", -1));
   let F = fill(e.book, ctr.T, ps);
   const fs: Array<[Q, O]> = [[1, lab(name_tt(x.k))]];
-  for (const a of x.x) {
+  for (let i = 0; i < x.x.length; i++) {
     const A = wnf(e.book, F);
     if (A.$ !== "All") {
       oos("a constructor past its fields");
     }
     const q = quant(A.q);
-    fs.push([q, arg_term(e, s, a, A.A, live && q > 0)]);
-    F = A.B(a);
+    fs.push([q, arg_term(e, s, x.x[i], A.A, live && q > 0)]);
+    if (i + 1 < x.x.length) {
+      F = A.B(x.x[i]);
+    }
   }
   return tup(fs);
 }
