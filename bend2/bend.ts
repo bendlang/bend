@@ -1708,18 +1708,18 @@ export function parse_qual(p: Parse, k: Name): Name {
   return p.ns === "" ? k : p.ns + ":" + k;
 }
 
-export function parse_reso(p: Parse, k: Name): Name {
+// a name resolves in the table its syntax picks (ctrs for X{..} and a
+// \{X: ..} arm, else tlds), the one parse_fresh refuses it by (#1236)
+export function parse_reso(p: Parse, k: Name, tab: Record<Name, unknown> = p.book.tlds): Name {
   const dot = k.indexOf(".");
   let q = parse_qual(p, k);
   if (dot !== -1 && k.slice(0, dot) in p.al) {
     q = p.al[k.slice(0, dot)] + ":" + k.slice(dot + 1);
-    if (q !== k && (q in p.book.tlds || q in p.book.ctrs) && (k in p.book.tlds || k in p.book.ctrs)) {
+    if (q !== k && q in tab && k in tab) {
       parse_fail(p, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
     }
   }
-  const own = q in p.book.tlds || q in p.book.ctrs;
-  const far = k in p.book.tlds || k in p.book.ctrs;
-  return own || !far ? q : k;
+  return q in tab || !(k in tab) ? q : k;
 }
 
 export function parse_own(p: Parse, k: Name, tab: Record<Name, unknown> = p.book.tlds): Name {
@@ -1759,7 +1759,7 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
   const book = p.book;
   switch (t.$) {
     case "Var": {
-      if (book_ctr(book, parse_reso(p, t.k)) !== null) {
+      if (book_ctr(book, parse_reso(p, t.k, book.ctrs)) !== null) {
         throw Err(book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
       }
       return parse_bind(p, t);
@@ -1847,7 +1847,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
     }
     if (parse_take(p, "{")) {
       const xs = parse_term_args(p, "}");
-      return Ctr(parse_reso(p, k), xs);
+      return Ctr(parse_reso(p, k, p.book.ctrs), xs);
     }
       return parse_var(p, k, parse_span(p, beg));
   }
@@ -1897,7 +1897,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         parse_skip(p);
         if ((t.$ === "Var" || t.$ === "Ref") && parse_take(p, ":")) {
           const h = parse_term(p);
-          arms.push([parse_reso(p, t.k), h]);
+          arms.push([parse_reso(p, t.k, p.book.ctrs), h]);
           parse_skip(p);
           parse_take(p, ";");
           continue;
