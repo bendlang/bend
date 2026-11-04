@@ -3484,10 +3484,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     // ------------------------------------------------- infer-adt
     // Γ ⊢ k<x1, .., xn> : Kind(G[x..]) ~ u1 + .. + un
     case "ADT": {
-      const adt = book_adt(book, tm, ctx, lhs.def);
-      if (tm.x.length !== adt.n) {
-        throw Err(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
-      }
+      const adt = adt_head(book, tm, ctx, lhs.def);
       const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
       return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us);
     }
@@ -3524,6 +3521,15 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
   }
 }
 
+// infer-adt's head: k's declaration, given one argument per parameter
+export function adt_head(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
+  const adt = book_adt(book, tm, ctx, def);
+  if (tm.x.length !== adt.n) {
+    throw Err(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, def);
+  }
+  return adt;
+}
+
 export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: HTerm } {
   const out: LTerm[] = [];
   let us = uses_nil();
@@ -3551,20 +3557,27 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
   }
 }
 
-// a binder's T is checked at its source, so only Data is left to show, and a
-// family's signature says that without checking its arguments again
+// check-let's and check-lam's Kind(+) for a + binder's T, which comes from a
+// value's inferred type or a goal's domain: checked there, or by its own
+// def's signature when that is below a dead use. So only Data is left to
+// show, and two heads show it without reading T's arguments: an equation,
+// and a family (T itself, not under an Ann) whose kind is Data at fresh
+// arguments. Anything else, a kind that reads them included, takes
+// term_check_kind. Data is not asked in @unsafe.
 export function term_check_bound(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Name, ctx: Ctx, d: number, s?: Span): void {
   if (lhs_kind(lhs, q).$ !== "Many") {
     return;
   }
-  const h = term_strip(T);
-  if (h.$ === "ADT") {
-    const adt = book_adt(book, h, ctx, lhs.def);
-    if (h.x.length === adt.n && term_compare("LE", book, tele_fill(book, adt.T, h.x, ctx, lhs.def, s), Typ(Qua(Many())), d)) {
+  const t = term_force(T);
+  if (t.$ === "ADT") {
+    const { doms, ret } = tele_unbind(book, adt_head(book, t, ctx, lhs.def).T);
+    if (term_compare("LE", book, ret, Typ(Qua(Many())), doms.length)) {
       return;
     }
   }
-  term_check_kind(book, lhs, T, q, k, ctx, d, s);
+  if (t.$ !== "Eql") {
+    term_check_kind(book, lhs, T, q, k, ctx, d, s);
+  }
 }
 
 export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Quant, s: Span | undefined, def?: Name): Uses {
@@ -3590,7 +3603,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     }
     // T == @q x:A -> B
     // Γ , x : q'A ⊢ f(x) : B(x) ~ u
-    // where q' is q, or + at a + binder when q is 1 and A : Kind(+)
+    // where q' is q, or + at a + binder when q is 1 and A : Data (if Kind(+)
+    //       is Data: in @unsafe, A is a type already, as T's domain)
     //       u[x] <= q'
     //       lhs steps by x while a parameter remains
     // ---------------------------------------------- check-lam

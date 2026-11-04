@@ -4,9 +4,6 @@
 type Tag<-f: Quant -> Quant> is Data:
   T{}
 
-def tag(f: Quant -> Quant) -> Tag<f>:
-  T{}
-
 def app(f: Quant -> Quant, g: Tag<f> -> Quant) -> Quant:
   &1
 
