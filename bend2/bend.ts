@@ -3292,11 +3292,12 @@ function adt_weakens(book: Book, k: Name, j: number, ks: string[]): boolean {
   if (t?.$ !== "ADT") {
     return false;
   }
-  let T = term_strip(term_lower(t.T));
+  // a quantity, as its type evaluates
+  let T = term_wnf(book, t.T);
   for (let d = 0; d < j && T.$ === "All"; d++) {
-    T = term_strip(T.B);
+    T = term_wnf(book, T.B(Var(T.k, d)));
   }
-  if (T.$ !== "All" || term_strip(T.A).$ !== "Qnt") {
+  if (T.$ !== "All" || term_wnf(book, T.A).$ !== "Qnt") {
     return false;
   }
   const me = [...ks, k + " " + j];
