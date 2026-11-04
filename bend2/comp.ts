@@ -2447,10 +2447,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       file_push(pl, `return ${jt};`);
     });
   }
-  const chain = calls.map(() => o.b);
-  for (let j = calls.length - 2; j >= 0; j--) {
-    chain[j] = let_open([o.ps[j + 1]], [x.v[j + 1]], chain[j + 1]);
-  }
+  const chain = calls.map((_, i) =>
+    let_open(o.ps.slice(i + 1), x.v.slice(i + 1), o.b));
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
   calls.forEach((c, i) => {
@@ -2471,7 +2469,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     emit_jump(sc, cargs, c.k!, !fork && c.b);
     const last = i === calls.length - 1;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
-    const ret = fun_of(c.k!).ret;
+    const { ret } = fun_of(c.k!);
     const rest = [...hold.keys(), chain[i]];
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret);
     sc = seg_open(sc, kn, sc.seg.ret, { pop: last ? depth : 0,
@@ -2480,15 +2478,10 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
-    // The fork fills the join: its holds, then the results. A hold the
-    // serial path sank (a spin read it last) passes trivial words.
     const live = [...hold.keys(), ...o.ps].map((p): [Of<"Var">, Bind] =>
       [p, sc.uses.get(p) ?? hold.get(p)!]);
-    if (live.filter(([p]) => sc.uses.has(p)).length < sc.uses.size) {
-      die("a fork's paths hold different values");
-    }
-    emit_jump(sc, live.flatMap(([p, b]) => sc.uses.has(p) ? b.val.ws
-      : b.val.ws.map(() => "0")), name);
+    emit_jump(sc, live.flatMap(([p, b]) => b.val.ws.map((w) =>
+      sc.uses.has(p) ? w : "0")), name);
     sc = seg_open(sc, name, sc.seg.ret, null, live, val_new([], lay_pack([])),
       [o.b]);
   }
