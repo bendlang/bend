@@ -2461,7 +2461,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       .flatMap((v) => v.ws);
     const kn = seg_name("k");
     spare_flush(sc);
-    const ws = [...sc.uses].filter(([p]) => i === 0 || p === o.ps[i - 1])
+    const ws = [...sc.uses].filter(([p]) => !i || p === o.ps[i - 1])
       .flatMap(([p, b]) => (pos.set(p, depth), depth += b.val.ws.length,
         b.val.ws));
     const kf = seg_fid(kn);
@@ -2473,14 +2473,14 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       emit_task(sc, kf, 1, ws)});`,
       `WL_IDX = ${ws.length};`)] as [string, () => void]]]);
     emit_jump(sc, cargs, c.k!, !fork && c.b);
-    const last = i === calls.length - 1;
+    const top = i < calls.length - 1 ? depth : 0;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const { ret } = fun_of(c.k!);
     const rest = [...hold.keys(), chain[i]];
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret);
-    sc = seg_open(sc, kn, sc.seg.ret, { pop: last ? depth : 0,
+    sc = seg_open(sc, kn, sc.seg.ret, { pop: depth - top,
       at: held.flatMap(([p, b]) => b.val.ws.map((_, j) =>
-        pos.get(p)! + j - (last ? 0 : depth))) }, held, rs, rest);
+        pos.get(p)! + j - top)) }, held, rs, rest);
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
