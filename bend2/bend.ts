@@ -710,6 +710,10 @@ export function term_higher(tm: LTerm, env: Env = null): HTerm {
       if (tm.i < 0) {
         return tm;
       }
+      // a free name (parse_var) is never bound: skip the env walk
+      if (tm.v !== undefined) {
+        return tm.v;
+      }
       const v = list_get(env, tm.i);
       if (v === null) {
         return tm.v ?? Ref(tm.k, tm.s);
@@ -3489,7 +3493,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
         throw Err(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
       }
       const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
-      return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us);
+      return Infer(ADT(tm.k, xs, tm.s, tm.r), tel(), us);
     }
     // Γ ⊢ A : Type    Γ ⊢ a : A    Γ ⊢ b : A
     // where A, a and b are dead; evidence is erased, so Data
@@ -3524,18 +3528,21 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
   }
 }
 
-export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: HTerm } {
+// tel is lazy: the rest after the last field is built only if asked for
+// (check-ctr already has its result type and never asks)
+export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: () => HTerm } {
   const out: LTerm[] = [];
   let us = uses_nil();
+  let rest = () => tel;
   for (const x of xs) {
-    const t_all = tele_head(book, tel, ctx, lhs.def, s);
+    const t_all = tele_head(book, rest(), ctx, lhs.def, s);
     const t_dem = quant_dem(t_all.q, qt);
     const x_chk = term_check(book, lhs, x, t_dem, t_all.A, ctx, d);
     out.push(x_chk.tm);
-    us  = uses_add(us, x_chk.us);
-    tel = t_all.B(x);
+    us   = uses_add(us, x_chk.us);
+    rest = () => t_all.B(x);
   }
-  return { xs: out, us, tel };
+  return { xs: out, us, tel: rest };
 }
 
 // the type T of a binder q k fits Kind(q); a miss is reported at s, and
@@ -3828,7 +3835,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
   }
   let T: HTerm;
   try {
-    T = tele_check(book, lhs, def.T, xs, None(), ctx_nil(), d, tm.s).tel;
+    T = tele_check(book, lhs, def.T, xs, None(), ctx_nil(), d, tm.s).tel();
   } catch (e) {
     const v = (e as Err)?.obs;
     if (typeof v === "object" && v.$ === "Var" && v.i >= 0 && v.i < d) {
