@@ -3332,11 +3332,12 @@ function adt_vary(book: Book, k: Name, j: number, ks: string[]): number[] {
   if (t?.$ !== "ADT") {
     return [2, ...r.slice(2)];
   }
-  let T = term_strip(term_lower(t.T));
+  // a quantity, as its type evaluates, sets a kind: at least 1
+  let T = term_wnf(book, t.T);
   for (let d = 0; d < j && T.$ === "All"; d++) {
-    T = term_strip(T.B);
+    T = term_wnf(book, T.B(Var(T.k, d)));
   }
-  if (T.$ === "All" && term_strip(T.A).$ === "Qnt") {
+  if (T.$ === "All" && term_wnf(book, T.A).$ === "Qnt") {
     r[0] = 1;
   }
   for (const c of t.c) {
