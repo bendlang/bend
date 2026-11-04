@@ -29,20 +29,16 @@
 // (bend2 compares it equal) goes out as that constructor: the kernel
 // reads it as the column (K3-R).
 //
-// A kind goes out as the kernel's *(q), and a meet as (a <&> b), so a
-// Quant is a kernel value like any other, and a kind converts in the
-// kernel where it does in bend2: Kind(&0) is *(.Q0), and fits *(.Q1)
-// (Type) only as bend2's LE does. An item (a book name) goes out
-// once per tuple of closed arguments at its template (~) parameters, with
-// those parameters gone. A def with a finite one also goes out as a
-// λ-match on its values that names an instance in each arm, so the
-// kernel checks that every value has one. Every def goes out after the
-// defs its live code names; a name in a type may come later. A def with
-// no body (a law, a native, a foreign fill) goes out opaque at a model:
-// the kernel checks the model, then never unfolds the def. What the
-// kernel cannot express is out of scope: it goes, with every def that
-// names it, and --verdict fails, as it does for a def that reaches no
-// kernel def.
+// A kind emits *(q), a meet (a <&> b). Quant is a kernel value; kinds
+// convert as in bend2: Kind(&0) is *(.Q0), which fits *(.Q1) (Type) only
+// as bend2's LE permits. A book name emits once per tuple of closed ~
+// arguments, with those parameters removed. A def with a finite template
+// parameter also emits a λ-match whose arms name its instances, so the kernel
+// checks coverage. Defs follow their live dependencies; names in types
+// may come later. A bodyless def (law, native, foreign fill) emits opaque
+// at a model: the kernel checks the model, never unfolds the def. An
+// inexpressible def and all dependents are out of scope; --verdict fails,
+// as it does for a def that reaches no kernel def.
 
 import * as child from "node:child_process";
 import * as crypto from "node:crypto";
@@ -190,6 +186,12 @@ function oos(why: string, E = Scope_Error): never {
   throw new E(why);
 }
 
+function emit_error(x: unknown, k: Name): never {
+  throw x instanceof RangeError
+    ? new Error("BendTT: while translating " + B.name_key(k.trimStart()) + ": " + x.message)
+    : x;
+}
+
 // Book
 // ====
 
@@ -227,7 +229,7 @@ function safe_pass(book: Book, groups: Map<Name, Group>, inst: Safe["inst"]): Ou
       roots.push([k, ...root_emit(e, k)]);
     } catch (x) {
       if (!(x instanceof Scope_Error)) {
-        throw x;
+        emit_error(x, k);
       }
       undo(e, m);
       const n = fresh(e, name_tt(k));
@@ -417,7 +419,7 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
         undo(e, m);
         throw new Reroute();
       }
-      throw x;
+      emit_error(x, k);
     } finally {
       e.stack.pop();
       e.going.delete(key);
