@@ -419,9 +419,10 @@ function term_open(t: Of<"Lam"> | Of<"Let">): Open {
   });
 }
 
-function let_open(ps: Of<"Var">[], vs: HTerm[], b: HTerm): Of<"Let"> {
+function let_open(ps: Of<"Var">[], vs: HTerm[], b: HTerm,
+  q?: Bend.Quant[]): Of<"Let"> {
   const l = Bend.Let(ps.map((p) => p.k), ps.map(() => 0), vs,
-    () => die("a pre-opened let")) as Of<"Let">;
+    () => die("a pre-opened let"), undefined, q) as Of<"Let">;
   FL.opens.set(l, { ps, b });
   return l;
 }
@@ -472,8 +473,7 @@ function call_eta(t: HTerm): HTerm | null {
     ? null : term_eta(t, tele_fill(m.tld!.T, m.all), f.n - m.all.length);
 }
 
-function term_kids(tm: HTerm): HTerm[] {
-  const t = term_force(tm);
+function term_kids(t: HTerm): HTerm[] {
   if (t.$ === "Let") {
     const on = let_live(t);
     return [...t.v.filter((_, j) => on[j]), term_open(t).b];
@@ -2253,36 +2253,33 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
     return null;
   }
   const fs = emit_fold_args(sc, m);
-  const walk = (xs: HTerm[]) => {
-    let b = h;
-    let hit = m.args.every((a) => term_const(fs[m.all.indexOf(a)]));
-    for (let w = term_strip(b); xs.length > 0; w = term_strip(b)) {
-      if (w.$ === "Lam") {
-        b = w.f(xs[0]);
-        xs = xs.slice(1);
-        continue;
-      }
-      const c = w.$ === "Mat" ? term_strip(xs[0]) : null;
-      if (c?.$ !== "Ctr" || !term_const(c)) {
-        return null;
-      }
-      const { arms, end } = mat_arms(w);
-      const arm = arms.find(([k]) => k === c.k);
-      b = arm?.[1] ?? end;
-      xs = arm ? [...ctr_flds(c), ...xs.slice(1)] : xs;
-      hit = true;
-    }
-    return !hit || term_any(b, (y) => y.$ === "Lam" || mat_head(y)) ? null : b;
-  };
   const doms = tele_unbind(m.tld!.T).doms;
-  const bind = (i: number, ys: HTerm[]): HTerm => {
-    const a = fs[i];
-    return i === fs.length ? walk(ys)! : !m.args.includes(m.all[i])
-      || term_const(a) || term_strip(a).$ === "Var" ? bind(i + 1, [...ys, a])
-      : Bend.Let(["a"], [0], [Bend.Ann(a, doms[i][2])], (xs) =>
-        bind(i + 1, [...ys, xs[0]]), undefined, [Bend.Many()]);
-  };
-  return walk(fs) === null ? null : bind(0, []);
+  const lets = fs.map((a, i) => !m.args.includes(m.all[i]) || term_const(a)
+    || term_strip(a).$ === "Var" ? null
+    : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
+  const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
+    || lets.some((l) => l?.p === y && term_any(l.v, bad));
+  let xs = fs.map((a, i) => lets[i]?.p ?? a);
+  let b = h;
+  let hit = m.args.every((a) => term_const(fs[m.all.indexOf(a)]));
+  for (let w = term_strip(b); xs.length > 0; w = term_strip(b)) {
+    if (w.$ === "Lam") {
+      b = w.f(xs[0]);
+      xs = xs.slice(1);
+      continue;
+    }
+    const c = w.$ === "Mat" ? term_strip(xs[0]) : null;
+    if (c?.$ !== "Ctr" || !term_const(c)) {
+      return null;
+    }
+    const { arms, end } = mat_arms(w);
+    const arm = arms.find(([k]) => k === c.k);
+    b = arm?.[1] ?? end;
+    xs = arm ? [...ctr_flds(c), ...xs.slice(1)] : xs;
+    hit = true;
+  }
+  return !hit || term_any(b, bad) ? null : lets.reduceRight((b2, l) =>
+    l ? let_open([l.p], [l.v], b2, [Bend.Many()]) : b2, b);
 }
 
 function emit_expr(sc: Scope, tm: HTerm, ty0: HTerm | null,
