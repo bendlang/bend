@@ -1708,8 +1708,6 @@ export function parse_qual(p: Parse, k: Name): Name {
   return p.ns === "" ? k : p.ns + ":" + k;
 }
 
-// a name resolves in the table its syntax picks (ctrs for X{..} and a
-// \{X: ..} arm, else tlds), the one parse_fresh refuses it by (#1236)
 export function parse_reso(p: Parse, k: Name, tab: Record<Name, unknown> = p.book.tlds): Name {
   const dot = k.indexOf(".");
   let q = parse_qual(p, k);
