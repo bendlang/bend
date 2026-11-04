@@ -48,6 +48,9 @@ function options(args: string[]): Options {
       opts.bend = path.resolve(val());
     } else if (a === "--min-ms") {
       opts.min = Number(val());
+      if (!(opts.min >= 0)) {
+        fail("--min-ms needs a number of ms");
+      }
     } else if (a === "--stats") {
       opts.stats = true;
     } else if (a.startsWith("-") || opts.file !== "") {
@@ -69,8 +72,7 @@ function fail(msg: string, code = 1): never {
 // bend.ts: book_valid takes a predicate of the entries to skip, and counts
 // the TODOs of skipped entries too (a def whose fill a later file dropped
 // is a TODO at its law, which may be skipped).
-// main.ts: book_read hands its book over and calls a replaceable
-// validator; book_promises reads the names kept for skipped defs (it reads
+// main.ts: book_read calls a replaceable validator; book_promises reads the names kept for skipped defs (it reads
 // t.e, which a skipped check does not make); the CLI functions exported.
 
 type Patch = { edits: Array<[string, string]>; tail: string };
@@ -97,10 +99,6 @@ const PATCHES: Record<string, Patch> = {
   "main.ts": {
     edits: [
       [
-        "  const book = base === undefined ? Bend.book_nil() : book_seed(base);\n",
-        "  const book = base === undefined ? Bend.book_nil() : book_seed(base);\n  CACHE_HOOK.book(book);\n",
-      ],
-      [
         "    Bend.book_valid(book, base?.order.length ?? 0);\n",
         "    CACHE_HOOK.valid(book, base?.order.length ?? 0);\n",
       ],
@@ -111,7 +109,6 @@ const PATCHES: Record<string, Patch> = {
       ],
     ],
     tail: "\nexport const CACHE_HOOK = {\n"
-      + "  book: (book: Bend.Book): void => {},\n"
       + "  valid: (book: Bend.Book, done: number): void => Bend.book_valid(book, done),\n"
       + "  refs: new WeakMap<object, string[]>(),\n"
       + "};\n"
@@ -129,7 +126,7 @@ type Main = {
   book_err(e: unknown): string;
   cli_verdict(book: any, kernel: boolean): number;
   term_refs(t: object, out: Set<string>): void;
-  CACHE_HOOK: { book: (book: any) => void; valid: (book: any, done: number) => void; refs: WeakMap<object, string[]> };
+  CACHE_HOOK: { valid: (book: any, done: number) => void; refs: WeakMap<object, string[]> };
 };
 
 async function load(dir: string): Promise<{ B: Bend; M: Main; ver: string }> {
@@ -144,7 +141,7 @@ async function load(dir: string): Promise<{ B: Bend; M: Main; ver: string }> {
       if (src.split(from).length !== 2) {
         fail("drift: bend2/" + f + " changed where bend-cache patches it", 2);
       }
-      src = src.replace(from, to);
+      src = src.split(from).join(to);
     }
     patched.set(fs.realpathSync(at), src + p.tail);
   }
@@ -162,7 +159,9 @@ async function load(dir: string): Promise<{ B: Bend; M: Main; ver: string }> {
   if (Object.keys(B.book_nil()).join(",") !== FIELDS || M.CACHE_HOOK === undefined) {
     fail("drift: bend2's Book changed (" + Object.keys(B.book_nil()).join(",") + ")", 2);
   }
-  const ver = sha(fs.readFileSync(path.join(dir, "bend.ts"), "utf8") + fs.readFileSync(B.BASE_BEND, "utf8"));
+  // what a trace depends on: the checker, Base, the verdict's refs, this tool
+  const srcs = [path.join(dir, "bend.ts"), path.join(dir, "main.ts"), B.BASE_BEND, url.fileURLToPath(import.meta.url)];
+  const ver = sha(srcs.map((f) => fs.readFileSync(f, "utf8")).join("\0"));
   return { B, M, ver };
 }
 
@@ -181,9 +180,8 @@ type Store = { ver: string; traces: Record<string, Trace> };
 
 type Stats = { checked: number; skipped: number; kept: number };
 
-function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, done: number, st: Stats): void {
-  const store = read_store(opts.cache, ver);
-  const db = store.traces;
+function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, st: Stats): void {
+  const db = read_store(opts.cache, ver).traces;
   // a def's hash: Base's by name (no file redeclares one), the rest lowered
   // without spans; an instance carries no b, so it hashes by its content
   const memo = new WeakMap<object, string>();
@@ -203,16 +201,18 @@ function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, do
     }
     return h;
   };
-  // the tables, and proxies that record the first read of each name
+  // the tables, and proxies that record what each name held at its first
+  // access (a read, or a write: an instance the check mints was absent)
   const tabs: Record<string, any> = { o: book.tlds, t: undefined, c: book.ctrs, m: book.tmps };
   let seen: Map<string, unknown> | null = null;
+  const note = (tag: string, o: any, k: string | symbol) => {
+    if (seen !== null && typeof k === "string" && !seen.has(tag + k)) {
+      seen.set(tag + k, o[k] instanceof Map ? new Map(o[k]) : o[k]);
+    }
+  };
   const spy = (tag: string, tab: any) => new Proxy(tab, {
-    get: (o, k, r) => {
-      if (seen !== null && typeof k === "string" && !seen.has(tag + k)) {
-        seen.set(tag + k, o[k] instanceof Map ? new Map(o[k]) : o[k]);
-      }
-      return Reflect.get(o, k, r);
-    },
+    get: (o, k, r) => (note(tag, o, k), Reflect.get(o, k, r)),
+    set: (o, k, v, r) => (note(tag, o, k), Reflect.set(o, k, v, r)),
   });
   let live = spy("o", book.tlds);
   Object.defineProperty(book, "tlds", {
@@ -259,25 +259,20 @@ function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, do
     }
     seen = null;
   };
-  // book_valid reads order[i] once in its first pass, then once per entry:
-  // the second read closes the entry before
-  let reads = 0;
-  book.order = new Proxy(order, {
-    get: (o, k) => {
-      if (typeof k === "string" && /^\d/.test(k) && ++reads > order.length) {
-        close();
-      }
-      return Reflect.get(o, k);
-    },
-  });
-  // the patched book_valid takes a predicate (its type here is the unpatched one)
+  // the patched book_valid takes a predicate (its type here is the
+  // unpatched one) and asks it once per entry: each ask closes the entry
+  // before, minus book_valid's own read of this entry's declaration
   const valid = B.book_valid as (book: unknown, done: number | ((i: number) => boolean)) => void;
   try {
     valid(book, (i: number) => {
+      if (at >= 0 && order[at] !== order[i]) {
+        seen?.delete("o" + order[i]);
+      }
+      close();
       const tr = db[keys[i]];
-      if (i < done || (tr !== undefined && tr.d.every(([k, h]) => hash(k.slice(1), tabs[k[0]][k.slice(1)]) === h))) {
-        M.CACHE_HOOK.refs.set(tabs.o[order[i]], tr?.r ?? []);
-        st.skipped += i < done ? 0 : 1;
+      if (tr !== undefined && tr.d.every(([k, h]) => hash(k.slice(1), tabs[k[0]][k.slice(1)]) === h)) {
+        M.CACHE_HOOK.refs.set(tabs.o[order[i]], tr.r);
+        st.skipped += 1;
         return true;
       }
       st.checked += 1;
@@ -290,12 +285,16 @@ function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, do
   } finally {
     // a failing def keeps no trace: it is still open
     Object.defineProperty(book, "tlds", { value: tabs.t ?? tabs.o, writable: true, configurable: true, enumerable: true });
-    Object.assign(book, { ctrs: tabs.c, tmps: tabs.m, order });
-    for (const [k, tr] of made) {
-      db[k] = tr;
-    }
+    Object.assign(book, { ctrs: tabs.c, tmps: tabs.m });
     st.kept = made.length;
-    write_store(opts.cache, store);
+    if (made.length > 0) {
+      // read again: another run may have written since
+      const now = read_store(opts.cache, ver);
+      for (const [k, tr] of made) {
+        now.traces[k] = tr;
+      }
+      write_store(opts.cache, now);
+    }
   }
 }
 
@@ -323,7 +322,7 @@ async function main(): Promise<void> {
   const opts = options(process.argv.slice(2));
   const { B, M, ver } = await load(opts.bend);
   const st: Stats = { checked: 0, skipped: 0, kept: 0 };
-  M.CACHE_HOOK.valid = (book, done) => trace_valid(B, M, opts, ver, book, done, st);
+  M.CACHE_HOOK.valid = (book) => trace_valid(B, M, opts, ver, book, st);
   try {
     process.exitCode = M.cli_verdict(await M.book_read(opts.file), false);
   } catch (e) {

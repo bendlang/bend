@@ -34,17 +34,26 @@ function run(cmd: string[], dir: string): string {
 }
 
 function cached(b: { dir: string; cache: string }, entry: string, stats = false): string {
-  return run([TOOL, entry, "--cache", b.cache, "--bend", BEND2, ...(stats ? ["--stats"] : [])], b.dir);
+  // every check keeps a trace, so the skips are what the cases test
+  return run([TOOL, entry, "--cache", b.cache, "--bend", BEND2, "--min-ms", "0", ...(stats ? ["--stats"] : [])], b.dir);
 }
 
 function plain(b: { dir: string }, entry: string): string {
   return run([MAIN, entry, "--check-only"], b.dir);
 }
 
+// a run on a warm cache: it skips, and prints what bend prints
+function warm(b: { dir: string }, entry: string): void {
+  const out = cached(b as never, entry, true);
+  expect(out).toMatch(/skipped [1-9]\d*/);
+  expect(out.replace(/bend-cache: .*\n/, "")).toBe(plain(b, entry));
+}
+
 // warm the cache on the book, apply each change in turn, and compare
 function same(files: Files, entry: string, changes: Array<[string, string, string]>): void {
   const b = book(files);
   expect(cached(b, entry)).toBe(plain(b, entry));
+  warm(b, entry);
   for (const [f, from, to] of changes) {
     const at = path.join(b.dir, f);
     const src = fs.readFileSync(at, "utf8");
@@ -65,9 +74,7 @@ const client = (j: number) =>
 test("a library checked once serves every client", () => {
   const b = book({ "lib.bend": LIB, "a.bend": client(0), "b.bend": client(1) });
   expect(cached(b, "a.bend")).toBe(plain(b, "a.bend"));
-  const warm = cached(b, "b.bend", true);
-  expect(warm).toMatch(/skipped [1-9]\d*/);
-  expect(warm.replace(/bend-cache: .*\n/, "")).toBe(plain(b, "b.bend"));
+  warm(b, "b.bend");
 });
 
 test("an edit to a library def rechecks it and what read it", () => {
@@ -110,7 +117,7 @@ test("a skipped def that calls Base's @unsafe Array.fork still fails", () => {
   const want = plain(b, "m.bend");
   expect(want).toContain("rely on unsafe or foreign code");
   expect(cached(b, "m.bend")).toBe(want);
-  expect(cached(b, "m.bend")).toBe(want);
+  warm(b, "m.bend");
 });
 
 test("a skipped def that calls an @unsafe template's instance still fails", () => {
@@ -118,7 +125,7 @@ test("a skipped def that calls an @unsafe template's instance still fails", () =
   const b = book({ "m.bend": src });
   const want = plain(b, "m.bend");
   expect(cached(b, "m.bend")).toBe(want);
-  expect(cached(b, "m.bend")).toBe(want);
+  warm(b, "m.bend");
 });
 
 test("a bend2 that changed where the seam patches stops with drift", () => {
