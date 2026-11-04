@@ -1378,7 +1378,7 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
 
 function ctr_term(e: Safe, s: Scope, x: Of<"Ctr">, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
-  const f = B.book_fam(e.book, x.k);
+  const f = ctr.f;
   const fam = e.book.tlds[f] as ADT;
   const w = B.u32_from_term(x) ?? B.u32_from_term(x, "F32");
   if (!s.sub && w !== null) {

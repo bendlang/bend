@@ -849,8 +849,9 @@ function src_add(k: Name): void {
 }
 
 function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
-  if (FL.book.ctrs[k]) {
-    src_add(Bend.book_fam(FL.book, k));
+  const ctr = FL.book.ctrs[k];
+  if (ctr) {
+    src_add(ctr.f);
   }
   const cid = cid_mac(k);
   if (lay_node(k).ks.join() === "w32" || exprs.length === 0) {
@@ -2516,7 +2517,7 @@ function row_term(sc: Scope, t: HTerm): HTerm {
 function row_val(sc: Scope, s: HTerm, ty: HTerm | null): Cell | null {
   if (term_const(s)) {
     const c = term_strip(s) as Of<"Ctr">;
-    const k = ty_adt(ty ?? tele_unbind(FL.book.ctrs[c.k].T).ret)?.k;
+    const k = ty === null ? FL.book.ctrs[c.k].f : ty_adt(ty)?.k;
     const u = k === "U32" || k === "F32" ? Bend.u32_from_term(c, k) : null;
     return u !== null ? k === "F32" ? Bend.f32_from_bits(u) : u
       : k === "Nat" ? nat_peel(c)[1] : k === "Bool" ? c.k === "True" : null;
@@ -2678,7 +2679,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
     const src = FL.js ? raw : raw.replace(/\\[ \t]*(\r\n?|\n)/g, "");
     FL.effs.set(path, [m, src]);
     if (!FL.js) c_ids(src, m, (p, q) => {
-      if (p === "CID" && q in FL.book.ctrs) src_add(Bend.book_fam(FL.book, q));
+      if (p === "CID" && q in FL.book.ctrs) src_add(FL.book.ctrs[q].f);
       if (p === "FID" && fun_runs(tld_of(q))) {
         src_add(q);
         FL.fids.add(q);

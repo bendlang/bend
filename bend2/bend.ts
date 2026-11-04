@@ -885,10 +885,6 @@ export function book_ctr(book: Book, k: Name): Ctr | null {
   return book.ctrs[k] ?? null;
 }
 
-export function book_fam(book: Book, k: Name): Name {
-  return (book_ctr(book, k) as Ctr).f;
-}
-
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
@@ -3637,7 +3633,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Ctr": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "ADT") {
-        const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
+        const fam = book_ctr(book, tm.k)?.f ?? null;
         const dt = [tm.k, tm.k.slice(tm.k.lastIndexOf(":") + 1)].find((k) => book.tlds[k]?.$ === "ADT");
         const nte = fam === null && dt !== undefined ? "Note: " + dt + " is a datatype: write its arguments as <>" : undefined;
         throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
@@ -3645,10 +3641,11 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
       const ctr = adt.c.find((c) => c.k === tm.k);
       if (ctr === undefined) {
-        if (book_ctr(book, tm.k) === null) {
+        const own = book_ctr(book, tm.k);
+        if (own === null) {
           throw Err(book, ctx, "a declared constructor (" + name_key(t_wnf.k) + " declares " + adt.c.map((c) => name_key(c.k)).join(", ") + ")", tm, tm.s, lhs.def);
         }
-        throw Err(book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
+        throw Err(book, ctx, ty, Ref(own.f, tm.s), tm.s, lhs.def);
       }
       if (tm.x.length !== ctr.n) {
         throw Err(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
