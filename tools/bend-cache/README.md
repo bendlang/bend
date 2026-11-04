@@ -22,6 +22,16 @@ bend-cache <file.bend> [--cache <file.json>] [--bend <bend2 dir>] [--min-ms <ms>
   check runs again faster than its trace would hash.
 - `--stats`: how many defs were checked and skipped, on stderr.
 
+## Disclaimer
+
+bend-cache is a development tool, and it may have bugs: a skip is
+bend-cache's judgment that nothing a check read has changed, not
+Bend's. Use it to iterate fast on a large codebase whose proofs take
+long to check. It does not count for a bounty: a submission is judged
+by `bend <file.bend> --check-only` (and `--verdict`), with no cache.
+Run that before you submit or merge. If the two ever disagree, the CLI
+is right; please report it with the files and the cache.
+
 It is not `bend` itself, and Bend stores nothing: the cache is this tool's.
 Only `--check-only`: a run or a build needs each def's elaborated body, which
 a skipped check does not make. `--verdict` (the kernel) still checks
