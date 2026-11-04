@@ -3303,13 +3303,13 @@ function adt_weakens(book: Book, k: Name, j: number, ks: string[]): boolean {
   const has = (o: unknown): boolean => typeof o === "object" && o !== null
     && ((o as LTerm).$ === "Var" && (o as { i: number }).i === j
       || Object.entries(o).some(([k, x]) => k !== "s" && has(x)));
-  const ok = (t: LTerm, p: boolean): boolean => t.$ === "All" ? ok(t.A, !p) && ok(t.B, p)
-    : t.$ === "ADT" ? t.x.every((x, s) => !has(x) || x.$ === "Var" && p && adt_weakens(book, t.k, s, me))
+  const ok = (t: LTerm): boolean => t.$ === "All" ? !has(t.A) && ok(t.B)
+    : t.$ === "ADT" ? t.x.every((x, s) => !has(x) || x.$ === "Var" && adt_weakens(book, t.k, s, me))
     : !has(t);
   return t.c.every((c) => {
     let tel = term_strip(term_lower(c.T));
     for (let d = 0; tel.$ === "All"; d++, tel = term_strip(tel.B)) {
-      if (d >= t.n && !ok(tel.A, true)) {
+      if (d >= t.n && !ok(tel.A)) {
         return false;
       }
     }
