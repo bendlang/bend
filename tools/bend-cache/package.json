@@ -1,0 +1,22 @@
+{
+  "name": "bend-cache",
+  "version": "0.1.0",
+  "description": "A proof cache for bend --check-only, outside bend: each def is skipped while what its check read is unchanged",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "bend-cache": "src/cache.ts"
+  },
+  "exports": "./src/cache.ts",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0"
+  },
+  "engines": {
+    "bun": ">=1.2"
+  },
+  "license": "Apache-2.0"
+}
