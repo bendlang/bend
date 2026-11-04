@@ -1708,21 +1708,21 @@ export function parse_qual(p: Parse, k: Name): Name {
   return p.ns === "" ? k : p.ns + ":" + k;
 }
 
-export function parse_reso(p: Parse, k: Name): Name {
+export function parse_reso(p: Parse, k: Name, t: "tlds" | "ctrs" = "tlds"): Name {
+  const tab = p.book[t];
   const dot = k.indexOf(".");
   let q = parse_qual(p, k);
   if (dot !== -1 && k.slice(0, dot) in p.al) {
     q = p.al[k.slice(0, dot)] + ":" + k.slice(dot + 1);
-    if (q !== k && (q in p.book.tlds || q in p.book.ctrs) && (k in p.book.tlds || k in p.book.ctrs)) {
+    if (q !== k && q in tab && k in tab) {
       parse_fail(p, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
     }
   }
-  const own = q in p.book.tlds || q in p.book.ctrs;
-  const far = k in p.book.tlds || k in p.book.ctrs;
-  return own || !far ? q : k;
+  return q in tab || !(k in tab) ? q : k;
 }
 
-export function parse_own(p: Parse, k: Name, tab: Record<Name, unknown> = p.book.tlds): Name {
+export function parse_own(p: Parse, k: Name, t: "tlds" | "ctrs" = "tlds"): Name {
+  const tab = p.book[t];
   const q = parse_qual(p, k);
   return q in tab || !(k in tab) ? q : k;
 }
@@ -1759,7 +1759,7 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
   const book = p.book;
   switch (t.$) {
     case "Var": {
-      if (book_ctr(book, parse_reso(p, t.k)) !== null) {
+      if (book_ctr(book, parse_reso(p, t.k, "ctrs")) !== null) {
         throw Err(book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
       }
       return parse_bind(p, t);
@@ -1847,7 +1847,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
     }
     if (parse_take(p, "{")) {
       const xs = parse_term_args(p, "}");
-      return Ctr(parse_reso(p, k), xs);
+      return Ctr(parse_reso(p, k, "ctrs"), xs);
     }
       return parse_var(p, k, parse_span(p, beg));
   }
@@ -1897,7 +1897,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         parse_skip(p);
         if ((t.$ === "Var" || t.$ === "Ref") && parse_take(p, ":")) {
           const h = parse_term(p);
-          arms.push([parse_reso(p, t.k), h]);
+          arms.push([parse_reso(p, t.k, "ctrs"), h]);
           parse_skip(p);
           parse_take(p, ";");
           continue;
@@ -1995,8 +1995,8 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       parse_take(p, ",");
       const ys  = xs.concat(parse_term_args(p, "]"));
       const spn = parse_span(p, beg);
-      const con = parse_own(p, "Con", p.book.ctrs);
-      const nil = Ctr(parse_own(p, "Nil", p.book.ctrs), [], spn);
+      const con = parse_own(p, "Con", "ctrs");
+      const nil = Ctr(parse_own(p, "Nil", "ctrs"), [], spn);
       return ys.reduceRight<LTerm>((t, x) => Ctr(con, [x, t], spn), nil);
     }
     case "'": {
@@ -2171,7 +2171,7 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
     } else if (op === "<&>") {
       out = Min(out, b, s);
     } else if (op === "<>") {
-      out = Ctr(parse_own(p, k, p.book.ctrs), [out, b], s);
+      out = Ctr(parse_own(p, k, "ctrs"), [out, b], s);
     } else {
       const f = k[0] === "." ? k : parse_own(p, k);
       out = App(App(Ref(f, op === "&" || op === "|" ? s : t), out, s), b, s);
@@ -2241,7 +2241,7 @@ export function parse_term_tup(p: Parse, beg: number): LTerm {
   parse_skip(p);
   if (b.$ !== "Match" && b.$ !== "Local" && parse_take(p, ",")) {
     const rest = parse_term_tup(p, beg);
-    return Ctr(parse_own(p, "Tuple", p.book.ctrs), [b, rest], parse_span(p, beg));
+    return Ctr(parse_own(p, "Tuple", "ctrs"), [b, rest], parse_span(p, beg));
   }
   const out = body_flatten(b, [], () => p.frs++);
   if (parse_take(p, ":")) {
@@ -2492,7 +2492,8 @@ export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Qua
 // Book
 // ----
 
-export function parse_fresh(p: Parse, nm: Name, tab: Record<Name, unknown> = p.book.tlds, what = "a fresh name"): Name {
+export function parse_fresh(p: Parse, nm: Name, t: "tlds" | "ctrs" = "tlds", what = "a fresh name"): Name {
+  const tab = p.book[t];
   const k = parse_qual(p, nm);
   const a = nm.includes(".") ? nm.slice(0, nm.indexOf(".")) : "";
   if (k in tab || nm in tab || a in p.al) {
@@ -2599,7 +2600,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
         if (!char_is_head(parse_peek(p)) || ["def", "type", "law"].some((w) => parse_at_word(p, w))) {
           break;
         }
-        const c = parse_fresh(p, parse_name(p), book.ctrs, "a fresh constructor name");
+        const c = parse_fresh(p, parse_name(p), "ctrs", "a fresh constructor name");
         parse_eat(p, "{");
         const n1 = p.stk.length;
         const fs = parse_tele(p, "}");
@@ -3638,7 +3639,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "ADT") {
         const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
-        const nte = fam === null && book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
+        const dt = [tm.k, tm.k.slice(tm.k.lastIndexOf(":") + 1)].find((k) => book.tlds[k]?.$ === "ADT");
+        const nte = fam === null && dt !== undefined ? "Note: " + dt + " is a datatype: write its arguments as <>" : undefined;
         throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
       }
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
