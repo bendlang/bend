@@ -2826,11 +2826,13 @@ def Play.blit(
 # (the bang must not follow the host's forks in one evaluation), the
 # frame (the last one dropped in its bang). The loop counts down a fuel
 # of 4294967295 frames, so every def here checks; in practice it runs
-# until Esc.
+# until Esc or Close.
 def Play.loop(fuel: Nat, window: Window, +s: Live, snd: Sound, last: Image & R.Cells) -> IO(Unit):
   match fuel:
     case 0n:
-      Window.close(window)
+      do IO<Unit>:
+        Unit <- Sound.close(snd)
+        Window.close(window)
     case 1n+fuel2:
       (old, used) = last
       do IO<Unit>:
