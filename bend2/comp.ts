@@ -2423,7 +2423,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   const calls = x.v.map(term_spine);
   const fork = calls.length > 1;
   const name = seg_name("j");
-  let hold: Of<"Var">[] = [];
+  let hold = new Map<Of<"Var">, Bind>();
   if (fork) {
     spare_flush(sc);
     sc.seg.fork = true;
@@ -2432,10 +2432,9 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       const margs = calls.map((c, j) => emit_args({ ...pl,
         rest: [...x.v.filter((_, i) => i !== j), o.b] }, c, false, true)
         .flatMap((v) => v.ws));
-      const live = [...pl.uses].filter(([p, b]) =>
-        val_owned(b.val).length > 0 || rest_use([o.b], p) > 0);
-      hold = live.map(([p]) => p);
-      const caps = live.flatMap(([, b]) => b.val.ws);
+      hold = new Map([...pl.uses].filter(([p, b]) =>
+        val_owned(b.val).length > 0 || rest_use([o.b], p) > 0));
+      const caps = [...hold.values()].flatMap((b) => b.val.ws);
       const jn = emit_task(pl, seg_fid(name), calls.length, caps);
       const jt = `term_tsk(${seg_fid(name)}, ${jn})`;
       let idx = caps.length;
@@ -2473,7 +2472,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     const last = i === calls.length - 1;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const ret = fun_of(c.k!).ret;
-    const rest = [...hold, chain[i]];
+    const rest = [...hold.keys(), chain[i]];
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret);
     sc = seg_open(sc, kn, sc.seg.ret, { pop: last ? depth : 0,
       at: held.flatMap(([p, b]) => b.val.ws.map((_, j) =>
@@ -2481,8 +2480,15 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
-    const live = [...sc.uses];
-    emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
+    // The fork fills the join: its holds, then the results. A hold the
+    // serial path sank (a spin read it last) passes trivial words.
+    const live = [...hold.keys(), ...o.ps].map((p): [Of<"Var">, Bind] =>
+      [p, sc.uses.get(p) ?? hold.get(p)!]);
+    if (live.filter(([p]) => sc.uses.has(p)).length < sc.uses.size) {
+      die("a fork's paths hold different values");
+    }
+    emit_jump(sc, live.flatMap(([p, b]) => sc.uses.has(p) ? b.val.ws
+      : b.val.ws.map(() => "0")), name);
     sc = seg_open(sc, name, sc.seg.ret, null, live, val_new([], lay_pack([])),
       [o.b]);
   }
