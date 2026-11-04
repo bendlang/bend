@@ -710,7 +710,6 @@ export function term_higher(tm: LTerm, env: Env = null): HTerm {
       if (tm.i < 0) {
         return tm;
       }
-      // a free name (parse_var) is never bound: skip the env walk
       if (tm.v !== undefined) {
         return tm.v;
       }
@@ -3528,8 +3527,6 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
   }
 }
 
-// tel is lazy: the rest after the last field is built only if asked for
-// (check-ctr already has its result type and never asks)
 export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; tel: () => HTerm } {
   const out: LTerm[] = [];
   let us = uses_nil();
