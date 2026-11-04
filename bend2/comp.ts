@@ -2428,7 +2428,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
   const calls = x.v.map(term_spine);
   const fork = calls.length > 1;
   const name = seg_name("j");
-  let hold: Of<"Var">[] = [];
+  let hold = new Map<Of<"Var">, Bind>();
   if (fork) {
     spare_flush(sc);
     sc.seg.fork = true;
@@ -2437,10 +2437,9 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       const margs = calls.map((c, j) => emit_args({ ...pl,
         rest: [...x.v.filter((_, i) => i !== j), o.b] }, c, false, true)
         .flatMap((v) => v.ws));
-      const live = [...pl.uses].filter(([p, b]) =>
-        val_owned(b.val).length > 0 || rest_use([o.b], p) > 0);
-      hold = live.map(([p]) => p);
-      const caps = live.flatMap(([, b]) => b.val.ws);
+      hold = new Map([...pl.uses].filter(([p, b]) =>
+        val_owned(b.val).length > 0 || rest_use([o.b], p) > 0));
+      const caps = [...hold.values()].flatMap((b) => b.val.ws);
       const jn = emit_task(pl, seg_fid(name), calls.length, caps);
       const jt = `term_tsk(${seg_fid(name)}, ${jn})`;
       let idx = caps.length;
@@ -2453,10 +2452,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       file_push(pl, `return ${jt};`);
     });
   }
-  const chain = calls.map(() => o.b);
-  for (let j = calls.length - 2; j >= 0; j--) {
-    chain[j] = let_open([o.ps[j + 1]], [x.v[j + 1]], chain[j + 1]);
-  }
+  const chain = calls.map((_, i) =>
+    let_open(o.ps.slice(i + 1), x.v.slice(i + 1), o.b));
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
   calls.forEach((c, i) => {
@@ -2464,7 +2461,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       .flatMap((v) => v.ws);
     const kn = seg_name("k");
     spare_flush(sc);
-    const ws = [...sc.uses].filter(([p]) => i === 0 || p === o.ps[i - 1])
+    const ws = [...sc.uses].filter(([p]) => !i || p === o.ps[i - 1])
       .flatMap(([p, b]) => (pos.set(p, depth), depth += b.val.ws.length,
         b.val.ws));
     const kf = seg_fid(kn);
@@ -2476,19 +2473,21 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       emit_task(sc, kf, 1, ws)});`,
       `WL_IDX = ${ws.length};`)] as [string, () => void]]]);
     emit_jump(sc, cargs, c.k!, !fork && c.b);
-    const last = i === calls.length - 1;
+    const top = i < calls.length - 1 ? depth : 0;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
-    const ret = fun_of(c.k!).ret;
-    const rest = [...hold, chain[i]];
+    const { ret } = fun_of(c.k!);
+    const rest = [...hold.keys(), chain[i]];
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret);
-    sc = seg_open(sc, kn, sc.seg.ret, { pop: last ? depth : 0,
+    sc = seg_open(sc, kn, sc.seg.ret, { pop: depth - top,
       at: held.flatMap(([p, b]) => b.val.ws.map((_, j) =>
-        pos.get(p)! + j - (last ? 0 : depth))) }, held, rs, rest);
+        pos.get(p)! + j - top)) }, held, rs, rest);
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
-    const live = [...sc.uses];
-    emit_jump(sc, live.flatMap(([, b]) => b.val.ws), name);
+    const live = [...hold.keys(), ...o.ps].map((p): [Of<"Var">, Bind] =>
+      [p, sc.uses.get(p) ?? hold.get(p)!]);
+    emit_jump(sc, live.flatMap(([p, b]) => b.val.ws.map((w) =>
+      sc.uses.has(p) ? w : "0")), name);
     sc = seg_open(sc, name, sc.seg.ret, null, live, val_new([], lay_pack([])),
       [o.b]);
   }
