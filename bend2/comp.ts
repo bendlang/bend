@@ -43,6 +43,7 @@ type Spine = {
   t: HTerm;
   all: HTerm[];
   args: HTerm[];
+  live: boolean[];
   tld: Bend.TLD | undefined;
   k: Name | null;
   xs: HTerm[];
@@ -377,7 +378,7 @@ function term_same(a: HTerm, b: HTerm, d = 1 << 29): boolean {
 }
 
 function probe_of(t: HTerm): Of<"Var"> {
-  return PROBES[(term_force(t) as Of<"Var">).i];
+  return PROBES[(t as Of<"Var">).i];
 }
 
 // Graph
@@ -452,7 +453,7 @@ function term_spine(tm: HTerm): Spine {
     const args = all.filter((_, i) => live[i]);
     const def = c.$ === "Ref" && !intr_of(c.k) && fun_runs(tld) ? c.k : null;
     const need = def === null ? 0 : fun_of(def).lays.length;
-    const m = { h, t: c, all, args, tld, k: null, xs: args };
+    const m = { h, t: c, all, args, live, tld, k: null, xs: args };
     const a = apps[live.lastIndexOf(true)];
     return def !== null && args.length === need
       ? { ...m, k: def, b: (c as Of<"Ref">).b }
@@ -2241,7 +2242,7 @@ function emit_refold(sc: Scope, x: HTerm): HTerm {
 }
 
 function emit_fold_args(sc: Scope, m: Spine): HTerm[] {
-  return m.all.map((a) => m.args.includes(a) ? emit_fold(sc, a) ?? a : a);
+  return m.all.map((a, i) => m.live[i] ? emit_fold(sc, a) ?? a : a);
 }
 
 function emit_unfold(sc: Scope, m: Spine): HTerm | null {
@@ -2254,14 +2255,14 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
   }
   const fs = emit_fold_args(sc, m);
   const doms = tele_unbind(m.tld!.T).doms;
-  const lets = fs.map((a, i) => !m.args.includes(m.all[i]) || term_const(a)
+  const lets = fs.map((a, i) => !m.live[i] || term_const(a)
     || term_strip(a).$ === "Var" ? null
     : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
   const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
     || lets.some((l) => l?.p === y && term_any(l.v, bad));
   let xs = fs.map((a, i) => lets[i]?.p ?? a);
   let b = h;
-  let hit = m.args.every((a) => term_const(fs[m.all.indexOf(a)]));
+  let hit = fs.every((a, i) => !m.live[i] || term_const(a));
   for (let w = term_strip(b); xs.length > 0; w = term_strip(b)) {
     if (w.$ === "Lam") {
       b = w.f(xs[0]);
