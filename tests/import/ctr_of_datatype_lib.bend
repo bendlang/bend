@@ -1,0 +1,24 @@
+# a module writes a Base datatype with braces: the error names the
+# repair, as it does in a main file (tests/check/ctr_of_datatype.bend)
+import Base
+
+def t(b: Bool) -> Maybe{&2, Bool}:
+  match b:
+    case True{}:
+      Some{False{}}
+    case False{}:
+      None{}
+
+#|SOME PROOFS FAIL
+#|Error:
+#|- expected : Type
+#|- observed : non-inferrable term
+#|Context:
+#|- b : Bool
+#|Location: t
+#|4 |
+#|5>| def t(b: Bool) -> Maybe{&2, Bool}:
+#|  |                   ^^^^^^^^^^^^^^^
+#|6 |   match b:
+#|Note: Maybe is a datatype: write its arguments as <>
+#|exit 1

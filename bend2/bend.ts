@@ -3636,7 +3636,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "ADT") {
         const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
-        const nte = fam === null && book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
+        const dt = [tm.k, tm.k.slice(tm.k.lastIndexOf(":") + 1)].find((k) => book.tlds[k]?.$ === "ADT");
+        const nte = fam === null && dt !== undefined ? "Note: " + dt + " is a datatype: write its arguments as <>" : undefined;
         throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
       }
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
