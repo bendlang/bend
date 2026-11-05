@@ -2755,7 +2755,8 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     const x   = vars[0];
     const scu = m.e[0];
     const c   = m.r.map((row) => row.p[0]).find((q): q is PCtr => q.$ === "PCtr") ?? null;
-    const v   = vars.find((w) => scu.$ === "Var" && w.i === scu.i);
+    const j   = vars.findIndex((w) => scu.$ === "Var" && w.i === scu.i);
+    const v   = j < 0 ? undefined : vars[j];
     if (v !== undefined && c === null && m.r.length > 0) {
       const w  = { ...v, q: patt_mark(v, m.r) };
       const rs = m.r.map((row): Case => {
@@ -2804,9 +2805,9 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         return Mat(c.k, pt, dt, c.s);
       }
     } else {
-      const j = v === undefined ? vars.length : vars.indexOf(v);
-      const t = match_flatten(m, vars.slice(j), fr);
-      return vars.slice(0, j).reduceRight((out, u) => Lam(u.k, u.i, out, u.s, u.q), t);
+      const n = j < 0 ? vars.length : j;
+      const t = match_flatten(m, vars.slice(n), fr);
+      return vars.slice(0, n).reduceRight((out, u) => Lam(u.k, u.i, out, u.s, u.q), t);
     }
   }
 }
