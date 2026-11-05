@@ -2430,7 +2430,6 @@ export function parse_body(p: Parse, col: number = 0): Body {
   return { $: "Local", k: ks, q, v: vs, f };
 }
 
-// An update is Array.set with four arguments, so a fifth rules it out.
 export function term_write(p: Parse, t: LTerm, beg: number): LTerm | null {
   const xs: LTerm[] = [];
   let h = t;
