@@ -3491,8 +3491,8 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
       if (tm.x.length !== adt.n) {
         throw Err(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
       }
-      const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
-      return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us);
+      const { xs, us, ret } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
+      return Infer(ADT(tm.k, xs, tm.s, tm.r), ret(), us);
     }
     // Γ ⊢ A : Type    Γ ⊢ a : A    Γ ⊢ b : A
     // where A, a and b are dead; evidence is erased, so Data
@@ -3527,20 +3527,19 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
   }
 }
 
-export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span, need_tel: boolean = true): { xs: LTerm[]; us: Uses; tel: HTerm } {
+export function tele_check(book: Book, lhs: LHS, tel: HTerm, xs: HTerm[], qt: Quant, ctx: Ctx, d: number, s?: Span): { xs: LTerm[]; us: Uses; ret: () => HTerm } {
   const out: LTerm[] = [];
-  let us = uses_nil();
-  for (let i = 0; i < xs.length; i++) {
-    const t_all = tele_head(book, tel, ctx, lhs.def, s);
+  let us  = uses_nil();
+  let ret = () => tel;
+  for (const x of xs) {
+    const t_all = tele_head(book, ret(), ctx, lhs.def, s);
     const t_dem = quant_dem(t_all.q, qt);
-    const x_chk = term_check(book, lhs, xs[i], t_dem, t_all.A, ctx, d);
+    const x_chk = term_check(book, lhs, x, t_dem, t_all.A, ctx, d);
     out.push(x_chk.tm);
     us  = uses_add(us, x_chk.us);
-    if (need_tel || i + 1 < xs.length) {
-      tel = t_all.B(xs[i]);
-    }
+    ret = () => t_all.B(x);
   }
-  return { xs: out, us, tel };
+  return { xs: out, us, ret };
 }
 
 // the type T of a binder q k fits Kind(q); a miss is reported at s, and
@@ -3658,7 +3657,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
         throw Err(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
       }
       const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
-      const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s, false);
+      const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
       return Check(Ctr(tm.k, xs, tm.s), ty, us);
     }
     // T == Base's type k of the literal, no constructor removed
@@ -3833,7 +3832,7 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
   }
   let T: HTerm;
   try {
-    T = tele_check(book, lhs, def.T, xs, None(), ctx_nil(), d, tm.s).tel;
+    T = tele_check(book, lhs, def.T, xs, None(), ctx_nil(), d, tm.s).ret();
   } catch (e) {
     const v = (e as Err)?.obs;
     if (typeof v === "object" && v.$ === "Var" && v.i >= 0 && v.i < d) {
