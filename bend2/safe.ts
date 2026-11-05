@@ -1378,27 +1378,26 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
 
 function ctr_term(e: Safe, s: Scope, x: Of<"Ctr">, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k] ?? oos("an unknown constructor " + B.name_key(x.k));
-  const f = B.book_fam(e.book, x.k);
-  const fam = e.book.tlds[f] as ADT;
+  const fam = e.book.tlds[ctr.f] as ADT;
   const w = B.u32_from_term(x) ?? B.u32_from_term(x, "F32");
   if (!s.sub && w !== null) {
     if (fam.n !== 0) {
       oos("a word literal of a parameterized datatype");
     }
-    return word_ref(e, x.k, f, w);
+    return word_ref(e, x.k, ctr.f, w);
   }
   const G = T === null || fam.n === 0 ? null : wnf(e.book, T);
   const ps = G?.$ === "ADT" ? G.x : Array.from({ length: fam.n }, (): HTerm => B.Var("_", -1));
   let F = fill(e.book, ctr.T, ps);
   const fs: Array<[Q, O]> = [[1, lab(name_tt(x.k))]];
-  for (const a of x.x) {
+  for (const [i, a] of x.x.entries()) {
     const A = wnf(e.book, F);
     if (A.$ !== "All") {
       oos("a constructor past its fields");
     }
     const q = quant(A.q);
     fs.push([q, arg_term(e, s, a, A.A, live && q > 0)]);
-    F = A.B(a);
+    F = i + 1 < x.x.length ? A.B(a) : F;
   }
   return tup(fs);
 }
