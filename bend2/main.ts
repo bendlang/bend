@@ -959,18 +959,19 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
 // defs outside Base collects who names whom, then each promise floods
 // back along those edges.
 function book_promises(book: Bend.Book): Array<[string, string[]]> {
-  const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
-  const keys = Object.keys(book.tlds);
-  const roots: Array<[string, string[]]> = [
-    ["@unsafe", keys.filter((k) => (book.tlds[k] as Bend.Def).u === true)],
-    ["foreign effects", keys.filter((k) => {
-      const t = book.tlds[k] as Bend.Def;
-      return t.u !== true && t.i !== undefined && t.b !== true;
-    })],
-  ];
-  if (roots.every(([, ks]) => ks.length === 0)) {
+  const unsafe: string[] = [];
+  const foreign: string[] = [];
+  for (const [k, t] of Object.entries(book.tlds) as Array<[string, Bend.Def]>) {
+    if (t.u === true) {
+      unsafe.push(k);
+    } else if (t.i !== undefined && t.b !== true) {
+      foreign.push(k);
+    }
+  }
+  if (unsafe.length === 0 && foreign.length === 0) {
     return [];
   }
+  const own = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
   const uses: Record<string, string[]> = Object.create(null);
   const reach = new Set(own);
   for (const k of reach) {
@@ -989,7 +990,7 @@ function book_promises(book: Bend.Book): Array<[string, string[]]> {
       }
     }
   }
-  return roots.flatMap(([on, ks]) => {
+  return ([["@unsafe", unsafe], ["foreign effects", foreign]] as const).flatMap(([on, ks]) => {
     const bad = new Set(ks);
     for (const k of bad) {
       uses[k]?.forEach((j) => bad.add(j));
