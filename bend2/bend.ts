@@ -3547,6 +3547,63 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
   }
 }
 
+// term_check_kind for a binder's T that bend2 built and checked (a value's
+// inferred type, a goal's domain): its kind is read off its head, so a
+// lambda substituted into it (infer-app's B(a)) is not checked again.
+// Only a reading that misses the goal takes the full check, for its error
+export function term_check_bound(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Name, ctx: Ctx, d: number, s?: Span): void {
+  const r = term_kind(book, T, ctx, d);
+  if (r === null || !term_compare("LE", book, term_wnf(book, r[0]), Typ(Qua(lhs_kind(lhs, q))), r[1])) {
+    term_check_kind(book, lhs, T, q, k, ctx, d, s);
+  }
+}
+
+// the type of a well-formed T, from its head as term_infer gives it, but
+// with no argument checked: an argument goes into the head's telescope
+// only if it is a quantity literal, else a fresh variable from d up does,
+// so nothing unchecked is normalized. [type, next fresh] or null
+export function term_kind(book: Book, T: HTerm, ctx: Ctx, d: number): [HTerm, number] | null {
+  const t = term_force(T);
+  const tld = t.$ === "Ref" || t.$ === "ADT" ? book.tlds[t.k] : undefined;
+  switch (t.$) {
+    case "Var": {
+      const ann = pmap_get(ctx, t.i);
+      return ann === null ? null : [ann.T, d];
+    }
+    case "Ref": {
+      return tld === undefined || tld.$ === "ADT" ? (tld?.n === 0 ? [tld.T, d] : null) : tld.x > 0 ? null : [tld.T, d];
+    }
+    case "ADT": {
+      return tld?.$ !== "ADT" || tld.n !== t.x.length ? null : t.x.reduce(kind_app(book), [tld.T, d] as [HTerm, number] | null);
+    }
+    case "App": {
+      return kind_app(book)(term_kind(book, t.f, ctx, d), t.x);
+    }
+    case "Eql": {
+      return [Typ(Qua(Many())), d];
+    }
+    case "Ann": {
+      return [t.T, d];
+    }
+    case "All":
+    case "Typ":
+    case "Qnt": {
+      return [Typ(Qua(Lone())), d];
+    }
+    default: {
+      return null;
+    }
+  }
+}
+
+function kind_app(book: Book): (r: [HTerm, number] | null, x: HTerm) => [HTerm, number] | null {
+  return (r, x) => {
+    const o = r === null ? null : tele_open(book, r[0]);
+    const v = term_force(x);
+    return r === null || o === null ? null : v.$ === "Qua" ? [o.B(v), r[1]] : [o.B(Var(o.k, r[1])), r[1] + 1];
+  };
+}
+
 export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Quant, s: Span | undefined, def?: Name): Uses {
   const o = pmap_get(us, i);
   const u = o ?? None();
@@ -3588,7 +3645,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       let q = t_wnf.q;
       if (tm.q?.$ === "Many" && q.$ === "Lone") {
         q = tm.q;
-        term_check_kind(book, lhs, t_wnf.A, q, tm.k, ctx, d, tm.s);
+        term_check_bound(book, lhs, t_wnf.A, q, tm.k, ctx, d, tm.s);
       }
       const f_ctx = ctx_bind(ctx, d, q, tm.k, t_wnf.A);
       const f_chk = term_check(book, f_lhs, tm.f(x), qt, t_wnf.B(x), f_ctx, d+1);
@@ -3610,7 +3667,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
         const v_dem = quant_dem(tm.q[j], qt);
         const v_inf = term_infer(book, lhs, tm.v[j], v_dem, ctx, d);
         if (lhs_kind(lhs, tm.q[j]).$ === "Many") {
-          term_check_kind(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
+          term_check_bound(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
         }
         vx.push(v_inf.tm);
         us = uses_add(us, v_inf.us);
