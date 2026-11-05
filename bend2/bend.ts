@@ -1687,7 +1687,6 @@ export function parse_open(p: Parse, k: Name): number {
   return i;
 }
 
-// idx holds each name's binders on stk, newest last.
 export function parse_push(p: Parse, k: Name, i: number): void {
   p.stk.push([k, i]);
   const is = p.idx.get(k);
