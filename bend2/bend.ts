@@ -1639,7 +1639,7 @@ export function parse_lexeme(p: Parse): Name {
     p.pos += 1;
   }
   const k = p.str.slice(beg, p.pos);
-  if (!/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
+  if (k.includes(".") && /\.(?![A-Za-z_])/.test(k)) {
     parse_fail(p, "a name (words joined by dots, got '" + k + "')", beg);
   }
   return k;
@@ -2057,6 +2057,19 @@ const INFIX: Record<string, [number, Bool, Name]> = {
   "%":   [11, false, ".mod"],
 };
 
+const INFIX_BY_HEAD: Record<string, string[]> = {
+  "<": ["<&>", "<-", "<=", "<>", "<<", "<"],
+  "-": ["->", "-"],
+  "&": ["&&", "&"],
+  "|": ["||", "|"],
+  ">": [">=", ">>", ">"],
+  ".": [".|.", ".^.", ".&."],
+  "+": ["++", "+"],
+  "*": ["*"],
+  "/": ["/"],
+  "%": ["%"],
+};
+
 export function parse_nl(p: Parse): boolean {
   for (let j = p.pos - 1; j >= 0; j--) {
     const c = p.str[j];
@@ -2133,11 +2146,8 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
       out = Lam(x.k, x.i, f, x.s, x.q);
       continue;
     }
-    let op = p.str.slice(p.pos, p.pos + 3);
-    while (op !== "" && INFIX[op] === undefined) {
-      op = op.slice(0, -1);
-    }
-    if (op === "") {
+    const op = INFIX_BY_HEAD[parse_peek(p)]?.find((o) => p.str.startsWith(o, p.pos));
+    if (op === undefined) {
       return out;
     }
     const [prc, right, k] = INFIX[op];
