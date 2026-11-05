@@ -2057,8 +2057,6 @@ const INFIX: Record<string, [number, Bool, Name]> = {
   "%":   [11, false, ".mod"],
 };
 
-// The INFIX keys by first character, longest first, so the first that
-// matches is the operator, and a term ends where none does.
 const INFIX_BY_HEAD: Record<string, string[]> = {
   "<": ["<&>", "<-", "<=", "<>", "<<", "<"],
   "-": ["->", "-"],
