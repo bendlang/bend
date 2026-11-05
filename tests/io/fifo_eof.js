@@ -11,7 +11,6 @@ function fifo_drain(len, hi, k) {
     open: { args: ["cstring", "i32"], returns: "i32" },
     dup2: { args: ["i32", "i32"], returns: "i32" },
     pipe: { args: ["ptr"], returns: "i32" },
-    read: { args: ["i32", "ptr", "u64"], returns: "i64" },
   }).symbols;
   const path = Buffer.from(`/tmp/bend_fifo_js_${process.pid}\0`);
   const nonblock = sys.mac ? 0x4 : 0x800;
@@ -38,7 +37,7 @@ function fifo_drain(len, hi, k) {
   let acked = false;
   const go = () => {
     for (;;) {
-      const n = Number(lib.read(rd, sys.ptr(b), 64));
+      const n = Number(sys.read(rd, sys.ptr(b), 64));
       if (n > 0) {
         total += n;
         continue;

@@ -6250,7 +6250,7 @@ function io_sys() {
     const vari = mac && process.arch === "arm64";
     const lib = ffi.dlopen(mac ? "libSystem.dylib" : "libc.so.6",
       Object.fromEntries(("socket:iii>i bind:ipu>i listen:ii>i connect:ipu>i"
-        + " accept:ipp>i send:ipUi>I recv:ipUi>I"
+        + " accept:ipp>i send:ipUi>I recv:ipUi>I read:ipU>I"
         + " sendto:ipUipu>I recvfrom:ipUipp>I close:i>i setsockopt:iiipu>i"
         + " " + sel + ":ipppp>i"
         + " fcntl:iii" + (vari ? "iiiiii" : "") + ">i getsockopt:iiipp>i"
