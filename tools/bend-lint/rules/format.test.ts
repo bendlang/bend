@@ -198,7 +198,7 @@ def main() -> String:
       { tabWidth: 4, wrapAtWidth: 18 },
     );
     await fixed(
-      "import Base\ndef main() -> List<U32>:\n  List.map(~U32, ~U32, ~(x => (x + 123456789 : U32)), [1, 2, 3, 4])\n",
+      "import Base\ndef main() -> List<U32>:\n  List.map(~&1, ~&1, ~U32, ~U32, ~(x => (x + 123456789 : U32)), [1, 2, 3, 4])\n",
       { tabWidth: 4, wrapAtWidth: 30 },
     );
     await fixed(

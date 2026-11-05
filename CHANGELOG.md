@@ -3,6 +3,14 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **`List.map` takes the quantity of each list** (#1994), so it maps over
+  a `List<&2, A>` and can change quantity. This breaks every existing call:
+  `List.map(~A, ~B, ~f, xs)` becomes `List.map(~&1, ~&1, ~A, ~B, ~f, xs)`.
+  `A` must have the input list's kind and `B` the output list's, so `~&2`
+  needs a `Data` element type.
+
 ## 2.0.39 (2026-10-23)
 
 - **`bend --publish` sends only files inside the entry's directory**: a

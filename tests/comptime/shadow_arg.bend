@@ -11,7 +11,7 @@ def sum(xs: List<Nat>) -> Nat:
       Nat.add(h, sum(t))
 
 def main() -> IO(Unit):
-  n = sum(List.map(~Nat, ~Nat, ~(h => Nat.mul(h, 2n)), [1n, 2n, 3n]))
+  n = sum(List.map(~&1, ~&1, ~Nat, ~Nat, ~(h => Nat.mul(h, 2n)), [1n, 2n, 3n]))
   IO.print(Nat.show(n))
 
 #|12

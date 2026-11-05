@@ -975,12 +975,14 @@ def Result.map(
 # List
 # ----
 
-def List.map(~A: Type, ~B: Type, ~f: A -> B, xs: List<A>) -> List<B>:
+def List.map(
+  ~a: Quant, ~b: Quant, ~A: Kind(a), ~B: Kind(b), ~f: A -> B, xs: List<a, A>
+) -> List<b, B>:
   match xs:
     case Nil{}:
       Nil{}
     case h <> t:
-      f(h) <> List.map(~A, ~B, ~f, t)
+      f(h) <> List.map(~a, ~b, ~A, ~B, ~f, t)
 
 def List.length(a, -A: Kind(a), xs: List<a, A>) -> Nat:
   match xs:
