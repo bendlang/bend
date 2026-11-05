@@ -3132,26 +3132,25 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 
 const RIGID: Book = book_nil();
 
-// two terms written alike are equal: before the full pass steps a pair it
-// compares the pair as written, a walk that neither unfolds nor steps, so
-// it costs at most their size; a walk that fails spends fuel for the
-// pair's own walk, so a path asks at most FUEL times and its siblings
-// keep theirs (Agda's syntactic-equality fuel, scoped like smalltt's)
+// raw comparisons that may still fail on the current path: a failure
+// spends one for the pair's own comparison and gives it back after
+// (Agda's syntactic-equality fuel, scoped per path like smalltt's)
 let FUEL = 0;
 
-// the pair just found unlike, walked next without asking again
-let ASKED = false;
+// the pair whose raw comparison just failed: compare_go calls itself on
+// it once more to unfold it, and that call must not compare it raw again
+let RAW_FAILED = false;
 
-// two terms written alike, through cells and annotations; two share cells
-// found alike become one (a walk with no steps makes no cycle)
-function term_same(x: HTerm, y: HTerm, dep: number): boolean {
+// two raw terms equal as written: nothing unfolds or steps, so it costs
+// at most their size; two share cells found equal become one
+function term_compare_raw(x: HTerm, y: HTerm, dep: number): boolean {
   const a = term_strip(x);
   const b = term_strip(y);
   if (a === b) {
     return true;
   }
   if (x.$ === "Var" && x.i < 0 && y.$ === "Var" && y.i < 0) {
-    const same = term_same(a, b, dep);
+    const same = term_compare_raw(a, b, dep);
     if (same) {
       y.v = x.v;
     }
@@ -3161,8 +3160,8 @@ function term_same(x: HTerm, y: HTerm, dep: number): boolean {
     case "Var": return b.$ === "Var" && a.i === b.i;
     case "Ref": return b.$ === "Ref" && a.k === b.k;
     case "Lit": return b.$ === "Lit" && a.k === b.k && a.v === b.v;
-    case "App": return b.$ === "App" && term_same(a.f, b.f, dep) && term_same(a.x, b.x, dep);
-    case "Ctr": return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length && a.x.every((x, j) => term_same(x, b.x[j], dep));
+    case "App": return b.$ === "App" && term_compare_raw(a.f, b.f, dep) && term_compare_raw(a.x, b.x, dep);
+    case "Ctr": return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length && a.x.every((x, j) => term_compare_raw(x, b.x[j], dep));
     default: return false;
   }
 }
@@ -3178,14 +3177,14 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
   if (lhs === rhs) {
     return true;
   }
-  if (ASKED) {
-    ASKED = false;
+  if (RAW_FAILED) {
+    RAW_FAILED = false;
   } else if (book !== RIGID && FUEL > 0 && (lhs.$ === "App" || lhs.$ === "Ref" || lhs.$ === "Var")) {
-    if (term_same(lhs, rhs, dep)) {
+    if (term_compare_raw(lhs, rhs, dep)) {
       return true;
     }
     FUEL -= 1;
-    ASKED = true;
+    RAW_FAILED = true;
     const same = compare_go(mode, book, lhs, rhs, dep);
     FUEL += 1;
     return same;
