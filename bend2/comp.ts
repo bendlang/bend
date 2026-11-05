@@ -2706,7 +2706,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 // WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
 
 function c_units(): Unit[] {
-  for (const [k, tld] of [...done_defs(), ...done_defs(def_foreign)]) {
+  for (const [k, tld] of done_defs(fun_runs)) {
     const unit = () => FL.units.get(k) ?? unit_new(k, () => {
       const [dl, vals] = emit_open(k);
       FL.unit!.segs.push(dl.seg);
