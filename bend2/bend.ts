@@ -2057,8 +2057,8 @@ const INFIX: Record<string, [number, Bool, Name]> = {
   "%":   [11, false, ".mod"],
 };
 
-// the first characters of the operators: a term ends at any other
-const INFIX_HEADS = Object.keys(INFIX).map((op) => op[0]).join("");
+// Every INFIX key starts with one of these, so a term ends at any other.
+const INFIX_HEADS = "<-&|>.+*/%";
 
 export function parse_nl(p: Parse): boolean {
   for (let j = p.pos - 1; j >= 0; j--) {
