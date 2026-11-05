@@ -1639,7 +1639,7 @@ export function parse_lexeme(p: Parse): Name {
     p.pos += 1;
   }
   const k = p.str.slice(beg, p.pos);
-  if (k.includes(".") && !/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
+  if (k.includes(".") && /\.(?![A-Za-z_])/.test(k)) {
     parse_fail(p, "a name (words joined by dots, got '" + k + "')", beg);
   }
   return k;
