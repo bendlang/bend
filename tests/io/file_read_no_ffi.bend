@@ -1,5 +1,5 @@
 # File.read, read_line, read_bytes and read_at once read through
-# io_sys(), which binds libc's read and pread through bun:ffi. On a host
+# io_sys(), which bound libc's read and pread through bun:ffi. On a host
 # without it (node) the first ask threw and the run ended. They read
 # through fs now; the twin makes io_sys() throw for the reads and puts it
 # back after (see file_read_no_ffi.js), so a read that still asked for
