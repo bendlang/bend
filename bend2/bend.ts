@@ -1639,7 +1639,7 @@ export function parse_lexeme(p: Parse): Name {
     p.pos += 1;
   }
   const k = p.str.slice(beg, p.pos);
-  if (!/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
+  if (k.includes(".") && !/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
     parse_fail(p, "a name (words joined by dots, got '" + k + "')", beg);
   }
   return k;
@@ -2057,6 +2057,9 @@ const INFIX: Record<string, [number, Bool, Name]> = {
   "%":   [11, false, ".mod"],
 };
 
+// the first characters of the operators: a term ends at any other
+const INFIX_HEADS = Object.keys(INFIX).map((op) => op[0]).join("");
+
 export function parse_nl(p: Parse): boolean {
   for (let j = p.pos - 1; j >= 0; j--) {
     const c = p.str[j];
@@ -2132,6 +2135,9 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
       parse_close(p, n0);
       out = Lam(x.k, x.i, f, x.s, x.q);
       continue;
+    }
+    if (!INFIX_HEADS.includes(p.str[p.pos] ?? "")) {
+      return out;
     }
     let op = p.str.slice(p.pos, p.pos + 3);
     while (op !== "" && INFIX[op] === undefined) {
