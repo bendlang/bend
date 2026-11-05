@@ -335,7 +335,7 @@ export type Body  = Match | Local | LTerm
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; };
-export type Parse = File & { book: Book; dir: string; pos: number; stk: Array<[Name, number]>; idx: Map<Name, number[]>; frs: number; };
+export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; };
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
@@ -1688,25 +1688,25 @@ export function parse_open(p: Parse, k: Name): number {
 }
 
 export function parse_push(p: Parse, k: Name, i: number): void {
-  p.stk.push([k, i]);
-  const is = p.idx.get(k);
+  let is = p.idx.get(k);
   if (is === undefined) {
-    p.idx.set(k, [i]);
-  } else {
-    is.push(i);
+    is = [];
+    p.idx.set(k, is);
   }
+  is.push(i);
+  p.stk.push(is);
 }
 
 export function parse_close(p: Parse, n: number): void {
   while (p.stk.length > n) {
-    p.idx.get(p.stk.pop()![0])!.pop();
+    p.stk.pop()!.pop();
   }
 }
 
 export function parse_var(p: Parse, k: Name, s?: Span): LTerm {
-  const is = p.idx.get(k);
-  if (is !== undefined && is.length > 0) {
-    return Var(k, is[is.length - 1], s);
+  const i = p.idx.get(k)?.at(-1);
+  if (i !== undefined) {
+    return Var(k, i, s);
   }
   const q = parse_reso(p, k);
   if (k.includes(".")) {
