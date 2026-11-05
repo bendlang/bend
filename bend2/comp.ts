@@ -3405,6 +3405,7 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 #define H_GROUPS     (H_CURSOR + 2)
 #define H_ROOT_DONE  (2 * LINE)
 #define H_ERROR_CODE (3 * LINE)
+#define H_VIEW       (3 * LINE + 1)
 #define H_ROOT_WORD  (4 * LINE)
 #define H_BANK       (H_ROOT_WORD + WL_RESW)
 
@@ -3949,36 +3950,45 @@ INLINE u32 blk_span(Term t) {
   return blk_wcls(term_tag(t) == TAG_ARR, blk_cls(t));
 }
 
-#if !DEVICE
-static void* view_map(u64 bytes) {
-  void* p = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
-    MAP_PRIVATE | MAP_ANON | MAP_NORESERVE, -1, 0);
-  if (p == MAP_FAILED) { abort(); }
-  return p;
-}
-#endif
-#define blk_view(t) (!DEVICE && (term_aux(t) & 32))
-#if !DEVICE
-static _Atomic u64* VIEW_BITS;
-__attribute__((constructor)) static void view_init(void) {
-  VIEW_BITS = view_map(1ull << 37);
-}
+#define blk_view(t) (term_aux(t) & 32)
+// the midpoint bits, one per heap word: in the heap past the banks with a
+// GPU (H[H_VIEW] is their u32 offset), else a mapping of their own
+#if DEVICE
+#define VIEW_AT(H) ((DEV u32*)(H) + (H)[H_VIEW])
+#else
+static u32* VIEW_BITS;
+#define VIEW_AT(H) VIEW_BITS
 #endif
 // a view's sibling sets its parent's midpoint bit; the second to die climbs
-INLINE void view_free(Env e, Term t) {
-#if !DEVICE
-  u32 s = blk_span(t), r = (term_aux(t) >> 6) & 31;
-  u64 loc = term_loc(t);
-  while (s < r) {
-    u64 up = loc & ~((2ull << s) - 1), mid = up + (1ull << s), bit = 1ull << (mid & 63);
-    if (!(atomic_fetch_xor_explicit(&VIEW_BITS[mid >> 6], bit, memory_order_acq_rel) & bit)) {
+INLINE void view_drop(Env e, u32 s, u32 r, u64 loc) {
+  for (; s < r; s += 1) {
+    u64 up = loc & ~((2ull << s) - 1), mid = up + (1ull << s) - HEAP_OFF;
+    DEV u32* p = VIEW_AT(e.mem) + (mid >> 5);
+    u32 bit = 1u << (mid & 31);
+    FENCE();
+    if (!(atomic_fetch_xor_explicit(A32(p), bit, REL) & bit)) {
       return;
     }
+    a32_acq(p);
     loc = up;
-    s += 1;
   }
   heap_free(e, r, loc);
-#endif
+}
+#define view_free(e, t) view_drop(e, blk_span(t), (term_aux(t) >> 6) & 31, term_loc(t))
+
+// a view of terms moves its cells to a block of its own and gives the view
+// back, so a drop only walks whole blocks
+OUTLINE Term view_own(Env e, Term t) {
+  u32 c = blk_cls(t);
+  u64 n = heap_alloc(e, c);
+  if (err_seen(e.mem)) {
+    return term_blk(0, 0, n);
+  }
+  for (u64 j = 0; j < 1ull << c; j += 1) {
+    e.mem[n + j] = e.mem[term_loc(t) + j];
+  }
+  view_free(e, t);
+  return term_blk(true, c, n);
 }
 
 // A node is freed before its last live child, its spine swapped last. An end
@@ -4002,16 +4012,11 @@ FAR void term_drop(Env e, Term t) {
     }
     if (!term_triv(t)) {
       u64 tag = term_tag(t);
+      if (tag == TAG_ARR && blk_view(t)) {
+        t = view_own(e, t);
+      }
       if (tag == TAG_BUF) {
         blk_view(t) ? view_free(e, t) : heap_free(e, blk_span(t), term_loc(t));
-#if !DEVICE
-      } else if (tag == TAG_ARR && blk_view(t)) {
-        u64 at = term_loc(t);
-        for (u64 j = 0; j < 1ull << blk_cls(t); j += 1) {
-          if (!term_triv(H[at + j])) { term_drop(e, H[at + j]); }
-        }
-        view_free(e, t);
-#endif
       } else {
         u32 aux = term_aux(t);
         u64 loc = term_loc(t);
@@ -4242,8 +4247,12 @@ __attribute__((always_inline)) INLINE Term blk_half(Env e, Term a, u32 hi) {
   u32 cw = blk_wcls(arr, c);
   if (arr || c > 0) {
 #if !DEVICE
-    u32 r = blk_view(a) ? (term_aux(a) >> 6) & 31 : blk_span(a);
-    if (!blk_shr(a) && (r - cw <= 4 || cw < 3)) {
+    // a block is split in place only when aligned to its own size, as the
+    // midpoint bits need: the device's large blocks are aligned to a page
+    bool v = blk_view(a);
+    u32  r = v ? (term_aux(a) >> 6) & 31 : blk_span(a);
+    if (!blk_shr(a) && (r - cw <= 4 || cw < 3)
+      && (v || !(term_loc(a) & ((1ull << r) - 1)))) {
       return term_make(arr ? TAG_ARR : TAG_BUF, c | 32 | (r << 6), term_loc(a) + ((u64)hi << cw));
     }
 #endif
@@ -5351,7 +5360,7 @@ static void* corpus_map(u64 size) {
 
 static void corpus_lay(u64* H, u64 size) {
   u64 span = size / 8;
-  u64 cap  = span > HEAP_OFF ? (span - HEAP_OFF) / (PAGE_LEN + 10) : 0;
+  u64 cap  = span > HEAP_OFF ? (span - HEAP_OFF) / (PAGE_LEN + (io_gpu ? 12 : 10)) : 0;
   if (cap <= CUBE) {
     err_fail("the GPU span is under the rings, stacks and a page per lane");
   }
@@ -5362,6 +5371,11 @@ static void corpus_lay(u64* H, u64 size) {
     memcpy(H + at, H + b->off, b->wr * sizeof(u64));
     b->off  = at;
     at     += 2 * (cap >> ((c < NCLS ? NCLS : c) - PAGE_BITS));
+  }
+  // a GPU's heap is laid once, and its midpoint bits follow the banks
+  if (io_gpu) {
+    H[H_VIEW] = 2 * at;
+    VIEW_BITS = (u32*)(H + at);
   }
   corpus_size = size;
   a32_store_rel(a32_at(H, H_CAP), (u32)cap);
@@ -5389,6 +5403,13 @@ static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   u64* H     = CORPUS;
   corpus_lay(H, size);
+  if (!gpu) {
+    VIEW_BITS = mmap(NULL, 1ull << 37, PROT_READ | PROT_WRITE,
+      MAP_PRIVATE | MAP_ANON | MAP_NORESERVE, -1, 0);
+    if (VIEW_BITS == MAP_FAILED) {
+      err_fail("the view bits' reservation failed");
+    }
+  }
   memcpy(H + STAT_OFF, STAT_IMG, STAT_LEN * sizeof(u64));
   a32_store(a32_at(H, H_BUMP), 1);
   if (gpu) {
