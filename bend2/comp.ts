@@ -3400,7 +3400,7 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 #if !DEVICE
 
 static u64*    CORPUS;
-static u64    ALC[CUBE_T + 1][3 * NCLS_ALL] __attribute__((aligned(128)));
+static u64    ALC[CUBE_T][3 * NCLS_ALL] __attribute__((aligned(128)));
 static u32    KEEP_WORDS;
 static u32    CUBE_LOG = 7;
 static u32    bank_lock;
@@ -5458,7 +5458,7 @@ static void io_park_add(IoWork* w) {
     }
     io_push(&p, w);
   }
-  w->prev       = w->next == w ? w : w->next->prev;
+  w->prev       = w->next->prev;
   w->next->prev = w;
 }
 
@@ -6250,7 +6250,7 @@ function io_sys() {
     const vari = mac && process.arch === "arm64";
     const lib = ffi.dlopen(mac ? "libSystem.dylib" : "libc.so.6",
       Object.fromEntries(("socket:iii>i bind:ipu>i listen:ii>i connect:ipu>i"
-        + " accept:ipp>i send:ipUi>I recv:ipUi>I read:ipU>I pread:ipUI>I"
+        + " accept:ipp>i send:ipUi>I recv:ipUi>I read:ipU>I"
         + " sendto:ipUipu>I recvfrom:ipUipp>I close:i>i setsockopt:iiipu>i"
         + " " + sel + ":ipppp>i"
         + " fcntl:iii" + (vari ? "iiiiii" : "") + ">i getsockopt:iiipp>i"
