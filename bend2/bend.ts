@@ -3548,60 +3548,25 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
 }
 
 // term_check_kind for a binder's T that bend2 built and checked (a value's
-// inferred type, a goal's domain): its kind is read off its head, so a
-// lambda substituted into it (infer-app's B(a)) is not checked again.
-// Only a reading that misses the goal takes the full check, for its error
+// inferred type, a goal's domain): T's kind is read through its head's
+// declared type, so a lambda substituted into T (infer-app's B(a)) is not
+// checked again. An argument enters only as a quantity literal, else as a
+// fresh variable, so nothing unchecked is normalized. A miss, or another
+// head, takes the full check, for its error
 export function term_check_bound(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Name, ctx: Ctx, d: number, s?: Span): void {
-  const r = term_kind(book, T, ctx, d);
-  if (r === null || !term_compare("LE", book, term_wnf(book, r[0]), Typ(Qua(lhs_kind(lhs, q))), r[1])) {
+  const t = term_force(T);
+  const [h, xs] = t.$ === "ADT" ? [t, t.x] : term_unapply(t);
+  const tld = h.$ === "ADT" || h.$ === "Ref" ? book.tlds[h.k] : undefined;
+  let K = h.$ === "Eql" ? Typ<HBody>(Qua(Many())) : tld === undefined || tld.$ === "Def" && (h.$ === "ADT" || tld.x > 0) ? null : tld.T;
+  let i = d;
+  for (const x of xs) {
+    const o = K === null ? null : tele_open(book, K);
+    const v = term_force(x);
+    K = o === null ? null : o.B(v.$ === "Qua" ? v : Var(o.k, i++));
+  }
+  if (K === null || !term_compare("LE", book, term_wnf(book, K), Typ(Qua(lhs_kind(lhs, q))), i)) {
     term_check_kind(book, lhs, T, q, k, ctx, d, s);
   }
-}
-
-// the type of a well-formed T, from its head as term_infer gives it, but
-// with no argument checked: an argument goes into the head's telescope
-// only if it is a quantity literal, else a fresh variable from d up does,
-// so nothing unchecked is normalized. [type, next fresh] or null
-export function term_kind(book: Book, T: HTerm, ctx: Ctx, d: number): [HTerm, number] | null {
-  const t = term_force(T);
-  const tld = t.$ === "Ref" || t.$ === "ADT" ? book.tlds[t.k] : undefined;
-  switch (t.$) {
-    case "Var": {
-      const ann = pmap_get(ctx, t.i);
-      return ann === null ? null : [ann.T, d];
-    }
-    case "Ref": {
-      return tld === undefined || tld.$ === "ADT" ? (tld?.n === 0 ? [tld.T, d] : null) : tld.x > 0 ? null : [tld.T, d];
-    }
-    case "ADT": {
-      return tld?.$ !== "ADT" || tld.n !== t.x.length ? null : t.x.reduce(kind_app(book), [tld.T, d] as [HTerm, number] | null);
-    }
-    case "App": {
-      return kind_app(book)(term_kind(book, t.f, ctx, d), t.x);
-    }
-    case "Eql": {
-      return [Typ(Qua(Many())), d];
-    }
-    case "Ann": {
-      return [t.T, d];
-    }
-    case "All":
-    case "Typ":
-    case "Qnt": {
-      return [Typ(Qua(Lone())), d];
-    }
-    default: {
-      return null;
-    }
-  }
-}
-
-function kind_app(book: Book): (r: [HTerm, number] | null, x: HTerm) => [HTerm, number] | null {
-  return (r, x) => {
-    const o = r === null ? null : tele_open(book, r[0]);
-    const v = term_force(x);
-    return r === null || o === null ? null : v.$ === "Qua" ? [o.B(v), r[1]] : [o.B(Var(o.k, r[1])), r[1] + 1];
-  };
 }
 
 export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Quant, s: Span | undefined, def?: Name): Uses {
