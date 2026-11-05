@@ -3547,12 +3547,7 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
   }
 }
 
-// term_check_kind for a binder's T that bend2 built and checked (a value's
-// inferred type, a goal's domain): T's kind is read through its head's
-// declared type, so a lambda substituted into T (infer-app's B(a)) is not
-// checked again. An argument enters only as a quantity literal, else as a
-// fresh variable, so nothing unchecked is normalized. A miss, or another
-// head, takes the full check, for its error
+// term_check_kind for an already-checked T: reads its kind off its head's declared type, else checks it in full
 export function term_check_bound(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Name, ctx: Ctx, d: number, s?: Span): void {
   const t = term_force(T);
   const [h, xs] = t.$ === "ADT" ? [t, t.x] : term_unapply(t);
