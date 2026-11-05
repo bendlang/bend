@@ -2057,8 +2057,20 @@ const INFIX: Record<string, [number, Bool, Name]> = {
   "%":   [11, false, ".mod"],
 };
 
-// Every INFIX key starts with one of these, so a term ends at any other.
-const INFIX_HEADS = "<-&|>.+*/%";
+// The INFIX keys by first character, longest first, so the first that
+// matches is the operator, and a term ends where none does.
+const INFIX_BY_HEAD: Record<string, string[]> = {
+  "<": ["<&>", "<-", "<=", "<>", "<<", "<"],
+  "-": ["->", "-"],
+  "&": ["&&", "&"],
+  "|": ["||", "|"],
+  ">": [">=", ">>", ">"],
+  ".": [".|.", ".^.", ".&."],
+  "+": ["++", "+"],
+  "*": ["*"],
+  "/": ["/"],
+  "%": ["%"],
+};
 
 export function parse_nl(p: Parse): boolean {
   for (let j = p.pos - 1; j >= 0; j--) {
@@ -2136,14 +2148,8 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
       out = Lam(x.k, x.i, f, x.s, x.q);
       continue;
     }
-    if (!INFIX_HEADS.includes(p.str[p.pos] ?? "")) {
-      return out;
-    }
-    let op = p.str.slice(p.pos, p.pos + 3);
-    while (op !== "" && INFIX[op] === undefined) {
-      op = op.slice(0, -1);
-    }
-    if (op === "") {
+    const op = INFIX_BY_HEAD[parse_peek(p)]?.find((o) => p.str.startsWith(o, p.pos));
+    if (op === undefined) {
       return out;
     }
     const [prc, right, k] = INFIX[op];
