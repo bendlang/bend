@@ -809,10 +809,9 @@ function lay_arr(lay: Lay) {
 // ===
 
 function ctr_adt(x: Of<"Ctr">, ty: HTerm | null): [Of<"ADT">, number | null] {
-  const adt = adt_of(ty ?? tele_unbind(FL.book.ctrs[x.k].T).ret);
-  if (ty === null && adt.x.length > 0) {
-    die("a constructor outside a datatype");
-  }
+  const f = FL.book.ctrs[x.k].f;
+  if (!ty && FL.book.tlds[f].n) die("a constructor outside a datatype");
+  const adt = adt_of(ty ?? Bend.ADT(f, []));
   return [adt, adt.k === "U32" || adt.k === "F32"
     ? Bend.u32_from_term(x, adt.k) : null];
 }
