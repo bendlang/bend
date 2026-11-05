@@ -4193,6 +4193,16 @@ INLINE Term blk_node(Env e, Term l, Term r) {
     err_post(H, ERR_TAGS);
     return l;
   }
+#if !DEVICE
+  // two live halves side by side in one block are its view at their parent,
+  // or the block itself at its root: no sibling died, so no bit is set
+  u32 s = blk_span(l), rt = (term_aux(l) >> 6) & 31;
+  u64 at = term_loc(l);
+  if (blk_view(l) && blk_view(r) && !blk_shr(l) && !blk_shr(r)
+    && !(at & ((2ull << s) - 1)) && term_loc(r) == at + (1ull << s)) {
+    return term_make(term_tag(l), s + 1 < rt ? (c + 1) | 32 | (rt << 6) : c + 1, at);
+  }
+#endif
   u64 pl = blk_loc(H, l);
   u64 pr = blk_loc(H, r);
   BLK_ALLOC(n, arr ? c + 1 : c)
