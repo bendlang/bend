@@ -971,9 +971,7 @@ function book_promises(book: Bend.Book): Array<[string, string[]]> {
   if (unsafe.length === 0 && foreign.length === 0) {
     return [];
   }
-  const roots: Array<[string, string[]]> = [
-    ["@unsafe", unsafe], ["foreign effects", foreign]];
-  const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
+  const own = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
   const uses: Record<string, string[]> = Object.create(null);
   const reach = new Set(own);
   for (const k of reach) {
@@ -992,7 +990,7 @@ function book_promises(book: Bend.Book): Array<[string, string[]]> {
       }
     }
   }
-  return roots.flatMap(([on, ks]) => {
+  return ([["@unsafe", unsafe], ["foreign effects", foreign]] as const).flatMap(([on, ks]) => {
     const bad = new Set(ks);
     for (const k of bad) {
       uses[k]?.forEach((j) => bad.add(j));
