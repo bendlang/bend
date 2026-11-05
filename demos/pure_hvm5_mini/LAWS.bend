@@ -7,7 +7,7 @@
 # PROOF.bend proves them.
 
 import Base
-import ./main.bend as Hvm
+import ./core.bend as Hvm
 
 # LAW: the lexer loses nothing: for any source and any head class,
 # the word at the head and the rest re-form the source.

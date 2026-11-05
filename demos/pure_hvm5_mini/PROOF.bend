@@ -1,4 +1,4 @@
-# HVM5 in Bend -- the proofs. This file imports the interpreter (as
+# HVM5 in Bend -- the proofs. This file imports the core (as
 # Hvm) and the claims (as Laws) and fills every law. word_joins is an
 # induction over the source: a name character is put back by go_cat
 # (the head over the re-joined rest) and the rest is the induction
@@ -12,7 +12,7 @@
 # source and the position; the closed laws compute.
 
 import Base
-import ./main.bend as Hvm
+import ./core.bend as Hvm
 import ./LAWS.bend as Laws
 
 # The lexer
