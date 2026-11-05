@@ -1701,6 +1701,9 @@ export function parse_close(p: Parse, n: number): void {
   while (p.stk.length > n) {
     p.stk.pop()!.pop();
   }
+  if (p.stk.length === 0 && p.idx.size > 4096) {
+    p.idx.clear();
+  }
 }
 
 export function parse_var(p: Parse, k: Name, s?: Span): LTerm {
