@@ -2720,7 +2720,6 @@ function c_units(): Unit[] {
       : FL.lazy.set(seg_fid(k), unit);
   }
   do {
-    // forward finds the callees, backward lets a fact climb a chain at once
     while (FL.stale.size > 0) {
       const run = (u: Unit) => FL.stale.has(u) && unit_emit(u);
       FL.units.forEach(run);
@@ -2729,7 +2728,6 @@ function c_units(): Unit[] {
     const us = [...FL.units.values()];
     const lent = graph_close(new Set(us.flatMap((u) => [...u.lent])),
       us.flatMap((u) => u.lends.map(([at, r]) => [r, at])));
-    // a borrowed parameter some unit read, as only those have an own reader
     for (const key of FL.when.keys()) {
       if (key.startsWith("own ") && !lent.has(key.slice(4))) {
         fact_add("own", key.slice(4));
