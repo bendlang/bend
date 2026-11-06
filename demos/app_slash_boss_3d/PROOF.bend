@@ -137,5 +137,8 @@ def Laws.pause_toggles():
 def Laws.dec_floor():
   {==}
 
+def Laws.dec_is_spec(x):
+  {==}
+
 def Laws.arrows_are_wasd():
   {==}

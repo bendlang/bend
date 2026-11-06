@@ -2,9 +2,9 @@
 # part the interpreter can evaluate without F32 arithmetic: the pause
 # freezes the world for any number of ticks, pausing twice restores
 # the pause state of any game, an Esc anywhere in a frame's events
-# quits, and the closed facts about the countdown, the key bits, the
-# pause toggle and the route back to the title. PROOF.bend proves
-# them.
+# quits, the game's countdown is SPEC.bend's for any count, and the
+# closed facts about the countdown, the key bits, the pause toggle and
+# the route back to the title. PROOF.bend proves them.
 
 import Base
 import ./bend3d.bend as R
@@ -68,6 +68,12 @@ law pause_toggles:
 # flash (7) falls to 6 (sanity).
 law dec_floor:
   {(Slash.Sim.dec(0), Slash.Sim.dec(7)) == (0, 6) : U32 & U32}
+
+# LAW: the game's countdown is SPEC.bend's for any count, so the
+# flash fades the way pause_freezes measures it.
+law dec_is_spec:
+  for +x: U32
+  {Slash.Sim.dec(x) == Spec.dec(x) : U32}
 
 # LAW: w a s d are the bits 1 2 4 8 of the held word, and the arrow
 # keys (up 63232, left 63234, down 63233, right 63235) are the same
