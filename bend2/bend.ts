@@ -3157,8 +3157,11 @@ function cell_class(t: Cell): Cell {
 }
 
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
+  if (lhs === rhs) {
+    return true;
+  }
   // two cells of one class were found EQ, and EQ implies LE
-  if (lhs === rhs || lhs.$ === "Var" && rhs.$ === "Var" && cell_class(lhs) === cell_class(rhs)) {
+  if (lhs.$ === "Var" && rhs.$ === "Var" && cell_class(lhs) === cell_class(rhs)) {
     return true;
   }
   let a = term_wnf(book, lhs);
