@@ -335,7 +335,7 @@ export type Body  = Match | Local | LTerm
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; };
-export type Parse = File & { book: Book; dir: string; pos: number; stk: Array<[Name, number]>; frs: number; };
+export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; };
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
@@ -1682,20 +1682,31 @@ export function parse_char(p: Parse): U32 {
 export function parse_open(p: Parse, k: Name): number {
   const i = p.frs++;
   if (k !== "_") {
-    p.stk.push([k, i]);
+    parse_push(p, k, i);
   }
   return i;
 }
 
+export function parse_push(p: Parse, k: Name, i: number): void {
+  let is = p.idx.get(k);
+  if (is === undefined) {
+    is = [];
+    p.idx.set(k, is);
+  }
+  is.push(i);
+  p.stk.push(is);
+}
+
 export function parse_close(p: Parse, n: number): void {
-  p.stk.length = n;
+  while (p.stk.length > n) {
+    p.stk.pop()!.pop();
+  }
 }
 
 export function parse_var(p: Parse, k: Name, s?: Span): LTerm {
-  for (let j = p.stk.length - 1; j >= 0; j--) {
-    if (p.stk[j][0] === k) {
-      return Var(k, p.stk[j][1], s);
-    }
+  const is = p.idx.get(k);
+  if (is !== undefined && is.length > 0) {
+    return Var(k, is[is.length - 1], s);
   }
   const q = parse_reso(p, k);
   if (k.includes(".")) {
@@ -1928,7 +1939,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
       parse_eat(p, ":");
       const n0 = p.stk.length;
       const xi = p.frs++;
-      p.stk.push(["_", xi]);
+      parse_push(p, "_", xi);
       const ei = parse_open(p, k);
       const P  = parse_term(p);
       parse_close(p, n0);
@@ -2577,7 +2588,7 @@ export function parse_def(p: Parse, u: Bool): void {
 }
 
 export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>): void {
-  const p: Parse = { book, dir, str: src, pos: 0, stk: [], frs: 0, ns, al };
+  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ns, al };
   while (true) {
     parse_skip(p);
     if (p.pos >= p.str.length) {
