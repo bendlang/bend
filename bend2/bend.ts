@@ -3561,6 +3561,23 @@ export function term_check_kind(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Nam
   }
 }
 
+// term_check_kind for an already-checked T: reads its kind off its head's declared type, else checks it in full
+export function term_check_bound(book: Book, lhs: LHS, T: HTerm, q: Quant, k: Name, ctx: Ctx, d: number, s?: Span): void {
+  const t = term_force(T);
+  const [h, xs] = t.$ === "ADT" ? [t, t.x] : term_unapply(t);
+  const tld = h.$ === "ADT" || h.$ === "Ref" ? book.tlds[h.k] : undefined;
+  let K = h.$ === "Eql" ? Typ<HBody>(Qua(Many())) : tld === undefined || tld.$ === "Def" && (h.$ === "ADT" || tld.x > 0) ? null : tld.T;
+  let i = d;
+  for (const x of xs) {
+    const o = K === null ? null : tele_open(book, K);
+    const v = term_force(x);
+    K = o === null ? null : o.B(v.$ === "Qua" ? v : Var(o.k, i++));
+  }
+  if (K === null || !term_compare("LE", book, term_wnf(book, K), Typ(Qua(lhs_kind(lhs, q))), i)) {
+    term_check_kind(book, lhs, T, q, k, ctx, d, s);
+  }
+}
+
 export function uses_close(book: Book, ctx: Ctx, us: Uses, i: U32, k: Name, q: Quant, s: Span | undefined, def?: Name): Uses {
   const o = pmap_get(us, i);
   const u = o ?? None();
@@ -3602,7 +3619,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       let q = t_wnf.q;
       if (tm.q?.$ === "Many" && q.$ === "Lone") {
         q = tm.q;
-        term_check_kind(book, lhs, t_wnf.A, q, tm.k, ctx, d, tm.s);
+        term_check_bound(book, lhs, t_wnf.A, q, tm.k, ctx, d, tm.s);
       }
       const f_ctx = ctx_bind(ctx, d, q, tm.k, t_wnf.A);
       const f_chk = term_check(book, f_lhs, tm.f(x), qt, t_wnf.B(x), f_ctx, d+1);
@@ -3624,7 +3641,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
         const v_dem = quant_dem(tm.q[j], qt);
         const v_inf = term_infer(book, lhs, tm.v[j], v_dem, ctx, d);
         if (lhs_kind(lhs, tm.q[j]).$ === "Many") {
-          term_check_kind(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
+          term_check_bound(book, lhs, v_inf.ty, tm.q[j], tm.k[j], ctx, d, tm.s);
         }
         vx.push(v_inf.tm);
         us = uses_add(us, v_inf.us);
