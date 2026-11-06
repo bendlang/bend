@@ -3411,6 +3411,10 @@ static u64    ALC[CUBE_T][3 * NCLS_ALL] __attribute__((aligned(128)));
 static u32    KEEP_WORDS;
 static u32    CUBE_LOG = 7;
 static u32    bank_lock;
+static u64*   FM_BITS;
+static u32*   FM_CNT;
+static u64*   FM_SUM;
+static u32    fm_cur[NCLS];
 
 static u32             pool_size;
 static u32             pool_row;
@@ -3732,6 +3736,12 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // KEEP_WORDS replace COLD and bank old COLD; blocks >= CAP_WORDS >=
 // KEEP_WORDS go straight to the bank. A miss takes COLD, the bank or fresh
 // memory. Devices bank at dev_cut.
+//
+// A bank pops LIFO, so a run's generations mix addresses round after round
+// and its cells end up scattered (#1007). The CPU heap lays small classes in
+// windows of one class (QUANTUM words) with a bitmap of free words: a host
+// miss pours a banked generation into it and takes the cells of a window
+// whose eighth is free, in address order. Frees and COLD stay O(1).
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))
@@ -3740,6 +3750,86 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 
 INLINE u32 cls_fit(u32 words) {
   return words > 1 ? 32 - clz(words - 1) : 0;
+}
+
+#define WIN_BITS 12
+#define WIN_MAX  (1ull << (32 - WIN_BITS + PAGE_BITS))
+
+#if !DEVICE
+
+INLINE void fm_put(u32 c, u64 loc) {
+  u64 off = loc - HEAP_OFF;
+  u64 win = off >> WIN_BITS;
+  __atomic_fetch_or(&FM_BITS[off >> 6], 1ull << (off & 63), __ATOMIC_RELEASE);
+  if (__atomic_add_fetch(&FM_CNT[win], 1, __ATOMIC_RELAXED)
+    == (1u << (WIN_BITS - c)) >> 3) {
+    __atomic_fetch_or(&FM_SUM[(c * WIN_MAX + win) >> 6], 1ull << (win & 63),
+      __ATOMIC_RELEASE);
+  }
+}
+
+static u32 fm_take(u64* H, u32 c, u64* got) {
+  u64* sum = FM_SUM + (c * WIN_MAX >> 6);
+  u64  nw  = (a32_load_acq(a32_at(H, H_BUMP)) >> (WIN_BITS - PAGE_BITS + 6))
+    + 1;
+  u64  at  = __atomic_load_n(&fm_cur[c], __ATOMIC_RELAXED);
+  for (u64 k = 0; k < nw; k += 1) {
+    u64 w = (at + k) % nw;
+    for (u64 bs; (bs = __atomic_load_n(&sum[w], __ATOMIC_RELAXED)) != 0;) {
+      u64 win = w << 6 | __builtin_ctzll(bs);
+      u64 bit = 1ull << (win & 63);
+      if (!(__atomic_fetch_and(&sum[w], ~bit, __ATOMIC_ACQ_REL) & bit)) {
+        continue;
+      }
+      __atomic_store_n(&FM_CNT[win], 0, __ATOMIC_RELAXED);
+      __atomic_store_n(&fm_cur[c], (u32)w, __ATOMIC_RELAXED);
+      u64* tail = got;
+      u32  n    = 0;
+      u64 j0 = win << (WIN_BITS - 6);
+      for (u64 j = j0; j < j0 + (1u << (WIN_BITS - 6)); j += 1) {
+        u64 m = __atomic_load_n(&FM_BITS[j], __ATOMIC_RELAXED);
+        m = m ? __atomic_exchange_n(&FM_BITS[j], 0, __ATOMIC_ACQUIRE) : 0;
+        for (; m != 0; m &= m - 1, n += 1) {
+          *tail = HEAP_OFF + (j << 6) + __builtin_ctzll(m);
+          tail  = &H[*tail];
+        }
+      }
+      *tail = 0;
+      if (n != 0) {
+        return n;
+      }
+    }
+  }
+  return 0;
+}
+
+static u32 fm_reuse(u64* H, u32 c, u64* got) {
+  u32 n = 0;
+  for (u64 g; FM_BITS && c < NCLS && !(n = fm_take(H, c, got))
+    && (g = bank_pop(H, c)) != 0;) {
+    for (u64 nx; g != 0; g = nx) {
+      nx = H[g];
+      fm_put(c, g);
+    }
+  }
+  return n;
+}
+
+#endif
+
+INLINE u32 heap_bump(DEV u64* H, u32 cls, u32 pages) {
+  DEV u32* at = a32_at(H, H_BUMP);
+#if !DEVICE
+  u32 a = 1u << (WIN_BITS - PAGE_BITS);
+  u32 p = a32_load(at);
+  while (FM_BITS && cls < NCLS) {
+    u32 q = (p + a - 1) & -a;
+    if (a32_cas(at, &p, q + pages)) {
+      return q;
+    }
+  }
+#endif
+  return a32_add(at, pages);
 }
 
 OUTLINE void heap_hand(Env e, u32 cls) {
@@ -3755,17 +3845,21 @@ OUTLINE void heap_hand(Env e, u32 cls) {
 OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
   DEV u64* H = e.mem;
   u64  got = 0;
-  if (!DEVICE) {
+  u32  n   = 0;
+#if !DEVICE
+  n = fm_reuse(H, cls, &got);
+  if (n == 0) {
     got = ALC_COLD(e, cls);
     ALC_COLD(e, cls) = 0;
   }
-  if (!got) {
+#endif
+  if (n == 0 && !got) {
     got = bank_pop(H, cls);
   }
-  u32 n = got ? KEEP(cls) : cls < NCLS ? QUANTUM >> cls : 1;
+  n = n ? n : got ? KEEP(cls) : cls < NCLS ? QUANTUM >> cls : 1;
   if (!got) {
     u32 pages = (n << cls) >> PAGE_BITS;
-    u32 p     = a32_add(a32_at(H, H_BUMP), pages);
+    u32 p     = heap_bump(H, cls, pages);
     if ((u64)p + pages > a32_load_acq(a32_at(H, H_CAP))
       && !corpus_grow(H, (u64)p + pages)) {
       err_post(H, ERR_HEAP);
@@ -5301,6 +5395,12 @@ static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   corpus_lay(H, size);
   memcpy(H + STAT_OFF, STAT_IMG, STAT_LEN * sizeof(u64));
   a32_store(a32_at(H, H_BUMP), 1);
+  u64* fm = gpu ? MAP_FAILED : pool_try(NULL, WIN_MAX * (NCLS / 8 + 516));
+  if (fm != MAP_FAILED) {
+    FM_SUM  = fm;
+    FM_BITS = fm + WIN_MAX * NCLS / 64;
+    FM_CNT  = (u32*)(FM_BITS + WIN_MAX * 64);
+  }
   if (gpu) {
     gpu_load(size);
   }
