@@ -4,21 +4,22 @@
 // A recv that finds nothing (the socket is non-blocking) parks until the
 // socket is readable. What it finds, read makes a String (io_text) or a
 // List of bytes (io_list).
+// max is a cap, not a size: one recv answers at most 64 KiB, as a short
+// read may, so a recv capped far above what arrived commits only 64 KiB
+// (File.read's twin, #1983).
 function tcp_recv_with(socket, max, k, read, at) {
   if (Number(max) === 0) {
     return io_tup(socket, io_ready(at, io_fail(22)));
   }
   const sys = io_sys();
   const fd = socket;
-  // recv(2) past INT32_MAX bytes answers EINVAL on macOS: cap as C does.
-  const len = Math.min(Number(max), 2147483647);
-  const b = new Uint8Array(len);
+  const b = new Uint8Array(Math.min(Number(max), 65536));
   const again = sys.mac ? 35 : 11;
   const intr = 4;
   const go = () => {
-    let n = Number(sys.recv(fd, sys.ptr(b), len, 0));
+    let n = Number(sys.recv(fd, sys.ptr(b), b.length, 0));
     while (n < 0 && sys.errno() === intr) {
-      n = Number(sys.recv(fd, sys.ptr(b), len, 0));
+      n = Number(sys.recv(fd, sys.ptr(b), b.length, 0));
     }
     if (n < 0) {
       const code = sys.errno();
