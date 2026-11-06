@@ -525,28 +525,59 @@ def Nat.name (d : Nat) : String :=
 def Term.show (d : Nat) : Term → String
   | Var i => Nat.name (d - i - 1)
   | Ref k => k
-  | Ann x T => "{" ++ Term.show d x ++ " : " ++ Term.show d T ++ "}"
-  | Let q v f => "!" ++ Quan.mark q ++ Nat.name d ++ " = " ++ Term.show d v ++ "; " ++ Term.show (d + 1) f
+  | Ann x T =>
+    let x := Term.show d x
+    let T := Term.show d T
+    "{" ++ x ++ " : " ++ T ++ "}"
+  | Let q v f =>
+    let v := Term.show d v
+    let f := Term.show (d + 1) f
+    "!" ++ Quan.mark q ++ Nat.name d ++ " = " ++ v ++ "; " ++ f
   | Typ (Lab "Q1") => "*1"
   | Typ (Lab "Q2") => "*2"
   | Typ q => "*(" ++ Term.show d q ++ ")"
   | Min a b => "(" ++ Term.show d a ++ " <&> " ++ Term.show d b ++ ")"
-  | All q A B => "∀" ++ Quan.mark q ++ Nat.name d ++ " : " ++ Term.show d A ++ " -> " ++ Term.show (d + 1) B
-  | Lam q f => "λ" ++ Quan.mark q ++ Nat.name d ++ " => " ++ Term.show (d + 1) f
-  | App q f x => "(" ++ Term.show d f ++ " " ++ Quan.mark q ++ Term.show d x ++ ")"
-  | Sig q A B => "Σ" ++ Quan.mark q ++ Nat.name d ++ " : " ++ Term.show d A ++ " -> " ++ Term.show (d + 1) B
-  | Tup q a b => "(" ++ Quan.mark q ++ Term.show d a ++ ", " ++ Term.show d b ++ ")"
-  | Prj h => "λ{(,): " ++ Term.show d h ++ "}"
+  | All q A B =>
+    let A := Term.show d A
+    let B := Term.show (d + 1) B
+    "∀" ++ Quan.mark q ++ Nat.name d ++ " : " ++ A ++ " -> " ++ B
+  | Lam q f =>
+    let f := Term.show (d + 1) f
+    "λ" ++ Quan.mark q ++ Nat.name d ++ " => " ++ f
+  | App q f x =>
+    let f := Term.show d f
+    let x := Term.show d x
+    "(" ++ f ++ " " ++ Quan.mark q ++ x ++ ")"
+  | Sig q A B =>
+    let A := Term.show d A
+    let B := Term.show (d + 1) B
+    "Σ" ++ Quan.mark q ++ Nat.name d ++ " : " ++ A ++ " -> " ++ B
+  | Tup q a b =>
+    let a := Term.show d a
+    let b := Term.show d b
+    "(" ++ Quan.mark q ++ a ++ ", " ++ b ++ ")"
+  | Prj h =>
+    let h := Term.show d h
+    "λ{(,): " ++ h ++ "}"
   | Enu ks => "<" ++ ", ".intercalate ks ++ ">"
   | Lab k => if k == "()" then k else "." ++ k
   | Mat k h m =>
     let k := if k == "()" then k else "." ++ k
-    "λ{" ++ k ++ ": " ++ Term.show d h ++ "; " ++ Term.show d m ++ "}"
+    let h := Term.show d h
+    let m := Term.show d m
+    "λ{" ++ k ++ ": " ++ h ++ "; " ++ m ++ "}"
   | Efq => "λ{}"
-  | Eql a b T => "{" ++ Term.show d a ++ " == " ++ Term.show d b ++ " : " ++ Term.show d T ++ "}"
+  | Eql a b T =>
+    let a := Term.show d a
+    let b := Term.show d b
+    let T := Term.show d T
+    "{" ++ a ++ " == " ++ b ++ " : " ++ T ++ "}"
   | Rfl => "{==}"
   | Rwt e P f =>
-    "%" ++ Term.show d e ++ " : " ++ Nat.name d ++ ", " ++ Nat.name (d + 1) ++ " => " ++ Term.show (d + 2) P ++ "; " ++ Term.show d f
+    let e := Term.show d e
+    let P := Term.show (d + 2) P
+    let f := Term.show d f
+    "%" ++ e ++ " : " ++ Nat.name d ++ ", " ++ Nat.name (d + 1) ++ " => " ++ P ++ "; " ++ f
 
 -- Parser
 -- ======
@@ -556,7 +587,8 @@ def Term.show (d : Nat) : Term → String
 
 def Parse.fail (e : String) : Parse α := do
   let b ← read
-  let s := (String.fromUTF8? (b.extract (← get) b.size)).getD ""
+  let i ← get
+  let s := (String.fromUTF8? (b.extract i b.size)).getD ""
   throw ("parse error: expected " ++ e ++ " at '" ++ (s.take 30).toString ++ "'")
 
 -- the first byte at or after i where p fails
@@ -567,17 +599,20 @@ partial def Parse.upto (p : Char → Bool) (b : ByteArray) (i : Nat) : Nat :=
 partial def Parse.gap (b : ByteArray) (i : Nat) : Nat :=
   if i < b.size then
     let c := Char.ofUInt8 b[i]!
-    if c == '#' then Parse.gap b (Parse.upto (· != '\n') b i)
+    if c == '#' then Parse.gap b (Parse.upto (fun c => c != '\n') b i)
     else if c.isWhitespace then Parse.gap b (i + 1)
     else i
   else i
 
 def Parse.skip : Parse Unit := do
-  modify (Parse.gap (← read))
+  let b ← read
+  modify (Parse.gap b)
 
 def Parse.peek : Parse Char := do
   Parse.skip
-  pure (Char.ofUInt8 ((← read)[← get]?.getD 32))
+  let b ← read
+  let i ← get
+  pure (if i < b.size then Char.ofUInt8 b[i]! else ' ')
 
 -- whether the text at i starts with w
 partial def Parse.at (b : ByteArray) (i : Nat) (w : String) (j : Nat := 0) : Bool :=
@@ -591,13 +626,15 @@ def Parse.sees (w : String) : Parse Bool := do
   pure (Parse.at (← read) (← get) w)
 
 def Parse.take (w : String) : Parse Bool := do
-  let ok ← Parse.sees w
-  if ok then
+  if ← Parse.sees w then
     modify (· + w.utf8ByteSize)
-  pure ok
+    pure true
+  else
+    pure false
 
 def Parse.eat (w : String) : Parse Unit := do
-  unless ← Parse.take w do
+  let ok ← Parse.take w
+  if !ok then
     Parse.fail ("'" ++ w ++ "'")
 
 def Parse.name : Parse String := do
@@ -630,9 +667,10 @@ mutual
 partial def Term.parse (vs : List String) : Parse Term := do
   let c ← Parse.peek
   if c.toNat ≥ 128 then
-    for w in ["∀", "Σ"] do
-      if ← Parse.sees w then
-        return ← Term.parse_bind vs w
+    if ← Parse.sees "∀" then
+      return ← Term.parse_bind vs "∀"
+    if ← Parse.sees "Σ" then
+      return ← Term.parse_bind vs "Σ"
     if ← Parse.sees "λ" then
       return ← Term.parse_lam vs
   match c with
@@ -640,14 +678,18 @@ partial def Term.parse (vs : List String) : Parse Term := do
   | '*' => Term.parse_typ vs
   | '!' => Term.parse_let vs
   | '(' => Term.parse_paren vs
-  | '<' => Parse.eat "<" *> Term.parse_enum []
+  | '<' =>
+    Parse.eat "<"
+    Term.parse_enum []
   | '.' => Lab <$> Parse.label true
   | '%' => Term.parse_rwt vs
   | _   => Term.parse_name vs
 
 partial def Term.parse_name (vs : List String) : Parse Term := do
   let k ← Parse.name
-  return ((vs.idxOf? k).map Var).getD (Ref k)
+  match vs.findIdx? (· == k) with
+  | some i => return Var i
+  | none   => return Ref k
 
 partial def Term.parse_brace (vs : List String) : Parse Term := do
   Parse.eat "{"
@@ -655,11 +697,16 @@ partial def Term.parse_brace (vs : List String) : Parse Term := do
     Parse.eat "}"
     return Rfl
   let a ← Term.parse vs
-  let b ← if ← Parse.take "==" then some <$> Term.parse vs else pure none
+  if ← Parse.take "==" then
+    let b ← Term.parse vs
+    Parse.eat ":"
+    let T ← Term.parse vs
+    Parse.eat "}"
+    return Eql a b T
   Parse.eat ":"
   let T ← Term.parse vs
   Parse.eat "}"
-  return (b.map (Eql a · T)).getD (Ann a T)
+  return Ann a T
 
 partial def Term.parse_typ (vs : List String) : Parse Term := do
   Parse.eat "*"
@@ -679,7 +726,8 @@ partial def Term.parse_let (vs : List String) : Parse Term := do
   Parse.eat "="
   let v ← Term.parse vs
   Parse.eat ";"
-  return Let q v (← Term.parse (k :: vs))
+  let f ← Term.parse (k :: vs)
+  return Let q v f
 
 partial def Term.parse_bind (vs : List String) (c : String) : Parse Term := do
   Parse.eat c
@@ -688,15 +736,21 @@ partial def Term.parse_bind (vs : List String) (c : String) : Parse Term := do
   Parse.eat ":"
   let A ← Term.parse vs
   Parse.eat "->"
-  return (if c == "∀" then All else Sig) q A (← Term.parse (k :: vs))
+  let B ← Term.parse (k :: vs)
+  return if c == "∀" then All q A B else Sig q A B
 
 partial def Term.parse_lam (vs : List String) : Parse Term := do
   Parse.eat "λ"
-  if !(← Parse.take "{") then
+  if ← Parse.take "{" then
+    Term.parse_match vs
+  else
     let q ← Quan.parse
     let k ← Parse.name
     Parse.eat "=>"
-    return Lam q (← Term.parse (k :: vs))
+    let f ← Term.parse (k :: vs)
+    return Lam q f
+
+partial def Term.parse_match (vs : List String) : Parse Term := do
   if ← Parse.take "}" then
     return Efq
   if ← Parse.take "(,)" then
@@ -718,29 +772,31 @@ partial def Term.parse_paren (vs : List String) : Parse Term := do
     return Lab "()"
   Term.parse_tup vs true
 
--- the rest of a parenthesis (top) or of a tuple, after a ","
+-- the rest of a parenthesis (top), or of a tuple after a ","
 partial def Term.parse_tup (vs : List String) (top : Bool) : Parse Term := do
   let q ← Quan.parse
   let a ← Term.parse vs
   if ← Parse.take "," then
-    return Tup q a (← Term.parse_tup vs false)
-  else if q != Q1 then
-    Parse.fail "a pair after a quantity mark"
-  else if !top then
-    Parse.eat ")"
-    return a
-  else if ← Parse.take "<&>" then
-    let b ← Term.parse vs
-    Parse.eat ")"
-    return Min a b
-  else
+    let b ← Term.parse_tup vs false
+    return Tup q a b
+  else if q == Q1 then
+    if !top then
+      Parse.eat ")"
+      return a
+    if ← Parse.take "<&>" then
+      let b ← Term.parse vs
+      Parse.eat ")"
+      return Min a b
     Term.parse_args vs a
+  else
+    Parse.fail "a pair after a quantity mark"
 
 partial def Term.parse_args (vs : List String) (f : Term) : Parse Term := do
   if ← Parse.take ")" then
     return f
   let q ← Quan.parse
-  Term.parse_args vs (App q f (← Term.parse vs))
+  let x ← Term.parse vs
+  Term.parse_args vs (App q f x)
 
 partial def Term.parse_enum (ks : List String) : Parse Term := do
   if ← Parse.take ">" then
@@ -761,7 +817,8 @@ partial def Term.parse_rwt (vs : List String) : Parse Term := do
   Parse.eat "=>"
   let P ← Term.parse (h :: x :: vs)
   Parse.eat ";"
-  return Rwt e P (← Term.parse vs)
+  let f ← Term.parse vs
+  return Rwt e P f
 
 end
 
@@ -776,7 +833,8 @@ partial def Book.parse_defs : Parse (List Def) := do
   let T ← Term.parse []
   Parse.eat "="
   let v ← Term.parse []
-  return ⟨k, T, v, o⟩ :: (← Book.parse_defs)
+  let ds ← Book.parse_defs
+  return ⟨k, T, v, o⟩ :: ds
 
 def Book.parse (s : String) : Res Book :=
   ((Book.parse_defs.run s.toUTF8).run' 0).map Book.of
@@ -820,7 +878,9 @@ def Term.wnf (ck : Book) (cl : Bool) : Nat → Term → List Arg → Term × Nat
     | _ => (Term.spine (Ref k) xs, n)
   | n + 1, t, xs =>
     match Term.fire ck cl n t [] xs with
-    | (some (t, e, xs), m) => Term.wnf ck cl (min m n) (Term.sub (Env.sub e) t) xs
+    | (some (t, e, xs), m) =>
+      let t := Term.sub (Env.sub e) t
+      Term.wnf ck cl (min m n) t xs
     | (none, m) => (Term.spine t xs, m)
 
 -- walks a def's case tree on a spine, binding its variables in the
@@ -830,23 +890,38 @@ def Term.run (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Opt
   | n + 1, t, e, xs =>
     match Term.fire ck cl n t e xs with
     | (some (t, e, xs), m) => Term.run ck cl (min m n) t e xs
-    | (none, m) => (if Term.takes t then none else some (Term.spine (Term.sub (Env.sub e) t) xs), m)
+    | (none, m) =>
+      if Term.takes t then
+        (none, m)
+      else
+        let t := Term.sub (Env.sub e) t
+        let t := Term.spine t xs
+        (some t, m)
 
 -- fires a λ or a λ-match on its next argument; a λ binds it in e, and
 -- a spine of a λ-match on a variable takes the variable's value
 def Term.fire (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Option Step × Nat
   | n, t@(App q f (Var v)), e, xs =>
-    (if Term.node t then some (f, e, (q, Env.sub e v) :: xs) else none, n)
+    if Term.node t then
+      (some (f, e, (q, Env.sub e v) :: xs), n)
+    else
+      (none, n)
   | n + 1, Lam q f, e, (_, x) :: xs =>
     let (x, m) := Term.val ck cl n q x
     (some (f, x :: e, xs), m)
   | n + 1, Prj h, e, (q, x) :: xs =>
     match Term.wnf ck cl n x [] with
-    | (Tup r a b, n) => (some (h, e, (Quan.fld r q, a) :: (q, b) :: xs), n)
+    | (Tup r a b, n) =>
+      let xs := (Quan.fld r q, a) :: (q, b) :: xs
+      (some (h, e, xs), n)
     | (_, n)         => (none, n)
   | n + 1, Mat k h m, e, (q, x) :: xs =>
     match Term.wnf ck cl n x [] with
-    | (Lab j, n) => (some (if j == k then (h, e, xs) else (m, e, (q, Lab j) :: xs)), n)
+    | (Lab j, n) =>
+      if j == k then
+        (some (h, e, xs), n)
+      else
+        (some (m, e, (q, Lab j) :: xs), n)
     | (_, n)     => (none, n)
   | n, _, _, _ => (none, n)
 
@@ -872,13 +947,17 @@ def Ctx.wnf (ck : Book) (c : Ctx) (t : Term) : Term :=
 -- the parts two weak heads must match on: the children of one former,
 -- as pairs; none when the heads differ. A λ+ matches a λ
 def Term.parts : Term → Term → Option (List (Term × Term))
-  | All q a b, All p c d | App q a b, App p c d
-  | Sig q a b, Sig p c d | Tup q a b, Tup p c d => if q = p then some [(a, c), (b, d)] else none
+  | All q A B, All p C D => if q = p then some [(A, C), (B, D)] else none
   | Lam q f,   Lam p g   => if q.lin = p.lin then some [(f, g)] else none
-  | Prj h,     Prj g     | Typ h, Typ g => some [(h, g)]
+  | App q f x, App p g y => if q = p then some [(f, g), (x, y)] else none
+  | Sig q A B, Sig p C D => if q = p then some [(A, C), (B, D)] else none
+  | Tup q a b, Tup p c d => if q = p then some [(a, c), (b, d)] else none
+  | Prj h,     Prj g     => some [(h, g)]
+  | Typ q,     Typ p     => some [(q, p)]
   | Min a b,   Min c d   => some [(a, c), (b, d)]
   | Mat k h m, Mat j g n => if k = j then some [(h, g), (m, n)] else none
-  | Eql a b T, Eql c d U | Rwt a b T, Rwt c d U => some [(a, c), (b, d), (T, U)]
+  | Eql a b T, Eql c d U => some [(a, c), (b, d), (T, U)]
+  | Rwt e P f, Rwt d Q g => some [(e, d), (P, Q), (f, g)]
   | a,         b         => if a = b then some [] else none
 
 -- a and b convert, lazily: they are equal, or their weak heads match
@@ -894,8 +973,9 @@ def Term.conv (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
       let (b, m) := Term.wnf ck cl (min m n) b []
       match Term.parts a b with
       | some ps =>
-        ps.foldl (fun (r : Bool × Nat) (p : Term × Term) =>
-          if r.1 then Term.conv ck (cl && !Term.binds a) (min r.2 n) p.1 p.2 else r) (true, min m n)
+        let go := fun (r : Bool × Nat) (p : Term × Term) =>
+          if r.1 then Term.conv ck (cl && !Term.binds a) (min r.2 n) p.1 p.2 else r
+        ps.foldl go (true, min m n)
       | none => (false, m)
 
 -- g is at least h, in the quantity order: .Q2 is the top, .Q0 and .Q1
@@ -1141,10 +1221,14 @@ def Term.check (ck : Book) : Nat → Ctx → Term → Term → Res Unit
   | n + 1, c, t@(App q f (Var i)), T =>
     if Term.node t then do
       let A ← Term.infer ck n c (Var i)
-      Term.check ck n c f (All q A (Term.ren (Ren.pick i) T))
-    else
-      Term.infer ck n c t >>= (Ctx.fit ck c · T)
-  | n + 1, c, t, T => Term.infer ck n c t >>= (Ctx.fit ck c · T)
+      let P := Term.ren (Ren.pick i) T
+      Term.check ck n c f (All q A P)
+    else do
+      let U ← Term.infer ck n c t
+      Ctx.fit ck c U T
+  | n + 1, c, t, T => do
+    let U ← Term.infer ck n c t
+    Ctx.fit ck c U T
 
 end
 
@@ -1165,12 +1249,33 @@ end
 -- the live uses of variable i in t
 def Term.uses : Term → Nat → Nat
   | Var j, i => if i == j then 1 else 0
-  | Ann x _, i | Prj x, i => Term.uses x i
-  | Let q v f, i => (if Quan.live q then Term.uses v i else 0) + Term.uses f (i + 1)
+  | Ann x _, i => Term.uses x i
+  | Let q v f, i =>
+    let v := if Quan.live q then Term.uses v i else 0
+    let f := Term.uses f (i + 1)
+    v + f
   | Lam _ f, i => Term.uses f (i + 1)
-  | App q f x, i => Term.uses f i + if Quan.live q then Term.uses x i else 0
-  | Tup q a b, i => (if Quan.live q then Term.uses a i else 0) + Term.uses b i
-  | Mat _ a b, i | Rwt a _ b, i | Min a b, i => Term.uses a i + Term.uses b i
+  | App q f x, i =>
+    let f := Term.uses f i
+    let x := if Quan.live q then Term.uses x i else 0
+    f + x
+  | Tup q a b, i =>
+    let a := if Quan.live q then Term.uses a i else 0
+    let b := Term.uses b i
+    a + b
+  | Prj h, i => Term.uses h i
+  | Mat _ h m, i =>
+    let h := Term.uses h i
+    let m := Term.uses m i
+    h + m
+  | Rwt e _ f, i =>
+    let e := Term.uses e i
+    let f := Term.uses f i
+    e + f
+  | Min a b, i =>
+    let a := Term.uses a i
+    let b := Term.uses b i
+    a + b
   | _, _ => 0
 
 -- A column's pattern: the pieces the def's case tree split open, each a
@@ -1189,8 +1294,9 @@ def Pat.ins : List Bool → Pat → Pat
 -- column j's pattern: split down to every variable the case tree bound in
 -- it and every label a match hit
 def Guard.pat (g : Guard) (j : Nat) : Pat :=
-  (g.tags.filterMap id ++ g.hits.map (·.1)).foldl (fun p (c, π) =>
-    if c == j then Pat.ins π.reverse p else p) .hole
+  let ps := (g.tags.filterMap id ++ g.hits.map (·.1)).filterMap fun (c, π) =>
+    if c == j then some π else none
+  ps.foldl (fun p π => Pat.ins π.reverse p) .hole
 
 -- x is the piece at π of column j as the case tree saw it: the variable it
 -- bound there, or the label a match hit there
@@ -1268,23 +1374,48 @@ def Term.called (g : Guard) (t : Term) : Bool :=
 
 -- the live check of a term; top is false on the head of an App
 def Term.live (g : Guard) : Bool → Term → Bool
-  | top, t@(App q f x) =>
-    (!top || Term.called g t) && Term.live g false f && (!Quan.live q || Term.live g true x)
-  | top, t@(Ref _) => !top || Term.called g t
-  | _, Ann x _ | _, Prj x => Term.live g true x
+  | top, App q f x =>
+    let s := !top || Term.called g (App q f x)
+    let f := Term.live g false f
+    let x := !Quan.live q || Term.live g true x
+    s && f && x
+  | top, Ref k => !top || Term.called g (Ref k)
+  | _, Ann x _ => Term.live g true x
   | _, Let q v f =>
-    Quan.allows q (Term.uses f 0) && (!Quan.live q || Term.live g true v) &&
-      Term.live (Guard.bind g none) true f
-  | _, Lam q f => Quan.allows q (Term.uses f 0) && Term.live (Guard.bind g none) true f
-  | _, Tup q a b => (!Quan.live q || Term.live g true a) && Term.live g true b
-  | _, Mat _ a b | _, Rwt a _ b | _, Min a b => Term.live g true a && Term.live g true b
+    let a := Quan.allows q (Term.uses f 0)
+    let v := !Quan.live q || Term.live g true v
+    let f := Term.live (Guard.bind g none) true f
+    a && v && f
+  | _, Lam q f =>
+    let a := Quan.allows q (Term.uses f 0)
+    let f := Term.live (Guard.bind g none) true f
+    a && f
+  | _, Tup q a b =>
+    let a := !Quan.live q || Term.live g true a
+    let b := Term.live g true b
+    a && b
+  | _, Prj h => Term.live g true h
+  | _, Mat _ h m =>
+    let h := Term.live g true h
+    let m := Term.live g true m
+    h && m
+  | _, Rwt e _ f =>
+    let e := Term.live g true e
+    let f := Term.live g true f
+    e && f
+  | _, Min a b =>
+    let a := Term.live g true a
+    let b := Term.live g true b
+    a && b
   | _, _ => true
 
 -- the live check of a def's case tree: ps are the pending arguments
 def Term.tree (g : Guard) (ps : List Tag) : Term → Bool
   | Lam q f =>
     let (p, g, ps) := Guard.next g ps (Quan.live q)
-    Quan.allows q (Term.uses f 0) && Term.tree (Guard.bind g p) ps f
+    let a := Quan.allows q (Term.uses f 0)
+    let f := Term.tree (Guard.bind g p) ps f
+    a && f
   | Prj h =>
     let (p, g, ps) := Guard.next g ps true
     let a := p.map (fun (j, π) => (j, false :: π))
@@ -1292,10 +1423,16 @@ def Term.tree (g : Guard) (ps : List Tag) : Term → Bool
     Term.tree g (a :: b :: ps) h
   | Mat k h m =>
     let (p, g, ps) := Guard.next g ps true
-    Term.tree { g with hits := p.toList.map (·, k) ++ g.hits } ps h && Term.tree g (p :: ps) m
+    let hits := p.toList.map (·, k) ++ g.hits
+    let h := Term.tree { g with hits := hits } ps h
+    let m := Term.tree g (p :: ps) m
+    h && m
   | Efq => true
   | t@(App _ f (Var v)) =>
-    if Term.node t then Term.tree g ((g.tags[v]?).join :: ps) f else Term.live g true t
+    if Term.node t then
+      Term.tree g ((g.tags[v]?).join :: ps) f
+    else
+      Term.live g true t
   | t => Term.live g true t
 
 -- Validator
@@ -1307,7 +1444,8 @@ def Def.check (bk tb : Book) (i : Nat) (d : Def) : Res Unit := do
   Term.check ck FUEL [] d.T T1
   Term.check ck FUEL [] d.v d.T
   Res.need (Term.ren Nat.succ d.v == d.v) "a closed def"
-  Res.need (Term.tree ⟨bk, i, [], [], []⟩ [] d.v) "affine live code, calls that descend"
+  let g : Guard := ⟨bk, i, [], [], []⟩
+  Res.need (Term.tree g [] d.v) "affine live code, calls that descend"
 
 -- tb is bk with every def transparent
 def Book.check_from (bk tb : Book) : Nat → List Def → Res Unit
