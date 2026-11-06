@@ -30,7 +30,7 @@ import * as Safe from "./safe.ts";
 // Constants
 // =========
 
-const VERSION = "2.0.39";
+const VERSION = "2.0.40";
 
 // BUILD tags a fork's bend after its version as semver build metadata:
 // "+win" prints bend <version>+win; upstream leaves it empty
