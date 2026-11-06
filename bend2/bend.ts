@@ -331,7 +331,8 @@ export type Case  = { p: Patt[]; f: Body };
 export type Rows  = Array<Case>;
 export type Match = { $: "Match"; e: LTerm[]; r: Rows; s?: Span };
 export type Local = { $: "Local"; k: Patt[]; q: Quant; v: LTerm[]; f: Body };
-export type Body  = Match | Local | LTerm
+export type Subs  = { i: number; v: Patt; t: number; n: Subs | null; x?: PMap<Subs> };
+export type Body  = Match | Local | LTerm | { $: "Subs"; u: Subs; f: Match | Local | LTerm }
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; };
@@ -2371,7 +2372,7 @@ export function parse_do_end(p: Parse): void {
 // Body
 // ----
 
-export function parse_body(p: Parse, col: number = 0): Body {
+export function parse_body(p: Parse, col: number = 0): Match | Local | LTerm {
   parse_skip(p);
   const beg = p.pos;
   if (parse_word(p, "match")) {
@@ -2706,28 +2707,79 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
 // later. a parallel let becomes one Let node binding its names to its
 // values. the + marks of a column's rows join into its binder (a +
 // lambda), or into its fields when a constructor row splits it.
+// a substitution is deferred: body_sub pushes x <- v onto its body's
+// Subs (newest first, shared by the rows), and body_force applies them
+// to one statement when flatten reaches it: a scrutinee or let value
+// takes, at each step, its binder's oldest entry newer than the last
+// applied, and a leaf is wrapped in every Sub, oldest innermost - the
+// terms one walk per substitution built, without walking the rest of
+// the body. subs_find indexes a Subs by binder once, on its nodes.
 
 export function body_sub(b: Body, i: number, v: Patt): Body {
-  function scrut(e: LTerm): LTerm {
-    if (e.$ === "Var") {
-      return e.i !== i ? e : patt_term(v, e.s);
-    } else {
-      return Sub(i, v, e);
+  const u = b.$ === "Subs" ? b.u : null;
+  return { $: "Subs", u: { i, v, t: u === null ? 0 : u.t + 1, n: u }, f: b.$ === "Subs" ? b.f : b };
+}
+
+export function subs_find(u: Subs | null, i: number): Subs | null {
+  const us: Subs[] = [];
+  let x = Emp<Subs>();
+  for (let w = u; w !== null; w = w.n) {
+    if (w.x !== undefined) {
+      x = w.x;
+      break;
     }
+    us.push(w);
   }
-  switch (b.$) {
+  for (let j = us.length - 1; j >= 0; j--) {
+    x = pmap_set(x, us[j].i, us[j]);
+    us[j].x = x;
+  }
+  return pmap_get(x, i);
+}
+
+export function subs_wrap(u: Subs | null, f: LTerm, t: number): LTerm {
+  const us: Subs[] = [];
+  for (let w = u; w !== null && w.t > t; w = w.n) {
+    us.push(w);
+  }
+  for (let j = us.length - 1; j >= 0; j--) {
+    f = Sub(us[j].i, us[j].v, f);
+  }
+  return f;
+}
+
+export function subs_term(u: Subs, e: LTerm): LTerm {
+  let t = -1;
+  while (e.$ === "Var") {
+    let c: Subs | null = null;
+    for (let w = subs_find(u, e.i); w !== null && w.t > t; w = subs_find(w.n, e.i)) {
+      c = w;
+    }
+    if (c === null) {
+      return e;
+    }
+    e = patt_term(c.v, e.s);
+    t = c.t;
+  }
+  return subs_wrap(u, e, t);
+}
+
+export function body_force(b: Body): Match | Local | LTerm {
+  if (b.$ !== "Subs") {
+    return b;
+  }
+  const u = b.u;
+  const f = b.f;
+  switch (f.$) {
     case "Match": {
-      const es = b.e.map(scrut);
-      const rs = b.r.map((row): Case => ({ p: row.p, f: body_sub(row.f, i, v) }));
-      return { $: "Match", e: es, r: rs, s: b.s };
+      const rs = f.r.map((row): Case => ({ p: row.p, f: { $: "Subs", u, f: body_force(row.f) } }));
+      return { $: "Match", e: f.e.map((e) => subs_term(u, e)), r: rs, s: f.s };
     }
     case "Local": {
-      const w = b.v.map(scrut);
-      const f = body_sub(b.f, i, v);
-      return { $: "Local", k: b.k, q: b.q, v: w, f };
+      return { $: "Local", k: f.k, q: f.q, v: f.v.map((e) => subs_term(u, e)), f: { $: "Subs", u, f: body_force(f.f) } };
     }
     default: {
-      return Sub(i, v, b);
+      return subs_wrap(u, f, -1);
     }
   }
 }
@@ -2841,7 +2893,8 @@ export function patt_term(q: Patt, s?: Span): LTerm {
   }
 }
 
-export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
+export function body_flatten(body: Body, vars: PVar[], fr: () => number): LTerm {
+  const b = body_force(body);
   switch (b.$) {
     case "Local": {
       if (b.k.length === 1 && b.k[0].$ === "PCtr") {
