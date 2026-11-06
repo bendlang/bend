@@ -9,6 +9,7 @@
 import Base
 import ./bend3d.bend as R
 import ./main.bend as Slash
+import ./SPEC.bend as Spec
 
 # LAW: a pause freezes the world: with no key tapped, any number of
 # ticks of a paused game (mode 4) leaves its time, its keys, the hero,
@@ -25,8 +26,8 @@ law pause_freezes:
   for +garb: Slash.Garb
   for +lens: Slash.Lens
   for +blast: Maybe<&2, Slash.Blast>
-  {Slash.Game.steps(n, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast})
-    == Slash.Game{time, held, 0, 4, hero, boss, Slash.Sim.fade(n, flash), cloth, garb, lens, blast}
+  {Spec.steps(n, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast})
+    == Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(n, flash), cloth, garb, lens, blast}
     : Slash.Game}
 
 # LAW: P twice restores the pause state of any game: paused stays
@@ -41,7 +42,7 @@ law esc_quits:
   for pre: List<Event>
   for post: List<Event>
   for g: Slash.Game
-  {Slash.Game.events(Slash.Game.cat(pre, Key{27, True{}} <> post), g) == None{}
+  {Slash.Game.events(Spec.cat(pre, Key{27, True{}} <> post), g) == None{}
     : Maybe<Slash.Game>}
 
 # LAW: K past the fight goes back to the title whatever else is

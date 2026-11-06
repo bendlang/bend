@@ -1108,33 +1108,6 @@ def Game.step(+g: Game) -> Game:
     (Sim.has(taps, 1024) || (U32.is_eq(mode, 4) && Sim.has(taps, 128))), U32.is_eq(mode, 1),
     (flash >= 6 : U32), g)
 
-# Spec
-# ----
-# What LAWS.bend measures: n ticks of the game (as the loop's
-# Live.steps runs them), n fades of a countdown, and a frame's events
-# joined.
-
-def Game.steps(n: Nat, +g: Game) -> Game:
-  match n:
-    case 0n:
-      g
-    case 1n+k:
-      Game.steps(k, Game.step(g))
-
-def Sim.fade(n: Nat, +x: U32) -> U32:
-  match n:
-    case 0n:
-      x
-    case 1n+k:
-      Sim.fade(k, Sim.dec(x))
-
-def Game.cat(a: List<Event>, b: List<Event>) -> List<Event>:
-  match a:
-    case Nil{}:
-      b
-    case e <> rest:
-      e <> Game.cat(rest, b)
-
 # Hero
 # ----
 
