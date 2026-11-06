@@ -11,6 +11,16 @@ import { formatBend } from "../formatter.js";
 // `case` or `def` header, `=>` lambda opener, `;`, `(` or parenthesized `,`
 // to that body's column. [source, formatted]
 const pinned = [
+  ...[0, 1, 2].flatMap((q) => [
+    [
+      `def main()->Quant:\n    (x=&0;&${q})\n`,
+      `def main() -> Quant:\n  (x = &0; &${q})\n`,
+    ],
+    [
+      `def main()->Quant:\n    (x=&0; &${q}) # quantity\n`,
+      `def main() -> Quant:\n  (x = &0; &${q})  # quantity\n`,
+    ],
+  ]),
   [
     "import Base\ndef main()->Result<&2,&2,U32,U32>:\n    x:Result<&2,&2,U32,U32,>=Done{19}\n    x\n",
     "import Base\ndef main() -> Result<&2, &2, U32, U32>:\n  x: Result<&2, &2, U32, U32, >= Done{19}\n  x\n",
