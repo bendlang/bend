@@ -83,7 +83,8 @@ type Intr = { C?: string | string[] | null; JS?: string };
 type Dom = [Bend.Quant, Name, HTerm];
 
 type Unit = { name: string; segs: Seg[]; n: number; lent: Set<string>;
-  lends: [string, string][]; clos: Set<string>; emit: () => void };
+  lends: [string, string][]; clos: Set<string>; emit: () => void;
+  wake: () => unknown };
 
 type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
@@ -1161,7 +1162,9 @@ function file_new(book: Bend.Book, js: boolean) {
     names: new Map<number, string>(),
     facts: new Set<string>(),
     heat: new Set<string>(),
-    when: new Map<string, (() => void)[]>(),
+    when: new Map<string, Set<() => unknown>>(),
+    lazy: new Map<string, () => void>(),
+    stale: new Set<Unit>(),
     units: new Map<string, Unit>(),
     unit: null as Unit | null,
     tabs: new Map<string, number>(),
@@ -1254,8 +1257,13 @@ function file_book(roots: Name[]): void {
   }
 }
 
-function fact(kind: string, k = ""): boolean {
-  return FL.facts.has(kind + " " + k);
+function fact(kind: string, k = "", w = FL.unit?.wake): boolean {
+  const key = kind + " " + k;
+  const has = FL.facts.has(key);
+  if (w && !has) {
+    memo(FL.when, key, () => new Set()).add(w);
+  }
+  return has;
 }
 
 function fact_add(kind: string, k = ""): boolean {
@@ -1264,15 +1272,13 @@ function fact_add(kind: string, k = ""): boolean {
     return false;
   }
   FL.facts.add(key);
-  FL.when.get(key)?.splice(0).forEach((f) => f());
+  FL.when.get(key)?.forEach((w) => w());
   return true;
 }
 
 function fact_when(kind: string, k: string, f: () => void): void {
-  if (fact(kind, k)) {
+  if (fact(kind, k, f)) {
     f();
-  } else {
-    memo(FL.when, kind + " " + k, () => []).push(f);
   }
 }
 
@@ -1395,6 +1401,7 @@ function seg_text(lines: string[], tab: number): string[] {
 
 function seg_ref(sc: Scope, fid: string): string {
   sc.seg.refs.add(fid);
+  FL.lazy.get(fid)?.();
   return fid;
 }
 
@@ -1701,12 +1708,14 @@ function memo<K, V>(m: { get(k: K): V | undefined; set(k: K, v: V): void },
 
 function unit_new(name: string, emit: () => void): Unit {
   // unit_emit fills the rest
-  const u = { name, emit } as Unit;
+  const u = { name, emit, wake: () => FL.stale.add(u) } as Unit;
   FL.units.set(name, u);
+  u.wake();
   return u;
 }
 
 function unit_emit(u: Unit): void {
+  FL.stale.delete(u);
   FL.folds.clear();
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
@@ -2696,9 +2705,8 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 // WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
 
 function c_units(): Unit[] {
-  for (const [k, tld] of [...done_defs().reverse(),
-    ...done_defs(def_foreign)]) {
-    unit_new(k, () => {
+  for (const [k, tld] of done_defs(fun_runs)) {
+    const unit = () => FL.units.get(k) ?? unit_new(k, () => {
       const [dl, vals] = emit_open(k);
       FL.unit!.segs.push(dl.seg);
       if (def_foreign(tld)) {
@@ -2707,19 +2715,24 @@ function c_units(): Unit[] {
         emit_body(dl, fun_of(k).h!, tld.T, vals, null);
       }
     });
+    k === "main" || FL.bangs.has(k) || FL.fids.has(k) ? unit()
+      : FL.lazy.set(seg_fid(k), unit);
   }
-  let was;
   do {
-    was = FL.facts.size;
-    FL.units.forEach(unit_emit);
+    while (FL.stale.size > 0) {
+      const run = (u: Unit) => FL.stale.has(u) && unit_emit(u);
+      FL.units.forEach(run);
+      [...FL.units.values()].reverse().forEach(run);
+    }
     const us = [...FL.units.values()];
     const lent = graph_close(new Set(us.flatMap((u) => [...u.lent])),
       us.flatMap((u) => u.lends.map(([at, r]) => [r, at])));
-    for (const [k] of done_defs()) {
-      brw_of(k).forEach((b, i) => b && !lent.has(arg_key(k, i))
-        && fact_add("own", arg_key(k, i)));
+    for (const key of FL.when.keys()) {
+      if (key.startsWith("own ") && !lent.has(key.slice(4))) {
+        fact_add("own", key.slice(4));
+      }
     }
-  } while (was !== FL.facts.size);
+  } while (FL.stale.size > 0);
   return [...FL.units.values()];
 }
 
