@@ -3148,8 +3148,7 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
   return compare_go(mode, RIGID, lhs, rhs, dep) || compare_go(mode, book, lhs, rhs, dep);
 }
 
-// the class of a share cell: the cell its c links end at. each step
-// relinks a cell to its grandparent (path halving), so chains stay short
+// the class of a share cell: the cell its c links end at
 function cell_class(t: Cell): Cell {
   while (t.c !== undefined) {
     t.c = t.c.c ?? t.c;
