@@ -6039,7 +6039,8 @@ const f32_round = ${Bend.f32_round};
 const char_new = ${char_new};
 
 function char_len(s, at = 0) {
-  return s[at] === "\uDC00" ? 4 : s.codePointAt(at) > 0xFFFF ? 2 : 1;
+  const c = s.codePointAt(at);
+  return c === 0xDC00 ? 4 : c > 0xFFFF ? 2 : 1;
 }
 
 function char_code(s) {
