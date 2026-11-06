@@ -3284,8 +3284,13 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
       if (mode === "EQ" && a.r.length !== b.r.length) {
         return false;
       }
-      return b.r.every((c) => a.r.includes(c))
-          && a.x.every((x, j) => compare_go("EQ", book, x, b.x[j], dep));
+      return b.r.every((c) => a.r.includes(c)) && a.x.every((x, j) => {
+        const v = mode === "LE" ? adt_variance(book, a.k, j) : 2;
+        return v === 0
+          || (v === 1 ? compare_go(mode, book, Typ(x), Typ(b.x[j]), dep)
+          : v === -1 ? compare_go(mode, book, Typ(b.x[j]), Typ(x), dep)
+          : compare_go("EQ", book, x, b.x[j], dep));
+      });
     }
     case "Ctr": {
       return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length
@@ -3318,6 +3323,83 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
       return false;
     }
   }
+}
+
+// Variance
+// ========
+// a datatype parameter's variance is how its fields use it: 0 nowhere,
+// 1 or -1 only where a fit keeps or swaps its direction, 2 anywhere
+// else; a quantity is at least 1, so List<&2, A> fits List<&1, A> and
+// not back. a fit (LE) skips a 0 slot and compares a 1 slot along, a -1
+// slot swapped, a 2 slot EQ, each inside Kind(_), which orders
+// quantities and leaves types as they are; EQ compares every slot.
+
+// the variance of parameter j of datatype k, in one walk of its fields,
+// as r[0], its own uses, and r[1 + i], what it passes to ks[i], a slot
+// still being asked: its variance is not known yet, and the asker joins
+// it in. an argument that is the parameter itself goes on into its
+// datatype's fields, or owes it to that slot if it is being asked; one
+// that only mentions it is walked at its slot's variance (2 if that is
+// owed to a slot being asked). a slot that owes itself 1 is unchanged;
+// -1 or 2 joins every use with its flip
+function adt_vary(book: Book, k: Name, j: number, ks: string[]): number[] {
+  const has = (o: unknown): boolean => typeof o === "object" && o !== null
+    && ((o as LTerm).$ === "Var" && (o as { i: number }).i === j
+      || Object.entries(o).some(([k, x]) => k !== "s" && has(x)));
+  const join = (a: number, b: number): number => a === 0 ? b : b === 0 || a === b ? a : 2;
+  const mul = (a: number, b: number): number => a === 0 || b === 0 ? 0 : a === 2 || b === 2 ? 2 : a * b;
+  const t = book.tlds[k];
+  const r = new Array<number>(ks.length + 2).fill(0);
+  const me = [...ks, k + " " + j];
+  const go = (t: LTerm, p: number): void => {
+    if (t.$ === "Var") {
+      r[0] = t.i === j ? join(r[0], p) : r[0];
+    } else if (t.$ === "All") {
+      go(t.A, -p);
+      go(t.B, p);
+    } else if (t.$ === "ADT") {
+      t.x.forEach((x, s) => {
+        if (!has(x)) {
+          return;
+        }
+        const f = me.indexOf(t.k + " " + s);
+        const v = f >= 0 ? null : adt_vary(book, t.k, s, me);
+        if (x.$ === "Var" && x.i === j) {
+          f >= 0 ? r[1 + f] = join(r[1 + f], p) : v!.forEach((v, i) => r[i] = join(r[i], mul(p, v)));
+        } else {
+          go(x, mul(p, v === null || v.slice(1).some((v) => v !== 0) ? 2 : v[0]));
+        }
+      });
+    } else if (has(t)) {
+      r[0] = 2;
+    }
+  };
+  if (t?.$ !== "ADT") {
+    return [2, ...r.slice(2)];
+  }
+  // a quantity, as its type evaluates, sets a kind: at least 1
+  let T = term_wnf(book, t.T);
+  for (let d = 0; d < j && T.$ === "All"; d++) {
+    T = term_wnf(book, T.B(Var(T.k, d)));
+  }
+  if (T.$ === "All" && term_wnf(book, T.A).$ === "Qnt") {
+    r[0] = 1;
+  }
+  for (const c of t.c) {
+    let tel = term_strip(term_lower(c.T));
+    for (let d = 0; tel.$ === "All"; d++, tel = term_strip(tel.B)) {
+      if (d >= t.n) {
+        go(tel.A, 1);
+      }
+    }
+  }
+  const b = r.pop()!;
+  return r.map((v) => join(v, mul(b, v)));
+}
+
+// the least variance of parameter j of datatype k
+function adt_variance(book: Book, k: Name, j: number): number {
+  return adt_vary(book, k, j, [])[0];
 }
 
 // Check
