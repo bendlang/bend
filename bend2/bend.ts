@@ -3161,9 +3161,44 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 
 const RIGID: Book = book_nil();
 
+// raw comparisons that may still fail on the current path: a failure
+// spends one for the pair's own comparison and gives it back after
+// (Agda's syntactic-equality fuel, scoped per path like smalltt's)
+let FUEL = 0;
+
+// the pair whose raw comparison just failed: compare_go calls itself on
+// it once more to unfold it, and that call must not compare it raw again
+let RAW_FAILED = false;
+
+// two raw terms equal as written: nothing unfolds or steps, so it costs
+// at most their size; two share cells found equal become one
+function term_compare_raw(x: HTerm, y: HTerm, dep: number): boolean {
+  const a = term_strip(x);
+  const b = term_strip(y);
+  if (a === b) {
+    return true;
+  }
+  if (x.$ === "Var" && x.i < 0 && y.$ === "Var" && y.i < 0) {
+    const same = term_compare_raw(a, b, dep);
+    if (same) {
+      y.v = x.v;
+    }
+    return same;
+  }
+  switch (a.$) {
+    case "Var": return b.$ === "Var" && a.i === b.i;
+    case "Ref": return b.$ === "Ref" && a.k === b.k;
+    case "Lit": return b.$ === "Lit" && a.k === b.k && a.v === b.v;
+    case "App": return b.$ === "App" && term_compare_raw(a.f, b.f, dep) && term_compare_raw(a.x, b.x, dep);
+    case "Ctr": return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length && a.x.every((x, j) => term_compare_raw(x, b.x[j], dep));
+    default: return false;
+  }
+}
+
 // two copies of one term are equal: a conversion first compares both
 // sides with every def rigid (the empty book unfolds none), then as usual
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
+  FUEL = 10;
   return compare_go(mode, RIGID, lhs, rhs, dep) || compare_go(mode, book, lhs, rhs, dep);
 }
 
@@ -3178,6 +3213,18 @@ function cell_class(t: Cell): Cell {
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
   if (lhs === rhs) {
     return true;
+  }
+  if (RAW_FAILED) {
+    RAW_FAILED = false;
+  } else if (book !== RIGID && FUEL > 0 && (lhs.$ === "App" || lhs.$ === "Ref" || lhs.$ === "Var")) {
+    if (term_compare_raw(lhs, rhs, dep)) {
+      return true;
+    }
+    FUEL -= 1;
+    RAW_FAILED = true;
+    const same = compare_go(mode, book, lhs, rhs, dep);
+    FUEL += 1;
+    return same;
   }
   let a = term_wnf(book, lhs);
   let b = term_wnf(book, rhs);
