@@ -1,10 +1,9 @@
 # a class of three or more share cells is still compared once: b's pair
 # links c under b, a's pair then links b under a, so c is two links from
-# its root, and the last pair (a, c) must follow both. a one-link lookup
-# missed it and walked the 18 levels as a tree. the separate ma/mb/mc
-# make the rigid pass fail, so the full-book pass does the linking; 18,
-# not more, because BendTT doesn't share cells yet and runs out of fuel
-# past 19 (#1555)
+# its root, and the last pair (a, c) must follow both, or it walks the
+# 18 levels as a tree. the separate ma/mb/mc make the rigid pass fail,
+# so the full-book pass does the linking; 18, not more, because BendTT
+# doesn't share cells yet and runs out of fuel past 19 (#1555)
 import Base
 
 def ma(x: U32, y: U32) -> U32:
