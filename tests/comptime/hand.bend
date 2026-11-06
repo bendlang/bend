@@ -23,7 +23,11 @@ def total(xs: List<U32>, acc: U32) -> U32:
     case h <> t:
       total(t, (h + acc : U32))
 
+# the list comes second, so no deforestation fuses total with the map
+def sum(acc: U32, xs: List<U32>) -> U32:
+  total(xs, acc)
+
 def main() -> IO(Unit):
-  IO.print(U32.show(total(incs(range(U32.to_nat(10000), 0, Nil{})), 0)))
+  IO.print(U32.show(sum(0, incs(range(U32.to_nat(10000), 0, Nil{})))))
 
 #|50005000
