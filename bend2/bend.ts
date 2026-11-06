@@ -3170,6 +3170,7 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
 // the class of a share cell: the cell its c links end at
 function cell_class(t: Cell): Cell {
   while (t.c !== undefined) {
+    t.c = t.c.c ?? t.c;
     t = t.c;
   }
   return t;
@@ -3177,6 +3178,10 @@ function cell_class(t: Cell): Cell {
 
 function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
   if (lhs === rhs) {
+    return true;
+  }
+  // two cells of one class were found EQ, and EQ implies LE
+  if (lhs.$ === "Var" && rhs.$ === "Var" && cell_class(lhs) === cell_class(rhs)) {
     return true;
   }
   let a = term_wnf(book, lhs);
@@ -3189,9 +3194,6 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
   // no value moves, since lhs's value may name rhs (Hd(D) <> Tl(D) == D),
   // and rhs holding it would name itself
   if (mode === "EQ" && lhs.$ === "Var" && lhs.i === -2 && rhs.$ === "Var" && rhs.i === -2) {
-    if (cell_class(lhs) === cell_class(rhs)) {
-      return true;
-    }
     const same = compare_go(mode, book, a, b, dep);
     const l = cell_class(lhs);
     const r = cell_class(rhs);
