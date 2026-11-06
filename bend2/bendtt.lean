@@ -172,8 +172,9 @@ def Quan.lin : Quan → Quan
 
 -- the quantity of a pair's first field, when the pair is used at q
 def Quan.fld : Quan → Quan → Quan
+  | Q0, _ => Q0
   | Q1, q => q
-  | r, _  => r
+  | Q2, _ => Q2
 
 -- Type and Data
 abbrev T1 : Term := Typ (Lab "Q1")
@@ -218,20 +219,57 @@ def Ren.pick (v i : Nat) : Nat :=
 
 def Term.ren (r : Ren) : Term → Term
   | Var i => Var (r i)
-  | Ann x T => Ann (Term.ren r x) (Term.ren r T)
-  | Let q v f => Let q (Term.ren r v) (Term.ren (Ren.up r) f)
+  | Ref k => Ref k
+  | Ann x T =>
+    let x := Term.ren r x
+    let T := Term.ren r T
+    Ann x T
+  | Let q v f =>
+    let v := Term.ren r v
+    let f := Term.ren (Ren.up r) f
+    Let q v f
   | Typ q => Typ (Term.ren r q)
   | Min a b => Min (Term.ren r a) (Term.ren r b)
-  | All q A B => All q (Term.ren r A) (Term.ren (Ren.up r) B)
-  | Lam q f => Lam q (Term.ren (Ren.up r) f)
-  | App q f x => App q (Term.ren r f) (Term.ren r x)
-  | Sig q A B => Sig q (Term.ren r A) (Term.ren (Ren.up r) B)
-  | Tup q a b => Tup q (Term.ren r a) (Term.ren r b)
-  | Prj h => Prj (Term.ren r h)
-  | Mat k h m => Mat k (Term.ren r h) (Term.ren r m)
-  | Eql a b T => Eql (Term.ren r a) (Term.ren r b) (Term.ren r T)
-  | Rwt e P f => Rwt (Term.ren r e) (Term.ren (Ren.up (Ren.up r)) P) (Term.ren r f)
-  | t => t
+  | All q A B =>
+    let A := Term.ren r A
+    let B := Term.ren (Ren.up r) B
+    All q A B
+  | Lam q f =>
+    let f := Term.ren (Ren.up r) f
+    Lam q f
+  | App q f x =>
+    let f := Term.ren r f
+    let x := Term.ren r x
+    App q f x
+  | Sig q A B =>
+    let A := Term.ren r A
+    let B := Term.ren (Ren.up r) B
+    Sig q A B
+  | Tup q a b =>
+    let a := Term.ren r a
+    let b := Term.ren r b
+    Tup q a b
+  | Prj h =>
+    let h := Term.ren r h
+    Prj h
+  | Enu ks => Enu ks
+  | Lab k => Lab k
+  | Mat k h m =>
+    let h := Term.ren r h
+    let m := Term.ren r m
+    Mat k h m
+  | Efq => Efq
+  | Eql a b T =>
+    let a := Term.ren r a
+    let b := Term.ren r b
+    let T := Term.ren r T
+    Eql a b T
+  | Rfl => Rfl
+  | Rwt e P f =>
+    let e := Term.ren r e
+    let P := Term.ren (Ren.up (Ren.up r)) P
+    let f := Term.ren r f
+    Rwt e P f
 
 def Term.spine (t : Term) : List Arg → Term
   | []           => t
@@ -243,8 +281,11 @@ def Term.unspine : Term → List Arg → Term × List Arg
 
 -- a λ or a λ-match: a node of a case tree, which takes an argument
 def Term.takes : Term → Bool
-  | Lam .. | Prj _ | Mat .. | Efq => true
-  | _ => false
+  | Lam _ _   => true
+  | Prj _     => true
+  | Mat _ _ _ => true
+  | Efq       => true
+  | _         => false
 
 -- an argument as it enters a type: a λ goes annotated, so its calls infer
 def Term.arg (x A : Term) : Term :=
@@ -269,20 +310,57 @@ def Subst.up (s : Subst) : Nat → Term
 
 def Term.sub (s : Subst) : Term → Term
   | Var i => s i
-  | Ann x T => Ann (Term.sub s x) (Term.sub s T)
-  | Let q v f => Let q (Term.sub s v) (Term.sub (Subst.up s) f)
+  | Ref k => Ref k
+  | Ann x T =>
+    let x := Term.sub s x
+    let T := Term.sub s T
+    Ann x T
+  | Let q v f =>
+    let v := Term.sub s v
+    let f := Term.sub (Subst.up s) f
+    Let q v f
   | Typ q => Typ (Term.sub s q)
   | Min a b => Min (Term.sub s a) (Term.sub s b)
-  | All q A B => All q (Term.sub s A) (Term.sub (Subst.up s) B)
-  | Lam q f => Lam q (Term.sub (Subst.up s) f)
-  | App q f x => App q (Term.sub s f) (Term.sub s x)
-  | Sig q A B => Sig q (Term.sub s A) (Term.sub (Subst.up s) B)
-  | Tup q a b => Tup q (Term.sub s a) (Term.sub s b)
-  | Prj h => Prj (Term.sub s h)
-  | Mat k h m => Mat k (Term.sub s h) (Term.sub s m)
-  | Eql a b T => Eql (Term.sub s a) (Term.sub s b) (Term.sub s T)
-  | Rwt e P f => Rwt (Term.sub s e) (Term.sub (Subst.up (Subst.up s)) P) (Term.sub s f)
-  | t => t
+  | All q A B =>
+    let A := Term.sub s A
+    let B := Term.sub (Subst.up s) B
+    All q A B
+  | Lam q f =>
+    let f := Term.sub (Subst.up s) f
+    Lam q f
+  | App q f x =>
+    let f := Term.sub s f
+    let x := Term.sub s x
+    App q f x
+  | Sig q A B =>
+    let A := Term.sub s A
+    let B := Term.sub (Subst.up s) B
+    Sig q A B
+  | Tup q a b =>
+    let a := Term.sub s a
+    let b := Term.sub s b
+    Tup q a b
+  | Prj h =>
+    let h := Term.sub s h
+    Prj h
+  | Enu ks => Enu ks
+  | Lab k => Lab k
+  | Mat k h m =>
+    let h := Term.sub s h
+    let m := Term.sub s m
+    Mat k h m
+  | Efq => Efq
+  | Eql a b T =>
+    let a := Term.sub s a
+    let b := Term.sub s b
+    let T := Term.sub s T
+    Eql a b T
+  | Rfl => Rfl
+  | Rwt e P f =>
+    let e := Term.sub s e
+    let P := Term.sub (Subst.up (Subst.up s)) P
+    let f := Term.sub s f
+    Rwt e P f
 
 -- The CLI runs Term.sub as Term.subz (sub_subz): the same map, but it
 -- passes the binder depth d down, so a value shifts once, not once per
@@ -294,20 +372,57 @@ def Subst.lift (s : Subst) (d : Nat) (i : Nat) : Term :=
 
 def Term.subk (s : Subst) (d : Nat) : Term → Term
   | Var i => Subst.lift s d i
-  | Ann x T => Ann (Term.subk s d x) (Term.subk s d T)
-  | Let q v f => Let q (Term.subk s d v) (Term.subk s (d + 1) f)
+  | Ref k => Ref k
+  | Ann x T =>
+    let x := Term.subk s d x
+    let T := Term.subk s d T
+    Ann x T
+  | Let q v f =>
+    let v := Term.subk s d v
+    let f := Term.subk s (d + 1) f
+    Let q v f
   | Typ q => Typ (Term.subk s d q)
   | Min a b => Min (Term.subk s d a) (Term.subk s d b)
-  | All q A B => All q (Term.subk s d A) (Term.subk s (d + 1) B)
-  | Lam q f => Lam q (Term.subk s (d + 1) f)
-  | App q f x => App q (Term.subk s d f) (Term.subk s d x)
-  | Sig q A B => Sig q (Term.subk s d A) (Term.subk s (d + 1) B)
-  | Tup q a b => Tup q (Term.subk s d a) (Term.subk s d b)
-  | Prj h => Prj (Term.subk s d h)
-  | Mat k h m => Mat k (Term.subk s d h) (Term.subk s d m)
-  | Eql a b T => Eql (Term.subk s d a) (Term.subk s d b) (Term.subk s d T)
-  | Rwt e P f => Rwt (Term.subk s d e) (Term.subk s (d + 2) P) (Term.subk s d f)
-  | t => t
+  | All q A B =>
+    let A := Term.subk s d A
+    let B := Term.subk s (d + 1) B
+    All q A B
+  | Lam q f =>
+    let f := Term.subk s (d + 1) f
+    Lam q f
+  | App q f x =>
+    let f := Term.subk s d f
+    let x := Term.subk s d x
+    App q f x
+  | Sig q A B =>
+    let A := Term.subk s d A
+    let B := Term.subk s (d + 1) B
+    Sig q A B
+  | Tup q a b =>
+    let a := Term.subk s d a
+    let b := Term.subk s d b
+    Tup q a b
+  | Prj h =>
+    let h := Term.subk s d h
+    Prj h
+  | Enu ks => Enu ks
+  | Lab k => Lab k
+  | Mat k h m =>
+    let h := Term.subk s d h
+    let m := Term.subk s d m
+    Mat k h m
+  | Efq => Efq
+  | Eql a b T =>
+    let a := Term.subk s d a
+    let b := Term.subk s d b
+    let T := Term.subk s d T
+    Eql a b T
+  | Rfl => Rfl
+  | Rwt e P f =>
+    let e := Term.subk s d e
+    let P := Term.subk s (d + 2) P
+    let f := Term.subk s d f
+    Rwt e P f
 
 def Term.subz (s : Subst) (t : Term) : Term :=
   Term.subk s 0 t
@@ -362,6 +477,10 @@ def Book.length (bk : Book) : Nat :=
 def Book.of (ds : List Def) : Book :=
   ⟨ds, Book.table 0 ds, rfl⟩
 
+-- the empty book: it unfolds no def
+def Book.nil : Book :=
+  Book.of []
+
 -- Ctx
 -- ===
 
@@ -386,7 +505,10 @@ def Guard.bind (g : Guard) (o : Tag) : Guard :=
 -- a new column of the given liveness
 def Guard.next (g : Guard) : List Tag → Bool → Tag × Guard × List Tag
   | p :: ps, _ => (p, g, ps)
-  | [],      l => (some (g.cols.length, []), { g with cols := g.cols ++ [l] }, [])
+  | [],      l =>
+    let p := some (g.cols.length, [])
+    let g := { g with cols := g.cols ++ [l] }
+    (p, g, [])
 
 -- Show
 -- ====
@@ -817,7 +939,7 @@ def Term.fits (ck : Book) (cl : Bool) : Nat → Term → Term → Bool × Nat
 -- none unfolds none), then with ck's; each pass from n fuel
 def Term.rigid (f : Book → Bool → Nat → Term → Term → Bool × Nat)
     (ck : Book) (cl : Bool) (n : Nat) (a b : Term) : Bool × Nat :=
-  let r := f (Book.of []) cl n a b
+  let r := f Book.nil cl n a b
   if r.1 then r else f ck cl n a b
 
 -- Checker
@@ -2008,7 +2130,7 @@ theorem fits_sound (hb : Sees ck bk) (h : (fits ck cl n U T).1 = true) : Fits bk
     · simp at h
   · exact .conv (conv_sound hb h)
 
-theorem sees_nil : Sees (Book.of []) bk := fun _ _ h => by simp [Book.get, Book.of, Book.table] at h
+theorem sees_nil : Sees Book.nil bk := fun _ _ h => by simp [Book.nil, Book.get, Book.of, Book.table] at h
 
 -- a rigid pass and a full pass are each sound
 theorem rigid_sound {P : Prop} {f : Book → Bool → Nat → Term → Term → Bool × Nat}
