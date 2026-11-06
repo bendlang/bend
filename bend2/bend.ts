@@ -3170,11 +3170,6 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
   if (a === b) {
     return true;
   }
-  // two filled cells try EQ first, which links them; EQ implies LE
-  if (mode === "LE" && lhs.$ === "Var" && lhs.i === -2 && rhs.$ === "Var" && rhs.i === -2
-      && compare_go("EQ", book, lhs, rhs, dep)) {
-    return true;
-  }
   // two share cells found equal join one class, so a shared graph is
   // compared once, not walked as a tree. a class is its c links alone:
   // no value moves, since lhs's value may name rhs (Hd(D) <> Tl(D) == D),
