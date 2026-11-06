@@ -5,7 +5,7 @@ import Base
 import ./bend3d.bend as R
 import ./main.bend as Slash
 
-# n ticks of the game, each one Game.step
+# n ticks of the game, as the loop's Live.steps runs them
 def steps(n: Nat, +g: Slash.Game) -> Slash.Game:
   match n:
     case 0n:
