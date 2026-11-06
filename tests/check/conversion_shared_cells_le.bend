@@ -4,7 +4,8 @@
 # walking the 16 levels as a tree would take 2^16 steps. the class check
 # runs in either mode, since EQ implies LE; when it ran in EQ alone, LE
 # walked the tree. the separate fa/fb make the rigid pass fail; 16, not
-# more, because BendTT doesn't share cells yet and runs out of fuel (#1555)
+# more, because BendTT doesn't share cells yet, so --verdict doubles per
+# level (1 s at 16, 21 s at 20) and soon passes the safe gate's 30 s (#1555)
 import Base
 
 def fa(-t: Type) -> Type:
