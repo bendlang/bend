@@ -585,15 +585,17 @@ def Term.show (d : Nat) : Term → String
 -- the parser reads the text's UTF-8 bytes at a position; a name, a space
 -- and every mark but ∀, Σ and λ is one ASCII byte
 
-def Parse.fail (e : String) : Parse α := do
-  let b ← read
-  let i ← get
-  let s := (String.fromUTF8? (b.extract i b.size)).getD ""
-  throw ("parse error: expected " ++ e ++ " at '" ++ (s.take 30).toString ++ "'")
-
 -- the first byte at or after i where p fails
 partial def Parse.upto (p : Char → Bool) (b : ByteArray) (i : Nat) : Nat :=
   if i < b.size && p (Char.ofUInt8 b[i]!) then Parse.upto p b (i + 1) else i
+
+-- shows the 30 chars at i: they fit in 120 bytes, cut at a char's start
+def Parse.fail (e : String) : Parse α := do
+  let b ← read
+  let i ← get
+  let j := Parse.upto (fun c => c.toNat &&& 0xC0 == 0x80) b (i + 120)
+  let s := (String.fromUTF8? (b.extract i j)).getD ""
+  throw ("parse error: expected " ++ e ++ " at '" ++ (s.take 30).toString ++ "'")
 
 -- the first byte at or after i that is not a space or in a comment
 partial def Parse.gap (b : ByteArray) (i : Nat) : Nat :=
@@ -899,7 +901,8 @@ def Term.run (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Opt
         (some t, m)
 
 -- fires a λ or a λ-match on its next argument; a λ binds it in e, and
--- a spine of a λ-match on a variable takes the variable's value
+-- a spine of a λ-match on a variable takes the variable's value. That
+-- step comes only from run, which took its fuel, so it takes none here
 def Term.fire (ck : Book) (cl : Bool) : Nat → Term → Env → List Arg → Option Step × Nat
   | n, t@(App q f (Var v)), e, xs =>
     if Term.node t then
