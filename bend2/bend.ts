@@ -1981,7 +1981,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         const n = parse_term(p);
         parse_eat(p, "]");
         const s = parse_span(p, beg);
-        parse_term_ns(p, xs[0], T);
+        parse_term_ns(p, xs[0], term_unapply(T)[0]);
         let d = n;
         if (cnt) {
           const k = Math.log2(nat_from_term(n) ?? 0);
@@ -2189,16 +2189,15 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
   }
 }
 
-export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): void {
+export function parse_term_ns(p: Parse, tm: LTerm, h: LTerm): void {
   if (tm.$ === "Let") {
-    return parse_term_ns(p, tm.f, T);
+    return parse_term_ns(p, tm.f, h);
   }
   const [f, xs] = term_unapply(tm);
   if (f.$ !== "Ref") {
     return;
   }
   if (f.k.lastIndexOf(".") === 0) {
-    const h = term_unapply(T)[0];
     if (h.$ !== "Var" && h.$ !== "Ref" && h.$ !== "ADT") {
       throw Err(p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
     }
@@ -2208,7 +2207,7 @@ export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): void {
     return;
   }
   for (const x of xs) {
-    parse_term_ns(p, x, T);
+    parse_term_ns(p, x, h);
   }
 }
 
@@ -2255,7 +2254,7 @@ export function parse_term_tup(p: Parse, beg: number): LTerm {
   }
   const out = body_flatten(b, [], () => p.frs++);
   if (parse_take(p, ":")) {
-    parse_term_ns(p, out, parse_term(p));
+    parse_term_ns(p, out, term_unapply(parse_term(p))[0]);
   }
   parse_eat(p, ")");
   return out;
@@ -2434,7 +2433,12 @@ export function parse_body(p: Parse, col: number = 0): Body {
 }
 
 export function term_write(p: Parse, t: LTerm, beg: number): LTerm | null {
-  const [h, xs] = term_unapply(t);
+  const xs: LTerm[] = [];
+  let h = t;
+  while (h.$ === "App" && xs.length < 5) {
+    xs.unshift(h.x);
+    h = h.f;
+  }
   if (h.$ === "Ref" && h.k === parse_own(p, "Array.set") && xs.length === 4 && xs[1].$ === "Var" && xs[1].s?.beg === beg) {
     return xs[1];
   }
@@ -2468,6 +2472,7 @@ export function parse_terms(p: Parse): LTerm[] {
 
 export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Quant, Name, number, LTerm, Span]> {
   const tele: Array<[Quant, Name, number, LTerm, Span]> = [];
+  const seen = new Set<Name>();
   while (true) {
     parse_skip(p);
     if (parse_take(p, close)) {
@@ -2480,9 +2485,10 @@ export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Qua
     const q   = ct ? None() : parse_quant(p);
     const beg = p.pos;
     const k   = parse_name(p);
-    if (close === "}" && tele.some((cell) => cell[1] === k)) {
+    if (close === "}" && seen.has(k)) {
       parse_fail(p, "a fresh field name (duplicate declaration: " + k + ")", p.pos - k.length);
     }
+    seen.add(k);
     const s   = parse_span(p, beg);
     parse_skip(p);
     const bare = q.$ === "Lone" && !parse_at(p, ":");
@@ -2751,7 +2757,8 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     const x   = vars[0];
     const scu = m.e[0];
     const c   = m.r.map((row) => row.p[0]).find((q): q is PCtr => q.$ === "PCtr") ?? null;
-    const v   = vars.find((w) => scu.$ === "Var" && w.i === scu.i);
+    const j   = vars.findIndex((w) => scu.$ === "Var" && w.i === scu.i);
+    const v   = j < 0 ? undefined : vars[j];
     if (v !== undefined && c === null && m.r.length > 0) {
       const w  = { ...v, q: patt_mark(v, m.r) };
       const rs = m.r.map((row): Case => {
@@ -2800,8 +2807,9 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
         return Mat(c.k, pt, dt, c.s);
       }
     } else {
-      const t = match_flatten(m, vars.slice(1), fr);
-      return Lam(x.k, x.i, t, x.s, x.q);
+      const n = j < 0 ? vars.length : j;
+      const t = match_flatten(m, vars.slice(n), fr);
+      return vars.slice(0, n).reduceRight((out, u) => Lam(u.k, u.i, out, u.s, u.q), t);
     }
   }
 }
