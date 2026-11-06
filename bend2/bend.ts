@@ -1701,15 +1701,12 @@ export function parse_close(p: Parse, n: number): void {
   while (p.stk.length > n) {
     p.stk.pop()!.pop();
   }
-  if (p.stk.length === 0 && p.idx.size > 4096) {
-    p.idx.clear();
-  }
 }
 
 export function parse_var(p: Parse, k: Name, s?: Span): LTerm {
-  const i = p.idx.get(k)?.at(-1);
-  if (i !== undefined) {
-    return Var(k, i, s);
+  const is = p.idx.get(k);
+  if (is !== undefined && is.length > 0) {
+    return Var(k, is[is.length - 1], s);
   }
   const q = parse_reso(p, k);
   if (k.includes(".")) {
