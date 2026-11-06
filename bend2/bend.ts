@@ -3170,9 +3170,8 @@ function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: 
   if (a === b) {
     return true;
   }
-  // two share cells found equal join one class; the class check above
-  // then meets them in either mode, so a shared graph is compared once,
-  // not walked as a tree. a class is its c links alone:
+  // two share cells found equal join one class, so a shared graph is
+  // compared once, not walked as a tree. a class is its c links alone:
   // no value moves, since lhs's value may name rhs (Hd(D) <> Tl(D) == D),
   // and rhs holding it would name itself
   if (mode === "EQ" && lhs.$ === "Var" && lhs.i === -2 && rhs.$ === "Var" && rhs.i === -2) {
