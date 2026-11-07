@@ -326,10 +326,11 @@ function cid_mac(k: string): string {
 // Char
 // ====
 
-// A Char past the Unicode scalars is 0xDC00 and three 11-bit pieces (str_out
-// writes U+FFFD); the JS runtime holds this function's text.
+// A non-scalar Char is 0xDC00 and three 11-bit pieces (str_out writes U+FFFD).
+// The JS runtime copies this function.
 function char_new(c: number): string {
-  return c < 0xD800 || c >= 0xE000 && c <= 0x10FFFF ? String.fromCodePoint(c)
+  return c < 0xD800 ? String.fromCharCode(c) : c >= 0xE000 && c <= 0x10FFFF
+    ? String.fromCodePoint(c)
     : String.fromCharCode(0xDC00, c >>> 22, c >>> 11 & 0x7FF, c & 0x7FF);
 }
 
