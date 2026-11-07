@@ -2696,6 +2696,8 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 // WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
 
 function c_units(): Unit[] {
+  const lists = tld_of("Array.to_list.go")?.b
+    && new Set(FL.book.tmps["Array.to_list.go"]?.values());
   for (const [k, tld] of [...done_defs().reverse(),
     ...done_defs(def_foreign)]) {
     unit_new(k, () => {
@@ -2703,6 +2705,27 @@ function c_units(): Unit[] {
       FL.unit!.segs.push(dl.seg);
       if (def_foreign(tld)) {
         emit_put(dl, null, val_new([ctr_build(dl, k, dl.seg.params)], BOX));
+      } else if (lists && lists.has(k)) {
+        const [a, acc] = vals.flatMap((v) => val_own(v));
+        const T = adt_of(fun_of(k).live[0][2]).x[0];
+        const el = lay_el(T);
+        const stride = 2 ** lay_arr(el).lgs;
+        const [loc] = emit_hold(dl, [arr_loc(dl, a)], "at");
+        const i = name_local(dl, "i");
+        const poll = name_local(dl, "poll");
+        file_push(dl, `u32 ${poll} = 0;`);
+        fact_when("ctr", "Con", () => facts_ctr(k, FL.book.ctrs.Con,
+          adt_of(tele_unbind(tld.T).ret).x));
+        block(dl, `for (u32 ${i} = 1u << blk_cls(${a}); ${i} >= ${stride}u;) {`, () => {
+          file_push(dl, `if (err_spun(e.mem, &${poll})) { return 0; }`,
+            `${i} -= ${stride}u;`);
+          const v = arr_cells(dl, loc, i, el,
+            `blk_shr(${a}) ? blk_keep(e, $) : e.mem[$]`);
+          const con = ctr_build(dl, "Con", [val_box(dl, v), acc]);
+          file_push(dl, `${acc} = ${con};`);
+        });
+        file_push(dl, `blk_free(e, ${a});`);
+        emit_put(dl, null, val_new([acc], BOX));
       } else {
         emit_body(dl, fun_of(k).h!, tld.T, vals, null);
       }
