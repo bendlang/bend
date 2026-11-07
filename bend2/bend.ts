@@ -1514,8 +1514,10 @@ export function err_show(err: Err): string {
     ? "\n- message  : " + expr_show(err.bok, err.exp, bnd, file)
     : "\n- expected : " + expr_show(err.bok, err.exp, bnd, file)
     + "\n- observed : " + expr_show(err.bok, err.obs, bnd, file);
-  const ctx  = anns.map(([i, a]) =>
-    "\n- " + a.k.padEnd(wid) + " : " + expr_show(err.bok, a.T, bnd.slice(0, i), file)).join("");
+  const ctx  = anns.map(([i, a]) => {
+    const hid = bnd.lastIndexOf(a.k) === i ? "" : " (shadowed)";
+    return "\n- " + a.k.padEnd(wid) + " : " + expr_show(err.bok, a.T, bnd.slice(0, i), file) + hid;
+  }).join("");
   const def  = err.def === undefined ? "" : " " + name_show(file, err.def);
   let   spn  = "";
   if (err.spn !== undefined) {
