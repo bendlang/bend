@@ -4563,8 +4563,14 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass, u32 at) {
   u32 stride = grids == 1 ? CUBE_G : 1;
   u32 me     = row * CUBE_T + stride * lane;
   u32 rg     = pass == 1 ? ring_flip(me) : me;
+#ifdef BEND_RTC
+  __shared__ u32 stops[CUBE_T];
+  stops[lane] = 0;
+  Env e      = { H, H + ALC_OFF + me, stops + lane };
+#else
   u32 stop   = 0;
   Env e      = { H, H + ALC_OFF + me, &stop };
+#endif
   DEV Term* stk = (DEV Term*)(H + STAK_OFF + me);
   if (lane == 0) {
     for (u32 i = 0; i < 3; i += 1) {
