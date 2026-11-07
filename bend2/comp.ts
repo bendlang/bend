@@ -1170,7 +1170,7 @@ function file_new(book: Bend.Book, js: boolean) {
     img: [] as string[],
     tails: new Map<Name, Set<Name>>(),
     entries: new Set<Name>(),
-    opens: new Map<Of<"Lam"> | Of<"Let">, Open>(),
+    opens: new (js ? Map : WeakMap)<Of<"Lam"> | Of<"Let">, Open>(),
     uses: new Map<HTerm, Bend.PMap<number>>(),
     folds: new Map<HTerm, HTerm | null>(),
     spines: new Map<HTerm, Spine>(),
@@ -2085,6 +2085,7 @@ function emit_spin(sc: Scope, ck: Spine): Val {
 
 // A foreign def's last parameter, past its live ones, is its continuation k.
 function emit_open(k: Name): [Scope, Val[]] {
+  if (FL.ground.size > 262144) FL.ground.clear();
   const sc = scope_new();
   const { live, lays, ret } = fun_of(k);
   const brw = brw_of(k);
