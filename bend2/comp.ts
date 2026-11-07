@@ -201,7 +201,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   nat_mul: { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
   nat_cmp: { C: "(($0 > $1) + ($0 >= $1))", JS: "cmp_new($0, $1)" },
   ...tpl_ops("nat_", "sub", "($0 < $1 ? 0 : $0 - $1)"),
-  ...tpl_ops("nat_", "is_lt:<", "($0 $o $1)"),
+  ...tpl_ops("nat_", "is_lt", "($0 < $1)"),
   ...tpl_ops("nat_", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
   nat_divmod: {
     C:  ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
@@ -811,7 +811,7 @@ function lay_arr(lay: Lay) {
 
 function ctr_adt(x: Of<"Ctr">, ty: HTerm | null): [Of<"ADT">, number | null] {
   const f = FL.book.ctrs[x.k].f;
-  if (!ty && FL.book.tlds[f].n) die("a constructor outside a datatype");
+  if (!ty && tld_of(f).n) die("a constructor outside a datatype");
   const adt = adt_of(ty ?? Bend.ADT(f, []));
   return [adt, adt.k === "U32" || adt.k === "F32"
     ? Bend.u32_from_term(x, adt.k) : null];
@@ -1284,6 +1284,7 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
     return;
   }
   FL.heat.add(key);
+  const hot = (x: HTerm) => facts_hot(def, x, true, local);
   const w = ty_wnf(B);
   if (w?.$ === "Lam") {
     return facts_hot(def, w.f(DUMMY), force, local);
@@ -1296,14 +1297,14 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
     const fam = m && done_live(m.tld) && term_strip(Bend.term_unapply(
       m.all.reduce((b, x) => Bend.term_apply(b, x), m.tld.v!))[0]);
     if (m && fam && fam.$ === "Mat") {
-      m.all.forEach((x) => facts_hot(def, x, true, local));
+      m.all.forEach((x) => hot(x));
       if (fact_add("fam", (m.t as Of<"Ref">).k)) {
-        facts_hot(def, fam, true, local);
+        hot(fam);
       }
       return;
     }
     if (w?.$ === "Mat") {
-      return term_kids(w).forEach((h) => facts_hot(def, h, true, local));
+      return term_kids(w).forEach((h) => hot(h));
     }
     const dom = w?.$ === "Var" && !local
       && tele_unbind(tld_of(def).T).doms[w.i];
@@ -1318,7 +1319,7 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
   }
   w.x.forEach((x) => facts_hot(def, x, force, local));
   if (!force) {
-    return fact_when("type", w.k, () => facts_hot(def, w, true, local));
+    return fact_when("type", w.k, () => hot(w));
   }
   if (!fact_add("type", w.k)) {
     return;
@@ -1925,7 +1926,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
         return go(o.b, top, T);
       }
       case "Lam": {
-        const all = T && Bend.tele_open(FL.book, T);
+        const all = T && ty_all(T);
         return all?.q.$ !== "None" ? s
           : Bend.Ann(go(s.f(DUMMY), top, all.B(DUMMY)), all.B(DUMMY));
       }
@@ -3370,9 +3371,6 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 #define CAP_WORDS 32768
 #define QUANTUM   (DEVICE ? PAGE_LEN \
   : KEEP_WORDS < 32 * PAGE_LEN ? KEEP_WORDS : 32 * PAGE_LEN)
-#if DEVICE
-#define KEEP_WORDS CHUNK
-#endif
 #define RING_WORDS ((1ull << 10) + 2)
 
 #define H_BUMP       0
@@ -3442,6 +3440,17 @@ static const char* CLI_HELP =
   "                    (default: on if present, over 2GB on Metal)\n"
   "  --gpu-build       write the GPU program and exit\n"
   "  --help            show this text\n";
+
+static Term f32_show(Env e, Term x);
+static Term f32_read(Env e, Term s);
+static bool corpus_grow(u64* H, u64 need);
+
+#else
+
+#define KEEP_WORDS CHUNK
+#define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
+#define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
+#define corpus_grow(H, n) false
 
 #endif
 
@@ -3668,18 +3677,6 @@ INLINE u64 map_msb_u(u64 n, u32 x) {
   return n < w ? n : w;
 }
 
-#if DEVICE
-
-#define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
-#define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
-
-#else
-
-static Term f32_show(Env e, Term x);
-static Term f32_read(Env e, Term s);
-
-#endif
-
 A32_LOOP(fadd, f32_rewrap(f32_unbox(o) + f32_unbox(v)))
 
 // Bank
@@ -3743,12 +3740,6 @@ OUTLINE void heap_hand(Env e, u32 cls) {
   ALC_COLD(e, cls) = large ? 0 : ALC_AT(e, cls);
   ALC_AT(e, cls)   = ALC_LEN(e, cls) = 0;
 }
-
-#if DEVICE
-#define corpus_grow(H, n) false
-#else
-static bool corpus_grow(u64* H, u64 need);
-#endif
 
 OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
   DEV u64* H = e.mem;
@@ -5765,21 +5756,16 @@ static int f32_text(char* buf, f32 v) {
   if (ex >= 21 || ex <= -7) {
     return (int)(ep - buf) + sprintf(ep, "e%+d", ex);
   }
-  // The scientific form has the rounded digits d, d[i] at the place ex - i:
-  // write each place from the highest down, with a point before place -1.
-  int  s = *buf == '-';
-  char d[9];
-  d[0] = buf[s];
-  memcpy(d + 1, buf + s + 2, p);
-  n = s;
-  for (int q = ex > 0 ? ex : 0; q >= 0 || q >= ex - p; q -= 1) {
-    if (q == -1) {
-      buf[n++] = '.';
-    }
-    buf[n++] = q <= ex && q >= ex - p ? d[ex - q] : '0';
+  // The fixed form rounds where the scientific one does, at 10^(ex - p): %f
+  // does so past the point, and a whole number pads the digits with zeros.
+  if (ex <= p) {
+    return snprintf(buf, 40, "%.*f", p - ex, (double)v);
   }
-  buf[n] = 0;
-  return n;
+  int s = *buf == '-';
+  memmove(buf + s + 1, buf + s + 2, p);
+  memset(buf + s + 1 + p, '0', ex - p);
+  buf[s + 1 + ex] = 0;
+  return s + 1 + ex;
 }
 
 static Term f32_show(Env e, Term x) {
@@ -5797,7 +5783,6 @@ static Term f32_read(Env e, Term s) {
   free(text);
   return out;
 }
-
 
 // Run
 // ===
@@ -6345,7 +6330,7 @@ function io_push(fun, arg, fresh, io = io_active) {
 }
 
 function io_wait(io, block) {
-  const soon = io.waits[0]?.at ?? Infinity;
+  const soon = io.waits[0].at;
   const ms = !block ? 0 : soon === Infinity ? -1
     : Math.max(0, Math.ceil(soon - performance.now()));
   const fds = io.waits.filter((w) => w.fd !== undefined);
