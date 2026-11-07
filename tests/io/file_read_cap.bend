@@ -7,12 +7,6 @@
 # so their initial buffer must account for the offset too.
 import Base
 
-law path:
-  String
-
-def path():
-  "/tmp/bend_io_file_read_cap"
-
 law write_go:
   for w: File & Result<&1, &1, (U32 & String), Unit>
   IO(Unit)
@@ -59,46 +53,49 @@ def count(p, max):
     count_go(m)
 
 law reads:
+  for +path: String
   for n: Nat
   for acc: U32
   IO(U32)
 
-def reads(n, acc):
+def reads(path, n, acc):
   match n:
     case 0n:
       IO.pure(U32, acc)
     case 1n+k:
       do IO<U32>:
-        c : U32 <- count(path(), 1073741824)
-        reads(k, U32.add(acc, c))
+        c : U32 <- count(path, 1073741824)
+        reads(path, k, U32.add(acc, c))
 
-def reads_at(n: Nat, acc: U32) -> IO(U32):
+def reads_at(+path: String, n: Nat, acc: U32) -> IO(U32):
   match n:
     case 0n:
       IO.pure(U32, acc)
     case 1n+k:
       do IO<U32>:
-        f : File <- IO.try(File, File.open(path(), "r"))
+        f : File <- IO.try(File, File.open(path, "r"))
         m : File & Result<&1, &1, (U32 & String), List<&2, U32>> <-
           File.read_at(f, 1073741824, 1073741824)
         c : U32 <- count_go(m)
-        reads_at(k, U32.add(acc, c))
+        reads_at(path, k, U32.add(acc, c))
 
 law main:
   IO(U32)
 
 def main():
   do IO<U32>:
-    f : File <- IO.try(File, File.open(path(), "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_file_read_cap_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá\n")
     x : Unit <- write_go(w)
-    t : U32 <- reads(1000n, 0)
+    t : U32 <- reads(path, 1000n, 0)
     p : Unit <- IO.print(U32.show(t))
-    f : File <- IO.try(File, File.open(path(), "w"))
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <-
       File.write_at(f, 1073741824, [65, 66, 67, 68, 69])
     x : Unit <- write_go(w)
-    t : U32 <- reads_at(2000n, 0)
+    t : U32 <- reads_at(path, 2000n, 0)
     p : Unit <- IO.print(U32.show(t))
     z : U32 <- count("/dev/zero", 300000)
     q : Unit <- IO.print(U32.show(z))

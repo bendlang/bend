@@ -56,11 +56,13 @@ law main:
 
 def main():
   do IO<U32>:
-    f  : File <- IO.try(File, File.open("/tmp/bend_io_nul.tmp", "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_nul_" ++ U32.show(salt)
+    f  : File <- IO.try(File, File.open(path, "w"))
     w  : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, payload())
     f2 : File <- write_go(w)
     x  : Unit <- File.close(f2)
-    g  : File <- IO.try(File, File.open("/tmp/bend_io_nul.tmp", "r"))
+    g  : File <- IO.try(File, File.open(path, "r"))
     m  : File & Result<&1, &1, (U32 & String), String> <- File.read(g, 8)
     read_go(m)
 

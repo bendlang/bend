@@ -19,20 +19,22 @@ def written(w: File & Result<&1, &1, (U32 & String), Unit>) -> IO(File):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_no_shell.tmp", "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_no_shell_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <-
       File.write(f, "echo through a shell\n")
     g : File <- written(w)
     x : Unit <- File.close(g)
     c : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/chmod", ["755", "/tmp/bend_io_no_shell.tmp"], "", 128,
+      Process.run("/bin/chmod", ["755", path], "", 128,
         1000)
     y : Unit <- IO.print("chmod: " ++ outcome(c))
     r : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/tmp/bend_io_no_shell.tmp", [], "", 128, 1000)
+      Process.run(path, [], "", 128, 1000)
     z : Unit <- IO.print("no #!: " ++ outcome(r))
     d : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", "/tmp/bend_io_no_shell.tmp"], "", 128,
+      Process.run("/bin/rm", ["-f", path], "", 128,
         1000)
     s : Unit <- IO.print("rm: " ++ outcome(d))
     p : Result<&1, &1, U32 & String, U32 & (String & String)> <-

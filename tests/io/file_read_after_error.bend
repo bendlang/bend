@@ -17,11 +17,13 @@ def text(p: File & Result<&1, &1, U32 & String, String>,
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_read_after_error", "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_read_after_error_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "ab\ncd")
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_read_after_error", "r"))
+    f : File <- IO.try(File, File.open(path, "r"))
     f : File <- failed_write(f)
     p : File & Result<&1, &1, U32 & String, String> <- File.read(f, 2)
     f : File <- text(p, "ab", "full text read")

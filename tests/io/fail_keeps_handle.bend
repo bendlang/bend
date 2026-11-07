@@ -60,13 +60,15 @@ law main:
 
 def main():
   do IO<U32>:
-    f  : File <- IO.try(File, File.open("/tmp/bend_io_keep.tmp", "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_keep_" ++ U32.show(salt)
+    f  : File <- IO.try(File, File.open(path, "w"))
     m  : File & Result<&1, &1, (U32 & String), String> <- File.read(f, 8)
     f2 : File <- read_fail(m)
     w  : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f2, "kept")
     f3 : File <- write_go(w)
     x  : Unit <- File.close(f3)
-    read_back("/tmp/bend_io_keep.tmp")
+    read_back(path)
 
 #|Bad file descriptor
 #|kept

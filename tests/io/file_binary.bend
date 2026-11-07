@@ -106,11 +106,12 @@ def bad_read(pair):
     return file
 
 law write_invalid:
+  for +path: String
   IO(File)
 
-def write_invalid():
+def write_invalid(path):
   do IO<File>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_binary", "w"))
+    f : File <- IO.try(File, File.open(path, "w"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <-
       File.read_at(f, 0, 1)
     f : File <- bad_read(p)
@@ -141,22 +142,24 @@ def write_all(f):
     File.close(f)
 
 law append:
+  for +path: String
   IO(Unit)
 
-def append():
+def append(path):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_binary", "a"))
+    f : File <- IO.try(File, File.open(path, "a"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_bytes(f, [0, 255])
     f : File <- wrote(p)
     File.close(f)
 
 law open_read:
+  for +path: String
   IO(File)
 
-def open_read():
+def open_read(path):
   do IO<File>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_binary", "r"))
+    f : File <- IO.try(File, File.open(path, "r"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_bytes(f, [1])
     f : File <- bad_write(p, 9, "write on read-only handle")
     p : File & Result<&1, &1, U32 & String, U32> <- File.size(f)
@@ -207,10 +210,12 @@ law main:
 
 def main():
   do IO<Unit>:
-    f : File <- write_invalid()
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_file_binary_" ++ U32.show(salt)
+    f : File <- write_invalid(path)
     write_all(f)
-    append()
-    f : File <- open_read()
+    append(path)
+    f : File <- open_read(path)
     f : File <- read_offsets(f)
     read_end(f)
 

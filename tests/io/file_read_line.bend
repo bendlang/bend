@@ -29,10 +29,12 @@ law main:
 
 def main():
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_read_line.tmp", "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_read_line_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "ab\n\nlonger\nend")
     x : Unit <- write_go(w)
-    g0 : File <- IO.try(File, File.open("/tmp/bend_io_read_line.tmp", "r"))
+    g0 : File <- IO.try(File, File.open(path, "r"))
     m1 : File & Result<&1, &1, (U32 & String), String> <- File.read_line(g0, 64)
     g1 : File <- line(m1)
     m2 : File & Result<&1, &1, (U32 & String), String> <- File.read_line(g1, 64)

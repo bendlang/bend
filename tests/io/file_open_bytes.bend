@@ -10,8 +10,8 @@ def ascii(s: String, tail: List<&2, U32>) -> List<&2, U32>:
     case SCon{c, t}:
       Char.to_u32(c) <> ascii(t, tail)
 
-def path(tail: List<&2, U32>) -> List<&2, U32>:
-  ascii("/tmp/bend_io_open_bytes_", tail)
+def path(+stem: String, tail: List<&2, U32>) -> List<&2, U32>:
+  ascii(stem, tail)
 
 def pick(ok: Bool, yes: String, no: String) -> String:
   match ok:
@@ -48,17 +48,19 @@ def read(pair: File & Result<&1, &1, U32 & String, String>) -> IO(String):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open_bytes(path([195, 169]), "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +stem : String = "/tmp/bend_io_open_bytes_" ++ U32.show(salt) ++ "_"
+    f : File <- IO.try(File, File.open_bytes(path(stem, [195, 169]), "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "hi")
     written(p)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_open_bytes_é", "r"))
+    f : File <- IO.try(File, File.open(stem ++ "é", "r"))
     p : File & Result<&1, &1, U32 & String, String> <- File.read(f, 16)
     t : String <- read(p)
     IO.print("utf-8 bytes: " ++ t)
-    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(path([256]), "r")
+    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(path(stem, [256]), "r")
     t : String <- shown(r)
     IO.print("past 255: " ++ t)
-    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(path([0, 120]), "w")
+    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(path(stem, [0, 120]), "w")
     t : String <- shown(r)
     IO.print("nul: " ++ t)
 

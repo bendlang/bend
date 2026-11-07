@@ -123,9 +123,11 @@ function shard_split(tests: Test[], count: number): Test[][] {
 // The shard's aggregator and build list ride in the script, over the pack
 // every shard shares. A build that fails leaves its message in
 // <name>.left: the test's lanes then read it as their answer, so a
-// program the compiler cannot build fails the gate. The io tests write
-// fixed names in /tmp, which every Mac user shares: the shard removes its
-// own before and after, so a user's leftovers never fail another's run.
+// program the compiler cannot build fails the gate. Two gates may share a
+// mini, so each shard builds in a fresh directory, and the io tests name
+// their /tmp files with IO.random_u32. Bend has no unlink, so the shard
+// sweeps the user's own test files and directories older than an hour,
+// never a running gate's.
 function shard_script(shard: Test[], tag: number): string {
   const runs = test_runs(shard);
   const bangs = runs.filter((t) => /!\(/.test(t.src)).map((t) => t.name);
@@ -137,12 +139,15 @@ function shard_script(shard: Test[], tag: number): string {
   const file = (name: string, text: string): string =>
     `cat > ${name} <<'${MARK}'\n${text}${MARK}\n`;
   const tmp = `find /tmp/ -maxdepth 1 -user $(id -u) \\( -name 'bend_io_*'`
-    + ` -o -name 'bend_gfx_*' \\) -delete 2>/dev/null;`;
+    + ` -o -name 'bend_gfx_*' \\) -mmin +60 -delete 2>/dev/null;`
+    + ` find $HOME/bend-test -mindepth 1 -maxdepth 1 -mmin +60`
+    + ` -exec rm -rf {} + 2>/dev/null;`;
   const probe = (kind: string, cmd: string): string =>
     `echo "${MARK} ${kind} $m"; perl -e 'alarm 5; exec @ARGV' ${cmd} 2>&1;`
     + ` echo "${MARK} exit $?";`;
   return `export BUN_JSC_maxPerThreadStackUsage=33554432; unset BENDRTS;`
-    + ` d=$HOME/bend-test/${tag}; rm -rf $d; mkdir -p $d; cd $d; tar -xzf -;`
+    + ` mkdir -p $HOME/bend-test; d=$(mktemp -d $HOME/bend-test/${tag}.XXXXXX);`
+    + ` cd $d; tar -xzf -;`
     + ` ${tmp}\n`
     + file("main.bend", main) + file("build.txt", build)
     + ` echo "${MARK} checkup"; ${BUN} bend2/main.ts main.bend --checkup 2>&1;`

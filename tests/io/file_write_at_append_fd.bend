@@ -6,7 +6,7 @@
 import Base
 import ./file_binary.bend as T
 
-def Fd.append() -> IO(File):
+def Fd.append(path: String) -> IO(File):
   import "./file_write_at_append_fd.c"
   import "./file_write_at_append_fd.js"
 
@@ -18,29 +18,25 @@ def ffi_back() -> IO(Unit):
   import "./file_write_at_append_fd.c"
   import "./file_read_no_ffi.js"
 
-law path:
-  String
-
-def path():
-  "/tmp/bend_io_file_write_at_append_fd"
-
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open(path(), "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_file_write_at_append_fd_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "AAAA")
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- Fd.append()
+    f : File <- Fd.append(path)
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_at(f, 0, [66])
     f : File <- T.bad_write(p, 22, "write_at on an O_APPEND fd rejected")
     File.close(f)
     a : Unit <- ffi_absent()
-    f : File <- IO.try(File, File.open(path(), "a"))
+    f : File <- IO.try(File, File.open(path, "a"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_at(f, 0, [66])
     f : File <- T.bad_write(p, 22, "write_at on an append handle rejected without ffi")
     File.close(f)
     b : Unit <- ffi_back()
-    f : File <- IO.try(File, File.open(path(), "r"))
+    f : File <- IO.try(File, File.open(path, "r"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(f, 0, 8)
     f : File <- T.read(p, [65, 65, 65, 65], "rejected writes keep the bytes")
     File.close(f)
