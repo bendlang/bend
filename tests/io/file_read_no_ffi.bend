@@ -8,6 +8,9 @@
 # an error still comes back as its errno, even a read of 0 bytes.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_file_read_no_ffi_" ++ U32.show(salt)
+
 def ffi_absent() -> IO(Unit):
   import "./file_read_no_ffi.js"
 
@@ -69,14 +72,13 @@ law main:
 
 def main():
   do IO<Unit>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_file_read_no_ffi_" ++ U32.show(salt)
-    f : File <- IO.try(File, File.open(path, "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "hello\nbye")
     x : Unit <- write_go(w)
-    g : File <- IO.try(File, File.open(path, "r"))
-    k : File <- IO.try(File, File.open(path, "r"))
-    h : File <- IO.try(File, File.open(path, "a"))
+    g : File <- IO.try(File, File.open(tmp(salt), "r"))
+    k : File <- IO.try(File, File.open(tmp(salt), "r"))
+    h : File <- IO.try(File, File.open(tmp(salt), "a"))
     a : Unit <- ffi_absent()
     m1 : File & Result<&1, &1, (U32 & String), String> <- File.read_line(g, 64)
     g1 : File <- text(m1)
@@ -97,7 +99,7 @@ def main():
     d : Unit <- File.close(k1)
     done : Unit <- File.close(g3)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|[hello

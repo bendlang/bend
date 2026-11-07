@@ -8,6 +8,9 @@
 # path, EINVAL for a mode or host, a plain miss for an env name.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_nul_bytes_" ++ U32.show(salt)
+
 law nul_tail:
   String
 
@@ -87,11 +90,10 @@ law main:
 
 def main():
   do IO<U32>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_nul_bytes_" ++ U32.show(salt)
-    r : Result<&1, &1, (U32 & String), File> <- File.open(String.append(path ++ "_", nul_tail()), "w")
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    r : Result<&1, &1, (U32 & String), File> <- File.open(String.append(tmp(salt) ++ "_", nul_tail()), "w")
     a : Unit <- path_go(r)
-    m : Result<&1, &1, (U32 & String), File> <- File.open(path ++ "_mode", String.append("w", nul_tail()))
+    m : Result<&1, &1, (U32 & String), File> <- File.open(tmp(salt) ++ "_mode", String.append("w", nul_tail()))
     b : Unit <- mode_go(m)
     e : Result<&1, &1, (U32 & String), String> <- IO.get_env(String.append("PATH", nul_tail()))
     c : Unit <- env_go(e)

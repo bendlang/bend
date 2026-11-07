@@ -3,6 +3,9 @@
 # File.open_bytes. A missing file fails with ENOENT and is not created.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_read_write_" ++ U32.show(salt)
+
 def written(pair: File & Result<&1, &1, U32 & String, Unit>) -> IO(File):
   (file, result) = pair
   do IO<File>:
@@ -71,12 +74,11 @@ def absent(+path: String) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_read_write_" ++ U32.show(salt)
-    update(path)
-    done : Unit <- absent(path ++ "_missing")
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    update(tmp(salt))
+    done : Unit <- absent(tmp(salt) ++ "_missing")
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|ab

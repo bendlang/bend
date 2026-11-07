@@ -8,6 +8,9 @@
 # would print "OlÃ¡" where the law prints what was written.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_path_" ++ U32.show(salt) ++ "_"
+
 law good:
   for stem: String
   String
@@ -42,16 +45,15 @@ law main:
 
 def main():
   do IO<U32>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +stem : String = "/tmp/bend_t_io_path_" ++ U32.show(salt) ++ "_"
-    f : File <- IO.try(File, File.open(good(stem), "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(good(tmp(salt)), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá 日本 🙂")
     x : Unit <- write_go(w)
-    g : File <- IO.try(File, File.open(good(stem), "r"))
+    g : File <- IO.try(File, File.open(good(tmp(salt)), "r"))
     m : File & Result<&1, &1, (U32 & String), String> <- File.read(g, 64)
     done : U32 <- read_go(m)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", good(stem)], "", 128, 1000)
+      Process.run("/bin/rm", ["-f", good(tmp(salt))], "", 128, 1000)
     return done
 
 #|Olá 日本 🙂

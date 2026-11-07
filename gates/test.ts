@@ -354,9 +354,9 @@ if (import.meta.main) {
       console.log("  expected: " + f.want.replace(/\n/g, "\\n"));
       console.log("  observed: " + f.got.replace(/\n/g, "\\n"));
     }
-    if (fails.length > 0) {
-      console.log("shard logs: " + LOGS);
-    }
+  }
+  if (fails.length > 0) {
+    console.error("shard logs: " + LOGS);
   }
   const bad = new Set(fails.map((f) => f.name));
   lib.verdict(tests.length - bad.size, tests.length);

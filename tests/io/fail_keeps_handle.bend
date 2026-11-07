@@ -6,6 +6,9 @@
 # leaked its file forever and this program could not be written.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_keep_" ++ U32.show(salt)
+
 law read_fail:
   for m: File & Result<&1, &1, (U32 & String), String>
   IO(File)
@@ -60,17 +63,16 @@ law main:
 
 def main():
   do IO<U32>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_keep_" ++ U32.show(salt)
-    f  : File <- IO.try(File, File.open(path, "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f  : File <- IO.try(File, File.open(tmp(salt), "w"))
     m  : File & Result<&1, &1, (U32 & String), String> <- File.read(f, 8)
     f2 : File <- read_fail(m)
     w  : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f2, "kept")
     f3 : File <- write_go(w)
     x  : Unit <- File.close(f3)
-    done : U32 <- read_back(path)
+    done : U32 <- read_back(tmp(salt))
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|Bad file descriptor

@@ -7,6 +7,9 @@
 # so their initial buffer must account for the offset too.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_file_read_cap_" ++ U32.show(salt)
+
 law write_go:
   for w: File & Result<&1, &1, (U32 & String), Unit>
   IO(Unit)
@@ -53,54 +56,53 @@ def count(p, max):
     count_go(m)
 
 law reads:
-  for +path: String
+  for +salt: U32
   for n: Nat
   for acc: U32
   IO(U32)
 
-def reads(path, n, acc):
+def reads(salt, n, acc):
   match n:
     case 0n:
       IO.pure(U32, acc)
     case 1n+k:
       do IO<U32>:
-        c : U32 <- count(path, 1073741824)
-        reads(path, k, U32.add(acc, c))
+        c : U32 <- count(tmp(salt), 1073741824)
+        reads(salt, k, U32.add(acc, c))
 
-def reads_at(+path: String, n: Nat, acc: U32) -> IO(U32):
+def reads_at(+salt: U32, n: Nat, acc: U32) -> IO(U32):
   match n:
     case 0n:
       IO.pure(U32, acc)
     case 1n+k:
       do IO<U32>:
-        f : File <- IO.try(File, File.open(path, "r"))
+        f : File <- IO.try(File, File.open(tmp(salt), "r"))
         m : File & Result<&1, &1, (U32 & String), List<&2, U32>> <-
           File.read_at(f, 1073741824, 1073741824)
         c : U32 <- count_go(m)
-        reads_at(path, k, U32.add(acc, c))
+        reads_at(salt, k, U32.add(acc, c))
 
 law main:
   IO(U32)
 
 def main():
   do IO<U32>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_file_read_cap_" ++ U32.show(salt)
-    f : File <- IO.try(File, File.open(path, "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá\n")
     x : Unit <- write_go(w)
-    t : U32 <- reads(path, 1000n, 0)
+    t : U32 <- reads(salt, 1000n, 0)
     p : Unit <- IO.print(U32.show(t))
-    f : File <- IO.try(File, File.open(path, "w"))
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <-
       File.write_at(f, 1073741824, [65, 66, 67, 68, 69])
     x : Unit <- write_go(w)
-    t : U32 <- reads_at(path, 2000n, 0)
+    t : U32 <- reads_at(salt, 2000n, 0)
     p : Unit <- IO.print(U32.show(t))
     z : U32 <- count("/dev/zero", 300000)
     q : Unit <- IO.print(U32.show(z))
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
     return 0
 
 #|5000

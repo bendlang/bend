@@ -3,6 +3,9 @@
 # A name with no slash is searched in PATH: found, it runs; missing, ENOENT.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_no_shell_" ++ U32.show(salt)
+
 def outcome(r: Result<&1, &1, U32 & String, U32 & (String & String)>) ->
   String:
   match r:
@@ -19,22 +22,21 @@ def written(w: File & Result<&1, &1, (U32 & String), Unit>) -> IO(File):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_no_shell_" ++ U32.show(salt)
-    f : File <- IO.try(File, File.open(path, "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <-
       File.write(f, "echo through a shell\n")
     g : File <- written(w)
     x : Unit <- File.close(g)
     c : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/chmod", ["755", path], "", 128,
+      Process.run("/bin/chmod", ["755", tmp(salt)], "", 128,
         1000)
     y : Unit <- IO.print("chmod: " ++ outcome(c))
     r : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run(path, [], "", 128, 1000)
+      Process.run(tmp(salt), [], "", 128, 1000)
     z : Unit <- IO.print("no #!: " ++ outcome(r))
     d : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128,
+      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128,
         1000)
     s : Unit <- IO.print("rm: " ++ outcome(d))
     p : Result<&1, &1, U32 & String, U32 & (String & String)> <-

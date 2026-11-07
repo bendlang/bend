@@ -2,6 +2,9 @@
 import Base
 import ./file_binary.bend as T
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_read_after_error_" ++ U32.show(salt)
+
 def failed_write(f: File) -> IO(File):
   do IO<File>:
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "!")
@@ -17,13 +20,12 @@ def text(p: File & Result<&1, &1, U32 & String, String>,
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_read_after_error_" ++ U32.show(salt)
-    f : File <- IO.try(File, File.open(path, "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "ab\ncd")
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- IO.try(File, File.open(path, "r"))
+    f : File <- IO.try(File, File.open(tmp(salt), "r"))
     f : File <- failed_write(f)
     p : File & Result<&1, &1, U32 & String, String> <- File.read(f, 2)
     f : File <- text(p, "ab", "full text read")
@@ -51,7 +53,7 @@ def main() -> IO(Unit):
     f : File <- T.read(p, [], "zero-length read")
     done : Unit <- File.close(f)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|read-only write fails

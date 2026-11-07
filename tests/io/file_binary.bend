@@ -2,6 +2,12 @@
 # the sequential cursor unchanged when reading at an offset or asking size.
 import Base
 
+# The file stays behind for the gate's sweep: with +data shared, removing it
+# through Process.run would make String hot here, so its text would no
+# longer cross the cold io_str path.
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_file_binary_" ++ U32.show(salt)
+
 law bytes:
   for n: Nat
   for +at: U32
@@ -106,12 +112,12 @@ def bad_read(pair):
     return file
 
 law write_invalid:
-  for +path: String
+  for +salt: U32
   IO(File)
 
-def write_invalid(path):
+def write_invalid(salt):
   do IO<File>:
-    f : File <- IO.try(File, File.open(path, "w"))
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <-
       File.read_at(f, 0, 1)
     f : File <- bad_read(p)
@@ -142,24 +148,24 @@ def write_all(f):
     File.close(f)
 
 law append:
-  for +path: String
+  for +salt: U32
   IO(Unit)
 
-def append(path):
+def append(salt):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open(path, "a"))
+    f : File <- IO.try(File, File.open(tmp(salt), "a"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_bytes(f, [0, 255])
     f : File <- wrote(p)
     File.close(f)
 
 law open_read:
-  for +path: String
+  for +salt: U32
   IO(File)
 
-def open_read(path):
+def open_read(salt):
   do IO<File>:
-    f : File <- IO.try(File, File.open(path, "r"))
+    f : File <- IO.try(File, File.open(tmp(salt), "r"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_bytes(f, [1])
     f : File <- bad_write(p, 9, "write on read-only handle")
     p : File & Result<&1, &1, U32 & String, U32> <- File.size(f)
@@ -210,17 +216,13 @@ law main:
 
 def main():
   do IO<Unit>:
-    salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_t_io_file_binary_" ++ U32.show(salt)
-    f : File <- write_invalid(path)
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- write_invalid(salt)
     write_all(f)
-    append(path)
-    f : File <- open_read(path)
+    append(salt)
+    f : File <- open_read(salt)
     f : File <- read_offsets(f)
-    done : Unit <- read_end(f)
-    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
-    return done
+    read_end(f)
 
 #|read on write-only handle
 #|invalid byte
