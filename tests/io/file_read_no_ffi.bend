@@ -14,12 +14,6 @@ def ffi_absent() -> IO(Unit):
 def ffi_back() -> IO(Unit):
   import "./file_read_no_ffi.js"
 
-law path:
-  String
-
-def path():
-  "/tmp/bend_io_file_read_no_ffi"
-
 law write_go:
   for w: File & Result<&1, &1, (U32 & String), Unit>
   IO(Unit)
@@ -75,12 +69,14 @@ law main:
 
 def main():
   do IO<Unit>:
-    f : File <- IO.try(File, File.open(path(), "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_file_read_no_ffi_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "hello\nbye")
     x : Unit <- write_go(w)
-    g : File <- IO.try(File, File.open(path(), "r"))
-    k : File <- IO.try(File, File.open(path(), "r"))
-    h : File <- IO.try(File, File.open(path(), "a"))
+    g : File <- IO.try(File, File.open(path, "r"))
+    k : File <- IO.try(File, File.open(path, "r"))
+    h : File <- IO.try(File, File.open(path, "a"))
     a : Unit <- ffi_absent()
     m1 : File & Result<&1, &1, (U32 & String), String> <- File.read_line(g, 64)
     g1 : File <- text(m1)

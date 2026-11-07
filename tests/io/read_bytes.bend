@@ -5,12 +5,6 @@
 # and the handle comes back beside the Result.
 import Base
 
-law path:
-  String
-
-def path():
-  "/tmp/bend_io_read_bytes"
-
 law bytes_line:
   for xs: List<&2, U32>
   String
@@ -46,12 +40,13 @@ def read_go(m):
     File.close(f)
 
 law read_max:
+  for +path: String
   for max: U32
   IO(Unit)
 
-def read_max(max):
+def read_max(path, max):
   do IO<Unit>:
-    g : File <- IO.try(File, File.open(path(), "r"))
+    g : File <- IO.try(File, File.open(path, "r"))
     m : File & Result<&1, &1, (U32 & String), List<&2, U32>> <-
       File.read_bytes(g, max)
     read_go(m)
@@ -61,11 +56,13 @@ law main:
 
 def main():
   do IO<U32>:
-    f : File <- IO.try(File, File.open(path(), "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_read_bytes_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá\n")
     x : Unit <- write_go(w)
-    y : Unit <- read_max(64)
-    z : Unit <- read_max(3)
+    y : Unit <- read_max(path, 64)
+    z : Unit <- read_max(path, 3)
     return 0
 
 #|79 108 195 161 10

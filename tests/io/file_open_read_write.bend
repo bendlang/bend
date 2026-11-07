@@ -71,9 +71,10 @@ def absent(+path: String) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    update("/tmp/bend_io_read_write")
-    n : U32 <- IO.try(U32, IO.random_u32())
-    absent("/tmp/bend_io_read_write_missing_" ++ U32.show(n))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_read_write_" ++ U32.show(salt)
+    update(path)
+    absent(path ++ "_missing")
 
 #|ab
 #|ef

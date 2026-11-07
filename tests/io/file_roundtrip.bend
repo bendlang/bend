@@ -55,12 +55,14 @@ law main:
 
 def main():
   do IO<U32>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file.tmp", "w"))
+    salt : U32 <- IO.try(U32, IO.random_u32())
+    +path : String = "/tmp/bend_io_file_" ++ U32.show(salt)
+    f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "bend-file")
     x : Unit <- write_go(w)
     r : Result<&1, &1, (U32 & String), File> <- File.open("/no/such/dir/bend.tmp", "r")
     y : Unit <- probe_missing(r)
-    read_back("/tmp/bend_io_file.tmp")
+    read_back(path)
 
 #|No such file or directory
 #|bend-file
