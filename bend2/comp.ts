@@ -210,6 +210,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   string_append: { JS: "($0 + $1)" },
   string_contains: { JS: "string_contains($0, $1)" },
+  string_eq: { JS: "($0 === $1)" },
   string_length: { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
     new: "array_new($0, $1, $2)", set: "($0[$1 % $0.length] = $2, $0)",
