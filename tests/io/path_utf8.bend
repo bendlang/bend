@@ -43,7 +43,7 @@ law main:
 def main():
   do IO<U32>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +stem : String = "/tmp/bend_io_path_" ++ U32.show(salt) ++ "_"
+    +stem : String = "/tmp/bend_t_io_path_" ++ U32.show(salt) ++ "_"
     f : File <- IO.try(File, File.open(good(stem), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá 日本 🙂")
     x : Unit <- write_go(w)

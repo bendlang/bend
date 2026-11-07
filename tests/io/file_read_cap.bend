@@ -85,7 +85,7 @@ law main:
 def main():
   do IO<U32>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_file_read_cap_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_file_read_cap_" ++ U32.show(salt)
     f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá\n")
     x : Unit <- write_go(w)

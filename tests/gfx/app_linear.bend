@@ -47,7 +47,7 @@ def closed(+path: String, m: Maybe<Log>) -> IO(Unit):
 def main() -> IO(Unit):
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_gfx_linear_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_gfx_linear_" ++ U32.show(salt)
     f : File <- IO.try(File, File.open(path, "w"))
     m : Maybe<Log> <- App.play(~Log, ~App{Log.view, Log.tick}, [[], [Close{}], []],
       Log{f, 0})

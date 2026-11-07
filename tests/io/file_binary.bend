@@ -211,7 +211,7 @@ law main:
 def main():
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_file_binary_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_file_binary_" ++ U32.show(salt)
     f : File <- write_invalid(path)
     write_all(f)
     append(path)

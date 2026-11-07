@@ -88,7 +88,7 @@ law main:
 def main():
   do IO<U32>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_nul_bytes_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_nul_bytes_" ++ U32.show(salt)
     r : Result<&1, &1, (U32 & String), File> <- File.open(String.append(path ++ "_", nul_tail()), "w")
     a : Unit <- path_go(r)
     m : Result<&1, &1, (U32 & String), File> <- File.open(path ++ "_mode", String.append("w", nul_tail()))

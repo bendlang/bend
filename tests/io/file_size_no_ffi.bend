@@ -45,7 +45,7 @@ def wrote(pair):
 def main() -> IO(Unit):
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_file_size_no_ffi_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_file_size_no_ffi_" ++ U32.show(salt)
     f : File <- IO.try(File, File.open(path, "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_bytes(f, [104, 101, 108, 108, 111])

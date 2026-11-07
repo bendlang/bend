@@ -51,7 +51,8 @@ const BUN = lib.BUN;
 const FAILS = /^(SOME PROOFS FAIL|Error:)/;
 
 // Each shard's raw output, for a failure's post-mortem: one directory per
-// gate, so two gates at once keep their own; a day's old ones are swept.
+// gate, so two gates at once keep their own, printed with the failures; a
+// day's old ones are swept, and a reused pid's starts empty.
 const LOGS = path.join("/tmp/bend-test", String(process.pid));
 
 // Test
@@ -129,9 +130,11 @@ function shard_split(tests: Test[], count: number): Test[][] {
 // <name>.left: the test's lanes then read it as their answer, so a
 // program the compiler cannot build fails the gate. Two gates may share a
 // mini, so each shard builds in a fresh directory, and the io tests name
-// their /tmp files with IO.random_u32 and remove them as they end. A run
-// that dies leaves its own behind: the shard sweeps the user's test files
-// and directories older than an hour, never a running gate's.
+// their /tmp files bend_t_* with IO.random_u32 and remove them as they end
+// (older gates delete every bend_io_* file, so the prefix keeps these out of
+// their reach). A run that dies leaves its own behind: the shard sweeps the
+// user's test files and directories older than an hour, never a running
+// gate's.
 function shard_script(shard: Test[], tag: number): string {
   const runs = test_runs(shard);
   const bangs = runs.filter((t) => /!\(/.test(t.src)).map((t) => t.name);
@@ -142,8 +145,8 @@ function shard_script(shard: Test[], tag: number): string {
     .join(" ") + "\n").join("");
   const file = (name: string, text: string): string =>
     `cat > ${name} <<'${MARK}'\n${text}${MARK}\n`;
-  const tmp = `find /tmp/ -maxdepth 1 -user $(id -u) \\( -name 'bend_io_*'`
-    + ` -o -name 'bend_gfx_*' \\) -mmin +60 -delete 2>/dev/null;`
+  const sweep = `find /tmp/ -maxdepth 1 -user $(id -u) -name 'bend_t_*'`
+    + ` -mmin +60 -delete 2>/dev/null;`
     + ` find $HOME/bend-test -mindepth 1 -maxdepth 1 -mmin +60`
     + ` -exec rm -rf {} + 2>/dev/null;`;
   const probe = (kind: string, cmd: string): string =>
@@ -153,7 +156,7 @@ function shard_script(shard: Test[], tag: number): string {
     + ` mkdir -p $HOME/bend-test`
     + ` && d=$(mktemp -d $HOME/bend-test/${tag}.XXXXXX) && cd "$d" || exit 1;`
     + ` tar -xzf -;`
-    + ` ${tmp}\n`
+    + ` ${sweep}\n`
     + file("main.bend", main) + file("build.txt", build)
     + ` echo "${MARK} checkup"; ${BUN} bend2/main.ts main.bend --checkup 2>&1;`
     + ` xargs -P 10 -L 1 sh -c 'm=$1; shift; ${BUN} bend2/main.ts "$@"`
@@ -312,11 +315,15 @@ async function state_run(): Promise<Fail[]> {
   return fails;
 }
 
+// Another gate may sweep the same entry first, so one already gone is
+// skipped.
 function logs_sweep(): void {
   const root = path.dirname(LOGS);
+  fs.rmSync(LOGS, { recursive: true, force: true });
   for (const name of fs.existsSync(root) ? fs.readdirSync(root) : []) {
     const at = path.join(root, name);
-    if (Date.now() - fs.statSync(at).mtimeMs > 24 * 3600 * 1000) {
+    const stat = fs.statSync(at, { throwIfNoEntry: false });
+    if (stat !== undefined && Date.now() - stat.mtimeMs > 24 * 3600 * 1000) {
       fs.rmSync(at, { recursive: true, force: true });
     }
   }
@@ -346,6 +353,9 @@ if (import.meta.main) {
       console.log("FAIL " + f.name + " [" + f.probe + "]");
       console.log("  expected: " + f.want.replace(/\n/g, "\\n"));
       console.log("  observed: " + f.got.replace(/\n/g, "\\n"));
+    }
+    if (fails.length > 0) {
+      console.log("shard logs: " + LOGS);
     }
   }
   const bad = new Set(fails.map((f) => f.name));

@@ -82,7 +82,7 @@ law main:
 def main():
   do IO<U32>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_mode_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_mode_" ++ U32.show(salt)
     a : Unit <- probe(path, "w")
     b : Unit <- probe(path, "r")
     c : Unit <- probe(path, "r+")

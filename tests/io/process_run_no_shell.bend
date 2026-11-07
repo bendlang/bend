@@ -20,7 +20,7 @@ def written(w: File & Result<&1, &1, (U32 & String), Unit>) -> IO(File):
 def main() -> IO(Unit):
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_no_shell_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_no_shell_" ++ U32.show(salt)
     f : File <- IO.try(File, File.open(path, "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <-
       File.write(f, "echo through a shell\n")

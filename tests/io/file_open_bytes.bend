@@ -46,7 +46,7 @@ def read(pair: File & Result<&1, &1, U32 & String, String>) -> IO(String):
 def main() -> IO(Unit):
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +stem : String = "/tmp/bend_io_open_bytes_" ++ U32.show(salt) ++ "_"
+    +stem : String = "/tmp/bend_t_io_open_bytes_" ++ U32.show(salt) ++ "_"
     f : File <- IO.try(File, File.open_bytes(ascii(stem, [195, 169]), "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "hi")
     written(p)

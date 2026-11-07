@@ -82,7 +82,7 @@ def appended(+path: String) -> IO(Unit):
 def main() -> IO(Unit):
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_file_write_at_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_file_write_at_" ++ U32.show(salt)
     f : File <- IO.try(File, File.open(path, "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_bytes(f, T.bytes(256n, 0))

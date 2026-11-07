@@ -41,7 +41,7 @@ def trial(+path: String, mode: U32, want: U32, bytes: List<&2, U32>) -> IO(Unit)
 def main() -> IO(Unit):
   do IO<Unit>:
     salt : U32 <- IO.try(U32, IO.random_u32())
-    +path : String = "/tmp/bend_io_write_at_control_" ++ U32.show(salt)
+    +path : String = "/tmp/bend_t_io_write_at_control_" ++ U32.show(salt)
     trial(path, 0, 0, [0, 255, 13, 10, 65, 0, 255])
     trial(path, 1, 5, [0, 255])
     done : Unit <- trial(path, 2, 13, [0, 255])
