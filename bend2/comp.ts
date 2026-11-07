@@ -93,9 +93,15 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // CLO_APPLY and IO~emit are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
 // is a device call (DFAR), and a host call too if it loops on F32 math (SLP
-// misjudges it); a node past WIDE pads to its size class.
+// misjudges it); a node past WIDE pads to its size class. A device of SPLIT
+// segments splits by id into calls of 2^PART: Metal is superlinear in one
+// switch, and a call costs with its callee's size.
 
 const CLO_APPLY = "Clo~apply";
+
+const PART = 3;
+
+const SPLIT = 1024;
 
 const FOLD_FUEL = 8192;
 
@@ -2777,6 +2783,9 @@ function c_header(segs: Seg[], clos: string[]): string {
   `#define WL_LAST(X) switch (war) { ${reg("case #: r# = (X); break;")} }`,
   `#define WL_SAVE(V) ${reg("(V)[#] = r#;", resw)}`,
   `#define WL_TAKE(V) ${reg("r# = (V)[#];", resw)}`,
+  `#define WL_PUT(V, N) do { ${reg("if ((N) <= #) break; (V)[#] = r#;")} } while (0);`,
+  `#define WL_GET(V, N) do { ${reg("if ((N) <= #) break; r# = (V)[#];")} } while (0);`,
+  `#define WL_REGS ${n}`,
   `#define WL_SIG Env e, DEV Term* sp, u32 seq, u32 rn, Term ${ws.join(
     ", Term ")}`, `#define WL_ALL e, sp, seq, rn, ${ws.join(", ")}`,
   `#define WL_TABLE ${entries.map((s) => `WL_X(${s.fid})`).join(" ")
@@ -2805,17 +2814,37 @@ export function compile_book(book: Bend.Book): string {
   const img = [`CONSTV u64 STAT_IMG[] = { ${FL.img.join(", ") || 0} };`,
     spins.map((s) => s.head + ";").join("\n"),
     ...spins.map((s) => s.lines.join("\n"))].join("\n\n");
-  const text = segs.map((seg) => {
+  // a part moves the registers its segments take or pass on
+  const parted = segs.filter((s) => dev.has(s.fid)).length >= SPLIT;
+  const fids = new Map(segs.map((s) => [s.fid, s]));
+  const take = (s?: Seg) => s ? s.params.length - (s.frame?.at.length ?? 0) : 2;
+  const parts = new Map<number, [number, string[]]>();
+  const text = segs.map((seg, i) => {
     const out = [`  WL_CASE(${seg.fid})`, ...seg_text([...seg_take(seg),
       "WL_OPEN", ...seg.spin ? ["WL_SPIN", ...seg.lines, "WL_SPUN"]
-        : seg.lines], 2), "  }}"];
-    return (dev.has(seg.fid) ? out : ["#if !DEVICE", ...out, "#endif"])
-      .join("\n");
+        : seg.lines], 2), "  }}"].join("\n");
+    if (parted && dev.has(seg.fid)) {
+      const pt = memo(parts, i >> PART, () => [0, []]);
+      pt[0] = Math.max(pt[0], take(seg), seg.ret.ks.length,
+        ...[...seg.refs].map((r) => take(fids.get(r))));
+      pt[1].push(out);
+    }
+    return dev.has(seg.fid) && !parted ? out : `#if !DEVICE\n${out}\n#endif`;
   }).join("\n\n");
+  const hops = [...parts].map(([p, [n, cs]]) => [`WL_PART(${p}, ${n})`, ...cs,
+    `WL_TRAP(${n})`].join("\n")).concat(`static Term wl_hop(Env e, THR Wl* w) {
+  switch (w->fid >> ${PART}) {${[...parts.keys()].map((p) => `
+  case ${p}: return wl_part_${p}(e, w);`).join("")}
+  }
+  err_post(e.mem, ERR_FIDS);
+  return 0;
+}`);
   const reqs = [...FL.effs.values()].map(([m, src]) => c_ids(src, m)).join("");
   // emitted C names no ids, so only the runtime is scanned
   const raw = c_ids(runtime_c("\0", "\0", "\0", "\0")).split("\0");
-  const c = String.raw({ raw }, tabs, img, text, reqs);
+  const c = String.raw({ raw }, tabs, !parted ? img
+    : [img, "#if DEVICE\n#define WL_HOP", ...hops, "#endif"].join("\n\n"), text,
+  reqs);
   // keep nothing memoized: clang may run next while this process waits
   FL = file_new(book, false);
   return c;
@@ -4311,6 +4340,23 @@ static u32 root_take(DEV u64* H, THR Term* v) {
 // Spins
 // =====
 
+// A part is a switch of its own; a lane leaves it for an id out of it (or
+// traps on the one it came in with), its state stowed in a Wl.
+#if DEVICE
+typedef struct { DEV Term* sp; u32 seq, rn, fid; Term r[WL_REGS]; } Wl;
+#define WL_IN(F) ((F) >= FID_EXIT ? WL_RESW : fid_resw(F) ? fid_resw(F) \
+  : fid_arity(F))
+#define WL_STOW(W, N) WL_PUT((W).r, N) (W).sp = sp; (W).seq = seq; \
+  (W).rn = rn; (W).fid = fid;
+#define WL_DRAW(W, N) sp = (W).sp; seq = (W).seq; rn = (W).rn; \
+  fid = (W).fid; WL_GET((W).r, N)
+#define WL_PART(P, N) FAR Term wl_part_##P(Env e, THR Wl* w) { WL_BANK \
+  DEV Term* sp; u32 seq, rn, fid, wpoll = 0; WL_DRAW(*w, N) WL_SPIN \
+  switch (fid) {
+#define WL_TRAP(N) default: if (fid == w->fid) { err_post(e.mem, ERR_FIDS); \
+  return 0; } WL_STOW(*w, N) return 1; }}}
+#endif
+
 ${spins}
 
 // Work
@@ -4425,8 +4471,22 @@ ${segs}
 
 #if DEVICE
   default: {
+#ifdef WL_HOP
+    Wl w;
+    WL_STOW(w, WL_IN(fid))
+    Term wr;
+    do {
+      wr = wl_hop(e, &w);
+    } while (wr == 1 && w.fid < FID(IO~emit));
+    if (wr != 1) {
+      return wr;
+    }
+    WL_DRAW(w, WL_IN(fid))
+    break;
+#else
     err_post(e.mem, ERR_FIDS);
     return 0;
+#endif
   }
   }
   }
