@@ -1284,7 +1284,6 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
     return;
   }
   FL.heat.add(key);
-  const hot = (x: HTerm) => facts_hot(def, x, true, local);
   const w = ty_wnf(B);
   if (w?.$ === "Lam") {
     return facts_hot(def, w.f(DUMMY), force, local);
@@ -1293,18 +1292,19 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
     if (!force) {
       return;
     }
+    const hot = (x: HTerm) => facts_hot(def, x, true, local);
     const m = w?.$ === "App" && term_spine(w);
     const fam = m && done_live(m.tld) && term_strip(Bend.term_unapply(
       m.all.reduce((b, x) => Bend.term_apply(b, x), m.tld.v!))[0]);
     if (m && fam && fam.$ === "Mat") {
-      m.all.forEach((x) => hot(x));
+      m.all.forEach(hot);
       if (fact_add("fam", (m.t as Of<"Ref">).k)) {
         hot(fam);
       }
       return;
     }
     if (w?.$ === "Mat") {
-      return term_kids(w).forEach((h) => hot(h));
+      return term_kids(w).forEach(hot);
     }
     const dom = w?.$ === "Var" && !local
       && tele_unbind(tld_of(def).T).doms[w.i];
@@ -1319,7 +1319,7 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
   }
   w.x.forEach((x) => facts_hot(def, x, force, local));
   if (!force) {
-    return fact_when("type", w.k, () => hot(w));
+    return fact_when("type", w.k, () => facts_hot(def, w, true, local));
   }
   if (!fact_add("type", w.k)) {
     return;
@@ -1926,9 +1926,12 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
         return go(o.b, top, T);
       }
       case "Lam": {
-        const all = T && ty_all(T);
-        return all?.q.$ !== "None" ? s
-          : Bend.Ann(go(s.f(DUMMY), top, all.B(DUMMY)), all.B(DUMMY));
+        const all = T && Bend.tele_open(FL.book, T);
+        if (all?.q.$ !== "None") {
+          return s;
+        }
+        const B = all.B(DUMMY);
+        return Bend.Ann(go(s.f(DUMMY), top, B), B);
       }
       default: {
         return s;
@@ -6330,7 +6333,7 @@ function io_push(fun, arg, fresh, io = io_active) {
 }
 
 function io_wait(io, block) {
-  const soon = io.waits[0].at;
+  const soon = io.waits[0]?.at ?? Infinity;
   const ms = !block ? 0 : soon === Infinity ? -1
     : Math.max(0, Math.ceil(soon - performance.now()));
   const fds = io.waits.filter((w) => w.fd !== undefined);
