@@ -44,7 +44,10 @@ def main() -> IO(Unit):
     +path : String = "/tmp/bend_io_write_at_control_" ++ U32.show(salt)
     trial(path, 0, 0, [0, 255, 13, 10, 65, 0, 255])
     trial(path, 1, 5, [0, 255])
-    trial(path, 2, 13, [0, 255])
+    done : Unit <- trial(path, 2, 13, [0, 255])
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|controlled bytes match
 #|controlled write preserved cursor

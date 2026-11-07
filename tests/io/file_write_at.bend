@@ -92,7 +92,10 @@ def main() -> IO(Unit):
     f : File <- patch(f)
     File.close(f)
     readonly(path)
-    appended(path ++ "_append")
+    done : Unit <- appended(path ++ "_append")
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path, path ++ "_append"], "", 128, 1000)
+    return done
 
 #|sequential prefix
 #|write_at preserves read cursor

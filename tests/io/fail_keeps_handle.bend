@@ -68,7 +68,10 @@ def main():
     w  : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f2, "kept")
     f3 : File <- write_go(w)
     x  : Unit <- File.close(f3)
-    read_back(path)
+    done : U32 <- read_back(path)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|Bad file descriptor
 #|kept

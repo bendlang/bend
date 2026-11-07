@@ -49,7 +49,10 @@ def main() -> IO(Unit):
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <-
       File.read_at(f, 0, 0)
     f : File <- T.read(p, [], "zero-length read")
-    File.close(f)
+    done : Unit <- File.close(f)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|read-only write fails
 #|full text read

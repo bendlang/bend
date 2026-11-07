@@ -63,6 +63,8 @@ def main():
     x : Unit <- write_go(w)
     y : Unit <- read_max(path, 64)
     z : Unit <- read_max(path, 3)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
     return 0
 
 #|79 108 195 161 10

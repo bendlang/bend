@@ -62,7 +62,10 @@ def main():
     x : Unit <- write_go(w)
     r : Result<&1, &1, (U32 & String), File> <- File.open("/no/such/dir/bend.tmp", "r")
     y : Unit <- probe_missing(r)
-    read_back(path)
+    done : U32 <- read_back(path)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|No such file or directory
 #|bend-file

@@ -217,7 +217,10 @@ def main():
     append(path)
     f : File <- open_read(path)
     f : File <- read_offsets(f)
-    read_end(f)
+    done : Unit <- read_end(f)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|read on write-only handle
 #|invalid byte

@@ -51,7 +51,10 @@ def main() -> IO(Unit):
     f : File <- IO.try(File, File.open(path, "w"))
     m : Maybe<Log> <- App.play(~Log, ~App{Log.view, Log.tick}, [[], [Close{}], []],
       Log{f, 0})
-    closed(path, m)
+    done : Unit <- closed(path, m)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|frames 3
 #|frame 0

@@ -89,6 +89,8 @@ def main():
     d : Unit <- probe(path, "w+")
     e : Unit <- probe(path, "wx")
     x : Unit <- excl(path ++ "_excl")
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path, path ++ "_excl"], "", 128, 1000)
     return 0
 
 #|opened

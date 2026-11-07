@@ -99,6 +99,8 @@ def main():
     p : Unit <- IO.print(U32.show(t))
     z : U32 <- count("/dev/zero", 300000)
     q : Unit <- IO.print(U32.show(z))
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
     return 0
 
 #|5000

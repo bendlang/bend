@@ -39,7 +39,10 @@ def main() -> IO(Unit):
     f : File <- IO.try(File, File.open(path, "r"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(f, 0, 8)
     f : File <- T.read(p, [65, 65, 65, 65], "rejected writes keep the bytes")
-    File.close(f)
+    done : Unit <- File.close(f)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|write_at on an O_APPEND fd rejected
 #|write_at on an append handle rejected without ffi

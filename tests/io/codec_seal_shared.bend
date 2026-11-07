@@ -48,7 +48,10 @@ def main():
     x : Unit <- write_go(w)
     g : File <- IO.try(File, File.open(path, "r"))
     m : File & Result<&1, &1, (U32 & String), String> <- File.read(g, 64)
-    read_go(m)
+    done : U32 <- read_go(m)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|4141
 #|abcabc

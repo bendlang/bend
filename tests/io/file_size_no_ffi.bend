@@ -54,6 +54,9 @@ def main() -> IO(Unit):
     p : File & Result<&1, &1, U32 & String, U32> <- File.size(f)
     v : Unit <- ffi_back()
     f : File <- report(p)
-    File.close(f)
+    done : Unit <- File.close(f)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|size 5

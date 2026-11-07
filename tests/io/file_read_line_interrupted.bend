@@ -31,7 +31,10 @@ def main() -> IO(Unit):
     m : File & Result<&1, &1, U32 & String, String> <- File.read_line(g, 64)
     g : File <- line(m)
     g : File <- Interrupted.check(g)
-    File.close(g)
+    done : Unit <- File.close(g)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|[ab
 #|]

@@ -95,7 +95,10 @@ def main():
     b : Unit <- ffi_back()
     c : Unit <- File.close(h2)
     d : Unit <- File.close(k1)
-    File.close(g3)
+    done : Unit <- File.close(g3)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|[hello
 #|]

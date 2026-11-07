@@ -34,7 +34,10 @@ def main() -> IO(Unit):
     f : File <- IO.try(File, File.open(path, "r"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 32)
     f : File <- T.read(p, [0, 255, 13, 10, 65, 0, 255], "bytes written once")
-    File.close(f)
+    done : Unit <- File.close(f)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|text written once
 #|bytes written once

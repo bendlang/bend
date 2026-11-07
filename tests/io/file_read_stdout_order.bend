@@ -28,7 +28,10 @@ def main() -> IO(Unit):
     r : File & Result<&1, &1, U32 & String, String> <- File.read_line(g, 64)
     Unit <- read(r)
     Unit <- raw_two()
-    IO.print("three")
+    done : Unit <- IO.print("three")
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/rm", ["-f", path], "", 128, 1000)
+    return done
 
 #|one
 #|two
