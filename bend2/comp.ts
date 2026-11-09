@@ -4857,8 +4857,7 @@ static void gpu_note(const char* path) {
 
 #if !BEND_CUDA
 #define gpu_map pool_mmap
-#define gpu_near(p, k)
-#define gpu_bang(beg)
+#define gpu_near(p)
 #endif
 
 #if BEND_METAL || BEND_CUDA
@@ -5050,111 +5049,7 @@ fail:;
 
 #undef GPU_CHECK
 
-// EXPERIMENT #1992, to remove before any merge. BEND_NEAR picks the
-// prefetches by letter: h the header, r ring row 0's get and put words, s the
-// ring slot, t the task's tail block, and w widens each to its aligned 64 KB.
-// Unset or 1 means hrst, 0 means none. A line at exit gives medians over the
-// second half of the bangs, when the weights are already resident.
-static char near_on[8];
-static u64  near_calls, near_ns, near_fails, bang_at, near_lo, near_hi;
-static u64  tail_off, tail_moves;
-static u32  bang_n, bang_cap;
-static u32* bang_us;
-static u32* host_us;
-
-static u64 near_now(void) {
-  struct timespec t;
-  clock_gettime(CLOCK_MONOTONIC, &t);
-  return t.tv_sec * 1000000000ull + t.tv_nsec;
-}
-
-static int near_cmp(const void* a, const void* b) {
-  u32 x = *(const u32*)a, y = *(const u32*)b;
-  return x < y ? -1 : x > y;
-}
-
-static u32 near_med(u32* xs) {
-  u32 n = bang_n - bang_n / 2;
-  qsort(xs + bang_n / 2, n, sizeof(u32), near_cmp);
-  return xs[bang_n / 2 + n / 2];
-}
-
-static void near_report(void) {
-  if (bang_n == 0) {
-    return;
-  }
-  u32 bang = near_med(bang_us);
-  u32 host = near_med(host_us);
-  fprintf(stderr, "bend: near=%s bangs=%u cycle_us=%u bang_us=%u host_us=%u"
-    " prefetches_per_bang=%.1f prefetch_us=%.1f failed=%llu corpus=0x%llx"
-    " ring_off=%llu stak_off=%llu heap_off=%llu tail_off=%llu"
-    " tail_moves=%llu\n",
-    near_on[0] ? near_on : "off", bang_n, bang + host, bang, host,
-    (double)near_calls / bang_n,
-    near_calls ? near_ns / 1e3 / near_calls : 0.0,
-    (unsigned long long)near_fails, (unsigned long long)(uintptr_t)CORPUS,
-    (unsigned long long)(RING_OFF * 8), (unsigned long long)(STAK_OFF * 8),
-    (unsigned long long)(HEAP_OFF * 8), (unsigned long long)tail_off,
-    (unsigned long long)tail_moves);
-}
-
-static void gpu_bang(bool beg) {
-  u64 now = near_now();
-  if (beg) {
-    if (bang_n == bang_cap) {
-      bang_cap = bang_cap ? 2 * bang_cap : 1024;
-      bang_us  = realloc(bang_us, bang_cap * sizeof(u32));
-      host_us  = realloc(host_us, bang_cap * sizeof(u32));
-    }
-    host_us[bang_n] = bang_at ? (now - bang_at) / 1000 : 0;
-    bang_at = now;
-  } else {
-    bang_us[bang_n++] = (now - bang_at) / 1000;
-    bang_at = now;
-  }
-}
-
-// Moves the page the host just touched to the device before a kernel faults
-// on it, if BEND_NEAR has the letter k.
-static void gpu_near(void* p, char k) {
-  if (k == 't') {
-    u64 off = (u64)((uintptr_t)p - (uintptr_t)CORPUS);
-    tail_moves += tail_off != 0 && (off & ~4095ull) != (tail_off & ~4095ull);
-    tail_off = off;
-  }
-  if (!strchr(near_on, k)) {
-    return;
-  }
-  u64 size = strchr(near_on, 'w') ? 65536 : 4096;
-  u64 at   = (uintptr_t)p & ~(size - 1);
-  u64 end  = at + size;
-  at  = at < near_lo ? near_lo : at;
-  end = end > near_hi ? near_hi : end;
-  u64 beg = near_now();
-#if CUDA_VERSION >= 13000
-  CUresult r = cuMemPrefetchAsync(at, end - at,
-    (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
-#else
-  CUresult r = cuMemPrefetchAsync(at, end - at, gpu_dev, NULL);
-#endif
-  near_ns += near_now() - beg;
-  near_calls += 1;
-  if (r != CUDA_SUCCESS && near_fails++ == 0) {
-    const char* name = "unknown CUDA error";
-    cuGetErrorName(r, &name);
-    fprintf(stderr, "bend: cuMemPrefetchAsync failed: %s\n", name);
-  }
-}
-
 static u64* gpu_map(u64 bytes) {
-  const char* near = getenv("BEND_NEAR");
-  near = near == NULL || !strcmp(near, "1") ? "hrst" : near;
-  for (u32 i = 0, n = 0; near[i] && n < 7; i += 1) {
-    if (strchr("hrstw", near[i]) && !strchr(near_on, near[i])) {
-      near_on[n++] = near[i];
-    }
-  }
-  atexit(near_report);
   CUdeviceptr p = 0;
   if (cuMemAllocManaged(&p, bytes, CU_MEM_ATTACH_GLOBAL) != CUDA_SUCCESS) {
     err_fail("corpus reservation failed");
@@ -5167,8 +5062,6 @@ static u64* gpu_map(u64 bytes) {
 #endif
   cuMemsetD8(p, 0, STAK_OFF * 8);
   cuCtxSynchronize();
-  near_lo = p;
-  near_hi = p + bytes;
   return (u64*)(uintptr_t)p;
 }
 
@@ -5251,14 +5144,24 @@ static void gpu_kernel(u32 pass, u32 at) {
   }
 }
 
-// A pass with no frontier returns at once. Reading H_FRONT pulls the header
-// back to the host, so each batch sends it to the device again.
+// Sends the page the host just wrote to the device before a kernel faults on
+// it (#1992).
+static void gpu_near(void* p) {
+  CUdeviceptr at = (uintptr_t)p & ~4095ull;
+#if CUDA_VERSION >= 13000
+  cuMemPrefetchAsync(at, 4096,
+    (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
+#else
+  cuMemPrefetchAsync(at, 4096, gpu_dev, NULL);
+#endif
+}
+
+// A pass with no frontier returns at once.
 static void gpu_pass(u64* H) {
   if (cuMemcpyHtoD(gpu_front, &H[H_FRONT], 8) != CUDA_SUCCESS) {
     err_fail("device fault");
   }
   for (u32 n = 1; H[H_FRONT] != 0; n = n < 32 ? 2 * n : 64) {
-    gpu_near(H, 'h');
     for (u32 i = 0; i < n; i += 1) {
       gpu_run();
     }
@@ -5311,11 +5214,9 @@ static void ring_rewind(u64* H, u32 rows) {
 static void cube_run(u64* H, bool gpu) {
   u32 f = turn_take(H);
   if (gpu) {
-    gpu_bang(true);
     turn_set(H, f);
-    gpu_near(ring_get(H, 0), 'r');
-    gpu_near(ring_put(H, 0), 'r');
-    gpu_near(ring_slot(H, 0, *ring_put(H, 0) - 1), 's');
+    gpu_near(ring_get(H, 0));
+    gpu_near(ring_put(H, 0));
   }
   while (!root_done(H)) {
     if (f == 0) {
@@ -5346,9 +5247,6 @@ static void cube_run(u64* H, bool gpu) {
     }
   }
   a32_store(a32_at(H, H_CURSOR), 0);
-  if (gpu) {
-    gpu_bang(false);
-  }
 }
 
 // Corpus
@@ -5440,7 +5338,6 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
       Term cont = H[tl];
       u32  idx  = (u32)(H[tl + 1] >> 32) & 0xFFFF;
       H[tl]     = TERM_HOLE;
-      gpu_near(H + tl, 't');
       a32_store(a32_at(H, H_CURSOR), 1);
       ring_push(H, 0, t);
       cube_run(H, true);
