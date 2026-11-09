@@ -5144,8 +5144,7 @@ static void gpu_kernel(u32 pass, u32 at) {
   }
 }
 
-// Sends the page the host just wrote to the device before a kernel faults on
-// it (#1992).
+// Moves p's page to the device, so a kernel doesn't fault on it.
 static void gpu_near(void* p) {
   CUdeviceptr at = (uintptr_t)p & ~4095ull;
 #if CUDA_VERSION >= 13000
