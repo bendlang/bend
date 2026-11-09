@@ -3417,7 +3417,6 @@ static u32*   FM_CNT;
 static u64*   FM_SUM;
 static u64*   FM_TOP;
 static u64    FM_WINS;
-static u32    fm_offers[NCLS];
 
 static u32             pool_size;
 static u32             pool_row;
@@ -3740,15 +3739,13 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // KEEP_WORDS go straight to the bank. A miss takes COLD, the bank or fresh
 // memory. Devices bank at dev_cut.
 //
-// A bank pops LIFO, so a run's generations mix addresses round after round
-// and its cells end up scattered (#1007). The CPU heap lays small classes in
-// windows of one class (QUANTUM words) with a free map: a bit per free word,
-// a count per window, and per class a bit per offered window (FM_SUM) and
-// per nonzero FM_SUM word (FM_TOP). A window is offered once 1/2^FM_LOW of
-// it is free. A host miss takes the lowest offered window, else COLD, else
-// one banked generation (poured unless in order), else bumps.
-// Frees, hand-off and COLD stay O(1); a miss with nothing offered reads one
-// count. The map is reserved for the largest heap and opened as it grows.
+// A bank pops LIFO, so a long run's generations mix addresses and its cells
+// scatter (#1007). The CPU heap bumps small classes in windows of one class
+// (QUANTUM words) and keeps a free map: a bit per free word, a count per
+// window, and per class a bit per offered window (FM_SUM, offered once an
+// eighth is free) and per nonzero FM_SUM word (FM_TOP). A host miss takes
+// the lowest offered window, else COLD, else a banked generation (poured
+// into the map unless in order), else fresh memory.
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))
@@ -3761,8 +3758,6 @@ INLINE u32 cls_fit(u32 words) {
 
 #define WIN_BITS 12
 #define WIN_MAX  (1ull << (32 - WIN_BITS + PAGE_BITS))
-#define FM_LOW   3
-#define FM_PEEK  64
 
 #if DEVICE
 
@@ -3772,53 +3767,28 @@ INLINE u32 cls_fit(u32 words) {
 
 #define fm_on(c) (FM_BITS && (c) < NCLS)
 
-INLINE void fm_offer(u32 c, u64 win) {
-  u64 w   = win >> 6;
+// Marks a poured cell free and offers its window as it crosses an eighth.
+INLINE void fm_put(u32 c, u64 loc) {
+  u64 off = loc - HEAP_OFF;
+  u64 win = off >> WIN_BITS;
   u64 bit = 1ull << (win & 63);
-  u64 old = __atomic_fetch_or(&FM_SUM[w * NCLS + c], bit, __ATOMIC_SEQ_CST);
-  if (old == 0) {
-    __atomic_fetch_or(&FM_TOP[(w >> 6) * NCLS + c], 1ull << (w & 63),
+  __atomic_fetch_or(&FM_BITS[off >> 6], 1ull << (off & 63), __ATOMIC_RELEASE);
+  if (__atomic_add_fetch(&FM_CNT[win], 1, __ATOMIC_RELAXED)
+    == (1u << (WIN_BITS - c)) >> 3
+    && !(__atomic_fetch_or(&FM_SUM[(win >> 6) * NCLS + c], bit,
+      __ATOMIC_SEQ_CST) & bit)) {
+    __atomic_fetch_or(&FM_TOP[(win >> 12) * NCLS + c], 1ull << (win >> 6 & 63),
       __ATOMIC_SEQ_CST);
   }
-  if (!(old & bit)) {
-    __atomic_fetch_add(&fm_offers[c], 1, __ATOMIC_RELEASE);
-  }
 }
 
-// Adds k poured cells to a window, offering it as it crosses the mark.
-INLINE void fm_count(u32 c, u64 win, u32 k) {
-  u32 t = (1u << (WIN_BITS - c)) >> FM_LOW;
-  u32 x = __atomic_add_fetch(&FM_CNT[win], k, __ATOMIC_RELAXED);
-  if (x >= t && x - k < t) {
-    fm_offer(c, win);
-  }
-}
-
-// Chains a claimed window's free words at *got, lowest first.
-FAR u32 fm_drain(u64* H, u64 win, u64* got) {
-  u64* tail = got;
-  u32  n    = 0;
-  u64  j0   = win << (WIN_BITS - 6);
-  __atomic_store_n(&FM_CNT[win], 0, __ATOMIC_RELAXED);
-  for (u64 j = j0; j < j0 + (1u << (WIN_BITS - 6)); j += 1) {
-    u64 m = __atomic_load_n(&FM_BITS[j], __ATOMIC_RELAXED);
-    m = m ? __atomic_exchange_n(&FM_BITS[j], 0, __ATOMIC_ACQUIRE) : 0;
-    for (; m != 0; m &= m - 1, n += 1) {
-      *tail = HEAP_OFF + (j << 6) + __builtin_ctzll(m);
-      tail  = &H[*tail];
-    }
-  }
-  *tail = 0;
-  return n;
-}
-
-// A FM_TOP bit is cleared only with its FM_SUM word seen zero after, so an
-// offer racing the clear keeps it.
+// Claims the lowest offered window and chains its free words at *got. A
+// FM_TOP bit is cleared only if its FM_SUM word reads zero after, so a
+// racing offer keeps it.
 FAR u32 fm_take(u64* H, u32 c, u64* got) {
   u64 nt = (a32_load_acq(a32_at(H, H_BUMP)) >> (WIN_BITS - PAGE_BITS + 12))
     + 1;
-  for (u64 t = 0; t < nt && __atomic_load_n(&fm_offers[c], __ATOMIC_ACQUIRE);
-    t += 1) {
+  for (u64 t = 0; t < nt; t += 1) {
     u64* top = &FM_TOP[t * NCLS + c];
     for (u64 tb; (tb = __atomic_load_n(top, __ATOMIC_RELAXED)) != 0;) {
       u64  w   = t << 6 | __builtin_ctzll(tb);
@@ -3832,54 +3802,47 @@ FAR u32 fm_take(u64* H, u32 c, u64* got) {
         continue;
       }
       u64 win = w << 6 | __builtin_ctzll(bs);
-      u64 bit = 1ull << (win & 63);
-      if (__atomic_fetch_and(sum, ~bit, __ATOMIC_ACQ_REL) & bit) {
-        __atomic_fetch_sub(&fm_offers[c], 1, __ATOMIC_RELAXED);
-        u32 n = fm_drain(H, win, got);
-        if (n != 0) {
-          return n;
+      if (!(__atomic_fetch_and(sum, ~(1ull << (win & 63)), __ATOMIC_ACQ_REL)
+        >> (win & 63) & 1)) {
+        continue;
+      }
+      __atomic_store_n(&FM_CNT[win], 0, __ATOMIC_RELAXED);
+      u64* tail = got;
+      u32  n    = 0;
+      for (u64 j = win << 6; j < (win + 1) << 6; j += 1) {
+        u64 m = __atomic_exchange_n(&FM_BITS[j], 0, __ATOMIC_ACQUIRE);
+        for (; m != 0; m &= m - 1, n += 1) {
+          *tail = HEAP_OFF + (j << 6) + __builtin_ctzll(m);
+          tail  = &H[*tail];
         }
+      }
+      *tail = 0;
+      if (n != 0) {
+        return n;
       }
     }
   }
   return 0;
 }
 
-// Pops one banked generation. When 7/8 of its first FM_PEEK links stay
-// within a window it is in order and is the chain; else it is poured into
-// the map, which then takes. A run of cells in one bitmap word or window
-// costs one atomic, and a word's bits land before its window's count.
+// Pops one banked generation. In order (7/8 of its first 64 links stay
+// within a window) it is the chain, as on main; else it is poured into the
+// map, which then takes.
 FAR u32 fm_pour(u64* H, u32 c, u64* got) {
-  u64 g = a32_load(&bank_at(H, c)->rd) != 0 ? bank_pop(H, c) : 0;
-  u64 w = 0;
-  u64 m = 0;
-  u32 k = 0;
-  if (g == 0) {
-    return 0;
-  }
+  u64 g    = a32_load(&bank_at(H, c)->rd) != 0 ? bank_pop(H, c) : 0;
   u32 near = 0;
   u32 seen = 0;
-  for (u64 h = g; seen < FM_PEEK && H[h] != 0; h = H[h], seen += 1) {
+  for (u64 h = g; h != 0 && H[h] != 0 && seen < 64; h = H[h], seen += 1) {
     near += H[h] - h + (1ull << WIN_BITS) < 2ull << WIN_BITS;
   }
-  if (near * 8 >= seen * 7) {
+  if (g == 0 || near * 8 >= seen * 7) {
     *got = g;
-    return KEEP(c);
+    return g ? KEEP(c) : 0;
   }
-  for (u64 off; g != 0; g = H[g], m |= 1ull << (off & 63), k += 1) {
-    off = g - HEAP_OFF;
-    if (off >> 6 != w && m != 0) {
-      __atomic_fetch_or(&FM_BITS[w], m, __ATOMIC_RELEASE);
-      m = 0;
-    }
-    if (off >> WIN_BITS != w >> (WIN_BITS - 6) && k != 0) {
-      fm_count(c, w >> (WIN_BITS - 6), k);
-      k = 0;
-    }
-    w = off >> 6;
+  for (u64 nx; g != 0; g = nx) {
+    nx = H[g];
+    fm_put(c, g);
   }
-  __atomic_fetch_or(&FM_BITS[w], m, __ATOMIC_RELEASE);
-  fm_count(c, w >> (WIN_BITS - 6), k);
   return fm_take(H, c, got);
 }
 
@@ -5441,22 +5404,20 @@ static void corpus_lay(u64* H, u64 size) {
   a32_store_rel(a32_at(H, H_CAP), (u32)cap);
 }
 
-// The free map: the prefix of each part that covers a heap of k windows.
+// The free map's parts (bits, counts, FM_SUM, FM_TOP) for k windows, each
+// with a page of slack.
 static void fm_lens(u64 k, u64* len) {
-  len[0] = k * 512;
-  len[1] = k * 4;
-  len[2] = (k / 64 + 1) * NCLS * 8;
-  len[3] = (k / 4096 + 1) * NCLS * 8;
+  u64 per[4] = { k * 512, k * 4, k * NCLS / 8, k * NCLS / 512 };
   for (u32 i = 0; i < 4; i += 1) {
-    len[i] = (len[i] + 16383) & ~16383ull;
+    len[i] = (per[i] + 32767) & ~16383ull;
   }
 }
 
 FAR bool fm_open(u64 size) {
-  u64   k      = (size / 8 >> WIN_BITS) + 1;
-  void* at[4]  = { FM_BITS, FM_CNT, FM_SUM, FM_TOP };
+  u64   k     = (size / 8 >> WIN_BITS) + 1;
+  void* at[4] = { FM_BITS, FM_CNT, FM_SUM, FM_TOP };
   u64   len[4];
-  bool  ok     = k <= FM_WINS;
+  bool  ok    = k <= FM_WINS;
   fm_lens(k, len);
   for (u32 i = 0; ok && i < 4; i += 1) {
     ok = !mprotect(at[i], len[i], PROT_READ | PROT_WRITE);
@@ -5464,14 +5425,15 @@ FAR bool fm_open(u64 size) {
   return ok;
 }
 
-// Reserved for the most windows a u32 page count or RLIMIT_AS allows.
+// Reserved for the most windows a u32 page count or RLIMIT_AS allows, and
+// opened as the corpus grows.
 FAR void fm_map(u64 size) {
   struct rlimit rl;
-  u64 w = WIN_MAX;
-  if (!getrlimit(RLIMIT_AS, &rl) && rl.rlim_cur != RLIM_INFINITY) {
-    w = rl.rlim_cur >> (WIN_BITS + 3) < w ? rl.rlim_cur >> (WIN_BITS + 3) : w;
+  u64   w = WIN_MAX;
+  u64   len[4];
+  if (!getrlimit(RLIMIT_AS, &rl) && rl.rlim_cur >> (WIN_BITS + 3) < w) {
+    w = rl.rlim_cur >> (WIN_BITS + 3);
   }
-  u64 len[4];
   fm_lens(w, len);
   u64   all = len[0] + len[1] + len[2] + len[3];
   char* p   = mmap(NULL, all, PROT_NONE, MAP_PRIVATE | MAP_ANON
@@ -5483,7 +5445,7 @@ FAR void fm_map(u64 size) {
   FM_BITS = (u64*)p;
   FM_CNT  = (u32*)(p + len[0]);
   FM_SUM  = (u64*)(p + len[0] + len[1]);
-  FM_TOP  = (u64*)(p + len[0] + len[1] + len[2]);
+  FM_TOP  = (u64*)(p + all - len[3]);
   if (!fm_open(size)) {
     munmap(p, all);
     FM_BITS = NULL;
