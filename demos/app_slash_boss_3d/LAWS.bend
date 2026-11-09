@@ -30,6 +30,53 @@ law pause_freezes:
     == Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(n, flash), cloth, garb, lens, blast}
     : Slash.Game}
 
+# LAW: the loop's ticks freeze a paused game the same way: any number
+# of them, from any previous game and cues, leave the game as
+# pause_freezes does.
+law pause_freezes_live:
+  for n: Nat
+  for prev: Slash.Game
+  for now: Nat
+  for +debt: U32
+  for begin: Nat
+  for +frames: U32
+  for cues: List<&2, Slash.Cue>
+  for +time: U32
+  for +held: U32
+  for +hero: Slash.Fighter
+  for +boss: Slash.Boss
+  for +flash: U32
+  for +cloth: R.Cloth
+  for +garb: Slash.Garb
+  for +lens: Slash.Lens
+  for +blast: Maybe<&2, Slash.Blast>
+  {Spec.game_of(Slash.Live.steps(n, prev, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, now, debt, begin, frames, cues))
+    == Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(n, flash), cloth, garb, lens, blast} : Slash.Game}
+
+# LAW: a frame with no input leaves a paused game frozen, however much
+# time has passed: the ticks it owes run as pause_freezes_live says.
+law pause_freezes_frame:
+  for prev: Slash.Game
+  for +stamp: Nat
+  for +debt: U32
+  for +now: Nat
+  for begin: Nat
+  for frames: U32
+  for cues: List<&2, Slash.Cue>
+  for +time: U32
+  for +held: U32
+  for +hero: Slash.Fighter
+  for +boss: Slash.Boss
+  for +flash: U32
+  for +cloth: R.Cloth
+  for +garb: Slash.Garb
+  for +lens: Slash.Lens
+  for +blast: Maybe<&2, Slash.Blast>
+  exs n: Nat
+  {Spec.frame_game(Slash.Live.after(Slash.Game.events(Nil{}, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}), prev, stamp, debt, now,
+      begin, frames, cues))
+    == Some{Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(n, flash), cloth, garb, lens, blast}} : Maybe<Slash.Game>}
+
 # LAW: P twice restores the pause state of any game: paused stays
 # paused, unpaused stays unpaused, whatever the mode was.
 law pause_twice:
