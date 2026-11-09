@@ -2952,9 +2952,9 @@ def Map.diff(a, b):
 def Map.new(a, -V: Kind(a)) -> Map<a, V>:
   MTip{}
 
-# Map.put.go, Map.ins.go, Map.seek.go, Map.has.go, Map.get.go and
-# Map.pop.go take the node they are in, whole, and the key's bit at it:
-# the child they descend into is that node's field, a node rebuilt
+# Map.put.go, Map.ins.go, Map.seek.go, Map.has.go and Map.pop.go take the
+# node they are in, whole, and the key's bit at it: the child they descend
+# into is that node's field, a node rebuilt
 def Map.put.go(-a: Quant, -V: Kind(a), node: Map<a, V>, x: V, kb: String & Bool) -> Map<a, V>:
   match node kb:
     case MNode{p, MTip{}, hi} Tuple{key, False{}}:
@@ -3140,20 +3140,44 @@ def Map.get.leaf(-V: Data, d: V, +v: V, r: (String & String) & Cmp) ->
     case o:
       (MLeaf{k2, v}, d)
 
-def Map.get.go(-V: Data, node: Map<&2, V>, d: V, kb: String & Bool) -> Map<&2, V> & V:
-  match node kb:
-    case MNode{p, MTip{}, hi} Tuple{key2, False{}}:
+# Map.get.go carries a cursor into the key: trie positions only grow on the
+# way down, so each level drops the characters between its position and the
+# child's instead of walking the key's shared prefix from its head again.
+def Map.get.bit(rest: String, off: Nat) -> Bool:
+  match rest:
+    case SNil{}:
+      False{}
+    case SCon{c, t}:
+      match c off:
+        case Chr{x} 0n:
+          True{}
+        case Chr{+x} 1n+b:
+          Map.bit.u(x, Nat.sub(31n, b))
+
+def Map.get.go(
+  -V: Data, node: Map<&2, V>, d: V, key: String, +rest: String, ci: Nat, b: Bool
+) -> Map<&2, V> & V:
+  match node b:
+    case MNode{p, MTip{}, hi} False{}:
       (MNode{p, MTip{}, hi}, d)
-    case MNode{p, MLeaf{k, v}, hi} Tuple{key2, False{}}:
-      Map.lo(&2, V, V, p, hi, Map.get.leaf(V, d, v, String.cmp(key2, k)))
-    case MNode{p, MNode{+q, a, b}, hi} Tuple{key2, False{}}:
-      Map.lo(&2, V, V, p, hi, Map.get.go(V, MNode{q, a, b}, d, Map.bit(key2, q)))
-    case MNode{p, lo, MTip{}} Tuple{key2, True{}}:
+    case MNode{p, MLeaf{k, v}, hi} False{}:
+      Map.lo(&2, V, V, p, hi, Map.get.leaf(V, d, v, String.cmp(key, k)))
+    case MNode{p, MNode{+q, a, b2}, hi} False{}:
+      +cq = Nat.div(q, 33n)
+      +r2 = String.drop(rest, Nat.sub(cq, ci))
+      Map.lo(&2, V, V, p, hi,
+        Map.get.go(V, MNode{q, a, b2}, d, key, r2, cq,
+          Map.get.bit(r2, Nat.mod(q, 33n))))
+    case MNode{p, lo, MTip{}} True{}:
       (MNode{p, lo, MTip{}}, d)
-    case MNode{p, lo, MLeaf{k, v}} Tuple{key2, True{}}:
-      Map.hi(&2, V, V, p, lo, Map.get.leaf(V, d, v, String.cmp(key2, k)))
-    case MNode{p, lo, MNode{+q, a, b}} Tuple{key2, True{}}:
-      Map.hi(&2, V, V, p, lo, Map.get.go(V, MNode{q, a, b}, d, Map.bit(key2, q)))
+    case MNode{p, lo, MLeaf{k, v}} True{}:
+      Map.hi(&2, V, V, p, lo, Map.get.leaf(V, d, v, String.cmp(key, k)))
+    case MNode{p, lo, MNode{+q, a, b2}} True{}:
+      +cq = Nat.div(q, 33n)
+      +r2 = String.drop(rest, Nat.sub(cq, ci))
+      Map.hi(&2, V, V, p, lo,
+        Map.get.go(V, MNode{q, a, b2}, d, key, r2, cq,
+          Map.get.bit(r2, Nat.mod(q, 33n))))
     case m _:
       (m, d)
 
@@ -3164,7 +3188,11 @@ def Map.get(-V: Data, d: V, m: Map<&2, V>, key: String) -> Map<&2, V> & V:
     case MLeaf{k, v}:
       Map.get.leaf(V, d, v, String.cmp(key, k))
     case MNode{+pos, lo, hi}:
-      Map.get.go(V, MNode{pos, lo, hi}, d, Map.bit(key, pos))
+      +k = key
+      +cq = Nat.div(pos, 33n)
+      +rest = String.drop(k, cq)
+      Map.get.go(V, MNode{pos, lo, hi}, d, k, rest, cq,
+        Map.get.bit(rest, Nat.mod(pos, 33n)))
 
 def Map.pop.lo(
   a, -V: Kind(a), pos: Nat, hi: Map<a, V>, r0: Map<a, V> & Maybe<a, V>
