@@ -6,6 +6,9 @@
 # take meets a raw non-trivial field and span_fade posts error 8.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_hots_" ++ U32.show(salt)
+
 law twice:
   for +s: String
   String
@@ -40,13 +43,17 @@ law main:
 
 def main():
   do IO<U32>:
+    +salt : U32 <- IO.try(U32, IO.random_u32())
     a : Unit <- IO.print(twice(U32.show(41)))
-    f : File <- IO.try(File, File.open("/tmp/bend_io_hots.tmp", "w"))
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "abc")
     x : Unit <- write_go(w)
-    g : File <- IO.try(File, File.open("/tmp/bend_io_hots.tmp", "r"))
+    g : File <- IO.try(File, File.open(tmp(salt), "r"))
     m : File & Result<&1, &1, (U32 & String), String> <- File.read(g, 64)
-    read_go(m)
+    done : U32 <- read_go(m)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
+    return done
 
 #|4141
 #|abcabc

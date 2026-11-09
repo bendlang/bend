@@ -3,6 +3,9 @@
 import Base
 import ./file_binary.bend as T
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_file_write_at_" ++ U32.show(salt)
+
 def patch(f: File) -> IO(File):
   do IO<File>:
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <-
@@ -45,9 +48,9 @@ def patch(f: File) -> IO(File):
     f : File <- T.read(p, [6, 7], "all positioned operations preserve cursor")
     return f
 
-def readonly() -> IO(Unit):
+def readonly(+salt: U32) -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_write_at", "r"))
+    f : File <- IO.try(File, File.open(tmp(salt), "r"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_at(f, 0, [88])
     f : File <- T.bad_write(p, 9, "read-only write fails and retains handle")
@@ -56,13 +59,13 @@ def readonly() -> IO(Unit):
     f : File <- T.read(p, [0, 1, 2], "invalid and failed writes preserve bytes")
     File.close(f)
 
-def appended() -> IO(Unit):
+def appended(+salt: U32) -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_write_at_append", "w"))
+    f : File <- IO.try(File, File.open(tmp(salt) ++ "_append", "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "AAAA")
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_write_at_append", "a"))
+    f : File <- IO.try(File, File.open(tmp(salt) ++ "_append", "a"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_at(f, 0, [66])
     f : File <- T.bad_write(p, 22, "append write_at rejected")
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_at(f, 1000, [])
@@ -70,7 +73,7 @@ def appended() -> IO(Unit):
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_bytes(f, [67])
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_write_at_append", "r+"))
+    f : File <- IO.try(File, File.open(tmp(salt) ++ "_append", "r+"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(f, 0, 8)
     f : File <- T.read(p, [65, 65, 65, 65, 67], "append failures preserve bytes")
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_at(f, 0, [66])
@@ -81,16 +84,20 @@ def appended() -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_write_at", "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_bytes(f, T.bytes(256n, 0))
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_write_at", "r+"))
+    f : File <- IO.try(File, File.open(tmp(salt), "r+"))
     f : File <- patch(f)
     File.close(f)
-    readonly()
-    appended()
+    readonly(salt)
+    done : Unit <- appended(salt)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt), tmp(salt) ++ "_append"], "", 128, 1000)
+    return done
 
 #|sequential prefix
 #|write_at preserves read cursor

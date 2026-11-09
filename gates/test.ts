@@ -50,6 +50,12 @@ const BUN = lib.BUN;
 // the head of a failed check's output, or of a failed program's
 const FAILS = /^(SOME PROOFS FAIL|Error:)/;
 
+// Each shard's raw output, for a failure's post-mortem: one fresh directory
+// per gate (logs_open), so two gates at once keep their own, printed when
+// the run fails; a day's old ones are swept.
+const LOG_ROOT = "/tmp/bend-test";
+let LOGS = "";
+
 // Test
 // ====
 
@@ -123,9 +129,14 @@ function shard_split(tests: Test[], count: number): Test[][] {
 // The shard's aggregator and build list ride in the script, over the pack
 // every shard shares. A build that fails leaves its message in
 // <name>.left: the test's lanes then read it as their answer, so a
-// program the compiler cannot build fails the gate. The io tests write
-// fixed names in /tmp, which every Mac user shares: the shard removes its
-// own before and after, so a user's leftovers never fail another's run.
+// program the compiler cannot build fails the gate. Two gates may share a
+// mini, so each shard builds in a fresh directory, and the io tests name
+// their /tmp files bend_t_* with IO.random_u32 and remove them as they end
+// (older gates delete every bend_io_* file, so the prefix keeps these out of
+// their reach). A run that dies leaves its own behind: the shard sweeps the
+// user's test files older than an hour, older gates' bend_io_* and
+// bend_gfx_* among them, and shard directories older than a day (a shard
+// has 20 minutes; $d is touched after the unpack, whose tar may date it).
 function shard_script(shard: Test[], tag: number): string {
   const runs = test_runs(shard);
   const bangs = runs.filter((t) => /!\(/.test(t.src)).map((t) => t.name);
@@ -136,14 +147,18 @@ function shard_script(shard: Test[], tag: number): string {
     .join(" ") + "\n").join("");
   const file = (name: string, text: string): string =>
     `cat > ${name} <<'${MARK}'\n${text}${MARK}\n`;
-  const tmp = `find /tmp/ -maxdepth 1 -user $(id -u) \\( -name 'bend_io_*'`
-    + ` -o -name 'bend_gfx_*' \\) -delete 2>/dev/null;`;
+  const sweep = `find /tmp/ -maxdepth 1 -user $(id -u) \\( -name 'bend_t_*'`
+    + ` -o -name 'bend_io_*' -o -name 'bend_gfx_*' \\) -mmin +60 -delete`
+    + ` 2>/dev/null; find $HOME/bend-test -mindepth 1 -maxdepth 1 -mmin +1440`
+    + ` -exec rm -rf {} + 2>/dev/null;`;
   const probe = (kind: string, cmd: string): string =>
     `echo "${MARK} ${kind} $m"; perl -e 'alarm 5; exec @ARGV' ${cmd} 2>&1;`
     + ` echo "${MARK} exit $?";`;
   return `export BUN_JSC_maxPerThreadStackUsage=33554432; unset BENDRTS;`
-    + ` d=$HOME/bend-test/${tag}; rm -rf $d; mkdir -p $d; cd $d; tar -xzf -;`
-    + ` ${tmp}\n`
+    + ` mkdir -p $HOME/bend-test`
+    + ` && d=$(mktemp -d $HOME/bend-test/${tag}.XXXXXX) && cd "$d" || exit 1;`
+    + ` tar -xzf -; touch "$d";`
+    + ` ${sweep}\n`
     + file("main.bend", main) + file("build.txt", build)
     + ` echo "${MARK} checkup"; ${BUN} bend2/main.ts main.bend --checkup 2>&1;`
     + ` xargs -P 10 -L 1 sh -c 'm=$1; shift; ${BUN} bend2/main.ts "$@"`
@@ -155,7 +170,7 @@ function shard_script(shard: Test[], tag: number): string {
     + ` >/dev/null 2>&1; done; for m in ${runs.map((t) => t.name).join(" ")};`
     + ` do if [ -f $m.left ]; then echo "${MARK} left $m"; cat $m.left;`
     + ` else ${probe("c", "./$m")} ${probe("js", BUN + " $m.js")} fi; done;`
-    + ` cd; rm -rf $d; ${tmp}`;
+    + ` cd; rm -rf "$d"`;
 }
 
 function shard_parse(shard: Test[], out: string): Map<string, Got> {
@@ -197,8 +212,7 @@ async function shard_run(shard: Test[], pack: Buffer, tag: number,
   node: number, fails: Fail[]): Promise<void> {
   const got = await lib.ssh(node, shard_script(shard, tag), pack,
     20 * 60 * 1000);
-  fs.mkdirSync("/tmp/bend-test", { recursive: true });
-  fs.writeFileSync("/tmp/bend-test/" + String(tag) + ".txt", got.out + got.err);
+  fs.writeFileSync(path.join(LOGS, String(tag) + ".txt"), got.out + got.err);
   if (!got.out.includes(MARK + " built")) {
     throw new Error("node", { cause: got.err });
   }
@@ -302,6 +316,21 @@ async function state_run(): Promise<Fail[]> {
   return fails;
 }
 
+// Sweeps the logs older than a day, then opens this gate's directory.
+// Another gate may sweep the same entry first, so one already gone is
+// skipped.
+function logs_open(): void {
+  fs.mkdirSync(LOG_ROOT, { recursive: true });
+  for (const name of fs.readdirSync(LOG_ROOT)) {
+    const at = path.join(LOG_ROOT, name);
+    const stat = fs.statSync(at, { throwIfNoEntry: false });
+    if (stat !== undefined && Date.now() - stat.mtimeMs > 24 * 3600 * 1000) {
+      fs.rmSync(at, { recursive: true, force: true });
+    }
+  }
+  LOGS = fs.mkdtempSync(LOG_ROOT + "/");
+}
+
 // Main
 // ====
 
@@ -310,14 +339,20 @@ if (import.meta.main) {
     fs.readdirSync(path.join(TESTS, dir)).filter((f) => f.endsWith(".bend"))
       .sort().map((f) => test_read(dir, f)));
   const state = state_run();
+  logs_open();
   const nodes = await lib.node_lock();
   // Every test's source goes to every shard: a test may import another,
   // or a module from a subdirectory.
   const pack = lib.pack(TESTS);
   const shards = shard_split(tests, nodes.length);
   const fails: Fail[] = [];
-  await lib.node_pool(nodes, shards.map((shard, tag) => (node: number) =>
-    shard_run(shard, pack, tag, node, fails)));
+  try {
+    await lib.node_pool(nodes, shards.map((shard, tag) => (node: number) =>
+      shard_run(shard, pack, tag, node, fails)));
+  } catch (e) {
+    console.error("shard logs: " + LOGS);
+    throw e;
+  }
   fails.push(...await state);
   fails.sort((a, b) => a.name < b.name ? -1 : 1);
   if (!lib.GATE) {
@@ -326,6 +361,9 @@ if (import.meta.main) {
       console.log("  expected: " + f.want.replace(/\n/g, "\\n"));
       console.log("  observed: " + f.got.replace(/\n/g, "\\n"));
     }
+  }
+  if (fails.length > 0) {
+    console.error("shard logs: " + LOGS);
   }
   const bad = new Set(fails.map((f) => f.name));
   lib.verdict(tests.length - bad.size, tests.length);

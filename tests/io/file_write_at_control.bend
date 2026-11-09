@@ -4,6 +4,9 @@
 import Base
 import ./file_binary.bend as T
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_write_at_control_" ++ U32.show(salt)
+
 def Control.arm(file: File, mode: U32) -> IO(File):
   import "./file_write_at_control.c"
   import "./file_write_at_control.js"
@@ -17,9 +20,9 @@ def outcome(p: File & Result<&1, &1, U32 & String, Unit>, want: U32) -> IO(File)
     case 0: T.wrote(p)
     case n: T.bad_write(p, n, "controlled failure")
 
-def trial(mode: U32, want: U32, bytes: List<&2, U32>) -> IO(Unit):
+def trial(+salt: U32, mode: U32, want: U32, bytes: List<&2, U32>) -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_write_at_control", "w"))
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     f : File <- Control.arm(f, mode)
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_at(f, 17, [0, 255, 13, 10, 65, 0, 255])
@@ -30,7 +33,7 @@ def trial(mode: U32, want: U32, bytes: List<&2, U32>) -> IO(Unit):
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_bytes(f, [89])
     f : File <- T.wrote(p)
     File.close(f)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_write_at_control", "r"))
+    f : File <- IO.try(File, File.open(tmp(salt), "r"))
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(f, 17, 8)
     f : File <- T.read(p, bytes, "controlled bytes match")
     p : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(f, 1)
@@ -40,9 +43,13 @@ def trial(mode: U32, want: U32, bytes: List<&2, U32>) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    trial(0, 0, [0, 255, 13, 10, 65, 0, 255])
-    trial(1, 5, [0, 255])
-    trial(2, 13, [0, 255])
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    trial(salt, 0, 0, [0, 255, 13, 10, 65, 0, 255])
+    trial(salt, 1, 5, [0, 255])
+    done : Unit <- trial(salt, 2, 13, [0, 255])
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
+    return done
 
 #|controlled bytes match
 #|controlled write preserved cursor

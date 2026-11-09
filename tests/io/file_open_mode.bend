@@ -2,9 +2,12 @@
 # in every backend; any other mode answers Fail(EINVAL). The JS kit
 # once took fs.openSync's wider vocabulary, so "w+" opened where C
 # refused it; it and Node's own "wx" stay refused. "x" creates a new
-# path and refuses one that exists, leaving its bytes alone. Bend has
-# no unlink, so the "x" path is random.
+# path and refuses one that exists, leaving its bytes alone. Its path
+# is random, like every test file's, so it is new on every run.
 import Base
+
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_mode_" ++ U32.show(salt)
 
 law answer:
   for r: Result<&1, &1, (U32 & String), File>
@@ -21,12 +24,13 @@ def answer(r):
       IO.print(message)
 
 law probe:
+  for +salt: U32
   for mode: String
   IO(Unit)
 
-def probe(mode):
+def probe(salt, mode):
   do IO<Unit>:
-    r : Result<&1, &1, (U32 & String), File> <- File.open("/tmp/bend_io_mode.txt", mode)
+    r : Result<&1, &1, (U32 & String), File> <- File.open(tmp(salt), mode)
     answer(r)
 
 law wrote:
@@ -65,16 +69,13 @@ def show(m):
     p    : Unit <- IO.print(data)
     File.close(f)
 
-def at(n: U32) -> String:
-  String.append("/tmp/bend_io_excl_", U32.show(n))
-
-def excl(+n: U32) -> IO(Unit):
+def excl(+salt: U32) -> IO(Unit):
   do IO<Unit>:
-    a : Result<&1, &1, (U32 & String), File> <- File.open(at(n), "x")
+    a : Result<&1, &1, (U32 & String), File> <- File.open(tmp(salt) ++ "_excl", "x")
     b : Unit <- keep(a)
-    c : Result<&1, &1, (U32 & String), File> <- File.open(at(n), "x")
+    c : Result<&1, &1, (U32 & String), File> <- File.open(tmp(salt) ++ "_excl", "x")
     d : Unit <- answer(c)
-    f : File <- IO.try(File, File.open(at(n), "r"))
+    f : File <- IO.try(File, File.open(tmp(salt) ++ "_excl", "r"))
     m : File & Result<&1, &1, (U32 & String), String> <- File.read(f, 64)
     show(m)
 
@@ -83,14 +84,15 @@ law main:
 
 def main():
   do IO<U32>:
-    a : Unit <- probe("w")
-    b : Unit <- probe("r")
-    c : Unit <- probe("r+")
-    d : Unit <- probe("w+")
-    e : Unit <- probe("wx")
-    r : Result<&1, &1, (U32 & String), U32> <- IO.random_u32()
-    n : U32 <- IO.pass(U32, r)
-    x : Unit <- excl(n)
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    a : Unit <- probe(salt, "w")
+    b : Unit <- probe(salt, "r")
+    c : Unit <- probe(salt, "r+")
+    d : Unit <- probe(salt, "w+")
+    e : Unit <- probe(salt, "wx")
+    x : Unit <- excl(salt)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt), tmp(salt) ++ "_excl"], "", 128, 1000)
     return 0
 
 #|opened

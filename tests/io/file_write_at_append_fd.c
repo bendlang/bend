@@ -1,6 +1,9 @@
 Term fd_append_run(Env e, Term* f, IoWork* w) {
-  return io_hand(open("/tmp/bend_io_file_write_at_append_fd",
-    O_WRONLY | O_APPEND));
+  uint64_t n = 0;
+  char* path = io_cstr(e, f[0], &n);
+  int fd = open(path, O_WRONLY | O_APPEND);
+  free(path);
+  return io_hand(fd);
 }
 
 Term ffi_keep_run(Env e, Term* f, IoWork* w) {
