@@ -53,7 +53,7 @@ def main():
     m : File & Result<&1, &1, (U32 & String), String> <- File.read(g, 64)
     done : U32 <- read_go(m)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", good(tmp(salt))], "", 128, 1000)
+      Process.run("rm", ["-f", good(tmp(salt))], "", 128, 1000)
     return done
 
 #|Olá 日本 🙂

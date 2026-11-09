@@ -53,7 +53,7 @@ def main() -> IO(Unit):
     f : File <- T.read(p, [], "zero-length read")
     done : Unit <- File.close(f)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|read-only write fails

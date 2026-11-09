@@ -78,7 +78,7 @@ def main() -> IO(Unit):
     update(tmp(salt))
     done : Unit <- absent(tmp(salt) ++ "_missing")
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|ab

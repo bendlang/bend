@@ -48,7 +48,7 @@ def main() -> IO(Unit):
     trial(salt, 1, 5, [0, 255])
     done : Unit <- trial(salt, 2, 13, [0, 255])
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", tmp(salt)], "", 128, 1000)
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
     return done
 
 #|controlled bytes match

@@ -92,7 +92,7 @@ def main():
     e : Unit <- probe(salt, "wx")
     x : Unit <- excl(salt)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", tmp(salt), tmp(salt) ++ "_excl"], "", 128, 1000)
+      Process.run("rm", ["-f", tmp(salt), tmp(salt) ++ "_excl"], "", 128, 1000)
     return 0
 
 #|opened

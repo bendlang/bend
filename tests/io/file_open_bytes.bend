@@ -63,7 +63,7 @@ def main() -> IO(Unit):
     t : String <- shown(r)
     done : Unit <- IO.print("nul: " ++ t)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", tmp(salt) ++ "é"], "", 128, 1000)
+      Process.run("rm", ["-f", tmp(salt) ++ "é"], "", 128, 1000)
     return done
 
 #|utf-8 bytes: hi

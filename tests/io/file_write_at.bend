@@ -96,7 +96,7 @@ def main() -> IO(Unit):
     readonly(salt)
     done : Unit <- appended(salt)
     gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
-      Process.run("/bin/rm", ["-f", tmp(salt), tmp(salt) ++ "_append"], "", 128, 1000)
+      Process.run("rm", ["-f", tmp(salt), tmp(salt) ++ "_append"], "", 128, 1000)
     return done
 
 #|sequential prefix
