@@ -212,7 +212,6 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   string_contains: { JS: "string_contains($0, $1)" },
   string_eq: { JS: "($0 === $1)" },
   string_length: { JS: "[...str_out($0)].length" },
-  // an Array is a 2^d tree, so & wraps an index as C's blk_at does
   ...Object.fromEntries(Object.entries({
     new: "array_new($0, $1, $2)", set: "($0[$1 & $0.length - 1] = $2, $0)",
     get: "tup_new($0, $0[$1 & $0.length - 1])",
