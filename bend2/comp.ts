@@ -2107,8 +2107,9 @@ function emit_native(sc: Scope, k: Name): string {
     const seg = Object.assign(sl.seg, { fid: name, native: true });
     emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
-    const body = [...seg_text(["u32 wpoll = 0;", ...seg.ks.flatMap((kd, i) =>
-      arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg), "WL_SPIN"],
+    const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
+      arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
+      seg.spin ? "WL_SPIN" : "for (;;) {"],
       1), ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
     const text = body.join("\n");
     const q = text.length + 1 < SPIN_FAR ? "INLINE"
@@ -3270,7 +3271,7 @@ using namespace metal;
 #define WL_JMP(F)  __attribute__((musttail)) return WL_##F(WL_ALL)
 #define WL_DYN(F)  __attribute__((musttail)) return wl_tab[F](WL_ALL)
 #endif
-#define WL_SPIN     for (;;) { if (err_spun(e.mem, &wpoll)) { return 0; }
+#define WL_SPIN     for (u32 wpoll = 0;;) { if (err_spun(e, &wpoll)) { return 0; }
 #define WL_SPUN     } break;
 #define WL_AGAIN(F) continue
 
@@ -3323,6 +3324,9 @@ typedef u64 Term;
 typedef struct {
   DEV u64* mem;
   DEV u64* alc;
+#if DEVICE
+  THR u32* stop;
+#endif
 } Env;
 
 typedef struct {
@@ -3454,7 +3458,7 @@ static bool corpus_grow(u64* H, u64 need);
 #define KEEP_WORDS CHUNK
 #define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
 #define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
-#define corpus_grow(H, n) false
+#define corpus_grow(H, n) (*e.stop = 1, false)
 
 #endif
 
@@ -3582,6 +3586,8 @@ INLINE void err_post(DEV u64* H, u32 code) {
   a32_cmpx(a32_at(H, H_ERROR_CODE), 0, code);
 }
 
+#define err_spun(e, n) (*e.stop || (++*n & 4095) == 0 && err_seen(e.mem))
+
 #else
 
 static const char* ERR_TEXT[] = { ${ERRS.map((s) =>
@@ -3607,6 +3613,8 @@ static void err_post(u64* H, u32 code) {
   err_fail(ERR_TEXT[code]);
 }
 
+#define err_spun(e, n) 0
+
 // Flush if free, report the fault, then re-raise its signal.
 static void err_trap(int sig) {
   static const char line[] = ${JSON.stringify(`bend: ${ERRS[7]}\n`)};
@@ -3619,7 +3627,6 @@ static void err_trap(int sig) {
 #endif
 
 #define err_seen(H)    (DEVICE && a32_load(a32_at(H, H_ERROR_CODE)) != 0)
-#define err_spun(H, n) ((++*(n) & 4095) == 0 && err_seen(H))
 
 #if __METAL_VERSION__ >= 320
 #define err_peek(H) *(volatile DEV u32*)a32_at(H, H_ERROR_CODE)
@@ -3969,7 +3976,7 @@ FAR void term_drop(Env e, Term t) {
       }
     }
     for (;;) {
-      if (err_spun(H, &step) || cur == 0) {
+      if (err_spun(e, &step) || cur == 0) {
         return;
       }
       u64  loc = cur & LOC_MASK;
@@ -4341,7 +4348,6 @@ static Term work_loop(Env e, DEV Term* sp, Term t, u32 seq) {
   r0 = t;
 #if DEVICE
   u32 fid   = FID_ENTER;
-  u32 wpoll = 0;
   WL_SPIN
   switch (fid) {
 #else
@@ -4453,18 +4459,14 @@ INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 strid
     return 0;
   }
   a32_store(get, *get + 1);
-  u32 spin = 0;
   for (;;) {
     Term r = work_loop(e, stk, t, seq);
-    if (r == 0) {
+    if (r == 0 || err_seen(H)) {
       return 2;
     }
     if ((u32)H[task_tail(r) + 1] == 0) {
       bool nofk = fid_nofk(term_aux(r));
       Term k    = H[task_tail(r)];
-      if (err_spun(H, &spin)) {
-        return 2;
-      }
       if (stride != 0 && nofk && (DEVICE || k == TERM_HOLE
         || !fid_resw(term_aux(k)) || fid_nofk(term_aux(k)))) {
         ring_push(H, ring_pick(base, stride, cur), r);
@@ -4557,7 +4559,8 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass, u32 at) {
   u32 stride = grids == 1 ? CUBE_G : 1;
   u32 me     = row * CUBE_T + stride * lane;
   u32 rg     = pass == 1 ? ring_flip(me) : me;
-  Env e      = { H, H + ALC_OFF + me };
+  u32 stop   = 0;
+  Env e      = { H, H + ALC_OFF + me, &stop };
   DEV Term* stk = (DEV Term*)(H + STAK_OFF + me);
   if (lane == 0) {
     for (u32 i = 0; i < 3; i += 1) {
