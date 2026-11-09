@@ -93,15 +93,14 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // CLO_APPLY and IO~emit are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
 // is a device call (DFAR), and a host call too if it loops on F32 math (SLP
-// misjudges it); a node past WIDE pads to its size class. A device of SPLIT
-// segments splits by id into calls of 2^PART: Metal is superlinear in one
-// switch, and a call costs with its callee's size.
+// misjudges it); a node past WIDE pads to its size class. A device that
+// needs more than one part of 2^PART segments splits into calls of them:
+// Metal is superlinear in one switch, and a call costs with its callee's size.
+// 8 runs fastest; a bigger part compiles slower and gains nothing.
 
 const CLO_APPLY = "Clo~apply";
 
 const PART = 3;
-
-const SPLIT = 1024;
 
 const FOLD_FUEL = 8192;
 
@@ -2815,16 +2814,42 @@ export function compile_book(book: Bend.Book): string {
     spins.map((s) => s.head + ";").join("\n"),
     ...spins.map((s) => s.lines.join("\n"))].join("\n\n");
   // a part moves the registers its segments take or pass on
-  const parted = segs.filter((s) => dev.has(s.fid)).length >= SPLIT;
+  const parted = segs.filter((s) => dev.has(s.fid)).length > 1 << PART;
   const fids = new Map(segs.map((s) => [s.fid, s]));
   const take = (s?: Seg) => s ? s.params.length - (s.frame?.at.length ?? 0) : 2;
   const parts = new Map<number, [number, string[]]>();
-  const text = segs.map((seg, i) => {
+  // a part takes 2^PART segments in the order control reaches them from the
+  // bangs: a segment, then what it calls, then its own continuations; a def
+  // of 4 parts or less goes whole
+  const grp = new Map<string, number>();
+  const unit = new Map(us.flatMap((u) => u.segs.map((s) => [s.fid, u.segs])));
+  const todo = [...FL.bangs].map(seg_fid).concat(segs.map((s) => s.fid))
+    .reverse();
+  let g = 0, n = 0;
+  while (parted && todo.length > 0) {
+    const f = todo.pop()!;
+    const s = fids.get(f);
+    if (grp.has(f) || !dev.has(f) || !s) {
+      continue;
+    }
+    const rest = unit.get(f)!.filter((d) => dev.has(d.fid) && !grp.has(d.fid));
+    const ds = rest.length > 4 << PART ? [s] : rest;
+    if (n > 0 && n + ds.length > 1 << PART) {
+      [g, n] = [g + 1, 0];
+    }
+    ds.forEach((d) => grp.set(d.fid, g));
+    n += ds.length;
+    for (const d of [...ds].reverse()) {
+      todo.push(...[...d.refs].sort((x, y) => Number(unit.get(y) === unit.get(f))
+        - Number(unit.get(x) === unit.get(f))));
+    }
+  }
+  const text = segs.map((seg) => {
     const out = [`  WL_CASE(${seg.fid})`, ...seg_text([...seg_take(seg),
       "WL_OPEN", ...seg.spin ? ["WL_SPIN", ...seg.lines, "WL_SPUN"]
         : seg.lines], 2), "  }}"].join("\n");
     if (parted && dev.has(seg.fid)) {
-      const pt = memo(parts, i >> PART, () => [0, []]);
+      const pt = memo(parts, grp.get(seg.fid)!, () => [0, []]);
       pt[0] = Math.max(pt[0], take(seg), seg.ret.ks.length,
         ...[...seg.refs].map((r) => take(fids.get(r))));
       pt[1].push(out);
@@ -2832,8 +2857,11 @@ export function compile_book(book: Bend.Book): string {
     return dev.has(seg.fid) && !parted ? out : `#if !DEVICE\n${out}\n#endif`;
   }).join("\n\n");
   const hops = [...parts].map(([p, [n, cs]]) => [`WL_PART(${p}, ${n})`, ...cs,
-    `WL_TRAP(${n})`].join("\n")).concat(`static Term wl_hop(Env e, THR Wl* w) {
-  switch (w->fid >> ${PART}) {${[...parts.keys()].map((p) => `
+    `WL_TRAP(${n})`].join("\n")).concat(`CONSTV u16 WL_GRP[] = { ${segs.map((s) =>
+    grp.get(s.fid) ?? 65535).join(", ")} };
+
+static Term wl_hop(Env e, THR Wl* w) {
+  switch (w->fid < ${segs.length} ? WL_GRP[w->fid] : 65535) {${[...parts.keys()].map((p) => `
   case ${p}: return wl_part_${p}(e, w);`).join("")}
   }
   err_post(e.mem, ERR_FIDS);
@@ -4340,8 +4368,8 @@ static u32 root_take(DEV u64* H, THR Term* v) {
 // Spins
 // =====
 
-// A part is a switch of its own; a lane leaves it for an id out of it (or
-// traps on the one it came in with), its state stowed in a Wl.
+// A part is a switch of its own; a lane leaves it for an id out of it, its
+// state stowed in a Wl.
 #if DEVICE
 typedef struct { DEV Term* sp; u32 seq, rn, fid; Term r[WL_REGS]; } Wl;
 #define WL_IN(F) ((F) >= FID_EXIT ? WL_RESW : fid_resw(F) ? fid_resw(F) \
@@ -4353,8 +4381,7 @@ typedef struct { DEV Term* sp; u32 seq, rn, fid; Term r[WL_REGS]; } Wl;
 #define WL_PART(P, N) FAR Term wl_part_##P(Env e, THR Wl* w) { WL_BANK \
   DEV Term* sp; u32 seq, rn, fid, wpoll = 0; WL_DRAW(*w, N) WL_SPIN \
   switch (fid) {
-#define WL_TRAP(N) default: if (fid == w->fid) { err_post(e.mem, ERR_FIDS); \
-  return 0; } WL_STOW(*w, N) return 1; }}}
+#define WL_TRAP(N) default: WL_STOW(*w, N) return 1; }}}
 #endif
 
 ${spins}
