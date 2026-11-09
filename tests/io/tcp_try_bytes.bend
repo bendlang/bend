@@ -3,7 +3,7 @@
 # once the client sends 1 2 3, one bounded by 1 s answers them. A list with
 # a value past 255 fails with EINVAL (22) through Ready, before any byte is
 # sent, and comes back whole. Toward a client that never reads,
-# try_send_bytes of 64 Ki bytes with a 20 ms limit goes until the kernel's
+# try_send_bytes of 64 Ki bytes with a 5 ms limit goes until the kernel's
 # buffers fill, then answers Wait{rest}: rest, the bytes the kernel did not
 # take, is never empty.
 import Base
@@ -84,7 +84,7 @@ def fill(k: Nat, +big: List<&2, U32>, s: Socket) -> IO(Socket):
       say(s, "try_send_bytes: never waited")
     case 1n+p:
       do IO<Socket>:
-        m : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>, List<&2, U32>> <- TCP.try_send_bytes(s, big, 20)
+        m : Socket & Poll<&1, &1, Result<&1, &1, (U32 & String) & List<&2, U32>, Unit>, List<&2, U32>> <- TCP.try_send_bytes(s, big, 5)
         fill.got(s2 => fill(p, big, s2), m)
 
 def talk(l: Listener, c: Socket, a: Socket) -> IO(Unit):

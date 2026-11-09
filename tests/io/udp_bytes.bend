@@ -129,7 +129,7 @@ def run(a: Socket, b: Socket, +port: U32) -> IO(U32):
       UDP.try_send_bytes_to(a7, "127.0.0.1", port, [300], 0)
     a8  : Socket <- show_try_send(m8)
     r7  : Socket & Poll<&1, &1, Result<&1, &1, U32 & String, String & U32 & List<&2, U32>>, Unit> <-
-      UDP.try_recv_bytes_from(b6, 64, 20)
+      UDP.try_recv_bytes_from(b6, 64, 5)
     b7  : Socket <- show_try_recv(r7)
     r8  : Socket & Result<&1, &1, U32 & String, String & U32 & List<&2, U32>> <-
       UDP.recv_bytes_from(b7, 0)

@@ -3,6 +3,105 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## 2.0.40 (2026-11-05)
+
+- **The checker no longer hangs on a proof that a list is its own head <>
+  tail**: conversion gave a share cell the value of an equal one, so a bare
+  `{==}` of `{Hd(D) <> Tl(D) == D}` made `D` name itself, and the next
+  check through `D` never ended, or `--verdict` overflowed the stack. Equal
+  cells now join a class and no value moves: a file that ran past 900 s
+  checks in 3.3 s.
+- **`bend --publish` sends the `README.md` beside the entry**, and the hub
+  shows it (PR #2033).
+- **`bend-cache`** (`tools/`): a proof cache for `--check-only` outside
+  bend (PR #2045).
+- **Base**: `Array.get_unchecked`, an `@unsafe` read without the wrap mask
+  (PR #1880 by adeerkhan); `U32.popcount` and `U32.ctz` (PR #1905 by
+  MattCozendey); merge sort starts from sorted pairs (PR #2018 by
+  toprameen).
+- **IO**: positioned byte writes (PR #1887 by vicmcorrea);
+  `File.open(path, "r+")` opens an existing file to read and write (PR
+  #1853 by EpsilonPhoenix); a pointer event is one `Press` for a mouse, a
+  finger or a pen (PR #1867 by MattCozendey); native fullscreen keeps the
+  logical rendering resolution (PR #1443 by oxura).
+- **Faster checks**: let kind checks, quantity comparisons, the scope
+  search, call arguments, constructor fields, `pmap_set`, free names,
+  operators and the verdict's walk each do less work (PRs #1947, #1952 by
+  raramos9; #1965, #1967 by sebastianbreguel; #1966, #2013, #2048, #2053,
+  #2060, #2061 by nicolas-abril).
+- **Faster programs**: a long loop over `F32` is a call on the host too:
+  nbody 1.19x on SEQ, 1.15x on PAR (#1240, PRs #1814, #1950 by
+  nicolas-abril); a match arm's node allocation is hoisted (PR #1792 by
+  viridale); host lanes share large freed blocks (PR #1869 by
+  sebastian-griego); `blk_new` fills vectorize (PRs #1928 by raramos9,
+  #1946 by nicolas-abril); a wide def's boxed record stays boxed until a
+  use needs it, and an unfold builds its callee's body once (PRs #2036,
+  #2051 by nicolas-abril); JS channel waits, GPU size checks and
+  positioned reads cost less (PRs #1859, #1872 by sebastianbreguel; #1993,
+  #2015, #2016 by toprameen).
+- **Clearer errors** (#1632): a call missing arguments, a pair where `Data`
+  is expected, a self-call that does not shrink, a false `{==}` (its sides
+  as written), a match missing cases and a def given `<...>` each say what
+  is wrong (PRs #1865, #2000, #2002, #2006, #2007, #2008); a do-block bind
+  or let written without its type gets a note (PR #1807 by HamedShams); a
+  call to a def written below its caller names the file order (#1782, PR
+  #1783 by viridale); a stray `=` after a do block's last statement is
+  refused (PR #1889); spaced successor patterns and a glued `x+y` point at
+  the right spelling (PR #1969); the import path and array depth errors
+  say what a name and `d` are (PRs #1963, #1964 by sebastianbreguel).
+- **CLI**: a BUILD tag after the version, for forks (PR #1907 by
+  MattCozendey); a `!` program built for the CPU because no CUDA toolkit
+  was found says so (PR #1888); colliding output requests are refused
+  before anything is written (PR #2010 by vicmcorrea); a hyphenated
+  published file prints valid aliases (PR #1849 by vicmcorrea).
+- **Fixes**:
+  - Checker and verdict: a law names its module's own def when a Base
+    constructor shares the name (#1236, PR #2047 by nicolas-abril); `!=`
+    and `where` mean the `Empty` and `Exists` of the file they are written
+    in (PR #1577 by HamedShams); BendTT labels spell the canonical key
+    injectively (#1131, #1247, PR #1216 by oxura); `--verdict` keeps
+    dependent template argument types and uses checked defs as model
+    fallbacks (PRs #1874, #1901 by sebastian-griego); a term at a type with
+    no finite η-long form goes to the kernel whole (#1164, PR #1896 by
+    nicolas-abril); `Nat` converts to `F32` without narrowing to `U32` (PR
+    #1610 by oxura).
+  - Compiler: a fold reads an argument's liveness by its position (PR #2054
+    by nicolas-abril); a fork's join opens on the fork path's holds (#1953,
+    PR #2042); on Metal the shared-node half of a take is a call (PR #1978
+    by HamedShams); CUDA's dispatch entry check reads the frontier from
+    device memory (PR #1877 by nuxyel); `Window.open` without
+    `Window.frame` builds natively (PR #1883 by sebastianbreguel); C
+    comments keep Unicode separators (PR #1972 by toprameen); process
+    workers run in module mode (PR #1842 by toprameen).
+  - IO: TCP connect, accept, send and receive, UDP send and receive, and
+    native file opens and writes retry after an interruption instead of
+    failing (PRs #1909, #1910, #1911, #1912 by sebastianbreguel, #1878 by
+    EpsilonPhoenix, #1900 by toprameen, #1862, #1898 by sebastian-griego);
+    `File.read` fills its buffer (PR #1845 by adeerkhan), its `max` is a
+    cap on JS (#1983, PR #1985 by lukaszsamson) and it reads through fs on
+    Node (PR #1881 by sebastianbreguel); an interrupted `File.read_line` no
+    longer reads a byte before its buffer (PR #1918 by sebastianbreguel);
+    `Process.run` refuses a file with no `#!` line on macOS, and answers
+    `ENOENT` for an empty program on JS (PRs #1860, #1875 by
+    sebastianbreguel); `File.write_at` refuses an `O_APPEND` fd on Bun (PR
+    #1903 by lee-eojin); `Window.open` refuses a bad size or a NUL title on
+    JS (PR #1884 by sebastianbreguel); macOS window titles decode as UTF-8
+    (PR #1834 by sebastian-griego); JS channels release timed-out and
+    abandoned waiters (PRs #1879 by toprameen, #1976 by EpsilonPhoenix),
+    and their buffer drains from a ring (PR #1851 by Revaycolizer); JS
+    timer waits work without Bun FFI (PR #1996 by EpsilonPhoenix);
+    `io_wait` flushes stdout after JS File and Process effects (PR #1899
+    by nicolas-abril); UDP send addresses are checked before FFI setup (PR
+    #1974 by sebastian-griego); `TCP.recv` past `INT32_MAX` caps the read
+    on JS as on C (PR #1861 by sebastianbreguel); the wake pipe is set up
+    before it goes nonblocking (PR #1935 by betterclever).
+  - Tools: the formatter keeps raw apostrophe literals whole (PR #1971 by
+    toprameen); a bundle encodes quoted HTML filenames (PR #1977 by
+    EpsilonPhoenix).
+- **Docs**: the `Text` constructor collision (PR #1933 by oxura); each
+  lane's clock zero, and `File.read_line` with max 0 (PR #1882 by
+  sebastianbreguel).
+
 ## 2.0.39 (2026-10-23)
 
 - **`bend --publish` sends only files inside the entry's directory**: a

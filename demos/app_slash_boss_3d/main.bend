@@ -1108,33 +1108,6 @@ def Game.step(+g: Game) -> Game:
     (Sim.has(taps, 1024) || (U32.is_eq(mode, 4) && Sim.has(taps, 128))), U32.is_eq(mode, 1),
     (flash >= 6 : U32), g)
 
-# Spec
-# ----
-# What LAWS.bend measures: n ticks of the game (as the loop's
-# Live.steps runs them), n fades of a countdown, and a frame's events
-# joined.
-
-def Game.steps(n: Nat, +g: Game) -> Game:
-  match n:
-    case 0n:
-      g
-    case 1n+k:
-      Game.steps(k, Game.step(g))
-
-def Sim.fade(n: Nat, +x: U32) -> U32:
-  match n:
-    case 0n:
-      x
-    case 1n+k:
-      Sim.fade(k, Sim.dec(x))
-
-def Game.cat(a: List<Event>, b: List<Event>) -> List<Event>:
-  match a:
-    case Nil{}:
-      b
-    case e <> rest:
-      e <> Game.cat(rest, b)
-
 # Hero
 # ----
 
@@ -2824,22 +2797,29 @@ def Play.blit(
 
 # A turn: the scene (the last one dropped in its build), an IO seam
 # (the bang must not follow the host's forks in one evaluation), the
-# frame (the last one dropped in its bang).
-@unsafe
-def Play.loop(window: Window, +s: Live, snd: Sound, last: Image & R.Cells) -> IO(Unit):
-  (old, used) = last
-  do IO<Unit>:
-    cells : R.Cells = Live.view(s, used)
-    now : Nat <- IO.now()
-    drawn : Image & R.Cells <- IO.pure(Image & R.Cells, Play.frame(cells, old))
-    Play.blit(drawn, window, s, snd, w => s2 => snd2 => l => Play.loop(w, s2, snd2, l))
+# frame (the last one dropped in its bang). The loop counts down a fuel
+# of 4294967295 frames, so every def here checks; in practice it runs
+# until Esc or Close.
+def Play.loop(fuel: Nat, window: Window, +s: Live, snd: Sound, last: Image & R.Cells) -> IO(Unit):
+  match fuel:
+    case 0n:
+      do IO<Unit>:
+        Unit <- Sound.close(snd)
+        Window.close(window)
+    case 1n+fuel2:
+      (old, used) = last
+      do IO<Unit>:
+        cells : R.Cells = Live.view(s, used)
+        now : Nat <- IO.now()
+        drawn : Image & R.Cells <- IO.pure(Image & R.Cells, Play.frame(cells, old))
+        Play.blit(drawn, window, s, snd, w => s2 => snd2 => l => Play.loop(fuel2, w, s2, snd2, l))
 
 def Play.run() -> IO(Unit):
   do IO<Unit>:
     window : Window <- IO.try(Window, Window.open("Slash Boss 3D", 1920, 1200))
     snd : Sound <- Sound.open()
     +stamp : Nat <- IO.now()
-    Play.loop(window, Live{Game.init(), Game.init(), stamp, 0, stamp, 0, Nil{}}, snd,
+    Play.loop(4294967295n, window, Live{Game.init(), Game.init(), stamp, 0, stamp, 0, Nil{}}, snd,
       (Pix{0}, R.CNil{}))
 
 # Probe

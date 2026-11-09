@@ -22,7 +22,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a filled definition (an unfilled law is a dead claim: live code cannot use it)
+#|- expected : a def whose body is implemented before the def is used (defs are checked in file order, and an unfilled law has none)
 #|- observed : EVIL_ADD_HOM
 #|Location: use
 #|14 | def use():

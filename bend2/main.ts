@@ -30,7 +30,7 @@ import * as Safe from "./safe.ts";
 // Constants
 // =========
 
-const VERSION = "2.0.39";
+const VERSION = "2.0.40";
 
 // BUILD tags a fork's bend after its version as semver build metadata:
 // "+win" prints bend <version>+win; upstream leaves it empty
@@ -98,6 +98,8 @@ const TERMS = "https://bend-lang.com/bendai/terms#s18";
 
 // the hub's SPDX line rule (hubdb.ts)
 const SPDX_RE = /^\s*SPDX-License-Identifier:\s*([A-Za-z0-9.+\-() ]{1,80}?)\s*$/;
+// the largest README.md the hub takes, which --publish checks first
+const README_MAX = 65536;
 
 // A package's proof of work is a nonce whose sha256(hash + " " + nonce)
 // opens (its top 53 bits) with a number under 2^53 / work, where work is
@@ -830,7 +832,9 @@ async function cli_login(): Promise<string> {
 // roots namespaces at, so an entry linked from another directory, or one
 // at the file system's root, is refused.
 // A LICENSE beside a published file goes along; a license/ directory, in
-// any case, is refused (it clashes with LICENSE on a case-blind disk).
+// any case, is refused (it clashes with LICENSE on a case-blind disk). The
+// README.md beside the entry goes along too, and the hub shows it on the
+// package's page; it must be under README_MAX bytes, as the hub takes.
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
   const ent = fs.realpathSync(file);
@@ -863,6 +867,14 @@ function pkg_files(file: string, book: Bend.Book,
       const lic = path.posix.join(path.posix.dirname(p), "LICENSE");
       files[lic] = pkg_read(lic, path.join(path.dirname(src), "LICENSE"), dir,
         "it is the LICENSE beside " + src + "; copy it");
+    }
+  }
+  if (fs.readdirSync(dir).includes("README.md")) {
+    files["README.md"] = pkg_read("README.md", path.join(dir, "README.md"), dir,
+      "it is the README.md beside " + file + "; copy it");
+    if (Buffer.byteLength(files["README.md"]) > README_MAX) {
+      throw "Error: " + path.join(dir, "README.md") + " cannot be published: it"
+        + " is over " + String(README_MAX) + " bytes, the most BendHub takes";
     }
   }
   return files;
@@ -947,18 +959,19 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
 // defs outside Base collects who names whom, then each promise floods
 // back along those edges.
 function book_promises(book: Bend.Book): Array<[string, string[]]> {
-  const own  = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
-  const keys = Object.keys(book.tlds);
-  const roots: Array<[string, string[]]> = [
-    ["@unsafe", keys.filter((k) => (book.tlds[k] as Bend.Def).u === true)],
-    ["foreign effects", keys.filter((k) => {
-      const t = book.tlds[k] as Bend.Def;
-      return t.u !== true && t.i !== undefined && t.b !== true;
-    })],
-  ];
-  if (roots.every(([, ks]) => ks.length === 0)) {
+  const unsafe: string[] = [];
+  const foreign: string[] = [];
+  for (const [k, t] of Object.entries(book.tlds) as Array<[string, Bend.Def]>) {
+    if (t.u === true) {
+      unsafe.push(k);
+    } else if (t.i !== undefined && t.b !== true) {
+      foreign.push(k);
+    }
+  }
+  if (unsafe.length === 0 && foreign.length === 0) {
     return [];
   }
+  const own = [...new Set(book.order)].filter((k) => book.tlds[k].b !== true);
   const uses: Record<string, string[]> = Object.create(null);
   const reach = new Set(own);
   for (const k of reach) {
@@ -977,7 +990,7 @@ function book_promises(book: Bend.Book): Array<[string, string[]]> {
       }
     }
   }
-  return roots.flatMap(([on, ks]) => {
+  return ([["@unsafe", unsafe], ["foreign effects", foreign]] as const).flatMap(([on, ks]) => {
     const bad = new Set(ks);
     for (const k of bad) {
       uses[k]?.forEach((j) => bad.add(j));

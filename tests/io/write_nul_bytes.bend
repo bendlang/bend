@@ -5,6 +5,9 @@
 # -- the C kit once printed through fputs; it writes by length now.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_nul_" ++ U32.show(salt)
+
 law payload:
   String
 
@@ -56,12 +59,16 @@ law main:
 
 def main():
   do IO<U32>:
-    f  : File <- IO.try(File, File.open("/tmp/bend_io_nul.tmp", "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f  : File <- IO.try(File, File.open(tmp(salt), "w"))
     w  : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, payload())
     f2 : File <- write_go(w)
     x  : Unit <- File.close(f2)
-    g  : File <- IO.try(File, File.open("/tmp/bend_io_nul.tmp", "r"))
+    g  : File <- IO.try(File, File.open(tmp(salt), "r"))
     m  : File & Result<&1, &1, (U32 & String), String> <- File.read(g, 8)
-    read_go(m)
+    done : U32 <- read_go(m)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
+    return done
 
 #|whole

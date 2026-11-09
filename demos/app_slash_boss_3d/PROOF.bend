@@ -15,6 +15,7 @@
 import Base
 import ./bend3d.bend as R
 import ./main.bend as Slash
+import ./SPEC.bend as Spec
 import ./LAWS.bend as Laws
 
 # A pause freezes the world
@@ -44,8 +45,8 @@ def Laws.pause_freezes(n, time, held, hero, boss, flash, cloth, garb, lens, blas
       {==}
     case 1n+k:
       %pause_tick(time, held, hero, boss, flash, cloth, garb, lens, blast)
-        : {Slash.Game.steps(k, _)
-           == Slash.Game{time, held, 0, 4, hero, boss, Slash.Sim.fade(k, Slash.Sim.dec(flash)),
+        : {Spec.steps(k, _)
+           == Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(k, Slash.Sim.dec(flash)),
                 cloth, garb, lens, blast} : Slash.Game}
       Laws.pause_freezes(k, time, held, hero, boss, Slash.Sim.dec(flash), cloth, garb, lens, blast)
 
@@ -103,7 +104,7 @@ def Laws.esc_quits(pre, post, g):
       {==}
     case Key{+code, +down} <> rest:
       esc_arm(U32.is_eq(code, 27), Slash.Game.key(g, code, down),
-        Slash.Game.cat(rest, Key{27, True{}} <> post),
+        Spec.cat(rest, Key{27, True{}} <> post),
         s => Laws.esc_quits(rest, post, s))
     case Text{text} <> rest:
       Laws.esc_quits(rest, post, g)
@@ -134,6 +135,9 @@ def Laws.pause_toggles():
   {==}
 
 def Laws.dec_floor():
+  {==}
+
+def Laws.dec_is_spec(x):
   {==}
 
 def Laws.arrows_are_wasd():

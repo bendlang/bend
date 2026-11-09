@@ -9,6 +9,9 @@
 # table away for exactly one read: see file_size_no_ffi.js.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_file_size_no_ffi_" ++ U32.show(salt)
+
 def ffi_absent() -> IO(Unit):
   import "./file_size_no_ffi.js"
 
@@ -44,7 +47,8 @@ def wrote(pair):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file_size_no_ffi", "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <-
       File.write_bytes(f, [104, 101, 108, 108, 111])
     f : File <- wrote(p)
@@ -52,6 +56,9 @@ def main() -> IO(Unit):
     p : File & Result<&1, &1, U32 & String, U32> <- File.size(f)
     v : Unit <- ffi_back()
     f : File <- report(p)
-    File.close(f)
+    done : Unit <- File.close(f)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
+    return done
 
 #|size 5
