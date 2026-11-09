@@ -134,6 +134,8 @@ const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
 
 const CMPS = "is_eq:==:=== is_ne:!=:!== is_lt:< is_le:<= is_gt:> is_ge:>=";
 
+const AT = "$0[$1 & $0.length - 1]";
+
 const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("u32_", "add:+ sub:- and:& or:| xor:^",
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
@@ -213,10 +215,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   string_eq: { JS: "($0 === $1)" },
   string_length: { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
-    new: "array_new($0, $1, $2)", set: "($0[$1 & $0.length - 1] = $2, $0)",
-    get: "tup_new($0, $0[$1 & $0.length - 1])",
+    new: "array_new($0, $1, $2)", set: `(${AT} = $2, $0)`,
+    get: `tup_new($0, ${AT})`,
     get_unchecked: "tup_new($0, $0[$1])",
-    swap: "array_rmw($0, $1, () => ($2))",
+    swap: "array_swap($0, $1, $2)",
     size: "tup_new($0, $0.length)",
   }).map(([k, JS]) => ["array_" + k, { C: null, JS }])),
   array_clone: {
@@ -224,13 +226,13 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "tup_new($0, $0.slice())",
   },
   ...Object.fromEntries(Object.entries({
-    add: "(o + $2) >>> 0", min: "Math.min(o, $2)", max: "Math.max(o, $2)",
-    and: "(o & $2) >>> 0", or: "(o | $2) >>> 0", xor: "(o ^ $2) >>> 0",
-    exch: "($2)", cmpx: "o === $2 ? $3 : o", fadd: "Math.fround(o + $2)",
+    add: "($o + $2) >>> 0", min: "Math.min($o, $2)", max: "Math.max($o, $2)",
+    and: "($o & $2) >>> 0", or: "($o | $2) >>> 0", xor: "($o ^ $2) >>> 0",
+    exch: "$2", cmpx: "$o === $2 ? $3 : $o", fadd: "Math.fround($o + $2)",
   }).map(([k, js]) => ["array_atomic_" + k.replace("cmpx", "cas"), {
     C:  ["$0", "a32_" + k + "(blk_ptr(e.mem, blk_loc(e.mem, $0),"
       + " blk_at($0, $1, 0)), (u32)$2" + (k === "cmpx" ? ", (u32)$3)" : ")")],
-    JS: `array_rmw($0, $1, (o) => ${js})`,
+    JS: `array_swap($0, $1, ${js.replaceAll("$o", AT)})`,
   }])),
 }, null);
 
@@ -6076,9 +6078,9 @@ function array_node(a, b) {
   return a.concat(b);
 }
 
-function array_rmw(a, i, f) {
+function array_swap(a, i, v) {
   const old = a[i &= a.length - 1];
-  a[i] = f(old);
+  a[i] = v;
   return tup_new(a, old);
 }
 
