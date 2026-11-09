@@ -4209,7 +4209,7 @@ INLINE u32 ring_lap(u32 pos) {
 
 INLINE void ring_push(DEV u64* H, u32 r, Term tsk) {
   u32 pos = a32_add(ring_put(H, r), 1);
-  if (pos - a32_load(ring_get(H, r)) >= RING_LEN) {
+  if (pos - a32_load_acq(ring_get(H, r)) >= RING_LEN) {
     err_post(H, ERR_RING);
     return;
   }
@@ -4458,7 +4458,7 @@ INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 strid
   if ((hi >> 31) != ring_lap(*get) || (!seq && fid_nofk(term_aux(t)))) {
     return 0;
   }
-  a32_store(get, *get + 1);
+  a32_store_rel(get, *get + 1);
   for (;;) {
     Term r = work_loop(e, stk, t, seq);
     if (r == 0 || err_seen(H)) {
