@@ -125,6 +125,54 @@ def Laws.esc_quits(pre, post, g):
     case Close{} <> rest:
       {==}
 
+# A calm frame keeps the game
+# ----------------------------
+
+# one key of a calm frame: an Esc is ruled out by the calm, any other
+# key keeps the game and the rest of the frame goes on
+law calm_arm:
+  for b: Bool
+  for g: Slash.Game
+  for -rest: List<Event>
+  for e: Spec.Calm.key(b, Spec.Calm(rest))
+  for ih: @s: Slash.Game -> Spec.Calm(rest) -> &g2: Slash.Game -> {Slash.Game.events(rest, s) == Some{g2} : Maybe<Slash.Game>}
+  exs g2: Slash.Game
+  {Maybe.bind(&1, Slash.Game, Slash.Game, Slash.Game.quit(b, g),
+      s => Slash.Game.events(rest, s)) == Some{g2} : Maybe<Slash.Game>}
+
+def calm_arm(b, g, rest, e, ih):
+  match b:
+    case True{}:
+      match e:
+    case False{}:
+      ih(g, e)
+
+def Laws.calm_keeps(es, g, e):
+  match es:
+    case Nil{}:
+      (g, {==})
+    case Key{+code, +down} <> rest:
+      calm_arm(U32.is_eq(code, 27), Slash.Game.key(g, code, down), rest, e,
+        s => c => Laws.calm_keeps(rest, s, c))
+    case Text{text} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Press{id, tool, x, y, time, button, down} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Move{id, tool, x, y, time} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Leave{id} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Lost{id} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Look{dx, dy} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Scroll{x, y, dx, dy} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Focus{on} <> rest:
+      Laws.calm_keeps(rest, g, e)
+    case Close{} <> rest:
+      match e:
+
 # Sanity
 # ------
 

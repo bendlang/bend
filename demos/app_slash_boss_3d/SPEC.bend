@@ -32,3 +32,23 @@ def cat(a: List<Event>, b: List<Event>) -> List<Event>:
       b
     case e <> rest:
       e <> cat(rest, b)
+
+# whether a frame's events hold no Esc and no Close: Unit when they
+# hold none, Empty when they hold one
+def Calm.key(esc: Bool, rest: Type) -> Type:
+  match esc:
+    case True{}:
+      Empty
+    case False{}:
+      rest
+
+def Calm(es: List<Event>) -> Type:
+  match es:
+    case Nil{}:
+      Unit
+    case Key{code, down} <> rest:
+      Calm.key(U32.is_eq(code, 27), Calm(rest))
+    case Close{} <> rest:
+      Empty
+    case e <> rest:
+      Calm(rest)
