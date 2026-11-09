@@ -6,6 +6,9 @@
 # allocates through the codec guard (the csrc pin holds it).
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_file_" ++ U32.show(salt)
+
 law read_go:
   for m: File & Result<&1, &1, (U32 & String), String>
   IO(U32)
@@ -55,12 +58,16 @@ law main:
 
 def main():
   do IO<U32>:
-    f : File <- IO.try(File, File.open("/tmp/bend_io_file.tmp", "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "bend-file")
     x : Unit <- write_go(w)
     r : Result<&1, &1, (U32 & String), File> <- File.open("/no/such/dir/bend.tmp", "r")
     y : Unit <- probe_missing(r)
-    read_back("/tmp/bend_io_file.tmp")
+    done : U32 <- read_back(tmp(salt))
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
+    return done
 
 #|No such file or directory
 #|bend-file

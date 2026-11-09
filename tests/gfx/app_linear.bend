@@ -3,6 +3,9 @@
 # line per frame through it, the program closes it and reads the log.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_gfx_linear_" ++ U32.show(salt)
+
 type Log is Type:
   Log{file: File, n: U32}
 
@@ -31,7 +34,7 @@ def read_go(m: File & Result<&1, &1, U32 & String, String>) -> IO(Unit):
     u : Unit <- IO.write(data)
     File.close(f)
 
-def closed(m: Maybe<Log>) -> IO(Unit):
+def closed(+salt: U32, m: Maybe<Log>) -> IO(Unit):
   match m:
     case None{}:
       IO.print("quit")
@@ -40,16 +43,20 @@ def closed(m: Maybe<Log>) -> IO(Unit):
       do IO<Unit>:
         u : Unit <- IO.print("frames " ++ U32.show(n))
         v : Unit <- File.close(file)
-        g : File <- IO.try(File, File.open("/tmp/bend_gfx_linear.tmp", "r"))
+        g : File <- IO.try(File, File.open(tmp(salt), "r"))
         m : File & Result<&1, &1, U32 & String, String> <- File.read(g, 64)
         read_go(m)
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open("/tmp/bend_gfx_linear.tmp", "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     m : Maybe<Log> <- App.play(~Log, ~App{Log.view, Log.tick}, [[], [Close{}], []],
       Log{f, 0})
-    closed(m)
+    done : Unit <- closed(salt, m)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
+    return done
 
 #|frames 3
 #|frame 0

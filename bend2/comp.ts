@@ -201,7 +201,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   nat_mul: { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
   nat_cmp: { C: "(($0 > $1) + ($0 >= $1))", JS: "cmp_new($0, $1)" },
   ...tpl_ops("nat_", "sub", "($0 < $1 ? 0 : $0 - $1)"),
-  ...tpl_ops("nat_", "is_lt:<", "($0 $o $1)"),
+  ...tpl_ops("nat_", "is_lt", "($0 < $1)"),
   ...tpl_ops("nat_", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
   nat_divmod: {
     C:  ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
@@ -210,6 +210,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   string_append: { JS: "($0 + $1)" },
   string_contains: { JS: "string_contains($0, $1)" },
+  string_eq: { JS: "($0 === $1)" },
   string_length: { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
     new: "array_new($0, $1, $2)", set: "($0[$1 % $0.length] = $2, $0)",
@@ -325,10 +326,11 @@ function cid_mac(k: string): string {
 // Char
 // ====
 
-// A Char past the Unicode scalars is 0xDC00 and three 11-bit pieces (str_out
-// writes U+FFFD); the JS runtime holds this function's text.
+// A non-scalar Char is 0xDC00 and its u32 in three pieces (str_out writes
+// U+FFFD). The JS runtime copies this function.
 function char_new(c: number): string {
-  return c < 0xD800 || c >= 0xE000 && c <= 0x10FFFF ? String.fromCodePoint(c)
+  return c < 0xD800 ? String.fromCharCode(c)
+    : c >= 0xE000 && c <= 0x10FFFF ? String.fromCodePoint(c)
     : String.fromCharCode(0xDC00, c >>> 22, c >>> 11 & 0x7FF, c & 0x7FF);
 }
 
@@ -810,7 +812,7 @@ function lay_arr(lay: Lay) {
 
 function ctr_adt(x: Of<"Ctr">, ty: HTerm | null): [Of<"ADT">, number | null] {
   const f = FL.book.ctrs[x.k].f;
-  if (!ty && FL.book.tlds[f].n) die("a constructor outside a datatype");
+  if (!ty && tld_of(f).n) die("a constructor outside a datatype");
   const adt = adt_of(ty ?? Bend.ADT(f, []));
   return [adt, adt.k === "U32" || adt.k === "F32"
     ? Bend.u32_from_term(x, adt.k) : null];
@@ -1291,18 +1293,19 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
     if (!force) {
       return;
     }
+    const hot = (x: HTerm) => facts_hot(def, x, true, local);
     const m = w?.$ === "App" && term_spine(w);
     const fam = m && done_live(m.tld) && term_strip(Bend.term_unapply(
       m.all.reduce((b, x) => Bend.term_apply(b, x), m.tld.v!))[0]);
     if (m && fam && fam.$ === "Mat") {
-      m.all.forEach((x) => facts_hot(def, x, true, local));
+      m.all.forEach(hot);
       if (fact_add("fam", (m.t as Of<"Ref">).k)) {
-        facts_hot(def, fam, true, local);
+        hot(fam);
       }
       return;
     }
     if (w?.$ === "Mat") {
-      return term_kids(w).forEach((h) => facts_hot(def, h, true, local));
+      return term_kids(w).forEach(hot);
     }
     const dom = w?.$ === "Var" && !local
       && tele_unbind(tld_of(def).T).doms[w.i];
@@ -1925,8 +1928,11 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
       }
       case "Lam": {
         const all = T && Bend.tele_open(FL.book, T);
-        return all?.q.$ !== "None" ? s
-          : Bend.Ann(go(s.f(DUMMY), top, all.B(DUMMY)), all.B(DUMMY));
+        if (all?.q.$ !== "None") {
+          return s;
+        }
+        const B = all.B(DUMMY);
+        return Bend.Ann(go(s.f(DUMMY), top, B), B);
       }
       default: {
         return s;
@@ -3373,9 +3379,6 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 #define CAP_WORDS 32768
 #define QUANTUM   (DEVICE ? PAGE_LEN \
   : KEEP_WORDS < 32 * PAGE_LEN ? KEEP_WORDS : 32 * PAGE_LEN)
-#if DEVICE
-#define KEEP_WORDS CHUNK
-#endif
 #define RING_WORDS ((1ull << 10) + 2)
 
 #define H_BUMP       0
@@ -3445,6 +3448,17 @@ static const char* CLI_HELP =
   "                    (default: on if present, over 2GB on Metal)\n"
   "  --gpu-build       write the GPU program and exit\n"
   "  --help            show this text\n";
+
+static Term f32_show(Env e, Term x);
+static Term f32_read(Env e, Term s);
+static bool corpus_grow(u64* H, u64 need);
+
+#else
+
+#define KEEP_WORDS CHUNK
+#define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
+#define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
+#define corpus_grow(H, n) (*e.stop = 1, false)
 
 #endif
 
@@ -3674,18 +3688,6 @@ INLINE u64 map_msb_u(u64 n, u32 x) {
   return n < w ? n : w;
 }
 
-#if DEVICE
-
-#define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
-#define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
-
-#else
-
-static Term f32_show(Env e, Term x);
-static Term f32_read(Env e, Term s);
-
-#endif
-
 A32_LOOP(fadd, f32_rewrap(f32_unbox(o) + f32_unbox(v)))
 
 // Bank
@@ -3749,12 +3751,6 @@ OUTLINE void heap_hand(Env e, u32 cls) {
   ALC_COLD(e, cls) = large ? 0 : ALC_AT(e, cls);
   ALC_AT(e, cls)   = ALC_LEN(e, cls) = 0;
 }
-
-#if DEVICE
-#define corpus_grow(H, n) (*e.stop = 1, false)
-#else
-static bool corpus_grow(u64* H, u64 need);
-#endif
 
 OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
   DEV u64* H = e.mem;
@@ -5767,21 +5763,16 @@ static int f32_text(char* buf, f32 v) {
   if (ex >= 21 || ex <= -7) {
     return (int)(ep - buf) + sprintf(ep, "e%+d", ex);
   }
-  // The scientific form has the rounded digits d, d[i] at the place ex - i:
-  // write each place from the highest down, with a point before place -1.
-  int  s = *buf == '-';
-  char d[9];
-  d[0] = buf[s];
-  memcpy(d + 1, buf + s + 2, p);
-  n = s;
-  for (int q = ex > 0 ? ex : 0; q >= 0 || q >= ex - p; q -= 1) {
-    if (q == -1) {
-      buf[n++] = '.';
-    }
-    buf[n++] = q <= ex && q >= ex - p ? d[ex - q] : '0';
+  // The fixed form rounds where the scientific one does, at 10^(ex - p): %f
+  // does so past the point, and a whole number pads the digits with zeros.
+  if (ex <= p) {
+    return snprintf(buf, 40, "%.*f", p - ex, (double)v);
   }
-  buf[n] = 0;
-  return n;
+  int s = *buf == '-';
+  memmove(buf + s + 1, buf + s + 2, p);
+  memset(buf + s + 1 + p, '0', ex - p);
+  buf[s + 1 + ex] = 0;
+  return s + 1 + ex;
 }
 
 static Term f32_show(Env e, Term x) {
@@ -5799,7 +5790,6 @@ static Term f32_read(Env e, Term s) {
   free(text);
   return out;
 }
-
 
 // Run
 // ===
@@ -6042,7 +6032,8 @@ const f32_round = ${Bend.f32_round};
 const char_new = ${char_new};
 
 function char_len(s, at = 0) {
-  return s[at] === "\uDC00" ? 4 : s.codePointAt(at) > 0xFFFF ? 2 : 1;
+  const c = s.codePointAt(at);
+  return c === 0xDC00 ? 4 : c > 0xFFFF ? 2 : 1;
 }
 
 function char_code(s) {

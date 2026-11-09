@@ -3,15 +3,15 @@
 # String names; a value past 255 fails with EINVAL and a 0 with EILSEQ.
 import Base
 
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_open_bytes_" ++ U32.show(salt) ++ "_"
+
 def ascii(s: String, tail: List<&2, U32>) -> List<&2, U32>:
   match s:
     case SNil{}:
       tail
     case SCon{c, t}:
       Char.to_u32(c) <> ascii(t, tail)
-
-def path(tail: List<&2, U32>) -> List<&2, U32>:
-  ascii("/tmp/bend_io_open_bytes_", tail)
 
 def pick(ok: Bool, yes: String, no: String) -> String:
   match ok:
@@ -48,19 +48,23 @@ def read(pair: File & Result<&1, &1, U32 & String, String>) -> IO(String):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    f : File <- IO.try(File, File.open_bytes(path([195, 169]), "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open_bytes(ascii(tmp(salt), [195, 169]), "w"))
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write(f, "hi")
     written(p)
-    f : File <- IO.try(File, File.open("/tmp/bend_io_open_bytes_é", "r"))
+    f : File <- IO.try(File, File.open(tmp(salt) ++ "é", "r"))
     p : File & Result<&1, &1, U32 & String, String> <- File.read(f, 16)
     t : String <- read(p)
     IO.print("utf-8 bytes: " ++ t)
-    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(path([256]), "r")
+    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(ascii(tmp(salt), [256]), "r")
     t : String <- shown(r)
     IO.print("past 255: " ++ t)
-    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(path([0, 120]), "w")
+    r : Result<&1, &1, U32 & String, File> <- File.open_bytes(ascii(tmp(salt), [0, 120]), "w")
     t : String <- shown(r)
-    IO.print("nul: " ++ t)
+    done : Unit <- IO.print("nul: " ++ t)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt) ++ "é"], "", 128, 1000)
+    return done
 
 #|utf-8 bytes: hi
 #|past 255: 22

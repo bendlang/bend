@@ -5,11 +5,8 @@
 # and the handle comes back beside the Result.
 import Base
 
-law path:
-  String
-
-def path():
-  "/tmp/bend_io_read_bytes"
+def tmp(salt: U32) -> String:
+  "/tmp/bend_t_io_read_bytes_" ++ U32.show(salt)
 
 law bytes_line:
   for xs: List<&2, U32>
@@ -46,12 +43,13 @@ def read_go(m):
     File.close(f)
 
 law read_max:
+  for +salt: U32
   for max: U32
   IO(Unit)
 
-def read_max(max):
+def read_max(salt, max):
   do IO<Unit>:
-    g : File <- IO.try(File, File.open(path(), "r"))
+    g : File <- IO.try(File, File.open(tmp(salt), "r"))
     m : File & Result<&1, &1, (U32 & String), List<&2, U32>> <-
       File.read_bytes(g, max)
     read_go(m)
@@ -61,11 +59,14 @@ law main:
 
 def main():
   do IO<U32>:
-    f : File <- IO.try(File, File.open(path(), "w"))
+    +salt : U32 <- IO.try(U32, IO.random_u32())
+    f : File <- IO.try(File, File.open(tmp(salt), "w"))
     w : File & Result<&1, &1, (U32 & String), Unit> <- File.write(f, "Olá\n")
     x : Unit <- write_go(w)
-    y : Unit <- read_max(64)
-    z : Unit <- read_max(3)
+    y : Unit <- read_max(salt, 64)
+    z : Unit <- read_max(salt, 3)
+    gone : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("rm", ["-f", tmp(salt)], "", 128, 1000)
     return 0
 
 #|79 108 195 161 10
