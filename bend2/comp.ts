@@ -1711,6 +1711,8 @@ function unit_new(name: string, emit: () => void): Unit {
 
 function unit_emit(u: Unit): void {
   FL.folds.clear();
+  FL.opens.size > 2e5 && [FL.opens, FL.uses, FL.spines, FL.ground]
+    .forEach((m) => m.clear());
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
   u.emit();
@@ -2817,7 +2819,7 @@ export function compile_book(book: Bend.Book): string {
   // emitted C names no ids, so only the runtime is scanned
   const raw = c_ids(runtime_c("\0", "\0", "\0", "\0")).split("\0");
   const c = String.raw({ raw }, tabs, img, text, reqs);
-  // keep nothing memoized: clang may run next while this process waits
+  // keep nothing memoized: clang may run while this process waits
   FL = file_new(book, false);
   return c;
 }
