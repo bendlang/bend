@@ -9,8 +9,10 @@
 # paused resumes then pauses, fighting pauses then resumes, any other
 # mode stays, shown by rewriting the tests back into the toggled
 # mode. esc_quits is an induction over the events before the Esc; the
-# Key arm is general over the key's quit flag. The sanity laws
-# compute.
+# Key arm is general over the key's quit flag. calm_keeps is an
+# induction over all the events, its Key arm (calm_arm) general over
+# the quit flag too: Spec.Calm is Empty at an Esc or a Close, so an
+# empty match rules them out. The sanity laws compute.
 
 import Base
 import ./bend3d.bend as R
@@ -125,8 +127,8 @@ def Laws.esc_quits(pre, post, g):
     case Close{} <> rest:
       {==}
 
-# A calm frame keeps the game
-# ----------------------------
+# A calm frame goes on
+# ---------------------
 
 # one key of a calm frame: an Esc is ruled out by the calm, any other
 # key keeps the game and the rest of the frame goes on

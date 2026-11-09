@@ -2,7 +2,7 @@
 # part the interpreter can evaluate without F32 arithmetic: the pause
 # freezes the world for any number of ticks, pausing twice restores
 # the pause state of any game, an Esc anywhere in a frame's events
-# quits and a frame with no Esc and no Close keeps the game, the
+# quits and a frame with no Esc and no Close does not end the game, the
 # game's countdown is SPEC.bend's for any count, and the closed facts
 # about the countdown, the key bits, the pause toggle and the route
 # back to the title. PROOF.bend proves them.
@@ -46,8 +46,8 @@ law esc_quits:
   {Slash.Game.events(Spec.cat(pre, Key{27, True{}} <> post), g) == None{}
     : Maybe<Slash.Game>}
 
-# LAW: a frame with no Esc and no Close keeps the game going, whatever
-# else it holds: the other side of esc_quits.
+# LAW: a frame with no Esc and no Close does not end the game,
+# whatever else it holds: the other side of esc_quits.
 law calm_keeps:
   for es: List<Event>
   for g: Slash.Game
