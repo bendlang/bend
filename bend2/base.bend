@@ -3148,11 +3148,7 @@ def Map.get.bit(rest: String, off: Nat) -> Bool:
     case SNil{}:
       False{}
     case SCon{c, t}:
-      match c off:
-        case Chr{x} 0n:
-          True{}
-        case Chr{+x} 1n+b:
-          Map.bit.u(x, Nat.sub(31n, b))
+      Pair.snd(Char, Bool, Map.bit.chr(c, off))
 
 def Map.get.go(
   -V: Data, node: Map<&2, V>, d: V, key: String, +rest: String, ci: Nat, b: Bool
