@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **CPU pattern matches**: shared-node takes can inline their count check
+  again. The reported BPE case uses 10.7% fewer instructions on Linux with
+  clang 22; Metal and CUDA keep the helper out of line (#2081).
+
 ## 2.0.40 (2026-11-05)
 
 - **The checker no longer hangs on a proof that a list is its own head <>
