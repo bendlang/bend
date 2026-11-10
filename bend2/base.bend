@@ -2193,6 +2193,14 @@ def String.starts_with.go(p, s):
 def String.starts_with(s, p):
   String.starts_with.go(p, s)
 
+# Counts like String.length, but in a loop, so a long s holds no frames.
+def String.ends_with.len(s: String, n: Nat) -> Nat:
+  match s:
+    case SNil{}:
+      n
+    case SCon{h, t}:
+      String.ends_with.len(t, 1n+n)
+
 # A p longer than s drops nothing, so String.eq fails on it.
 def String.ends_with(s: String, p: String) -> Bool:
   match p:
@@ -2201,7 +2209,7 @@ def String.ends_with(s: String, p: String) -> Bool:
     case SCon{c, t}:
       +s2 = s
       +p2 = {SCon{c, t} : String}
-      String.eq(String.drop(s2, Nat.sub(String.length(s2), String.length(p2))), p2)
+      String.eq(String.drop(s2, Nat.sub(String.ends_with.len(s2, 0n), String.ends_with.len(p2, 0n))), p2)
 
 law String.contains:
   for +s: String
