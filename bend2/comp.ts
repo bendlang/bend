@@ -916,7 +916,6 @@ function mat_lits(x: HTerm, k: Name, self: HTerm): Row[] {
 function arm_self(arm: HTerm, n: number, self: HTerm,
   back: (ps: HTerm[]) => HTerm): [HTerm, number] {
   const ps: Of<"Var">[] = [];
-  // rebuilt once: a binder keeps its own body as the same value, unrewritten
   const go = (t: HTerm, top: boolean): HTerm => {
     const s = Bend.term_force(t);
     const lam = s.$ === "Lam";
@@ -935,8 +934,9 @@ function arm_self(arm: HTerm, n: number, self: HTerm,
       if (b === o.b && vs.every((v, j) => v === s.v[j])) {
         return s;
       }
-      const l = (lam ? Bend.Lam(s.k, s.i, s.f, s.s, s.q)
-        : Bend.Let(s.k, s.i, vs, s.f, s.s, s.q)) as Of<"Lam"> | Of<"Let">;
+      const l = (lam ? Bend.Lam(s.k, s.i, (y: HTerm) => go(s.f(y), false),
+        s.s, s.q) : Bend.Let(s.k, s.i, vs, (ys: HTerm[]) => go(s.f(ys), false),
+        s.s, s.q)) as Of<"Lam"> | Of<"Let">;
       FL.opens.set(l, { ps: o.ps, b });
       return l;
     }
