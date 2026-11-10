@@ -2193,8 +2193,15 @@ def String.starts_with.go(p, s):
 def String.starts_with(s, p):
   String.starts_with.go(p, s)
 
+# A p longer than s drops nothing, so String.eq fails on it.
 def String.ends_with(s: String, p: String) -> Bool:
-  String.starts_with(String.reverse(s), String.reverse(p))
+  match p:
+    case SNil{}:
+      True{}
+    case SCon{c, t}:
+      +s2 = s
+      +p2 = {SCon{c, t} : String}
+      String.eq(String.drop(s2, Nat.sub(String.length(s2), String.length(p2))), p2)
 
 law String.contains:
   for +s: String
