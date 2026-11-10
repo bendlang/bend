@@ -1400,6 +1400,7 @@ function seg_text(lines: string[], tab: number): string[] {
 function seg_ref(sc: Scope, fid: string): string {
   sc.seg.refs.add(fid);
   FL.lazy.get(fid)?.();
+  FL.lazy.delete(fid);
   return fid;
 }
 
@@ -2707,7 +2708,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 
 function c_units(): Unit[] {
   for (const [k, tld] of done_defs(fun_runs)) {
-    const unit = () => FL.units.get(k) ?? unit_new(k, () => {
+    const unit = () => unit_new(k, () => {
       const [dl, vals] = emit_open(k);
       FL.unit!.segs.push(dl.seg);
       if (def_foreign(tld)) {
@@ -2860,6 +2861,7 @@ function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
   if (!fun_runs(tld)) {
     die("a live call into the law " + Bend.name_key(k));
   }
+  seg_ref(sc, seg_fid(k));
   const f = name_id("$", k);
   if (def_foreign(tld) && exprs.length === fun_of(k).lays.length - 1) {
     const v = name_local(sc, "x");
@@ -3104,8 +3106,10 @@ export function js_lib(book: Bend.Book, mod = false): string {
   });
   file_book(outs ?? ["main"]);
   for (const [k, def] of done_defs(fun_runs)) {
-    unit_emit(unit_new(k, () => js_def(k, def)));
+    const unit = () => unit_new(k, () => js_def(k, def));
+    (outs ?? ["main"]).includes(k) ? unit() : FL.lazy.set(seg_fid(k), unit);
   }
+  FL.units.forEach(unit_emit);
   const effs = [...FL.effs.values()]
     .map(([m, src]) => `(() => {\n${c_ids(src, m)}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) => {
