@@ -52,55 +52,6 @@ def Laws.pause_freezes(n, time, held, hero, boss, flash, cloth, garb, lens, blas
                 cloth, garb, lens, blast} : Slash.Game}
       Laws.pause_freezes(k, time, held, hero, boss, Slash.Sim.dec(flash), cloth, garb, lens, blast)
 
-# the loop's ticks: the same induction, carrying the previous game and
-# the cues the loop gathers
-def Laws.pause_freezes_live(n, prev, now, debt, begin, frames, cues, time, held, hero, boss, flash, cloth, garb, lens, blast):
-  match n:
-    case 0n:
-      {==}
-    case 1n+k:
-      %pause_tick(time, held, hero, boss, flash, cloth, garb, lens, blast)
-        : {Spec.game_of(Slash.Live.steps(k, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, _, now, debt, begin, frames,
-             Slash.Cue.list(Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, Slash.Game.step(Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}), cues)))
-           == Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(k, Slash.Sim.dec(flash)), cloth, garb, lens, blast} : Slash.Game}
-      Laws.pause_freezes_live(k, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, now, debt, begin, frames,
-        Slash.Cue.list(Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, Slash.Game.step(Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}), cues),
-        time, held, hero, boss, Slash.Sim.dec(flash), cloth, garb, lens, blast)
-
-# a frame's ticks, the loop's ticks under Some
-law frame_ticks:
-  for n: Nat
-  for prev: Slash.Game
-  for now: Nat
-  for +debt: U32
-  for begin: Nat
-  for +frames: U32
-  for cues: List<&2, Slash.Cue>
-  for +time: U32
-  for +held: U32
-  for +hero: Slash.Fighter
-  for +boss: Slash.Boss
-  for +flash: U32
-  for +cloth: R.Cloth
-  for +garb: Slash.Garb
-  for +lens: Slash.Lens
-  for +blast: Maybe<&2, Slash.Blast>
-  {Some{Spec.game_of(Slash.Live.steps(n, prev, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, now, debt, begin, frames, cues))}
-    == Some{Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(n, flash), cloth, garb, lens, blast}} : Maybe<Slash.Game>}
-
-def frame_ticks(n, prev, now, debt, begin, frames, cues, time, held, hero, boss, flash, cloth, garb, lens, blast):
-  %Laws.pause_freezes_live(n, prev, now, debt, begin, frames, cues, time, held, hero, boss, flash, cloth, garb, lens, blast)
-    : {Some{Spec.game_of(Slash.Live.steps(n, prev, Slash.Game{time, held, 0, 4, hero, boss, flash, cloth, garb, lens, blast}, now, debt, begin, frames, cues))}
-       == Some{_} : Maybe<Slash.Game>}
-  {==}
-
-# the ticks a frame owes, as Live.after counts them
-def Laws.pause_freezes_frame(prev, stamp, debt, now, begin, frames, cues, time, held, hero, boss, flash, cloth, garb, lens, blast):
-  +ms = U32.from_nat(Nat.sub(now, stamp))
-  +total = (debt + R.word((ms < 100 : U32), ms, 100) * 60 : U32)
-  (U32.to_nat((total / 1000 : U32)),
-    frame_ticks(U32.to_nat((total / 1000 : U32)), prev, now, (total % 1000 : U32), begin, frames, cues, time, held, hero, boss, flash, cloth, garb, lens, blast))
-
 # The loop's ticks
 # ----------------
 
@@ -111,6 +62,16 @@ def Laws.live_steps(n, prev, g, now, debt, begin, frames, cues):
     case 1n+k:
       Laws.live_steps(k, g, Slash.Game.step(g), now, debt, begin, frames,
         Slash.Cue.list(g, Slash.Game.step(g), cues))
+
+def Laws.live_after(prev, g, stamp, debt, now, begin, frames, cues):
+  +ms = U32.from_nat(Nat.sub(now, stamp))
+  +total = (debt + R.word((ms < 100 : U32), ms, 100) * 60 : U32)
+  %Laws.live_steps(U32.to_nat((total / 1000 : U32)), prev, g, now, (total % 1000 : U32), begin,
+      frames, cues)
+    : {Some{Spec.game_of(Slash.Live.steps(U32.to_nat((total / 1000 : U32)), prev, g, now,
+         (total % 1000 : U32), begin, frames, cues))}
+       == Some{_} : Maybe<Slash.Game>}
+  {==}
 
 # P twice restores the pause state
 # --------------------------------
