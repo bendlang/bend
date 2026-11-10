@@ -920,10 +920,8 @@ function mat_lits(x: HTerm, k: Name, self: HTerm): Row[] {
       return;
     }
     const { arms, end } = mat_arms(h ?? t);
-    const [arm, flds] = arms.length < 2
-      ? arm_self(end, h ? 2 : 1, self, back(bits, val)) : [end, 0];
-    const inst = (w: HTerm) => flds === 0 ? arm : (h ? (w as Of<"Ctr">).x
-      : [w]).reduce((f, a) => Bend.term_apply(f, a), arm);
+    const inst = (w: HTerm) => (h ? (w as Of<"Ctr">).x : [w])
+      .reduce((f, a) => Bend.term_apply(f, a), end);
     const w = arms.length < 2 && cov
       && Bend.Ctr("WCon", [probe("b"), probe("t")]) as HTerm;
     const own = arms.length < 2 && !(w && term_same(cov!(w), inst(w)));
@@ -933,6 +931,7 @@ function mat_lits(x: HTerm, k: Name, self: HTerm): Row[] {
         sub(Bend.Ctr("WCon", [Bend.Ctr(c, []), v]))));
     }
     if (own) {
+      const [arm, flds] = arm_self(end, h ? 2 : 1, self, back(bits, val));
       ws.push([arm, bits, val, flds]);
     }
   };
