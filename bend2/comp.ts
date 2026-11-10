@@ -503,35 +503,6 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
     === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
 }
 
-function term_map(t: HTerm, f: (s: HTerm) => HTerm | null): HTerm {
-  const s = Bend.term_force(t);
-  const go = (x: HTerm) => term_map(x, f);
-  const got = term_const(s) ? s : f(s);
-  if (got !== null) {
-    return got;
-  }
-  const re = (ys: HTerm[], mk: (xs: HTerm[]) => HTerm) => {
-    const xs = ys.map(go);
-    return xs.every((x, j) => x === ys[j]) ? s : mk(xs);
-  };
-  if (s.$ === "Lam" || s.$ === "Let") {
-    const o = term_open(s);
-    return re([o.b, ...s.$ === "Let" ? s.v : []], ([b, ...vs]) => {
-      const l = (s.$ === "Lam"
-        ? Bend.Lam(s.k, s.i, (y: HTerm) => go(s.f(y)), s.s, s.q)
-        : Bend.Let(s.k, s.i, vs, (ys: HTerm[]) => go(s.f(ys)), s.s, s.q)) as
-        Of<"Lam"> | Of<"Let">;
-      FL.opens.set(l, { ps: o.ps, b });
-      return l;
-    });
-  }
-  return s.$ === "Ann" ? re([s.x], ([x]) => Bend.Ann(x, s.T, s.s))
-    : s.$ === "App" ? re([s.f, s.x], ([f, x]) => Bend.App(f, x, s.s))
-    : s.$ === "Ctr" ? re(s.x, (xs) => Bend.Ctr(s.k, xs, s.s))
-    : s.$ === "Mat" ? re([s.h, s.m], ([h, m]) => Bend.Mat(s.k, h, m, s.s))
-    : s.$ === "Rwt" ? re([s.f], ([f]) => Bend.Rwt(s.e, s.p, f, s.s)) : s;
-}
-
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
@@ -945,15 +916,41 @@ function mat_lits(x: HTerm, k: Name, self: HTerm): Row[] {
 function arm_self(arm: HTerm, n: number, self: HTerm,
   back: (ps: HTerm[]) => HTerm): [HTerm, number] {
   const ps: Of<"Var">[] = [];
-  let open = true;
-  const out = term_map(arm, (s) => {
-    if (open && ps.length < n && s.$ === "Lam") {
-      ps.push(term_open(s).ps[0]);
-      return null;
+  const go = (t: HTerm, top: boolean): HTerm => {
+    const s = Bend.term_force(t);
+    const lam = s.$ === "Lam";
+    const hd = top && lam && ps.length < n;
+    if (term_const(s)) {
+      return s;
     }
-    open &&= s.$ === "Ann";
-    return s.$ === "Ctr" && ps.length && term_same(s, back(ps)) ? self : null;
-  });
+    if (s.$ === "Ctr" && ps.length && term_same(s, back(ps))) {
+      return self;
+    }
+    if (lam || s.$ === "Let") {
+      const o = term_open(s);
+      hd && ps.push(o.ps[0]);
+      const b = go(o.b, hd);
+      const vs = lam ? [] : s.v.map((v) => go(v, false));
+      if (b === o.b && vs.every((v, j) => v === s.v[j])) {
+        return s;
+      }
+      const l = (lam ? Bend.Lam(s.k, s.i, (y: HTerm) => go(s.f(y), false),
+        s.s, s.q) : Bend.Let(s.k, s.i, vs, (ys: HTerm[]) => go(s.f(ys), false),
+        s.s, s.q)) as Of<"Lam"> | Of<"Let">;
+      FL.opens.set(l, { ps: o.ps, b });
+      return l;
+    }
+    const re = (ys: HTerm[], mk: (xs: HTerm[]) => HTerm) => {
+      const xs = ys.map((y) => go(y, top && s.$ === "Ann"));
+      return xs.every((x, j) => x === ys[j]) ? s : mk(xs);
+    };
+    return s.$ === "Ann" ? re([s.x], ([x]) => Bend.Ann(x, s.T, s.s))
+      : s.$ === "App" ? re([s.f, s.x], ([f, x]) => Bend.App(f, x, s.s))
+      : s.$ === "Ctr" ? re(s.x, (xs) => Bend.Ctr(s.k, xs, s.s))
+      : s.$ === "Mat" ? re([s.h, s.m], ([h, m]) => Bend.Mat(s.k, h, m, s.s))
+      : s.$ === "Rwt" ? re([s.f], ([f]) => Bend.Rwt(s.e, s.p, f, s.s)) : s;
+  };
+  const out = go(arm, true);
   const b = ps.reduce((t) => term_open(Bend.term_strip(t) as Of<"Lam">).b, out);
   return ps.length < n || ps.some((p) => rest_use([b], p) > 0)
     ? [out, n] : [b, 0];
