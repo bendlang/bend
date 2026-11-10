@@ -497,7 +497,7 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   const s = term_force(t);
   return p(s, tail) || term_kids(s).some((x, i, ks) => term_any(x, p, tail
     && (s.$ === "Let" ? i === ks.length - 1
-      : ["Ann", "Lam", "Mat", "Rwt"].includes(s.$))));
+      : "Ann Lam Mat Rwt".includes(s.$))));
 }
 
 function term_const(t: HTerm): boolean {
