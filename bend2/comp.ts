@@ -492,15 +492,13 @@ function term_kids(t: HTerm): HTerm[] {
     : t.$ === "Mat" ? [t.h, t.m] : t.$ === "Rwt" ? [t.f] : [];
 }
 
+const TAILS = new Set(["Ann", "Lam", "Mat", "Rwt"]);
+
 function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   tail = true): boolean {
   const s = term_force(t);
-  if (p(s, tail)) {
-    return true;
-  }
-  const kids = term_kids(s);
-  return kids.some((x, i) => term_any(x, p, tail && (s.$
-    === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
+  return p(s, tail) || term_kids(s).some((x, i, ks) => term_any(x, p, tail
+    && (s.$ === "Let" ? i === ks.length - 1 : TAILS.has(s.$))));
 }
 
 function term_const(t: HTerm): boolean {
@@ -2217,16 +2215,9 @@ function emit_fold(sc: Scope, t: HTerm): HTerm | null {
     const m = term_spine(s);
     if (m.t.$ !== "Ref" || !intr_of(m.t.k)) {
       const b = emit_unfold(sc, m);
-      if (b === null) {
-        return null;
-      }
-      term_any(b, () => (sc.fuel.n--, false));
-      return term_any(b, (y) => {
-        if (y.$ === "App" || y.$ === "Ref") {
-          emit_fold(sc, y);
-        }
-        return sc.fuel.n < 0;
-      }) ? null : b;
+      return b === null || term_any(b, () => --sc.fuel.n < 0)
+        || term_any(b, (y) => ((y.$ === "App" || y.$ === "Ref")
+          && emit_fold(sc, y), sc.fuel.n < 0)) ? null : b;
     }
     const as = emit_fold_args(sc, m);
     return as.every((a, i) => a === m.all[i]) ? s
@@ -2266,8 +2257,9 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
   const lets = fs.map((a, i) => !m.live[i] || term_const(a)
     || term_strip(a).$ === "Var" ? null
     : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
+  const seen = new Map<HTerm, boolean>();
   const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
-    || lets.some((l) => l?.p === y && term_any(l.v, bad));
+    || lets.some((l) => l?.p === y && memo(seen, y, () => term_any(l.v, bad)));
   let xs = fs.map((a, i) => lets[i]?.p ?? a);
   let b = h;
   let hit = fs.every((a, i) => !m.live[i] || term_const(a));
