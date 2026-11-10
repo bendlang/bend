@@ -4668,8 +4668,8 @@ static u32 row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want,
     u32 put0[CUBE_T];
     u32 has = 0;
     for (u32 i = 0; i < CUBE_T; i += 1) {
-      put0[i] = *ring_put(H, base + i * stride);
-      has += put0[i] != *ring_get(H, base + i * stride);
+      put0[i] = a32_load(ring_put(H, base + i * stride));
+      has += put0[i] != a32_load(ring_get(H, base + i * stride));
     }
     if (root_done(H) || has >= want) {
       return cur;

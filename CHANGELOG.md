@@ -3,6 +3,11 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **Runtime**: read both ring cursors atomically while growing worker rows,
+  avoiding data races with publishing and consuming threads (#2104).
+
 ## 2.0.40 (2026-11-05)
 
 - **The checker no longer hangs on a proof that a list is its own head <>
