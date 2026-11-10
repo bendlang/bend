@@ -5,6 +5,10 @@
 # mode is 4), and the rest of a paused game keeps every field but the
 # flash (pause_tick, by evaluation of step, route and rest); the
 # remaining ticks are the induction hypothesis at the faded flash.
+# live_steps is an induction over the loop's ticks, the previous game
+# and the cues changing at each one; live_after unfolds Live.after
+# and rewrites its ticks by live_steps at the count Live.after
+# computes, which is Spec.owed's.
 # pause_twice splits the mode's two tests as Bools (toggle_twice):
 # paused resumes then pauses, fighting pauses then resumes, any other
 # mode stays, shown by rewriting the tests back into the toggled
@@ -12,7 +16,7 @@
 # Key arm is general over the key's quit flag. calm_keeps is an
 # induction over all the events, its Key arm (calm_arm) general over
 # the quit flag too: Spec.Calm is Empty at an Esc or a Close, so an
-# empty match rules them out. The sanity laws compute.
+# empty match rules them out. empty_keeps and the sanity laws compute.
 
 import Base
 import ./bend3d.bend as R

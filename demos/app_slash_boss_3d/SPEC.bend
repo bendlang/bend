@@ -15,7 +15,7 @@ def steps(n: Nat, +g: Slash.Game) -> Slash.Game:
 
 # the game a live state holds
 def game_of(l: Slash.Live) -> Slash.Game:
-  Slash.Live{game, prev, stamp, debt, begin, frames, cues} = l
+  Slash.Live{game, _, _, _, _, _, _} = l
   game
 
 # the game a frame leaves, or None when the frame ends the game

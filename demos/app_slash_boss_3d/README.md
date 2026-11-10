@@ -15,15 +15,20 @@ bend demos/app_slash_boss_3d/main.bend -o slash && ./slash
 ```
 
 **Laws** ([`LAWS.bend`](LAWS.bend), proved in [`PROOF.bend`](PROOF.bend)):
-a pause freezes the world for any number of ticks, P twice restores the
-pause state of any game, an Esc anywhere in a frame's events quits and a
-frame with no Esc and no Close does not end the game, and the game's
+a pause freezes the world for any number of ticks, the loop's ticks are
+the game's and a frame runs the ticks it owes (60 a second of at most
+100 ms), P twice restores the pause state of any game, an Esc anywhere
+in a frame's events quits, a frame with no Esc and no Close does not end
+the game and a frame with no events keeps it as it is, and the game's
 countdown is the spec's; plus closed sanity facts about the route back to the
 title, the pause toggle, the countdown floor and the arrow keys. What the
-laws measure with (n ticks, n fades, a frame's events joined) is in
-[`SPEC.bend`](SPEC.bend). Keep it fixed with `LAWS.bend` when rewriting
-the game or its proofs: a claim must not rely on an editable helper to say
-what it means. Check: `bend PROOF.bend`.
+laws measure with (n ticks, the ticks a frame owes, n fades, a frame's
+events joined) is in [`SPEC.bend`](SPEC.bend). Keep it fixed with
+`LAWS.bend` when rewriting the game or its proofs: a claim must not rely
+on an editable helper to say what it means. The loop laws read only the
+game a frame leaves: the rest of the loop's state and its IO are not
+pinned, and the top of `LAWS.bend` lists what the laws leave open.
+Check: `bend PROOF.bend`.
 
 ## Audio
 
