@@ -78,6 +78,21 @@ law pause_freezes_frame:
       begin, frames, cues))
     == Some{Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(n, flash), cloth, garb, lens, blast}} : Maybe<Slash.Game>}
 
+# LAW: the loop's ticks are the game's: n of them leave any game
+# where n ticks of Game.step leave it, whatever the previous game and
+# the cues.
+law live_steps:
+  for n: Nat
+  for prev: Slash.Game
+  for +g: Slash.Game
+  for now: Nat
+  for +debt: U32
+  for begin: Nat
+  for +frames: U32
+  for cues: List<&2, Slash.Cue>
+  {Spec.game_of(Slash.Live.steps(n, prev, g, now, debt, begin, frames, cues)) == Spec.steps(n, g)
+    : Slash.Game}
+
 # LAW: P twice restores the pause state of any game: paused stays
 # paused, unpaused stays unpaused, whatever the mode was.
 law pause_twice:

@@ -101,6 +101,17 @@ def Laws.pause_freezes_frame(prev, stamp, debt, now, begin, frames, cues, time, 
   (U32.to_nat((total / 1000 : U32)),
     frame_ticks(U32.to_nat((total / 1000 : U32)), prev, now, (total % 1000 : U32), begin, frames, cues, time, held, hero, boss, flash, cloth, garb, lens, blast))
 
+# The loop's ticks
+# ----------------
+
+def Laws.live_steps(n, prev, g, now, debt, begin, frames, cues):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      Laws.live_steps(k, g, Slash.Game.step(g), now, debt, begin, frames,
+        Slash.Cue.list(g, Slash.Game.step(g), cues))
+
 # P twice restores the pause state
 # --------------------------------
 
