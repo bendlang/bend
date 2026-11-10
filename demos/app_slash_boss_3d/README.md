@@ -17,7 +17,7 @@ bend demos/app_slash_boss_3d/main.bend -o slash && ./slash
 **Laws** ([`LAWS.bend`](LAWS.bend), proved in [`PROOF.bend`](PROOF.bend)):
 a pause freezes the world for any number of ticks, the loop's ticks are
 the game's and a frame runs the ticks it owes (60 a second of at most
-100 ms), P twice restores the pause state of any game, an Esc anywhere
+100 ms), a frame whose events end the game ends the loop, P twice restores the pause state of any game, an Esc anywhere
 in a frame's events quits, a frame with no Esc and no Close does not end
 the game and a frame with no events keeps it as it is, and the game's
 countdown is the spec's; plus closed sanity facts about the route back to the

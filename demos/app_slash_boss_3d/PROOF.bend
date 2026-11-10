@@ -8,7 +8,7 @@
 # live_steps is an induction over the loop's ticks, the previous game
 # and the cues changing at each one; live_after unfolds Live.after
 # and rewrites its ticks by live_steps at the count Live.after
-# computes, which is Spec.owed's.
+# computes, which is Spec.owed's. frame_quits computes.
 # pause_twice splits the mode's two tests as Bools (toggle_twice):
 # paused resumes then pauses, fighting pauses then resumes, any other
 # mode stays, shown by rewriting the tests back into the toggled
@@ -75,6 +75,9 @@ def Laws.live_after(prev, g, stamp, debt, now, begin, frames, cues):
     : {Some{Spec.game_of(Slash.Live.steps(U32.to_nat((total / 1000 : U32)), prev, g, now,
          (total % 1000 : U32), begin, frames, cues))}
        == Some{_} : Maybe<Slash.Game>}
+  {==}
+
+def Laws.frame_quits(prev, stamp, debt, now, begin, frames, cues):
   {==}
 
 # P twice restores the pause state
