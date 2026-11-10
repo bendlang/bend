@@ -5,6 +5,10 @@
 # mode is 4), and the rest of a paused game keeps every field but the
 # flash (pause_tick, by evaluation of step, route and rest); the
 # remaining ticks are the induction hypothesis at the faded flash.
+# live_steps is an induction over the loop's ticks, the previous game
+# and the cues changing at each one; live_after unfolds Live.after
+# and rewrites its ticks by live_steps at the count Live.after
+# computes, which is Spec.owed's. frame_quits computes.
 # pause_twice splits the mode's two tests as Bools (toggle_twice):
 # paused resumes then pauses, fighting pauses then resumes, any other
 # mode stays, shown by rewriting the tests back into the toggled
@@ -12,7 +16,7 @@
 # Key arm is general over the key's quit flag. calm_keeps is an
 # induction over all the events, its Key arm (calm_arm) general over
 # the quit flag too: Spec.Calm is Empty at an Esc or a Close, so an
-# empty match rules them out. The sanity laws compute.
+# empty match rules them out. empty_keeps and the sanity laws compute.
 
 import Base
 import ./bend3d.bend as R
@@ -51,6 +55,30 @@ def Laws.pause_freezes(n, time, held, hero, boss, flash, cloth, garb, lens, blas
            == Slash.Game{time, held, 0, 4, hero, boss, Spec.fade(k, Slash.Sim.dec(flash)),
                 cloth, garb, lens, blast} : Slash.Game}
       Laws.pause_freezes(k, time, held, hero, boss, Slash.Sim.dec(flash), cloth, garb, lens, blast)
+
+# The loop's ticks
+# ----------------
+
+def Laws.live_steps(n, prev, g, now, debt, begin, frames, cues):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      Laws.live_steps(k, g, Slash.Game.step(g), now, debt, begin, frames,
+        Slash.Cue.list(g, Slash.Game.step(g), cues))
+
+def Laws.live_after(prev, g, stamp, debt, now, begin, frames, cues):
+  +ms = U32.from_nat(Nat.sub(now, stamp))
+  +total = (debt + R.word((ms < 100 : U32), ms, 100) * 60 : U32)
+  %Laws.live_steps(U32.to_nat((total / 1000 : U32)), prev, g, now, (total % 1000 : U32), begin,
+      frames, cues)
+    : {Some{Spec.game_of(Slash.Live.steps(U32.to_nat((total / 1000 : U32)), prev, g, now,
+         (total % 1000 : U32), begin, frames, cues))}
+       == Some{_} : Maybe<Slash.Game>}
+  {==}
+
+def Laws.frame_quits(prev, stamp, debt, now, begin, frames, cues):
+  {==}
 
 # P twice restores the pause state
 # --------------------------------
@@ -174,6 +202,9 @@ def Laws.calm_keeps(es, g, e):
       Laws.calm_keeps(rest, g, e)
     case Close{} <> rest:
       match e:
+
+def Laws.empty_keeps(g):
+  {==}
 
 # Sanity
 # ------

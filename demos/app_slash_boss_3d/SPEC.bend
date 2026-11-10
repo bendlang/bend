@@ -13,6 +13,25 @@ def steps(n: Nat, +g: Slash.Game) -> Slash.Game:
     case 1n+k:
       steps(k, Slash.Game.step(g))
 
+# the game a live state holds
+def game_of(l: Slash.Live) -> Slash.Game:
+  Slash.Live{game, _, _, _, _, _, _} = l
+  game
+
+# the game a frame leaves, or None when the frame ends the game
+def frame_game(m: Maybe<Slash.Live>) -> Maybe<Slash.Game>:
+  match m:
+    case None{}:
+      None{}
+    case Some{l}:
+      Some{game_of(l)}
+
+# the ticks a frame owes: 60 a second of the time since stamp, at most
+# 100 ms of it, on top of the debt (thousandths of a tick)
+def owed(+stamp: Nat, +debt: U32, +now: Nat) -> Nat:
+  +ms = U32.from_nat(Nat.sub(now, stamp))
+  U32.to_nat(((debt + R.word((ms < 100 : U32), ms, 100) * 60 : U32) / 1000 : U32))
+
 # a countdown's tick: down by one, never below 0
 def dec(+x: U32) -> U32:
   R.word((x > 0 : U32), (x - 1 : U32), 0)
