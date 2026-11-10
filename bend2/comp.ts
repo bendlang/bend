@@ -492,13 +492,12 @@ function term_kids(t: HTerm): HTerm[] {
     : t.$ === "Mat" ? [t.h, t.m] : t.$ === "Rwt" ? [t.f] : [];
 }
 
-const TAILS = new Set(["Ann", "Lam", "Mat", "Rwt"]);
-
 function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   tail = true): boolean {
   const s = term_force(t);
   return p(s, tail) || term_kids(s).some((x, i, ks) => term_any(x, p, tail
-    && (s.$ === "Let" ? i === ks.length - 1 : TAILS.has(s.$))));
+    && (s.$ === "Let" ? i === ks.length - 1
+      : ["Ann", "Lam", "Mat", "Rwt"].includes(s.$))));
 }
 
 function term_const(t: HTerm): boolean {
@@ -2214,7 +2213,7 @@ function emit_fold(sc: Scope, t: HTerm): HTerm | null {
     }
     const m = term_spine(s);
     if (m.t.$ !== "Ref" || !intr_of(m.t.k)) {
-      const b = emit_unfold(sc, m);
+      const b = sc.fuel.n < 0 ? null : emit_unfold(sc, m);
       return b === null || term_any(b, () => --sc.fuel.n < 0)
         || term_any(b, (y) => ((y.$ === "App" || y.$ === "Ref")
           && emit_fold(sc, y), sc.fuel.n < 0)) ? null : b;
