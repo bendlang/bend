@@ -16,7 +16,8 @@
 function file_read_room(fs, file, len, line, offset) {
   let room = 65536;
   try {
-    const st = line ? null : fs.fstatSync(file);
+    // A cap within room already determines the buffer size.
+    const st = line || len <= room ? null : fs.fstatSync(file);
     if (st?.isFile()) {
       room = Math.max(room, st.size - (offset ?? 0) + 1);
     }
