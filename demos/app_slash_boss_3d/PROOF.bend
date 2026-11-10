@@ -196,6 +196,9 @@ def Laws.calm_keeps(es, g, e):
     case Close{} <> rest:
       match e:
 
+def Laws.empty_keeps(g):
+  {==}
+
 # Sanity
 # ------
 

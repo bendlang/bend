@@ -84,6 +84,11 @@ law calm_keeps:
   exs g2: Slash.Game
   {Slash.Game.events(es, g) == Some{g2} : Maybe<Slash.Game>}
 
+# LAW: a frame with no events keeps the game as it is.
+law empty_keeps:
+  for g: Slash.Game
+  {Slash.Game.events(Nil{}, g) == Some{g} : Maybe<Slash.Game>}
+
 # LAW: K past the fight goes back to the title whatever else is
 # tapped: the route on back = True is the initial game, for every
 # other flag and every game (sanity).
