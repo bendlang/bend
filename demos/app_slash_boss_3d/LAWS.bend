@@ -90,13 +90,15 @@ law pause_twice:
   for +g: Slash.Game
   {Slash.Game.paused(Slash.Game.pause(Slash.Game.pause(g))) == Slash.Game.paused(g) : Bool}
 
-# LAW: an Esc key-down anywhere in a frame's events quits, whatever
-# the events before and after it and whatever the game.
+# LAW: an Esc anywhere in a frame's events quits, on its key-down or
+# on its release, whatever the events before and after it and whatever
+# the game.
 law esc_quits:
   for pre: List<Event>
+  for down: Bool
   for post: List<Event>
   for g: Slash.Game
-  {Slash.Game.events(Spec.cat(pre, Key{27, True{}} <> post), g) == None{}
+  {Slash.Game.events(Spec.cat(pre, Key{27, down} <> post), g) == None{}
     : Maybe<Slash.Game>}
 
 # LAW: a Close anywhere in a frame's events quits, whatever the events

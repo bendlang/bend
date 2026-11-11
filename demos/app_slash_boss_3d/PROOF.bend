@@ -168,8 +168,8 @@ def quits_anywhere(pre, e, post, g, h):
     case Close{} <> rest:
       {==}
 
-def Laws.esc_quits(pre, post, g):
-  quits_anywhere(pre, Key{27, True{}}, post, g, s => {==})
+def Laws.esc_quits(pre, down, post, g):
+  quits_anywhere(pre, Key{27, down}, post, g, s => {==})
 
 def Laws.close_quits(pre, post, g):
   quits_anywhere(pre, Close{}, post, g, s => {==})
