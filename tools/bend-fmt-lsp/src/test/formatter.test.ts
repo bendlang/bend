@@ -299,9 +299,9 @@ test("uses tabs when requested and is idempotent", () => {
   assert.equal(formatBend(once, { tabSize: 4, insertSpaces: false }), once);
 });
 
-test("keeps Bend prefix forms glued without changing infix operators", () => {
+test("formats Bend prefix forms without changing infix operators", () => {
   const source = "law use:\n    for + value: U32\n    List< & 2,U32>\n    & item:U32 -> { item==item:U32}\n    \\ {}\n    % proof : {==}";
-  assert.equal(formatBend(source), "law use:\n  for +value: U32\n  List<&2, U32>\n  &item: U32 -> {item == item: U32}\n  \\{}\n  %proof : {==}");
+  assert.equal(formatBend(source), "law use:\n  for +value: U32\n  List<&2, U32>\n  &item: U32 -> {item == item: U32}\n  \\{}\n  % proof : {==}");
 });
 
 test("keeps floating point exponents intact", () => {
@@ -383,8 +383,15 @@ test("mixed line endings and the final-newline state survive formatting", () => 
   }
 });
 
-test("preserves body layout across dedents, declarations, and delimiters", { skip: !runnable && "needs bun and bend2/main.ts" }, () => {
+test("preserves body layout and parser-sensitive spacing", { skip: !runnable && "needs bun and bend2/main.ts" }, () => {
   const cases = [
+    ["import Base\ndef main()->U32:\n    (17\n      % 5 : U32)\n", "2\n"],
+    ...["%eq", "%# use the equality\n         eq"].map((proof) => [
+      "import Base\ndef pick(x: U32, y: U32) -> U32:\n  y\n"
+        + "def rewrite(eq: {0 == 0 : U32}) -> U32:\n    pick(5 "
+        + proof + " : U32; 7)\ndef main() -> U32:\n  rewrite({==})\n",
+      "7\n",
+    ]),
     ["import Base\ndef g(a:Bool,b:Bool)->Nat:\n  match a:\n    case True{}:\n      match b:\n        case True{}:\n  10n\n          case False{}:\n  20n\n    case False{}:\n  30n\ndef main()->Nat:\n  g(True{},False{})\n", "20n\n"],
     ["import Base\ndef g(a: Bool, b: Bool) -> Nat:\n  match a:\n    case True{}:\n      match b:case True{}:\n  10n\n              case False{}:\n  20n\n    case False{}:\n  30n\ndef main() -> Nat:\n  g(True{}, False{})\n", "20n\n"],
     ["import Base\ndef  g(a: Bool, b: Bool) -> IO(Unit):\n  match a:\n    case True{}:\n      match b: case True{}:\n  IO.print(\"10\")\n               case False{}:\n                 do IO<Unit>:\n                   IO.print(\"20\")\n                   IO.print(\"21\")\n    case False{}:\n  IO.print(\"30\")\ndef main() -> IO(Unit):\n  g(True{}, False{})\n", "20\n21\n"],
