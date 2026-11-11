@@ -1118,11 +1118,9 @@ function book_err(e: unknown): string {
       || String(e);
   }
   const err = e as Bend.Err;
-  if (e instanceof RangeError) {
-    return "Error: the machine stack overflowed (a deep recursion, or a"
-      + " literal too large to expand)";
-  }
-  return err?.$ === "Err" ? Bend.err_show(err) : String(e);
+  return err?.$ === "Err" ? Bend.err_show(err) : /call stack/.test(String(e))
+    ? "Error: the machine stack overflowed (a deep recursion, or a literal"
+      + " too large to expand)" : String(e);
 }
 
 // Load
