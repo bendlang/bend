@@ -94,12 +94,12 @@ function splitLine(text: string): Line {
 
 function unary(tokens: Token[], index: number): boolean {
   const token = tokens[index].text;
-  if (!["+", "-", "~", "?", "@", "&", "%"].includes(token)) return false;
+  if (!["+", "-", "~", "?", "@", "&"].includes(token)) return false;
   const previous = tokens[index - 1]?.text;
   const next = tokens[index + 1];
   if (!next) return false;
   const atPrefix = index === 0 || PREFIX_CONTEXT.has(previous) || BINARY.has(previous);
-  if (token === "~" || token === "%") return atPrefix;
+  if (token === "~") return atPrefix;
   if (token === "+" || token === "-") return next.kind === "word" && (!next.gap || (index > 0 && atPrefix));
   return next.kind === "word" || next.kind === "number" ? atPrefix : false;
 }
@@ -113,6 +113,8 @@ function needsSpace(tokens: Token[], index: number): boolean {
   const left = tokens[index - 1];
   const right = tokens[index];
   if (!left) return false;
+  // Bend reads % as infix modulo only when whitespace follows it.
+  if (left.text === "%") return right.gap;
   if ([")", "]", "}", ",", ";"].includes(right.text)) return false;
   if (right.text === ":") return right.gap;
   if (["(", "[", "{"].includes(left.text)) return false;
@@ -329,7 +331,10 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
       bodyPins.set(line.tokens[at], pin);
     }
     if (code === "") return prefix + line.comment + ending;
-    return prefix + code + (line.comment === "" ? "" : "  " + line.comment) + ending;
+    if (line.comment === "") return prefix + code + ending;
+    const last = line.tokens.at(-1)!;
+    const gap = last.text === "%" && rawLines[index][last.col + 1] === "#" ? "" : "  ";
+    return prefix + code + gap + line.comment + ending;
   }).join("");
   try {
     if (fingerprint(lines) !== fingerprint(formatted.replace(/\r\n/g, "\n").split("\n").slice(0, finalEol ? -1 : undefined).map(splitLine))) return source;
