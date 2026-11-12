@@ -304,6 +304,16 @@ test("formats Bend prefix forms without changing infix operators", () => {
   assert.equal(formatBend(source), "law use:\n  for +value: U32\n  List<&2, U32>\n  &item: U32 -> {item == item: U32}\n  \\{}\n  % proof : {==}");
 });
 
+test("keeps the gap after % that separates modulo from rewrite", () => {
+  const rewrite = "def f() -> U32:\n    pick(5 %# use eq\n      eq : U32; 7)\n";
+  assert.equal(formatBend(rewrite), "def f() -> U32:\n  pick(5 %# use eq\n    eq : U32; 7)\n");
+  assert.equal(formatBend("def f() -> U32:\n    pick(5 %eq : U32; 7)"), "def f() -> U32:\n  pick(5 %eq : U32; 7)");
+  assert.equal(formatBend("def f() -> U32:\n    (17\n      % 5 : U32)"), "def f() -> U32:\n  (17\n    % 5 : U32)");
+  assert.equal(formatBend("def f() -> U32:\n    (17 %  # modulo\n      5)"), "def f() -> U32:\n  (17 %  # modulo\n    5)");
+  // Before a closer neither reading parses, so the gap is normalized.
+  assert.equal(formatBend("def f(x: U32) -> U32:\n  f(x % )"), "def f(x: U32) -> U32:\n  f(x %)");
+});
+
 test("keeps floating point exponents intact", () => {
   assert.equal(formatBend("def x()->F32:\n  1.25e-4"), "def x() -> F32:\n  1.25e-4");
 });

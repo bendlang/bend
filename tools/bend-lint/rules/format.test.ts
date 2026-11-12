@@ -55,6 +55,12 @@ describe("format/layout", () => {
       "import Base\n\ndef constructor() -> U32:\n  1\n\ndef toString() -> U32:\n  2\n\ndef valueOf() -> U32:\n  3\n",
     );
   });
+  test("keeps % glued to a following comment, which makes it a rewrite", () => {
+    const source = "def f(eq: {0 == 0: U32}) -> U32:\n  pick(5 %# use eq\n    eq: U32; 7)\n";
+    expect(format(source, opts)).toBe(source);
+    const modulo = "def f(x: U32) -> U32:\n  (x %  # modulo\n    5)\n";
+    expect(format(modulo, opts)).toBe(modulo);
+  });
   test("validates its own defaults, union and unknown options", () => {
     expect(formatOptions({})).toEqual(opts);
     expect(formatOptions({ wrapAtWidth: "never" })).toEqual({ ...opts, wrapAtWidth: "never" });

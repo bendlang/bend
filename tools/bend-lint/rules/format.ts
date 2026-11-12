@@ -171,6 +171,8 @@ function separator(a: Node, b: Node): string {
     y = first(b),
     l = x.text,
     r = y.text;
+  // Bend reads % as infix modulo only when whitespace follows it.
+  if (l === "%" && x.end === y.beg) return "";
   if (y.kind === "comment") return "  ";
   if (r === "," || r === ";" || r === ":" || r === "?" || r === "!" || r === ".") return "";
   if (l === "," || l === ";" || l === ":") return " ";
