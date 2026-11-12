@@ -14,6 +14,7 @@ type Line = {
   indent: string;
   code: string;
   comment: string;
+  commentGap: boolean;
   tokens: Token[];
 };
 
@@ -25,6 +26,13 @@ const BINARY = new Set(["=", "==", "!=", "->", "<-", "=>", "+", "-", "*", "/", "
 const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ";", ":", "=", "for", "case", "~"]);
 const ANGLES = new Set(["<", ">", "<<", ">>"]);
 const KEYWORDS = new Set(["return", "match", "case", "do", "for", "exs", "where", "is", "import", "def", "type", "law"]);
+
+// Bend reads % as modulo only when whitespace follows it, and as a rewrite otherwise.
+function gluedPercent(line: Line, index: number): boolean {
+  if (line.tokens[index].text !== "%") return false;
+  const next = line.tokens[index + 1];
+  return next ? !next.gap : line.comment !== "" && !line.commentGap;
+}
 
 function splitLine(text: string): Line {
   const indent = text.match(/^[\t ]*/)?.[0] ?? "";
@@ -89,17 +97,17 @@ function splitLine(text: string): Line {
     tokens.push({ text: code.slice(start, i), kind, gap: hadGap, col: indent.length + start });
     hadGap = false;
   }
-  return { indent, code: code.slice(0, i).trim(), comment: code.slice(i), tokens };
+  return { indent, code: code.slice(0, i).trim(), comment: code.slice(i), commentGap: hadGap, tokens };
 }
 
 function unary(tokens: Token[], index: number): boolean {
   const token = tokens[index].text;
-  if (!["+", "-", "~", "?", "@", "&", "%"].includes(token)) return false;
+  if (!["+", "-", "~", "?", "@", "&"].includes(token)) return false;
   const previous = tokens[index - 1]?.text;
   const next = tokens[index + 1];
   if (!next) return false;
   const atPrefix = index === 0 || PREFIX_CONTEXT.has(previous) || BINARY.has(previous);
-  if (token === "~" || token === "%") return atPrefix;
+  if (token === "~") return atPrefix;
   if (token === "+" || token === "-") return next.kind === "word" && (!next.gap || (index > 0 && atPrefix));
   return next.kind === "word" || next.kind === "number" ? atPrefix : false;
 }
@@ -113,6 +121,7 @@ function needsSpace(tokens: Token[], index: number): boolean {
   const left = tokens[index - 1];
   const right = tokens[index];
   if (!left) return false;
+  if (left.text === "%") return right.gap;
   if ([")", "]", "}", ",", ";"].includes(right.text)) return false;
   if (right.text === ":") return right.gap;
   if (["(", "[", "{"].includes(left.text)) return false;
@@ -286,7 +295,11 @@ function indentDepths(lines: Line[], loose = looseLines(lines), anchors: (Token 
 
 function fingerprint(lines: Line[]): string {
   const depths = indentDepths(lines);
-  return lines.map((line, index) => line.tokens.length === 0 ? "" : depths[index] + ":" + line.tokens.map((token) => token.text).join("\u0000")).join("\n");
+  return lines.map((line, index) => {
+    if (line.tokens.length === 0) return "";
+    const texts = line.tokens.map((token, at) => token.text + (gluedPercent(line, at) ? "\u0001" : ""));
+    return depths[index] + ":" + texts.join("\u0000");
+  }).join("\n");
 }
 
 export function formatBend(source: string, options: FormatOptions = {}): string {
@@ -329,7 +342,8 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
       bodyPins.set(line.tokens[at], pin);
     }
     if (code === "") return prefix + line.comment + ending;
-    return prefix + code + (line.comment === "" ? "" : "  " + line.comment) + ending;
+    if (line.comment === "") return prefix + code + ending;
+    return prefix + code + (gluedPercent(line, line.tokens.length - 1) ? "" : "  ") + line.comment + ending;
   }).join("");
   try {
     if (fingerprint(lines) !== fingerprint(formatted.replace(/\r\n/g, "\n").split("\n").slice(0, finalEol ? -1 : undefined).map(splitLine))) return source;
