@@ -3127,7 +3127,23 @@ def Map.set.fin(
 ) -> Map<a, V>:
   Map.set.fin.go(a, V, m, key, x, Map.diff(keyb, k, 0n))
 
-def Map.set.go(
+def Map.set.compact.node(a, -V: Kind(a), p: Nat, lo: Map<a, V>, hi: Map<a, V>) -> Map<a, V>:
+  match lo hi:
+    case MTip{} r:
+      r
+    case l MTip{}:
+      l
+    case l r:
+      MNode{p, l, r}
+
+def Map.set.compact(a, -V: Kind(a), m: Map<a, V>) -> Map<a, V>:
+  match m:
+    case MNode{p, lo, hi}:
+      Map.set.compact.node(a, V, p, Map.set.compact(a, V, lo), Map.set.compact(a, V, hi))
+    case m2:
+      m2
+
+def Map.set.compacted(
   a, -V: Kind(a), x: V, r: Map<a, V> & String & Maybe<&2, String>
 ) -> Map<a, V>:
   (m2, key2, found) = r
@@ -3137,6 +3153,18 @@ def Map.set.go(
     case Some{k}:
       +ka = {key2 : String}
       Map.set.fin(a, V, m2, ka, x, ka, k)
+
+def Map.set.go(
+  a, -V: Kind(a), x: V, r: Map<a, V> & String & Maybe<&2, String>
+) -> Map<a, V>:
+  match r:
+    case (m, key, Some{k}):
+      +ka = {key : String}
+      Map.set.fin(a, V, m, ka, x, ka, k)
+    case (MTip{}, key, None{}):
+      MLeaf{key, x}
+    case (m, key, None{}):
+      Map.set.compacted(a, V, x, Map.seek(a, V, Map.set.compact(a, V, m), key))
 
 def Map.set(a, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
   Map.set.go(a, V, x, Map.seek(a, V, m, key))
