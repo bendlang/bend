@@ -36,6 +36,7 @@ type Seg = {
   fork: boolean;
   native: boolean;
   head?: string;
+  kept?: number;
 };
 
 type Spine = {
@@ -104,6 +105,10 @@ const EXACT = { fround: Math.fround, imul: Math.imul };
 const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
+
+const KEPT = "~";
+
+const PURE = /^(\} else \{|(\} else )?if \(.*\) \{|\w+ \w+ = \(\w+ - \d+\);)$/;
 
 const USE0 = Bend.Emp<number>();
 
@@ -1171,6 +1176,7 @@ function file_new(book: Bend.Book, js: boolean) {
     opens: new Map<Of<"Lam"> | Of<"Let">, Open>(),
     uses: new Map<HTerm, Bend.PMap<number>>(),
     folds: new Map<HTerm, HTerm | null>(),
+    same: new Map<string, string>(),
     spines: new Map<HTerm, Spine>(),
     ground: new Map<HTerm, boolean>(),
     steps: new Map<string, HTerm>(),
@@ -1391,6 +1397,26 @@ function seg_text(lines: string[], tab: number): string[] {
   return lines.map((l) => "  ".repeat(tab) + l);
 }
 
+// Whether the lines that ran to reach here only tested and named words (the
+// arms left behind are skipped): the segment may then start over.
+function seg_pure(seg: Seg): boolean {
+  let lv = seg.tab;
+  let skip = false;
+  for (const l of seg.lines.toReversed()) {
+    const t = l.trimStart();
+    const d = (l.length - t.length) / 2;
+    if (d > lv && skip) {
+      continue;
+    }
+    if (d > lv || !PURE.test(t)) {
+      return false;
+    }
+    skip = d < lv ? t[0] === "}" : skip && t[0] === "}";
+    lv = d;
+  }
+  return true;
+}
+
 function seg_ref(sc: Scope, fid: string): string {
   sc.seg.refs.add(fid);
   return fid;
@@ -1445,6 +1471,9 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
     : r === null ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
   const ws = emit_hold(sc, node.ks.map((_, j) =>
     taken ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
+  if (r === KEPT) {
+    FL.same.set(k + " " + ws, t);
+  }
   const spare = { cls: cls_fit(n), name: sp, taken };
   if (r === null && tail) {
     sc.spares.push(spare);
@@ -1479,15 +1508,21 @@ function val_hold(sc: Scope, v: Val, k: string): Val {
     v.lay, v.rs);
 }
 
-function val_own(v: Val, at: string | null = null, held = false): string[] {
-  v.rs.forEach((r, j) => {
+function val_own(v: Val, at: string | null = null, held = false,
+  last = false): string[] {
+  return v.ws.map((w, j) => {
+    const r = v.rs[j];
+    if (r === KEPT) {
+      return at !== null ? w : last ? `term_last(e, ${w}, k)`
+        : `term_copy(e, ${w})`;
+    }
     if (r !== null && at !== null) {
       FL.unit!.lends.push([at, r]);
     } else if (r !== null || (at !== null && !held && v.lay.ks[j] === "box")) {
       fact_add("own", r ?? at!);
     }
+    return w;
   });
-  return v.ws;
 }
 
 function val_owned(v: Val): string[] {
@@ -1706,6 +1741,7 @@ function unit_new(name: string, emit: () => void): Unit {
 
 function unit_emit(u: Unit): void {
   FL.folds.clear();
+  FL.same.clear();
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
   u.emit();
@@ -2008,6 +2044,9 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): Val[] {
   const k = ck.k!;
   const lays = fun_of(k).lays;
   const brw = brw_of(k);
+  if (jump && sc.seg.def === k && sc.seg.kept !== undefined) {
+    brw[sc.seg.kept] = true;
+  }
   ck.all.forEach((a, q) =>
     fact("arg", arg_key(k, q)) && facts_hot(sc.def, a, true));
   const xs = ck.xs.map(term_strip);
@@ -2057,7 +2096,8 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
   if (dst === null) {
     spare_flush(sc);
   }
-  const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret));
+  const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret), null, false,
+    sc.seg.kept !== undefined);
   file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${w};`));
   if (dst === null) {
     file_push(sc, `WL_RETN(${ws.length});`);
@@ -2095,11 +2135,14 @@ function emit_open(k: Name): [Scope, Val[]] {
   return [{ ...sc, seg: seg_new(k, ret, vals), def: k }, vals];
 }
 
-function emit_native(sc: Scope, k: Name): string {
-  const name = name_id("spin_", k);
-  memo(FL.units, "spin " + k, (n) => unit_new(n, () => {
+function emit_native(sc: Scope, k: Name, kept?: number): string {
+  const name = name_id("spin_", k + (kept === undefined ? "" : KEPT + kept));
+  memo(FL.units, "spin " + name, (n) => unit_new(n, () => {
     const [sl, vals] = emit_open(k);
-    const seg = Object.assign(sl.seg, { fid: name, native: true });
+    const seg = Object.assign(sl.seg, { fid: name, native: true, kept });
+    if (kept !== undefined) {
+      vals[kept] = val_new(vals[kept].ws, BOX, [KEPT]);
+    }
     emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
     const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
@@ -2109,7 +2152,8 @@ function emit_native(sc: Scope, k: Name): string {
     const text = body.join("\n");
     const q = text.length + 1 < SPIN_FAR ? "INLINE"
       : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
-    const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
+    const head = `${q} Term ${name}(Env e, THR Term* o${
+      kept === undefined ? "" : ", THR Term* k"}${seg.ks.map((kd, i) =>
       `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
   }));
@@ -2193,7 +2237,8 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   const v = val_new(lay.ks.map((_, j) => ws[j] ?? "0"), lay,
     [...tag.map(() => null), ...fs.flatMap((f) => f.rs)],
     vs.every((f) => f.stat));
-  const out = lay === pos ? v
+  const same = pos === BOX && FL.same.get(x.k + " " + v.ws);
+  const out = lay === pos ? v : same ? val_new([same], BOX, [KEPT])
     : val_new([ctr_build(sc, x.k, val_own(v), v.stat)], BOX, [], v.stat);
   if (out.stat) {
     seen.set(x, out);
@@ -2403,6 +2448,12 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
       }
       const { h, ret } = fun_of(ck.k);
+      const kept = sc.seg.def === ck.k ? sc.seg.kept : undefined;
+      const a = kept === undefined ? null : term_strip(ck.xs[kept]);
+      if (a && !(a.$ === "Var"
+        && sc.uses.get(probe_of(a))?.val.rs[0] === KEPT)) {
+        return emit_put(sc, dst, emit_spin(sc, ck));
+      }
       const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld)
         && (ret !== BOX || sc.seg.ret === BOX);
       if (sc.seg.def !== ck.k && (flat_call(x) || (dst === null && once))) {
@@ -2561,6 +2612,22 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
     bind_uses(sc, self, u, rows.map(([a]) => a), adt);
   }
   const sw = u.ws[0];
+  const d = sc.seg.def;
+  const wi = sc.seg.params.indexOf(sw);
+  let n = 0;
+  const pi = fun_of(d).lays.findIndex((l) => (n += l.ks.length) > wi);
+  if (rows === null && adt.k !== "Array" && sc.seg.native
+    && sc.seg.kept === undefined && u.rs[0] === null && wi >= 0
+    && fun_of(d).lays[pi] === BOX && seg_pure(sc.seg)
+    && mat_ctrs(x, adt).some(([c]) => fact("ctr", c))
+    && term_any(fun_of(d).h!, (s, tail) => tail && term_spine(s).k === d)) {
+    const xs = sc.seg.params.flatMap((w, j) =>
+      arr_q(sc.seg.ks[j]) ? [w, arr_loc(sc, w)] : [w]);
+    block(sc, `if (term_shr(e, ${sw})) {`, () => file_push(sc,
+      `Term k = ${sw};`, `Term ok = ${emit_native(sc, d, pi)}(${
+        ["e", "o", "&k", ...xs].join(", ")});`, "term_sink(e, k);",
+      "return ok;"));
+  }
   const tab = emit_tab(sc, cells, ret, sw);
   if (tab !== null) {
     return emit_put(sc, dst, val_new([tab], lay_of(ret)));
@@ -4004,6 +4071,29 @@ FAR void term_drop(Env e, Term t) {
       }
     }
   }
+}
+
+// Whether others hold t too: all it reaches is shared then.
+#define term_shr(e, t) (!term_triv(t) && term_rfc(t) \
+  && (a32_load(a32_at((e).mem, term_loc(t))) & RFC_CNT) > 1)
+
+// A copy of a value read under a shared root, where all is sealed or trivial.
+INLINE Term term_copy(Env e, Term t) {
+  if (term_rfc(t)) {
+    rfc_bump(e, term_loc(t), 1);
+  } else if (!term_triv(t)) {
+    err_post(e.mem, ERR_RFCS);
+  }
+  return t;
+}
+
+// The copy a segment returns: the root itself hands its own hold over.
+INLINE Term term_last(Env e, Term t, THR Term* k) {
+  if (t == *k) {
+    *k = 0;
+    return t;
+  }
+  return term_copy(e, t);
 }
 
 INLINE void term_sink(Env e, Term t) {
