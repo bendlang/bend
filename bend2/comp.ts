@@ -5502,27 +5502,34 @@ static u64 io_utf8(char* buf, u64 c) {
   return k;
 }
 
-INLINE char* io_cbuf_go(Env e, Term s, u64* len, u64 cons, Term root) {
+// A String as UTF-8 or a List as bytes, NULL past 255. Borrows shared cells.
+FAR char* io_cbuf(Env e, Term s, u64* len, u64 cons) {
   u64   cap = 64, n = 0, bad = 0;
   char* buf = io_mem(malloc(cap));
-  while (term_aux(s) == cons) {
-    Term fb[2];
-    if (root) {
-      COPY(fb, e.mem + term_peek(e.mem, s), 2);
-    } else {
-      spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
+  Term  root = 0, fb[2];
+  for (;; root = s) {
+    while (term_aux(s) == cons && (root || term_triv(s) || !term_rfc(s)
+      || (a32_load(a32_at(e.mem, term_loc(s))) & RFC_CNT) == 1)) {
+      if (root) {
+        COPY(fb, e.mem + term_peek(e.mem, s), 2);
+      } else {
+        spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
+      }
+      if (n + 5 > cap) {
+        cap *= 2;
+        buf = io_mem(realloc(buf, cap));
+      }
+      if (cons == CID(SCon)) {
+        n += io_utf8(buf + n, fb[0]);
+      } else {
+        bad |= fb[0] > 255;
+        buf[n++] = (char)fb[0];
+      }
+      s = fb[1];
     }
-    if (n + 5 > cap) {
-      cap *= 2;
-      buf = io_mem(realloc(buf, cap));
+    if (root || term_aux(s) != cons) {
+      break;
     }
-    if (cons == CID(SCon)) {
-      n += io_utf8(buf + n, fb[0]);
-    } else {
-      bad |= fb[0] > 255;
-      buf[n++] = (char)fb[0];
-    }
-    s = fb[1];
   }
   term_sink(e, root);
   buf[n] = 0;
@@ -5532,13 +5539,6 @@ INLINE char* io_cbuf_go(Env e, Term s, u64* len, u64 cons, Term root) {
     return NULL;
   }
   return buf;
-}
-
-OUTLINE char* io_cbuf(Env e, Term s, u64* len, u64 cons) {
-  if (term_rfc(s) && (a32_load(a32_at(e.mem, term_loc(s))) & RFC_CNT) > 1) {
-    return io_cbuf_go(e, s, len, cons, s);
-  }
-  return io_cbuf_go(e, s, len, cons, 0);
 }
 #define io_cstr(e, s, len) io_cbuf(e, s, len, CID(SCon))
 
