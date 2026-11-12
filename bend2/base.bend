@@ -2108,8 +2108,30 @@ def String.cmp(a, b):
     case SCon{h1, t1} SCon{h2, t2}:
       String.cmp.fin(t1, t2, Char.cmp(h1, h2))
 
-def String.eq(a: String, b: String) -> Bool:
-  Cmp.is_eq(String.order(a, b))
+law String.eq:
+  for a: String
+  for b: String
+  Bool
+
+# Settle the heads before opening the tails, so unequal heads decide even
+# when the tails are unknown (in a proof).
+def String.eq.go(t1: String, t2: String, same: Bool) -> Bool:
+  match same:
+    case False{}:
+      False{}
+    case True{}:
+      String.eq(t1, t2)
+
+def String.eq(a, b):
+  match a b:
+    case SNil{} SNil{}:
+      True{}
+    case SNil{} SCon{h, t}:
+      False{}
+    case SCon{h, t} SNil{}:
+      False{}
+    case SCon{h1, t1} SCon{h2, t2}:
+      String.eq.go(t1, t2, Char.is_eq(h1, h2))
 
 def String.length(s: String) -> Nat:
   match s:
@@ -2945,24 +2967,30 @@ def Map.diff.step(x: Char, y: Char) -> Nat & Bool:
 law Map.diff:
   for a: String
   for b: String
-  Nat
+  for n: Nat
+  Maybe<&2, Nat>
 
-def Map.diff.fin(xt: String, yt: String, rc: Nat & Bool) -> Nat:
+# Map.diff walks two keys once: None if they are equal, else the bit where
+# they first differ (n is the bits before a and b).
+def Map.diff.fin(xt: String, yt: String, n: Nat, rc: Nat & Bool) ->
+  Maybe<&2, Nat>:
   (r, c) = rc
   match c:
     case True{}:
-      Nat.add(33n, Map.diff(xt, yt))
+      Map.diff(xt, yt, Nat.add(n, 33n))
     case False{}:
-      r
+      Some{Nat.add(n, r)}
 
-def Map.diff(a, b):
+def Map.diff(a, b, n):
   match a b:
-    case SNil{} _:
-      0n
+    case SNil{} SNil{}:
+      None{}
+    case SNil{} SCon{h, t}:
+      Some{n}
     case SCon{h, t} SNil{}:
-      0n
+      Some{n}
     case SCon{x, xt} SCon{y, yt}:
-      Map.diff.fin(xt, yt, Map.diff.step(x, y))
+      Map.diff.fin(xt, yt, n, Map.diff.step(x, y))
 
 def Map.new(a, -V: Kind(a)) -> Map<a, V>:
   MTip{}
@@ -3086,19 +3114,18 @@ def Map.seek(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) ->
       Map.seek.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
 
 def Map.set.fin.go(
-  a, -V: Kind(a), m: Map<a, V>, key: String, x: V, r: (String & String) & Cmp
+  a, -V: Kind(a), m: Map<a, V>, key: String, x: V, d: Maybe<&2, Nat>
 ) -> Map<a, V>:
-  ((keyb2, k2), c) = r
-  match c:
-    case EQ{}:
+  match d:
+    case None{}:
       Map.put(a, V, m, key, x)
-    case o:
-      Map.ins(a, V, m, key, x, Map.diff(keyb2, k2))
+    case Some{p}:
+      Map.ins(a, V, m, key, x, p)
 
 def Map.set.fin(
   a, -V: Kind(a), m: Map<a, V>, key: String, x: V, keyb: String, k: String
 ) -> Map<a, V>:
-  Map.set.fin.go(a, V, m, key, x, String.cmp(keyb, k))
+  Map.set.fin.go(a, V, m, key, x, Map.diff(keyb, k, 0n))
 
 def Map.set.go(
   a, -V: Kind(a), x: V, r: Map<a, V> & String & Maybe<&2, String>
@@ -3114,36 +3141,9 @@ def Map.set.go(
 def Map.set(a, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
   Map.set.go(a, V, x, Map.seek(a, V, m, key))
 
-law Map.key_eq:
-  for a: String
-  for b: String
-  Bool
-
-# Decide unequal heads before inspecting symbolic tails.
-def Map.key_eq.fin(t1: String, t2: String, hc: (Char & Char) & Cmp) -> Bool:
-  ((h1, h2), c) = hc
-  match c:
-    case EQ{}:
-      Map.key_eq(t1, t2)
-    case LT{}:
-      False{}
-    case GT{}:
-      False{}
-
-def Map.key_eq(a, b):
-  match a b:
-    case SNil{} SNil{}:
-      True{}
-    case SNil{} SCon{h, t}:
-      False{}
-    case SCon{h, t} SNil{}:
-      False{}
-    case SCon{h1, t1} SCon{h2, t2}:
-      Map.key_eq.fin(t1, t2, Char.cmp(h1, h2))
-
 def Map.has.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
   Map<a, V> & Bool:
-  (MLeaf{k, v}, Map.key_eq(key, k))
+  (MLeaf{k, v}, String.eq(key, k))
 
 def Map.has.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
   Map<a, V> & Bool:
@@ -3182,7 +3182,7 @@ def Map.get.leaf.eq(-V: Data, d: V, +v: V, k: String, found: Bool) ->
 
 def Map.get.leaf(-V: Data, d: V, +v: V, key: String, +k: String) ->
   Map<&2, V> & V:
-  Map.get.leaf.eq(V, d, v, k, Map.key_eq(key, k))
+  Map.get.leaf.eq(V, d, v, k, String.eq(key, k))
 
 # Map.get.go carries a cursor into the key: trie positions only grow on the
 # way down, so each level drops the characters between its position and the
@@ -3264,7 +3264,7 @@ def Map.pop.leaf.eq(a, -V: Kind(a), v: V, k: String, found: Bool) ->
 
 def Map.pop.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
   Map<a, V> & Maybe<a, V>:
-  Map.pop.leaf.eq(a, V, v, k, Map.key_eq(key, k))
+  Map.pop.leaf.eq(a, V, v, k, String.eq(key, k))
 
 def Map.pop.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
   Map<a, V> & Maybe<a, V>:
