@@ -123,9 +123,11 @@ def write_invalid(salt):
     f : File <- bad_read(p)
     p : File & Result<&1, &1, U32 & String, Unit> <- File.write_bytes(f, [])
     f : File <- wrote(p)
+    +invalid : List<&2, U32> = bytes(3n, 255)
     p : File & Result<&1, &1, U32 & String, Unit> <-
-      File.write_bytes(f, [1, 256, 2])
+      File.write_bytes(f, invalid)
     f : File <- bad_write(p, 22, "invalid byte")
+    check("shared invalid byte list survives rejection", same(invalid, bytes(3n, 255)))
     p : File & Result<&1, &1, U32 & String, U32> <- File.size(f)
     f : File <- sized(p, 0, "invalid write leaves empty file")
     return f
@@ -226,6 +228,7 @@ def main():
 
 #|read on write-only handle
 #|invalid byte
+#|shared invalid byte list survives rejection
 #|invalid write leaves empty file
 #|shared byte list survives write
 #|max U32 is not a byte
