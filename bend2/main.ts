@@ -1117,11 +1117,12 @@ function book_err(e: unknown): string {
     return e.errors.map((m) => Bun.inspect(m, { colors: false })).join("\n")
       || String(e);
   }
-  const err = e as Bend.Err;
-  if (e instanceof RangeError) {
+  if (e instanceof RangeError
+    && e.message.startsWith("Maximum call stack size exceeded")) {
     return "Error: the machine stack overflowed (a deep recursion, or a"
       + " literal too large to expand)";
   }
+  const err = e as Bend.Err;
   return err?.$ === "Err" ? Bend.err_show(err) : String(e);
 }
 

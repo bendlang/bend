@@ -6442,7 +6442,9 @@ function io_run(m) {
       }
     }
   } catch (e) {
-    throw e instanceof RangeError ? "bend: ${ERRS[7]}" : e;
+    throw e instanceof RangeError
+      && e.message.startsWith("Maximum call stack size exceeded")
+      ? "bend: ${ERRS[7]}" : e;
   } finally {
     io_sync();
     io.done = true;
