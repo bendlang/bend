@@ -2408,7 +2408,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
     parse_skip(p);
   }
   const at = p.pos;
-  let T = ts.length === 1 && parse_take(p, ":") ? parse_term(p) : null;
+  let T = ts.length === 1 && parse_at(p, ":") && parse_eq_ahead(p) && parse_take(p, ":") ? parse_term(p) : null;
   parse_skip(p);
   if (T !== null && !parse_at(p, "=")) {
     [p.pos, T] = [at, null];
@@ -2443,6 +2443,35 @@ export function parse_body(p: Parse, col: number = 0): Body {
   const f = parse_body(p, col);
   parse_close(p, n0);
   return { $: "Local", k: ks, q, v: vs, f };
+}
+
+// No = before the group closes means no typed let, so the type stays unread (#2001).
+export function parse_eq_ahead(p: Parse): boolean {
+  const s = p.str;
+  let d = 0;
+  for (let i = p.pos; i < s.length; i++) {
+    const c = s[i];
+    if (c === "#") {
+      i = s.indexOf("\n", i);
+      if (i < 0) {
+        return false;
+      }
+    } else if (c === '"' || c === "'") {
+      i += c === "'" && s[i + 1] !== "\\" ? 2 : 1;
+      while (i < s.length && s[i] !== c) {
+        i += s[i] === "\\" ? 2 : 1;
+      }
+    } else if (c === "(" || c === "[" || c === "{") {
+      d++;
+    } else if (c === ")" || c === "]" || c === "}") {
+      if (d-- === 0) {
+        return false;
+      }
+    } else if (c === "=" && d === 0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function term_write(p: Parse, t: LTerm, beg: number): LTerm | null {
