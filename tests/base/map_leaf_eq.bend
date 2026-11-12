@@ -52,6 +52,14 @@ def pop_mismatch(-t: String, -p: String) ->
   {Pair.snd(Map<&2, U32>, Maybe<&2, U32>, Map.pop(&2, U32, MLeaf{SCon{'a', t}, 37}, SCon{'b', p})) == None{} : Maybe<&2, U32>}:
   {==}
 
+def has_late_mismatch(-t: String, -p: String) ->
+  {Pair.snd(Map<&2, U32>, Bool, Map.has(&2, U32, MLeaf{SCon{'a', SCon{'b', t}}, 37}, SCon{'a', SCon{'c', p}})) == False{} : Bool}:
+  {==}
+
+def eq_late_mismatch(-t: String, -p: String) ->
+  {String.eq(SCon{'a', SCon{'b', t}}, SCon{'a', SCon{'c', p}}) == False{} : Bool}:
+  {==}
+
 def lane.pop(r: Map<&2, U32> & Maybe<&2, U32>) -> U32:
   (m, v) = r
   Maybe.default(&2, U32, v, 0)
