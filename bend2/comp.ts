@@ -776,7 +776,7 @@ function lay_packed(lay: Lay): boolean {
 
 function lay_arr(lay: Lay) {
   return { arr: Number(lay.ks.some((k) => k !== "w32")),
-    lgs: cls_fit(lay.ks.length || 1) };
+    lgs: cls_fit(lay.ks.length) };
 }
 
 // Ctr
@@ -1352,7 +1352,7 @@ function block(sc: Scope, open: string, go: () => void): void {
 // ===
 
 function cls_fit(words: number): number {
-  return 32 - Math.clz32(words - 1);
+  return words > 1 ? 32 - Math.clz32(words - 1) : 0;
 }
 
 // Spare
