@@ -3173,6 +3173,7 @@ using namespace metal;
 #include <unistd.h>
 #include <signal.h>
 #include <sys/mman.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <poll.h>
 #include <sys/select.h>
@@ -3405,6 +3406,11 @@ static u64    ALC[CUBE_T][3 * NCLS_ALL] __attribute__((aligned(128)));
 static u32    KEEP_WORDS;
 static u32    CUBE_LOG = 7;
 static u32    bank_lock;
+static u64*   FM_BITS;
+static u32*   FM_CNT;
+static u64*   FM_SUM;
+static u64*   FM_TOP;
+static u64    FM_WINS;
 
 static u32             pool_size;
 static u32             pool_row;
@@ -3726,6 +3732,14 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // KEEP_WORDS replace COLD and bank old COLD; blocks >= CAP_WORDS >=
 // KEEP_WORDS go straight to the bank. A miss takes COLD, the bank or fresh
 // memory. Devices bank at dev_cut.
+//
+// A bank pops LIFO, so a long run's generations mix addresses and its cells
+// scatter (#1007). The CPU heap bumps small classes in windows of one class
+// (QUANTUM words) and keeps a free map: a bit per free word, a count per
+// window, and per class a bit per offered window (FM_SUM, offered once an
+// eighth is free) and per nonzero FM_SUM word (FM_TOP). A host miss takes
+// the lowest offered window, else COLD, else a banked generation (poured
+// into the map unless in order), else fresh memory.
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))
@@ -3734,6 +3748,112 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 
 INLINE u32 cls_fit(u32 words) {
   return words > 1 ? 32 - clz(words - 1) : 0;
+}
+
+#define WIN_BITS 12
+#define WIN_MAX  (1ull << (32 - WIN_BITS + PAGE_BITS))
+
+#if DEVICE
+
+#define fm_on(c) false
+
+#else
+
+#define fm_on(c) (FM_BITS && (c) < NCLS)
+
+// Marks a poured cell free and offers its window as it crosses an eighth.
+INLINE void fm_put(u32 c, u64 loc) {
+  u64 off = loc - HEAP_OFF;
+  u64 win = off >> WIN_BITS;
+  u64 bit = 1ull << (win & 63);
+  __atomic_fetch_or(&FM_BITS[off >> 6], 1ull << (off & 63), __ATOMIC_RELEASE);
+  if (__atomic_add_fetch(&FM_CNT[win], 1, __ATOMIC_RELAXED)
+    == (1u << (WIN_BITS - c)) >> 3
+    && !(__atomic_fetch_or(&FM_SUM[(win >> 6) * NCLS + c], bit,
+      __ATOMIC_SEQ_CST) & bit)) {
+    __atomic_fetch_or(&FM_TOP[(win >> 12) * NCLS + c], 1ull << (win >> 6 & 63),
+      __ATOMIC_SEQ_CST);
+  }
+}
+
+// Claims the lowest offered window and chains its free words at *got. A
+// FM_TOP bit is cleared only if its FM_SUM word reads zero after, so a
+// racing offer keeps it.
+FAR u32 fm_take(u64* H, u32 c, u64* got) {
+  u64 nt = (a32_load_acq(a32_at(H, H_BUMP)) >> (WIN_BITS - PAGE_BITS + 12))
+    + 1;
+  for (u64 t = 0; t < nt; t += 1) {
+    u64* top = &FM_TOP[t * NCLS + c];
+    for (u64 tb; (tb = __atomic_load_n(top, __ATOMIC_RELAXED)) != 0;) {
+      u64  w   = t << 6 | __builtin_ctzll(tb);
+      u64* sum = &FM_SUM[w * NCLS + c];
+      u64  bs  = __atomic_load_n(sum, __ATOMIC_SEQ_CST);
+      if (bs == 0) {
+        __atomic_fetch_and(top, ~(1ull << (w & 63)), __ATOMIC_SEQ_CST);
+        if (__atomic_load_n(sum, __ATOMIC_SEQ_CST) != 0) {
+          __atomic_fetch_or(top, 1ull << (w & 63), __ATOMIC_SEQ_CST);
+        }
+        continue;
+      }
+      u64 win = w << 6 | __builtin_ctzll(bs);
+      if (!(__atomic_fetch_and(sum, ~(1ull << (win & 63)), __ATOMIC_ACQ_REL)
+        >> (win & 63) & 1)) {
+        continue;
+      }
+      __atomic_store_n(&FM_CNT[win], 0, __ATOMIC_RELAXED);
+      u64* tail = got;
+      u32  n    = 0;
+      for (u64 j = win << 6; j < (win + 1) << 6; j += 1) {
+        u64 m = __atomic_exchange_n(&FM_BITS[j], 0, __ATOMIC_ACQUIRE);
+        for (; m != 0; m &= m - 1, n += 1) {
+          *tail = HEAP_OFF + (j << 6) + __builtin_ctzll(m);
+          tail  = &H[*tail];
+        }
+      }
+      *tail = 0;
+      if (n != 0) {
+        return n;
+      }
+    }
+  }
+  return 0;
+}
+
+// Pops one banked generation. In order (7/8 of its first 64 links stay
+// within a window) it is the chain, as on main; else it is poured into the
+// map, which then takes.
+FAR u32 fm_pour(u64* H, u32 c, u64* got) {
+  u64 g    = a32_load(&bank_at(H, c)->rd) != 0 ? bank_pop(H, c) : 0;
+  u32 near = 0;
+  u32 seen = 0;
+  for (u64 h = g; h != 0 && H[h] != 0 && seen < 64; h = H[h], seen += 1) {
+    near += H[h] - h + (1ull << WIN_BITS) < 2ull << WIN_BITS;
+  }
+  if (g == 0 || near * 8 >= seen * 7) {
+    *got = g;
+    return g ? KEEP(c) : 0;
+  }
+  for (u64 nx; g != 0; g = nx) {
+    nx = H[g];
+    fm_put(c, g);
+  }
+  return fm_take(H, c, got);
+}
+
+#endif
+
+// A small class bumps whole windows while the map is on; a bump that would
+// pass 2^32 pages adds, and the cap check catches it.
+INLINE u32 heap_bump(DEV u64* H, u32 cls, u32 pages) {
+  DEV u32* at = a32_at(H, H_BUMP);
+  u32      a  = 1u << (WIN_BITS - PAGE_BITS);
+  for (u32 p = a32_load(at); fm_on(cls) && p < ~0u - a - pages;) {
+    u32 q = (p + a - 1) & -a;
+    if (a32_cas(at, &p, q + pages)) {
+      return q;
+    }
+  }
+  return a32_add(at, pages);
 }
 
 OUTLINE void heap_hand(Env e, u32 cls) {
@@ -3749,17 +3869,24 @@ OUTLINE void heap_hand(Env e, u32 cls) {
 OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
   DEV u64* H = e.mem;
   u64  got = 0;
-  if (!DEVICE) {
+  u32  n   = 0;
+#if !DEVICE
+  n = fm_on(cls) ? fm_take(H, cls, &got) : 0;
+  if (n == 0) {
     got = ALC_COLD(e, cls);
     ALC_COLD(e, cls) = 0;
   }
-  if (!got) {
+  if (n == 0 && !got && fm_on(cls)) {
+    n = fm_pour(H, cls, &got);
+  }
+#endif
+  if (n == 0 && !got && !fm_on(cls)) {
     got = bank_pop(H, cls);
   }
-  u32 n = got ? KEEP(cls) : cls < NCLS ? QUANTUM >> cls : 1;
+  n = n ? n : got ? KEEP(cls) : cls < NCLS ? QUANTUM >> cls : 1;
   if (!got) {
     u32 pages = (n << cls) >> PAGE_BITS;
-    u32 p     = a32_add(a32_at(H, H_BUMP), pages);
+    u32 p     = heap_bump(H, cls, pages);
     if ((u64)p + pages > a32_load_acq(a32_at(H, H_CAP))
       && !corpus_grow(H, (u64)p + pages)) {
       err_post(H, ERR_HEAP);
@@ -5271,12 +5398,61 @@ static void corpus_lay(u64* H, u64 size) {
   a32_store_rel(a32_at(H, H_CAP), (u32)cap);
 }
 
+// The free map's parts (bits, counts, FM_SUM, FM_TOP) for k windows, each
+// with a page of slack.
+static void fm_lens(u64 k, u64* len) {
+  u64 per[4] = { k * 512, k * 4, k * NCLS / 8, k * NCLS / 512 };
+  for (u32 i = 0; i < 4; i += 1) {
+    len[i] = (per[i] + 32767) & ~16383ull;
+  }
+}
+
+FAR bool fm_open(u64 size) {
+  u64   k     = (size / 8 >> WIN_BITS) + 1;
+  void* at[4] = { FM_BITS, FM_CNT, FM_SUM, FM_TOP };
+  u64   len[4];
+  bool  ok    = k <= FM_WINS;
+  fm_lens(k, len);
+  for (u32 i = 0; ok && i < 4; i += 1) {
+    ok = !mprotect(at[i], len[i], PROT_READ | PROT_WRITE);
+  }
+  return ok;
+}
+
+// Reserved for the most windows a u32 page count or RLIMIT_AS allows, and
+// opened as the corpus grows.
+FAR void fm_map(u64 size) {
+  struct rlimit rl;
+  u64   w = WIN_MAX;
+  u64   len[4];
+  if (!getrlimit(RLIMIT_AS, &rl) && rl.rlim_cur >> (WIN_BITS + 3) < w) {
+    w = rl.rlim_cur >> (WIN_BITS + 3);
+  }
+  fm_lens(w, len);
+  u64   all = len[0] + len[1] + len[2] + len[3];
+  char* p   = mmap(NULL, all, PROT_NONE, MAP_PRIVATE | MAP_ANON
+    | MAP_NORESERVE, -1, 0);
+  if (p == MAP_FAILED) {
+    return;
+  }
+  FM_WINS = w;
+  FM_BITS = (u64*)p;
+  FM_CNT  = (u32*)(p + len[0]);
+  FM_SUM  = (u64*)(p + len[0] + len[1]);
+  FM_TOP  = (u64*)(p + all - len[3]);
+  if (!fm_open(size)) {
+    munmap(p, all);
+    FM_BITS = NULL;
+  }
+}
+
 static bool corpus_grow(u64* H, u64 need) {
   bool ok = true;
   LOCK(bank_lock);
   while (ok && need > a32_load(a32_at(H, H_CAP))) {
     u64 more = corpus_size;
-    ok = !io_gpu && more < 1ull << 43 && corpus_at((char*)H + more, more);
+    ok = !io_gpu && more < 1ull << 43 && corpus_at((char*)H + more, more)
+      && (!FM_BITS || fm_open(more * 2));
     if (ok) {
       corpus_lay(H, more * 2);
     }
@@ -5295,6 +5471,9 @@ static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   corpus_lay(H, size);
   memcpy(H + STAT_OFF, STAT_IMG, STAT_LEN * sizeof(u64));
   a32_store(a32_at(H, H_BUMP), 1);
+  if (!gpu && QUANTUM == 1u << WIN_BITS) {
+    fm_map(size);
+  }
   if (gpu) {
     gpu_load(size);
   }
