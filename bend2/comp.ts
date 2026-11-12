@@ -66,7 +66,7 @@ type Scope = {
   fuel: { n: number };
 };
 
-type Spare = { words: number; name: string; taken: boolean };
+type Spare = { cls: number; name: string; taken: boolean };
 
 type Native = Record<Name, { intr: string; elim?: string[]; cond?: string }>;
 
@@ -137,91 +137,91 @@ const CMPS = "is_eq:==:=== is_ne:!=:!== is_lt:< is_le:<= is_gt:> is_ge:>=";
 const AT = "$0[$1 & $0.length - 1]";
 
 const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
-  ...tpl_ops("u32_", "add:+ sub:- and:& or:| xor:^",
+  ...tpl_ops("U32.", "add:+ sub:- and:& or:| xor:^",
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
-  ...tpl_ops("u32_", CMPS, "U32_BIN($0, $o, $1)", "($0 $o $1)"),
-  u32_mul: { C: "U32_BIN($0, *, $1)", JS: "(Math.imul($0, $1) >>> 0)" },
+  ...tpl_ops("U32.", CMPS, "U32_BIN($0, $o, $1)", "($0 $o $1)"),
+  "U32.mul": { C: "U32_BIN($0, *, $1)", JS: "(Math.imul($0, $1) >>> 0)" },
   // C only: intr_of skips an op with no JS, so JS runs Base's
-  u32_pow: { C: "u32_pow($0, $1)" },
-  u32_log2: { C: "(31 - clz((u32)$0 | 1))" },
-  u32_popcount: { C: "popcount((u32)$0)" },
-  map_msb_u: { C: "map_msb_u($0, $1)" },
-  map_bit: { C: ["$0", "map_bit(e, $0, $1)"] },
-  u32_div: {
+  "U32.pow": { C: "u32_pow($0, $1)" },
+  "U32.log2": { C: "(31 - clz((u32)$0 | 1))" },
+  "U32.popcount": { C: "popcount((u32)$0)" },
+  "Map.msb.u": { C: "map_msb_u($0, $1)" },
+  "Map.bit": { C: ["$0", "map_bit(e, $0, $1)"] },
+  "U32.div": {
     C:  "((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))",
     JS: "($1 === 0 ? 0 : ($0 / $1) >>> 0)",
   },
-  u32_mod: {
+  "U32.mod": {
     C:  "((u32)($1) == 0 ? $0 : U32_BIN($0, -,"
       + " U32_QUO((u32)($0), (u32)($1)) * $1))",
     JS: "($1 === 0 ? $0 : $0 % $1)",
   },
-  ...tpl_ops("u32_", "inc:+ shl:<< shr:>>:>>>", "U32_BIN($0, $o, 1)",
+  ...tpl_ops("U32.", "inc:+ shl:<< shr:>>:>>>", "U32_BIN($0, $o, 1)",
     "(($0 $o 1) >>> 0)"),
-  ...tpl_ops("u32_", "shln:<< shrn:>>:>>>",
+  ...tpl_ops("U32.", "shln:<< shrn:>>:>>>",
     "($1 >= 32 ? 0 : U32_BIN($0, $o, $1))",
     "($1 >= 32 ? 0 : ($0 $o $1) >>> 0)"),
-  u32_not: { C: "((u64)~(u32)($0))", JS: "(~$0 >>> 0)" },
-  u32_is_zero: { C: "U32_BIN($0, ==, 0)", JS: "($0 === 0)" },
-  u32_cmp: {
+  "U32.not": { C: "((u64)~(u32)($0))", JS: "(~$0 >>> 0)" },
+  "U32.is_zero": { C: "U32_BIN($0, ==, 0)", JS: "($0 === 0)" },
+  "U32.cmp": {
     C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
     JS: "cmp_new($0, $1)",
   },
-  ...tpl_ops("", "u32_to_f32:(u32):>>>0 f32_from_nat::",
+  ...tpl_ops("", "U32.to_f32:(u32):>>>0 F32.from_nat::",
     "f32_rewrap((f32)$o($0))", "Math.fround($0 $o)"),
-  ...tpl_ops("u32_", "to_nat:: from_nat:(u32):>>>0",
+  ...tpl_ops("U32.", "to_nat:: from_nat:(u32):>>>0",
     "((u64)$o($0))", "($0 $o)"),
-  ...tpl_ops("f32_", "add:+ sub:- mul:* div:/",
+  ...tpl_ops("F32.", "add:+ sub:- mul:* div:/",
     "f32_rewrap(f32_unbox($0) $o f32_unbox($1))", "Math.fround($0 $o $1)"),
-  f32_neg: { C: "f32_rewrap(-f32_unbox($0))", JS: "(-$0)" },
-  ...tpl_ops("f32_", CMPS, "((u64)(f32_unbox($0) $o f32_unbox($1)))",
+  "F32.neg": { C: "f32_rewrap(-f32_unbox($0))", JS: "(-$0)" },
+  ...tpl_ops("F32.", CMPS, "((u64)(f32_unbox($0) $o f32_unbox($1)))",
     "($0 $o $1)"),
-  ...tpl_ops("f32_", "sqrt exp log log2 log10 sin cos tan asin acos atan"
+  ...tpl_ops("F32.", "sqrt exp log log2 log10 sin cos tan asin acos atan"
     + " sinh cosh tanh floor ceil trunc abs:fabs:abs",
     "f32_rewrap((f32)$o(f32_unbox($0)))", "Math.fround(Math.$o($0))"),
-  ...tpl_ops("f32_", "atan2",
+  ...tpl_ops("F32.", "atan2",
     "f32_rewrap((f32)$o(f32_unbox($0), f32_unbox($1)))",
     "Math.fround(Math.$o($0, $1))"),
   // IEEE's pow(1, y) and pow(-1, inf) are 1; JS's Math.pow says NaN
-  f32_pow: {
+  "F32.pow": {
     C:  "f32_rewrap((f32)pow(f32_unbox($0), f32_unbox($1)))",
     JS: "($0 === 1 || $0 === -1 && Math.abs($1) === Infinity ? 1"
       + " : Math.fround(Math.pow($0, $1)))",
   },
-  f32_mod: {
+  "F32.mod": {
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
   },
-  f32_to_u32: {
+  "F32.to_u32": {
     C:  "f32_to_u32($0)",
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
   },
-  f32_bits: { C: "$0", JS: "f32_bits($0)" },
-  ...tpl_ops("f32_", "show read", "f32_$o(e, $0)", "f32_$o($0)"),
-  ...tpl_ops("nat_", "add:$1 double:$0", "nat_chk(e, $0 + $o)",
+  "F32.bits": { C: "$0", JS: "f32_bits($0)" },
+  ...tpl_ops("F32.", "show read", "f32_$o(e, $0)", "f32_$o($0)"),
+  ...tpl_ops("Nat.", "add:$1 double:$0", "nat_chk(e, $0 + $o)",
     "nat_chk($0 + $o)"),
-  nat_mul: { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
-  nat_cmp: { C: "(($0 > $1) + ($0 >= $1))", JS: "cmp_new($0, $1)" },
-  ...tpl_ops("nat_", "sub", "($0 < $1 ? 0 : $0 - $1)"),
-  ...tpl_ops("nat_", "is_lt", "($0 < $1)"),
-  ...tpl_ops("nat_", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
-  nat_divmod: {
+  "Nat.mul": { C: "nat_mul(e, $0, $1)", JS: "nat_chk($0 * $1)" },
+  "Nat.cmp": { C: "(($0 > $1) + ($0 >= $1))", JS: "cmp_new($0, $1)" },
+  ...tpl_ops("Nat.", "sub", "($0 < $1 ? 0 : $0 - $1)"),
+  ...tpl_ops("Nat.", "is_lt", "($0 < $1)"),
+  ...tpl_ops("Nat.", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
+  "Nat.divmod": {
     C:  ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
     JS: "nat_divmod($0, $1)",
   },
-  ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
-  string_append: { JS: "($0 + $1)" },
-  string_contains: { JS: "string_contains($0, $1)" },
-  string_eq: { JS: "($0 === $1)" },
-  string_length: { JS: "[...str_out($0)].length" },
+  ...tpl_ops("Bool.", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
+  "String.append": { JS: "($0 + $1)" },
+  "String.contains": { JS: "string_contains($0, $1)" },
+  "String.eq": { JS: "($0 === $1)" },
+  "String.length": { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
     new: "array_new($0, $1, $2)", set: `(${AT} = $2, $0)`,
     get: `tup_new($0, ${AT})`,
     get_unchecked: "tup_new($0, $0[$1])",
     swap: "array_swap($0, $1, $2)",
     size: "tup_new($0, $0.length)",
-  }).map(([k, JS]) => ["array_" + k, { C: null, JS }])),
-  array_clone: {
+  }).map(([k, JS]) => ["Array." + k, { C: null, JS }])),
+  "Array.clone": {
     C:  ["$0", "blk_copy(e, $0)"],
     JS: "tup_new($0, $0.slice())",
   },
@@ -229,7 +229,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     add: "($o + $2) >>> 0", min: "Math.min($o, $2)", max: "Math.max($o, $2)",
     and: "($o & $2) >>> 0", or: "($o | $2) >>> 0", xor: "($o ^ $2) >>> 0",
     exch: "$2", cmpx: "$o === $2 ? $3 : $o", fadd: "Math.fround($o + $2)",
-  }).map(([k, js]) => ["array_atomic_" + k.replace("cmpx", "cas"), {
+  }).map(([k, js]) => ["Array.atomic." + k.replace("cmpx", "cas"), {
     C:  ["$0", "a32_" + k + "(blk_ptr(e.mem, blk_loc(e.mem, $0),"
       + " blk_at($0, $1, 0)), (u32)$2" + (k === "cmpx" ? ", (u32)$3)" : ")")],
     JS: `array_swap($0, $1, ${js.replaceAll("$o", AT)})`,
@@ -544,21 +544,16 @@ function dom_live([q]: Dom): boolean {
 // Intr
 // ====
 
-function intr_of(k: Name, js = false): Intr | undefined {
+function intr_of(k: Name): Intr | undefined {
   const tld = tld_of(k);
-  const it = tld?.$ === "Def" && tld.i === undefined && tld.b
-    && OPERATIONS[op_name(k)];
-  return it && (js || it.C !== undefined) && (!FL.js || it.JS) ? it : undefined;
+  const it = tld?.$ === "Def" && tld.i === undefined && tld.b && OPERATIONS[k];
+  return it && (FL.js ? it.JS : it.C !== undefined) ? it : undefined;
 }
 
 function op_bare(t: HTerm): boolean {
   const s = term_strip(t);
   return s.$ === "Var" || term_const(s) && !(FL.js && s.$ === "Ctr"
     && (s.k in OPTIMIZED.Array || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
-}
-
-function op_name(k: Name): string {
-  return memo(FL.ops, k, () => k.toLowerCase().replace(/[./]/g, "_"));
 }
 
 function tpl_ops(pre: string, names: string, C: string, JS = C) {
@@ -780,7 +775,7 @@ function lay_packed(lay: Lay): boolean {
 
 function lay_arr(lay: Lay) {
   return { arr: Number(lay.ks.some((k) => k !== "w32")),
-    lgs: cls_fit(lay.ks.length || 1) };
+    lgs: cls_fit(lay.ks.length) };
 }
 
 // Ctr
@@ -840,9 +835,9 @@ function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
       FL.img.push(...exprs) - exprs.length);
     return `term_ctr(${cid}, STAT_OFF + ${at})`;
   }
-  const alloc = `heap_alloc(e, ${cls_fit(exprs.length)})`;
-  const at = sc.spares.findIndex((s) =>
-    cls_fit(s.words) === cls_fit(exprs.length));
+  const cls = cls_fit(exprs.length);
+  const alloc = `heap_alloc(e, ${cls})`;
+  const at = sc.spares.findIndex((s) => s.cls === cls);
   const [s] = at < 0 ? [] : sc.spares.splice(at, 1);
   const got = s?.taken ? `${s.name} >= HEAP_OFF ? ${s.name} : ${alloc}`
     : s?.name ?? alloc;
@@ -1180,7 +1175,6 @@ function file_new(book: Bend.Book, js: boolean) {
     ground: new Map<HTerm, boolean>(),
     steps: new Map<string, HTerm>(),
     ty_opens: new Map<string, boolean>(),
-    ops: new Map<Name, string>(),
     holds: new Map<string, Lay>(),
     fids: new Set<Name>(),
     effs: new Map<string, [string, string]>(),
@@ -1357,15 +1351,15 @@ function block(sc: Scope, open: string, go: () => void): void {
 // ===
 
 function cls_fit(words: number): number {
-  return 32 - Math.clz32(words - 1);
+  return words > 1 ? 32 - Math.clz32(words - 1) : 0;
 }
 
 // Spare
 // =====
 
 function spare_free(sc: Scope, s: Spare): void {
-  file_push(sc, `${s.taken ? "spare_free" : "heap_free"}(e,`
-    + ` cls_fit(${s.words}), ${s.name});`);
+  file_push(sc,
+    `${s.taken ? "spare_free" : "heap_free"}(e, ${s.cls}, ${s.name});`);
 }
 
 function spare_flush(sc: Scope): void {
@@ -1451,7 +1445,7 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
     : r === null ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
   const ws = emit_hold(sc, node.ks.map((_, j) =>
     taken ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
-  const spare = { words: n, name: sp, taken };
+  const spare = { cls: cls_fit(n), name: sp, taken };
   if (r === null && tail) {
     sc.spares.push(spare);
   } else if (r === null) {
@@ -1592,16 +1586,16 @@ function arr_loc(sc: Scope, a: string): string {
 
 function arr_op(sc: Scope, k: string, el: Lay, args: Val[]): Val {
   const { arr, lgs } = lay_arr(el);
-  if (k === "array_new") {
+  if (k === "Array.new") {
     return val_new([arr_new(sc, args[0].ws[0], args[1], el)], BOX);
   }
   const a = emit_alias(sc, val_own(args[0])[0], "a");
-  if (k === "array_size") {
+  if (k === "Array.size") {
     return val_new([a, `(1ull << (blk_cls(${a}) - ${lgs}))`],
       lay_pack([["Tuple", [BOX, W32]]]));
   }
-  const raw = k === "array_get_unchecked";
-  const get = raw || k === "array_get";
+  const raw = k === "Array.get_unchecked";
+  const get = raw || k === "Array.get";
   const [l, at] = emit_hold(sc, [arr_loc(sc, a), raw
     ? `((u32)${args[1].ws[0]} << ${lgs})`
     : `blk_at(${a}, ${args[1].ws[0]}, ${lgs})`], "at");
@@ -1609,7 +1603,7 @@ function arr_op(sc: Scope, k: string, el: Lay, args: Val[]): Val {
   if (!get) {
     val_own(val_to(sc, args[2], el)).forEach((w, j) => file_push(sc,
       `blk_write(e.mem, ${arr}, ${l}, ${at} + ${j}, ${w});`));
-    if (k !== "array_swap") {
+    if (k !== "Array.swap") {
       val_sink(sc, old);
       return val_new([a], BOX);
     }
@@ -2124,15 +2118,14 @@ function emit_native(sc: Scope, k: Name): string {
 
 function emit_intr(sc: Scope, k: Name, m: Spine, ty: HTerm | null): Val {
   const args = emit_each(sc, m.args);
-  const op = op_name(k);
   const C = intr_of(k)!.C!;
-  if (/^array_(get|get_unchecked|new|clone)$/.test(op)
+  if (/^Array\.(get|get_unchecked|new|clone)$/.test(k)
     && lay_el(m.all[0]).ks.includes("box")
-    && !(op === "array_new" && ctr_packed(m.all[2]))) {
+    && !(k === "Array.new" && ctr_packed(m.all[2]))) {
     facts_hot(sc.def, m.all[0], true);
   }
   if (C === null) {
-    return arr_op(sc, op, lay_el(m.all[0]), args);
+    return arr_op(sc, k, lay_el(m.all[0]), args);
   }
   const lays = fun_of(k).lays;
   const as = args.map((v, i) => val_own(val_to(sc, v, lays[i]))[0])
@@ -2220,8 +2213,8 @@ function emit_fold(sc: Scope, t: HTerm): HTerm | null {
       if (b === null) {
         return null;
       }
-      term_any(b, () => (sc.fuel.n--, false));
       return term_any(b, (y) => {
+        sc.fuel.n--;
         if (y.$ === "App" || y.$ === "Ref") {
           emit_fold(sc, y);
         }
@@ -2530,7 +2523,7 @@ function row_val(sc: Scope, s: HTerm, ty: HTerm | null): Cell | null {
       : k === "Nat" ? nat_peel(c)[1] : k === "Bool" ? c.k === "True" : null;
   }
   const m = term_spine(s);
-  const js = m.t.$ === "Ref" ? intr_of(m.t.k, true)?.JS : undefined;
+  const js = m.t.$ === "Ref" ? intr_of(m.t.k)?.JS : undefined;
   const xs = m.args.map((a) => row_val(sc, row_term(sc, a), null));
   // an op's JS runs here if it calls nothing past EXACT
   return js === undefined || xs.includes(null)
@@ -2846,7 +2839,7 @@ function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
     const [f, x] = exprs;
     return tail ? `run_tail(${f}, ${x})` : `${f}(${x})`;
   }
-  const intr = intr_of(k, true);
+  const intr = intr_of(k);
   if (intr) {
     return tpl(intr.JS!, exprs.map((e, i) => op_bare(args[i]) ? e
       : emit_hold(sc, [e], "x")[0]));
@@ -3037,7 +3030,7 @@ function js_match(sc: Scope, x: HTerm, ty: HTerm | null, args: string[]): void {
 }
 
 function js_def(k: Name, def: Bend.Def): void {
-  if (intr_of(k, true)) {
+  if (intr_of(k)) {
     return;
   }
   const sc = scope_new();
