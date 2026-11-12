@@ -141,7 +141,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
   ...tpl_ops("U32.", CMPS, "U32_BIN($0, $o, $1)", "($0 $o $1)"),
   "U32.mul": { C: "U32_BIN($0, *, $1)", JS: "(Math.imul($0, $1) >>> 0)" },
-  // C only: intr_of skips an op with no JS, so JS runs Base's
+  // Without JS, keep Base's definition.
   "U32.pow": { C: "u32_pow($0, $1)" },
   "U32.log2": { C: "(31 - clz((u32)$0 | 1))" },
   "U32.popcount": { C: "popcount((u32)$0)" },
@@ -214,6 +214,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   "String.contains": { JS: "string_contains($0, $1)" },
   "String.eq": { JS: "($0 === $1)" },
   "String.length": { JS: "[...str_out($0)].length" },
+  "String.drop": { C: "str_drop(e, $0, $1)" },
   ...Object.fromEntries(Object.entries({
     new: "array_new($0, $1, $2)", set: `(${AT} = $2, $0)`,
     get: `tup_new($0, ${AT})`,
@@ -1457,11 +1458,8 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
 // Val
 // ===
 
-// A box rooted in a borrowed parameter (rs) is not owned; a non-box word has
-// no root. val_own is the gate: at an owned position a rooted word owns its
-// root; lent at `at`, a rooted word passes its lend on and an unheld owned
-// box owns `at`.
-
+// Only borrowed boxes have roots (rs). val_own takes that root at an owned
+// position; at a lend, roots pass the lend on and unheld owned boxes own `at`.
 function val_new(ws: string[], lay: Lay, rs: (string | null)[] = [],
   stat = false): Val {
   return { ws, lay, stat,
@@ -1621,10 +1619,8 @@ function arr_leaf(sc: Scope, s: string, el: Lay): Val {
 // Bind
 // ====
 
-// A binding counts its uses: the last takes the value, others share it; a
-// frame slot of a shared word takes the wrapped one. A lazy record stays
-// boxed: a read that needs its words peeks them, as a borrowed root would.
-
+// Last use takes; others share, updating frame slots with the wrapper.
+// Lazy records stay boxed; word reads borrow their fields.
 function bind_pop(sc: Scope, x: HTerm, at: Lay | null): Val {
   const p = probe_of(x);
   const b = sc.uses.get(p)!;
@@ -1959,14 +1955,11 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
 // Emit
 // ====
 
-// A call emits its nested arguments, pops the owned ones, then reads the
-// borrowed ones (a read asks a lend). A closure moves its captures into a
-// node. A jump's returns agree or are one word, else it is a cut. A fork
-// runs a join task and a task per call; in sequence one frame serves each
-// step. A self-jump reads its parameters back, typed in the device's loop.
-// A foreign def short of its continuation is an IO action. A C table's F32
-// row is its bits (no JS number has a NaN payload).
-
+// Calls pop owned arguments before borrowing; closures move captures.
+// Jumps cut unless returns agree or fit one word. Forks join per-call tasks;
+// sequential calls reuse a frame. Self-jumps read typed device parameters.
+// Foreign defs lacking their continuation are IO. C tables keep F32 bits:
+// JS numbers lose NaN payloads.
 function emit_hold(sc: Scope, exprs: string[], k: string,
   ks?: Kind[]): string[] {
   return exprs.map((ex, i) => {
@@ -3878,11 +3871,9 @@ INLINE Term term_keep(Env e, Term t, u32 k) {
   return rfc_wrap(e, t, 1 + k);
 }
 
-// A redirect cell holds its target's loc over a 24-bit count, which only
-// atomic adds on the low word change: the loc bits never do. The host reads
-// the cell in one relaxed 64-bit load; the device's plain load may tear into
-// two halves, both holding the same loc. A shared node's fields never change
-// either, so ctr_take copies them before it acquires.
+// Redirect loc stays fixed across relaxed host loads or torn device loads;
+// only its low 24-bit count changes. Immutable shared fields let ctr_take
+// read them before acquiring.
 INLINE u64 term_peek(DEV u64* H, Term t) {
   if (term_rfc(t)) {
     return w64_load(&H[term_loc(t)]) >> 24;
@@ -4050,6 +4041,27 @@ INLINE Term term_word(Env e, Term w) {
   }
   term_sink(e, w);
   return x;
+}
+
+// Retain the sealed tail before dropping its root.
+INLINE Term str_drop(Env e, Term s, u64 n) {
+  while (n && term_aux(s) == CID(SCon)) {
+    if (!term_triv(s) && term_rfc(s)
+      && (a32_load(a32_at(e.mem, term_loc(s))) & RFC_CNT) > 1) {
+      Term root = s;
+      do {
+        s = e.mem[term_peek(e.mem, s) + 1];
+      } while (--n && term_aux(s) == CID(SCon));
+      s = term_keep(e, s, 1);
+      term_sink(e, root);
+      return s;
+    }
+    Term fields[2];
+    spare_free(e, cls_fit(2), ctr_take(e, s, 2, fields));
+    s = fields[1];
+    n -= 1;
+  }
+  return s;
 }
 
 // Blk
