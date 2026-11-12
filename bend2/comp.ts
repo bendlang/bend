@@ -1176,7 +1176,6 @@ function file_new(book: Bend.Book, js: boolean) {
     opens: new Map<Of<"Lam"> | Of<"Let">, Open>(),
     uses: new Map<HTerm, Bend.PMap<number>>(),
     folds: new Map<HTerm, HTerm | null>(),
-    same: new Map<string, string>(),
     spines: new Map<HTerm, Spine>(),
     ground: new Map<HTerm, boolean>(),
     steps: new Map<string, HTerm>(),
@@ -1471,9 +1470,6 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
     : r === null ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
   const ws = emit_hold(sc, node.ks.map((_, j) =>
     taken ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
-  if (r === KEPT) {
-    FL.same.set(k + " " + ws, t);
-  }
   const spare = { cls: cls_fit(n), name: sp, taken };
   if (r === null && tail) {
     sc.spares.push(spare);
@@ -1508,13 +1504,11 @@ function val_hold(sc: Scope, v: Val, k: string): Val {
     v.lay, v.rs);
 }
 
-function val_own(v: Val, at: string | null = null, held = false,
-  last = false): string[] {
+function val_own(v: Val, at: string | null = null, held = false): string[] {
   return v.ws.map((w, j) => {
     const r = v.rs[j];
     if (r === KEPT) {
-      return at !== null ? w : last ? `term_last(e, ${w}, k)`
-        : `term_copy(e, ${w})`;
+      return at === null ? `term_copy(e, ${w})` : w;
     }
     if (r !== null && at !== null) {
       FL.unit!.lends.push([at, r]);
@@ -1741,7 +1735,6 @@ function unit_new(name: string, emit: () => void): Unit {
 
 function unit_emit(u: Unit): void {
   FL.folds.clear();
-  FL.same.clear();
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
   u.emit();
@@ -2096,8 +2089,7 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
   if (dst === null) {
     spare_flush(sc);
   }
-  const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret), null, false,
-    sc.seg.kept !== undefined);
+  const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret));
   file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${w};`));
   if (dst === null) {
     file_push(sc, `WL_RETN(${ws.length});`);
@@ -2152,8 +2144,7 @@ function emit_native(sc: Scope, k: Name, kept?: number): string {
     const text = body.join("\n");
     const q = text.length + 1 < SPIN_FAR ? "INLINE"
       : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
-    const head = `${q} Term ${name}(Env e, THR Term* o${
-      kept === undefined ? "" : ", THR Term* k"}${seg.ks.map((kd, i) =>
+    const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
       `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
   }));
@@ -2237,8 +2228,7 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   const v = val_new(lay.ks.map((_, j) => ws[j] ?? "0"), lay,
     [...tag.map(() => null), ...fs.flatMap((f) => f.rs)],
     vs.every((f) => f.stat));
-  const same = pos === BOX && FL.same.get(x.k + " " + v.ws);
-  const out = lay === pos ? v : same ? val_new([same], BOX, [KEPT])
+  const out = lay === pos ? v
     : val_new([ctr_build(sc, x.k, val_own(v), v.stat)], BOX, [], v.stat);
   if (out.stat) {
     seen.set(x, out);
@@ -2624,9 +2614,8 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
     const xs = sc.seg.params.flatMap((w, j) =>
       arr_q(sc.seg.ks[j]) ? [w, arr_loc(sc, w)] : [w]);
     block(sc, `if (term_shr(e, ${sw})) {`, () => file_push(sc,
-      `Term k = ${sw};`, `Term ok = ${emit_native(sc, d, pi)}(${
-        ["e", "o", "&k", ...xs].join(", ")});`, "term_sink(e, k);",
-      "return ok;"));
+      `Term ok = ${emit_native(sc, d, pi)}(${["e", "o", ...xs].join(", ")});`,
+      `term_sink(e, ${sw});`, "return ok;"));
   }
   const tab = emit_tab(sc, cells, ret, sw);
   if (tab !== null) {
@@ -4085,15 +4074,6 @@ INLINE Term term_copy(Env e, Term t) {
     err_post(e.mem, ERR_RFCS);
   }
   return t;
-}
-
-// The copy a segment returns: the root itself hands its own hold over.
-INLINE Term term_last(Env e, Term t, THR Term* k) {
-  if (t == *k) {
-    *k = 0;
-    return t;
-  }
-  return term_copy(e, t);
 }
 
 INLINE void term_sink(Env e, Term t) {
