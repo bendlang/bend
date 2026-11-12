@@ -5336,10 +5336,8 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
 // Io
 // ==
 
-// Base's opaque, linear handles pack host fds or pointers into aux and loc.
-// Text is UTF-8, decoded as WHATWG does. io_sys_addr refuses a leading zero
-// (octal to some libcs). macOS poll misses FIFO EOF, so io_wait selects,
-// sized to the highest fd.
+// Text uses WHATWG UTF-8. io_sys_addr rejects octal-looking leading zeros.
+// macOS poll misses FIFO EOF: io_wait selects, sized to the highest fd.
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -5504,26 +5502,36 @@ static u64 io_utf8(char* buf, u64 c) {
   return k;
 }
 
-// io_cbuf writes a String (cons SCon) as UTF-8, or a List (cons Con) as
-// its bytes, with no UTF-8: NULL if a value is past 255.
-OUTLINE char* io_cbuf(Env e, Term s, u64* len, u64 cons) {
+// A String as UTF-8 or a List as bytes, NULL past 255. Borrows shared cells.
+FAR char* io_cbuf(Env e, Term s, u64* len, u64 cons) {
   u64   cap = 64, n = 0, bad = 0;
   char* buf = io_mem(malloc(cap));
-  while (term_aux(s) == cons) {
-    Term fb[2];
-    spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
-    if (n + 5 > cap) {
-      cap *= 2;
-      buf = io_mem(realloc(buf, cap));
+  Term  root = 0, fb[2];
+  for (;; root = s) {
+    while (term_aux(s) == cons && (root || term_triv(s) || !term_rfc(s)
+      || (a32_load(a32_at(e.mem, term_loc(s))) & RFC_CNT) == 1)) {
+      if (root) {
+        COPY(fb, e.mem + term_peek(e.mem, s), 2);
+      } else {
+        spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
+      }
+      if (n + 5 > cap) {
+        cap *= 2;
+        buf = io_mem(realloc(buf, cap));
+      }
+      if (cons == CID(SCon)) {
+        n += io_utf8(buf + n, fb[0]);
+      } else {
+        bad |= fb[0] > 255;
+        buf[n++] = (char)fb[0];
+      }
+      s = fb[1];
     }
-    if (cons == CID(SCon)) {
-      n += io_utf8(buf + n, fb[0]);
-    } else {
-      bad |= fb[0] > 255;
-      buf[n++] = (char)fb[0];
+    if (root || term_aux(s) != cons) {
+      break;
     }
-    s = fb[1];
   }
+  term_sink(e, root);
   buf[n] = 0;
   *len = n;
   if (bad) {
@@ -5532,7 +5540,6 @@ OUTLINE char* io_cbuf(Env e, Term s, u64* len, u64 cons) {
   }
   return buf;
 }
-
 #define io_cstr(e, s, len) io_cbuf(e, s, len, CID(SCon))
 
 OUTLINE void io_errs(Env e, Term s) {

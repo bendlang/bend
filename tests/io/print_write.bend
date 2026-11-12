@@ -13,7 +13,14 @@ def main():
     a : Unit <- IO.print("hello")
     b : Unit <- IO.write("num=")
     c : Unit <- IO.print(U32.show((40 + 2 : U32)))
+    +text : String = U32.show(123) ++ " é🌍"
+    d : Unit <- IO.print(text)
+    e : Unit <- IO.print("prefix:" ++ text)
+    f : Unit <- IO.print(text)
     return 7
 
 #|hello
 #|num=42
+#|123 é🌍
+#|prefix:123 é🌍
+#|123 é🌍
