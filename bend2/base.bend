@@ -3114,10 +3114,36 @@ def Map.set.go(
 def Map.set(a, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
   Map.set.go(a, V, x, Map.seek(a, V, m, key))
 
-def Map.has.leaf(a, -V: Kind(a), v: V, r: (String & String) & Cmp) ->
+law Map.key_eq:
+  for a: String
+  for b: String
+  Bool
+
+# Decide unequal heads before inspecting symbolic tails.
+def Map.key_eq.fin(t1: String, t2: String, hc: (Char & Char) & Cmp) -> Bool:
+  ((h1, h2), c) = hc
+  match c:
+    case EQ{}:
+      Map.key_eq(t1, t2)
+    case LT{}:
+      False{}
+    case GT{}:
+      False{}
+
+def Map.key_eq(a, b):
+  match a b:
+    case SNil{} SNil{}:
+      True{}
+    case SNil{} SCon{h, t}:
+      False{}
+    case SCon{h, t} SNil{}:
+      False{}
+    case SCon{h1, t1} SCon{h2, t2}:
+      Map.key_eq.fin(t1, t2, Char.cmp(h1, h2))
+
+def Map.has.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
   Map<a, V> & Bool:
-  ((key2, k2), c) = r
-  (MLeaf{k2, v}, Cmp.is_eq(c))
+  (MLeaf{k, v}, Map.key_eq(key, k))
 
 def Map.has.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
   Map<a, V> & Bool:
@@ -3125,13 +3151,13 @@ def Map.has.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
     case MNode{p, MTip{}, hi} Tuple{key, False{}}:
       (MNode{p, MTip{}, hi}, False{})
     case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
-      Map.lo(a, V, Bool, p, hi, Map.has.leaf(a, V, v, String.cmp(key, k)))
+      Map.lo(a, V, Bool, p, hi, Map.has.leaf(a, V, v, key, k))
     case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
       Map.lo(a, V, Bool, p, hi, Map.has.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
     case MNode{p, lo, MTip{}} Tuple{key, True{}}:
       (MNode{p, lo, MTip{}}, False{})
     case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
-      Map.hi(a, V, Bool, p, lo, Map.has.leaf(a, V, v, String.cmp(key, k)))
+      Map.hi(a, V, Bool, p, lo, Map.has.leaf(a, V, v, key, k))
     case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
       Map.hi(a, V, Bool, p, lo, Map.has.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
     case m _:
@@ -3142,18 +3168,21 @@ def Map.has(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Bo
     case MTip{}:
       (MTip{}, False{})
     case MLeaf{k, v}:
-      Map.has.leaf(a, V, v, String.cmp(key, k))
+      Map.has.leaf(a, V, v, key, k)
     case MNode{+pos, lo, hi}:
       Map.has.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
 
-def Map.get.leaf(-V: Data, d: V, +v: V, r: (String & String) & Cmp) ->
+def Map.get.leaf.eq(-V: Data, d: V, +v: V, k: String, found: Bool) ->
   Map<&2, V> & V:
-  ((key2, k2), c) = r
-  match c:
-    case EQ{}:
-      (MLeaf{k2, v}, v)
-    case o:
-      (MLeaf{k2, v}, d)
+  match found:
+    case True{}:
+      (MLeaf{k, v}, v)
+    case False{}:
+      (MLeaf{k, v}, d)
+
+def Map.get.leaf(-V: Data, d: V, +v: V, key: String, +k: String) ->
+  Map<&2, V> & V:
+  Map.get.leaf.eq(V, d, v, k, Map.key_eq(key, k))
 
 # Map.get.go carries a cursor into the key: trie positions only grow on the
 # way down, so each level drops the characters between its position and the
@@ -3172,7 +3201,7 @@ def Map.get.go(
     case MNode{p, MTip{}, hi} False{}:
       (MNode{p, MTip{}, hi}, d)
     case MNode{p, MLeaf{k, v}, hi} False{}:
-      Map.lo(&2, V, V, p, hi, Map.get.leaf(V, d, v, String.cmp(key, k)))
+      Map.lo(&2, V, V, p, hi, Map.get.leaf(V, d, v, key, k))
     case MNode{p, MNode{+q, a, b2}, hi} False{}:
       +cq = Nat.div(q, 33n)
       +r2 = String.drop(rest, Nat.sub(cq, ci))
@@ -3182,7 +3211,7 @@ def Map.get.go(
     case MNode{p, lo, MTip{}} True{}:
       (MNode{p, lo, MTip{}}, d)
     case MNode{p, lo, MLeaf{k, v}} True{}:
-      Map.hi(&2, V, V, p, lo, Map.get.leaf(V, d, v, String.cmp(key, k)))
+      Map.hi(&2, V, V, p, lo, Map.get.leaf(V, d, v, key, k))
     case MNode{p, lo, MNode{+q, a, b2}} True{}:
       +cq = Nat.div(q, 33n)
       +r2 = String.drop(rest, Nat.sub(cq, ci))
@@ -3197,7 +3226,7 @@ def Map.get(-V: Data, d: V, m: Map<&2, V>, key: String) -> Map<&2, V> & V:
     case MTip{}:
       (MTip{}, d)
     case MLeaf{k, v}:
-      Map.get.leaf(V, d, v, String.cmp(key, k))
+      Map.get.leaf(V, d, v, key, k)
     case MNode{+pos, lo, hi}:
       +k = key
       +cq = Nat.div(pos, 33n)
@@ -3225,14 +3254,17 @@ def Map.pop.hi(
     case hi2:
       (MNode{pos, lo, hi2}, r)
 
-def Map.pop.leaf(a, -V: Kind(a), v: V, r: (String & String) & Cmp) ->
+def Map.pop.leaf.eq(a, -V: Kind(a), v: V, k: String, found: Bool) ->
   Map<a, V> & Maybe<a, V>:
-  ((key2, k2), c) = r
-  match c:
-    case EQ{}:
+  match found:
+    case True{}:
       (MTip{}, Some{v})
-    case o:
-      (MLeaf{k2, v}, None{})
+    case False{}:
+      (MLeaf{k, v}, None{})
+
+def Map.pop.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
+  Map<a, V> & Maybe<a, V>:
+  Map.pop.leaf.eq(a, V, v, k, Map.key_eq(key, k))
 
 def Map.pop.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
   Map<a, V> & Maybe<a, V>:
@@ -3240,13 +3272,13 @@ def Map.pop.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
     case MNode{p, MTip{}, hi} Tuple{key, False{}}:
       (hi, None{})
     case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
-      Map.pop.lo(a, V, p, hi, Map.pop.leaf(a, V, v, String.cmp(key, k)))
+      Map.pop.lo(a, V, p, hi, Map.pop.leaf(a, V, v, key, k))
     case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
       Map.pop.lo(a, V, p, hi, Map.pop.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
     case MNode{p, lo, MTip{}} Tuple{key, True{}}:
       (lo, None{})
     case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
-      Map.pop.hi(a, V, p, lo, Map.pop.leaf(a, V, v, String.cmp(key, k)))
+      Map.pop.hi(a, V, p, lo, Map.pop.leaf(a, V, v, key, k))
     case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
       Map.pop.hi(a, V, p, lo, Map.pop.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
     case m _:
@@ -3257,7 +3289,7 @@ def Map.pop(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Ma
     case MTip{}:
       (MTip{}, None{})
     case MLeaf{k, v}:
-      Map.pop.leaf(a, V, v, String.cmp(key, k))
+      Map.pop.leaf(a, V, v, key, k)
     case MNode{+pos, lo, hi}:
       Map.pop.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
 
