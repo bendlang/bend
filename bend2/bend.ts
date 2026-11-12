@@ -2408,7 +2408,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
     parse_skip(p);
   }
   const [at, hs] = [p.pos, p.book.hols];
-  let T = ts.length === 1 && !p.ann.has(at) && parse_take(p, ":") ? parse_term(p) : null;
+  let T = ts.length === 1 && parse_at(p, ":") && !p.ann.has(at) && parse_take(p, ":") ? parse_term(p) : null;
   parse_skip(p);
   if (T !== null && !parse_at(p, "=")) {
     p.ann.add(at);
@@ -2598,6 +2598,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string, al:
       return;
     }
     p.frs = 0;
+    p.ann.clear();
     parse_close(p, 0);
     if (parse_take(p, "@")) {
       if (!parse_word(p, "unsafe")) {

@@ -1,7 +1,9 @@
-# the type after a `:` is read at most twice. A body first tries it as a
-# typed let's type and goes back when no `=` follows; it used to try again
-# on every later visit, so each nested annotation doubled the work of the
-# ones inside it: 32 levels took 2^32 reads. Now a failed try is remembered
+# nested annotations parse in time that grows with the square of their
+# depth, not with its power of two. A body first tries the type after a
+# `:` as a typed let's type and goes back when no `=` follows; it used to
+# try again on every later visit, so each annotation doubled the work of
+# the ones inside it: 32 levels took 2^32 reads. Now a failed try is
+# remembered, and a type is read once per annotation around it
 import Base
 
 def main() -> U32:
