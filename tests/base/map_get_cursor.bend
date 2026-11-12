@@ -45,6 +45,25 @@ def twice.go(r: Map<&2, U32> & U32, b: String) -> String:
 def twice(m: Map<&2, U32>, a: String, b: String) -> String:
   twice.go(Map.get(U32, 0, m, a), b)
 
+# The root tests the second character. Its high child tests the first.
+def backward() -> Map<&2, U32>:
+  MNode{33n, MLeaf{"a", 1}, MNode{32n, MLeaf{"bb", 2}, MLeaf{"ab", 7}}}
+
+# A short key reaches the low child with an empty suffix.
+def past_end() -> Map<&2, U32>:
+  MNode{66n, MNode{0n, MLeaf{"", 10}, MLeaf{"a", 11}}, MLeaf{"abc", 12}}
+
+# An empty key takes the low child at every position.
+def empty_at(-p: Nat) -> {Pair.snd(Map<&2, U32>, U32, Map.get(U32, 9,
+  MNode{p, MNode{0n, MLeaf{"", 7}, MTip{}}, MTip{}}, "")) == 7 : U32}:
+  {==}
+
+# Both tests are past the end of "a", even with an open child position.
+def past_at(-p: Nat) -> {Pair.snd(Map<&2, U32>, U32, Map.get(U32, 9,
+  MNode{65n, MNode{66n+p, MLeaf{"abb", 7}, MLeaf{"abc", 8}}, MLeaf{"ac", 2}},
+  "a")) == 9 : U32}:
+  {==}
+
 def main() -> IO(Unit):
   +m = build(64n, 0, 64n, Map.new(&2, U32))
   +t = Map.set(&2, U32, Map.set(&2, U32, Map.set(&2, U32,
@@ -61,7 +80,11 @@ def main() -> IO(Unit):
     Unit <- IO.print(get(t, String.repeat("y", 1024n), 999))
     Unit <- IO.print(twice(t, key(64n, 5), key(64n, 6)))
     Unit <- IO.print(get(Map.set(&2, U32, Map.new(&2, U32), "\u{ffffffff}", 7), "\u{ffffffff}", 999))
-    IO.print(get(Map.set(&2, U32, Map.new(&2, U32), "\u{7fffffff}", 8), "\u{ffffffff}", 999))
+    Unit <- IO.print(get(Map.set(&2, U32, Map.new(&2, U32), "\u{7fffffff}", 8), "\u{ffffffff}", 999))
+    Unit <- IO.print(twice(backward(), "ab", "bb"))
+    Unit <- IO.print(twice(past_end(), "a", ""))
+    # The equal leaf is in the other branch.
+    IO.print(get(MNode{33n, MTip{}, MNode{32n, MLeaf{"ab", 7}, MTip{}}}, "ab", 999))
 
 #|1
 #|64
@@ -74,4 +97,7 @@ def main() -> IO(Unit):
 #|999
 #|6/7
 #|7
+#|999
+#|7/2
+#|11/10
 #|999

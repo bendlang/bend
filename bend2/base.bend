@@ -3184,9 +3184,6 @@ def Map.get.leaf(-V: Data, d: V, +v: V, key: String, +k: String) ->
   Map<&2, V> & V:
   Map.get.leaf.eq(V, d, v, k, String.eq(key, k))
 
-# Map.get.go carries a cursor into the key: trie positions only grow on the
-# way down, so each level drops the characters between its position and the
-# child's instead of walking the key's shared prefix from its head again.
 def Map.get.bit(rest: String, off: Nat) -> Bool:
   match rest:
     case SNil{}:
@@ -3194,32 +3191,99 @@ def Map.get.bit(rest: String, off: Nat) -> Bool:
     case SCon{c, t}:
       Pair.snd(Char, Bool, Map.bit.chr(c, off))
 
+def Map.get.suffix(back: Bool, key: String, cq: Nat, n: Nat, rest: String) -> String:
+  match back:
+    case True{}:
+      String.drop(key, cq)
+    case False{}:
+      # Most forward steps stay in this character or move to its tail.
+      match n rest:
+        case 0n s:
+          s
+        case 1n SCon{c, t}:
+          t
+        case count s:
+          String.drop(s, count)
+
+# Map.set builds trees with increasing positions. An explicit MNode can
+# test an earlier character and need the original key.
+def Map.get.cursor(
+  empty: Bool, key: String, rest: String, +ci: Nat, +cq: Nat, prev: Nat, pos: Nat
+) -> String:
+  match empty:
+    case False{}:
+      Map.get.suffix(Nat.is_lt(cq, ci), key, cq, Nat.sub(cq, ci), rest)
+    case True{}:
+      match key:
+        case SNil{}:
+          SNil{}
+        case k:
+          # The smaller bit position can establish that the cursor stays
+          # past the end even when the child position is symbolic.
+          low = Nat.div(Nat.min(prev, pos), 33n)
+          back = Bool.and(Nat.is_lt(low, ci), Nat.is_lt(cq, ci))
+          Map.get.suffix(back, k, cq, 0n, SNil{})
+
+def Map.get.pos(-V: Data, m: Map<&2, V>) -> Maybe<&2, Nat>:
+  match m:
+    case MNode{p, lo, hi}:
+      Some{p}
+    case _:
+      None{}
+
+def Map.get.end(-V: Data, m: Map<&2, V>, d: V, key: String) -> Map<&2, V> & V:
+  match m:
+    case MLeaf{k, v}:
+      Map.get.leaf(V, d, v, key, k)
+    case m:
+      (m, d)
+
+def Map.get.child(
+  -V: Data, node: Map<&2, V>, d: V, key: String, +rest: String,
+  ci: Nat, prev: Nat, pos: Maybe<&2, Nat>
+) -> Map<&2, V> & V:
+  match pos:
+    case None{}:
+      Map.get.end(V, node, d, key)
+    case Some{+q}:
+      +k = key
+      +cq = Nat.div(q, 33n)
+      +r = Map.get.cursor(String.is_empty(rest), k, rest, ci, cq, prev, q)
+      Map.get.go(V, node, d, k, r, cq, Map.get.bit(r, Nat.mod(q, 33n)))
+
 def Map.get.go(
   -V: Data, node: Map<&2, V>, d: V, key: String, +rest: String, ci: Nat, b: Bool
 ) -> Map<&2, V> & V:
   match node b:
-    case MNode{p, MTip{}, hi} False{}:
-      (MNode{p, MTip{}, hi}, d)
-    case MNode{p, MLeaf{k, v}, hi} False{}:
-      Map.lo(&2, V, V, p, hi, Map.get.leaf(V, d, v, key, k))
-    case MNode{p, MNode{+q, a, b2}, hi} False{}:
-      +cq = Nat.div(q, 33n)
-      +r2 = String.drop(rest, Nat.sub(cq, ci))
+    case MNode{+p, +lo, hi} False{}:
       Map.lo(&2, V, V, p, hi,
-        Map.get.go(V, MNode{q, a, b2}, d, key, r2, cq,
-          Map.get.bit(r2, Nat.mod(q, 33n))))
-    case MNode{p, lo, MTip{}} True{}:
-      (MNode{p, lo, MTip{}}, d)
-    case MNode{p, lo, MLeaf{k, v}} True{}:
-      Map.hi(&2, V, V, p, lo, Map.get.leaf(V, d, v, key, k))
-    case MNode{p, lo, MNode{+q, a, b2}} True{}:
-      +cq = Nat.div(q, 33n)
-      +r2 = String.drop(rest, Nat.sub(cq, ci))
+        Map.get.child(V, lo, d, key, rest, ci, p, Map.get.pos(V, lo)))
+    case MNode{+p, lo, +hi} True{}:
       Map.hi(&2, V, V, p, lo,
-        Map.get.go(V, MNode{q, a, b2}, d, key, r2, cq,
-          Map.get.bit(r2, Nat.mod(q, 33n))))
+        Map.get.child(V, hi, d, key, rest, ci, p, Map.get.pos(V, hi)))
     case m _:
       (m, d)
+
+# Select the first child. A leaf can answer before another cursor step.
+def Map.get.first(
+  -V: Data, bit: Bool, +p: Nat, lo: Map<&2, V>, hi: Map<&2, V>,
+  d: V, key: String, rest: String, ci: Nat
+) -> Map<&2, V> & V:
+  match bit lo hi:
+    case False{} MTip{} h:
+      (MNode{p, MTip{}, h}, d)
+    case False{} MLeaf{k, v} h:
+      Map.lo(&2, V, V, p, h, Map.get.leaf(V, d, v, key, k))
+    case False{} MNode{+q, a, b} h:
+      Map.lo(&2, V, V, p, h,
+        Map.get.child(V, MNode{q, a, b}, d, key, rest, ci, p, Some{q}))
+    case True{} l MTip{}:
+      (MNode{p, l, MTip{}}, d)
+    case True{} l MLeaf{k, v}:
+      Map.hi(&2, V, V, p, l, Map.get.leaf(V, d, v, key, k))
+    case True{} l MNode{+q, a, b}:
+      Map.hi(&2, V, V, p, l,
+        Map.get.child(V, MNode{q, a, b}, d, key, rest, ci, p, Some{q}))
 
 def Map.get(-V: Data, d: V, m: Map<&2, V>, key: String) -> Map<&2, V> & V:
   match m:
@@ -3231,8 +3295,8 @@ def Map.get(-V: Data, d: V, m: Map<&2, V>, key: String) -> Map<&2, V> & V:
       +k = key
       +cq = Nat.div(pos, 33n)
       +rest = String.drop(k, cq)
-      Map.get.go(V, MNode{pos, lo, hi}, d, k, rest, cq,
-        Map.get.bit(rest, Nat.mod(pos, 33n)))
+      Map.get.first(V, Map.get.bit(rest, Nat.mod(pos, 33n)),
+        pos, lo, hi, d, k, rest, cq)
 
 def Map.pop.lo(
   a, -V: Kind(a), pos: Nat, hi: Map<a, V>, r0: Map<a, V> & Maybe<a, V>
