@@ -1017,8 +1017,9 @@ function fun_of(k: Name): Fun {
       return { n: 0, h: null, live: [], lays: [BOX, BOX], ret: BOX };
     }
     const doms = tele_unbind(tld.T).doms;
-    const sv = /^(.*)~(core|fill)$/.exec(k);
-    const h = sv ? sv_core(sv[1], sv[2] === "fill")
+    const sv = /^(.*)~(core|fill|lend)$/.exec(k);
+    const h = sv?.[2] === "lend" ? sv_body(sv[1], sv_raw(sv[1]), k)
+      : sv ? sv_core(sv[1], sv[2] === "fill")
       : tld.e ? sv_body(k, Bend.term_higher(tld.e)) : null;
     const n = tld.n + (h === null ? 0
       : Math.min(def_raise(h, tld.n), doms.length - tld.n));
@@ -1567,6 +1568,65 @@ function sv_same(k: Name): Shape {
   return FL.sames.get(k)!;
 }
 
+// A self-recursive def that owns a boxed parameter takes it apart as it
+// walks; where the caller keeps every boxed argument (it uses them after
+// the call), k~lend runs instead: the same def, its parameters borrowed and
+// what escapes of them copied. A kept argument is used twice, so it is
+// shared data: its parts can be copied.
+function sv_lend(k: Name): boolean {
+  return memo(FL.lendv, k, () => {
+    const tld = tld_of(k);
+    const ok = !FL.js && done_live(tld) && !def_foreign(tld) && !intr_of(k)
+      && !k.includes("~") && sv_refs(k).has(k)
+      && fun_of(k).lays.some((l) => l.ks.includes("box"));
+    if (ok) {
+      // its calls are picked as it is emitted: never a def called once
+      FL.book.tlds[k + "~lend"] = { ...tld };
+      FL.sites.set(k + "~lend", 2);
+    }
+    return ok;
+  });
+}
+
+// a call whose boxed arguments the caller keeps (rest reads them) and owns,
+// one of them where the def owns it, runs the lend variant. The caller seals
+// them first (the variant may copy one whole) and their types are hot, as
+// sharing them would have made them.
+function sv_pick(sc: Scope, ck: Spine, rest: HTerm[], wl: boolean): Spine {
+  if (!ck.k || !sv_lend(ck.k)) {
+    return ck;
+  }
+  const { lays } = fun_of(ck.k);
+  const brw = brw_of(ck.k);
+  const xs = ck.xs.map(term_strip);
+  const box = xs.flatMap((x, i) => lays[i]?.ks.includes("box") ? [i] : []);
+  const bs = box.map((i) => xs[i].$ === "Var"
+    ? sc.uses.get(probe_of(xs[i])) : undefined);
+  if (!box.some((i) => !brw[i]) || !bs.every((b, j) => b && ty_adt(b.A)
+    && b.val.rs.every((r) => r === null)
+    && rest_use(rest, probe_of(xs[box[j]])) > 0)) {
+    return ck;
+  }
+  const fr = sc.seg.frame;
+  bs.forEach((b) => {
+    facts_hot(sc.def, b!.A, true);
+    file_push(sc, ...val_owned(b!.val).map((w) => {
+      const s = fr?.pop === 0 ? fr.at[sc.seg.params.indexOf(w)] : undefined;
+      return `${s === undefined ? "" : `STK(${s}) = `}${w} = rfc_seal(e, ${w});`;
+    }));
+  });
+  // the def keeps the lends it had, so its own inference is as before
+  lays.forEach((_, i) => FL.unit!.lent.add(arg_key(ck.k!, i)));
+  const v = ck.k + "~lend";
+  // a variant is emitted where a call first runs it (a spin as it is called)
+  wl && !FL.units.has(v) && unit_new(v, () => {
+    const [dl, vals] = emit_open(v);
+    FL.unit!.segs.push(dl.seg);
+    emit_body(dl, fun_of(v).h!, tld_of(v).T, vals, null);
+  });
+  return { ...ck, k: v };
+}
+
 // a copy of a borrowed parameter's part shares it: its type's nodes seal
 // their fields, as for any shared value
 function sv_hot(k: Name, As: HTerm[]): void {
@@ -1576,6 +1636,9 @@ function sv_hot(k: Name, As: HTerm[]): void {
 // whether r is a parameter a core hands back: a part of it is shared by
 // the def, so the core takes a copy and keeps the parameter borrowed
 function sv_kept(r: string): boolean {
+  if (/~lend~\d+$/.test(r)) {
+    return true;
+  }
   const m = /^(.*)~core~(\d+)$/.exec(r);
   const j = m && tele_unbind(tld_of(m[1]).T).doms.indexOf(
     fun_of(m[1] + "~core").live[Number(m[2])]);
@@ -1599,9 +1662,10 @@ function sv_core(k: Name, fill: boolean): HTerm {
   return go(tld_of(k + (fill ? "~fill" : "~core")).T, []);
 }
 
-// a body whose calls to a def with a core go through it
-function sv_body(k: Name, h: HTerm): HTerm {
-  if (FL.js || ![...sv_refs(k)].some((g) => sv_same(g))) {
+// a body whose calls to a def with a core go through it, and whose
+// self-calls go to self (k's lend variant calls itself)
+function sv_body(k: Name, h: HTerm, self = k): HTerm {
+  if (FL.js || self === k && ![...sv_refs(k)].some((g) => sv_same(g))) {
     return h;
   }
   const map = (t: HTerm): HTerm => {
@@ -1610,12 +1674,16 @@ function sv_body(k: Name, h: HTerm): HTerm {
       const [h0, as] = sv_unapply(s);
       const ys = as.map(map);
       const g = term_strip(h0);
+      if (g.$ === "Ref" && g.k === k && self !== k) {
+        return ys.reduce((f, y) => Bend.App(f, y), Bend.Ann(Bend.Ref(self),
+          tld_of(k).T) as HTerm);
+      }
       const sm = g.$ === "Ref" ? sv_same(g.k) : null;
       const T = sm && tld_of((g as Of<"Ref">).k).T;
       if (!T || ys.length !== tele_unbind(T).doms.length) {
         return ys.reduce((f, y) => Bend.App(f, y), h0);
       }
-      const k = (g as Of<"Ref">).k;
+      const gk = (g as Of<"Ref">).k;
       const doms = tele_unbind(T).doms;
       const ps = ys.map((y) => sv_var(y).$ === "Var" ? y : probe("a"));
       const R = tele_fill(T, ps);
@@ -1628,7 +1696,7 @@ function sv_body(k: Name, h: HTerm): HTerm {
           ty_adt(doms[i][2])!.k), doms[i][2]));
       return ys.reduceRight((b, y, i) => ps[i] === y ? b : let_open(
         [ps[i] as Of<"Var">], [sv_ann(y, doms[i][2])], b),
-        call(k + "~fill", [...zs, call(k + "~core", ps)]));
+        call(gk + "~fill", [...zs, call(gk + "~core", ps)]));
     }
     return s.$ === "Ann" ? Bend.Ann(map(s.x), s.T, s.s)
       : s.$ === "Lam" ? Bend.Lam(s.k, s.i, (y: HTerm) => map(s.f(y)), s.s, s.q)
@@ -1720,6 +1788,7 @@ function file_new(book: Bend.Book, js: boolean) {
     sames: new Map<Name, Shape>(),
     raws: new Map<Name, HTerm>(),
     cycs: new Map<Name, boolean>(),
+    lendv: new Map<Name, boolean>(),
     refs: new Map<Name, Set<Name>>(),
   };
 }
@@ -2583,7 +2652,7 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): Val[] {
     }
     let v = val_to(sc, b, lays[i]);
     if (!brw[i]) {
-      // a part of a borrowed parameter a core copies (val_own) goes in as
+      // a part of a borrowed parameter a variant copies (val_own) goes in as
       // that copy, held once
       const ws = val_own(v);
       v = ws.every((w, j) => w === v.ws[j]) ? v : val_new(ws.map((w, j) =>
@@ -2613,7 +2682,8 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
   }
 }
 
-function emit_spin(sc: Scope, ck: Spine): Val {
+function emit_spin(sc: Scope, ck0: Spine): Val {
+  const ck = sv_pick(sc, ck0, sc.rest, false);
   const k = ck.k!;
   const { lays, ret } = fun_of(k);
   const ws = emit_args(sc, ck).flatMap((v) => v.ws);
@@ -2977,7 +3047,8 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
 
 function emit_fork(sc: Scope, x: Of<"Let">): void {
   const o = term_open(x);
-  const calls = x.v.map(term_spine);
+  const o0 = term_open(x);
+  const calls = x.v.map((v) => sv_pick(sc, term_spine(v), [o0.b], true));
   const fork = calls.length > 1;
   const name = seg_name("j");
   let hold = new Map<Of<"Var">, Bind>();
