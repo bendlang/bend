@@ -11,6 +11,11 @@ import { formatBend } from "../formatter.js";
 // `case` or `def` header, `=>` lambda opener, `;`, `(` or parenthesized `,`
 // to that body's column. [source, formatted]
 const pinned = [
+  ...[0, 1, 2].map((q) => {
+    const source = "def Box.pure(-A: Type, x: A) -> A: x\n\n"
+      + `def main() -> Quant:\n  do Box<Quant>:\n    return &${q}\n`;
+    return [source, source];
+  }),
   ...[0, 1, 2].flatMap((q) => [
     [
       `def main()->Quant:\n    (x=&0;&${q})\n`,
@@ -302,6 +307,7 @@ test("uses tabs when requested and is idempotent", () => {
 test("formats Bend prefix forms without changing infix operators", () => {
   const source = "law use:\n    for + value: U32\n    List< & 2,U32>\n    & item:U32 -> { item==item:U32}\n    \\ {}\n    % proof : {==}";
   assert.equal(formatBend(source), "law use:\n  for +value: U32\n  List<&2, U32>\n  &item: U32 -> {item == item: U32}\n  \\{}\n  % proof : {==}");
+  assert.equal(formatBend("return U32 & U32"), "return U32 & U32");
 });
 
 test("keeps the gap after % that separates modulo from rewrite", () => {

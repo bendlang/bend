@@ -23,7 +23,7 @@ const WORD = /[A-Za-z0-9_.]/;
 const HEAD = /[A-Za-z_]/;
 const DIGIT = /[0-9]/;
 const BINARY = new Set(["=", "==", "!=", "->", "<-", "=>", "+", "-", "*", "/", "%", "&&", "||", "++", "<>", "<&>", "<=", ">=", "<<", ">>", ".|.", ".^.", ".&.", "&", "|"]);
-const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ";", ":", "=", "for", "case", "~"]);
+const PREFIX_CONTEXT = new Set(["(", "{", "[", "<", ",", ";", ":", "=", "for", "case", "return", "~"]);
 const ANGLES = new Set(["<", ">", "<<", ">>"]);
 const KEYWORDS = new Set(["return", "match", "case", "do", "for", "exs", "where", "is", "import", "def", "type", "law"]);
 
