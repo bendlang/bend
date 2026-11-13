@@ -1168,11 +1168,11 @@ function file_new(book: Bend.Book, js: boolean) {
     img: [] as string[],
     tails: new Map<Name, Set<Name>>(),
     entries: new Set<Name>(),
-    opens: new Map<Of<"Lam"> | Of<"Let">, Open>(),
-    uses: new Map<HTerm, Bend.PMap<number>>(),
+    opens: slot(),
+    uses: slot(),
     folds: new Map<HTerm, HTerm | null>(),
-    spines: new Map<HTerm, Spine>(),
-    ground: new Map<HTerm, boolean>(),
+    spines: slot(),
+    ground: slot(),
     steps: new Map<string, HTerm>(),
     ty_opens: new Map<string, boolean>(),
     holds: new Map<string, Lay>(),
@@ -1684,6 +1684,10 @@ function die(m: string): never {
 
 // Memo
 // ====
+
+// A cache on the term, under a hidden per-file key: it dies with the term.
+const slot = (s = Symbol()) => ({ get: (k: any) => k[s],
+  set: (k: any, v: any) => Object.defineProperty(k, s, { value: v, writable: true }) });
 
 function memo<K, V>(m: { get(k: K): V | undefined; set(k: K, v: V): void },
   k: K, f: (k: K) => V): V {
