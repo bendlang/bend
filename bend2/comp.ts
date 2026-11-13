@@ -4013,7 +4013,12 @@ INLINE void term_sink(Env e, Term t) {
 }
 
 // Inlined, M1 Metal runs wrong (#1954).
-FAR u64 span_fade(Env e, Term t, u64 src, u32 n) {
+#if DEVICE
+FAR
+#else
+INLINE
+#endif
+u64 span_fade(Env e, Term t, u64 src, u32 n) {
   DEV u32* c = a32_at(e.mem, term_loc(t));
   if ((a32_load(c) & RFC_CNT) == 1) {
     a32_acq(c);
