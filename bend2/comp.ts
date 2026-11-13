@@ -36,6 +36,10 @@ type Seg = {
   fork: boolean;
   native: boolean;
   head?: string;
+  als: Map<string, string>;
+  st: number[];
+  pre: string[];
+  lane?: Name;
 };
 
 type Spine = {
@@ -64,6 +68,8 @@ type Scope = {
   rest: HTerm[];
   def: Name;
   fuel: { n: number };
+  nz?: string[];
+  zr?: string[];
 };
 
 type Spare = { cls: number; name: string; taken: boolean };
@@ -104,6 +110,10 @@ const EXACT = { fround: Math.fround, imul: Math.imul };
 const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
+
+const LANES = 16;
+
+const LANE_MIN = 8;
 
 const USE0 = Bend.Emp<number>();
 
@@ -1179,6 +1189,7 @@ function file_new(book: Bend.Book, js: boolean) {
     fids: new Set<Name>(),
     effs: new Map<string, [string, string]>(),
     hold: new Map<string, boolean>(),
+    cnts: new Map<Name, number[]>(),
   };
 }
 
@@ -1373,7 +1384,8 @@ function seg_new(name: string, ret: Lay, vals: Val[],
   frame: Seg["frame"] = null): Seg {
   return { fid: name && seg_fid(name), def: name, ret, lines: [],
     params: vals.flatMap((v) => v.ws), ks: vals.flatMap((v) => v.lay.ks),
-    frame, refs: new Set(), tab: 0, spin: false, fork: false, native: false };
+    frame, refs: new Set(), tab: 0, spin: false, fork: false, native: false,
+    als: new Map(), st: [], pre: [] };
 }
 
 function seg_fid(k: Name): string {
@@ -1972,6 +1984,7 @@ function emit_hold(sc: Scope, exprs: string[], k: string,
   return exprs.map((ex, i) => {
     const al = name_local(sc, k);
     file_push(sc, `${FL.js ? "const" : lay_c(ks?.[i] ?? "w64")} ${al} = ${ex};`);
+    sc.seg.als.set(al, ex);
     return al;
   });
 }
@@ -2000,6 +2013,8 @@ function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
     return file_push(sc, `WL_JMP(${seg_ref(sc, fid)});`);
   }
   sc.seg.spin = true;
+  sc.seg.params.forEach((p, i) => sc.seg.st[i] |= args[i] === p ? 1
+    : sc.seg.als.get(args[i]) === `(${p} - 1)` ? 2 : 4);
   file_push(sc, ...sc.seg.params.map((p, i) => `${p} = r${i};`),
     `WL_AGAIN(${sc.seg.fid});`);
 }
@@ -2053,6 +2068,10 @@ function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = [],
 }
 
 function emit_put(sc: Scope, dst: Val | null, v: Val): void {
+  sc.seg.params.forEach((p, i) => sc.zr?.includes(p) || (sc.seg.st[i] |= 8));
+  if (sc.seg.lane && sc.seg.lane !== sc.seg.def) {
+    fact_add("lane", sc.seg.def);
+  }
   bind_dead(sc, []);
   if (dst === null) {
     spare_flush(sc);
@@ -2067,7 +2086,9 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
 function emit_spin(sc: Scope, ck: Spine): Val {
   const k = ck.k!;
   const { lays, ret } = fun_of(k);
+  const at = sc.seg.lines.length;
   const ws = emit_args(sc, ck).flatMap((v) => v.ws);
+  const ls = sc.seg.lines.slice(at);
   const name = emit_native(sc, k);
   const o = name_local(sc, "o");
   const out = val_new(ret.ks.map((kd, j) =>
@@ -2077,11 +2098,106 @@ function emit_spin(sc: Scope, ck: Spine): Val {
   const ks = lays.flatMap((l) => l.ks);
   const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
     : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
+  emit_lanes(sc, k, ws, ls, o);
   block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(sc, "return 0;"));
   bind_dead(sc, sc.rest,
     ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
   return out;
+}
+
+// The index of a native's countdown: a Nat every self-jump passes the
+// predecessor of, whose zero row holds every result.
+function cnt_of(k: Name): number {
+  return FL.cnts.get(k)?.indexOf(2) ?? -1;
+}
+
+// The countdown loop a call to k runs last: k itself, or the one def every
+// tail of k calls.
+function lane_to(k: Name): Name | null {
+  if (cnt_of(k) >= 0) {
+    return k;
+  }
+  const ts = new Set<Name>();
+  term_any(fun_of(k).h!, (s, tail) => {
+    const d = tail ? term_spine(s).k : null;
+    d !== null && ts.add(d);
+    return false;
+  });
+  const [b] = ts;
+  return ts.size === 1 && cnt_of(b) >= 0 && !fact("lane", k) ? b : null;
+}
+
+// A countdown loop (the native being emitted) calls k at the top of its
+// nonzero row, on words fixed for the loop but the predecessor, and k ends in
+// a countdown loop b over words: the host runs the calls of the next LANES
+// turns side by side. Each lane enters b (k's lane variant stores b's
+// arguments instead of calling it); while the lanes count the same, b's lane
+// variant steps them a round at a time, which clang vectorises; b ends each
+// lane. A turn then reads its result by its predecessor. The first turn's
+// count decides before the loop: one clang knows, or one under LANE_MIN,
+// leaves the loop as it was (there clang unrolls b, and the core overlaps
+// the turns by itself).
+function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
+  o: string): void {
+  const seg = sc.seg;
+  const st = FL.cnts.get(seg.def) ?? [];
+  const p = seg.params[st.indexOf(2)];
+  const b = FL.js || !seg.native || seg.lane || sc.def !== seg.def
+    || seg.tab !== 1 || !sc.nz?.includes(p) ? null : lane_to(k);
+  if (b == null) {
+    return;
+  }
+  const fk = fun_of(k), fb = fun_of(b);
+  const kb = fb.lays.flatMap((l) => l.ks);
+  const names = ls.map((l) => l.match(/^ *(?:Term|u32) (\w+) = [^;]*;$/)?.[1]);
+  const preds = [...seg.als].filter(([, ex]) => ex === `(${p} - 1)`)
+    .map(([al]) => al);
+  const ok = new Set([...names, ...preds, ...seg.params.filter((_, i) =>
+    !(st[i] & 6) && seg.ks[i] !== "box")]);
+  const text = [...ls, ...ws].join(" ");
+  if ([...fk.lays.flatMap((l) => l.ks), ...kb, ...fk.ret.ks].includes("box")
+    || kb.length > 32 || !lay_eq(fk.ret, fb.ret) || fact("lane", b)
+    || /\be\b/.test(text)
+    || (text.match(/\b_\w+/g) ?? []).some((id) => !ok.has(id))) {
+    return;
+  }
+  const u = name_local(sc, "l");
+  const c = cnt_of(b);
+  const q = (f: (j: number) => string) => kb.map((_, j) => f(j));
+  const each = (...lines: string[]) =>
+    block(sc, `for (u32 l = 0; l < ${LANES}; l++) {`, () =>
+      file_push(sc, ...lines));
+  const hit = `${u}n && ${u}b - (${p} - 1) < ${LANES}`;
+  const enter = (l: string, to: (j: number) => string) => [...preds.map(
+    (al) => `Term ${al} = ${p} - 1 - ${l};`), ...ls.map((x) => x.trim()),
+    ...k === b ? q((j) => `${to(j).slice(1)} = ${ws[j]};`)
+      : [`${emit_native(sc, k, b)}(${["e", u + "d", ...ws, ...q(to)]
+        .join(", ")});`]];
+  const step = emit_native(sc, b, b), end = emit_native(sc, b);
+  const rn = fk.ret.ks.length;
+  seg.pre.push("#if !DEVICE", `Term ${u}n = 0, ${u}b = 0, ${u}o[${LANES}][${
+    rn}], ${u}d[${rn}];`, ...q((j) => `${lay_c(kb[j])} ${u}q${j}[${LANES}];`),
+    `u32 ${u}w = 0;`, `if (${p} >= ${LANES}) {`,
+    ...seg_text([...q((j) => `${lay_c(kb[j])} ${u}s${j};`),
+      ...enter("0", (j) => `&${u}s${j}`), `${u}w = !__builtin_constant_p(${u}s${
+        c}) && ${u}s${c} >= ${LANE_MIN};`], 1), "}", "#endif");
+  file_push(sc, "#if !DEVICE");
+  block(sc, `if (${u}w && !(${hit}) && ${p} >= ${LANES}) {`, () => {
+    file_push(sc, `u32 ${u}e = 1;`);
+    each(...enter("l", (j) => `&${u}q${j}[l]`),
+      `${u}e &= ${u}q${c}[l] == ${u}q${c}[0];`);
+    block(sc, `for (Term n = ${u}e ? ${u}q${c}[0] : 0; n != 0; n--) {`, () =>
+      each(`${step}(${["e", u + "d", ...q((j) => j === c ? "n"
+        : `${u}q${j}[l]`), ...q((j) => `&${u}q${j}[l]`)].join(", ")});`));
+    each(`if (${end}(${["e", u + "o[l]", ...q((j) => `${u}q${j}[l]`)]
+      .join(", ")}) == 0) {`, "  return 0;", "}");
+    file_push(sc, `${u}b = ${p} - 1;`, `${u}n = 1;`);
+  });
+  block(sc, `if (${hit}) {`, () => file_push(sc, ...fk.ret.ks.map((_, j) =>
+    `${o}[${j}] = ${u}o[${u}b - (${p} - 1)][${j}];`)));
+  seg.lines.push(seg.lines.pop() + " else");
+  file_push(sc, "#endif");
 }
 
 // A foreign def's last parameter, past its live ones, is its continuation k.
@@ -2095,23 +2211,33 @@ function emit_open(k: Name): [Scope, Val[]] {
   return [{ ...sc, seg: seg_new(k, ret, vals), def: k }, vals];
 }
 
-function emit_native(sc: Scope, k: Name): string {
-  const name = name_id("spin_", k);
-  memo(FL.units, "spin " + k, (n) => unit_new(n, () => {
+function emit_native(sc: Scope, k: Name, to?: Name): string {
+  const name = name_id(to ? "lane_" : "spin_", k);
+  memo(FL.units, (to ? "lane " : "spin ") + k, (n) => unit_new(n, () => {
     const [sl, vals] = emit_open(k);
-    const seg = Object.assign(sl.seg, { fid: name, native: true });
+    const seg = Object.assign(sl.seg, { fid: name, native: true, lane: to });
     emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
     const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
       arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
-      seg.spin ? "WL_SPIN" : "for (;;) {"],
+      ...seg.pre, seg.spin ? "WL_SPIN" : "for (;;) {"],
       1), ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
     const text = body.join("\n");
-    const q = text.length + 1 < SPIN_FAR ? "INLINE"
+    const far = text.length + 1 >= SPIN_FAR;
+    const q = to || !far ? "INLINE"
       : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
     const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
-      `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")})`;
+      `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")}${
+      to ? fun_of(to).lays.flatMap((l) => l.ks).map((kd, i) =>
+        `, THR ${lay_c(kd)}* q${i}`).join("") : ""})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
+    const st = [...seg.st].map((x) => x ?? 0);
+    if (to) {
+      far && fact_add("lane", k);
+    } else if (seg.spin && st.includes(2) || FL.cnts.has(k)) {
+      FL.cnts.set(k, seg.spin ? st : []);
+      fact_add("cnt", k + " " + st);
+    }
   }));
   return seg_ref(sc, name);
 }
@@ -2402,6 +2528,12 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       if (ck.k === null) {
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
       }
+      if (sc.seg.lane === ck.k) {
+        const ws = emit_args(sc, ck, true).flatMap((v) => v.ws);
+        spare_flush(sc);
+        return file_push(sc, ...ws.map((w, i) => `*q${i} = ${w};`),
+          "return 2;");
+      }
       const { h, ret } = fun_of(ck.k);
       const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld)
         && (ret !== BOX || sc.seg.ret === BOX);
@@ -2598,8 +2730,11 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
         : [`${sw} == ${Object.keys(lay.arms!).indexOf(k)}`, h,
           () => val_arm(u, k)];
     });
-  emit_chain(sc, lv.map(([c, h, fs]) => [c, () => {
-    const al = { ...sc, uses: new Map(sc.uses), spares: sc.spares.slice() };
+  emit_chain(sc, lv.map(([c, h, fs], i) => [c, () => {
+    const [, bits, val] = adt.k === "Nat" ? rows![i] : [0, 64, 1];
+    const al = { ...sc, uses: new Map(sc.uses), spares: sc.spares.slice(),
+      nz: bits < 64 ? [...sc.nz ?? [], sw] : sc.nz,
+      zr: bits + val === 64 ? [...sc.zr ?? [], sw] : sc.zr };
     bind_dead(al, [h]);
     emit_body(al, h, null, [...fs(al), ...args.slice(1)], dst);
     spare_flush(al);
