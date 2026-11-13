@@ -1126,6 +1126,8 @@ type SvK = (v: HTerm, cx: SvCx) => HTerm;
 type SvSt = { def: Name; S: Shape; core: boolean; fuel: number; R: HTerm };
 
 const SV_BAIL = {};
+// the walk's steps: Map.get.go takes 2,680
+const SV_FUEL = 4000;
 const SV_ZERO = new WeakSet<HTerm>();
 // the matches the pass builds, applied to their scrutinee where they stand
 const SV_CASES = new WeakSet<HTerm>();
@@ -1254,6 +1256,10 @@ function sv_uses(t: HTerm, p: HTerm): number {
 
 // the names a def's body calls (its cells may be cyclic)
 function sv_refs(k: Name): Set<Name> {
+  return memo(FL.refs, k, () => sv_walk(k));
+}
+
+function sv_walk(k: Name): Set<Name> {
   const out = new Set<Name>();
   const seen = new WeakSet<object>();
   const go = (t: any): void => {
@@ -1533,7 +1539,7 @@ function sv_same(k: Name): Shape {
   for (let was = ""; S && was !== JSON.stringify(S);) {
     was = JSON.stringify(S);
     const tails: Shape[] = [];
-    const st = { def: k, S, core: false, fuel: 20000, R: DUMMY };
+    const st = { def: k, S, core: false, fuel: SV_FUEL, R: DUMMY };
     S = sv_try(() => (sv_ev(sv_raw(k), ps, tld.T, new Map(), (v, cx) =>
       (tails.push(sv_shape(v, ps, cx)), DUMMY), st), tails.reduce(sv_meet, S)),
       null);
@@ -1575,7 +1581,7 @@ function sv_core(k: Name, fill: boolean): HTerm {
   const doms = tele_unbind(tld.T).doms;
   const go = (T: HTerm, ps: HTerm[]): HTerm => {
     const all = ty_all(T);
-    const st = { def: k, S, core: true, fuel: 20000, R: T };
+    const st = { def: k, S, core: true, fuel: SV_FUEL, R: T };
     return ps.length < doms.length + Number(fill) ? Bend.Ann(Bend.Lam(all.k,
       0, (y: HTerm) => go(all.B(y), [...ps, y]), undefined, all.q), T)
       : fill ? sv_fill(ps.at(-1)!, S, T, ps, new Map(), (v) => v, st)
@@ -1706,6 +1712,7 @@ function file_new(book: Bend.Book, js: boolean) {
     sames: new Map<Name, Shape>(),
     raws: new Map<Name, HTerm>(),
     cycs: new Map<Name, boolean>(),
+    refs: new Map<Name, Set<Name>>(),
   };
 }
 
