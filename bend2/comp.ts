@@ -2213,34 +2213,34 @@ function ix_sat(ex: string): string {
 
 // Parameter word p now: fixed (its entry value), a countdown (a Nat every
 // self call passes a predecessor of), or a counter (stepped by c on some
-// self calls, as many times at most as the countdown's entry value).
+// self calls, as many times at most as the countdown's entry value). A
+// bound of 2^32 - 1 is no bound (a Nat may be past it), and stays none
+// whatever is taken off it. sub is the successors a match took off the
+// word: the value is that much under it, and so are its bounds.
 function ix_word(sc: Scope, w: string, sub = 0): Iv {
   const ix = FL.ix!;
   const p = sc.seg.native ? sc.seg.params.indexOf(w) : -1;
   const role = ix.roles?.[p] ?? "";
-  const at = p < 0 ? "" : ix_sat(`(u64)r${p}`);
   const down = ix.roles?.indexOf("down") ?? -1;
   if (p < 0) {
     return sub === 0 && ix.outs.get(w) || IX_ANY;
   }
-  if (role === "down") {
-    return { lo: "0ull", hi: ix_tmp(`(${at} > ${sub} ? ${at} - ${sub} : 0)`),
-      p, add: -sub };
-  }
-  if (role === "same") {
-    return { lo: at, hi: at, p, add: 0 };
-  }
-  if (role === "" || down < 0) {
+  if (role === "" || (role !== "down" && role !== "same" && down < 0)) {
     return { ...IX_ANY, p, add: -sub };
   }
-  // under an arm that took low successors off the countdown, that many
-  // of its steps are still to come
-  const n = ix_sat(`(u64)r${down}`);
-  const low = sc.low ?? 0;
-  const raw = ix_tmp(`${at} + ${role}ull * ${low
-    ? `(${n} > ${low} ? ${n} - ${low} : 0)` : n}`);
-  return { lo: ix_tmp(`(${raw} > ${IX_MAX} ? 0 : ${at})`), hi: ix_sat(raw),
-    p, add: 0 };
+  const at = ix_sat(`(u64)r${p}`);
+  const less = (x: string, k: number) => k === 0 ? x : ix_tmp(
+    `(${x} == ${IX_MAX} ? ${IX_MAX} : ${x} > ${k} ? ${x} - ${k} : 0)`);
+  let [lo, hi] = [role === "down" ? "0ull" : at, at];
+  if (role !== "down" && role !== "same") {
+    // under an arm that took low successors off the countdown, that many
+    // of its steps are still to come
+    const raw = ix_tmp(`${at} + ${role}ull * ${
+      less(ix_sat(`(u64)r${down}`), sc.low ?? 0)}`);
+    [lo, hi] = [ix_tmp(`(${raw} > ${IX_MAX} ? 0 : ${at})`), ix_sat(raw)];
+  }
+  return { lo: sub === 0 ? lo : ix_tmp(`(${lo} > ${sub} ? ${lo} - ${sub} : 0)`),
+    hi: less(hi, sub), p, add: -sub };
 }
 
 function ix_bind(sc: Scope, p: Of<"Var">, v: Val, from: Val): void {
@@ -2295,7 +2295,8 @@ function iv(sc: Scope, tm: HTerm): Iv {
     return { lo: c, hi: c };
   }
   const m = term_spine(s);
-  const k = m.t.$ === "Ref" ? m.t.k : "";
+  // an operator is Base's def of that name, not a file's own
+  const k = m.t.$ === "Ref" && m.tld?.$ === "Def" && m.tld.b ? m.t.k : "";
   const [a, b] = [0, 1].map((i) => m.args[i] ? iv(sc, m.args[i]) : IX_ANY);
   const one = { lo: "1ull", hi: "1ull" };
   const wrap = (raw: string, lo: string): Iv =>
