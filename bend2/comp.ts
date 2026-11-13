@@ -147,6 +147,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   "U32.popcount": { C: "popcount((u32)$0)" },
   "Map.msb.u": { C: "map_msb_u($0, $1)" },
   "Map.bit": { C: ["$0", "map_bit(e, $0, $1)"] },
+  "String.cmp": { C: ["$0", "$1", "string_cmp(e, $0, $1)"] },
   "U32.div": { C: "((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))",
     JS: "($1 === 0 ? 0 : ($0 / $1) >>> 0)" },
   "U32.mod": { C: "((u32)($1) == 0 ? $0 : U32_BIN($0, -,"
@@ -3802,6 +3803,18 @@ INLINE u64 map_bit(Env e, Term key, u64 pos) {
     key = e.mem[at + 1];
   }
   return 0;
+}
+
+// Base's String.cmp in place: 0 LT, 1 EQ, 2 GT
+INLINE u64 string_cmp(Env e, Term a, Term b) {
+  DEV u64* H = e.mem;
+  while (term_aux(a) == CID(SCon)) {
+    if (term_aux(b) != CID(SCon)) return 2;
+    u64 at = term_peek(H, a), bt = term_peek(H, b);
+    if (H[at] != H[bt]) return (u32)H[at] < (u32)H[bt] ? 0 : 2;
+    a = H[at + 1], b = H[bt + 1];
+  }
+  return term_aux(b) == CID(SCon) ? 0 : 1;
 }
 
 #define blk_shr(t) (BLK_SHR && term_rfc(t))
