@@ -1,9 +1,10 @@
 import Base
 
-# String.cmp answers both of its strings unchanged, so the C lane runs its
-# core, a borrowed walk that builds nothing, and each call takes its own
-# strings back. Every call here must answer as the def does: the order,
-# and both strings intact after it.
+# String.cmp and Map.has answer their arguments unchanged, and so does
+# tag, inside either of its constructors, so the C lane runs their cores
+# (borrowed walks that build nothing) and each call takes its own
+# arguments back. Every call here must answer as the def does, with its
+# arguments intact after it.
 
 def code(c: Cmp) -> String:
   match c:
@@ -35,8 +36,48 @@ def chain(n: Nat, r: (String & String) & Cmp, acc: U32) -> String:
 def shared(+s: String, +t: String) -> String:
   show(String.cmp(s, t)) ++ show(String.cmp(t, s)) ++ s ++ t
 
+type Tag is Data:
+  Long{s: String, n: U32}
+  Short{s: String}
+
+def tag(s: String, n: U32) -> Tag:
+  match s:
+    case SNil{}:
+      Short{SNil{}}
+    case SCon{h, t}:
+      Long{SCon{h, t}, n}
+
+def tag.show(t: Tag) -> String:
+  match t:
+    case Long{s, n}:
+      "L" ++ s ++ U32.show(n)
+    case Short{s}:
+      "S" ++ s
+
+def has.fin(b: Bool, v: U32, r: Map<&2, U32> & Bool) -> String:
+  (m, n) = r
+  U32.show(Bool.to_u32(b)) ++ U32.show(v) ++ U32.show(Bool.to_u32(n))
+
+def has.get(b: Bool, r: Map<&2, U32> & U32) -> String:
+  (m, v) = r
+  has.fin(b, v, Map.has(&2, U32, m, "zz"))
+
+# the map Map.has answers is read again
+def has(r: Map<&2, U32> & Bool, k: String) -> String:
+  (m, b) = r
+  has.get(b, Map.get(U32, 0, m, k))
+
+def keys() -> Map<&2, U32>:
+  Map.set(&2, U32, Map.set(&2, U32, Map.set(&2, U32, Map.new(&2, U32),
+    "abc", 1), "abd", 2), "b", 3)
+
 def main() -> IO(Unit):
   do IO<Unit>:
+    IO.print(tag.show(tag("hey", 7)) ++ tag.show(tag("", 7)))
+    IO.print(has(Map.has(&2, U32, keys(), "abd"), "abd"))
+    IO.print(has(Map.has(&2, U32, keys(), "ab"), "b"))
+    IO.print(has(Map.has(&2, U32, Map.new(&2, U32), "a"), "a"))
+    IO.print(has(Map.has(&2, U32, Map.set(&2, U32, Map.new(&2, U32), "a", 9), "a"), "a"))
     IO.print(show(String.cmp("", "")))
     IO.print(show(String.cmp("", "a")))
     IO.print(show(String.cmp("a", "")))
@@ -52,6 +93,11 @@ def main() -> IO(Unit):
     IO.print(code(Pair.snd(String & String, Cmp,
       String.cmp(String.repeat("q", 300n), String.append(String.repeat("q", 299n), "r")))))
 
+#|Lhey7S
+#|120
+#|030
+#|000
+#|190
 #|=[|]
 #|<[|a]
 #|>[a|]

@@ -461,7 +461,7 @@ function term_spine(tm: HTerm): Spine {
     const a = apps[live.lastIndexOf(true)];
     return def !== null && args.length === need
       ? { ...m, k: def, b: (c as Of<"Ref">).b }
-      : args.length > need && (def !== null || c.$ !== "Ref")
+      : args.length > need && (def !== null || c.$ !== "Ref" && !SV_CASES.has(c))
       ? { ...m, k: CLO_APPLY, xs: [a.f, a.x] } : m;
   });
 }
@@ -1017,7 +1017,8 @@ function fun_of(k: Name): Fun {
       return { n: 0, h: null, live: [], lays: [BOX, BOX], ret: BOX };
     }
     const doms = tele_unbind(tld.T).doms;
-    const h = k.endsWith("~core") ? sv_core(k.slice(0, -5))
+    const sv = /^(.*)~(core|fill)$/.exec(k);
+    const h = sv ? sv_core(sv[1], sv[2] === "fill")
       : tld.e ? sv_body(k, Bend.term_higher(tld.e)) : null;
     const n = tld.n + (h === null ? 0
       : Math.min(def_raise(h, tld.n), doms.length - tld.n));
@@ -1107,22 +1108,27 @@ function flat_of(k: Name): boolean {
 // Same
 // ====
 
-// A def whose result answers boxed parameters unchanged (the variable, or a
-// node rebuilt from the fields its match bound) and one word besides gets
-// f~core, which answers the word only: its parameters no longer escape, so
-// they are borrowed, and a call is `c = f~core(xs)` rebuilt around xs. The
-// walk inlines non-recursive helpers and resolves matches on known
-// constructors; a self-call is taken to answer its arguments, which is
-// induction on Bend's structural recursion. In the core, a self-call that
-// the rest only rebuilds is the tail call.
+// A def whose result hands boxed parameters back unchanged (the variable,
+// or a node rebuilt from the fields its match bound), anywhere in it, gets
+// f~core: the def with those holes answered 0, so its parameters no longer
+// escape and are borrowed. A call is f~fill(xs, f~core(xs)), which puts xs
+// back in the holes. sv_ev walks a body applied to its arguments: it inlines
+// non-recursive helpers, resolves matches on known constructors and takes a
+// self-call to answer its arguments (induction: Bend's recursion is
+// structural). A match it cannot resolve gets the rest of the walk in each
+// arm, so the walk has a size budget. In the core, a self-call the rest only
+// rebuilds is the tail call.
 
+// a hole answers parameters js; else, per constructor, its fields' shapes
+type Shape = { js: number[]; cs: Record<Name, Shape[]> | null } | null;
 type SvCx = Map<HTerm, [Name, HTerm[]]>;
 type SvK = (v: HTerm, cx: SvCx) => HTerm;
-type Same = { T: HTerm; kids: Same[] | null; j: number | null };
-type SvSt = { def: Name; S: Same | null; core: boolean; fuel: number;
-  R: HTerm };
+type SvSt = { def: Name; S: Shape; core: boolean; fuel: number; R: HTerm };
 
 const SV_BAIL = {};
+const SV_ZERO = new WeakSet<HTerm>();
+// the matches the pass builds, applied to their scrutinee where they stand
+const SV_CASES = new WeakSet<HTerm>();
 
 function sv_try<T>(f: () => T, or: T): T {
   try {
@@ -1139,24 +1145,6 @@ function sv_raw(k: Name): HTerm {
   return memo(FL.raws, k, () => Bend.term_higher((tld_of(k) as Bend.Def).e!));
 }
 
-function sv_tree(T: HTerm): Same {
-  const t = ty_adt(T);
-  return { T, j: null, kids: t?.k !== "Sigma" ? null
-    : [sv_tree(t.x[2]), sv_tree(Bend.term_apply(t.x[3], DUMMY))] };
-}
-
-function sv_leaves(t: Same): Same[] {
-  return t.kids ? t.kids.flatMap(sv_leaves) : [t];
-}
-
-// v's part at the leaf l of t, if v is pairs down to it
-function sv_at(v: HTerm, t: Same, l: Same): HTerm | null {
-  const s = term_strip(v);
-  const i = t.kids?.findIndex((u) => sv_leaves(u).includes(l)) ?? -1;
-  return t === l ? v : i < 0 || s.$ !== "Ctr" || s.k !== "Tuple" ? null
-    : sv_at(ctr_flds(s)[i], t.kids![i], l);
-}
-
 function sv_ann(v: HTerm, T: HTerm | null): HTerm {
   return T === null || term_force(v).$ === "Ann" ? v : Bend.Ann(v, T);
 }
@@ -1167,14 +1155,87 @@ function sv_var(t: HTerm): HTerm {
   return s.$ === "Var" && s.i > 0 && PROBES[s.i]?.k === s.k ? PROBES[s.i] : s;
 }
 
+// what t is known to be: a constructor and its fields
+function sv_node(t: HTerm, cx: SvCx): [Name, HTerm[]] | undefined {
+  const s = sv_var(t);
+  return s.$ === "Var" ? cx.get(s) : s.$ === "Ctr" ? [s.k, s.x] : undefined;
+}
+
 // whether t is u, or the node u matched, rebuilt
 function sv_eqv(t: HTerm, u: HTerm, cx: SvCx): boolean {
-  const s = sv_var(t);
-  const c = cx.get(sv_var(u));
-  const d: [Name, HTerm[]] | undefined = s.$ === "Var" ? cx.get(s)
-    : s.$ === "Ctr" ? [s.k, s.x] : undefined;
-  return s === sv_var(u) || !!c && !!d && c[0] === d[0]
+  const c = sv_node(u, cx);
+  const d = sv_node(t, cx);
+  return sv_var(t) === sv_var(u) || !!c && !!d && c[0] === d[0]
     && c[1].length === d[1].length && d[1].every((y, i) => sv_eqv(y, c[1][i], cx));
+}
+
+// a value's shape: the parameters it is, and the node it is known to be
+function sv_shape(v: HTerm, ps: HTerm[], cx: SvCx): Shape {
+  const c = sv_node(v, cx);
+  return { js: ps.flatMap((p, j) => sv_eqv(v, p, cx) ? [j] : []),
+    cs: c ? { [c[0]]: c[1].map((x) => sv_shape(x, ps, cx)) } : null };
+}
+
+// what S still says once a result of shape t is seen
+function sv_meet(S: Shape, t: Shape): Shape {
+  if (S === null || t === null) {
+    return null;
+  }
+  if (!S.cs) {
+    const js = S.js.filter((j) => t.js.includes(j));
+    return js.length > 0 ? { js, cs: null } : null;
+  }
+  const cs = Object.fromEntries(Object.entries(S.cs).map(([c, fs]) => [c,
+    t.cs?.[c] ? fs.map((f, i) => sv_meet(f, t.cs![c][i])) : fs]));
+  return t.cs && Object.values(cs).flat().some(sv_holes) ? { js: [], cs }
+    : null;
+}
+
+function sv_holes(S: Shape): boolean {
+  return S !== null && (!S.cs || Object.values(S.cs).flat().some(sv_holes));
+}
+
+// the first guess: each boxed position of T takes the next parameter of
+// its type, a word or a field past depth 2 none
+function sv_guess(T: HTerm, doms: Dom[], used: Set<number>, d = 0): Shape {
+  const key = (A: HTerm) => ty_key(ty_wnf(A)!);
+  const adt = ty_adt(T);
+  const tld = adt && tld_of(adt.k);
+  const j = doms.findIndex(([, , A], i) => !used.has(i) && key(A) === key(T));
+  if (j >= 0 && adt && adt.k !== "Array" && lay_of(T).ks.includes("box")) {
+    used.add(j);
+    return { js: [j], cs: null };
+  }
+  if (d > 2 || tld?.$ !== "ADT" || WORDS[adt!.k]) {
+    return null;
+  }
+  const cs = Object.fromEntries(tld.c.map((c) => {
+    const u = tld.c.length > 1 ? new Set(used) : used;
+    return [c.k, sv_doms(c.k, adt!.x).map((A) => sv_guess(A, doms, u, d + 1))];
+  }));
+  return Object.values(cs).flat().some(sv_holes) ? { js: [], cs } : null;
+}
+
+// a constructor's field types, each over a fresh probe
+function sv_doms(c: Name, xs: HTerm[]): HTerm[] {
+  const As: HTerm[] = [];
+  for (let t = tele_fill(FL.book.ctrs[c].T, xs), a = Bend.tele_open(FL.book, t);
+    a; a = Bend.tele_open(FL.book, t)) {
+    As.push(a.A);
+    t = a.B(probe(a.k));
+  }
+  return As;
+}
+
+// whether every part of T outside S's holes is words: a boxed part could
+// be a piece of a borrowed parameter
+function sv_words(T: HTerm, S: Shape, d = 0): boolean {
+  const adt = ty_adt(T);
+  const tld = adt && tld_of(adt.k);
+  return S?.cs === null || !lay_of(T).ks.includes("box")
+    || !!S && d < 3 && tld?.$ === "ADT" && tld.c.every((c) =>
+      sv_doms(c.k, adt!.x).every((A, i) => sv_words(A, S.cs![c.k]?.[i]
+        ?? null, d + 1)));
 }
 
 function sv_unapply(t: HTerm): [HTerm, HTerm[]] {
@@ -1222,6 +1283,23 @@ function sv_refs(k: Name): Set<Name> {
   return out;
 }
 
+// whether k's calls lead back to k other than through d, whose own
+// recursion the walk takes as answered (laws allow mutual recursion)
+function sv_cyc(k: Name, d: Name): boolean {
+  const seen = new Set<Name>([d]);
+  const go = (g: Name): boolean => !seen.has(g) && (seen.add(g), true)
+    && tld_of(g)?.$ === "Def" && !!(tld_of(g) as Bend.Def).e
+    && [...sv_refs(g)].some((h) => h === k || go(h));
+  return memo(FL.cycs, k + " " + d, () => go(k));
+}
+
+// let p = v; a constructor's fields are known through p
+function sv_let(p: Of<"Var">, v: HTerm, A: HTerm | null, cx: SvCx,
+  b: (cx: SvCx) => HTerm): HTerm {
+  const c = sv_node(v, cx);
+  return let_open([p], [sv_ann(v, A)], b(c ? new Map(cx).set(p, c) : cx));
+}
+
 function sv_seq(ts: HTerm[], cx: SvCx, st: SvSt,
   k: (vs: HTerm[], cx: SvCx) => HTerm, vs: HTerm[] = []): HTerm {
   return vs.length === ts.length ? k(vs, cx) : sv_ev(ts[vs.length], [],
@@ -1251,8 +1329,8 @@ function sv_ev(t: HTerm, xs: HTerm[], T: HTerm | null, cx: SvCx, k: SvK,
         return sv_ev(s.f(x), xs.slice(1), all.B(x), cx, k, st);
       }
       const p = probe(s.k);
-      return sv_ev(x, [], all.A, cx, (v, c) => let_open([p], [sv_ann(v, all.A)],
-        sv_ev(s.f(p), xs.slice(1), all.B(p), c, k, st)), st);
+      return sv_ev(x, [], all.A, cx, (v, c) => sv_let(p, v, all.A, c, (c2) =>
+        sv_ev(s.f(p), xs.slice(1), all.B(p), c2, k, st)), st);
     }
     case "Mat": {
       const all = ty_all(T);
@@ -1281,12 +1359,13 @@ function sv_ev(t: HTerm, xs: HTerm[], T: HTerm | null, cx: SvCx, k: SvK,
           return sv_call(g.k, sm, all, cx, k, st);
         }
         if (done_live(tld) && !def_foreign(tld) && all.length >= tld.n
-          && !sv_refs(g.k).has(g.k) && g.k !== st.def) {
+          && g.k !== st.def && !sv_cyc(g.k, st.def)) {
           return sv_ev(sv_raw(g.k), all, tld.T, cx, k, st);
         }
       }
       return mat_head(g) || g.$ === "Lam" ? sv_ev(h, all, ty_ann(h), cx, k, st)
-        : sv_seq(all, cx, st, (vs, c) => k(vs.reduce((f, v) => Bend.App(f, v), h), c));
+        : sv_seq(all, cx, st, (vs, c) => k(vs.reduce((f, v) => Bend.App(f, v),
+          h), c));
     }
     default: {
       return k(s, cx);
@@ -1300,27 +1379,49 @@ function sv_mat(M: Of<"Mat">, all: Of<"All">, v: HTerm, rest: HTerm[],
   cx: SvCx, k: SvK, st: SvSt): HTerm {
   const { arms, end } = mat_arms(M);
   const sc = sv_var(v);
-  const adt = ty_adt(all.A);
   if (sc.$ === "Ctr") {
     const arm = arms.find(([c]) => c === sc.k);
     return sv_ev(arm?.[1] ?? end, arm ? [...ctr_flds(sc), ...rest]
       : [v, ...rest], null, cx, k, st);
   }
-  if (!adt || term_strip(end).$ !== "Efq" || arms.some(([c]) => c === "WCon")) {
+  if (arms.some(([c]) => c === "WCon")) {
     throw SV_BAIL;
   }
-  const on = (s: HTerm): HTerm => Bend.App(Bend.Ann(arms.reduceRight<HTerm>(
-    (m, [c, h]) => Bend.Mat(c, sv_fields(c, adt.x, st, (ys) =>
-      sv_ev(h, [...ys, ...rest], null, new Map(cx).set(s, [c, ys]), k, st)),
-    m), Bend.Efq()), Bend.All(all.q, "s", 0, all.A, (_: HTerm) => st.R)), s);
+  return sv_case(v, all.A, cx, st, arms.map(([c, h]) =>
+    [c, (ys, As, c2) => sv_ev(h, [...ys, ...rest], null, c2, k, st)]),
+    term_strip(end).$ === "Efq" ? null
+    : (s, c2) => sv_ev(end, [s, ...rest], null, c2, k, st));
+}
+
+// a match on v of type A, one arm per constructor given, on typed fields,
+// then the default, on v itself; v (a variable, or let-bound) is known to
+// be each node in its arm
+function sv_case(v: HTerm, A: HTerm, cx: SvCx, st: SvSt,
+  arms: [Name, (ys: HTerm[], As: HTerm[], cx: SvCx) => HTerm][],
+  dflt: ((s: HTerm, cx: SvCx) => HTerm) | null = null): HTerm {
+  const adt = ty_adt(A);
+  if (!adt) {
+    throw SV_BAIL;
+  }
+  const fn = Bend.All(Bend.Many(), "s", 0, A, (_: HTerm) => st.R);
+  const on = (s: HTerm, cx0: SvCx): HTerm => {
+    const m = arms.reduceRight<HTerm>((m, [c, arm]) => Bend.Mat(c,
+      sv_fields(c, adt.x, st, (ys, As) => arm(ys, As,
+        new Map(cx0).set(s, [c, ys]))), m), !dflt ? Bend.Efq() : st.core
+      ? Bend.Ann(Bend.Lam("_", 0, (_: HTerm) => dflt(s, cx0)), fn)
+      : dflt(s, cx0));
+    SV_CASES.add(m);
+    return Bend.App(Bend.Ann(m, fn), s);
+  };
   const p = probe("s");
-  return sc.$ === "Var" ? on(sc) : let_open([p], [sv_ann(v, all.A)], on(p));
+  return sv_var(v).$ === "Var" ? on(sv_var(v), cx)
+    : sv_let(p, v, A, cx, (c) => on(p, c));
 }
 
 // a constructor's arm, a typed lambda per field, into st.R (the walk that
 // only reads results opens it at once)
 function sv_fields(c: Name, xs: HTerm[], st: SvSt,
-  body: (ys: HTerm[]) => HTerm): HTerm {
+  body: (ys: HTerm[], As: HTerm[]) => HTerm): HTerm {
   const ctr = FL.book.ctrs[c];
   if (ctr_live(ctr, xs).length !== ctr.n) {
     throw SV_BAIL;
@@ -1329,50 +1430,104 @@ function sv_fields(c: Name, xs: HTerm[], st: SvSt,
     const a = Bend.tele_open(FL.book, t);
     return a ? Bend.All(a.q, a.k, 0, a.A, (y: HTerm) => ty(a.B(y))) : st.R;
   };
-  const go = (t: HTerm, ys: HTerm[]): HTerm => {
+  const go = (t: HTerm, ys: HTerm[], As: HTerm[]): HTerm => {
     const a = Bend.tele_open(FL.book, t);
     const p = st.core ? null : probe(a?.k ?? "");
-    return !a ? body(ys) : p ? go(a.B(p), [...ys, p]) : Bend.Ann(Bend.Lam(a.k,
-      0, (y: HTerm) => go(a.B(y), [...ys, y]), undefined, a.q), ty(t));
+    return !a ? body(ys, As) : p ? go(a.B(p), [...ys, p], [...As, a.A])
+      : Bend.Ann(Bend.Lam(a.k, 0, (y: HTerm) => go(a.B(y), [...ys, y],
+        [...As, a.A]), undefined, a.q), ty(t));
   };
-  return go(tele_fill(ctr.T, xs), []);
+  return go(tele_fill(ctr.T, xs), [], []);
 }
 
-// g(args), g answering its arguments at sm's leaves: c = g~core(args), and
-// the pairs around it; in g's own core, a rest that only rebuilds them is
-// the tail call
-function sv_call(g: Name, sm: Same, args: HTerm[], cx: SvCx, k: SvK,
+// v of type T, S's holes filled from xs, then k
+function sv_fill(v: HTerm, S: Shape, T: HTerm, xs: HTerm[], cx: SvCx,
+  k: SvK, st: SvSt): HTerm {
+  if (S === null) {
+    return k(v, cx);
+  }
+  if (!S.cs) {
+    return k(sv_ann(xs[S.js[0]], T), cx);
+  }
+  const tld = tld_of(ty_adt(T)!.k) as Bend.ADT;
+  return sv_case(v, T, cx, st, tld.c.map((c) => [c.k, (ys, As, c0) => {
+    const go = (ws: HTerm[], c1: SvCx): HTerm => ws.length === ys.length
+      ? k(Bend.Ann(Bend.Ctr(c.k, ws), T), c1)
+      : sv_fill(ys[ws.length], S.cs![c.k]?.[ws.length] ?? null, As[ws.length],
+        xs, c1, (w, c2) => go([...ws, w], c2), st);
+    return go([], c0);
+  }]));
+}
+
+// v of type T with S's holes 0
+function sv_zero(v: HTerm, S: Shape, T: HTerm, doms: Dom[], cx: SvCx): HTerm {
+  const c = sv_node(v, cx);
+  if (S === null || S.cs && !S.cs[c?.[0] ?? ""]) {
+    return v;
+  }
+  if (!S.cs) {
+    const z: HTerm = Bend.Ref(ty_adt(doms[S.js[0]][2])!.k);
+    SV_ZERO.add(z);
+    return Bend.Ann(z, doms[S.js[0]][2]);
+  }
+  const As = sv_doms(c![0], ty_adt(T)!.x);
+  return Bend.Ann(Bend.Ctr(c![0], c![1].map((x, i) =>
+    sv_zero(x, S.cs![c![0]][i], As[i], doms, cx))), T);
+}
+
+// whether t is v with S's holes 0, through the matches t opens
+function sv_isz(t: HTerm, v: HTerm, S: Shape, cx: SvCx): boolean {
+  const s = term_strip(t);
+  const [h, as] = sv_unapply(s);
+  const m = term_strip(h);
+  if (m.$ === "Mat" && as.length === 1) {
+    const e = term_strip(mat_arms(m).end);
+    return (e.$ !== "Lam" || sv_isz(term_open(e).b, v, S, cx))
+      && mat_arms(m).arms.every(([c, arm]) => {
+      const ys: HTerm[] = [];
+      let b = term_strip(arm);
+      for (; b.$ === "Lam"; b = term_strip(term_open(b as Of<"Lam">).b)) {
+        ys.push(term_open(b as Of<"Lam">).ps[0]);
+      }
+      return sv_isz(b, v, S, new Map(cx).set(sv_var(as[0]), [c, ys]));
+    });
+  }
+  const c = sv_node(v, cx);
+  return S === null || S.cs && !S.cs[c?.[0] ?? ""] ? sv_eqv(s, v, cx)
+    : !S.cs ? SV_ZERO.has(s) : s.$ === "Ctr" && s.k === c![0]
+      && s.x.every((x, i) => sv_isz(x, c![1][i], S.cs![c![0]][i], cx));
+}
+
+// g(args), g answering its arguments at sm's holes: g~core(args), the
+// holes filled back; an argument rebuilt from a node's fields is the node;
+// in g's own core, a rest that only rebuilds the call is the tail call
+function sv_call(g: Name, sm: Shape, args: HTerm[], cx: SvCx, k: SvK,
   st: SvSt): HTerm {
   const doms = tele_unbind(tld_of(g).T).doms;
-  const ls = sv_leaves(sm);
-  const ans = ls.filter((l) => l.j === null);
-  if (ans.length !== 1) {
-    throw SV_BAIL;
-  }
+  const need = new Set(JSON.stringify(sm).match(/(?<="js":\[)\d+/g)!.map(Number));
   const bind = (as: HTerm[], c0: SvCx): HTerm => {
     const i = as.length;
+    const a = args[i];
     const p = probe("a");
-    if (i === args.length) {
-      const core = tld_of(g + "~core");
-      const call = Bend.Ann(as.reduce((f: HTerm, a) => Bend.App(f, a), Bend.Ref(g + "~core")),
-        core ? tele_fill(core.T, as) : ans[0].T);
-      const c = probe("c");
-      const build = (t: Same): HTerm => Bend.Ann(t.kids ? Bend.Ctr("Tuple",
-        t.kids.map(build)) : t.j === null ? c : as[t.j], t.T);
-      const body = k(build(sm), c0);
-      return st.core && g === st.def && sv_var(body) === c ? call
-        : let_open([c], [call], body);
+    const u = i < args.length && need.has(i) && sv_var(a).$ !== "Var"
+      ? [...c0.keys()].find((u) => sv_eqv(a, u, c0)) ?? null : a;
+    if (i < args.length) {
+      return u ? bind([...as, u], c0) : sv_ev(a, [], doms[i][2], c0, (v, c) =>
+        sv_let(p, v, doms[i][2], c, (c2) => bind([...as, p], c2)), st);
     }
-    return !ls.some((l) => l.j === i) || sv_var(args[i]).$ === "Var"
-      ? bind([...as, args[i]], c0) : sv_ev(args[i], [], doms[i][2], c0,
-        (v, c) => let_open([p], [sv_ann(v, doms[i][2])], bind([...as, p], c)), st);
+    const R = tele_fill(tld_of(g).T, as);
+    const call = Bend.Ann(as.reduce((f: HTerm, a) => Bend.App(f, a),
+      Bend.Ref(g + "~core")), R);
+    const r = probe("r");
+    const b = sv_fill(r, sm, R, as, c0, k, st);
+    return st.core && g === st.def && sv_isz(b, r, sm, c0) ? call
+      : let_open([r], [call], b);
   };
   return bind([], cx);
 }
 
-// the leaves of k's result that answer a parameter unchanged, if a core
-// can answer the rest
-function sv_same(k: Name): Same | null {
+// where k's result hands its parameters back, if a core can answer the rest
+function sv_same(k: Name): Shape {
   const tld = tld_of(k);
   if (FL.js || FL.sames.has(k) || !done_live(tld) || def_foreign(tld)
     || !tld.e || intr_of(k)) {
@@ -1380,63 +1535,49 @@ function sv_same(k: Name): Same | null {
   }
   FL.sames.set(k, null);
   const { doms, ret } = tele_unbind(tld.T);
-  const S = sv_tree(ret);
-  const ls = sv_leaves(S);
-  const box = (T: HTerm) => lay_of(T).ks.includes("box");
-  const key = (T: HTerm) => ty_key(ty_wnf(T)!);
-  ls.forEach((l) => {
-    const j = box(l.T) ? doms.findIndex(([, , A], i) => key(A) === key(l.T)
-      && !ls.some((m) => m.j === i)) : -1;
-    l.j = j < 0 ? null : j;
-  });
-  const ans = ls.filter((l) => l.j === null);
-  if (ans.length !== 1 || ls.length < 2 || box(ans[0].T)) {
+  const ps = doms.map(([, x]) => probe(x));
+  let S = sv_guess(ret, doms, new Set());
+  for (let was = ""; S && was !== JSON.stringify(S);) {
+    was = JSON.stringify(S);
+    const tails: Shape[] = [];
+    const st = { def: k, S, core: false, fuel: 20000, R: DUMMY };
+    S = sv_try(() => (sv_ev(sv_raw(k), ps, tld.T, new Map(), (v, cx) =>
+      (tails.push(sv_shape(v, ps, cx)), DUMMY), st), tails.reduce(sv_meet, S)),
+      null);
+  }
+  if (!S || !sv_words(ret, S)) {
     return null;
   }
-  const ps = doms.map(([, x]) => probe(x));
-  const tails: [HTerm, SvCx][] = [];
-  const st = { def: k, S, core: false, fuel: 20000, R: DUMMY };
-  const same = sv_try(() => (sv_ev(sv_raw(k), ps, tld.T, new Map(),
-    (v, cx) => (tails.push([v, cx]), DUMMY), st), tails.every(([v, cx]) =>
-    ls.every((l) => {
-      const x = l.j === null ? v : sv_at(v, S, l);
-      return x !== null && (l.j === null || sv_eqv(x, ps[l.j], cx));
-    }))), false);
-  const at = ls.indexOf(ans[0]);
   const ty = (T: HTerm, n: number): HTerm => {
     const a = ty_all(T);
-    return n === 0 ? sv_leaves(sv_tree(T))[at].T
-      : Bend.All(a.q, a.k, 0, a.A, (y: HTerm) => ty(a.B(y), n - 1));
+    return n > 0 ? Bend.All(a.q, a.k, 0, a.A, (y: HTerm) => ty(a.B(y), n - 1))
+      : Bend.All(Bend.Lone(), "r", 0, T, (_: HTerm) => T);
   };
-  if (same) {
-    FL.book.tlds[k + "~core"] = { ...tld, T: ty(tld.T, doms.length) };
-    FL.sames.set(k, S);
-  }
-  if (same && !sv_try(() => sv_uses(sv_core(k), DUMMY) >= 0, false)) {
-    delete FL.book.tlds[k + "~core"];
+  FL.book.tlds[k + "~core"] = { ...tld };
+  FL.book.tlds[k + "~fill"] = { ...tld, n: tld.n + 1, T: ty(tld.T, doms.length) };
+  FL.sames.set(k, S);
+  if (!sv_try(() => sv_uses(sv_core(k, false), DUMMY)
+    + sv_uses(sv_core(k, true), DUMMY) >= 0, false)) {
     FL.sames.set(k, null);
   }
   return FL.sames.get(k)!;
 }
 
-function sv_core(k: Name): HTerm {
+// k's core (its holes 0), or its fill (the holes of r filled from xs)
+function sv_core(k: Name, fill: boolean): HTerm {
   const tld = tld_of(k) as Bend.Def;
   const S = FL.sames.get(k)!;
-  const ans = sv_leaves(S).find((l) => l.j === null)!;
-  const n = tele_unbind(tld.T).doms.length;
+  const doms = tele_unbind(tld.T).doms;
   const go = (T: HTerm, ps: HTerm[]): HTerm => {
     const all = ty_all(T);
-    return ps.length === n ? sv_ev(sv_raw(k), ps, tld.T, new Map(), (v) => {
-      const x = sv_at(v, S, ans);
-      if (x === null) {
-        throw SV_BAIL;
-      }
-      return sv_ann(x, T);
-    }, { def: k, S, core: true, fuel: 20000, R: T })
-      : Bend.Ann(Bend.Lam(all.k, 0, (y: HTerm) => go(all.B(y), [...ps, y]),
-        undefined, all.q), T);
+    const st = { def: k, S, core: true, fuel: 20000, R: T };
+    return ps.length < doms.length + Number(fill) ? Bend.Ann(Bend.Lam(all.k,
+      0, (y: HTerm) => go(all.B(y), [...ps, y]), undefined, all.q), T)
+      : fill ? sv_fill(ps.at(-1)!, S, T, ps, new Map(), (v) => v, st)
+      : sv_ev(sv_raw(k), ps, tld.T, new Map(), (v, cx) =>
+        sv_zero(v, S, T, doms, cx), st);
   };
-  return go(tld_of(k + "~core").T, []);
+  return go(tld_of(k + (fill ? "~fill" : "~core")).T, []);
 }
 
 // a body whose calls to a def with a core go through it
@@ -1444,17 +1585,31 @@ function sv_body(k: Name, h: HTerm): HTerm {
   if (FL.js || ![...sv_refs(k)].some((g) => sv_same(g))) {
     return h;
   }
-  const st = { def: "", S: null, core: false, fuel: Infinity, R: DUMMY };
   const map = (t: HTerm): HTerm => {
     const s = Bend.term_force(t);
     if (s.$ === "App" || s.$ === "Ref") {
-      const [g, as] = sv_unapply(s);
+      const [h0, as] = sv_unapply(s);
       const ys = as.map(map);
-      const r = term_strip(g);
-      const sm = r.$ === "Ref" ? sv_same(r.k) : null;
-      return sm && ys.length === tele_unbind(tld_of((r as Of<"Ref">).k).T)
-        .doms.length && sv_try(() => sv_call((r as Of<"Ref">).k, sm, ys,
-        new Map(), (v) => v, st), null) || ys.reduce((f, y) => Bend.App(f, y), g);
+      const g = term_strip(h0);
+      const sm = g.$ === "Ref" ? sv_same(g.k) : null;
+      const T = sm && tld_of((g as Of<"Ref">).k).T;
+      if (!T || ys.length !== tele_unbind(T).doms.length) {
+        return ys.reduce((f, y) => Bend.App(f, y), h0);
+      }
+      const k = (g as Of<"Ref">).k;
+      const doms = tele_unbind(T).doms;
+      const ps = ys.map((y) => sv_var(y).$ === "Var" ? y : probe("a"));
+      const R = tele_fill(T, ps);
+      const need = JSON.stringify(sm).match(/(?<="js":\[)\d+/g)!.map(Number);
+      const call = (f: Name, xs: HTerm[]) => Bend.Ann(xs.reduce((f0: HTerm, x) =>
+        Bend.App(f0, x), Bend.Ref(f)), R);
+      // the fill reads only the holes' arguments: the rest are 0
+      const zs = ps.map((p, i) => need.includes(i) || doms[i][0].$ === "None"
+        || !ty_adt(doms[i][2]) ? p : Bend.Ann(Bend.Ref<Bend.HBody>(
+          ty_adt(doms[i][2])!.k), doms[i][2]));
+      return ys.reduceRight((b, y, i) => ps[i] === y ? b : let_open(
+        [ps[i] as Of<"Var">], [sv_ann(y, doms[i][2])], b),
+        call(k + "~fill", [...zs, call(k + "~core", ps)]));
     }
     return s.$ === "Ann" ? Bend.Ann(map(s.x), s.T, s.s)
       : s.$ === "Lam" ? Bend.Lam(s.k, s.i, (y: HTerm) => map(s.f(y)), s.s, s.q)
@@ -1543,8 +1698,9 @@ function file_new(book: Bend.Book, js: boolean) {
     fids: new Set<Name>(),
     effs: new Map<string, [string, string]>(),
     hold: new Map<string, boolean>(),
-    sames: new Map<Name, Same | null>(),
+    sames: new Map<Name, Shape>(),
     raws: new Map<Name, HTerm>(),
+    cycs: new Map<Name, boolean>(),
   };
 }
 
@@ -2761,7 +2917,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
     }
     default: {
       const [hd, as] = sv_unapply(x);
-      if (as.length > 0 && mat_head(term_strip(hd))) {
+      if (as.length > 0 && SV_CASES.has(term_strip(hd))) {
         return emit_body(sc, hd, null, [...emit_each(sc, as), ...args], dst);
       }
       if (args.length > 0) {
