@@ -30,7 +30,7 @@ type Seg = {
   lines: string[];
   params: string[];
   ks: Kind[];
-  frame: { pop: number; at: number[] } | null;
+  frame: { pop: number; at: number[]; deep: number; push: number } | null;
   refs: Set<string>;
   tab: number;
   spin: boolean;
@@ -1156,6 +1156,7 @@ function file_new(book: Bend.Book, js: boolean) {
     js,
     bangs: new Set<Name>(),
     sites: new Map<Name, number>(),
+    room: 0,
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
@@ -1165,7 +1166,7 @@ function file_new(book: Bend.Book, js: boolean) {
     teles: new Map<HTerm, { doms: Dom[]; ret: HTerm }>(),
     keys: new WeakMap<HTerm, string>(),
     ids: new Map<string, string>(),
-    taken: new Set("FID_EXIT FID_ENTER FID_T CID_T $pc".split(" ")),
+    taken: new Set("FID_EXIT FID_ENTER FID_T FID_DEEP CID_T $pc".split(" ")),
     locals: new Map<string, Name>(),
     names: new Map<number, string>(),
     facts: new Set<string>(),
@@ -1993,7 +1994,8 @@ function emit_task(sc: Scope, fid: string, rem: number, words: string[],
     `task_node(e, ${seg_ref(sc, fid)}, ${cont}, ${idx}, ${rem})`, words);
 }
 
-function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
+function emit_jump(sc: Scope, args: string[], k: Name, bang = false,
+  push = false): void {
   const fid = seg_fid(k);
   sc.seg.fork ||= bang;
   if (bang || sc.seg.def !== k) {
@@ -2004,11 +2006,13 @@ function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
   }
   file_push(sc, ...args.map((a, i) => `r${i} = ${a};`));
   if (sc.seg.def !== k) {
-    return file_push(sc, `WL_JMP(${seg_ref(sc, fid)});`);
+    return file_push(sc, ...push ? [`WL_ROOM(${seg_ref(sc, fid)});`] : [],
+      `WL_JMP(${seg_ref(sc, fid)});`);
   }
   sc.seg.spin = true;
   file_push(sc, ...sc.seg.params.map((p, i) => `${p} = r${i};`),
-    `WL_AGAIN(${sc.seg.fid});`);
+    ...push ? [`if (WL_FULL) { ${sc.seg.params.map((p, i) => `r${i} = ${p};`)
+      .join(" ")} WL_SPILL(${sc.seg.fid}); }`] : [], `WL_AGAIN(${sc.seg.fid});`);
 }
 
 function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): Val[] {
@@ -2481,14 +2485,14 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       (pos.set(p, depth), depth += b.val.ws.length, b.val.ws));
     emit_chain(sc, [["seq", () => {
       const fr = [...ws, seg_ref(sc, seg_fid(kn))];
-      file_push(sc, `WL_ROOM(${fr.length});`,
-        ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
+      file_push(sc, ...fr.map((w, j) => `STK(${j}) = ${w};`),
+        `WL_PUSHN(${fr.length});`);
     }], ...fork ? [] : [["", () => {
       file_push(sc, `WL_CONT = term_tsk(${seg_fid(kn)}, ${
         emit_task(sc, seg_fid(kn), 1, ws)});`);
       file_push(sc, `WL_IDX = ${ws.length};`);
     }] as [string, () => void]]]);
-    emit_jump(sc, cargs, c.k!, !fork && c.b);
+    emit_jump(sc, cargs, c.k!, !fork && c.b, true);
     const last = i === calls.length - 1;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const at = held.flatMap(([p, b]) => b.val.ws.map((_, j) =>
@@ -2496,8 +2500,9 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     const ret = fun_of(c.k!).ret;
     const rest = [...hold, chain[i]];
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret);
-    sc = seg_open(sc, kn, sc.seg.ret, { pop: last ? depth : 0, at }, held, rs,
-      rest);
+    sc = seg_open(sc, kn, sc.seg.ret,
+      { pop: last ? depth : 0, at, deep: depth + 1, push: ws.length + 1 }, held,
+      rs, rest);
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
@@ -2778,7 +2783,8 @@ function c_header(segs: Seg[], clos: string[]): string {
   defs.push(`CONSTV Fid FID_T[] = { ${entries.map((s) => `{ ${[s.params.length,
     s.frame === null ? 0 : s.params.length - s.frame.at.length,
     FL.bangs.has(s.def), !forky.has(s.fid)].map(Number).join(", ")} }`)
-    .join(", ")} };`,
+    .join(", ")} };`, `#if DEVICE`, `CONSTV u16 FID_DEEP[] = { ${entries.map(
+    (s) => s.frame?.deep ?? 0).join(", ")} };`, `#endif`,
   `CONSTV Cid CID_T[] = { ${[...cids].map(([k, [n, d]]) => `{ ${[n,
     fact("ctr", k), d].map(Number).join(", ")} }`).join(", ")} };`,
   `#define STAT_LEN ${FL.img.length}`, `#define WL_RESW ${resw}`,
@@ -2812,6 +2818,8 @@ export function compile_book(book: Bend.Book): string {
   const segs = all.filter((s) => !s.native && live.has(s.fid));
   const spins = all.filter((s) => s.native && live.has(s.fid));
   const tabs = c_header(segs, clos);
+  FL.room = Math.max(0, ...segs.filter((s) => dev.has(s.fid))
+    .map((s) => s.frame?.push ?? 0));
   // a spin may call one defined after it
   const img = [`CONSTV u64 STAT_IMG[] = { ${FL.img.join(", ") || 0} };`,
     spins.map((s) => s.head + ";").join("\n"),
@@ -3311,11 +3319,6 @@ using namespace metal;
     STK(wi) = e.mem[(A) + wi]; \
   } \
   WL_PUSHN(N);
-#define WL_ROOM(N) \
-  if (DEVICE && sp + (N) * CUBE >= e.mem + STAT_OFF + CUBE) { \
-    err_post(e.mem, ERR_DEEP); \
-    return 0; \
-  }
 
 // Types
 // =====
@@ -4339,7 +4342,59 @@ ${spins}
 // ====
 
 // A host self-jump is a tail call: as a loop, clang hoists constants badly.
-#if !DEVICE
+// A device call that may leave no room for a frame moves the stack to the
+// heap (#1393), asked through rn, which no call reads. A self call asks after
+// setting its loop's parameters, so the loop keeps r0.. dead. The exit frame
+// gives back whole defs until about half a stack, so the lane resumes low.
+#if DEVICE
+#define WL_FULL     (sp >= e.mem + STAT_OFF - ${FL.room} * CUBE)
+#define WL_SPILL(F) { rn = (F) | 1u << 16; WL_JMP(~0u); }
+#define WL_ROOM(F)  if (WL_FULL) WL_SPILL(F)
+
+FAR DEV Term* lane_spill(Env e, DEV Term* sp) {
+  DEV Term* sb = e.alc + (STAK_OFF - ALC_OFF);
+  u64 k = (sb[CUBE] >> 32) + 1;
+  if (k > 1u << 12) {
+    err_post(e.mem, ERR_DEEP);
+    return 0;
+  }
+  u64 wa = heap_alloc(e, cls_fit(STAK_LEN));
+  if (err_seen(e.mem)) {
+    return 0;
+  }
+  u32 sn = (sp - sb) / CUBE;
+  for (u32 i = 0; i < sn; i += 1) {
+    e.mem[wa + i] = sb[i * CUBE];
+  }
+  sb[0]        = term_tsk(FID_EXIT, wa);
+  sb[CUBE]     = k << 32 | sn;
+  sb[2 * CUBE] = FID_EXIT;
+  return sb + 3 * CUBE;
+}
+
+// FID_DEEP counts its def's words on the stack when a continuation's fid is
+// on top.
+FAR DEV Term* lane_unspill(Env e, DEV Term* sp, u64 wa, u32 sn) {
+  u32 d = 0;
+  while (d + 3 < sn && d < STAK_LEN / 2) {
+    d += FID_DEEP[(u32)e.mem[wa + sn - 1 - d]];
+  }
+  if (d + 3 >= sn) {
+    d = sn;
+  } else {
+    sp[CUBE] -= d;
+    sp += 3 * CUBE;
+  }
+  WL_ARGS(wa + sn - d, d)
+  if (d == sn) {
+    heap_free(e, cls_fit(STAK_LEN), wa);
+  }
+  return sp;
+}
+#else
+#define WL_ROOM(F)
+#define WL_FULL     0
+#define WL_SPILL(F)
 #undef  WL_SPIN
 #undef  WL_SPUN
 #undef  WL_AGAIN
@@ -4432,6 +4487,13 @@ ${segs}
     Term cont = STK(0);
     u32  idx  = (u32)STK(1);
     u32  wf   = term_aux(cont);
+#if DEVICE
+    if (cont != TERM_HOLE && wf == FID_EXIT) {
+      sp = lane_unspill(e, sp, term_loc(cont), idx);
+      WL_TAKE(rv)
+      WL_RETN(n);
+    }
+#endif
     if (cont != TERM_HOLE && fid_resw(wf)) {
       u64 wa = term_loc(cont);
       u32 wn = fid_arity(wf);
@@ -4447,6 +4509,14 @@ ${segs}
 
 #if DEVICE
   default: {
+    if (rn >> 16) {
+      fid = rn & 0xFFFF;
+      rn  = 0;
+      if (!(sp = lane_spill(e, sp))) {
+        return 0;
+      }
+      break;
+    }
     err_post(e.mem, ERR_FIDS);
     return 0;
   }
