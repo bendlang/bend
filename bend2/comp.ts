@@ -4851,6 +4851,7 @@ static void gpu_note(const char* path) {
 
 #if !BEND_CUDA
 #define gpu_map pool_mmap
+#define gpu_near(p)
 #endif
 
 #if BEND_METAL || BEND_CUDA
@@ -5137,6 +5138,17 @@ static void gpu_kernel(u32 pass, u32 at) {
   }
 }
 
+// Moves p's page to the device, so a kernel doesn't fault on it.
+static void gpu_near(void* p) {
+  CUdeviceptr at = (uintptr_t)p & ~4095ull;
+#if CUDA_VERSION >= 13000
+  cuMemPrefetchAsync(at, 4096,
+    (CUmemLocation){ CU_MEM_LOCATION_TYPE_DEVICE, gpu_dev }, 0, NULL);
+#else
+  cuMemPrefetchAsync(at, 4096, gpu_dev, NULL);
+#endif
+}
+
 // A pass with no frontier returns at once.
 static void gpu_pass(u64* H) {
   if (cuMemcpyHtoD(gpu_front, &H[H_FRONT], 8) != CUDA_SUCCESS) {
@@ -5196,6 +5208,8 @@ static void cube_run(u64* H, bool gpu) {
   u32 f = turn_take(H);
   if (gpu) {
     turn_set(H, f);
+    gpu_near(ring_get(H, 0));
+    gpu_near(ring_put(H, 0));
   }
   while (!root_done(H)) {
     if (f == 0) {
