@@ -1195,24 +1195,23 @@ function sv_holes(S: Shape): boolean {
   return S !== null && (!S.cs || Object.values(S.cs).flat().some(sv_holes));
 }
 
-// the first guess: each boxed position of T takes the next parameter of
-// its type, a word or a field past depth 2 none
-function sv_guess(T: HTerm, doms: Dom[], used: Set<number>, d = 0): Shape {
+// the first guess: each boxed position of T may be any parameter of its
+// type, and holes sit only under unboxed constructors (a boxed node the core
+// built would be built again); a word or a field past depth 2 none
+function sv_guess(T: HTerm, doms: Dom[], d = 0): Shape {
   const key = (A: HTerm) => ty_key(ty_wnf(A)!);
   const adt = ty_adt(T);
   const tld = adt && tld_of(adt.k);
-  const j = doms.findIndex(([, , A], i) => !used.has(i) && key(A) === key(T));
-  if (j >= 0 && adt && adt.k !== "Array" && lay_of(T).ks.includes("box")) {
-    used.add(j);
-    return { js: [j], cs: null };
+  const js = doms.flatMap(([, , A], i) => key(A) === key(T) ? [i] : []);
+  if (js.length > 0 && adt && adt.k !== "Array"
+    && lay_of(T).ks.includes("box")) {
+    return { js, cs: null };
   }
-  if (d > 2 || tld?.$ !== "ADT" || WORDS[adt!.k]) {
+  if (d > 2 || tld?.$ !== "ADT" || WORDS[adt!.k] || lay_of(T) === BOX) {
     return null;
   }
-  const cs = Object.fromEntries(tld.c.map((c) => {
-    const u = tld.c.length > 1 ? new Set(used) : used;
-    return [c.k, sv_doms(c.k, adt!.x).map((A) => sv_guess(A, doms, u, d + 1))];
-  }));
+  const cs = Object.fromEntries(tld.c.map((c) =>
+    [c.k, sv_doms(c.k, adt!.x).map((A) => sv_guess(A, doms, d + 1))]));
   return Object.values(cs).flat().some(sv_holes) ? { js: [], cs } : null;
 }
 
@@ -1225,17 +1224,6 @@ function sv_doms(c: Name, xs: HTerm[]): HTerm[] {
     t = a.B(probe(a.k));
   }
   return As;
-}
-
-// whether every part of T outside S's holes is words: a boxed part could
-// be a piece of a borrowed parameter
-function sv_words(T: HTerm, S: Shape, d = 0): boolean {
-  const adt = ty_adt(T);
-  const tld = adt && tld_of(adt.k);
-  return S?.cs === null || !lay_of(T).ks.includes("box")
-    || !!S && d < 3 && tld?.$ === "ADT" && tld.c.every((c) =>
-      sv_doms(c.k, adt!.x).every((A, i) => sv_words(A, S.cs![c.k]?.[i]
-        ?? null, d + 1)));
 }
 
 function sv_unapply(t: HTerm): [HTerm, HTerm[]] {
@@ -1505,6 +1493,11 @@ function sv_call(g: Name, sm: Shape, args: HTerm[], cx: SvCx, k: SvK,
   st: SvSt): HTerm {
   const doms = tele_unbind(tld_of(g).T).doms;
   const need = new Set(JSON.stringify(sm).match(/(?<="js":\[)\d+/g)!.map(Number));
+  // a hole not yet settled to one parameter: the tails past this self-call
+  // wait for the ones that settle it
+  if (!st.core && g === st.def && /"js":\[\d+,/.test(JSON.stringify(sm))) {
+    return DUMMY;
+  }
   const bind = (as: HTerm[], c0: SvCx): HTerm => {
     const i = as.length;
     const a = args[i];
@@ -1536,7 +1529,7 @@ function sv_same(k: Name): Shape {
   FL.sames.set(k, null);
   const { doms, ret } = tele_unbind(tld.T);
   const ps = doms.map(([, x]) => probe(x));
-  let S = sv_guess(ret, doms, new Set());
+  let S = sv_guess(ret, doms);
   for (let was = ""; S && was !== JSON.stringify(S);) {
     was = JSON.stringify(S);
     const tails: Shape[] = [];
@@ -1544,8 +1537,11 @@ function sv_same(k: Name): Shape {
     S = sv_try(() => (sv_ev(sv_raw(k), ps, tld.T, new Map(), (v, cx) =>
       (tails.push(sv_shape(v, ps, cx)), DUMMY), st), tails.reduce(sv_meet, S)),
       null);
+    if (S && JSON.stringify(S) === was) {
+      S = JSON.parse(was.replace(/"js":\[(\d+)[\d,]*\]/g, '"js":[$1]'));
+    }
   }
-  if (!S || !sv_words(ret, S)) {
+  if (!S) {
     return null;
   }
   const ty = (T: HTerm, n: number): HTerm => {
@@ -1561,6 +1557,15 @@ function sv_same(k: Name): Shape {
     FL.sames.set(k, null);
   }
   return FL.sames.get(k)!;
+}
+
+// whether r is a parameter a core hands back: a part of it is shared by
+// the def, so the core takes a copy and keeps the parameter borrowed
+function sv_kept(r: string): boolean {
+  const m = /^(.*)~core~(\d+)$/.exec(r);
+  const j = m && tele_unbind(tld_of(m[1]).T).doms.indexOf(
+    fun_of(m[1] + "~core").live[Number(m[2])]);
+  return !!m && JSON.stringify(FL.sames.get(m[1])).includes(`"js":[${j}]`);
 }
 
 // k's core (its holes 0), or its fill (the holes of r filled from xs)
@@ -2002,14 +2007,17 @@ function val_hold(sc: Scope, v: Val, k: string): Val {
 }
 
 function val_own(v: Val, at: string | null = null, held = false): string[] {
-  v.rs.forEach((r, j) => {
+  return v.ws.map((w, j) => {
+    const r = v.rs[j];
     if (r !== null && at !== null) {
       FL.unit!.lends.push([at, r]);
+    } else if (r !== null && sv_kept(r)) {
+      return `term_keep(e, ${w}, 1)`;
     } else if (r !== null || (at !== null && !held && v.lay.ks[j] === "box")) {
       fact_add("own", r ?? at!);
     }
+    return w;
   });
-  return v.ws;
 }
 
 function val_owned(v: Val): string[] {

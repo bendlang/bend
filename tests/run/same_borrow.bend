@@ -1,10 +1,10 @@
 import Base
 
-# String.cmp and Map.has answer their arguments unchanged, and so does
-# tag, inside either of its constructors, so the C lane runs their cores
-# (borrowed walks that build nothing) and each call takes its own
-# arguments back. Every call here must answer as the def does, with its
-# arguments intact after it.
+# String.cmp, Map.has and Map.get answer their arguments unchanged, and so
+# do the defs below (tag inside either of its constructors, swap crossed,
+# first beside a copy of a part), so the C lane runs their cores (borrowed
+# walks that build nothing) and each call takes its own arguments back.
+# Every call here must answer as the def does, with its arguments intact.
 
 def code(c: Cmp) -> String:
   match c:
@@ -71,8 +71,59 @@ def keys() -> Map<&2, U32>:
   Map.set(&2, U32, Map.set(&2, U32, Map.set(&2, U32, Map.new(&2, U32),
     "abc", 1), "abd", 2), "b", 3)
 
+type Tree is Data:
+  Leaf{}
+  Node{l: Tree, v: U32, r: Tree}
+
+def Tree.sum.k(+v: U32, lr: Tree & U32, rr: Tree & U32) -> Tree & U32:
+  (l, a) = lr
+  (r, b) = rr
+  (Node{l, v, r}, U32.add(U32.add(a, b), v))
+
+def Tree.sum(t: Tree) -> Tree & U32:
+  match t:
+    case Leaf{}:
+      (Leaf{}, 0)
+    case Node{l, +v, r}:
+      Tree.sum.k(v, Tree.sum(l), Tree.sum(r))
+
+def swap(a: String, b: String) -> String & String:
+  (b, a)
+
+def first(l: List<&2, String>) -> List<&2, String> & String:
+  match l:
+    case []:
+      ([], "")
+    case +h <> t:
+      (h <> t, h)
+
+def sum.again(n: U32, r: Tree & U32) -> String:
+  (t, m) = r
+  U32.show(n) ++ U32.show(m)
+
+# the tree Tree.sum answers is summed again
+def sum.show(r: Tree & U32) -> String:
+  (t, n) = r
+  sum.again(n, Tree.sum(t))
+
+def swap.show(r: String & String) -> String:
+  (a, b) = r
+  a ++ b
+
+def first.again(h: String, r: List<&2, String> & String) -> String:
+  (l, h2) = r
+  h ++ h2
+
+# the list first answers is read again
+def first.show(r: List<&2, String> & String) -> String:
+  (l, h) = r
+  first.again(h, first(l))
+
 def main() -> IO(Unit):
   do IO<Unit>:
+    IO.print(sum.show(Tree.sum(Node{Node{Leaf{}, 1, Leaf{}}, 5, Node{Leaf{}, 9, Leaf{}}})))
+    IO.print(swap.show(swap("ab", "cd")))
+    IO.print(first.show(first(["x", "y"])) ++ first.show(first([])))
     IO.print(tag.show(tag("hey", 7)) ++ tag.show(tag("", 7)))
     IO.print(has(Map.has(&2, U32, keys(), "abd"), "abd"))
     IO.print(has(Map.has(&2, U32, keys(), "ab"), "b"))
@@ -93,6 +144,9 @@ def main() -> IO(Unit):
     IO.print(code(Pair.snd(String & String, Cmp,
       String.cmp(String.repeat("q", 300n), String.append(String.repeat("q", 299n), "r")))))
 
+#|1515
+#|cdab
+#|xx
 #|Lhey7S
 #|120
 #|030
