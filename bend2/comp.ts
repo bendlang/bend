@@ -640,7 +640,7 @@ function ty_holds(A: HTerm | null, p: Name | { tags: string; not: boolean },
   const xs = t.x.map((x, i) => vs[i] ? ty_key(x) : "");
   const ys = w.on.get(t.k);
   const re = !!ys && xs.some((x, i) => x.length > ys[i]);
-  const key = t.k + (!re && xs);
+  const key = JSON.stringify([t.k, re ? null : xs]);
   const at = w.seen.get(key);
   if (tld?.$ !== "ADT" || at !== undefined) {
     w.low = Math.min(w.low, at ?? Infinity);
