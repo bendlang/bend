@@ -12,11 +12,13 @@
 # pause_twice splits the mode's two tests as Bools (toggle_twice):
 # paused resumes then pauses, fighting pauses then resumes, any other
 # mode stays, shown by rewriting the tests back into the toggled
-# mode. esc_quits is an induction over the events before the Esc; the
-# Key arm is general over the key's quit flag. calm_keeps is an
-# induction over all the events, its Key arm (calm_arm) general over
-# the quit flag too: Spec.Calm is Empty at an Esc or a Close, so an
-# empty match rules them out. empty_keeps and the sanity laws compute.
+# mode. esc_quits and close_quits are one induction over the events
+# before the Esc or the Close (quits_anywhere), which takes any event
+# that ends every game; the Key arm is general over the key's quit
+# flag. calm_keeps is an induction over all the events, its Key arm
+# (calm_arm) general over the quit flag too: Spec.Calm is Empty at an
+# Esc or a Close, so an empty match rules them out. empty_keeps and
+# the sanity laws compute.
 
 import Base
 import ./bend3d.bend as R
@@ -110,8 +112,8 @@ def Laws.pause_twice(g):
     case Slash.Game{time, held, taps, mode, hero, boss, flash, cloth, garb, lens, blast}:
       toggle_twice(U32.is_eq(mode, 4), U32.is_eq(mode, 1), mode, {==}, {==})
 
-# Esc anywhere
-# ------------
+# Esc or Close anywhere
+# ---------------------
 
 law esc_arm:
   for b: Bool
@@ -128,32 +130,49 @@ def esc_arm(b, g, rest, ih):
     case False{}:
       ih(g)
 
-def Laws.esc_quits(pre, post, g):
+# an event that ends every game ends the frame it sits in, whatever
+# the events before and after it
+law quits_anywhere:
+  for pre: List<Event>
+  for e: Event
+  for post: List<Event>
+  for g: Slash.Game
+  for h: @s: Slash.Game -> {None{} == Slash.Game.event(e, s) : Maybe<Slash.Game>}
+  {Slash.Game.events(Spec.cat(pre, e <> post), g) == None{} : Maybe<Slash.Game>}
+
+def quits_anywhere(pre, e, post, g, h):
   match pre:
     case Nil{}:
+      %h(g) : {Maybe.bind(&1, Slash.Game, Slash.Game, _, s => Slash.Game.events(post, s)) == None{}
+        : Maybe<Slash.Game>}
       {==}
     case Key{+code, +down} <> rest:
-      esc_arm(U32.is_eq(code, 27), Slash.Game.key(g, code, down),
-        Spec.cat(rest, Key{27, True{}} <> post),
-        s => Laws.esc_quits(rest, post, s))
+      esc_arm(U32.is_eq(code, 27), Slash.Game.key(g, code, down), Spec.cat(rest, e <> post),
+        s => quits_anywhere(rest, e, post, s, h))
     case Text{text} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Press{id, tool, x, y, time, button, down} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Move{id, tool, x, y, time} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Leave{id} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Lost{id} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Look{dx, dy} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Scroll{x, y, dx, dy} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Focus{on} <> rest:
-      Laws.esc_quits(rest, post, g)
+      quits_anywhere(rest, e, post, g, h)
     case Close{} <> rest:
       {==}
+
+def Laws.esc_quits(pre, down, post, g):
+  quits_anywhere(pre, Key{27, down}, post, g, s => {==})
+
+def Laws.close_quits(pre, post, g):
+  quits_anywhere(pre, Close{}, post, g, s => {==})
 
 # A calm frame goes on
 # ---------------------

@@ -3,20 +3,20 @@
 # freezes the world for any number of ticks, the loop's ticks are the
 # game's and a frame runs the ticks it owes, a frame whose events end
 # the game ends the loop, pausing twice restores the pause state of
-# any game, an Esc anywhere in a frame's events quits, a frame with no
-# Esc and no Close does not end the game and a frame with no events
-# keeps it as it is, the game's countdown is SPEC.bend's for any
-# count, and the closed facts about the countdown, the key bits, the
-# pause toggle and the route back to the title. PROOF.bend proves
-# them.
+# any game, an Esc or a Close anywhere in a frame's events quits, a
+# frame with no Esc and no Close does not end the game and a frame
+# with no events keeps it as it is, the game's countdown is
+# SPEC.bend's for any count, and the closed facts about the countdown,
+# the key bits, the pause toggle and the route back to the title.
+# PROOF.bend proves them.
 #
 # What they leave open: live_steps and live_after read only the game a
 # Live holds, so its prev, stamp, debt, begin, frames and cues are not
 # pinned (a Live.after that passes a debt of 0, or keeps the old
 # stamp, still checks), and neither is the IO part of the loop,
 # Play.*, that calls Live.after. A frame that holds events is pinned
-# only by esc_quits and calm_keeps: one whose mouse move changes the
-# game still checks.
+# only by esc_quits, close_quits and calm_keeps: one whose mouse move
+# changes the game still checks.
 
 import Base
 import ./bend3d.bend as R
@@ -90,17 +90,28 @@ law pause_twice:
   for +g: Slash.Game
   {Slash.Game.paused(Slash.Game.pause(Slash.Game.pause(g))) == Slash.Game.paused(g) : Bool}
 
-# LAW: an Esc key-down anywhere in a frame's events quits, whatever
-# the events before and after it and whatever the game.
+# LAW: an Esc anywhere in a frame's events quits, on its key-down or
+# on its release, whatever the events before and after it and whatever
+# the game.
 law esc_quits:
+  for pre: List<Event>
+  for down: Bool
+  for post: List<Event>
+  for g: Slash.Game
+  {Slash.Game.events(Spec.cat(pre, Key{27, down} <> post), g) == None{}
+    : Maybe<Slash.Game>}
+
+# LAW: a Close anywhere in a frame's events quits, whatever the events
+# before and after it and whatever the game.
+law close_quits:
   for pre: List<Event>
   for post: List<Event>
   for g: Slash.Game
-  {Slash.Game.events(Spec.cat(pre, Key{27, True{}} <> post), g) == None{}
+  {Slash.Game.events(Spec.cat(pre, Close{} <> post), g) == None{}
     : Maybe<Slash.Game>}
 
 # LAW: a frame with no Esc and no Close does not end the game,
-# whatever else it holds: the other side of esc_quits.
+# whatever else it holds: the other side of esc_quits and close_quits.
 law calm_keeps:
   for es: List<Event>
   for g: Slash.Game
