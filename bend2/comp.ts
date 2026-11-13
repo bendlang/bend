@@ -3919,7 +3919,8 @@ INLINE u32 blk_span(Term t) {
 }
 
 // A node is freed before its last live child, its spine swapped last. An end
-// over 255 goes in its trivial last cell.
+// over 255 goes in its trivial last cell. A node whose only box is its last
+// field skips cur, so a list is freed as it is walked.
 FAR void term_drop(Env e, Term t) {
   DEV u64* H = e.mem;
   u64  cur = 0;
@@ -3935,6 +3936,16 @@ FAR void term_drop(Env e, Term t) {
         a32_acq(p);
         t = (t & ~(RFC_BIT | LOC_MASK)) | (H[r] >> 24);
         heap_free(e, 0, r);
+      }
+    }
+    if (!term_triv(t) && term_tag(t) == TAG_CTR) {
+      u64 loc = term_loc(t);
+      u32 n = cid_arity(term_aux(t)), i = 1;
+      while (i < n && term_triv(H[loc + i - 1])) ++i;
+      if (i == n && n <= ${WIDE} && !err_spun(e, &step)) {
+        t = H[loc + n - 1];
+        heap_free(e, cls_fit(n), loc);
+        continue;
       }
     }
     if (!term_triv(t)) {
