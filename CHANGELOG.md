@@ -3,6 +3,10 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- Bare names in patterns bind variables, including names also used by
+  constructors. Constructor patterns use braces in every file.
 ## 2.0.40 (2026-11-05)
 
 - **The checker no longer hangs on a proof that a list is its own head <>
