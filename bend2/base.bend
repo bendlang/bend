@@ -3194,6 +3194,17 @@ def Map.get.bit(rest: String, off: Nat) -> Bool:
     case SCon{c, t}:
       Pair.snd(Char, Bool, Map.bit.chr(c, off))
 
+# Most steps down the trie move 0 or 1 characters: those skip String.drop,
+# which rebuilds the head on a 0 step and recurses on a 1 step
+def Map.get.skip(n: Nat, s: String) -> String:
+  match n s:
+    case 0n s:
+      s
+    case 1n SCon{c, t}:
+      t
+    case n s:
+      String.drop(s, n)
+
 def Map.get.go(
   -V: Data, node: Map<&2, V>, d: V, key: String, +rest: String, ci: Nat, b: Bool
 ) -> Map<&2, V> & V:
@@ -3204,7 +3215,7 @@ def Map.get.go(
       Map.lo(&2, V, V, p, hi, Map.get.leaf(V, d, v, key, k))
     case MNode{p, MNode{+q, a, b2}, hi} False{}:
       +cq = Nat.div(q, 33n)
-      +r2 = String.drop(rest, Nat.sub(cq, ci))
+      +r2 = Map.get.skip(Nat.sub(cq, ci), rest)
       Map.lo(&2, V, V, p, hi,
         Map.get.go(V, MNode{q, a, b2}, d, key, r2, cq,
           Map.get.bit(r2, Nat.mod(q, 33n))))
@@ -3214,7 +3225,7 @@ def Map.get.go(
       Map.hi(&2, V, V, p, lo, Map.get.leaf(V, d, v, key, k))
     case MNode{p, lo, MNode{+q, a, b2}} True{}:
       +cq = Nat.div(q, 33n)
-      +r2 = String.drop(rest, Nat.sub(cq, ci))
+      +r2 = Map.get.skip(Nat.sub(cq, ci), rest)
       Map.hi(&2, V, V, p, lo,
         Map.get.go(V, MNode{q, a, b2}, d, key, r2, cq,
           Map.get.bit(r2, Nat.mod(q, 33n))))
