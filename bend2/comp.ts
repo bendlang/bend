@@ -1556,6 +1556,8 @@ function sv_same(k: Name): Shape {
       : Bend.All(Bend.Lone(), "r", 0, T, (_: HTerm) => T);
   };
   FL.book.tlds[k + "~core"] = { ...tld };
+  sv_hot(k + "~core", doms.filter((_, j) => JSON.stringify(S).includes(
+    `"js":[${j}]`)).map(([, , A]) => A));
   FL.book.tlds[k + "~fill"] = { ...tld, n: tld.n + 1, T: ty(tld.T, doms.length) };
   FL.sames.set(k, S);
   if (!sv_try(() => sv_uses(sv_core(k, false), DUMMY)
@@ -1563,6 +1565,12 @@ function sv_same(k: Name): Shape {
     FL.sames.set(k, null);
   }
   return FL.sames.get(k)!;
+}
+
+// a copy of a borrowed parameter's part shares it: its type's nodes seal
+// their fields, as for any shared value
+function sv_hot(k: Name, As: HTerm[]): void {
+  As.forEach((A) => lay_of(A).ks.includes("box") && facts_hot(k, A, true));
 }
 
 // whether r is a parameter a core hands back: a part of it is shared by
@@ -2573,9 +2581,13 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): Val[] {
       }
       b = bd.val;
     }
-    const v = val_to(sc, b, lays[i]);
+    let v = val_to(sc, b, lays[i]);
     if (!brw[i]) {
-      val_own(v);
+      // a part of a borrowed parameter a core copies (val_own) goes in as
+      // that copy, held once
+      const ws = val_own(v);
+      v = ws.every((w, j) => w === v.ws[j]) ? v : val_new(ws.map((w, j) =>
+        w === v.ws[j] ? w : emit_hold(sc, [w], "c")[0]), v.lay);
     } else if (!(vs[i] === null && v === b) && !ctr_packed(x)) {
       val_own(v, at);
     }
