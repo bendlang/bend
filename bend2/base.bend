@@ -2261,14 +2261,18 @@ def String.take(s: String, n: Nat) -> String:
     case SCon{h, t} 1n+p:
       SCon{h, String.take(t, p)}
 
-def String.drop(s: String, n: Nat) -> String:
-  match s n:
-    case SNil{} _:
+# The count is matched first, so dropping nothing never reads the string.
+def String.drop.go(n: Nat, s: String) -> String:
+  match n s:
+    case 0n s:
+      s
+    case 1n+p SNil{}:
       SNil{}
-    case SCon{h, t} 0n:
-      SCon{h, t}
-    case SCon{h, t} 1n+p:
-      String.drop(t, p)
+    case 1n+p SCon{h, t}:
+      String.drop.go(p, t)
+
+def String.drop(s: String, n: Nat) -> String:
+  String.drop.go(n, s)
 
 def String.get(s: String, n: Nat) -> Maybe<&2, Char>:
   match s n:

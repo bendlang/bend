@@ -36,6 +36,7 @@ type Seg = {
   fork: boolean;
   native: boolean;
   head?: string;
+  kept?: number;
 };
 
 type Spine = {
@@ -104,6 +105,10 @@ const EXACT = { fround: Math.fround, imul: Math.imul };
 const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
+
+const KEPT = "~";
+
+const PURE = /^(\} else \{|(\} else )?if \(.*\) \{|\w+ \w+ = \(\w+ - \d+\);)$/;
 
 const USE0 = Bend.Emp<number>();
 
@@ -1391,6 +1396,26 @@ function seg_text(lines: string[], tab: number): string[] {
   return lines.map((l) => "  ".repeat(tab) + l);
 }
 
+// Whether the lines that ran to reach here only tested and named words (the
+// arms left behind are skipped): the segment may then start over.
+function seg_pure(seg: Seg): boolean {
+  let lv = seg.tab;
+  let skip = false;
+  for (const l of seg.lines.toReversed()) {
+    const t = l.trimStart();
+    const d = (l.length - t.length) / 2;
+    if (d > lv && skip) {
+      continue;
+    }
+    if (d > lv || !PURE.test(t)) {
+      return false;
+    }
+    skip = d < lv ? t[0] === "}" : skip && t[0] === "}";
+    lv = d;
+  }
+  return true;
+}
+
 function seg_ref(sc: Scope, fid: string): string {
   sc.seg.refs.add(fid);
   return fid;
@@ -1480,14 +1505,18 @@ function val_hold(sc: Scope, v: Val, k: string): Val {
 }
 
 function val_own(v: Val, at: string | null = null, held = false): string[] {
-  v.rs.forEach((r, j) => {
+  return v.ws.map((w, j) => {
+    const r = v.rs[j];
+    if (r === KEPT) {
+      return at === null ? `term_copy(e, ${w})` : w;
+    }
     if (r !== null && at !== null) {
       FL.unit!.lends.push([at, r]);
     } else if (r !== null || (at !== null && !held && v.lay.ks[j] === "box")) {
       fact_add("own", r ?? at!);
     }
+    return w;
   });
-  return v.ws;
 }
 
 function val_owned(v: Val): string[] {
@@ -2008,6 +2037,9 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false): Val[] {
   const k = ck.k!;
   const lays = fun_of(k).lays;
   const brw = brw_of(k);
+  if (jump && sc.seg.def === k && sc.seg.kept !== undefined) {
+    brw[sc.seg.kept] = true;
+  }
   ck.all.forEach((a, q) =>
     fact("arg", arg_key(k, q)) && facts_hot(sc.def, a, true));
   const xs = ck.xs.map(term_strip);
@@ -2095,11 +2127,14 @@ function emit_open(k: Name): [Scope, Val[]] {
   return [{ ...sc, seg: seg_new(k, ret, vals), def: k }, vals];
 }
 
-function emit_native(sc: Scope, k: Name): string {
-  const name = name_id("spin_", k);
-  memo(FL.units, "spin " + k, (n) => unit_new(n, () => {
+function emit_native(sc: Scope, k: Name, kept?: number): string {
+  const name = name_id("spin_", k + (kept === undefined ? "" : KEPT + kept));
+  memo(FL.units, "spin " + name, (n) => unit_new(n, () => {
     const [sl, vals] = emit_open(k);
-    const seg = Object.assign(sl.seg, { fid: name, native: true });
+    const seg = Object.assign(sl.seg, { fid: name, native: true, kept });
+    if (kept !== undefined) {
+      vals[kept] = val_new(vals[kept].ws, BOX, [KEPT]);
+    }
     emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
     const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
@@ -2403,6 +2438,12 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
       }
       const { h, ret } = fun_of(ck.k);
+      const kept = sc.seg.def === ck.k ? sc.seg.kept : undefined;
+      const a = kept === undefined ? null : term_strip(ck.xs[kept]);
+      if (a && !(a.$ === "Var"
+        && sc.uses.get(probe_of(a))?.val.rs[0] === KEPT)) {
+        return emit_put(sc, dst, emit_spin(sc, ck));
+      }
       const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld)
         && (ret !== BOX || sc.seg.ret === BOX);
       if (sc.seg.def !== ck.k && (flat_call(x) || (dst === null && once))) {
@@ -2561,6 +2602,21 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
     bind_uses(sc, self, u, rows.map(([a]) => a), adt);
   }
   const sw = u.ws[0];
+  const d = sc.seg.def;
+  const wi = sc.seg.params.indexOf(sw);
+  let n = 0;
+  const pi = fun_of(d).lays.findIndex((l) => (n += l.ks.length) > wi);
+  if (rows === null && adt.k !== "Array" && sc.seg.native
+    && sc.seg.kept === undefined && u.rs[0] === null && wi >= 0
+    && fun_of(d).lays[pi] === BOX && seg_pure(sc.seg)
+    && mat_ctrs(x, adt).some(([c]) => fact("ctr", c))
+    && term_any(fun_of(d).h!, (s, tail) => tail && term_spine(s).k === d)) {
+    const xs = sc.seg.params.flatMap((w, j) =>
+      arr_q(sc.seg.ks[j]) ? [w, arr_loc(sc, w)] : [w]);
+    block(sc, `if (term_shr(e, ${sw})) {`, () => file_push(sc,
+      `Term ok = ${emit_native(sc, d, pi)}(${["e", "o", ...xs].join(", ")});`,
+      `term_sink(e, ${sw});`, "return ok;"));
+  }
   const tab = emit_tab(sc, cells, ret, sw);
   if (tab !== null) {
     return emit_put(sc, dst, val_new([tab], lay_of(ret)));
@@ -4004,6 +4060,20 @@ FAR void term_drop(Env e, Term t) {
       }
     }
   }
+}
+
+// Whether others hold t too: all it reaches is shared then.
+#define term_shr(e, t) (!term_triv(t) && term_rfc(t) \
+  && (a32_load(a32_at((e).mem, term_loc(t))) & RFC_CNT) > 1)
+
+// A copy of a value read under a shared root, where all is sealed or trivial.
+INLINE Term term_copy(Env e, Term t) {
+  if (term_rfc(t)) {
+    rfc_bump(e, term_loc(t), 1);
+  } else if (!term_triv(t)) {
+    err_post(e.mem, ERR_RFCS);
+  }
+  return t;
 }
 
 INLINE void term_sink(Env e, Term t) {
