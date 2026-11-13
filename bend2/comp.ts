@@ -2781,6 +2781,29 @@ function c_header(segs: Seg[], clos: string[]): string {
     `CONSTV u64 TAB_${i}[] = { ${r} };`)].join("\n\n");
 }
 
+// Continuations alike but for their locals' names are one segment: a return
+// through one target predicts.
+function segs_fuse(segs: Seg[], dev: Set<string>): Seg[] {
+  const seen = new Map<string, string>();
+  const dup = new Map<string, string>();
+  const to = (w: string) => dup.get(w) ?? w;
+  for (const s of segs.filter((s) => s.frame !== null)) {
+    const ids = new Map<string, number>();
+    dup.set(s.fid, memo(seen, [...seg_take(s), s.spin, ...s.lines].join("\n")
+      .replace(/\b_\w*_\d+\b/g, (m) => "_" + memo(ids, m, () => ids.size)),
+    () => s.fid));
+    if (dev.has(s.fid)) {
+      dev.add(to(s.fid));
+    }
+  }
+  const out = segs.filter((s) => to(s.fid) === s.fid);
+  for (const s of out) {
+    s.lines = s.lines.map((l) => l.replace(/\bFID_\w+/g, to));
+    s.refs = new Set([...s.refs].map(to));
+  }
+  return out.length < segs.length ? segs_fuse(out, dev) : out;
+}
+
 export function compile_book(book: Bend.Book): string {
   FL = file_new(main_pure(book), false);
   file_book(["main", ...RUNTIME_ADTS]);
@@ -2793,7 +2816,7 @@ export function compile_book(book: Bend.Book): string {
   const wide = [...FL.bangs].some((k) => fun_of(k).live.some(([, , A]) =>
     ty_holds(A, { tags: "ADT Typ Qua Min Eql", not: true })));
   const dev = reach([...[...FL.bangs].map(seg_fid), ...wide ? clos : []]);
-  const segs = all.filter((s) => !s.native && live.has(s.fid));
+  const segs = segs_fuse(all.filter((s) => !s.native && live.has(s.fid)), dev);
   const spins = all.filter((s) => s.native && live.has(s.fid));
   const tabs = c_header(segs, clos);
   // a spin may call one defined after it
