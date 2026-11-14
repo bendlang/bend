@@ -3,14 +3,21 @@ static void reuse_need(bool ok, const char* message) {
 }
 
 static bool reuse_empty(Env e, u32 cls) {
-  return ALC_AT(e, cls) == 0 && ALC_LEN(e, cls) == 0
+  return ALC_AT(e, cls) == 0 && ALC_LEN(e, cls) == ALC_NONE
     && ALC_COLD(e, cls) == 0;
+}
+
+// A lane's row with no chain: every count at ALC_NONE.
+static Env reuse_lane(Env e, u64* row) {
+  Env a = {e.mem, row};
+  for (u32 c = 0; c < NCLS_ALL; c += 1) ALC_LEN(a, c) = ALC_NONE;
+  return a;
 }
 
 // Private lane rows share the real corpus and bank.
 static void reuse_large(Env e, u32 cls) {
   u64 rows[2][3 * NCLS_ALL] = {0};
-  Env a = {e.mem, rows[0]}, b = {e.mem, rows[1]};
+  Env a = reuse_lane(e, rows[0]), b = reuse_lane(e, rows[1]);
   u64 first = heap_alloc(a, cls);
   heap_free(a, cls, first);
   u32 bump = a32_load(a32_at(e.mem, H_BUMP));
@@ -37,7 +44,7 @@ static void reuse_large(Env e, u32 cls) {
 // Smaller blocks keep their one-block or two-block generations.
 static void reuse_small(Env e, u32 cls) {
   u64 rows[2][3 * NCLS_ALL] = {0};
-  Env a = {e.mem, rows[0]}, b = {e.mem, rows[1]};
+  Env a = reuse_lane(e, rows[0]), b = reuse_lane(e, rows[1]);
   u64 blocks[4];
   u32 keep = KEEP(cls);
   reuse_need(2 * keep <= 4, "a small generation outgrew the check");
