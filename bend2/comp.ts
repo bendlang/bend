@@ -1171,6 +1171,9 @@ function file_new(book: Bend.Book, js: boolean) {
     opens: new Map<Of<"Lam"> | Of<"Let">, Open>(),
     uses: new Map<HTerm, Bend.PMap<number>>(),
     folds: new Map<HTerm, HTerm | null>(),
+    deeps: new Map<HTerm, HTerm | null>(),
+    calls: new Map<Name, Set<Name>>(),
+    spent: new Set<Name>(),
     spines: new Map<HTerm, Spine>(),
     ground: new Map<HTerm, boolean>(),
     steps: new Map<string, HTerm>(),
@@ -1706,6 +1709,8 @@ function unit_new(name: string, emit: () => void): Unit {
 
 function unit_emit(u: Unit): void {
   FL.folds.clear();
+  FL.deeps.clear();
+  FL.spent.clear();
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
   u.emit();
@@ -2201,35 +2206,62 @@ function emit_ctr(sc: Scope, x: Of<"Ctr">, ty: HTerm | null,
   return out;
 }
 
-function emit_fold(sc: Scope, t: HTerm): HTerm | null {
+function emit_fold(sc: Scope, t: HTerm, deep = false): HTerm | null {
   const s = term_strip(t);
-  const r = memo(FL.folds, s, () => {
+  const folds = deep ? FL.deeps : FL.folds;
+  const r = memo(folds, s, () => {
     if (term_const(s)) {
       return s;
     }
     const m = term_spine(s);
     if (m.t.$ !== "Ref" || !intr_of(m.t.k)) {
-      const b = emit_unfold(sc, m);
-      if (b === null) {
-        return null;
-      }
-      return term_any(b, (y) => {
-        sc.fuel.n--;
-        if (y.$ === "App" || y.$ === "Ref") {
-          emit_fold(sc, y);
-        }
-        return sc.fuel.n < 0;
-      }) ? null : b;
+      const b = emit_unfold(sc, m, deep);
+      return b === null || (!deep && fold_all(sc, b, null)) ? null : b;
     }
-    const as = emit_fold_args(sc, m);
-    return as.every((a, i) => a === m.all[i]) ? s
-      : as.reduce((f, x) => Bend.App(f, x), m.t);
+    const as = emit_fold_args(sc, m, deep);
+    const x = as.every((a, i) => a === m.all[i]) ? s
+      : as.reduce((f, a) => Bend.App(f, a), m.t);
+    const v = deep && as.length === fun_of(m.t.k).n
+      && as.every((a, i) => !m.live[i] || term_const(a))
+      ? row_val(sc, x, null) : null;
+    return typeof v === "boolean" ? Bend.Ctr(v ? "True" : "False", [])
+      : v !== null && ty_adt(tele_fill(m.tld!.T, m.all))?.k === "U32"
+      ? Bend.Lit("U32", v) : x;
   });
   if (r === null && sc.fuel.n < 0) {
-    FL.folds.delete(s);
+    folds.delete(s);
   }
   const T = ty_ann(t);
   return r === s ? t : r === null || T === null ? r : Bend.Ann(r, T);
+}
+
+// Folds every call under b, a unit of fuel a term: whether the fuel ran out.
+// Where a statement unfolds def k, also whether b forks or bangs (its segment
+// would too) or keeps a call that leads back to k: the constants must carry
+// a recursion to its end, or it would only be peeled.
+function fold_all(sc: Scope, b: HTerm, k: Name | null): boolean {
+  return term_any(b, (y) => {
+    sc.fuel.n--;
+    const got = y.$ === "App" || y.$ === "Ref"
+      ? emit_fold(sc, y, k !== null) : y;
+    return sc.fuel.n < 0 || (k !== null && ((y.$ === "Ref" && !!y.b)
+      || (y.$ === "Let" && y.k.length >= 2)
+      || (got === null && far_call(y) && def_reach(term_spine(y).k!, k))));
+  });
+}
+
+// Whether def d is k or calls its way to it.
+function def_reach(d: Name, k: Name, seen = new Set<Name>()): boolean {
+  if (d === k || seen.has(d)) {
+    return d === k;
+  }
+  seen.add(d);
+  return [...memo(FL.calls, d, () => {
+    const out = new Set<Name>();
+    term_any(fun_of(d).h ?? DUMMY, (y) =>
+      (y.$ === "Ref" && out.add(y.k), false));
+    return out;
+  })].some((c) => def_reach(c, k, seen));
 }
 
 function emit_refold(sc: Scope, x: HTerm): HTerm {
@@ -2242,23 +2274,57 @@ function emit_refold(sc: Scope, x: HTerm): HTerm {
   return got;
 }
 
-function emit_fold_args(sc: Scope, m: Spine): HTerm[] {
-  return m.all.map((a, i) => m.live[i] ? emit_fold(sc, a) ?? a : a);
+function emit_fold_args(sc: Scope, m: Spine, deep = false): HTerm[] {
+  const fold = (a: HTerm): HTerm => {
+    const g = deep && far_call(a) ? a : emit_fold(sc, a, deep) ?? a;
+    return deep && g !== a ? fold(g) : g;
+  };
+  return m.all.map((a, i) => m.live[i] ? fold(a) : a);
 }
 
-function emit_unfold(sc: Scope, m: Spine): HTerm | null {
+function far_call(t: HTerm): boolean {
+  return term_spine(t).k !== null && !flat_call(t);
+}
+
+// A statement's call with a constant argument unfolds past flat defs too, as
+// ANF cuts the calls its residue makes: all of it within the fuel, or none
+// (a try that fails gives its fuel back, and one that ran out is the unit's
+// last into that def). There a flat argument folds to its end, an op on
+// constants is its constant, a def with no match of its own unfolds if its
+// body's call does, and an argument that calls a def not flat is bound
+// first, so no later one is held across it.
+function emit_deep(sc: Scope, x: HTerm): HTerm | null {
+  const k = term_spine(x).k;
+  if (!far_call(x) || FL.spent.has(k!) || !term_spine(x).args.some((a) =>
+    term_const(emit_fold(sc, a) ?? a))) {
+    return null;
+  }
+  const n = sc.fuel.n;
+  const got = n < 0 ? null : emit_fold(sc, x, true);
+  if (got === null || got === x) {
+    sc.fuel.n < 0 && FL.spent.add(k!);
+    sc.fuel.n = n;
+    return null;
+  }
+  sc.uses.forEach((bd, p) => bind_set(sc, p, bd,
+    bd.n - rest_use([x], p) + rest_use([got], p)));
+  return got;
+}
+
+function emit_unfold(sc: Scope, m: Spine, deep = false): HTerm | null {
   if (m.t.$ !== "Ref") {
     return null;
   }
   const { h, n } = fun_of(m.t.k);
-  if (h === null || m.all.length !== n || !flat_of(m.t.k)) {
+  if (h === null || m.all.length !== n
+    || !(deep ? !m.t.b : flat_of(m.t.k))) {
     return null;
   }
-  const fs = emit_fold_args(sc, m);
+  const fs = emit_fold_args(sc, m, deep);
   const doms = tele_unbind(m.tld!.T).doms;
   const lets = fs.map((a, i) => !m.live[i] || term_const(a)
     || term_strip(a).$ === "Var" ? null
-    : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
+    : { p: probe("a"), v: deep ? a : Bend.Ann(a, doms[i][2]) });
   const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
     || lets.some((l) => l?.p === y && term_any(l.v, bad));
   let xs = fs.map((a, i) => lets[i]?.p ?? a);
@@ -2280,8 +2346,24 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
     xs = arm ? [...ctr_flds(c), ...xs.slice(1)] : xs;
     hit = true;
   }
-  return !hit || term_any(b, bad) ? null : lets.reduceRight((b2, l) =>
-    l ? let_open([l.p], [l.v], b2, [Bend.Many()]) : b2, b);
+  const r = deep && term_spine(b).k !== null && --sc.fuel.n >= 0
+    ? emit_fold(sc, b, true) : null;
+  const to = r === null || r === b ? b : r;
+  if (!(hit || to !== b) || term_any(to, bad)
+    || (deep && fold_all(sc, b, m.t.k))) {
+    return null;
+  }
+  // a statement's argument is typed by the arguments before it, as the
+  // caller reads its uses
+  let T = m.tld!.T;
+  lets.forEach((l, i) => {
+    const all = deep ? ty_all(T) : null;
+    T = all?.B(fs[i]) ?? T;
+    l && all && (l.v = Bend.Ann(l.v, all.A));
+  });
+  const far = (l: typeof lets[0]) => Number(deep && l && far_call(l.v));
+  return [...lets].sort((x, y) => far(y) - far(x)).reduceRight((b2, l) =>
+    l ? let_open([l.p], [l.v], b2, [Bend.Many()]) : b2, to);
 }
 
 function emit_expr(sc: Scope, tm: HTerm, ty0: HTerm | null,
@@ -2361,7 +2443,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
     return emit_put(sc, dst, emit_clo(sc, x, ty));
   }
   const l = x.$ === "Let" || (args.length === 0 && x.$ !== "Lam")
-    ? anf(x, ty) : x;
+    ? (args.length === 0 && emit_deep(sc, x)) || anf(x, ty) : x;
   if (l !== x) {
     return emit_body(sc, l, ty, args, dst);
   }
@@ -2384,6 +2466,11 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       return emit_match(sc, x, ty, args, dst);
     }
     case "Let": {
+      const got = x.k.length < 2 && emit_deep(sc, x.v[0]);
+      if (got) {
+        return emit_body(sc, let_open(term_open(x).ps, [got],
+          term_open(x).b), ty, args, dst);
+      }
       if (x.k.length >= 2
         || (term_spine(x.v[0]).k !== null && !flat_call(x.v[0]))) {
         return emit_fork(sc, x);
