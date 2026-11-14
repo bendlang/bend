@@ -4203,9 +4203,12 @@ INLINE u32 ring_lap(u32 pos) {
 
 INLINE void ring_push(DEV u64* H, u32 r, Term tsk) {
   u32 pos = a32_add(ring_put(H, r), 1);
-  if (pos - a32_load_acq(ring_get(H, r)) >= RING_LEN) {
-    err_post(H, ERR_RING);
-    return;
+  // retry a stale get
+  for (u32 n = 0; pos - a32_load_acq(ring_get(H, r)) >= RING_LEN; n += 1) {
+    if (n == 64) {
+      err_post(H, ERR_RING);
+      return;
+    }
   }
   DEV u32* lo = (DEV u32*)ring_slot(H, r, pos);
   a32_store(lo, (u32)tsk);
