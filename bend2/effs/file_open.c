@@ -48,6 +48,7 @@ static Term file_open_start(Env e, Term* f, IoWork* w, u64 cons) {
   if (w->code != 0) {
     return file_open_pack(e, w);
   }
+  io_sync();
   return io_work(w, file_open_call, file_open_pack);
 }
 

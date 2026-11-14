@@ -78,7 +78,11 @@ a tracing garbage collector.
 
 Blocking work leaves the loop in two ways. `io_work(w, call, pack)` runs
 `call(w)` on a helper thread, then `pack(e, w)` on the loop; `pack`'s value
-is the answer. `call` has no `Env`: it may only touch `w`.
+is the answer. `call` has no `Env`: it may only touch `w`. A job that can
+reach stdout's destination (a file it opens, reads or writes, or a process
+that can read that file) calls `io_sync()` first: it flushes stdout, so
+`IO.print`'s earlier output lands before the job's. Other `io_work` jobs
+keep stdout buffered.
 `io_wait_on(w, fd, POLLIN, 0, more)` parks until `fd` is ready (`POLLIN` or
 `POLLOUT`), then runs `more(e, w)` on the loop; `more` may call
 `io_wait_on` again. Both return `IO_PARK`, which the effect returns.

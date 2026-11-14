@@ -36,6 +36,7 @@ static Term file_read_start(Term file, u64 max, IoWork* w,
   w->hand = (intptr_t)io_hand_v(file);
   w->word = max < INT32_MAX ? max : INT32_MAX;
   w->data = io_mem(malloc(w->word + 1));
+  io_sync();
   return io_work(w, call, pack);
 }
 
