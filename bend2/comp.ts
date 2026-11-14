@@ -2187,8 +2187,9 @@ function ix_word(sc: Scope, w: string, sub = 0): Iv {
     return IX_ANY;
   }
   if (role === "down") {
-    return { lo: "0ull", hi: ix_tmp(`(${at} > ${sub} ? ${at} - ${sub} : 0)`),
-      p, add: -sub };
+    // a bound of 2^32 - 1 is no bound (a Nat may be past it), and stays none
+    return { lo: "0ull", hi: ix_tmp(`(${at} == ${IX_MAX} ? ${IX_MAX} : ${at
+      } > ${sub} ? ${at} - ${sub} : 0)`), p, add: -sub };
   }
   if (role === "same") {
     return { lo: at, hi: at, p, add: 0 };
@@ -2220,7 +2221,8 @@ function iv(sc: Scope, tm: HTerm): Iv {
     return { lo: c, hi: c };
   }
   const m = term_spine(s);
-  const k = m.t.$ === "Ref" ? m.t.k : "";
+  // an operator is Base's def of that name, not a file's own
+  const k = m.t.$ === "Ref" && m.tld?.$ === "Def" && m.tld.b ? m.t.k : "";
   const [a, b] = [0, 1].map((i) => m.args[i] ? iv(sc, m.args[i]) : IX_ANY);
   const one = { lo: "1ull", hi: "1ull" };
   const wrap = (raw: string, lo: string): Iv =>
