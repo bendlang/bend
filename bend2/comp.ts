@@ -105,6 +105,8 @@ const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
 
+const BASE_MAX = 8;
+
 const USE0 = Bend.Emp<number>();
 
 const W32: Lay = { ks: ["w32"], arms: null };
@@ -501,6 +503,14 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   const kids = term_kids(s);
   return kids.some((x, i) => term_any(x, p, tail && (s.$
     === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
+}
+
+// The most calls of k along one path: a match takes its arm with the most.
+function term_calls(t: HTerm, k: Name): number {
+  const s = term_force(t);
+  return term_kids(s).map((x) => term_calls(x, k)).reduce((a, b) =>
+    s.$ === "Mat" ? Math.max(a, b) : a + b,
+  Number(s.$ === "App" && term_spine(s).k === k));
 }
 
 function term_const(t: HTerm): boolean {
@@ -1148,6 +1158,7 @@ function file_new(book: Bend.Book, js: boolean) {
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
+    trees: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
@@ -1986,7 +1997,8 @@ function emit_task(sc: Scope, fid: string, rem: number, words: string[],
     `task_node(e, ${seg_ref(sc, fid)}, ${cont}, ${idx}, ${rem})`, words);
 }
 
-function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
+function emit_jump(sc: Scope, args: string[], k: Name, bang = false,
+  base: string[] = []): void {
   const fid = seg_fid(k);
   sc.seg.fork ||= bang;
   if (bang || sc.seg.def !== k) {
@@ -1995,7 +2007,7 @@ function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
       file_push(sc, `return term_tsk(${fid}, ${
         emit_task(sc, fid, 0, args)});`));
   }
-  file_push(sc, ...args.map((a, i) => `r${i} = ${a};`));
+  file_push(sc, ...args.map((a, i) => `r${i} = ${a};`), ...base);
   if (sc.seg.def !== k) {
     return file_push(sc, `WL_JMP(${seg_ref(sc, fid)});`);
   }
@@ -2464,14 +2476,17 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       .flatMap(([p, b]) => (pos.set(p, depth), depth += b.val.ws.length,
         b.val.ws));
     const kf = seg_fid(kn);
-    emit_chain(sc, [[`WL_SEQ(${sc.seg.fid})`, () => {
+    const on = `WL_SEQ(${sc.seg.fid})`;
+    emit_chain(sc, [[on, () => {
       const fr = [...ws, seg_ref(sc, kf)];
       file_push(sc, `WL_ROOM(${fr.length});`,
         ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
     }], ...fork ? [] : [["", () => file_push(sc, `WL_CONT = term_tsk(${kf}, ${
       emit_task(sc, kf, 1, ws)});`,
       `WL_IDX = ${ws.length};`)] as [string, () => void]]]);
-    emit_jump(sc, cargs, c.k!, !fork && c.b);
+    emit_jump(sc, cargs, c.k!, !fork && c.b, c.b || !memo(FL.trees, c.k!, (k) =>
+      term_calls(fun_of(k).h ?? DUMMY, k) > 1) ? []
+      : [`//base ${seg_fid(c.k!)} ${kf} ${fork ? 1 : on}`]);
     const top = i < calls.length - 1 ? depth : 0;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const { ret } = fun_of(c.k!);
@@ -2724,6 +2739,53 @@ function c_units(): Unit[] {
   return [...FL.units.values()];
 }
 
+// A call that pushed its frame carries a //base line naming its callee and
+// its continuation, if the callee calls itself twice on one path (a tree's
+// calls mostly end at once; a list's test would run once per element for
+// one hit). The line becomes the callee's arms that return at once (the
+// leading chain of its entry, the other arms left empty), each jumping to
+// that continuation in place of its return; an arm that pushes, jumps,
+// calls a spin (clang inlines a spin with one site) or leaves the loop stays
+// in the callee, as does one past BASE_MAX lines.
+function seg_base(s: Seg): string[] | null {
+  const out: string[] = [];
+  let n = 0;
+  let at = -1;
+  for (const l of s.frame === null ? s.lines : []) {
+    if (l[0] === " ") {
+      out.push(l);
+      continue;
+    }
+    const arm = out.slice(at + 1);
+    if (at >= 0 && /^  WL_RETN\(\d+\);$/.test(arm.pop() ?? "")
+      && arm.length < BASE_MAX && !arm.some((x) =>
+        /WL_|STK\(|\b(seq|sp|goto|break|continue|return)\b|spin_/.test(x))) {
+      n = out.length;
+    } else {
+      out.length = at + 1;
+    }
+    if (!(at < 0 ? /^if \(.*\) \{$/ : /^\} else( if \(.*\))? \{$/).test(l)) {
+      break;
+    }
+    at = out.length;
+    out.push(l);
+  }
+  return n > 0 ? [...seg_take(s), ...out.slice(0, n), "}"] : null;
+}
+
+function segs_base(segs: Seg[]): void {
+  const arms = new Map(segs.map((s) => [s.fid, seg_base(s)]));
+  for (const s of segs) {
+    s.lines = s.lines.flatMap((l) => {
+      const m = l.match(/^( *)\/\/base (\S+) (\S+) (.+)$/);
+      const b = m && arms.get(m[2]);
+      return !m ? [l] : !b ? [] : seg_text([`if (!DEVICE && ${m[4]}) {`,
+        ...b.map((x) => "  " + x.replace(/WL_RETN\(\d+\);/,
+          `WL_POPN(1); WL_JMP(${m[3]});`)), "}"], m[1].length / 2);
+    });
+  }
+}
+
 function c_header(segs: Seg[], clos: string[]): string {
   const arg = val_new([""], W64);
   const entries = [...segs, seg_new("IO~emit", BOX, [arg]),
@@ -2795,6 +2857,7 @@ export function compile_book(book: Bend.Book): string {
   const dev = reach([...[...FL.bangs].map(seg_fid), ...wide ? clos : []]);
   const segs = all.filter((s) => !s.native && live.has(s.fid));
   const spins = all.filter((s) => s.native && live.has(s.fid));
+  segs_base(segs);
   const tabs = c_header(segs, clos);
   // a spin may call one defined after it
   const img = [`CONSTV u64 STAT_IMG[] = { ${FL.img.join(", ") || 0} };`,
