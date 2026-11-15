@@ -11,7 +11,7 @@ def app(~f, x):
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : a name
+#|- expected : bare parameter names and no '->' (def app fills a law, which gives the types)
 #|- observed : '~'
 #|Location:
 #| 8 | 

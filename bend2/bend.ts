@@ -2484,13 +2484,16 @@ export function parse_terms(p: Parse): LTerm[] {
 // Tele
 // ----
 
-export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Quant, Name, number, LTerm, Span]> {
+export function parse_tele(p: Parse, close: string, tk: Name[] = [], fill = ""): Array<[Quant, Name, number, LTerm, Span]> {
   const tele: Array<[Quant, Name, number, LTerm, Span]> = [];
   const seen = new Set<Name>();
   while (true) {
     parse_skip(p);
     if (parse_take(p, close)) {
       return tele;
+    }
+    if (fill && !char_is_head(parse_peek(p))) {
+      parse_fail(p, fill);
     }
     if (close === ")" && parse_at(p, "~") && tk.length < tele.length) {
       parse_fail(p, "a plain binder (only leading binders take ~)");
@@ -2505,6 +2508,9 @@ export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Qua
     seen.add(k);
     const s   = parse_span(p, beg);
     parse_skip(p);
+    if (fill && parse_at(p, ":")) {
+      parse_fail(p, fill);
+    }
     const bare = q.$ === "Lone" && !parse_at(p, ":");
     if (!bare) {
       parse_eat(p, ":");
@@ -2541,17 +2547,14 @@ export function parse_def(p: Parse, u: Bool): void {
   const k   = law ? q : parse_fresh(p, nm);
   const un  = parse_take(p, "?") || u;
   parse_eat(p, "(");
-  parse_skip(p);
-  if (law && parse_at(p, "~")) {
-    parse_fail(p, "a name");
-  }
+  const fill = law ? "bare parameter names and no '->' (def " + nm + " fills a law, which gives the types)" : "";
   const tk: Name[] = [];
-  const tele = parse_tele(p, ")", tk);
+  const tele = parse_tele(p, ")", tk, fill);
   parse_skip(p);
   let def: Def;
   if (law) {
-    if (tele.some((cell) => cell[3].$ !== "Qnt")) {
-      parse_fail(p, "a name");
+    if (parse_at(p, "->")) {
+      parse_fail(p, fill);
     }
     if (tele.length < law.x) {
       parse_fail(p, "a name for each ~ clause of the law (" + String(law.x) + ")");

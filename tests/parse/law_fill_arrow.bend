@@ -1,5 +1,5 @@
 # a def that fills a law declares no return type: its text is bare names,
-# and a "->" after them is refused at the missing ':', so a fill cannot
+# and a "->" after them is refused where it is written, so a fill cannot
 # state a type other than the law's
 law claim:
   for n: Nat
@@ -10,7 +10,7 @@ def claim(n) -> {0n == 1n : Nat}:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- expected : ':'
+#|- expected : bare parameter names and no '->' (def claim fills a law, which gives the types)
 #|- observed : '-'
 #|Location:
 #|7 | 
