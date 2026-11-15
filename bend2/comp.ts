@@ -4810,8 +4810,8 @@ static long cpu_count(void) {
 OUTLINE void pool_turn(bool grow, u32 rows) {
   static u32 up;
   rows = rows < CUBE_G ? rows : CUBE_G;
-  u32 workers = grow ? rows : pool_ready;
-  u32 step = grow ? 1 : pool_step(rows);
+  u32 workers = grow ? rows : pool_ready,
+      step = grow ? 1 : pool_step(rows);
   a32_store(&pool_done, rows * step);
   if (grow) {
     pool_ready = 0;
@@ -5214,7 +5214,7 @@ static void cube_run(u64* H, bool gpu) {
       gpu_pass(H);
       f = (u32)H[H_FRONT];
     } else {
-      u32 rows = f;
+      u32 rows = pool_ready = f;
       u32 want = (pool_size - 1) / (CUBE_T / LINE) + 1;
       if (f < want) {
         u32 cur = row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, want, f, NULL);
