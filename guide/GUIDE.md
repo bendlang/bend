@@ -637,10 +637,9 @@ A `Nat` literal past `256n` is `U32.to_nat(n)` underneath, up to `4294967295n`.
 
 ## Under the Hood
 
-Bend's compiler emits one C file, and that file is both the CPU program and the
-GPU kernel. clang compiles it for the CPU. Metal (on Apple) or CUDA (on NVIDIA)
-compiles the same file for the GPU. So a `!` call runs the same code on
-whichever chip it lands on.
+One emitted C file runs on both CPU and GPU: clang builds the CPU program;
+Metal (Apple) or CUDA (NVIDIA) builds the kernel. A `!` call runs the same
+code on either chip.
 
 A term is one 64-bit word: small values are stored inline, everything else is a
 pointer into a single heap shared by every core and by the GPU. There is no
@@ -649,6 +648,7 @@ on the spot, but copying any value of a datatype makes all its nodes count their
 fields. There is no C stack either: each def compiles to a segment of a flat
 state machine, a call is a jump, and a parallel call creates a join task plus
 one task per call, which the scheduler deals across CPU or GPU lanes.
+Two-word scalar records open eagerly for locality; wider records can stay boxed.
 `paper/BendRT.pdf` has the design and the benchmarks.
 
 Bend's theory has one universe and no positivity check: `Type : Type` holds,

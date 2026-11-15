@@ -1,8 +1,5 @@
-# compile (closure_record_shared): a closure's result is a flat record
-# bound with + and used twice. The closure returns it boxed; the binding
-# stays boxed: the first use reads its words in place and the last takes
-# the node (a share of the node that did not heat its type freed it twice:
-# memory fault).
+# A record returned by a closure is read by both sum and difference.
+# The first read must leave the fields available for the second.
 import Base
 
 type P is Data:
