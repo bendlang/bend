@@ -2652,6 +2652,10 @@ def Array.size(-T: Type, a: Array<T>) -> Array<T> & U32:
     case ANode{xs, ys}:
       Array.size.node(T, ys, Array.size(T, xs))
 
+# A consuming size projection, also usable in erased index bounds.
+def Array.capacity(-T: Type, a: Array<T>) -> U32:
+  Pair.snd(Array<T>, U32, Array.size(T, a))
+
 def Array.swap.lo(-T: Type, ys: Array<T>, r: Array<T> & T) -> Array<T> & T:
   (nxs, old) = r
   (ANode{nxs, ys}, old)
@@ -2800,6 +2804,11 @@ def Array.get.at(-T: Data, i: U32, an: Array<T> & U32) -> Array<T> & T:
 
 def Array.get(-T: Data, a: Array<T>, +i: U32) -> Array<T> & T:
   Array.get.at(T, i, Array.size(T, a))
+
+# A proof-bound read: the erased bound permits skipping the wrap mask.
+def Array.get_in(-T: Data, a: Array<T>, +i: U32,
+  -h: {U32.is_lt(i, Array.capacity(T, a)) == True{} : Bool}) -> Array<T> & T:
+  Array.get(T, a, i)
 
 # A read at an index the caller promises is below the block's capacity: it
 # skips the wrap mask. @unsafe, like Array.fork; only reads.
