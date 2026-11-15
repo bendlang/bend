@@ -454,6 +454,15 @@ try {
   const argv = await bend([argn, "x", "--", "--verdict"]);
   check("a plain run gets its arguments: " + argv.err, argv.code === 0
     && argv.out === "3\n");
+  const inline_args = await bend(["--script", fs.readFileSync(argn, "utf8"),
+    "x", "--", "--verdict"]);
+  check("an inline program gets its arguments, including a quoted option: "
+    + inline_args.err, inline_args.code === 0 && inline_args.out === "3\n");
+  const before_inline = fs.readdirSync(TMP).sort().join("\n");
+  const bad_inline = await bend(["--script", "not valid Bend"]);
+  check("a failed inline load leaves the working directory alone: "
+    + bad_inline.err, bad_inline.code === 1
+    && fs.readdirSync(TMP).sort().join("\n") === before_inline);
   // a built program's runtime options are BENDRTS's, then those between
   // +RTS and -RTS; the rest are its arguments, -- among them, and --RTS
   // (dropped) makes every one after it the program's
@@ -511,6 +520,13 @@ try {
     && got.ok && await got.text() === lics["sub/LICENSE"]);
   check("the notice names the terms and the shallowest LICENSE's SPDX id",
     spdx.err.includes(TERMS + "License: MIT (LICENSE)\n"));
+  const remote_entry = await bend([hash + "/lic_spdx.bend"],
+    { BEND_HUB: ORIGIN });
+  check("a published file runs as the entry, with its relative imports: "
+    + remote_entry.err, remote_entry.code === 0 && remote_entry.out === "2n\n");
+  const inline_import = await bend(["--script", use("pub/spdx/sub/two.bend")]);
+  check("an inline program imports from the working directory: "
+    + inline_import.err, inline_import.code === 0 && inline_import.out === "2n\n");
   const docs = { "lic_docs.bend": use("sub/two.bend"), "sub/two.bend": two,
     "README.md": "# Two\n\nReturns two.\n", "sub/README.md": "left out\n" };
   const readme = await publish("docs", docs);

@@ -38,7 +38,8 @@ const BUILD = "";
 
 // the commands, one row each: [usage, what it does]; bend guide stays last
 const USAGE = [
-  ["bend <file.bend> [args]", "check the file, then run main with args"],
+  ["bend <entry> [args]", "check a local .bend file or hub path, then run main with args"],
+  ["bend --script <source> [args]", "check inline source, then run main with args"],
   ["bend <file.bend> -o <out>", "build a binary, or C, JS, .mjs or BendTT by extension"],
   ["bend <file.bend> --check-only", "check the file and its imports; run nothing"],
   ["bend <file.bend> --verdict", "check it, then recheck it with the proven kernel"],
@@ -63,6 +64,8 @@ Read the guide (\`bend guide\`) before writing Bend code.
 `;
 
 const BASE = Bend.BASE_BEND;
+
+const HUB_ENTRY = /^(?:0x[0-9a-f]+|[^/\s]+@[^/\s]+)\/\S+\.bend$/;
 
 const GUIDE = path.join(Bend.BEND_DIR, "..", "guide");
 
@@ -241,6 +244,7 @@ async function cli_file(args: string[]): Promise<void> {
   const outs: string[] = [];
   const argv: string[] = [];
   let file: string | undefined;
+  let source: string | undefined;
   let only = false;
   let verdict = false;
   let checkup = false;
@@ -250,6 +254,13 @@ async function cli_file(args: string[]): Promise<void> {
     const a = args[i];
     if (a === "--help" || a === "-h") {
       return cli_say(1, HELP);
+    } else if (a === "--script") {
+      if (file !== undefined) {
+        cli_fail("--script supplies the entry, not a second input");
+      }
+      i += 1;
+      source = args[i] ?? cli_fail("--script needs source text");
+      file = "--script";
     } else if (a === "--check-only") {
       only = true;
     } else if (a === "--verdict") {
@@ -284,14 +295,18 @@ async function cli_file(args: string[]): Promise<void> {
     || checkup || publish || argv.length !== 0)) {
     cli_fail("a page bundles with -o <dir>");
   }
+  if ((publish || checkup) && (source !== undefined
+    || HUB_ENTRY.test(file) && !fs.existsSync(file))) {
+    cli_fail("--publish and --checkup need a local entry file");
+  }
   if (publish && (outs.length !== 0 || only || verdict || checkup)) {
     cli_fail("--publish takes no other option");
   }
   if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
     cli_fail((verdict ? "--verdict" : "--check-only") + " takes no other option");
   }
-  // args go to a plain run only: any option (all start with -) refuses them
-  if (argv.length !== 0 && args.some((a) => a.startsWith("-") && a !== "--")) {
+  // Arguments belong to a run; --script only changes its input.
+  if (argv.length !== 0 && (outs.length !== 0 || only || verdict || checkup || publish)) {
     cli_fail("arguments go to a run: bend <file.bend> [args]");
   }
   if (checkup && outs.length !== 0) {
@@ -309,7 +324,7 @@ async function cli_file(args: string[]): Promise<void> {
       return await cli_checkup(file);
     }
     const seen = new Map<string, string | null>();
-    const book = await book_read(file, undefined, seen);
+    const book = await book_read(file, undefined, seen, source);
     if (only || verdict) {
       process.exitCode = cli_verdict(book, verdict);
       return;
@@ -1048,14 +1063,48 @@ function cli_fail(msg: string): never {
 // Book
 // ====
 
+async function book_source(book: Bend.Book, source: string, dir: string,
+  seen: Map<string, string | null>): Promise<string> {
+  const file = path.join(dir, ".bend-input-" + crypto.randomUUID() + ".bend");
+  const fd = fs.openSync(file, "wx", 0o600);
+  try {
+    fs.writeFileSync(fd, source);
+    await Bend.book_load(book, file, "", seen);
+    return file;
+  } finally {
+    fs.closeSync(fd);
+    fs.unlinkSync(file);
+  }
+}
+
 async function book_read(file: string, base?: Bend.Book,
-  seen = new Map<string, string | null>()): Promise<Bend.Book> {
+  seen = new Map<string, string | null>(), source?: string): Promise<Bend.Book> {
   const book = base === undefined ? Bend.book_nil() : book_seed(base);
   if (base !== undefined) {
     seen.set(BASE, "");
   }
   try {
-    await Bend.book_load(book, file, "", seen);
+    if (source !== undefined) {
+      file = await book_source(book, source, process.cwd(), seen);
+    } else if (HUB_ENTRY.test(file) && !fs.existsSync(file)) {
+      await book_source(book, "import " + file + " as Entry\n", os.tmpdir(), seen);
+      // The wrapper has one import, entered before that module's dependencies.
+      for (const [real, ns] of seen) {
+        if (ns) {
+          file = real;
+          const key = ns + ":main";
+          const main = book.tlds[key];
+          if (main?.$ === "Def" && (main.v !== null || main.i !== undefined)) {
+            book.tlds.main = { $: "Def", n: 0, x: 0, T: main.T,
+              v: Bend.Ref(key), u: main.u, m: "" };
+            book.order.push("main");
+          }
+          break;
+        }
+      }
+    } else {
+      await Bend.book_load(book, file, "", seen);
+    }
     const laws = path.join(path.dirname(file), "LAWS.bend");
     if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws)
       && !seen.has(fs.realpathSync(laws))) {
