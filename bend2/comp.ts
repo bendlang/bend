@@ -1095,6 +1095,19 @@ function loop_of(k: Name): Name[] {
   return memo(FL.loops, k, () => (visit(k), FL.loops.get(k)!));
 }
 
+// A tail Nat.add, or successors, of a call to d: a flat d loops on that call
+// and sums the other operand in acc. No partial sum of Nats passes the whole.
+// A second call to d, in the other operand, keeps d from being flat.
+function acc_of(d: Name, t: HTerm): [HTerm | number, HTerm] | null {
+  const s = term_strip(t);
+  const m = term_spine(s);
+  const [b, n] = s.$ === "Ctr" && s.k === "Succ" ? nat_peel(s) : [null, 0];
+  const i = m.t.$ === "Ref" && m.t.k === "Nat.add" && intr_of(m.t.k)
+    ? m.args.findIndex((a) => term_spine(a).k === d) : -1;
+  return b !== null && term_spine(b).k === d ? [n, b]
+    : i < 0 ? null : [m.args[1 - i], m.args[i]];
+}
+
 function flat_of(k: Name): boolean {
   return memo(FL.flats, k, () => {
     const deps = FL.srcs.get(k);
@@ -1148,6 +1161,7 @@ function file_new(book: Bend.Book, js: boolean) {
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
+    accs: new Set<Name>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
@@ -1229,7 +1243,13 @@ function file_book(roots: Name[]): void {
     }
     const deps = new Set<Name>();
     let flat = true;
+    let acc: HTerm | null = null;
     term_any(fun_of(d).h!, (s, tail) => {
+      const ac = tail && !FL.js && fun_of(d).ret === W64 ? acc_of(d, s) : null;
+      if (ac) {
+        acc = term_strip(ac[1]);
+        FL.accs.add(d);
+      }
       if (s.$ === "Ref") {
         if (s.b) {
           FL.bangs.add(s.k);
@@ -1244,7 +1264,8 @@ function file_book(roots: Name[]): void {
         deps.add(ck.k);
       }
       flat &&= !((s.$ === "Let" && s.k.length >= 2)
-        || (ck.k !== null && (ck.b || (ck.k === d && !tail))));
+        || (ck.k !== null && (ck.b
+          || (ck.k === d && !tail && term_strip(s) !== acc))));
       return false;
     });
     FL.srcs.set(d, flat ? deps : null);
@@ -2052,13 +2073,18 @@ function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = [],
     ...sc.rest] }, x, tys[i] ?? null, ats[i] ?? null));
 }
 
+function acc_on(sc: Scope): boolean {
+  return sc.seg.native && FL.accs.has(sc.seg.def);
+}
+
 function emit_put(sc: Scope, dst: Val | null, v: Val): void {
   bind_dead(sc, []);
   if (dst === null) {
     spare_flush(sc);
   }
   const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret));
-  file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${w};`));
+  file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${
+    acc_on(sc) ? `nat_chk(e, acc + ${w})` : w};`));
   if (dst === null) {
     file_push(sc, `WL_RETN(${ws.length});`);
   }
@@ -2104,6 +2130,7 @@ function emit_native(sc: Scope, k: Name): string {
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
     const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
       arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
+      ...FL.accs.has(k) ? ["u64 acc = 0;"] : [],
       seg.spin ? "WL_SPIN" : "for (;;) {"],
       1), ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
     const text = body.join("\n");
@@ -2398,6 +2425,13 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_body(sc, term_eta(x, ty!, 1), ty, args, dst);
       }
       sc = { ...sc, rest: [] };
+      const ac = acc_on(sc) ? acc_of(sc.seg.def, x) : null;
+      if (ac) {
+        file_push(sc, `acc = nat_chk(e, acc + ${typeof ac[0] === "number"
+          ? ac[0] : emit_expr({ ...sc, rest: [ac[1]] }, ac[0], null, W64)
+            .ws[0]});`);
+        return emit_body(sc, ac[1], ty, [], dst);
+      }
       const ck = term_spine(x);
       if (ck.k === null) {
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));
