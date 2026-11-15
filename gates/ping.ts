@@ -521,6 +521,42 @@ try {
     + " beside another file stays out: " + readme.err, readme.code === 0
     && readme.out.startsWith(pkg_hash(sent) + "\n") && shown.ok
     && await shown.text() === docs["README.md"]);
+  const carry = {
+    "lic_carry.bend": use("sub/two.bend"), "sub/two.bend": two,
+    "LICENSE": "SPDX-License-Identifier: MIT-0\n",
+    "LAWS.bend": "import Base\ndef shift(x: U32) -> U32:\n  (x + 3 : U32)\n",
+    "PROOF.bend": "import Base\nimport ./LAWS.bend as L\n"
+      + "def witness() -> {L.shift(0) == 3 : U32}:\n  {==}\n"
+      + "def answer(x: U32) -> U32:\n  L.shift(L.shift(x))\n",
+    "counter.blend": "object Counter\n  step = 3\n",
+  };
+  const omitted = await publish("carry", carry);
+  check("unimported files stay out unless requested: " + omitted.err,
+    omitted.code === 0 && omitted.out.startsWith(pkg_hash({
+      "lic_carry.bend": carry["lic_carry.bend"], "sub/two.bend": two,
+      "LICENSE": carry.LICENSE }) + "\n"));
+  const carryDir = path.join(TMP, "pub", "carry");
+  const carried = await bend([path.join(carryDir, "lic_carry.bend"),
+    "--publish", ...["LAWS.bend", "PROOF.bend", "counter.blend"]
+      .flatMap((f) => ["--extra", path.join(carryDir, f)])], { BEND_HUB: ORIGIN });
+  const carryHash = pkg_hash(carry);
+  const blend = await fetch(ORIGIN + "/" + carryHash + "/counter.blend");
+  check("requested text files go along without being parsed: " + carried.err,
+    carried.code === 0 && carried.out.startsWith(carryHash + "\n")
+    && blend.ok && await blend.text() === carry["counter.blend"]);
+  fs.writeFileSync(path.join(TMP, "carry.bend"), "import Base\nimport "
+    + carryHash + "/PROOF.bend as P\ndef main() -> IO(Unit):\n"
+    + "  IO.print(U32.show(P.answer(7)))\n");
+  const proof = await bend([path.join(TMP, "carry.bend")], { BEND_HUB: ORIGIN });
+  check("a carried proof imports its carried law and runs: " + proof.err,
+    proof.code === 0 && proof.out === "13\n");
+  fs.writeFileSync(path.join(TMP, "carry_entry.bend"), "import Base\n"
+    + carried.out.slice(carried.out.indexOf("\n") + 1)
+    + "def main() -> Nat:\n  Lic_carry.main()\n");
+  const carryEntry = await bend([path.join(TMP, "carry_entry.bend")],
+    { BEND_HUB: ORIGIN });
+  check("extras keep the printed entry alias usable: " + carryEntry.err,
+    carryEntry.code === 0 && carryEntry.out === "2n\n");
   const big = await publish("big", { "lic_big.bend": two,
     "README.md": "x".repeat(65537) });
   check("a README.md over 64 KB is refused before mining: " + big.err,
@@ -530,8 +566,7 @@ try {
     const run = await bend([path.join(TMP, "sum.bend"), ...flags],
       { BEND_HUB: ORIGIN, BEND_NO_TELEMETRY: "1" });
     check(flags.join(" ") + " is refused before publishing: " + run.err,
-      run.code === 1 && run.out === "" && run.err === "bend: --publish"
-      + " takes no other option (see bend --help)\n" && seen.length === count);
+      run.code === 1 && run.out === "" && seen.length === count);
   }
   const ids: [string, string][] = [
     ["SPDX-License-Identifier: MIT\r\n", "MIT (LICENSE)"],
