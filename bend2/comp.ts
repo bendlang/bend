@@ -3674,7 +3674,8 @@ INLINE u64 nat_chk(Env e, u64 n) {
 }
 
 INLINE u64 nat_mul(Env e, u64 a, u64 b) {
-  return nat_chk(e, b != 0 && a > NAT_IMM / b ? NAT_IMM + 1 : a * b);
+  return nat_chk(e, (a | b) >> 32 != 0 && b != 0 && a > NAT_IMM / b
+    ? NAT_IMM + 1 : a * b);
 }
 
 INLINE u64 map_msb_u(u64 n, u32 x) {
