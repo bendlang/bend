@@ -206,6 +206,10 @@ static void file_read_line_call(IoWork* w) {
 // straight from the buffer: it reads no fd, so it neither blocks nor
 // flushes stdout, and skips the helper thread's round trip.
 Term file_read_line_run(Env e, Term* f, IoWork* w) {
+  // A zero-byte read still checks for errors such as EBADF.
+  if (f[1] == 0) {
+    return file_read_start(f[0], 0, w, file_read_call, file_read_pack);
+  }
   u64       hand = io_hand_v(f[0]);
   FileLine* b    = file_line_of((int)hand, false);
   u64       max  = f[1] < INT32_MAX ? f[1] : INT32_MAX;
