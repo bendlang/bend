@@ -1009,6 +1009,9 @@ function mat_ops(eq: (k: Name) => string): string {
 // fun_of raises a def's arity by the lambdas its body opens past its
 // parameters under every arm. A def is flat if it and its callees have no
 // fork, no bang call and only tail self-calls; loop_of is its tail cycle.
+// A cycle of several defs is flat too if none calls another in an argument
+// and one is a head: each other def is named once in the cycle, so the
+// head's spin holds its body in place of that call.
 
 function fun_of(k: Name): Fun {
   return memo(FL.funs, k, () => {
@@ -1095,11 +1098,24 @@ function loop_of(k: Name): Name[] {
   return memo(FL.loops, k, () => (visit(k), FL.loops.get(k)!));
 }
 
+function loop_head(h: Name): boolean {
+  const all = loop_of(h);
+  return all.every((d) => d === h || all.reduce((n, c) =>
+    n + (FL.sites.get(c + " " + d) ?? 0), 0) === 1);
+}
+
 function flat_of(k: Name): boolean {
   return memo(FL.flats, k, () => {
-    const deps = FL.srcs.get(k);
-    FL.flats.set(k, false);
-    return deps != null && [...deps].every(flat_of);
+    const all = [k, ...loop_of(k)];
+    all.forEach((d) => FL.flats.set(d, false));
+    const ok = all.some(loop_head) && all.every((d) => {
+      const deps = FL.srcs.get(d);
+      return deps != null && [...deps].every((x) => all.includes(x)
+        || flat_of(x)) && !term_any(fun_of(d).h!, (s, tail) =>
+        !tail && all.includes(term_spine(s).k!));
+    });
+    all.forEach((d) => FL.flats.set(d, ok));
+    return ok;
   });
 }
 
@@ -1236,7 +1252,8 @@ function file_book(roots: Name[]): void {
         }
         if (!intr_of(s.k)) {
           src_add(s.k);
-          FL.sites.set(s.k, (FL.sites.get(s.k) ?? 0) + 1);
+          [s.k, d + " " + s.k].forEach((k) =>
+            FL.sites.set(k, (FL.sites.get(k) ?? 0) + 1));
         }
       }
       const ck = term_spine(s);
@@ -2406,7 +2423,9 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       const once = FL.sites.get(ck.k) === 1 && !ck.b && !def_foreign(ck.tld)
         && (ret !== BOX || sc.seg.ret === BOX);
       if (sc.seg.def !== ck.k && (flat_call(x) || (dst === null && once))) {
-        return flat_of(ck.k) ? emit_put(sc, dst, emit_spin(sc, ck))
+        return flat_of(ck.k) && !(dst && loop_head(sc.seg.def)
+          && loop_of(ck.k).includes(sc.seg.def))
+          ? emit_put(sc, dst, emit_spin(sc, ck))
           : emit_body({ ...sc, def: ck.k }, h!, ck.tld!.T,
             emit_args(sc, ck, true), dst);
       }
