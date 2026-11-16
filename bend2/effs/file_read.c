@@ -1,22 +1,24 @@
 // File
 // ====
 
-#include <sys/stat.h>
-
 #ifdef CID(File.read_line)
 
 // A handle File.read_line reads keeps what it read past its line in a
 // buffer of its own, so a line costs one read(2) per FILE_LINE_CAP bytes,
 // not one per byte, on a pipe or a terminal as on a file. The bytes in it
 // are the handle's, not the fd's: File.read answers them first, a write
-// and File.close give them back to a regular file (lseek), and on a pipe
-// they stay for the next read. A handle runs one effect at a time, so only
-// the table, which handles on other threads grow, needs the lock.
-#define FILE_LINE_CAP 65536
+// and File.close give them back to a file that seeks (lseek), and on a
+// pipe they stay for the next read. A handle runs one effect at a time,
+// so only the table, which handles on other threads grow, needs the lock.
+// A line whole in the buffer answers on the loop, but only FILE_LINE_RUNS
+// in a row: then one goes through the helper, so the loop polls.
+#define FILE_LINE_CAP  65536
+#define FILE_LINE_RUNS 64
 
 typedef struct {
   u64  head;
   u64  tail;
+  u32  runs;
   char data[FILE_LINE_CAP];
 } FileLine;
 
@@ -40,6 +42,7 @@ static FileLine* file_line_of(int fd, bool make) {
     }
     b = file_lines[fd] = io_mem(malloc(sizeof *b));
     b->head = b->tail = 0;
+    b->runs = 0;
   }
   pthread_mutex_unlock(&file_lines_gate);
   return b;
@@ -59,21 +62,28 @@ static u64 file_line_take(FileLine* b, char* out, u64 max, int line,
   return take;
 }
 
-// Before a write, the position goes back to the end of the last line read.
-// Only a regular file is seeked: a terminal or a device may answer lseek
-// without moving, and its reads and writes are apart anyway. 0, or the
-// errno of a failed seek, which keeps the bytes.
+// Before a write, the position goes back to the end of the last line read,
+// and the bytes past it leave the buffer. A pipe or a terminal keeps them:
+// its reads and writes are apart. So does a device whose seek answers
+// without landing where it was asked. 0, or the errno of a failed seek on
+// a file that seeks, which keeps the bytes.
 static int file_line_sync(int fd) {
-  FileLine*   b = file_line_of(fd, false);
-  struct stat st;
-  if (b == NULL || b->head == b->tail || fstat(fd, &st) != 0
-    || !S_ISREG(st.st_mode)) {
+  FileLine* b = file_line_of(fd, false);
+  if (b == NULL || b->head == b->tail || isatty(fd)) {
     return 0;
   }
-  if (lseek(fd, -(off_t)(b->tail - b->head), SEEK_CUR) < 0) {
+  off_t at = lseek(fd, 0, SEEK_CUR);
+  off_t to = at - (off_t)(b->tail - b->head);
+  if (at < 0 || to < 0) {
+    return 0;
+  }
+  off_t got = lseek(fd, to, SEEK_SET);
+  if (got < 0) {
     return errno;
   }
-  b->head = b->tail = 0;
+  if (got == to) {
+    b->head = b->tail = 0;
+  }
   return 0;
 }
 
@@ -134,6 +144,7 @@ static Term file_read_start(Term file, u64 max, IoWork* w,
   w->hand = (intptr_t)io_hand_v(file);
   w->word = max < INT32_MAX ? max : INT32_MAX;
   w->data = io_mem(malloc(w->word + 1));
+  io_sync();
   return io_work(w, call, pack);
 }
 
@@ -187,19 +198,28 @@ static void file_read_line_call(IoWork* w) {
   w->size = got;
 }
 
-// A line already whole in the buffer, or max bytes of one, answers here:
-// it can't block, so it skips the helper thread's round trip.
+// A line already whole in the buffer, or max bytes of one, answers here,
+// sized to the line: it reads no fd, so it neither blocks nor flushes
+// stdout, and skips the helper thread's round trip.
 Term file_read_line_run(Env e, Term* f, IoWork* w) {
   FileLine* b   = file_line_of((int)io_hand_v(f[0]), false);
   u64       max = f[1] < INT32_MAX ? f[1] : INT32_MAX;
   u64       has = b != NULL ? b->tail - b->head : 0;
-  if (has > 0 && (has >= max || memchr(b->data + b->head, '\n', has))) {
-    int end;
+  u64       len = has < max ? has : max;
+  char*     nl  = len > 0 ? memchr(b->data + b->head, '\n', len) : NULL;
+  if (len > 0 && (nl != NULL || has >= max)
+    && b->runs++ < FILE_LINE_RUNS) {
+    len = nl != NULL ? (u64)(nl + 1 - (b->data + b->head)) : len;
     w->hand = (intptr_t)io_hand_v(f[0]);
-    w->data = io_mem(malloc(max + 1));
+    w->data = io_mem(malloc(len + 1));
     w->code = 0;
-    w->size = file_line_take(b, w->data, max, 1, &end);
+    w->size = len;
+    memcpy(w->data, b->data + b->head, len);
+    b->head += len;
     return file_read_pack(e, w);
+  }
+  if (b != NULL) {
+    b->runs = 0;
   }
   return file_read_start(f[0], f[1], w, file_read_line_call, file_read_pack);
 }
