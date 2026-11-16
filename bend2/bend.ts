@@ -2788,38 +2788,52 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       if (c === null) {
         return Efq(m.s);
       } else {
+        // The rows are grouped by constructor in one pass, in the order each
+        // first appears. Each constructor's branch takes its own rows and the
+        // variable rows, in source order; the variable rows alone make the
+        // default past the last constructor.
         const xq = patt_mark(x, m.r);
-        const xs = c.x.map((q): PVar => {
-          if (q.$ === "PVar") {
-            return { ...q, q: quant_join(q.q, xq) };
-          }
-          const i = fr();
-          return { $: "PVar", k: "_" + String(i), i, q: xq, s: q.s };
-        });
-        const kx: Patt = { $: "PCtr", k: c.k, x: xs, s: x.s };
-        const ps = m.r.flatMap((row): Rows => {
+        const gs = new Map<Name, number[]>();
+        const ws: number[] = [];
+        m.r.forEach((row, i) => {
           const p0 = row.p[0];
-          switch (p0.$) {
-            case "PCtr": {
-              if (p0.k !== c.k) {
-                return [];
-              }
-              const f = body_sub(row.f, x.i, kx);
-              return [{ p: [...p0.x, ...row.p.slice(1)], f }];
-            }
-            case "PVar": {
-              const g = body_sub(row.f, p0.i, x);
-              const f = body_sub(g, x.i, kx);
-              return [{ p: [...xs, ...row.p.slice(1)], f }];
-            }
+          if (p0.$ === "PVar") {
+            ws.push(i);
+          } else if (gs.has(p0.k)) {
+            gs.get(p0.k)!.push(i);
+          } else {
+            gs.set(p0.k, [i]);
           }
         });
-        const pe = xs.map((q) => patt_term(q)).concat(m.e.slice(1));
-        const pv = xs.concat(vars.slice(1));
-        const pt = match_flatten({ $: "Match", e: pe, r: ps, s: m.s }, pv, fr);
-        const ds = m.r.filter((row) => row.p[0].$ !== "PCtr" || row.p[0].k !== c.k);
-        const dt = match_flatten({ $: "Match", e: m.e, r: ds, s: m.s }, vars, fr);
-        return Mat(c.k, pt, dt, c.s);
+        const ms = [...gs.values()].map((g): [PCtr, LTerm] => {
+          const c  = m.r[g[0]].p[0] as PCtr;
+          const xs = c.x.map((q): PVar => {
+            if (q.$ === "PVar") {
+              return { ...q, q: quant_join(q.q, xq) };
+            }
+            const i = fr();
+            return { $: "PVar", k: "_" + String(i), i, q: xq, s: q.s };
+          });
+          const kx: Patt = { $: "PCtr", k: c.k, x: xs, s: x.s };
+          const ps: Rows = [];
+          for (let a = 0, b = 0; a < g.length || b < ws.length;) {
+            if (b === ws.length || a < g.length && g[a] < ws[b]) {
+              const row = m.r[g[a++]];
+              const p0  = row.p[0] as PCtr;
+              ps.push({ p: [...p0.x, ...row.p.slice(1)], f: body_sub(row.f, x.i, kx) });
+            } else {
+              const row = m.r[ws[b++]];
+              const p0  = row.p[0] as PVar;
+              const g0  = body_sub(row.f, p0.i, x);
+              ps.push({ p: [...xs, ...row.p.slice(1)], f: body_sub(g0, x.i, kx) });
+            }
+          }
+          const pe = xs.map((q) => patt_term(q)).concat(m.e.slice(1));
+          const pv = xs.concat(vars.slice(1));
+          return [c, match_flatten({ $: "Match", e: pe, r: ps, s: m.s }, pv, fr)];
+        });
+        const dt = match_flatten({ $: "Match", e: m.e, r: ws.map((i) => m.r[i]), s: m.s }, vars, fr);
+        return ms.reduceRight((out, [c, pt]) => Mat(c.k, pt, out, c.s), dt);
       }
     } else {
       const n = j < 0 ? vars.length : j;
