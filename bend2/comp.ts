@@ -6211,6 +6211,9 @@ function io_out(fd, data) {
 let io_held = null;
 
 function io_std(data) {
+  if (data.length === 0) {
+    return;
+  }
   io_held ??= !require("tty").isatty(1) && [];
   if (!io_held) {
     return io_out(1, data);
