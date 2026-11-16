@@ -12,7 +12,7 @@
 // so only the table, which handles on other threads grow, needs the lock.
 // A line whole in the buffer answers on the loop, but only FILE_LINE_RUNS
 // in a row: then one goes through the helper, so the loop polls.
-#define FILE_LINE_CAP  65536
+#define FILE_LINE_CAP  16384
 #define FILE_LINE_RUNS 64
 
 typedef struct {
