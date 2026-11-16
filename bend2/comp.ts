@@ -2477,6 +2477,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
         b.val.ws));
     const kf = seg_fid(kn);
     const on = `WL_SEQ(${sc.seg.fid})`;
+    const base = !c.b && memo(FL.trees, c.k!, (k) =>
+      term_calls(fun_of(k).h ?? DUMMY, k) > 1);
     emit_chain(sc, [[on, () => {
       const fr = [...ws, seg_ref(sc, kf)];
       file_push(sc, `WL_ROOM(${fr.length});`,
@@ -2484,9 +2486,8 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     }], ...fork ? [] : [["", () => file_push(sc, `WL_CONT = term_tsk(${kf}, ${
       emit_task(sc, kf, 1, ws)});`,
       `WL_IDX = ${ws.length};`)] as [string, () => void]]]);
-    emit_jump(sc, cargs, c.k!, !fork && c.b, c.b || !memo(FL.trees, c.k!, (k) =>
-      term_calls(fun_of(k).h ?? DUMMY, k) > 1) ? []
-      : [`//base ${seg_fid(c.k!)} ${kf} ${fork ? 1 : on}`]);
+    emit_jump(sc, cargs, c.k!, !fork && c.b, base
+      ? [`//base ${seg_fid(c.k!)} ${kf} ${ws.length} ${fork ? 1 : on}`] : []);
     const top = i < calls.length - 1 ? depth : 0;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const { ret } = fun_of(c.k!);
@@ -2766,7 +2767,8 @@ function seg_base(s: Seg): string[] | null {
       }
       const pre = out.length;
       let n = 0;
-      let ok = out.every((x) => /^ *\w+ \w+ = ((?!\w\()[^;]|\b(term_loc|term_aux|term_peek|U32_BIN)\()*;$/.test(x));
+      let ok = out.every((x) =>
+        /^ *\w+ \w+ = ((?!\w\()[^;]|\b(term_loc|term_aux|term_peek|U32_BIN)\()*;$/.test(x));
       do {
         ok &&= !bad(ls[i]);
         out.push(ls[i++]);
@@ -2791,14 +2793,27 @@ function seg_base(s: Seg): string[] | null {
 
 function segs_base(segs: Seg[]): void {
   const arms = new Map(segs.map((s) => [s.fid, seg_base(s)]));
-  for (const s of segs) {
-    s.lines = s.lines.flatMap((l) => {
-      const m = l.match(/^( *)\/\/base (\S+) (\S+) (.+)$/);
+  for (const { fid, lines: ls } of segs) {
+    for (let i = ls.length; i-- > 0;) {
+      const m = ls[i].match(/^( *)\/\/base (\S+) (\S+) (\d+) (.+)$/);
       const b = m && arms.get(m[2]);
-      return !m ? [l] : !b ? [] : seg_text([`if (!DEVICE && ${m[4]}) {`,
-        ...b.map((x) => "  " + x.replace(/WL_RETN\(\d+\);/,
-          `WL_POPN(1); WL_JMP(${m[3]});`)), "}"], m[1].length / 2);
-    });
+      // the frame's id is stored below the arms, so an answered call
+      // neither stores nor pops it; not in the callee's own entry, where
+      // the call closes a loop that clang would then vectorise
+      const own = m?.[2] === fid;
+      if (m) {
+        ls.splice(i, 1, ...b ? seg_text([`if (!DEVICE && ${m[5]}) {`,
+          ...b.map((x) => "  " + x.replace(/WL_RETN\(\d+\);/,
+            `${own ? "WL_POPN(1); " : ""}WL_JMP(${m[3]});`)), "}",
+          ...own ? [] : [`if (${m[5]}) {`, `  STK(0) = ${m[3]};`,
+            "  WL_PUSHN(1);", "}"]], m[1].length / 2) : []);
+      }
+      if (b && !own) {
+        let at = i;
+        while (ls[--at].trim() !== `STK(${m![4]}) = ${m![3]};`);
+        ls.splice(at, 2, ls[at + 1].replace(/\d+/, m![4]));
+      }
+    }
   }
 }
 
