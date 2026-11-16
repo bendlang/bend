@@ -2,13 +2,13 @@
 # nor jumps runs that arm at the call and jumps to its own continuation,
 # when the callee calls itself twice on one path. Such defs here, each
 # called in non-tail position: an arm that frees the node it owns (sum), one
-# that allocates (grow), one that drops another owned parameter (shed), a
-# record result (span), a Nat match two levels deep (fib), a returning arm
-# written after the calling one (last), a shared tree read by two walks
-# (twice), a forking def (par) and forks over fork-free ones (fan). The
-# rest call themselves once on a path and keep their calls: a recursion
-# down a list (take), two defs that call each other (ping, pong), a deep
-# recursion (deep). Counts come from the argument list, so no call is
+# that allocates (grow), a record result (span), a Nat match two levels deep
+# (fib), a returning arm written after the calling one (last), a shared tree
+# read by two walks (twice), a forking def (par) and forks over fork-free
+# ones (fan). The rest keep their calls: an arm that drops another owned
+# parameter (shed), and those that call themselves once on a path, a
+# recursion down a list (take), two defs that call each other (ping, pong),
+# a deep recursion (deep). Counts come from the argument list, so no call is
 # unrolled. Every line is the same at any thread count.
 import Base
 
@@ -78,7 +78,7 @@ def take(xs: List<U32>, t: Tree) -> U32:
     case Con{h, tl}:
       U32.add(h, U32.mul(take(tl, t), 3))
 
-# the returning arm drops the list it was handed
+# the returning arm drops the list it was handed: it stays in the callee
 def shed(t: Tree, xs: List<U32>) -> U32:
   match t:
     case Leaf{a, b}:

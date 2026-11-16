@@ -2742,35 +2742,51 @@ function c_units(): Unit[] {
 // A call that pushed its frame carries a //base line naming its callee and
 // its continuation, if the callee calls itself twice on one path (a tree's
 // calls mostly end at once; a list's test would run once per element for
-// one hit). The line becomes the callee's arms that return at once (the
-// leading chain of its entry, the other arms left empty), each jumping to
-// that continuation in place of its return; an arm that pushes, jumps,
-// calls a spin (clang inlines a spin with one site) or leaves the loop stays
-// in the callee, as does one past BASE_MAX lines.
+// one hit). The line becomes the callee's tests down to each arm that
+// returns at once, the other arms left empty, each jumping to that
+// continuation in place of its return. Lines before a test are run again by
+// the callee when no arm answers, so a test is kept only below lines that
+// just name words. An arm stays in the callee if it pushes, jumps, leaves
+// the loop, is past BASE_MAX lines or calls out of line: a spin (clang
+// inlines a spin with one site) or a drop (the call gives the segment it is
+// copied to a frame on every entry).
 function seg_base(s: Seg): string[] | null {
-  const out: string[] = [];
-  let n = 0;
-  let at = -1;
-  for (const l of s.frame === null ? s.lines : []) {
-    if (l[0] === " ") {
-      out.push(l);
-      continue;
+  const ls = s.frame === null ? s.lines : [];
+  const bad = (x: string) =>
+    /WL_|STK\(|\b(seq|sp|goto|break|continue|return)\b|spin_|term_sink/.test(x);
+  let i = 0;
+  // the block of lines at depth d from line i: what of it returns at once
+  const block = (d: number): string[] | null => {
+    const tab = " ".repeat(d);
+    const out: string[] = [];
+    for (; ls[i]?.startsWith(tab); i++) {
+      if (!ls[i].startsWith(tab + "if (")) {
+        out.push(ls[i]);
+        continue;
+      }
+      const pre = out.length;
+      let n = 0;
+      let ok = out.every((x) => /^ *\w+ \w+ = ((?!\w\()[^;]|\b(term_loc|term_aux|term_peek|U32_BIN)\()*;$/.test(x));
+      do {
+        ok &&= !bad(ls[i]);
+        out.push(ls[i++]);
+        const arm = block(d + 2);
+        if (arm) {
+          out.push(...arm);
+          n = out.length;
+        }
+      } while (ls[i]?.startsWith(tab + "} else"));
+      while (ls[i]?.startsWith(tab)) {
+        i++;
+      }
+      return ok && n > pre ? [...out.slice(0, n), tab + "}"] : null;
     }
-    const arm = out.slice(at + 1);
-    if (at >= 0 && /^  WL_RETN\(\d+\);$/.test(arm.pop() ?? "")
-      && arm.length < BASE_MAX && !arm.some((x) =>
-        /WL_|STK\(|\b(seq|sp|goto|break|continue|return)\b|spin_/.test(x))) {
-      n = out.length;
-    } else {
-      out.length = at + 1;
-    }
-    if (!(at < 0 ? /^if \(.*\) \{$/ : /^\} else( if \(.*\))? \{$/).test(l)) {
-      break;
-    }
-    at = out.length;
-    out.push(l);
-  }
-  return n > 0 ? [...seg_take(s), ...out.slice(0, n), "}"] : null;
+    const end = out.pop() ?? "";
+    return d > 0 && /^ *WL_RETN\(\d+\);$/.test(end) && out.length < BASE_MAX
+      && !out.some(bad) ? [...out, end] : null;
+  };
+  const out = block(0);
+  return out && [...seg_take(s), ...out];
 }
 
 function segs_base(segs: Seg[]): void {
