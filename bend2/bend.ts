@@ -335,7 +335,7 @@ export type Body  = Match | Local | LTerm
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; };
-export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; ann: Set<number>; };
+export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; ann: Set<number>; nsd: WeakSet<LTerm>; };
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
@@ -2202,7 +2202,13 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
   }
 }
 
+// A walk renames every '.op' it reaches, and walking the result again reaches
+// no node the first walk did not, so a group nested in another is walked once:
+// its term is marked when its walk returns, and an outer walk stops there.
 export function parse_term_ns(p: Parse, tm: LTerm, h: LTerm): void {
+  if (p.nsd.has(tm)) {
+    return;
+  }
   if (tm.$ === "Let") {
     return parse_term_ns(p, tm.f, h);
   }
@@ -2222,6 +2228,7 @@ export function parse_term_ns(p: Parse, tm: LTerm, h: LTerm): void {
   for (const x of xs) {
     parse_term_ns(p, x, h);
   }
+  p.nsd.add(tm);
 }
 
 export function parse_term_args(p: Parse, close: string): LTerm[] {
@@ -2591,7 +2598,7 @@ export function parse_def(p: Parse, u: Bool): void {
 }
 
 export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>): void {
-  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ann: new Set(), ns, al };
+  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ann: new Set(), nsd: new WeakSet(), ns, al };
   while (true) {
     parse_skip(p);
     if (p.pos >= p.str.length) {
