@@ -4800,25 +4800,28 @@ static long cpu_count(void) {
   if (sched_getaffinity(0, sizeof set, &set) == 0) {
     n = CPU_COUNT(&set);
   }
-  // A v2 quota may sit on any parent of our cgroup.
-  char  g[4096] = "/sys/fs/cgroup", *e;
+  // v1's quota, then each v2 cpu.max from our cgroup up to the root.
+  char  g[4096] = "/sys/fs/cgroup", *r = g + 14, *e;
+  long  q = 0, p = 0;
   FILE* f = fopen("/proc/self/cgroup", "r");
-  while (f && !fscanf(f, "0::%4000s", g + 14) && !fscanf(f, "%*[^\n]\n")) {
+  while (f && !fscanf(f, " 0::%4000[^\n]", r) && !fscanf(f, "%*[^\n]")) {
   }
   if (f) {
     fclose(f);
   }
-  for (e = g + strlen(g); e; e = strrchr(g + 14, '/')) {
-    long q = 0, p = 0;
-    strcpy(e, "/cpu.max");
-    if (cpu_read(g, &q, &p) != 2) {
-      cpu_read("/sys/fs/cgroup/cpu/cpu.cfs_quota_us", &q, &p);
-      cpu_read("/sys/fs/cgroup/cpu/cpu.cfs_period_us", &p, &p);
-    }
-    *e = 0;
+  cpu_read("/sys/fs/cgroup/cpu/cpu.cfs_quota_us", &q, &p);
+  cpu_read("/sys/fs/cgroup/cpu/cpu.cfs_period_us", &p, &p);
+  for (e = r + strlen(r);; e = strrchr(r, '/')) {
     if (q > 0 && p > 0 && (q + p - 1) / p < n) {
       n = (q + p - 1) / p;
     }
+    if (e == NULL) {
+      break;
+    }
+    q = 0;
+    strcpy(e, "/cpu.max");
+    cpu_read(g, &q, &p);
+    *e = 0;
   }
 #endif
   return n;
