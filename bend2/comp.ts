@@ -669,7 +669,7 @@ function ty_key(T: HTerm): string {
 }
 
 function tld_of(k: Name): Bend.TLD {
-  return FL.book.tlds[k];
+  return FL.book.tlds[k] ?? FL.made[k];
 }
 
 function ty_tag(t: HTerm | null, tags: string): boolean {
@@ -1103,6 +1103,164 @@ function flat_of(k: Name): boolean {
   });
 }
 
+// A def that calls itself computes once a call fixed for the recursion: one
+// that yields words, runs a def that loops or is not flat, does not unfold,
+// and whose variables are parameters every self call passes back as they
+// are. An arm that holds the call binds it first and goes on in k~fix, a copy
+// of the def that takes the value last and reads it where the call was. So
+// the call still runs in each arm that reached it, and in no other.
+
+function lt_any(t: any, p: (t: any) => boolean): boolean {
+  return !!t && typeof t === "object" && (p(t)
+    || Object.entries(t).some(([j, x]) => j !== "s" && j !== "T"
+      && lt_any(x, p)));
+}
+
+function def_fix(k: Name): boolean {
+  const kf = k + "~fix";
+  const d = tld_of(k) as Bend.Def;
+  const f = fun_of(k);
+  if (k.endsWith("~fix") || tld_of(kf) || d.x) {
+    return false;
+  }
+  const leaves = new Map<HTerm, number[]>();
+  const fixed = tele_unbind(d.T).doms.slice(0, f.n).map(([, , A]) => !(d.u
+    && (ty_holds(A, "Array")
+      || ty_holds(A, { tags: "ADT Typ Qua Min Eql", not: true }))));
+  const calls = new Set<HTerm>();
+  const hits: [HTerm, HTerm, HTerm, string][] = [];
+  const longs = new Map<Name, boolean>();
+  let bad = 0;
+  const tree = (t: HTerm, left: number[], pv: number[]): void => {
+    const s = Bend.term_strip(t);
+    if (left.length === 0) {
+      leaves.set(s, pv);
+    } else if (s.$ === "Lam") {
+      const o = term_open(s);
+      tree(o.b, left.slice(1), pv.map((p, j) => j === left[0] ? o.ps[0].i : p));
+    } else if (s.$ === "Mat") {
+      tree(s.h, [...Array(FL.book.ctrs[s.k].n).fill(-1), ...left.slice(1)], pv);
+      tree(s.m, left, pv);
+    } else if (s.$ !== "Efq") {
+      bad = 1;
+    }
+  };
+  const own = (s: HTerm): Spine | null => {
+    const m = term_spine(s);
+    return s.$ === "App" && m.t.$ === "Ref" && m.t.k === k
+      && m.all.length === f.n ? m : null;
+  };
+  const long = (g: Name): boolean => memo(longs, g, () => FL.srcs.has(g)
+    && done_live(tld_of(g)) && !intr_of(g) && (!flat_of(g)
+      || loop_of(g).length > 0 || [...FL.srcs.get(g)!].some(long)));
+  const scan = (t: HTerm, T: HTerm | null, l: HTerm, pv: number[]): void => {
+    const s = term_force(t);
+    const n = hits.length;
+    if (s.$ === "Ann") {
+      return scan(s.x, s.T, l, pv);
+    }
+    const m = term_spine(s);
+    if (s.$ === "Lam" || mat_head(s) || (s.$ === "App" && m.tld?.$ === "Def"
+      && m.args.length < tele_unbind(m.tld.T).doms.filter(dom_live).length)) {
+      return;
+    }
+    if ((s.$ === "App" || s.$ === "Ref") && T
+      && !lay_of(T).ks.includes("box")
+      && !lt_any(Bend.term_lower(T), (y) => y.$ === "Var")
+      && !lt_any(s, (y) => y.$ === "Var" ? !fixed[pv.indexOf(y.i)]
+        : y.$ === "Ref" ? y.k === k || y.b || def_foreign(tld_of(y.k))
+        : "Lam Let Mat Efq".includes(y.$))
+      && lt_any(s, (y) => y.$ === "Ref" && long(y.k))) {
+      hits.push([l, s, T, JSON.stringify(s, (j, v) => j === "s" || j === "T"
+        ? undefined : v?.$ === "Var" ? pv.indexOf(v.i) : v)]);
+    } else {
+      term_kids(s).forEach((x) => scan(x, null, l, pv));
+    }
+    if (hits.length > n && (emit_fold(scope_new(), s) ?? s) !== s) {
+      hits.length = n;
+    }
+  };
+  tree(f.h!, [...Array(f.n).keys()], Array(f.n).fill(-2));
+  for (const [l, pv] of leaves) {
+    term_any(l, (s) => {
+      const m = own(s);
+      bad += m ? 1 : s.$ === "Ref" && s.k === k ? -1 : 0;
+      m?.all.forEach((a, j) => {
+        const v = Bend.term_strip(a);
+        fixed[j] &&= v.$ === "Var" && v.i === pv[j];
+      });
+      m && calls.add(l);
+      return false;
+    });
+  }
+  leaves.forEach((pv, l) => bad || scan(l, null, l, pv));
+  const hit = hits.find(([l]) => calls.has(l));
+  if (bad || !hit) {
+    return false;
+  }
+  const cs = new Map<HTerm, HTerm>();
+  hits.forEach(([l, s, , key]) => key === hit[3] && cs.set(l, s).set(s, s));
+  const tele = (T: HTerm, n: number): HTerm => {
+    const a = n ? Bend.tele_open(FL.book, T) : null;
+    bad ||= Number(n && !a);
+    return a ? Bend.All(a.q, a.k, a.i, a.A, (x) => tele(a.B(x), n - 1), a.s)
+      : Bend.All(Bend.Many(), "c", 0, hit[2], () => T);
+  };
+  const pc = Bend.Var("c", 1 << 30) as any;
+  const lv = new Map<number, HTerm>();
+  let at: HTerm | undefined;
+  const low = (t: HTerm, mode: number): any => {
+    const s = Bend.term_force(t);
+    const go = (x: HTerm, n = 0) => low(x, mode > 2 ? mode + n : mode);
+    if (mode > 1 && leaves.has(s)) {
+      at = cs.get(s);
+      return mode > 2 ? Bend.Lam("c", pc.i, low(s, 1), undefined, Bend.Many())
+        : low(s, at ? -1 : 0);
+    }
+    if (mode < 0 && s.$ !== "Ann" && !(s.$ === "Let" && !s.v.some((v) =>
+      term_any(v, (y) => cs.get(y) === y)))) {
+      return Bend.Let(["c"], [pc.i], [Bend.Ann(low(at!, 0),
+        Bend.term_cell(hit[2]))], low(s, 1), undefined, [Bend.Many()]);
+    }
+    if (mode === 1 && cs.get(s) === s) {
+      return pc;
+    }
+    const m = mode === 1 ? own(s) : null;
+    if (m) {
+      return Bend.App(m.all.reduce((g: any, a) => Bend.App(g, go(a)),
+        { ...m.t, k: kf }), pc);
+    }
+    const o = s.$ === "Lam" || s.$ === "Let" ? term_open(s)
+      : s.$ === "All" ? { ps: [probe(s.k)], b: s } : null;
+    o?.ps.forEach((p, j) =>
+      lv.set(p.i, Bend.Var(p.k, [(s as any).i].flat()[j])));
+    bad ||= Number(s !== t || (s.$ === "Var" && !lv.has(s.i)));
+    return s.$ === "Lam" ? Bend.Lam(s.k, s.i, go(o!.b, -1), s.s, s.q)
+      : s.$ === "Let" ? Bend.Let(s.k, s.i, s.v.map((v) =>
+        low(v, Math.max(mode, 0))), go(o!.b), s.s, s.q)
+      : s.$ === "Ann" ? Bend.Ann(go(s.x), Bend.term_cell(mode > 2
+        ? tele(s.T, mode - 3) : s.T), s.s)
+      : s.$ === "App" ? Bend.App(go(s.f), go(s.x), s.s)
+      : s.$ === "Ctr" || s.$ === "ADT" ? { ...s, x: s.x.map((x) => go(x)) }
+      : s.$ === "Mat" ? Bend.Mat(s.k, go(s.h, FL.book.ctrs[s.k].n - 1),
+        go(s.m), s.s)
+      : s.$ === "Rwt" ? Bend.Rwt(Bend.term_cell(s.e), Bend.term_cell(s.p),
+        go(s.f), s.s)
+      : s.$ === "All" ? Bend.All(s.q, s.k, s.i, go(s.A), go(s.B(o!.ps[0])),
+        s.s)
+      : s.$ === "Var" ? lv.get(s.i)
+      : "Ref Lit Efq Rfl".includes(s.$) ? s : Bend.term_cell(s);
+  };
+  const [e, h] = [low(f.h!, 3 + f.n), low(f.h!, 2)];
+  if (bad) {
+    return false;
+  }
+  FL.made[kf] = { $: "Def", n: f.n + 1, x: 0, T: tele(d.T, f.n),
+    v: Bend.term_higher(e), e };
+  f.h = Bend.term_higher(h);
+  return true;
+}
+
 // Io
 // ==
 
@@ -1149,6 +1307,7 @@ function file_new(book: Bend.Book, js: boolean) {
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
+    made: Object.create(null) as Record<Name, Bend.Def>,
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
     teles: new Map<HTerm, { doms: Dom[]; ret: HTerm }>(),
@@ -1213,6 +1372,7 @@ function file_book(roots: Name[]): void {
     }
   }
   roots.forEach(src_add);
+  const own = new Set<Name>();
   for (const d of FL.srcs.keys()) {
     const tld = tld_of(d);
     // ty_srcs only finds ADTs, and only the C lane reads those
@@ -1240,14 +1400,18 @@ function file_book(roots: Name[]): void {
         }
       }
       const ck = term_spine(s);
-      if (ck.k !== null && ck.k !== d) {
-        deps.add(ck.k);
+      if (ck.k !== null) {
+        (ck.k === d ? own : deps).add(ck.k);
       }
       flat &&= !((s.$ === "Let" && s.k.length >= 2)
         || (ck.k !== null && (ck.b || (ck.k === d && !tail))));
       return false;
     });
     FL.srcs.set(d, flat ? deps : null);
+  }
+  if ([...own].filter(def_fix).length > 0) {
+    [FL.sites, FL.loops, FL.flats].forEach((m) => m.clear());
+    file_book(roots);
   }
 }
 
