@@ -1,9 +1,21 @@
 // File
 // ====
 
+#ifdef CID(File.read_line)
+static int file_line_sync(int fd);
+#endif
+
+// A write lands where the program has read to, past what File.read_line
+// buffered (file_line_sync).
 static void file_write_fill(IoWork* w, int at_offset) {
   int fd = (int)w->hand;
   ssize_t n = 0;
+#ifdef CID(File.read_line)
+  w->code = (u32)file_line_sync(fd);
+  if (w->code != 0) {
+    return;
+  }
+#endif
   for (uint64_t at = 0; n >= 0 && at < w->size; at += (uint64_t)n) {
     do {
       n = at_offset ? pwrite(fd, w->data + at, w->size - at, (off_t)(w->made + at))
