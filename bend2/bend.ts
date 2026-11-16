@@ -335,7 +335,9 @@ export type Body  = Match | Local | LTerm
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; };
-export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; ann: Set<number>; };
+export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; ann: Set<number>; lin: Lines; };
+// at[i]: the line holding position i (a \n ends its own line); beg[l]: where line l starts; ind[l]: its first non-blank position.
+export type Lines = { at: Int32Array; beg: number[]; ind: number[]; };
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
@@ -1554,8 +1556,25 @@ const QUAS: Record<string, Quant> = { "0": None(), "1": Lone(), "2": Many() };
 // A + glued to a name heads a binder, so x+y and x +y end up here.
 const OP_SPACES = "an operator takes spaces on both sides and a type: (a + b : T)";
 
-export function parse_col(src: string, pos: number): number {
-  return pos - src.lastIndexOf("\n", pos - 1);
+export function parse_lines(src: string): Lines {
+  const at = new Int32Array(src.length + 1);
+  const beg = [0];
+  const ind: number[] = [];
+  for (let i = 0; i <= src.length; i++) {
+    const c = src[i];
+    at[i] = beg.length - 1;
+    if (ind.length < beg.length && c !== " " && c !== "\r" && c !== "\t") {
+      ind.push(i);
+    }
+    if (c === "\n") {
+      beg.push(i + 1);
+    }
+  }
+  return { at, beg, ind };
+}
+
+export function parse_col(p: Parse, pos: number): number {
+  return pos - p.lin.beg[p.lin.at[pos]] + 1;
 }
 
 export function parse_span(p: Parse, beg: number): Span {
@@ -1844,7 +1863,7 @@ export function parse_term_base(p: Parse, beg: number): LTerm {
         parse_span(p, beg));
       parse_eat(p, ":");
       parse_skip(p);
-      return parse_term_do_stmt(p, m, ts, parse_col(p.str, p.pos));
+      return parse_term_do_stmt(p, m, ts, parse_col(p, p.pos));
     }
     if (k === "match") {
       parse_fail(p, "a term (a match heads a def body, not a term)", beg);
@@ -2086,16 +2105,7 @@ const INFIX_BY_HEAD: Record<string, string[]> = {
 };
 
 export function parse_nl(p: Parse): boolean {
-  for (let j = p.pos - 1; j >= 0; j--) {
-    const c = p.str[j];
-    if (c === "\n") {
-      return true;
-    }
-    if (c !== " " && c !== "\r" && c !== "\t") {
-      return false;
-    }
-  }
-  return true;
+  return p.pos <= p.lin.ind[p.lin.at[p.pos]];
 }
 
 export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): LTerm {
@@ -2259,7 +2269,7 @@ export function parse_term_all(p: Parse, exi: boolean): LTerm {
 
 export function parse_term_tup(p: Parse, beg: number): LTerm {
   parse_skip(p);
-  const b = parse_body(p, parse_col(p.str, p.pos) - 1);
+  const b = parse_body(p, parse_col(p, p.pos) - 1);
   parse_skip(p);
   if (b.$ !== "Match" && b.$ !== "Local" && parse_take(p, ",")) {
     const rest = parse_term_tup(p, beg);
@@ -2379,10 +2389,10 @@ export function parse_body(p: Parse, col: number = 0): Body {
   if (parse_word(p, "match")) {
     const es = parse_terms(p);
     parse_skip(p);
-    const ccol = parse_col(p.str, p.pos);
+    const ccol = parse_col(p, p.pos);
     const rows: Rows = [];
-    while (ccol > col && parse_at_word(p, "case") && parse_col(p.str, p.pos) >= ccol) {
-      const rcol = parse_col(p.str, p.pos);
+    while (ccol > col && parse_at_word(p, "case") && parse_col(p, p.pos) >= ccol) {
+      const rcol = parse_col(p, p.pos);
       parse_word(p, "case");
       parse_skip(p);
       const qbeg = p.pos;
@@ -2416,7 +2426,7 @@ export function parse_body(p: Parse, col: number = 0): Body {
   }
   if (T === null && q.$ === "Lone" && ts.length === 1 && !(parse_at(p, "=") && !parse_at(p, "=="))) {
     const w = term_write(p, ts[0], beg);
-    if (w === null || !parse_more(p, parse_col(p.str, beg))) {
+    if (w === null || !parse_more(p, parse_col(p, beg))) {
       return ts[0];
     }
     vs.push(ts[0]);
@@ -2460,12 +2470,12 @@ export function term_write(p: Parse, t: LTerm, beg: number): LTerm | null {
 }
 
 export function parse_more(p: Parse, col: number): boolean {
-  return parse_at(p, ";") || p.pos < p.str.length && parse_col(p.str, p.pos) === col;
+  return parse_at(p, ";") || p.pos < p.str.length && parse_col(p, p.pos) === col;
 }
 
 export function parse_block(p: Parse): LTerm {
   parse_skip(p);
-  const b = parse_body(p, parse_col(p.str, p.pos) - 1);
+  const b = parse_body(p, parse_col(p, p.pos) - 1);
   return body_flatten(b, [], () => p.frs++);
 }
 
@@ -2591,7 +2601,7 @@ export function parse_def(p: Parse, u: Bool): void {
 }
 
 export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>): void {
-  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ann: new Set(), ns, al };
+  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ann: new Set(), lin: parse_lines(src), ns, al };
   while (true) {
     parse_skip(p);
     if (p.pos >= p.str.length) {
