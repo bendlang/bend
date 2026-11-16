@@ -73,6 +73,8 @@ function tokens(source: string): Token[] {
       kind = "comment";
     } else if (c === '"' || c === "'") {
       at++;
+      // In ''', the middle apostrophe is the character.
+      if (c === "'" && source[at] === "'") at++;
       while (at < source.length) {
         if (source[at] === "\\") {
           at += 2;
