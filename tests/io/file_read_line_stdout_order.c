@@ -1,14 +1,22 @@
 #include <dlfcn.h>
 
-static int armed_fd = -1;
+static int  armed_fd = -1;
+static bool flushed;
 
-// The first read of the armed file writes "two" to fd 1 past the runtime,
-// so a line IO.print still holds at the read comes out after it.
+// Notes a flush of stdout, so the armed read can tell whether the runtime
+// flushed what IO.print held before it read.
+int fflush(FILE* h) {
+  int (*real)(FILE*) = dlsym(RTLD_NEXT, "fflush");
+  flushed = flushed || h == stdout;
+  return real(h);
+}
+
 ssize_t read(int fd, void* data, size_t size) {
   ssize_t (*real)(int, void*, size_t) = dlsym(RTLD_NEXT, "read");
   if (fd == armed_fd) {
     armed_fd = -1;
-    if (write(1, "two\n", 4)) {
+    if (!flushed) {
+      err_fail("the read ran with stdout still held");
     }
   }
   return real(fd, data, size);
@@ -16,6 +24,7 @@ ssize_t read(int fd, void* data, size_t size) {
 
 Term read_arm_run(Env e, Term* f, IoWork* w) {
   armed_fd = (int)io_hand_v(f[0]);
+  flushed  = false;
   return f[0];
 }
 

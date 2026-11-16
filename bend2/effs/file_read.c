@@ -10,15 +10,14 @@
 // and File.close give them back to a file that seeks (lseek), and on a
 // pipe they stay for the next read. A handle runs one effect at a time,
 // so only the table, which handles on other threads grow, needs the lock.
-// A line whole in the buffer answers on the loop, but only FILE_LINE_RUNS
-// in a row: then one goes through the helper, so the loop polls.
-#define FILE_LINE_CAP  16384
-#define FILE_LINE_RUNS 64
+// A line whole in the buffer answers on the loop, which polls its timers
+// and helpers every 64 answers, as for any effect that answers at once;
+// at most FILE_LINE_CAP lines fit, then a refill goes through the helper.
+#define FILE_LINE_CAP 16384
 
 typedef struct {
   u64  head;
   u64  tail;
-  u32  runs;
   char data[FILE_LINE_CAP];
 } FileLine;
 
@@ -42,24 +41,30 @@ static FileLine* file_line_of(int fd, bool make) {
     }
     b = file_lines[fd] = io_mem(malloc(sizeof *b));
     b->head = b->tail = 0;
-    b->runs = 0;
   }
   pthread_mutex_unlock(&file_lines_gate);
   return b;
 }
 
-// Moves up to max buffered bytes to out, through the first '\n' when line
-// is set; answers how many, and sets *end when it stopped at a '\n'.
+// How many buffered bytes the next answer takes: up to max, through the
+// first '\n' when line is set, which sets *end.
+static u64 file_line_cut(FileLine* b, u64 max, int line, int* end) {
+  u64   len  = b->tail - b->head < max ? b->tail - b->head : max;
+  char* from = b->data + b->head;
+  char* nl   = line ? memchr(from, '\n', len) : NULL;
+  if (end != NULL) {
+    *end = nl != NULL;
+  }
+  return nl != NULL ? (u64)(nl + 1 - from) : len;
+}
+
+// Moves file_line_cut's bytes to out; answers how many.
 static u64 file_line_take(FileLine* b, char* out, u64 max, int line,
   int* end) {
-  u64   take = b->tail - b->head < max ? b->tail - b->head : max;
-  char* from = b->data + b->head;
-  char* nl   = line ? memchr(from, '\n', take) : NULL;
-  take = nl != NULL ? (u64)(nl + 1 - from) : take;
-  memcpy(out, from, take);
-  b->head += take;
-  *end = nl != NULL;
-  return take;
+  u64 len = file_line_cut(b, max, line, end);
+  memcpy(out, b->data + b->head, len);
+  b->head += len;
+  return len;
 }
 
 // Before a write, the position goes back to the end of the last line read,
@@ -112,8 +117,7 @@ static void file_read_fill(IoWork* w, int at) {
   w->code = 0;
 #ifdef CID(File.read_line)
   FileLine* b = at ? NULL : file_line_of(fd, false);
-  int       end;
-  got = b != NULL ? file_line_take(b, w->data, w->word, 0, &end) : 0;
+  got = b != NULL ? file_line_take(b, w->data, w->word, 0, NULL) : 0;
   if (got > 0 && got == w->word) {
     w->size = got;
     return;
@@ -199,27 +203,19 @@ static void file_read_line_call(IoWork* w) {
 }
 
 // A line already whole in the buffer, or max bytes of one, answers here,
-// sized to the line: it reads no fd, so it neither blocks nor flushes
-// stdout, and skips the helper thread's round trip.
+// straight from the buffer: it reads no fd, so it neither blocks nor
+// flushes stdout, and skips the helper thread's round trip.
 Term file_read_line_run(Env e, Term* f, IoWork* w) {
-  FileLine* b   = file_line_of((int)io_hand_v(f[0]), false);
-  u64       max = f[1] < INT32_MAX ? f[1] : INT32_MAX;
-  u64       has = b != NULL ? b->tail - b->head : 0;
-  u64       len = has < max ? has : max;
-  char*     nl  = len > 0 ? memchr(b->data + b->head, '\n', len) : NULL;
-  if (len > 0 && (nl != NULL || has >= max)
-    && b->runs++ < FILE_LINE_RUNS) {
-    len = nl != NULL ? (u64)(nl + 1 - (b->data + b->head)) : len;
-    w->hand = (intptr_t)io_hand_v(f[0]);
-    w->data = io_mem(malloc(len + 1));
+  u64       hand = io_hand_v(f[0]);
+  FileLine* b    = file_line_of((int)hand, false);
+  u64       max  = f[1] < INT32_MAX ? f[1] : INT32_MAX;
+  int       end  = 0;
+  u64       len  = b != NULL ? file_line_cut(b, max, 1, &end) : 0;
+  if (b != NULL && b->head < b->tail && (end || len == max)) {
     w->code = 0;
-    w->size = len;
-    memcpy(w->data, b->data + b->head, len);
+    Term r = io_res(e, w, io_str(e, b->data + b->head, len));
     b->head += len;
-    return file_read_pack(e, w);
-  }
-  if (b != NULL) {
-    b->runs = 0;
+    return io_tup(e, io_hand(hand), r);
   }
   return file_read_start(f[0], f[1], w, file_read_line_call, file_read_pack);
 }
