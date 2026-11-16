@@ -13,6 +13,8 @@
 # Nat is a native immediate) matched ahead of the self-call, and
 # 300M levels overrun the 2GB window into the guard page in under
 # a second, on whichever lane owns the deep child.
+# The result of the self-call is xored before the adds: a tail sum of one
+# self-call would run as a loop on the C lane and push no frame.
 # The JS walls join the numbered-error law at io_run: a cut there
 # is a nested host call, so the host stack throws RangeError long
 # before the machine's depth, and io_run's catch translates it into
@@ -41,7 +43,7 @@ def deep(n, a, b, c, d):
       (a + b + c + d : U32)
     case 1n+p:
       x = deep(p, (a + 1 : U32), (b + 2 : U32), (c + 3 : U32), (d + 4 : U32))
-      (x + a + b + c + d : U32)
+      (U32.xor(x, a) + b + c + d : U32)
 
 law run:
   for n: U32

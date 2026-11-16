@@ -669,7 +669,7 @@ function ty_key(T: HTerm): string {
 }
 
 function tld_of(k: Name): Bend.TLD {
-  return FL.book.tlds[k];
+  return FL.book.tlds[k] ?? FL.made[k];
 }
 
 function ty_tag(t: HTerm | null, tags: string): boolean {
@@ -1095,17 +1095,82 @@ function loop_of(k: Name): Name[] {
   return memo(FL.loops, k, () => (visit(k), FL.loops.get(k)!));
 }
 
-// A tail Nat.add, or successors, of a call to d: a flat d loops on that call
-// and sums the other operand in acc. No partial sum of Nats passes the whole.
-// A second call to d, in the other operand, keeps d from being flat.
-function acc_of(d: Name, t: HTerm): [HTerm | number, HTerm] | null {
-  const s = term_strip(t);
-  const m = term_spine(s);
-  const [b, n] = s.$ === "Ctr" && s.k === "Succ" ? nat_peel(s) : [null, 0];
-  const i = m.t.$ === "Ref" && m.t.k === "Nat.add" && intr_of(m.t.k)
-    ? m.args.findIndex((a) => term_spine(a).k === d) : -1;
-  return b !== null && term_spine(b).k === d ? [n, b]
-    : i < 0 ? null : [m.args[1 - i], m.args[i]];
+// A def that answers a Nat or a U32 and calls itself outside a tail goes on
+// in d~acc, which takes the sum so far first, if every such call is an
+// operand of a tail add: there, under successors, or bound by a let used
+// once. The other operands join the sum, bound before the calls, each call
+// takes it in turn (the last as a tail call), and any other answer is added
+// to it: no part of a sum of Nats passes the whole, and U32 wraps. d calls
+// d~acc with 0. A def in a tail cycle with another keeps its tail calls.
+// loop_of opens d's body, so a let's probe is past every index term_lower
+// gives.
+function acc_def(d: Name): void {
+  const f = fun_of(d);
+  const { T } = tld_of(d) as Bend.Def;
+  const R = ty_adt(tele_fill(T, Array(f.n).fill(DUMMY)));
+  const op = R?.k + ".add";
+  const w = d + "~acc";
+  if (FL.js || !intr_of(op) || R!.k === "F32" || f.lays.length >= WIDE
+    || !term_any(f.h!, (s, tail) => !tail && term_spine(s).k === d)
+    || loop_of(d).length > 1) {
+    return;
+  }
+  const go = (t: HTerm, a: HTerm, env: Map<number, Spine>): any => {
+    const s = term_force(t);
+    const on = (x: HTerm) => go(x, a, env);
+    if (s.$ === "Lam") {
+      return { ...s, f: (x: HTerm) => on(s.f(x)) };
+    }
+    if (s.$ === "Let") {
+      const o = term_open(s);
+      const m = term_spine(s.v[0]);
+      const one = s.k.length === 1 && m.k === d && !m.b
+        && rest_use([o.b], o.ps[0]) === 1;
+      return { ...s, f: (xs: Of<"Var">[]) => go(s.f(xs), a,
+        one ? new Map(env).set(xs[0].i, m) : env) };
+    }
+    if (s.$ === "Mat") {
+      return { ...s, h: on(s.h), m: on(s.m) };
+    }
+    if (s.$ === "Ann") {
+      return { ...s, x: on(s.x) };
+    }
+    if (s.$ === "Rwt") {
+      return { ...s, f: on(s.f) };
+    }
+    if (s.$ === "Efq") {
+      return s;
+    }
+    const cs: Spine[] = [];
+    const flat = (x: HTerm): void => {
+      const y = term_strip(x);
+      const m = term_spine(y);
+      const [b, n] = y.$ === "Ctr" && y.k === "Succ" ? nat_peel(y) : [null, 0];
+      const c = m.k === d && !m.b ? m : y.$ === "Var" && env.get(y.i);
+      if (b !== null) {
+        flat(b);
+        flat(Bend.Lit("Nat", n));
+      } else if (m.t.$ === "Ref" && m.t.k === op) {
+        m.args.forEach(flat);
+      } else if (c) {
+        cs.push(c);
+      } else {
+        a = Bend.Ann(Bend.App(Bend.App(Bend.Ref(op), a), Bend.Ann(x, R!)), R!);
+      }
+    };
+    flat(s);
+    return cs.length === 0 ? a : Bend.Let(["a"], [0], [Bend.Ann(a, R!)],
+      (xs: HTerm[]) => cs.reduce((a, m) => Bend.Ann(m.all.reduce((g, x) =>
+        Bend.App(g, x), Bend.App(Bend.Ref(w), a)), R!), xs[0]));
+  };
+  const e = Bend.term_lower(Bend.Lam("acc", 0, (a: HTerm) =>
+    go(f.h!, a, new Map())));
+  const v = Bend.term_higher(e);
+  if (!term_any(v, (s) => s.$ === "Ref" && s.k === d)) {
+    FL.made[w] = { $: "Def", n: f.n + 1, x: 0, v, e,
+      T: Bend.All(Bend.Many(), "acc", 0, R!, () => T) };
+    f.h = term_eta(Bend.App(Bend.Ref(w), Bend.Lit(R!.k as "Nat", 0)), T, f.n);
+  }
 }
 
 function flat_of(k: Name): boolean {
@@ -1161,7 +1226,7 @@ function file_new(book: Bend.Book, js: boolean) {
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
-    accs: new Set<Name>(),
+    made: Object.create(null) as Record<Name, Bend.Def>,
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
@@ -1241,15 +1306,10 @@ function file_book(roots: Name[]): void {
     if (!done_live(tld)) {
       continue;
     }
+    acc_def(d);
     const deps = new Set<Name>();
     let flat = true;
-    let acc: HTerm | null = null;
     term_any(fun_of(d).h!, (s, tail) => {
-      const ac = tail && !FL.js && fun_of(d).ret === W64 ? acc_of(d, s) : null;
-      if (ac) {
-        acc = term_strip(ac[1]);
-        FL.accs.add(d);
-      }
       if (s.$ === "Ref") {
         if (s.b) {
           FL.bangs.add(s.k);
@@ -1264,8 +1324,7 @@ function file_book(roots: Name[]): void {
         deps.add(ck.k);
       }
       flat &&= !((s.$ === "Let" && s.k.length >= 2)
-        || (ck.k !== null && (ck.b
-          || (ck.k === d && !tail && term_strip(s) !== acc))));
+        || (ck.k !== null && (ck.b || (ck.k === d && !tail))));
       return false;
     });
     FL.srcs.set(d, flat ? deps : null);
@@ -2073,18 +2132,13 @@ function emit_each(sc: Scope, xs: HTerm[], ats: Lay[] = [],
     ...sc.rest] }, x, tys[i] ?? null, ats[i] ?? null));
 }
 
-function acc_on(sc: Scope): boolean {
-  return sc.seg.native && FL.accs.has(sc.seg.def);
-}
-
 function emit_put(sc: Scope, dst: Val | null, v: Val): void {
   bind_dead(sc, []);
   if (dst === null) {
     spare_flush(sc);
   }
   const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret));
-  file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${
-    acc_on(sc) ? `nat_chk(e, acc + ${w})` : w};`));
+  file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${w};`));
   if (dst === null) {
     file_push(sc, `WL_RETN(${ws.length});`);
   }
@@ -2130,7 +2184,6 @@ function emit_native(sc: Scope, k: Name): string {
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
     const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
       arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
-      ...FL.accs.has(k) ? ["u64 acc = 0;"] : [],
       seg.spin ? "WL_SPIN" : "for (;;) {"],
       1), ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
     const text = body.join("\n");
@@ -2425,13 +2478,6 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_body(sc, term_eta(x, ty!, 1), ty, args, dst);
       }
       sc = { ...sc, rest: [] };
-      const ac = acc_on(sc) ? acc_of(sc.seg.def, x) : null;
-      if (ac) {
-        file_push(sc, `acc = nat_chk(e, acc + ${typeof ac[0] === "number"
-          ? ac[0] : emit_expr({ ...sc, rest: [ac[1]] }, ac[0], null, W64)
-            .ws[0]});`);
-        return emit_body(sc, ac[1], ty, [], dst);
-      }
       const ck = term_spine(x);
       if (ck.k === null) {
         return emit_put(sc, dst, emit_expr(sc, x, ty, dst?.lay ?? sc.seg.ret));

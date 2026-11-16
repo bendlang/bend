@@ -1,13 +1,14 @@
 # A def whose tail is Nat.add, or successors, of one call to itself runs as
-# a loop on the C lane: the other operand is summed in the loop and added to
-# whatever the def answers last, so the recursion holds no frame. Every
-# count comes from the command line's length (1 in the harness), which no
-# compiler sees. The shapes: the call on either side of Nat.add, under
-# successors, beside a plain tail call and a tail call to another def, an
-# operand that consumes a list while the call takes its tail, a sum that
-# lands on 2^48-1, fifty thousand steps, and the same def under a fork. Two
-# recursive calls under one Nat.add, and a call bound by a let first, stay
-# recursions and must answer the same.
+# a loop on the C lane: the other operand joins a sum the loop carries, and
+# whatever the def answers last is added to it, so the recursion holds no
+# frame. Every count comes from the command line's length (1 in the
+# harness), which no compiler sees. The shapes: the call on either side of
+# Nat.add, under successors, beside a plain tail call and a tail call to
+# another def, an operand that consumes a list while the call takes its
+# tail, a sum that lands on 2^48-1, twenty thousand steps (the JS lanes
+# hold about thirty thousand frames), and the same def under a fork. Two
+# calls under one Nat.add (both) and a call bound by a let first (bound)
+# loop too: sum_loop_calls and sum_loop_shapes hold the rest.
 import Base
 
 def digits(+k: Nat, +n: Nat) -> Nat:
@@ -100,7 +101,7 @@ def show(+one: Nat) -> String:
     Nat.show(mixed(Nat.mul(40n, one), Nat.mul(9n, one))),
     Nat.show(lens(rows(Nat.mul(50n, one), Nil{}))),
     Nat.show(edge(Nat.mul(254n, one), Nat.div(big(), Nat.mul(255n, one)))),
-    Nat.show(left(Nat.mul(50000n, one))),
+    Nat.show(left(Nat.mul(20000n, one))),
     Nat.show(both(Nat.mul(12n, one))),
     Nat.show(bound(Nat.mul(1000n, one))),
     Nat.show(fork(Nat.mul(6n, one), Nat.mul(1000n, one)))], "\n")
@@ -116,7 +117,7 @@ def main() -> IO(Unit):
 #|7930
 #|1275
 #|281474976710655
-#|1250025007
+#|200010007
 #|4096
 #|500500
 #|3524605
