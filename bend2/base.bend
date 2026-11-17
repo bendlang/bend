@@ -3352,8 +3352,21 @@ def Map.from_list(a, -V: Kind(a), kvs: List<a, Sigma<&2, a, String, _ => V>>) ->
   Map<a, V>:
   Map.from_list.go(a, V, kvs, MTip{})
 
+def Map.union.into(a, -V: Kind(a), m: Map<a, V>, n: Map<a, V>) -> Map<a, V>:
+  match m:
+    case MTip{}:
+      n
+    case left:
+      Map.from_list.go(a, V, Map.to_list(a, V, n), left)
+
 def Map.union(a, -V: Kind(a), m: Map<a, V>, n: Map<a, V>) -> Map<a, V>:
-  Map.from_list.go(a, V, Map.to_list(a, V, n), m)
+  match n:
+    case MTip{}:
+      m
+    case MLeaf{k, v}:
+      Map.set(a, V, m, k, v)
+    case right:
+      Map.union.into(a, V, m, right)
 
 def Map.size(a, -V: Kind(a), m: Map<a, V>) -> Nat:
   match m:
