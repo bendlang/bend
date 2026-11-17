@@ -2254,23 +2254,23 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
   if (h === null || m.all.length !== n || !flat_of(m.t.k)) {
     return null;
   }
-  const fs = emit_fold_args(sc, m);
-  const doms = tele_unbind(m.tld!.T).doms;
+  const fs = emit_fold_args(sc, m), doms = tele_unbind(m.tld!.T).doms;
   const lets = fs.map((a, i) => !m.live[i] || term_const(a)
     || term_strip(a).$ === "Var" ? null
     : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
   const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
-    || lets.some((l) => l?.p === y && term_any(l.v, bad));
-  let xs = fs.map((a, i) => lets[i]?.p ?? a);
-  let b = h;
+    || lets.some((l) => l?.p === y ? term_any(l.v, bad)
+      : l && !rest_use([b], l.p));
+  let xs = fs.map((a, i) => lets[i]?.p ?? a), b = h;
   let hit = fs.every((a, i) => !m.live[i] || term_const(a));
-  for (let w = term_strip(b); xs.length > 0; w = term_strip(b)) {
+  while (xs.length > 0) {
+    const w = term_strip(b);
     if (w.$ === "Lam") {
       b = w.f(xs[0]);
       xs = xs.slice(1);
       continue;
     }
-    const c = w.$ === "Mat" ? term_strip(xs[0]) : null;
+    const c = w.$ === "Mat" && term_strip(xs[0]);
     if (c?.$ !== "Ctr" || !term_const(c)) {
       return null;
     }
