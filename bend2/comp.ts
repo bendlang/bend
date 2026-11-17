@@ -1120,7 +1120,7 @@ function loop_head(h: Name): boolean {
 // gives.
 function acc_def(d: Name): void {
   const f = fun_of(d);
-  const { T } = tld_of(d) as Bend.Def;
+  const { T, u } = tld_of(d) as Bend.Def;
   const R = ty_adt(tele_fill(T, Array(f.n).fill(DUMMY)));
   const op = R?.k + ".add";
   const w = d + "~acc";
@@ -1181,7 +1181,7 @@ function acc_def(d: Name): void {
     go(f.h!, a, new Map())));
   const v = Bend.term_higher(e);
   if (!term_any(v, (s) => s.$ === "Ref" && s.k === d)) {
-    FL.made[w] = { $: "Def", n: f.n + 1, x: 0, v, e,
+    FL.made[w] = { $: "Def", n: f.n + 1, x: 0, v, e, u,
       T: Bend.All(Bend.Many(), "acc", 0, R!, () => T) };
     f.h = term_eta(Bend.App(Bend.Ref(w), Bend.Lit(R!.k as "Nat", 0)), T, f.n);
   }
@@ -1355,7 +1355,7 @@ function def_fix(k: Name): boolean {
     return false;
   }
   FL.made[kf] = { $: "Def", n: f.n + 1, x: 0, T: tele(d.T, f.n),
-    v: Bend.term_higher(e), e };
+    v: Bend.term_higher(e), e, u: d.u };
   f.h = Bend.term_higher(h);
   return true;
 }
