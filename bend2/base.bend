@@ -355,7 +355,7 @@ def File.read(file: File, max: U32) ->
 
 # The next line with its "\n", up to max bytes, so a terminal or a pipe
 # answers each line as it comes; "" at the end of the file, or when max
-# is 0.
+# is 0 (which still fails, as File.read does, on a handle that can't read).
 def File.read_line(file: File, max: U32) ->
   IO(File & Result<&1, &1, U32 & String, String>):
   import "./effs/file_read.c"

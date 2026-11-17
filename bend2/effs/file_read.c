@@ -179,6 +179,12 @@ static void __attribute__((constructor)) file_read_use(void) {
 // One read(2) refills the buffer with what is there, so a terminal or a
 // pipe answers a line as soon as it has come.
 static void file_read_line_call(IoWork* w) {
+  // The loop below reads nothing for max 0, so a bad handle would answer
+  // "": file_read_fill makes the 0-byte read(2) that File.read does.
+  if (w->word == 0) {
+    file_read_fill(w, 0);
+    return;
+  }
   int       fd  = (int)w->hand;
   FileLine* b   = file_line_of(fd, true);
   u64       got = 0;
