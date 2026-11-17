@@ -3727,12 +3727,14 @@ INLINE void bank_push(DEV u64* H, u32 c, u64 head) {
 // Lanes keep a free chain and word count per class. Host chains reaching
 // KEEP_WORDS replace COLD and bank old COLD; blocks >= CAP_WORDS >=
 // KEEP_WORDS go straight to the bank. A miss takes COLD, the bank or fresh
-// memory. Devices bank at dev_cut.
+// memory. Devices bank at dev_cut. A host count starts at ALC_NONE, less
+// KEEP_WORDS, so a free tests its sign.
 
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, NCLS_ALL + (c))
 #define ALC_COLD(e, c) ALC_AT(e, 2 * NCLS_ALL + (c))
 #define KEEP(c)        (KEEP_WORDS >> (c) ? KEEP_WORDS >> (c) : 1)
+#define ALC_NONE       (DEVICE ? 0 : 0 - (u64)KEEP_WORDS)
 
 INLINE u32 cls_fit(u32 words) {
   return words > 1 ? 32 - clz(words - 1) : 0;
@@ -3745,7 +3747,8 @@ OUTLINE void heap_hand(Env e, u32 cls) {
     bank_push(e.mem, cls, cold);
   }
   ALC_COLD(e, cls) = large ? 0 : ALC_AT(e, cls);
-  ALC_AT(e, cls)   = ALC_LEN(e, cls) = 0;
+  ALC_AT(e, cls)   = 0;
+  ALC_LEN(e, cls)  = ALC_NONE;
 }
 
 OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
@@ -3773,7 +3776,7 @@ OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
     }
   }
   ALC_AT(e, cls)  = H[got];
-  ALC_LEN(e, cls) = (u64)(n - 1) << cls;
+  ALC_LEN(e, cls) = ALC_NONE + ((u64)(n - 1) << cls);
   return got;
 }
 
@@ -3799,7 +3802,7 @@ INLINE void heap_free(Env e, u32 cls, u64 loc) {
   e.mem[loc]       = ALC_AT(e, cls);
   ALC_AT(e, cls)   = loc;
   ALC_LEN(e, cls) += 1ull << cls;
-  if (!DEVICE && ALC_LEN(e, cls) >= KEEP_WORDS) {
+  if (!DEVICE && ALC_LEN(e, cls) >> 63 == 0) {
     heap_hand(e, cls);
   }
 }
@@ -5301,6 +5304,9 @@ static bool corpus_grow(u64* H, u64 need) {
 static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
+  for (u32 i = 0; i < CUBE_T * NCLS_ALL; i += 1) {
+    ALC[i / NCLS_ALL][NCLS_ALL + i % NCLS_ALL] = ALC_NONE;
+  }
   u64 size   = (!gpu ? 1ull << 33 : bytes != 0 ? bytes : gpu_span())
     & ~16383ull;
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
