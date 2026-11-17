@@ -890,7 +890,8 @@ export function book_ctr(book: Book, k: Name): Ctr | null {
   return book.ctrs[k] ?? null;
 }
 
-export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
+// The declared datatype of tm, with all its constructors.
+export function book_adt_tld(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
     const k = name_show(tm.s?.file, tm.k);
@@ -900,6 +901,12 @@ export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx,
     const nte = tld.n === 0 ? " with no arguments: write it as " + k : ": write its arguments as ()";
     throw Err(book, ctx, "a declared datatype", undefined, tm.s, def, "Note: " + k + " is a def" + nte);
   }
+  return tld;
+}
+
+// The datatype of tm without the constructors tm.r already matched.
+export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
+  const tld = book_adt_tld(book, tm, ctx, def);
   if (tm.r.length === 0) {
     return tld;
   }
@@ -3754,9 +3761,10 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (a_wnf.$ !== "ADT") {
         throw Err(book, ctx, "a datatype", t_wnf.A, tm.s, lhs.def);
       }
-      const rem = book_adt(book, a_wnf, ctx, lhs.def).c;
+      const tld = book_adt_tld(book, a_wnf, ctx, lhs.def);
       switch (tm.$) {
         case "Efq": {
+          const rem = book_adt(book, a_wnf, ctx, lhs.def).c;
           if (rem.length !== 0 && !ctx_dead(book, ctx)) {
             throw Err(book, ctx, "this match doesn't cover " + rem.map((c) => name_key(c.k)).join(", "),
               undefined, tm.s, lhs.def, "Note: add the missing cases, or a catch-all case.");
@@ -3766,8 +3774,11 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
         case "Mat": {
           const b     = tm;
           const t_all = t_wnf;
-          const ctr   = rem.find((c) => c.k === tm.k);
-          if (ctr === undefined) {
+          // a_wnf.r only grows here, by a constructor of a_wnf.k not yet in it,
+          // so the arm's constructor is looked up by name, and a_wnf.k has
+          // c.length - r.length constructors left
+          const ctr   = book_ctr(book, tm.k);
+          if (ctr === null || ctr.f !== a_wnf.k || a_wnf.r.includes(tm.k)) {
             throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
@@ -3788,7 +3799,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           }
           const h_chk = term_check(book, h_lhs, tm.h, qt, term_check_mat_goal(tel, ctr.n, null), ctx, d);
           const m_gol = All(t_wnf.q, t_wnf.k, t_wnf.i, ADT(a_wnf.k, a_wnf.x, tm.s, a_wnf.r.concat([ctr.k])), t_wnf.B, tm.s);
-          const m_chk = rem.length === 1 && tm.m.$ !== "Mat" ? Check(Efq(tm.s), m_gol, uses_nil()) : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
+          const m_chk = tld.c.length - a_wnf.r.length === 1 && tm.m.$ !== "Mat" ? Check(Efq(tm.s), m_gol, uses_nil()) : term_check(book, lhs, tm.m, qt, m_gol, ctx, d);
           return Check(Mat(tm.k, h_chk.tm, m_chk.tm, tm.s), ty, pmap_union(h_chk.us, m_chk.us, quant_join));
         }
       }
