@@ -3854,10 +3854,10 @@ OUTLINE Term rfc_wrap(Env e, Term t, u32 cnt) {
 }
 
 INLINE Term rfc_seal(Env e, Term t) {
-  if (term_tag(t) != TAG_CTR || term_rfc(t)) {
-    return t;
-  }
-  return rfc_wrap(e, t, 1);
+  u64 tag = term_tag(t);
+  return !term_rfc(t) && (tag == TAG_CTR
+    || BLK_SHR && (tag == TAG_ARR || tag == TAG_BUF))
+    ? rfc_wrap(e, t, 1) : t;
 }
 
 INLINE void rfc_bump(Env e, u64 r, u32 k) {
@@ -3881,8 +3881,8 @@ INLINE Term term_keep(Env e, Term t, u32 k) {
 // A redirect cell holds its target's loc over a 24-bit count, which only
 // atomic adds on the low word change: the loc bits never do. The host reads
 // the cell in one relaxed 64-bit load; the device's plain load may tear into
-// two halves, both holding the same loc. A shared node's fields never change
-// either, so ctr_take copies them before it acquires.
+// two halves with the same loc. Shared fields stay fixed, so ctr_take
+// copies them before acquiring.
 INLINE u64 term_peek(DEV u64* H, Term t) {
   if (term_rfc(t)) {
     return w64_load(&H[term_loc(t)]) >> 24;
