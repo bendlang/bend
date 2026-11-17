@@ -3234,8 +3234,8 @@ function c_header(segs: Seg[], clos: string[]): string {
     `CONSTV u64 TAB_${i}[] = { ${r} };`)].join("\n\n");
 }
 
-// Continuations alike but for their locals' names are one segment: a return
-// through one target predicts.
+// Continuations alike but for their locals' names and their own id (WL_SEQ
+// names it) are one segment: a return through one target predicts.
 function segs_fuse(segs: Seg[], dev: Set<string>): Seg[] {
   const seen = new Map<string, string>();
   const dup = new Map<string, string>();
@@ -3243,7 +3243,8 @@ function segs_fuse(segs: Seg[], dev: Set<string>): Seg[] {
   for (const s of segs.filter((s) => s.frame !== null)) {
     const ids = new Map<string, number>();
     dup.set(s.fid, memo(seen, [...seg_take(s), s.spin, ...s.lines].join("\n")
-      .replace(/\b_\w*_\d+\b/g, (m) => "_" + memo(ids, m, () => ids.size)),
+      .replace(/\b(_\w*_\d+|FID_\w+)\b/g, (m) => m === s.fid ? ""
+        : m[0] === "F" ? m : "_" + memo(ids, m, () => ids.size)),
     () => s.fid));
     if (dev.has(s.fid)) {
       dev.add(to(s.fid));
