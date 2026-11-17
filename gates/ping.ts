@@ -373,6 +373,14 @@ try {
     { BEND_NO_TELEMETRY: "1" });
   check("--checkup gives Base only to a module that imports it",
     base_run.code === 1);
+  const late_base = path.join(TMP, "late-base.bend");
+  fs.writeFileSync(late_base,
+    "import ./no-base.bend as NoBase\nimport Base\ndef main() -> Nat:\n  0n\n");
+  fs.writeFileSync(header_source, "import ./late-base.bend as LateBase\n");
+  const late_base_run = await bend([header_source, "--checkup"],
+    { BEND_NO_TELEMETRY: "1" });
+  check("--checkup checks a dependency before a later import of Base",
+    late_base_run.code === 1 && late_base_run.err.includes("- observed : String"));
   fs.writeFileSync(path.join(TMP, "page.html"),
     "<script type=\"module\" src=\"./page.ts\"></script>\n");
   fs.writeFileSync(path.join(TMP, "page.ts"), "import \"./none.ts\";\n");
