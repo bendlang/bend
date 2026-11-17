@@ -2703,6 +2703,8 @@ function emit_native(sc: Scope, k: Name, to?: Name): string {
   const name = name_id(to ? "lane_" : "spin_", k);
   memo(FL.units, (to ? "lane " : "spin ") + k, (n) => unit_new(n, () => {
     const go = () => {
+      // a pass names its words as the last did: what those lent is not its
+      FL.unit!.arrs.clear();
       const [sl, vals] = emit_open(k);
       const seg = Object.assign(sl.seg, { fid: name, native: true, lane: to });
       emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
