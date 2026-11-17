@@ -1955,6 +1955,37 @@ def F32.square(a: F32) -> F32:
     case F32{+x}:
       F32.mul(F32{x}, F32{x})
 
+# At stored exponent 254, hi = A*2^104 and lo = B*2^(104-d). Overflow starts at
+# (2^24 - 1/2)*2^104. Thus B^2/4^d must reach D+1/4, with
+# D = (2^24-A)*(2^24+A) - 2^24. Each integer operation fits in 48 bits.
+def F32.hypot.finite(hi: U32, +lo: U32, r: F32, finite: Bool) -> F32:
+  match finite:
+    case False{}:
+      r
+    case True{}:
+      +gap = U32.to_nat(U32.sub(2139095040, hi))
+      deficit = Nat.sub(Nat.mul(gap, Nat.sub(33554432n, gap)), 16777216n)
+      # For d >= 12 overflow is impossible. The clamped quotient stays below D.
+      d = U32.min(U32.sub(254, U32.shrn(lo, 23n)), 12)
+      +scale = U32.shln(1, U32.to_nat(U32.mul(d, 2)))
+      +b = U32.to_nat(U32.or(U32.and(lo, 8388607), 8388608))
+      bias = U32.to_nat(U32.mul(U32.shrn(scale, 2n), 3))
+      # The bias accounts for the quarter in D+1/4, including scale = 1.
+      q = Nat.div(Nat.add(Nat.mul(b, b), bias), U32.to_nat(scale))
+      Bool.pick(F32, Nat.is_gt(q, deficit), F32.div(1.0, 0.0),
+        F32.min(r, 3.4028234663852886e38))
+
+def F32.hypot.limit(a: F32, b: F32, r: F32, large: Bool) -> F32:
+  match large:
+    case False{}:
+      r
+    case True{}:
+      +x = F32.bits(a)
+      +y = F32.bits(b)
+      +hi = U32.max(x, y)
+      F32.hypot.finite(hi, U32.min(x, y), r,
+        U32.is_eq(U32.shrn(hi, 23n), 254))
+
 # Outside [2^-60, 2^60] the squares would overflow or underflow, so scale
 # both sides by a power of two first; inside, the scale is 1 and exact.
 def F32.hypot(a: F32, b: F32) -> F32:
@@ -1969,7 +2000,8 @@ def F32.hypot(a: F32, b: F32) -> F32:
     Bool.pick(F32, lo, 7.888609052210118e-31, 1.0))
   +p = F32.mul(x, s)
   +q = F32.mul(y, s)
-  F32.mul(F32.sqrt(F32.add(F32.mul(p, p), F32.mul(q, q))), u)
+  r = F32.mul(F32.sqrt(F32.add(F32.mul(p, p), F32.mul(q, q))), u)
+  F32.hypot.limit(x, y, r, F32.is_ge(m, 1.7014118346046923e38))
 
 # A rounded zero keeps the input sign, including at the negative half.
 def F32.round.zero(a: F32, r: F32, zero: Bool) -> F32:
