@@ -179,6 +179,12 @@ static void __attribute__((constructor)) file_read_use(void) {
 // One read(2) refills the buffer with what is there, so a terminal or a
 // pipe answers a line as soon as it has come.
 static void file_read_line_call(IoWork* w) {
+  // The loop below reads nothing for max 0, so a bad handle would answer
+  // "": file_read_fill makes the 0-byte read(2) that File.read does.
+  if (w->word == 0) {
+    file_read_fill(w, 0);
+    return;
+  }
   int       fd  = (int)w->hand;
   FileLine* b   = file_line_of(fd, true);
   u64       got = 0;
@@ -206,10 +212,6 @@ static void file_read_line_call(IoWork* w) {
 // straight from the buffer: it reads no fd, so it neither blocks nor
 // flushes stdout, and skips the helper thread's round trip.
 Term file_read_line_run(Env e, Term* f, IoWork* w) {
-  // A zero-byte read still checks for errors such as EBADF.
-  if (f[1] == 0) {
-    return file_read_start(f[0], 0, w, file_read_call, file_read_pack);
-  }
   u64       hand = io_hand_v(f[0]);
   FileLine* b    = file_line_of((int)hand, false);
   u64       max  = f[1] < INT32_MAX ? f[1] : INT32_MAX;
