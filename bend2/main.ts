@@ -350,8 +350,8 @@ async function cli_file(args: string[]): Promise<void> {
   }
 }
 
-// cli_checkup checks and runs each import of the file alone (Base read
-// once, seeded into every module that imports it); one that fails fails it.
+// cli_checkup checks and runs each import of the file alone; one that fails
+// fails it. Seed the checked Base only where the loader would read Base first.
 async function cli_checkup(file: string): Promise<void> {
   const base = await book_read(BASE);
   let bad = false;
@@ -373,8 +373,9 @@ async function cli_checkup(file: string): Promise<void> {
     cli_say(1, "--- " + m[1] + " ---\n");
     let code = 1;
     try {
-      const own = /^(?:[\t\r ]*(?:(?:#|import )[^\n]*)?\n)*[\t ]*import Base\s/
-        .test(fs.readFileSync(at, "utf8"));
+      const first = fs.readFileSync(at, "utf8").split("\n")
+        .find((line) => !/^\s*(?:#|$)/.test(line))?.trim();
+      const own = /^import\s+Base(?:\s+#.*)?$/.test(first ?? "");
       code = book_run(await book_read(at, own ? base : undefined), [at]);
     } catch (e) {
       cli_say(2, book_err(e) + "\n");
