@@ -3359,7 +3359,6 @@ def Map.union.into(a, -V: Kind(a), m: Map<a, V>, n: Map<a, V>) -> Map<a, V>:
     case left:
       Map.from_list.go(a, V, Map.to_list(a, V, n), left)
 
-# Empty and singleton right maps reduce even with an abstract left.
 def Map.union(a, -V: Kind(a), m: Map<a, V>, n: Map<a, V>) -> Map<a, V>:
   match n:
     case MTip{}:
