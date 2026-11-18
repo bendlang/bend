@@ -2260,7 +2260,8 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
     || term_strip(a).$ === "Var" ? null
     : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
   const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
-    || lets.some((l) => l?.p === y && term_any(l.v, bad));
+    || lets.some((l) => l && (l.p === y ? term_any(l.v, bad)
+      : rest_use([b], l.p) === 0));
   let xs = fs.map((a, i) => lets[i]?.p ?? a);
   let b = h;
   let hit = fs.every((a, i) => !m.live[i] || term_const(a));
