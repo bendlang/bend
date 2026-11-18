@@ -43,6 +43,7 @@ const USAGE = [
   ["bend <file.bend> --check-only", "check the file and its imports; run nothing"],
   ["bend <file.bend> --verdict", "check it, then recheck it with the proven kernel"],
   ["bend <file.bend> --publish [<name>@<version>]", "publish the file and its imports; a name needs login"],
+  ["bend <file.bend> --publish --extra <file>", "include a text file under the entry's directory; repeat --extra"],
   ["bend link <name>@<version> 0x<hash>", "name a package already on the hub"],
   ["bend login", "log in to BendAI for --publish <name>@…"],
   ["bend <page.html> -o <dir>", "bundle a page that imports .bend files"],
@@ -240,6 +241,7 @@ function ver_newer(ver: string): boolean {
 async function cli_file(args: string[]): Promise<void> {
   const outs: string[] = [];
   const argv: string[] = [];
+  const extras: string[] = [];
   let file: string | undefined;
   let only = false;
   let verdict = false;
@@ -263,6 +265,9 @@ async function cli_file(args: string[]): Promise<void> {
         named = args[i];
         named_parts(named);
       }
+    } else if (a === "--extra") {
+      i += 1;
+      extras.push(args[i] ?? cli_fail("--extra needs a file"));
     } else if (a === "-o") {
       i += 1;
       outs.push(args[i] ?? cli_fail("-o needs an output file"));
@@ -280,12 +285,15 @@ async function cli_file(args: string[]): Promise<void> {
     cli_say(1, HELP);
     process.exit(1);
   }
+  if (extras.length !== 0 && !publish) {
+    cli_fail("--extra needs --publish");
+  }
   if (file.endsWith(".html") && (outs.length !== 1 || only || verdict
     || checkup || publish || argv.length !== 0)) {
     cli_fail("a page bundles with -o <dir>");
   }
   if (publish && (outs.length !== 0 || only || verdict || checkup)) {
-    cli_fail("--publish takes no other option");
+    cli_fail("--publish takes no output or check option");
   }
   if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
     cli_fail((verdict ? "--verdict" : "--check-only") + " takes no other option");
@@ -303,7 +311,7 @@ async function cli_file(args: string[]): Promise<void> {
       return await cli_bundle(file, outs[0]);
     }
     if (publish) {
-      return await cli_publish(file, named);
+      return await cli_publish(file, extras, named);
     }
     if (checkup) {
       return await cli_checkup(file);
@@ -671,10 +679,11 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
 // First it prints the terms and the license the hub will show.
-async function cli_publish(file: string, named?: string): Promise<void> {
+async function cli_publish(file: string, extras: string[],
+  named?: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const book = await book_read(file, undefined, seen);
-  const files = pkg_files(file, book, seen);
+  const files = pkg_files(file, book, seen, extras);
   const entry = Object.keys(files)[0];
   const name  = path.basename(entry, ".bend").replaceAll("-", "_");
   if (name === "") {
@@ -837,7 +846,7 @@ async function cli_login(): Promise<string> {
 // README.md beside the entry goes along too, and the hub shows it on the
 // package's page; it must be under README_MAX bytes, as the hub takes.
 function pkg_files(file: string, book: Bend.Book,
-  seen: Map<string, string | null>): Record<string, string> {
+  seen: Map<string, string | null>, extras: string[]): Record<string, string> {
   const ent = fs.realpathSync(file);
   const dir = path.join(path.dirname(ent), "/");
   if (dir !== path.join(fs.realpathSync(path.dirname(file)), "/")) {
@@ -854,10 +863,14 @@ function pkg_files(file: string, book: Bend.Book,
   ...Object.entries(book.tlds).flatMap(([k, tld]): [string, string][] =>
     tld.$ !== "Def" || tld.i === undefined || tld.b === true
       || k.startsWith("0x") ? [] : tld.i.map((f) =>
-      [path.posix.normalize(f.slice(dir.length)), f]))];
-  // .bend files come first, so a foreign file's .bend, its directory a
+      [path.posix.normalize(f.slice(dir.length)), f])),
+  ...extras.map((src): [string, string] => {
+    const full = path.resolve(src);
+    return [path.relative(dir, full).split(path.sep).join("/"), full];
+  })];
+  // Imported .bend files come first, so a foreign file's .bend, its directory a
   // prefix of the file's path, is checked inside dir before its path is cut
-  const files: Record<string, string> = {};
+  const files: Record<string, string> = Object.create(null);
   for (const [p, src] of raws) {
     if (p.split("/").slice(0, -1).some((s) => s.toLowerCase() === "license")) {
       throw "Error: " + src + " cannot be published: it is in a directory"
