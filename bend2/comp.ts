@@ -18,7 +18,8 @@ type Kind = "w32" | "w64" | "box";
 
 type Lay = { ks: Kind[]; arms: Record<Name, Lay[]> | null };
 
-type Val = { ws: string[]; lay: Lay; stat: boolean; rs: (string | null)[] };
+type Val = { ws: string[]; lay: Lay; stat: boolean; rs: (string | null)[];
+  iv?: Iv };
 
 type Bind = { val: Val; n: number; A: HTerm };
 
@@ -64,6 +65,7 @@ type Scope = {
   rest: HTerm[];
   def: Name;
   fuel: { n: number };
+  low?: number;
 };
 
 type Spare = { cls: number; name: string; taken: boolean };
@@ -71,6 +73,20 @@ type Spare = { cls: number; name: string; taken: boolean };
 type Native = Record<Name, { intr: string; elim?: string[]; cond?: string }>;
 
 type Of<K> = Extract<HTerm, { $: K }>;
+
+// A value's bounds over a spin's whole run, as C over the spin's entry
+// arguments; p and add say it is parameter word p's current value plus add.
+type Iv = { lo: string; hi: string; p?: number; add?: number };
+
+// A spin's index analysis: what each self call passes for each parameter
+// word (forms), the roles read off them, each variable's bounds, and the
+// checks (conds, over the temporaries tmps) its mask-free copy needs. A
+// helper it calls is emitted in place inl times at most (seen: it calls
+// one), and outs holds what each word of such a helper's result is.
+type Ix = { forms: Map<number, Set<string>>; roles: string[] | null;
+  info: Map<number, Iv>; conds: string[]; tmps: Map<string, string>;
+  exs: Map<string, string>; outs: Map<string, Iv>; inl: number;
+  seen: boolean };
 
 type Row = [HTerm, number, number, number];
 
@@ -1158,6 +1174,7 @@ function file_new(book: Bend.Book, js: boolean) {
     locals: new Map<string, Name>(),
     names: new Map<number, string>(),
     facts: new Set<string>(),
+    ix: null as Ix | null,
     heat: new Set<string>(),
     when: new Map<string, (() => void)[]>(),
     units: new Map<string, Unit>(),
@@ -1584,7 +1601,8 @@ function arr_loc(sc: Scope, a: string): string {
     ? `${a} == h${i} ? q${i} : ${s}` : s, `blk_loc(e.mem, ${a})`);
 }
 
-function arr_op(sc: Scope, k: string, el: Lay, args: Val[]): Val {
+function arr_op(sc: Scope, k: string, el: Lay, args: Val[],
+  bare = false): Val {
   const { arr, lgs } = lay_arr(el);
   if (k === "Array.new") {
     return val_new([arr_new(sc, args[0].ws[0], args[1], el)], BOX);
@@ -1594,8 +1612,8 @@ function arr_op(sc: Scope, k: string, el: Lay, args: Val[]): Val {
     return val_new([a, `(1ull << (blk_cls(${a}) - ${lgs}))`],
       lay_pack([["Tuple", [BOX, W32]]]));
   }
-  const raw = k === "Array.get_unchecked";
-  const get = raw || k === "Array.get";
+  const raw = bare || k === "Array.get_unchecked";
+  const get = k.startsWith("Array.get");
   const [l, at] = emit_hold(sc, [arr_loc(sc, a), raw
     ? `((u32)${args[1].ws[0]} << ${lgs})`
     : `blk_at(${a}, ${args[1].ws[0]}, ${lgs})`], "at");
@@ -2058,6 +2076,9 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
     spare_flush(sc);
   }
   const ws = val_own(val_to(sc, v, dst?.lay ?? sc.seg.ret));
+  if (dst && FL.ix) {
+    ws.forEach((w, j) => ix_out(sc, dst.ws[j], w));
+  }
   file_push(sc, ...ws.map((w, j) => `${dst?.ws[j] ?? "r" + j} = ${w};`));
   if (dst === null) {
     file_push(sc, `WL_RETN(${ws.length});`);
@@ -2066,19 +2087,30 @@ function emit_put(sc: Scope, dst: Val | null, v: Val): void {
 
 function emit_spin(sc: Scope, ck: Spine): Val {
   const k = ck.k!;
-  const { lays, ret } = fun_of(k);
-  const ws = emit_args(sc, ck).flatMap((v) => v.ws);
-  const name = emit_native(sc, k);
-  const o = name_local(sc, "o");
-  const out = val_new(ret.ks.map((kd, j) =>
-    `${kd === "w32" ? "(u32)" : ""}${o}[${j}]`), ret);
-  out.ws.forEach((w) => FL.locals.set(w, "o"));
-  file_push(sc, `Term ${o}[${out.ws.length}];`);
-  const ks = lays.flatMap((l) => l.ks);
-  const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
-    : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
-  block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
-    file_push(sc, "return 0;"));
+  const { h, lays, ret } = fun_of(k);
+  const ivs = ix_inl(sc, k) ? ck.xs.map((x) => iv(sc, x)) : null;
+  const vals = emit_args(sc, ck);
+  const ws = vals.flatMap((v) => v.ws);
+  const o = ivs ? "" : name_local(sc, "o");
+  const out = val_new(ivs ? emit_hold(sc, ret.ks.map(() => "0"), "o", ret.ks)
+    : ret.ks.map((kd, j) => `${kd === "w32" ? "(u32)" : ""}${o}[${j}]`), ret);
+  if (ivs) {
+    // in place: the callee's body over its arguments, rooted as its own
+    const brw = brw_of(k);
+    block(sc, "{", () => emit_body({ ...sc, def: k, uses: new Map(),
+      spares: [], rest: [], fuel: { n: FOLD_FUEL } }, h!, tld_of(k).T,
+    vals.map((v, i) => ({ ...val_new(v.ws, v.lay, v.lay.ks.map(() =>
+      brw[i] ? arg_key(k, i) : null)), iv: ivs[i] })), out));
+  } else {
+    const name = emit_native(sc, k);
+    out.ws.forEach((w) => FL.locals.set(w, "o"));
+    file_push(sc, `Term ${o}[${out.ws.length}];`);
+    const ks = lays.flatMap((l) => l.ks);
+    const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
+      : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
+    block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
+      file_push(sc, "return 0;"));
+  }
   bind_dead(sc, sc.rest,
     ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
   return out;
@@ -2098,15 +2130,49 @@ function emit_open(k: Name): [Scope, Val[]] {
 function emit_native(sc: Scope, k: Name): string {
   const name = name_id("spin_", k);
   memo(FL.units, "spin " + k, (n) => unit_new(n, () => {
-    const [sl, vals] = emit_open(k);
-    const seg = Object.assign(sl.seg, { fid: name, native: true });
-    emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
-      val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
-    const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
-      arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
-      seg.spin ? "WL_SPIN" : "for (;;) {"],
-      1), ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
-    const text = body.join("\n");
+    const go = () => {
+      const [sl, vals] = emit_open(k);
+      const seg = Object.assign(sl.seg, { fid: name, native: true });
+      emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
+        val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
+      return seg;
+    };
+    const ix: Ix = FL.ix = { forms: new Map(), roles: null, info: new Map(),
+      conds: [], tmps: new Map(), exs: new Map(), outs: new Map(), inl: 0,
+      seen: false };
+    const seg = go();
+    // with helpers, the forms are read again off a pass that opens them
+    const pass = () => {
+      ix.info.clear();
+      ix.outs.clear();
+      ix.inl = ix.seen ? IX_INL : 0;
+      return go();
+    };
+    if (seg.spin && !FL.js && ix.seen) {
+      ix.forms.clear();
+      pass();
+    }
+    const bare = seg.spin && !FL.js && ix_roles(ix, seg) ? pass() : seg;
+    FL.ix = null;
+    bare.refs.forEach((r) => seg.refs.add(r));
+    const loop = (s: Seg, tab: number) => [...seg_text([s.spin ? "WL_SPIN"
+      : "for (;;) {"], tab), ...seg_text(s.lines, tab + 1),
+    ...seg_text(["break;", "}"], tab)];
+    // the temporaries the checks read, in the order they were made
+    const need = new Set<string>();
+    const mark = (ex: string) => ex.match(/\bb\d+\b/g)?.forEach((t) =>
+      need.has(t) || (need.add(t), mark(ix.tmps.get(t)!)));
+    ix.conds.forEach(mark);
+    const top = seg_text([...seg.ks.flatMap((kd, i) =>
+      arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg)], 1);
+    const body = [...top, ...ix.conds.length === 0 ? loop(seg, 1) : [
+      ...seg_text([...ix.tmps].filter(([t]) => need.has(t)).map(([t, ex]) =>
+        `u64 ${t} = ${ex};`), 1),
+      `  if (!DEVICE && ${[...new Set(ix.conds)].join("\n    && ")}) {`,
+      ...loop(bare, 2), "  } else {", ...loop(seg, 2), "  }"],
+    "  return 1;", "}"];
+    // the device runs the masked copy alone: its length is the spin's
+    const text = [...top, ...loop(seg, 1), "  return 1;", "}"].join("\n");
     const q = text.length + 1 < SPIN_FAR ? "INLINE"
       : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
     const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
@@ -2116,7 +2182,267 @@ function emit_native(sc: Scope, k: Name): string {
   return seg_ref(sc, name);
 }
 
+// Ix
+// ==
+
+// An Array index wraps: blk_at masks it by the block's size, which keeps
+// clang from reading and writing a loop's cells side by side. A spin whose
+// index has a bound that is fixed for the loop (iv, by the operator) is
+// emitted twice: once without the masks, entered when every bound is under
+// its array's size, and once as before.
+
+const IX_MAX = "0xFFFFFFFFull";
+
+const IX_ANY: Iv = { lo: "0ull", hi: IX_MAX };
+
+const IX_INL = 32;
+
+function ix_tmp(ex: string): string {
+  const ix = FL.ix!;
+  return memo(ix.exs, ex, () => {
+    const name = "b" + ix.tmps.size;
+    ix.tmps.set(name, ex);
+    return name;
+  });
+}
+
+function ix_sat(ex: string): string {
+  const t = ix_tmp(ex);
+  return ix_tmp(`(${t} > ${IX_MAX} ? ${IX_MAX} : ${t})`);
+}
+
+// Parameter word p now: fixed (its entry value), a countdown (a Nat every
+// self call passes a predecessor of), or a counter (stepped by c on some
+// self calls, as many times at most as the countdown's entry value). A
+// bound of 2^32 - 1 is no bound (a Nat may be past it), and stays none
+// whatever is taken off it. sub is the successors a match took off the
+// word: the value is that much under it, and so are its bounds.
+function ix_word(sc: Scope, w: string, sub = 0): Iv {
+  const ix = FL.ix!;
+  const p = sc.seg.native ? sc.seg.params.indexOf(w) : -1;
+  const role = ix.roles?.[p] ?? "";
+  const down = ix.roles?.indexOf("down") ?? -1;
+  if (p < 0) {
+    return sub === 0 && ix.outs.get(w) || IX_ANY;
+  }
+  if (role === "" || (role !== "down" && role !== "same" && down < 0)) {
+    return { ...IX_ANY, p, add: -sub };
+  }
+  const at = ix_sat(`(u64)r${p}`);
+  const less = (x: string, k: number) => k === 0 ? x : ix_tmp(
+    `(${x} == ${IX_MAX} ? ${IX_MAX} : ${x} > ${k} ? ${x} - ${k} : 0)`);
+  let [lo, hi] = [role === "down" ? "0ull" : at, at];
+  if (role !== "down" && role !== "same") {
+    // under an arm that took low successors off the countdown, that many
+    // of its steps are still to come
+    const raw = ix_tmp(`${at} + ${role}ull * ${
+      less(ix_sat(`(u64)r${down}`), sc.low ?? 0)}`);
+    [lo, hi] = [ix_tmp(`(${raw} > ${IX_MAX} ? 0 : ${at})`), ix_sat(raw)];
+  }
+  return { lo: sub === 0 ? lo : ix_tmp(`(${lo} > ${sub} ? ${lo} - ${sub} : 0)`),
+    hi: less(hi, sub), p, add: -sub };
+}
+
+function ix_bind(sc: Scope, p: Of<"Var">, v: Val, from: Val): void {
+  const ix = FL.ix;
+  const pred = /^\((\w+) - (\d+)\)$/.exec(from.ws[0] ?? "");
+  if (!ix || v.ws.length !== 1) {
+    return;
+  }
+  const lent = from.ws.length === 1 ? from.iv : undefined;
+  const got = lent ?? (pred ? ix_word(sc, pred[1], Number(pred[2]))
+    : ix_word(sc, v.ws[0]));
+  if (pred && !lent && got.p !== undefined
+    && got.p === ix.roles?.indexOf("down")) {
+    sc.low = Number(pred[2]);
+  }
+  ix.info.set(p.i, got);
+}
+
+// A flat def that takes an Array and calls itself nowhere is a helper: the
+// analysis and the mask-free copy emit its body in place of the call, so
+// its accesses are the spin's own.
+function ix_inl(sc: Scope, k: Name): boolean {
+  const ix = FL.ix;
+  if (!ix || !sc.seg.native || loop_of(k).length > 0
+    || !fun_of(k).live.some(([, , A]) => ty_holds(A, "Array"))) {
+    return false;
+  }
+  ix.seen = true;
+  return ix.inl-- > 0;
+}
+
+// A helper's result word `to` takes w: it is what every w it takes is.
+function ix_out(sc: Scope, to: string, w: string): void {
+  const outs = FL.ix!.outs;
+  const got = ix_word(sc, w);
+  const old = outs.get(to) ?? got;
+  outs.set(to, old.p === got.p && old.add === got.add
+    ? { ...old.hi === got.hi && old.lo === got.lo ? got : IX_ANY,
+      p: got.p, add: got.add } : IX_ANY);
+}
+
+function iv(sc: Scope, tm: HTerm): Iv {
+  const s = term_strip(tm);
+  if (s.$ === "Var") {
+    // a parameter as it is: its bound where it is read, not where bound
+    const got = FL.ix!.info.get(s.i) ?? IX_ANY;
+    return got.add === 0 && sc.low ? ix_word(sc, sc.seg.params[got.p!]) : got;
+  }
+  if (term_const(s)) {
+    const n = Bend.u32_from_term(s) ?? nat_peel(s)[1];
+    const c = Math.min(n, 0xFFFFFFFF) + "ull";
+    return { lo: c, hi: c };
+  }
+  const m = term_spine(s);
+  // an operator is Base's def of that name, not a file's own
+  const k = m.t.$ === "Ref" && m.tld?.$ === "Def" && m.tld.b ? m.t.k : "";
+  const [a, b] = [0, 1].map((i) => m.args[i] ? iv(sc, m.args[i]) : IX_ANY);
+  const one = { lo: "1ull", hi: "1ull" };
+  const wrap = (raw: string, lo: string): Iv =>
+    ({ lo: ix_tmp(`(${raw} > ${IX_MAX} ? 0 : ${lo})`), hi: ix_sat(raw) });
+  const sum = (x: Iv, y: Iv, o: string): Iv => x.hi === IX_MAX
+    || y.hi === IX_MAX ? IX_ANY : wrap(
+      ix_tmp(`${x.hi} ${o} ${y.hi}`), ix_sat(`${x.lo} ${o} ${y.lo}`));
+  const pick = (o: string): Iv => ({
+    lo: ix_tmp(`(${a.lo} ${o} ${b.lo} ? ${a.lo} : ${b.lo})`),
+    hi: ix_tmp(`(${a.hi} ${o} ${b.hi} ? ${a.hi} : ${b.hi})`) });
+  const top = (hi: string): Iv => ({ lo: "0ull", hi: ix_tmp(hi) });
+  // no bound in, none out: a check that cannot hold asks for no copy
+  if ((a.hi === IX_MAX || m.args[1] && b.hi === IX_MAX)
+    && /\.(sub|x?or|max|shln|shr)$/.test(k)) {
+    return IX_ANY;
+  }
+  switch (k) {
+    case "U32.add":
+    case "Nat.add": {
+      const c = /^(\d+)ull$/.exec(b.hi);
+      return { ...sum(a, b, "+"), ...a.p !== undefined && c
+        && b.lo === b.hi && a.add! >= 0
+        ? { p: a.p, add: a.add! + Number(c[1]) } : {} };
+    }
+    case "U32.inc": {
+      return { ...sum(a, one, "+"), ...a.p !== undefined && a.add! >= 0
+        ? { p: a.p, add: a.add! + 1 } : {} };
+    }
+    case "U32.mul":
+    case "Nat.mul": {
+      return sum(a, b, "*");
+    }
+    case "U32.shl":
+    case "Nat.double": {
+      return sum(a, { lo: "2ull", hi: "2ull" }, "*");
+    }
+    case "U32.sub": {
+      const ok = ix_tmp(`${a.lo} >= ${b.hi}`);
+      return { lo: ix_tmp(`(${ok} ? ${a.lo} - ${b.hi} : 0)`),
+        hi: ix_tmp(`(${ok} ? ${a.hi} - ${b.lo} : ${IX_MAX})`) };
+    }
+    case "Nat.sub": {
+      return { lo: ix_tmp(`(${a.lo} > ${b.hi} ? ${a.lo} - ${b.hi} : 0)`),
+        hi: ix_tmp(`(${a.hi} == ${IX_MAX} ? ${IX_MAX}`
+          + ` : ${a.hi} > ${b.lo} ? ${a.hi} - ${b.lo} : 0)`) };
+    }
+    case "U32.and": {
+      return top(`(${a.hi} < ${b.hi} ? ${a.hi} : ${b.hi})`);
+    }
+    case "U32.or":
+    case "U32.xor": {
+      const hi = pick(">").hi;
+      return top(`(${IX_MAX} >> clz((u32)${hi} | 1))`);
+    }
+    case "U32.shr": {
+      return { lo: ix_tmp(`${a.lo} >> 1`), hi: ix_tmp(`${a.hi} >> 1`) };
+    }
+    case "U32.shln": {
+      const t = ix_tmp(`(${b.hi} >= 32 ? ${IX_MAX} : ${a.hi} << ${b.hi})`);
+      return { lo: "0ull", hi: ix_sat(t) };
+    }
+    case "U32.shrn": {
+      return top(`(${b.lo} >= 32 ? 0 : ${a.hi} >> ${b.lo})`);
+    }
+    case "U32.div": {
+      return top(`(${b.lo} ? ${a.hi} / ${b.lo} : ${a.hi})`);
+    }
+    case "U32.mod": {
+      return top(`(${b.lo} && ${b.hi} - 1 < ${a.hi} ? ${b.hi} - 1 : ${a.hi})`);
+    }
+    case "U32.min":
+    case "Nat.min": {
+      return pick("<");
+    }
+    case "U32.max":
+    case "Nat.max": {
+      return pick(">");
+    }
+    case "U32.to_nat": {
+      return { lo: a.lo, hi: a.hi };
+    }
+    case "U32.from_nat": {
+      return { lo: ix_tmp(`(${a.hi} == ${IX_MAX} ? 0 : ${a.lo})`), hi: a.hi };
+    }
+    case "Array.get":
+    case "Array.set":
+    case "Array.swap": {
+      // the array these answer is the array they take
+      const arr = iv(sc, m.args[0]);
+      return { ...IX_ANY, p: arr.p, add: arr.add };
+    }
+    default: {
+      return /^(U32|Nat)\.is_/.test(k) ? { lo: "0ull", hi: "1ull" } : IX_ANY;
+    }
+  }
+}
+
+// What a self call passes for each parameter word: "0" itself, "+c" itself
+// plus c, "-n" its n-th predecessor, "?" anything else.
+function ix_forms(sc: Scope, ck: Spine, vals: Val[]): void {
+  let w = 0;
+  ck.xs.forEach((x, i) => {
+    const got = iv(sc, x);
+    vals[i].ws.forEach((word, j) => {
+      // a word of a record, or of a helper's result, is read by its name
+      const g = j === 0 && got.p !== undefined ? got : ix_word(sc, word);
+      memo(FL.ix!.forms, w, () => new Set()).add(g.p !== w++ ? "?"
+        : g.add! > 0 ? "+" + g.add : String(g.add));
+    });
+  });
+}
+
+function ix_roles(ix: Ix, seg: Seg): boolean {
+  ix.roles = seg.params.map((_, p) => {
+    const fs = [...ix.forms.get(p) ?? ["?"]];
+    const up = fs.filter((f) => f[0] === "+");
+    return fs.every((f) => f === "0") ? "same"
+      : fs.every((f) => f[0] === "-" && f !== "-0") && seg.ks[p] === "w64"
+      ? "down"
+      : up.length > 0 && new Set(up).size === 1 && seg.ks[p] === "w32"
+        && fs.every((f) => f === "0" || f[0] === "+") ? up[0].slice(1) : "";
+  });
+  ix.info.clear();
+  return ix.roles.includes("down");
+}
+
+// The index of an access to a fixed array has a bound: the mask-free copy
+// needs it under the array's size, and reads the index as it is.
+function ix_site(sc: Scope, k: Name, m: Spine): boolean {
+  if (!FL.ix?.roles || !sc.seg.native
+    || !/^Array\.(get|set|swap)$/.test(k)) {
+    return false;
+  }
+  const arr = iv(sc, m.args[0]);
+  const at = iv(sc, m.args[1]);
+  if (arr.p === undefined || FL.ix.roles[arr.p] !== "same"
+    || at.hi === IX_MAX) {
+    return false;
+  }
+  FL.ix.conds.push(`${at.hi} < (1ull << (blk_cls(r${arr.p}) - ${
+    lay_arr(lay_el(m.all[0])).lgs}))`);
+  return true;
+}
+
 function emit_intr(sc: Scope, k: Name, m: Spine, ty: HTerm | null): Val {
+  const bare = ix_site(sc, k, m);
   const args = emit_each(sc, m.args);
   const C = intr_of(k)!.C!;
   if (/^Array\.(get|get_unchecked|new|clone)$/.test(k)
@@ -2125,7 +2451,7 @@ function emit_intr(sc: Scope, k: Name, m: Spine, ty: HTerm | null): Val {
     facts_hot(sc.def, m.all[0], true);
   }
   if (C === null) {
-    return arr_op(sc, k, lay_el(m.all[0]), args);
+    return arr_op(sc, k, lay_el(m.all[0]), args, bare);
   }
   const lays = fun_of(k).lays;
   const as = args.map((v, i) => val_own(val_to(sc, v, lays[i]))[0])
@@ -2350,8 +2676,13 @@ function emit_zero(ty: HTerm | null): Val {
 
 function emit_let(sc: Scope, x: Of<"Let">): void {
   const o = term_open(x);
-  bind_uses(sc, o.ps[0], val_hold(sc, emit_expr(sc, x.v[0], null, null),
-    x.k[0]), [o.b], ty_ann(x.v[0])!);
+  const v = val_hold(sc, emit_expr(sc, x.v[0], null, null), x.k[0]);
+  if (FL.ix) {
+    const got = iv(sc, x.v[0]);
+    FL.ix.info.set(o.ps[0].i, got.hi === IX_MAX && got.p === undefined
+      && v.ws.length === 1 ? ix_word(sc, v.ws[0]) : got);
+  }
+  bind_uses(sc, o.ps[0], v, [o.b], ty_ann(x.v[0])!);
 }
 
 function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
@@ -2375,8 +2706,9 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       const o = term_open(x);
       const at = lay_at(all.A, args[0]);
       const lay = lay_lazy(args[0], at) ? BOX : at;
-      bind_uses(sc, o.ps[0], val_hold(sc, val_to(sc, args[0], lay), x.k),
-        [o.b], all.A);
+      const held = val_hold(sc, val_to(sc, args[0], lay), x.k);
+      ix_bind(sc, o.ps[0], held, args[0]);
+      bind_uses(sc, o.ps[0], held, [o.b], all.A);
       return emit_body(sc, o.b, all.B(DUMMY), args.slice(1), dst);
     }
     case "Mat":
@@ -2415,7 +2747,11 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
         return emit_body(sc, Bend.Let(["r"], [0], [Bend.Ann(x, ty!)],
           (xs) => xs[0]), ty, args, dst);
       }
-      const cargs = emit_args(sc, ck, true).flatMap((v) => v.ws);
+      const vals = emit_args(sc, ck, true);
+      if (FL.ix && sc.seg.native && sc.seg.def === ck.k) {
+        ix_forms(sc, ck, vals);
+      }
+      const cargs = vals.flatMap((v) => v.ws);
       spare_flush(sc);
       emit_jump(sc, cargs, ck.k, ck.b);
     }
