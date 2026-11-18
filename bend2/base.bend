@@ -1927,10 +1927,10 @@ def F32.max(a: F32, b: F32) -> F32:
 def F32.clamp(x: F32, lo: F32, hi: F32) -> F32:
   F32.min(F32.max(x, lo), hi)
 
-# At t = 0 and t = 1 return that endpoint as is, keeping signed zero and never
-# multiplying the other one (an infinite endpoint would give NaN). Between them
-# the weighted sum avoids overflowing b - a for finite endpoints of opposite
-# signs.
+# At t = 0 and t = 1 keep that endpoint, including its signed zero.
+# For same-sign finite endpoints and finite t, use a + t * (b - a) to
+# avoid cancellation of separately rounded weights. Other cases use the
+# weighted sum, avoiding opposite-sign overflow and keeping nonfinite behavior.
 def F32.lerp(a: F32, b: F32, t: F32) -> F32:
   match t:
     case F32{+z}:
@@ -1948,7 +1948,40 @@ def F32.lerp.one(a: F32, b: F32, +t: F32, one: Bool) -> F32:
     case True{}:
       b
     case False{}:
-      F32.add(F32.mul(a, F32.sub(1.0, t)), F32.mul(b, t))
+      F32.lerp.choose(a, b, t)
+
+def F32.lerp.choose(a: F32, b: F32, t: F32) -> F32:
+  match a b:
+    case F32{+x} F32{+y}:
+      F32.lerp.same(F32{x}, F32{y}, t,
+        U32.is_lt(U32.xor(F32.bits(F32{x}), F32.bits(F32{y})), 2147483648))
+
+def F32.lerp.same(+a: F32, +b: F32, +t: F32, same: Bool) -> F32:
+  match same:
+    case True{}:
+      +d = F32.sub(b, a)
+      +limit = {3.4028234663852886e38 : F32}
+      F32.lerp.finite(a, b, t, d,
+        Bool.and(F32.is_le(F32.abs(d), limit), F32.is_le(F32.abs(t), limit)))
+    case False{}:
+      F32.lerp.mix(a, b, t)
+
+def F32.lerp.finite(a: F32, b: F32, t: F32, +d: F32, finite: Bool) -> F32:
+  match finite:
+    case True{}:
+      F32.lerp.direct(a, t, d, F32.is_eq(d, 0.0))
+    case False{}:
+      F32.lerp.mix(a, b, t)
+
+def F32.lerp.direct(a: F32, t: F32, d: F32, zero: Bool) -> F32:
+  match zero:
+    case True{}:
+      a
+    case False{}:
+      F32.add(a, F32.mul(t, d))
+
+def F32.lerp.mix(a: F32, b: F32, +t: F32) -> F32:
+  F32.add(F32.mul(a, F32.sub(1.0, t)), F32.mul(b, t))
 
 def F32.square(a: F32) -> F32:
   match a:
