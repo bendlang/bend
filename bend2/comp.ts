@@ -93,7 +93,9 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // CLO_APPLY and IO~emit are runtime segments (~ keeps files from declaring
 // them). FOLD_FUEL caps what unfolds add to a segment; a SPIN_FAR-char spin
 // is a device call (DFAR), and a host call too if it loops on F32 math (SLP
-// misjudges it); a node past WIDE pads to its size class.
+// misjudges it); a loop's call to a spin of several sites and over HOT_SIZE
+// terms, its callees' included, is inlined there (HOT): clang would call it;
+// a node past WIDE pads to its size class.
 
 const CLO_APPLY = "Clo~apply";
 
@@ -104,6 +106,8 @@ const EXACT = { fround: Math.fround, imul: Math.imul };
 const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
+
+const HOT_SIZE = 1024;
 
 const USE0 = Bend.Emp<number>();
 
@@ -2077,7 +2081,13 @@ function emit_spin(sc: Scope, ck: Spine): Val {
   const ks = lays.flatMap((l) => l.ks);
   const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
     : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
-  block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
+  let n = 0;
+  const big = (d: Name): boolean => term_any(fun_of(d).h!, (y) =>
+    ++n > HOT_SIZE || y.$ === "Ref" && y.k !== d && !intr_of(y.k)
+      && flat_of(y.k) && big(y.k));
+  const hot = loop_of(sc.def).length > 0 && loop_of(k).length === 0
+    && FL.sites.get(k)! > 1 && big(k) ? "HOT " : "";
+  block(sc, `${hot}if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(sc, "return 0;"));
   bind_dead(sc, sc.rest,
     ck.xs.map(term_strip).filter((x) => x.$ === "Var").map(probe_of));
@@ -3244,6 +3254,12 @@ using namespace metal;
 #endif
 #endif
 #define FAR static __attribute__((noinline))
+// clang 17 reads a statement's attribute in C11
+#if !DEVICE && __clang_major__ >= 17
+#define HOT [[clang::always_inline]]
+#else
+#define HOT
+#endif
 
 // The device inlines a spin once per caller, so a long one is a call there.
 // The host lets clang decide, but for a long F32 loop (emit_native).
