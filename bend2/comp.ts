@@ -1499,7 +1499,7 @@ function val_sink(sc: Scope, v: Val): void {
 }
 
 function lay_lazy(v: Val, lay: Lay): boolean {
-  return v.lay === BOX && lay.ks.length > 1 && !lay.ks.includes("box");
+  return v.lay === BOX && lay.ks.length > 2 && !lay.ks.includes("box");
 }
 
 function val_to(sc: Scope, v: Val, lay: Lay): Val {
