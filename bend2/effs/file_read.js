@@ -6,9 +6,9 @@
 // a caller that asked for n bytes gets n unless the file ends first; a
 // line stops after its '\n', read a byte at a time so nothing past it
 // leaves the file. An error after some bytes answers them (a pipe has
-// already given them up). Read straight into the buffer. For 0 bytes use
-// readvSync: Bun's readSync skips the syscall, so it would miss errors.
-// Neither needs bun:ffi, which node lacks.
+// already given them up). Bun's readSync skips the syscall for 0 bytes,
+// so a 0-byte read goes through readvSync and fails on a bad handle as C
+// does; neither needs bun:ffi, which node lacks.
 // max is a cap, not a size: the buffer starts at what a regular file holds
 // past the given offset (one byte more, to see its end) or 64 KiB. It doubles
 // up to max as bytes arrive, so a read capped far above the available data
