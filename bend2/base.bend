@@ -2245,9 +2245,6 @@ def String.contains.if(t: String, p: String, here: Bool) -> Bool:
     case True{}:
       True{}
 
-# Whether p is a prefix of s, while every char so far was the same. One def
-# that calls itself, so it is a loop, and one only String.contains reaches, so
-# it borrows both strings whatever the program's other calls do.
 def String.contains.pre(p: String, s: String, same: Bool) -> Bool:
   match p s same:
     case _ _ False{}:
@@ -2259,8 +2256,6 @@ def String.contains.pre(p: String, s: String, same: Bool) -> Bool:
     case SCon{y, yt} SCon{x, xt} True{}:
       String.contains.pre(yt, xt, Char.is_eq(x, y))
 
-# Whether p is a prefix of SCon{h, t}, from the node's two fields: testing a
-# position rebuilds no node, so the search neither allocates nor counts.
 def String.contains.at(p: String, h: Char, t: String) -> Bool:
   match p:
     case SNil{}:
