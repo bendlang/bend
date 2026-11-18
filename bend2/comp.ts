@@ -3409,9 +3409,12 @@ static u32    bank_lock;
 static u32             pool_size;
 static u32             pool_row;
 static u32             pool_done;
+static u32             pool_ready;
+static u32             pool_pending[CUBE_T];
 static pthread_mutex_t pool_lock = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t  pool_wake = PTHREAD_COND_INITIALIZER;
-static pthread_cond_t  pool_join = PTHREAD_COND_INITIALIZER;
+static pthread_cond_t  pool_wake[CUBE_T] = {
+  [0 ... CUBE_T - 1] = PTHREAD_COND_INITIALIZER
+};
 
 #if BEND_METAL || BEND_CUDA
 #pragma clang diagnostic ignored "-Wc23-extensions"
@@ -4649,35 +4652,40 @@ static u64 io_tick(void) {
   return ts.tv_sec * 1000000000ull + ts.tv_nsec;
 }
 
-// A row runs what precedes its forks on one thread; with fewer rows than
-// threads, a grow past 1 ms deals its forks over the rows for idle threads.
+// Spread forks to idle workers after 1 ms.
 static u32 row_grow(Env e, DEV Term* stk, u32 base, u32 stride, u32 want,
-  u32 rows) {
+  u32 rows, u32* ready) {
   u64* H = e.mem;
   u32 cur = 0;
+  u32 has;
   u64 end = rows < pool_size ? io_tick() + 1000000 : ~0ull;
   for (;;) {
     u32 put0[CUBE_T];
-    u32 has = 0;
+    has = 0;
     for (u32 i = 0; i < CUBE_T; i += 1) {
       put0[i] = *ring_put(H, base + i * stride);
       has += put0[i] != *ring_get(H, base + i * stride);
     }
     if (root_done(H) || has >= want) {
-      return cur;
+      break;
     }
     bool slow = io_tick() > end;
-    u32 grew = 0;
+    bool grew = false;
     u32 ran  = 0;
     for (u32 i = 0; i < CUBE_T && ran != 2; i += 1) {
       ran   = monk_step(e, stk, base + i * stride, put0[i], slow ? 0 : base,
         slow ? CUBE_G : stride, slow ? a32_at(H, H_CURSOR) : &cur);
-      grew += ran == 1;
+      grew |= ran == 1;
     }
-    if (grew == 0 || slow) {
-      return cur;
+    if (!grew || slow) {
+      has += !slow && ran == 2; // Unscanned local move.
+      break;
     }
   }
+  if (ready && has) {
+    a32_add(ready, has);
+  }
+  return cur;
 }
 
 // Pool
@@ -4712,41 +4720,41 @@ static Term* pool_stack(void) {
   return (Term*)p;
 }
 
-// A wait yields a while before it sleeps, so a short turn pays no wake.
-
-#define POOL_WAIT(c, cv) \
-  for (u32 s = 0; s < 128 && (c); s += 1) { \
-    sched_yield(); \
-  } \
-  pthread_mutex_lock(&pool_lock); \
-  while (c) { \
-    pthread_cond_wait(&cv, &pool_lock); \
-  } \
-  pthread_mutex_unlock(&pool_lock);
-
 static u32 pool_step(u32 rows) {
   u32 per = rows * CUBE_T / (32 * pool_size);
   return CUBE_T >> (31 - clz(per < LINE ? per | 1 : LINE));
 }
 
-static u32 pool_rows(Env e, DEV Term* stk) {
+static void pool_wait(u32 w) {
+  u32* pending = pool_pending + w;
+  for (u32 spins = 4096; spins && !a32_load(pending); spins -= 1) {}
+  pthread_mutex_lock(&pool_lock);
+  while (!a32_load(pending)) {
+    pthread_cond_wait(&pool_wake[w], &pool_lock);
+  }
+  a32_store(pending, 0);
+  pthread_mutex_unlock(&pool_lock);
+}
+
+static void pool_rows(Env e, DEV Term* stk) {
   u32 n = 0;
   for (;;) {
     u32 c    = a32_add(&pool_row, 1);
     u32 r    = c & 32767;
-    u32 rows = c >> 15 & 255;
-    u32 step = c >> 23 & 1 ? 1 : pool_step(rows);
+    u8  rows = c >> 15;
+    u32 step = c >> 24;
     if (r >= rows * step) {
-      if (n != 0 && a32_sub_rel(&pool_done, n) == n) {
+      if (n && a32_sub_rel(&pool_done, n) == n) {
         pthread_mutex_lock(&pool_lock);
-        pthread_cond_signal(&pool_join);
+        a32_store(pool_pending, 1);
+        pthread_cond_signal(pool_wake);
         pthread_mutex_unlock(&pool_lock);
       }
-      return c >> 24;
+      return;
     }
     a32_acq(&pool_row);
     if (c >> 23 & 1) {
-      row_grow(e, stk, r * CUBE_T, 1, CUBE_T, rows);
+      row_grow(e, stk, r * CUBE_T, 1, CUBE_T, rows, &pool_ready);
     } else {
       u32 row = r / step * CUBE_T;
       for (u32 rg = row + r % step; rg < row + CUBE_T; rg += step) {
@@ -4761,25 +4769,11 @@ static u32 pool_rows(Env e, DEV Term* stk) {
 }
 
 static void* pool_work(void* arg) {
-  Term* stk  = pool_stack();
-  u32   seen = 0;
+  Term* stk = pool_stack();
+  u32 w = (uintptr_t)arg;
   for (;;) {
-    POOL_WAIT(a32_load(&pool_row) >> 24 == seen, pool_wake)
-    seen = pool_rows((Env){ CORPUS, ALC[(uintptr_t)arg] }, stk);
-  }
-}
-
-OUTLINE void pool_open(void) {
-  static bool up;
-  if (up) {
-    return;
-  }
-  up = true;
-  for (u32 w = 1; w < pool_size; w += 1) {
-    pthread_t tid;
-    if (pthread_create(&tid, NULL, pool_work, (void*)(uintptr_t)w)) {
-      err_fail("pthread_create");
-    }
+    pool_wait(w);
+    pool_rows((Env){ CORPUS, ALC[w] }, stk);
   }
 }
 
@@ -4814,16 +4808,31 @@ static long cpu_count(void) {
 }
 
 OUTLINE void pool_turn(bool grow, u32 rows) {
-  static u32 turn;
-  u32 n = rows < CUBE_G ? rows : CUBE_G;
-  turn += 1;
-  a32_store(&pool_done, grow ? n : n * pool_step(n));
+  static u32 up;
+  rows = rows < CUBE_G ? rows : CUBE_G;
+  u32 workers = grow ? rows : pool_ready,
+      step = grow ? 1 : pool_step(rows);
+  a32_store(&pool_done, rows * step);
+  if (grow) {
+    pool_ready = 0;
+  }
   pthread_mutex_lock(&pool_lock);
-  a32_store_rel(&pool_row, turn << 24 | grow << 23 | n << 15);
-  pthread_cond_broadcast(&pool_wake);
+  a32_store_rel(&pool_row, step << 24 | grow << 23 | rows << 15);
+  for (u32 w = 1; w < pool_size && w < workers; w += 1) {
+    if (w > up) {
+      pthread_t tid;
+      if (pthread_create(&tid, NULL, pool_work, (void*)(uintptr_t)w)) {
+        err_fail("pthread_create");
+      }
+      up = w;
+    }
+    a32_store(&pool_pending[w], 1);
+    pthread_cond_signal(&pool_wake[w]);
+  }
   pthread_mutex_unlock(&pool_lock);
   pool_rows((Env){ CORPUS, ALC[0] }, io_stk);
-  POOL_WAIT(a32_load_acq(&pool_done) != 0, pool_join)
+  pool_wait(0);
+  a32_acq(&pool_done);
 }
 
 // Gpu
@@ -5205,10 +5214,10 @@ static void cube_run(u64* H, bool gpu) {
       gpu_pass(H);
       f = (u32)H[H_FRONT];
     } else {
-      u32 rows = f;
+      u32 rows = pool_ready = f;
       u32 want = (pool_size - 1) / (CUBE_T / LINE) + 1;
       if (f < want) {
-        u32 cur = row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, want, f);
+        u32 cur = row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, want, f, NULL);
         rows = cur > f ? cur : f;
       }
       for (u32 g = f; g != 0 && f < CUBE;
@@ -5309,7 +5318,6 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
     u64 tl = task_tail(t);
     if ((u32)H[tl + 1] != 0) {
       task_deal(H, t, 0, 0, NULL);
-      pool_open();
       cube_run(H, false);
       break;
     }
