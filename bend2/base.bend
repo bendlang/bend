@@ -3059,10 +3059,10 @@ def Map.hi(
   (hi2, r) = r0
   (MNode{p2, lo, hi2}, r)
 
-# Map.set walks to the nearest leaf. A leaf with the same key takes x there,
-# so an update takes one walk, and the walk hands back None. Else it hands x
-# back, with the key and the bit where the key leaves the leaf's, for
-# Map.ins; with no bit (a tip under a node), x becomes the whole map.
+# Map.set walks to the nearest leaf once: a leaf with the same key takes x
+# there and the walk hands back None; else it hands back x, the key and the
+# bit where the key leaves the leaf's, for Map.ins (no bit at a tip: x
+# becomes the whole map).
 def Map.upd.fin(
   -a: Quant, -V: Kind(a), v: V, x: V, k: String, key: String,
   d: Maybe<&2, Nat>
@@ -3091,21 +3091,14 @@ def Map.upd.go(-a: Quant, -V: Kind(a), node: Map<a, V>, x: V, kb: String & Bool)
     case m Tuple{key, b}:
       (m, Some{x}, key, None{})
 
-def Map.set.at(
-  a, -V: Kind(a), m2: Map<a, V>, mx: Maybe<a, V>, key: String,
-  d: Maybe<&2, Nat>
-) -> Map<a, V>:
-  match mx d:
-    case None{} _:
-      m2
-    case Some{x} None{}:
-      MLeaf{key, x}
-    case Some{x} Some{p}:
-      Map.ins(a, V, m2, key, x, p)
-
 def Map.set.fin(a, -V: Kind(a), r: Map<a, V> & Maybe<a, V> & String & Maybe<&2, Nat>) -> Map<a, V>:
-  (m2, mx, key, d) = r
-  Map.set.at(a, V, m2, mx, key, d)
+  match r:
+    case Tuple{m2, Tuple{None{}, _}}:
+      m2
+    case Tuple{m2, Tuple{Some{x}, Tuple{key, None{}}}}:
+      MLeaf{key, x}
+    case Tuple{m2, Tuple{Some{x}, Tuple{key, Some{p}}}}:
+      Map.ins(a, V, m2, key, x, p)
 
 def Map.set(a, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
   match m:
