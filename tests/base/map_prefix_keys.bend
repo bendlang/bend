@@ -20,6 +20,20 @@ def cs(r: (String & String) & Cmp) -> String:
     case GT{}:
       "GT"
 
+law union_empty_right:
+  for m: Map<&2, U32>
+  {Map.union(&2, U32, m, Map.new(&2, U32)) == m : Map<&2, U32>}
+
+def union_empty_right(m):
+  {==}
+
+law union_singleton_right:
+  for m: Map<&2, U32>
+  {Map.union(&2, U32, m, MLeaf{"a", 5}) == Map.set(&2, U32, m, "a", 5) : Map<&2, U32>}
+
+def union_singleton_right(m):
+  {==}
+
 def main() -> IO(Unit):
   +m1 = Map.set(&2, U32, Map.set(&2, U32,
     Map.set(&2, U32, Map.new(&2, U32), "ab", 1), "a", 2), "b", 3)
@@ -28,10 +42,12 @@ def main() -> IO(Unit):
     Unit <- IO.print(kvs(Map.to_list(&2, U32, m1)))
     Unit <- IO.print(kvs(Map.to_list(&2, U32, Map.union(&2, U32, m1, m2))))
     Unit <- IO.print(kvs(Map.to_list(&2, U32, Map.union(&2, U32, m2, m1))))
+    Unit <- IO.print(kvs(Map.to_list(&2, U32, Map.union(&2, U32, Map.new(&2, U32), m1))))
     IO.print(cs(String.cmp("ab", "abc")) ++ cs(String.cmp("b", "abc"))
       ++ cs(String.cmp("", "a")))
 
 #|a=2,ab=1,b=3,.
 #|a=20,ab=1,b=3,c=30,.
 #|a=2,ab=1,b=3,c=30,.
+#|a=2,ab=1,b=3,.
 #|LTGTLT

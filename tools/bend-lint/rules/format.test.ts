@@ -152,6 +152,11 @@ def main() -> String:
     expect(await fixed("import Base\ndef main() -> Char:\n  '='\n")).toContain("  '='");
   });
 
+  test("preserves a raw apostrophe in a list of characters", async () => {
+    const source = "import Base\ndef main()->List<Char>: [''','#','a'] #tail\n";
+    expect(await fixed(source)).toContain("  [''', '#', 'a']  # tail\n");
+  });
+
   test("keeps inline argument comments attached when wrapping", async () => {
     const source =
       "import Base\ndef f(x: U32, y: U32) -> U32:\n  x\ndef main() -> U32:\n  f(123, # first\n    456 # second\n  )\n";

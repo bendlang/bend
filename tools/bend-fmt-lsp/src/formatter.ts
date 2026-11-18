@@ -90,8 +90,9 @@ function splitLine(text: string): Line {
       }
       if (code[i] === "n") i++;
     } else {
-      // A comparison needs a left operand separated from >.
-      const multi = MULTI.find((value) => code.startsWith(value, i) && (value !== ">=" || !tokens.length || hadGap && tokens.at(-1)?.text !== ","));
+      // A comparison needs a left operand separated from >; Box<-T opens a <, not a bind.
+      const multi = MULTI.find((value) => code.startsWith(value, i) && (value !== ">=" || !tokens.length || hadGap && tokens.at(-1)?.text !== ",")
+        && (value !== "<-" || hadGap || tokens.at(-1)?.kind !== "word" || !HEAD.test(code[i + 2] ?? "")));
       i += multi?.length ?? 1;
     }
     tokens.push({ text: code.slice(start, i), kind, gap: hadGap, col: indent.length + start });
@@ -108,6 +109,8 @@ function unary(tokens: Token[], index: number): boolean {
   if (!next) return false;
   const atPrefix = index === 0 || PREFIX_CONTEXT.has(previous) || BINARY.has(previous);
   if (token === "~") return atPrefix;
+  // @-x and @+x bind x with a quantity.
+  if (token === "@" && (next.text === "-" || next.text === "+") && !next.gap) return atPrefix;
   if (token === "+" || token === "-") return next.kind === "word" && (!next.gap || (index > 0 && atPrefix));
   return next.kind === "word" || next.kind === "number" ? atPrefix : false;
 }
