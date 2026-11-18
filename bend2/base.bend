@@ -2995,35 +2995,9 @@ def Map.diff(a, b, n):
 def Map.new(a, -V: Kind(a)) -> Map<a, V>:
   MTip{}
 
-# Map.put.go, Map.ins.go, Map.seek.go, Map.has.go and Map.pop.go take the
-# node they are in, whole, and the key's bit at it: the child they descend
-# into is that node's field, a node rebuilt
-def Map.put.go(-a: Quant, -V: Kind(a), node: Map<a, V>, x: V, kb: String & Bool) -> Map<a, V>:
-  match node kb:
-    case MNode{p, MTip{}, hi} Tuple{key, False{}}:
-      MNode{p, MLeaf{key, x}, hi}
-    case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
-      MNode{p, MLeaf{k, x}, hi}
-    case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
-      MNode{p, Map.put.go(a, V, MNode{q, c, d}, x, Map.bit(key, q)), hi}
-    case MNode{p, lo, MTip{}} Tuple{key, True{}}:
-      MNode{p, lo, MLeaf{key, x}}
-    case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
-      MNode{p, lo, MLeaf{k, x}}
-    case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
-      MNode{p, lo, Map.put.go(a, V, MNode{q, c, d}, x, Map.bit(key, q))}
-    case m _:
-      m
-
-def Map.put(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
-  match m:
-    case MTip{}:
-      MLeaf{key, x}
-    case MLeaf{k, v}:
-      MLeaf{k, x}
-    case MNode{+pos, lo, hi}:
-      Map.put.go(a, V, MNode{pos, lo, hi}, x, Map.bit(key, pos))
-
+# Map.upd.go, Map.ins.go, Map.has.go and Map.pop.go take the node they are
+# in, whole, and the key's bit at it: the child they descend into is that
+# node's field, a node rebuilt
 def Map.ins.splice.bit(
   a, -V: Kind(a), x: V, rest: Map<a, V>, pb: Nat, kb: String & Bool
 ) -> Map<a, V>:
@@ -3085,61 +3059,62 @@ def Map.hi(
   (hi2, r) = r0
   (MNode{p2, lo, hi2}, r)
 
-def Map.seek.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
-  Map<a, V> & String & Maybe<&2, String>:
-  match node kb:
-    case MNode{p, MTip{}, hi} Tuple{key, False{}}:
-      (MNode{p, MTip{}, hi}, key, None{})
-    case MNode{p, MLeaf{+k, v}, hi} Tuple{key, False{}}:
-      (MNode{p, MLeaf{k, v}, hi}, key, Some{k})
-    case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
-      Map.lo(a, V, String & Maybe<&2, String>, p, hi, Map.seek.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
-    case MNode{p, lo, MTip{}} Tuple{key, True{}}:
-      (MNode{p, lo, MTip{}}, key, None{})
-    case MNode{p, lo, MLeaf{+k, v}} Tuple{key, True{}}:
-      (MNode{p, lo, MLeaf{k, v}}, key, Some{k})
-    case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
-      Map.hi(a, V, String & Maybe<&2, String>, p, lo, Map.seek.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
-    case m Tuple{key, b}:
-      (m, key, None{})
-
-def Map.seek(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) ->
-  Map<a, V> & String & Maybe<&2, String>:
-  match m:
-    case MTip{}:
-      (MTip{}, key, None{})
-    case MLeaf{+k, v}:
-      (MLeaf{k, v}, key, Some{k})
-    case MNode{+pos, lo, hi}:
-      Map.seek.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
-
-def Map.set.fin.go(
-  a, -V: Kind(a), m: Map<a, V>, key: String, x: V, d: Maybe<&2, Nat>
-) -> Map<a, V>:
+# Map.set walks to the nearest leaf. A leaf with the same key takes x there,
+# so an update takes one walk, and the walk hands back None. Else it hands x
+# back, with the key and the bit where the key leaves the leaf's, for
+# Map.ins; with no bit (a tip under a node), x becomes the whole map.
+def Map.upd.fin(
+  -a: Quant, -V: Kind(a), v: V, x: V, k: String, key: String,
+  d: Maybe<&2, Nat>
+) -> Map<a, V> & Maybe<a, V> & String & Maybe<&2, Nat>:
   match d:
     case None{}:
-      Map.put(a, V, m, key, x)
+      (MLeaf{k, x}, None{}, key, None{})
     case Some{p}:
-      Map.ins(a, V, m, key, x, p)
+      (MLeaf{k, v}, Some{x}, key, Some{p})
 
-def Map.set.fin(
-  a, -V: Kind(a), m: Map<a, V>, key: String, x: V, keyb: String, k: String
-) -> Map<a, V>:
-  Map.set.fin.go(a, V, m, key, x, Map.diff(keyb, k, 0n))
+def Map.upd.leaf(-a: Quant, -V: Kind(a), v: V, x: V, +k: String, +key: String) ->
+  Map<a, V> & Maybe<a, V> & String & Maybe<&2, Nat>:
+  Map.upd.fin(a, V, v, x, k, key, Map.diff(key, k, 0n))
 
-def Map.set.go(
-  a, -V: Kind(a), x: V, r: Map<a, V> & String & Maybe<&2, String>
+def Map.upd.go(-a: Quant, -V: Kind(a), node: Map<a, V>, x: V, kb: String & Bool) ->
+  Map<a, V> & Maybe<a, V> & String & Maybe<&2, Nat>:
+  match node kb:
+    case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
+      Map.lo(a, V, Maybe<a, V> & String & Maybe<&2, Nat>, p, hi, Map.upd.leaf(a, V, v, x, k, key))
+    case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
+      Map.lo(a, V, Maybe<a, V> & String & Maybe<&2, Nat>, p, hi, Map.upd.go(a, V, MNode{q, c, d}, x, Map.bit(key, q)))
+    case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
+      Map.hi(a, V, Maybe<a, V> & String & Maybe<&2, Nat>, p, lo, Map.upd.leaf(a, V, v, x, k, key))
+    case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
+      Map.hi(a, V, Maybe<a, V> & String & Maybe<&2, Nat>, p, lo, Map.upd.go(a, V, MNode{q, c, d}, x, Map.bit(key, q)))
+    case m Tuple{key, b}:
+      (m, Some{x}, key, None{})
+
+def Map.set.at(
+  a, -V: Kind(a), m2: Map<a, V>, mx: Maybe<a, V>, key: String,
+  d: Maybe<&2, Nat>
 ) -> Map<a, V>:
-  (m2, key2, found) = r
-  match found:
-    case None{}:
-      MLeaf{key2, x}
-    case Some{k}:
-      +ka = {key2 : String}
-      Map.set.fin(a, V, m2, ka, x, ka, k)
+  match mx d:
+    case None{} _:
+      m2
+    case Some{x} None{}:
+      MLeaf{key, x}
+    case Some{x} Some{p}:
+      Map.ins(a, V, m2, key, x, p)
+
+def Map.set.fin(a, -V: Kind(a), r: Map<a, V> & Maybe<a, V> & String & Maybe<&2, Nat>) -> Map<a, V>:
+  (m2, mx, key, d) = r
+  Map.set.at(a, V, m2, mx, key, d)
 
 def Map.set(a, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
-  Map.set.go(a, V, x, Map.seek(a, V, m, key))
+  match m:
+    case MTip{}:
+      MLeaf{key, x}
+    case MLeaf{k, v}:
+      Map.set.fin(a, V, Map.upd.leaf(a, V, v, x, k, key))
+    case MNode{+pos, lo, hi}:
+      Map.set.fin(a, V, Map.upd.go(a, V, MNode{pos, lo, hi}, x, Map.bit(key, pos)))
 
 def Map.has.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
   Map<a, V> & Bool:
