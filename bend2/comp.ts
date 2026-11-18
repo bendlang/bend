@@ -1444,16 +1444,19 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
   if (lay_packed(node)) {
     return val_arm(val_new(node.ks.map(() => `term_loc(${t})`), node));
   }
-  const taken = r === null && (fact("ctr", k) || fact("stat", k));
+  // Only a hot constructor's node can be counted: a static one is read in
+  // place, its cell no spare.
+  const hot = r === null && fact("ctr", k);
+  const taken = hot || r === null && fact("stat", k);
   const sp = name_local(sc, "sp");
-  const fb = taken ? name_local(sc, "fb") : "";
-  if (taken) {
+  const fb = hot ? name_local(sc, "fb") : "";
+  if (hot) {
     file_push(sc, `Term ${fb}[${n}];`);
   }
-  file_push(sc, `u64 ${sp} = ${taken ? `ctr_take(e, ${t}, ${n}, ${fb})`
+  file_push(sc, `u64 ${sp} = ${hot ? `ctr_take(e, ${t}, ${n}, ${fb})`
     : r === null ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
   const ws = emit_hold(sc, node.ks.map((_, j) =>
-    taken ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
+    hot ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
   const spare = { cls: cls_fit(n), name: sp, taken };
   if (r === null && tail) {
     sc.spares.push(spare);
@@ -3281,6 +3284,12 @@ using namespace metal;
 #endif
 #endif
 #define FAR static __attribute__((noinline))
+// A counted node's take and wrap are inline on the host.
+#if DEVICE
+#define NEAR(Q) Q
+#else
+#define NEAR(Q) INLINE
+#endif
 
 // The device inlines a spin once per caller, so a long one is a call there.
 // The host lets clang decide, but for a long F32 loop (emit_native).
@@ -3881,7 +3890,7 @@ INLINE bool term_triv(Term t) {
   return term_tag(t) <= TAG_PAK || t == TERM_HOLE || term_loc(t) < HEAP_OFF;
 }
 
-OUTLINE Term rfc_wrap(Env e, Term t, u32 cnt) {
+NEAR(OUTLINE) Term rfc_wrap(Env e, Term t, u32 cnt) {
   if (term_tag(t) == TAG_CLO || term_tag(t) == TAG_TSK) {
     err_post(e.mem, ERR_RFCS);
     return t;
@@ -4047,7 +4056,7 @@ INLINE void term_sink(Env e, Term t) {
 }
 
 // Inlined, M1 Metal runs wrong (#1954).
-FAR u64 span_fade(Env e, Term t, u64 src, u32 n) {
+NEAR(FAR) u64 span_fade(Env e, Term t, u64 src, u32 n) {
   DEV u32* c = a32_at(e.mem, term_loc(t));
   if ((a32_load(c) & RFC_CNT) == 1) {
     a32_acq(c);
