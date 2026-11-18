@@ -1991,7 +1991,7 @@ function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
   sc.seg.fork ||= bang;
   if (bang || sc.seg.def !== k) {
     block(sc, `if (${bang ? "!seq"
-      : `!DEVICE && !seq && fid_nofk(${fid})`}) {`, () =>
+      : `!DEVICE && !WL_SEQ(${sc.seg.fid}) && fid_nofk(${fid})`}) {`, () =>
       file_push(sc, `return term_tsk(${fid}, ${
         emit_task(sc, fid, 0, args)});`));
   }
@@ -2464,7 +2464,7 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       .flatMap(([p, b]) => (pos.set(p, depth), depth += b.val.ws.length,
         b.val.ws));
     const kf = seg_fid(kn);
-    emit_chain(sc, [["seq", () => {
+    emit_chain(sc, [[`WL_SEQ(${sc.seg.fid})`, () => {
       const fr = [...ws, seg_ref(sc, kf)];
       file_push(sc, `WL_ROOM(${fr.length});`,
         ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
@@ -3273,6 +3273,7 @@ using namespace metal;
 #define STK(I)    sp[(long)(I) * LANE_STEP]
 
 #define WL_RETN(N)  { rn = (N); sp -= LANE_STEP; WL_DYN((u32)STK(0)); }
+#define WL_SEQ(F) (seq || (!DEVICE && fid_nofk(F)))
 #define WL_CONT     STK(-3)
 #define WL_IDX      STK(-2)
 #define WL_POPN(N)  sp -= (N) * LANE_STEP
