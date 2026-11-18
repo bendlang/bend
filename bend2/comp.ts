@@ -520,6 +520,14 @@ function term_uses(tm: HTerm): Bend.PMap<number> {
   });
 }
 
+// The least uses of p along any path: a match takes its least arm.
+function path_use(tm: HTerm, p: Of<"Var">): number {
+  const t = term_force(tm);
+  const ns = term_kids(t).map((x) => path_use(x, p));
+  return t.$ === "Var" ? Number(t.i === p.i) : t.$ === "Efq" ? Infinity
+    : t.$ === "Mat" ? Math.min(...ns) : ns.reduce((a, b) => a + b, 0);
+}
+
 function rest_use(rest: HTerm[], p: Of<"Var">): number {
   return rest.reduce((n, r) =>
     n + (Bend.pmap_get(term_uses(r), p.i) ?? 0), 0);
@@ -909,7 +917,7 @@ function mat_lits(x: HTerm, k: Name, self: HTerm): Row[] {
 }
 
 function arm_self(arm: HTerm, n: number, self: HTerm,
-  back: (ps: HTerm[]) => HTerm): [HTerm, number] {
+  back: (ps: HTerm[]) => HTerm, box?: (j: number) => boolean): [HTerm, number] {
   const ps: Of<"Var">[] = [];
   const go = (t: HTerm, top: boolean): HTerm => {
     const s = Bend.term_force(t);
@@ -947,8 +955,9 @@ function arm_self(arm: HTerm, n: number, self: HTerm,
   };
   const out = go(arm, true);
   const b = ps.reduce((t) => term_open(Bend.term_strip(t) as Of<"Lam">).b, out);
-  return ps.length < n || ps.some((p) => rest_use([b], p) > 0)
-    ? [out, n] : [b, 0];
+  const on = ps.map((p) => rest_use([b], p) > 0);
+  return box && (ps.length < n || on.some((u, j) => u && box(j))) ? [arm, -1]
+    : ps.length < n || on.includes(true) ? [out, n] : [b, 0];
 }
 
 function mat_rows(sc: Scope, x: HTerm, ty: HTerm | null, self: HTerm) {
@@ -2578,25 +2587,53 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
       }
       return f === 1 ? [v] : val_arm(v).slice(0, f);
     }])
-    : mat_ctrs(x, adt).map(([k, h]) => {
+    : mat_ctrs(x, adt).flatMap(([k, h]): typeof lv => {
       if (k === "" || k === "_") {
-        return [k && mat_ops(is), h, () => [u]];
+        return [[k && mat_ops(is), h, () => [u]]];
       }
       if (adt.k === "Array") {
         const el = lay_el(adt.x[0]);
         const leaf = k === "ALeaf";
-        return [`blk_cls(${sw}) ${leaf ? "==" : "!="} ${lay_arr(el).lgs}`, h,
+        return [[`blk_cls(${sw}) ${leaf ? "==" : "!="} ${lay_arr(el).lgs}`, h,
           () => {
             val_own(u);
             return leaf ? [arr_leaf(sc, sw, el)] : emit_hold(sc,
               [0, 1].map((hi) => `blk_half(e, ${sw}, ${hi})`), "h")
               .map((w) => val_new([w], BOX));
-          }];
+          }]];
       }
-      return lay === BOX ? [is(k), h, (al) => node_fields(al, sw, u.rs[0], k,
-        true)]
-        : [`${sw} == ${Object.keys(lay.arms!).indexOf(k)}`, h,
-          () => val_arm(u, k)];
+      if (lay !== BOX) {
+        return [[`${sw} == ${Object.keys(lay.arms!).indexOf(k)}`, h,
+          () => val_arm(u, k)]];
+      }
+      // An arm that re-forms its node on every path, its box fields used
+      // for nothing else, keeps the node whole.
+      const ctr = FL.book.ctrs[k], ds = ctr ? ctr_tail(ctr) : [];
+      const lays = lay_node(k).arms![k];
+      const arm = (cond: string, a: HTerm, skip: HTerm[]): typeof lv[0] => {
+        const m = skip.length;
+        const [c, g] = !ctr ? [a, -1] : arm_self(a, ctr.n - m, self, (ps) =>
+          Bend.Ctr(k, [...skip, ...ps]), (j) => dom_live(ds[m + j]) && lays[
+          ds.slice(0, m + j).filter(dom_live).length].ks.includes("box"));
+        const [b, f] = path_use(c, self) > 0 ? [c, g] : [a, -1];
+        return [cond, b, (al) => {
+          const fs = node_fields(al, sw, f < 0 ? u.rs[0] : u.rs[0] ?? "s", k,
+            true).slice(f ? m : lays.length);
+          if (f >= 0) {
+            bind_uses(al, self, u, [b], adt);
+          }
+          return fs;
+        }];
+      };
+      const e0 = ds[0] && dom_live(ds[0]) && lays[0].ks.length === 1
+        && term_strip(h).$ === "Mat" ? Object.keys(lays[0].arms ?? {}) : [];
+      const inn = mat_arms(h);
+      const split = e0.length < 2 ? [] : [...inn.arms.map(([c, a]) => arm(
+        `${is(k)} && (u32)e.mem[term_peek(e.mem, ${sw})] == ${e0.indexOf(c)}`,
+        a, [Bend.Ctr(c, [])])), ...inn.arms.length < e0.length
+        ? [arm(is(k), inn.end, [])] : []];
+      return split.some(([, b], i) => b !== (inn.arms[i]?.[1] ?? inn.end))
+        ? split : [arm(is(k), h, [])];
     });
   emit_chain(sc, lv.map(([c, h, fs]) => [c, () => {
     const al = { ...sc, uses: new Map(sc.uses), spares: sc.spares.slice() };
