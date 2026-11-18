@@ -179,11 +179,7 @@ class Open_Error extends Scope_Error {}
 
 // a live cycle found below the item at key, now a group: the emission
 // since key began is undone, and its caller retries (Reroute)
-class Regroup extends Error {
-  constructor(readonly key: string) {
-    super(key);
-  }
-}
+class Regroup extends Error {}
 class Reroute extends Error {}
 
 function oos(why: string, E = Scope_Error): never {
@@ -415,7 +411,7 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
       if (x instanceof Scope_Error) {
         put(e, e.fail, n, x.message);
       }
-      if (x instanceof Regroup && x.key === key) {
+      if (x instanceof Regroup && x.message === key) {
         undo(e, m);
         throw new Reroute();
       }

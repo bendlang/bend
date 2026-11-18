@@ -36,6 +36,18 @@ def dep.value(x: U32) -> U32:
     if (built.status !== 0) {
       return 1;
     }
+    // Check the source loader on Node versions that strip TypeScript types.
+    const loaded = child.spawnSync("node", ["--input-type=module", "-e", `
+      if (process.features.typescript === "strip") {
+        await import("./bend2/main.ts");
+        const { default: lib } = await import(process.argv[1]);
+        if (lib.ordinary(5) !== 9) throw new Error("ordinary(5) must return 9");
+      }
+    `, require("node:url").pathToFileURL(input).href],
+      { encoding: "utf8", env: { ...process.env, NODE_OPTIONS: "" } });
+    if (loaded.status !== 0 && loaded.error?.code !== "ENOENT") {
+      throw loaded.error ?? new Error(loaded.stderr);
+    }
     const lib = require(output).default;
     const values = { "dep:value": 15, ["__proto__"]: 6, constructor: 7,
       toString: 8, ordinary: 9, "dep.value": 25 };
