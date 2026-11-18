@@ -862,11 +862,22 @@ def Nat.max_ge_r(a, b):
     case 1n+ap 1n+bp:
       Nat.max_ge_r(ap, bp)
 
+# Nat.div and Nat.mod drop the other half of Nat.divmod as a Nat, which costs
+# nothing, so C computes one division (Pair.fst and Pair.snd would drop it
+# as a generic value, with a test that reads it)
+def Nat.div.go(p: Nat & Nat) -> Nat:
+  (q, r) = p
+  q
+
 def Nat.div(a: Nat, b: Nat) -> Nat:
-  Pair.fst(Nat, Nat, Nat.divmod(a, b))
+  Nat.div.go(Nat.divmod(a, b))
+
+def Nat.mod.go(p: Nat & Nat) -> Nat:
+  (q, r) = p
+  r
 
 def Nat.mod(a: Nat, b: Nat) -> Nat:
-  Pair.snd(Nat, Nat, Nat.divmod(a, b))
+  Nat.mod.go(Nat.divmod(a, b))
 
 def Nat.pow(+a: Nat, b: Nat) -> Nat:
   match b:

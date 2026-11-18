@@ -136,8 +136,6 @@ const CMPS = "is_eq:==:=== is_ne:!=:!== is_lt:< is_le:<= is_gt:> is_ge:>=";
 
 const AT = "$0[$1 & $0.length - 1]";
 
-const DIVMOD = ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"];
-
 const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("U32.", "add:+ sub:- and:& or:| xor:^",
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
@@ -207,9 +205,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("Nat.", "sub", "($0 < $1 ? 0 : $0 - $1)"),
   ...tpl_ops("Nat.", "is_lt", "($0 < $1)"),
   ...tpl_ops("Nat.", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
-  "Nat.divmod": { C: DIVMOD, JS: "nat_divmod($0, $1)" },
-  "Nat.div": { C: DIVMOD[0] },
-  "Nat.mod": { C: DIVMOD[1] },
+  "Nat.divmod": {
+    C:  ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
+    JS: "nat_divmod($0, $1)",
+  },
   ...tpl_ops("Bool.", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   "String.append": { JS: "($0 + $1)" },
   "String.contains": { JS: "string_contains($0, $1)" },
