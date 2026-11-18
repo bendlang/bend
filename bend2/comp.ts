@@ -4049,9 +4049,60 @@ FAR void term_drop(Env e, Term t) {
   }
 }
 
+// The host frees a constructor node at once: its spine field loops and the
+// others recurse, to a depth; the rest is term_drop's walk.
+#if !DEVICE
+INLINE bool rfc_last(Env e, Term* t) {
+  if (term_rfc(*t)) {
+    u64  r = term_loc(*t);
+    u32* p = a32_at(e.mem, r);
+    if ((a32_sub_rel(p, 1) & RFC_CNT) != 1) {
+      return 0;
+    }
+    a32_acq(p);
+    *t = (*t & ~(RFC_BIT | LOC_MASK)) | (e.mem[r] >> 24);
+    heap_free(e, 0, r);
+  }
+  return !term_triv(*t);
+}
+
+FAR void term_fall(Env e, Term t, u32 d) {
+  for (;;) {
+    u32 aux = term_aux(t);
+    u32 n = term_tag(t) == TAG_CTR && d < 64 ? cid_arity(aux) : 255;
+    if (n > ${WIDE}) {
+      term_drop(e, t);
+      return;
+    }
+    u64 loc = term_loc(t);
+    u32 at = n - 1 - CID_T[aux].spine;
+    Term nx = n ? e.mem[loc + at] : 0;
+    for (u32 j = 0; j < n; j += 1) {
+      Term c = e.mem[loc + j];
+      if (j != at && rfc_last(e, &c)) {
+        term_fall(e, c, d + 1);
+      }
+    }
+    heap_free(e, cls_fit(n), loc);
+    if (!rfc_last(e, &nx)) {
+      return;
+    }
+    t = nx;
+  }
+}
+
+FAR void term_sunk(Env e, Term t) {
+  if (rfc_last(e, &t)) {
+    term_fall(e, t, 0);
+  }
+}
+#else
+#define term_sunk term_drop
+#endif
+
 INLINE void term_sink(Env e, Term t) {
   if (!term_triv(t)) {
-    term_drop(e, t);
+    term_sunk(e, t);
   }
 }
 
