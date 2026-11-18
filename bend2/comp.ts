@@ -218,6 +218,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     new: "array_new($0, $1, $2)", set: `(${AT} = $2, $0)`,
     get: `tup_new($0, ${AT})`,
     get_unchecked: "tup_new($0, $0[$1])",
+    get_in: "tup_new($0, $0[$1])",
     swap: "array_swap($0, $1, $2)",
     size: "tup_new($0, $0.length)",
   }).map(([k, JS]) => ["Array." + k, { C: null, JS }])),
@@ -1594,7 +1595,7 @@ function arr_op(sc: Scope, k: string, el: Lay, args: Val[]): Val {
     return val_new([a, `(1ull << (blk_cls(${a}) - ${lgs}))`],
       lay_pack([["Tuple", [BOX, W32]]]));
   }
-  const raw = k === "Array.get_unchecked";
+  const raw = k === "Array.get_unchecked" || k === "Array.get_in";
   const get = raw || k === "Array.get";
   const [l, at] = emit_hold(sc, [arr_loc(sc, a), raw
     ? `((u32)${args[1].ws[0]} << ${lgs})`
@@ -2119,7 +2120,7 @@ function emit_native(sc: Scope, k: Name): string {
 function emit_intr(sc: Scope, k: Name, m: Spine, ty: HTerm | null): Val {
   const args = emit_each(sc, m.args);
   const C = intr_of(k)!.C!;
-  if (/^Array\.(get|get_unchecked|new|clone)$/.test(k)
+  if (/^Array\.(get|get_unchecked|get_in|new|clone)$/.test(k)
     && lay_el(m.all[0]).ks.includes("box")
     && !(k === "Array.new" && ctr_packed(m.all[2]))) {
     facts_hot(sc.def, m.all[0], true);
