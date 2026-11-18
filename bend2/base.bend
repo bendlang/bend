@@ -2245,12 +2245,30 @@ def String.contains.if(t: String, p: String, here: Bool) -> Bool:
     case True{}:
       True{}
 
+def String.contains.pre(p: String, s: String, same: Bool) -> Bool:
+  match p s same:
+    case _ _ False{}:
+      False{}
+    case SNil{} _ True{}:
+      True{}
+    case SCon{y, yt} SNil{} True{}:
+      False{}
+    case SCon{y, yt} SCon{x, xt} True{}:
+      String.contains.pre(yt, xt, Char.is_eq(x, y))
+
+def String.contains.at(p: String, h: Char, t: String) -> Bool:
+  match p:
+    case SNil{}:
+      True{}
+    case SCon{y, yt}:
+      String.contains.pre(yt, t, Char.is_eq(h, y))
+
 def String.contains(s, p):
   match s:
     case SNil{}:
       String.is_empty(p)
     case SCon{h, t}:
-      String.contains.if(t, p, String.starts_with(SCon{h, t}, p))
+      String.contains.if(t, p, String.contains.at(p, h, t))
 
 def String.take(s: String, n: Nat) -> String:
   match s n:
