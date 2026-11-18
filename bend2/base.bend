@@ -321,14 +321,34 @@ def IO.join.go(-A: Type, chan: Chan(A), got: Maybe<&1, A>) -> IO(A):
 def IO.join(-A: Type, +chan: Chan(A)) -> IO(A):
   IO.bind(Maybe<&1, A>, A, Chan.recv(A, chan), IO.join.go(A, chan))
 
-# Some{x} if act answers x within ms milliseconds, else None{}. The loser
-# is not cancelled: it runs to its end before the program exits.
+def IO.within.result(-A: Type, got: Poll<&1, &1, Maybe<&1, A>, Unit>) -> Maybe<&1, A>:
+  match got:
+    case Ready{value}:
+      value
+    case Wait{rest}:
+      None{}
+
+def IO.within.go(-A: Type, ms: U32, act: IO(A), zero: Bool) -> IO(Maybe<&1, A>):
+  match zero:
+    case True{}:
+      # A zero deadline still gives the action a turn before the timeout.
+      won = IO.bind(A, Maybe<&1, A>, act, x => IO.pure(Maybe<&1, A>, Some{x}))
+      late = IO.bind(Unit, Maybe<&1, A>, IO.sleep(0), u => IO.pure(Maybe<&1, A>, None{}))
+      both = IO.bind(Chan(Maybe<&1, A>), Chan(Maybe<&1, A>), IO.fork(Maybe<&1, A>, won),
+        IO.fork.go(Maybe<&1, A>, late))
+      IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
+    case False{}:
+      do IO<Maybe<&1, A>>:
+        +c : Chan(A) <- IO.fork(A, act)
+        got : Poll<&1, &1, Maybe<&1, A>, Unit> <- Chan.try_recv(A, c, ms)
+        Chan.close(A, c)
+        return IO.within.result(A, got)
+
+# Some{x} if act answers x within ms milliseconds, else None{}. After a
+# timeout, the action still runs to its end before the program exits.
 def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
-  won = IO.bind(A, Maybe<&1, A>, act, x => IO.pure(Maybe<&1, A>, Some{x}))
-  late = IO.bind(Unit, Maybe<&1, A>, IO.sleep(ms), u => IO.pure(Maybe<&1, A>, None{}))
-  both = IO.bind(Chan(Maybe<&1, A>), Chan(Maybe<&1, A>), IO.fork(Maybe<&1, A>, won),
-    IO.fork.go(Maybe<&1, A>, late))
-  IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
+  +timeout = ms
+  IO.within.go(A, timeout, act, U32.is_zero(timeout))
 
 # Modes: "r" reads, "r+" reads and writes without creating or truncating,
 # "w" creates or truncates, "a" appends or creates, "x" creates exclusively.

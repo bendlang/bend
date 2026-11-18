@@ -401,7 +401,7 @@ socket, a sleep or a channel steps aside for the others. `IO.fork` starts a
 computation and returns the channel its result will arrive on; `IO.join` waits
 for it. Underneath are `IO.spawn`, `Chan.new`, `Chan.send`, `Chan.recv` and
 `Chan.close`. `IO.within(A, ms, act)` races `act` against a deadline and answers
-`None{}` if the deadline wins; the loser is not cancelled. The program ends when
+`None{}` if the deadline wins. The action keeps running. The program ends when
 every computation is done, or reports a deadlock when the remaining ones all
 wait.
 
