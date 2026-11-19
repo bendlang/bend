@@ -3149,8 +3149,6 @@ def Map.get.bit(rest: String, off: Nat) -> Bool:
     case SCon{c, t}:
       Pair.snd(Char, Bool, Map.bit.chr(c, off))
 
-# Most steps down the trie move 0 or 1 characters: those skip String.drop,
-# which rebuilds the head on a 0 step and recurses on a 1 step
 def Map.get.skip(n: Nat, s: String) -> String:
   match n s:
     case 0n s:
@@ -3160,8 +3158,7 @@ def Map.get.skip(n: Nat, s: String) -> String:
     case n s:
       String.drop(s, n)
 
-# Map.has and Map.get keep the whole key for the leaf comparison and carry
-# its suffix at ci through the trie. Split positions only grow on descent.
+# Split positions increase on descent, so the key cursor only moves forward.
 def Map.has.go(
   -a: Quant, -V: Kind(a), node: Map<a, V>, key: String, +rest: String, ci: Nat, b: Bool
 ) -> Map<a, V> & Bool:

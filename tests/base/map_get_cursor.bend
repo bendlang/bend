@@ -3,7 +3,7 @@
 # re-walking a shared prefix from the start. Hits, misses past the end,
 # short and empty keys, keys that prefix each other, characters past
 # U+10FFFF and a reused result all answer, and the returned map still
-# holds its keys. Map.has follows the same key cursor.
+# holds its keys.
 import Base
 
 def pre(n: Nat, t: String) -> String:
