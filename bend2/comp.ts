@@ -2556,7 +2556,34 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   const word = WORDS[adt.k] === W32;
   const at = lay_at(adt, args[0]);
   const lay = word ? lay_node(adt.k) : lay_lazy(args[0], at) ? BOX : at;
+  // A later enumeration, alone or a field of a record, is tested first when
+  // for some value of it this match re-forms its node on every arm.
+  const lent = !val_owned(args[0]).length;
+  const box = lay === BOX && !rows && adt.k !== "Array" && adt.k !== "IO.OP";
+  const eta = box && mat_eta(x, adt, self, lent);
+  for (const [j, f, v] of !box || eta ? [] : args.flatMap((a, i) =>
+    (i && a.lay.arms ? Object.keys(a.lay.arms).length === 1 ? val_arm(a)
+      : [a] : []).flatMap((v, f) => mat_enum(v.lay) ? [[i, f - +(v === a),
+      v] as const] : []))) {
+    const ps = Object.keys(v.lay.arms!).map((c) =>
+      mat_pick(x, ty, j, c, f) as Of<"Mat">);
+    if (ps.some((p) => mat_eta(p, adt, self, lent))) {
+      const w = emit_alias(sc, v.ws[0], "o");
+      emit_chain(sc, ps.map((p, i) => [`${w} == ${i}`, () => {
+        const al = { ...sc, uses: new Map(sc.uses),
+          spares: sc.spares.slice() };
+        bind_dead(al, [p]);
+        emit_match(al, p, ty, args, dst);
+        spare_flush(al);
+      }]));
+      return void sc.spares.splice(0);
+    }
+  }
   const u = val_hold(sc, val_to(sc, args[0], word ? W32 : lay), "s");
+  if (eta) {
+    bind_uses(sc, self, u, [eta], adt);
+    return emit_body(sc, eta, null, args.slice(1), dst);
+  }
   if (rows !== null) {
     bind_uses(sc, self, u, rows.map(([a]) => a), adt);
   }
@@ -2605,6 +2632,78 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
     spare_flush(al);
   }]));
   sc.spares.splice(0);
+}
+
+// An enumeration word: a Bool, a Cmp, any type of field-less constructors.
+function mat_enum(lay: Lay): boolean {
+  return !!lay.arms && lay.ks.join() === "w32"
+    && Object.values(lay.arms).every((a) => !a.length);
+}
+
+// t with the test of argument pos (an enumeration, or field f of a record)
+// known to take arm c. A constructor arm takes its live fields as
+// arguments; a default the scrutinee. A path past a word, Array or IO.OP
+// match keeps its tests.
+function mat_pick(t: HTerm, ty: HTerm | null, pos: number, c: Name,
+  f = -1): HTerm {
+  const s = term_force(t);
+  if (s.$ === "Ann" || s.$ === "Rwt") {
+    return s.$ === "Ann" ? Bend.Ann(mat_pick(s.x, s.T, pos, c, f), s.T, s.s)
+      : Bend.Rwt(s.e, s.p, mat_pick(s.f, ty, pos, c, f), s.s);
+  }
+  if (s.$ === "Lam" && ty) {
+    const all = ty_all(ty);
+    const n = Number(all.q.$ !== "None");
+    return pos < n ? s : Bend.Lam(s.k, s.i, (y: HTerm) =>
+      mat_pick(s.f(y), all.B(y), pos - n, c, f), s.s, s.q);
+  }
+  const g = s.$ === "Mat" ? FL.book.ctrs[s.k] : null;
+  if (pos === 0 && g) {
+    const h = mat_arms(s).arms.find(([k]) => k === c)?.[1];
+    return f >= 0 ? Bend.Mat(s.k, mat_pick(s.h, null, f, c), s.m, s.s)
+      : !h ? mat_arms(s).end : ty ? Bend.Ann(Bend.Lam("_", 0, () => h), ty)
+      : s;
+  }
+  return s.$ !== "Mat" || !g || WORDS[g.f] || g.f === "Array"
+    || g.f === "IO.OP" ? s : Bend.Mat(s.k, mat_pick(s.h, null,
+      pos - 1 + ctr_live(g).length, c, f), mat_pick(s.m, ty, pos, c, f), s.s);
+}
+
+// A match on a box whose every arm re-forms the node, its fields read for
+// nothing else and the node used once on every path (at most once if
+// lent), is no match: the arms' one body takes the node whole, untaken. An arm that opens with a match on
+// its first field, an enumeration, is an arm per value.
+function mat_eta(x: Of<"Mat">, adt: Of<"ADT">, self: HTerm,
+  lent: boolean): HTerm | null {
+  const cs = FL.book.ctrs;
+  const fs = mat_ctrs(x, adt).flatMap(([k, h]): [HTerm, number,
+    (ps: HTerm[]) => HTerm][] => {
+    const m = term_strip(h);
+    const n = k ? cs[k].n : -1;
+    const at = (pre: HTerm[]) => (ps: HTerm[]) => Bend.Ctr(k, [...pre, ...ps]);
+    const { arms, end } = mat_arms(m);
+    return n < 0 ? [[m.$ === "Lam" ? m.f(self) : m, n, at([])]]
+      : n && arms.length && arms.every(([c]) => !cs[c].n) ? [...arms.map(([c,
+        a]): [HTerm, number, (ps: HTerm[]) => HTerm] => [a, n - 1,
+        at([Bend.Ctr(c, [])])]), ...term_strip(end).$ === "Efq" ? []
+        : [[end, n, at([])] as [HTerm, number, (ps: HTerm[]) => HTerm]]]
+      : [[h, n, at([])]];
+  });
+  const [rt, rn, rb] = fs.find(([, n]) => n > 0) ?? [];
+  const [b, f] = rn ? arm_self(rt!, rn, self, rb!) : [null, 1];
+  return f || rest_use([b!], probe_of(self)) > 1
+    || path_use(b!, probe_of(self)) < +!lent || !fs.every(([t, n, at]) => {
+      const [g, e] = n > 0 ? arm_self(t, n, self, at) : [t, 0];
+      return !e && term_same(g, n ? b! : arm_self(rt!, rn!, at([]), rb!)[0]);
+    }) ? null : b;
+}
+
+// The least uses of p along any path: a match takes its least arm.
+function path_use(tm: HTerm, p: Of<"Var">): number {
+  const t = term_force(tm);
+  const ns = term_kids(t).map((x) => path_use(x, p));
+  return t.$ === "Var" ? Number(t.i === p.i) : t.$ === "Efq" ? Infinity
+    : t.$ === "Mat" ? Math.min(...ns) : ns.reduce((a, b) => a + b, 0);
 }
 
 // Arms that each open with their one alloc, of one class and in no inner
