@@ -2466,9 +2466,9 @@ def Nat.read.go(s, acc):
       Nat.read.if(t, acc, d, U32.is_lt(d, 10))
 
 # 2^48-1 is the text 281474976710655. Past leading zeros, fewer than
-# fifteen characters fit, more do not, and fifteen compare as text;
-# Nat.read.go still refuses a non-digit. The gate is a def, not a
-# Bool.pick: an argument is built before the call, and reading a string
+# fifteen characters fit, the sixteenth rules it out, and exactly fifteen
+# compare as text. Nat.read.go still refuses a non-digit. The gate is a def,
+# not a Bool.pick: an argument is built before the call, and reading a string
 # that does not fit would build a Nat past the bound. A law that reads
 # "7" never builds the unary nat (each digit once divided it).
 def Nat.read.trim(s: String) -> String:
@@ -2478,10 +2478,28 @@ def Nat.read.trim(s: String) -> String:
     case t:
       t
 
+def Nat.read.len_cmp(s: String, limit: Nat) -> Cmp:
+  match s limit:
+    case SNil{} 0n:
+      EQ{}
+    case SNil{} 1n+p:
+      LT{}
+    case SCon{h, t} 0n:
+      GT{}
+    case SCon{h, t} 1n+p:
+      Nat.read.len_cmp(t, p)
+
+def Nat.read.fits.cmp(s: String, size: Cmp) -> Bool:
+  match size:
+    case LT{}:
+      True{}
+    case EQ{}:
+      String.is_le(s, "281474976710655")
+    case GT{}:
+      False{}
+
 def Nat.read.fits(+s: String) -> Bool:
-  +n = String.length(s)
-  Bool.or(Nat.is_lt(n, 15n),
-    Bool.and(Nat.is_eq(n, 15n), String.is_le(s, "281474976710655")))
+  Nat.read.fits.cmp(s, Nat.read.len_cmp(s, 15n))
 
 def Nat.read.gate(+s: String, ok: Bool) -> Maybe<&2, Nat>:
   match ok:
