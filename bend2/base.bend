@@ -3142,21 +3142,47 @@ def Map.has.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
   Map<a, V> & Bool:
   (MLeaf{k, v}, String.eq(key, k))
 
-def Map.has.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
-  Map<a, V> & Bool:
-  match node kb:
-    case MNode{p, MTip{}, hi} Tuple{key, False{}}:
+def Map.get.bit(rest: String, off: Nat) -> Bool:
+  match rest:
+    case SNil{}:
+      False{}
+    case SCon{c, t}:
+      Pair.snd(Char, Bool, Map.bit.chr(c, off))
+
+def Map.get.skip(n: Nat, s: String) -> String:
+  match n s:
+    case 0n s:
+      s
+    case 1n SCon{c, t}:
+      t
+    case n s:
+      String.drop(s, n)
+
+# Split positions increase on descent, so the key cursor only moves forward.
+def Map.has.go(
+  -a: Quant, -V: Kind(a), node: Map<a, V>, key: String, +rest: String, ci: Nat, b: Bool
+) -> Map<a, V> & Bool:
+  match node b:
+    case MNode{p, MTip{}, hi} False{}:
       (MNode{p, MTip{}, hi}, False{})
-    case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
+    case MNode{p, MLeaf{k, v}, hi} False{}:
       Map.lo(a, V, Bool, p, hi, Map.has.leaf(a, V, v, key, k))
-    case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
-      Map.lo(a, V, Bool, p, hi, Map.has.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
-    case MNode{p, lo, MTip{}} Tuple{key, True{}}:
+    case MNode{p, MNode{+q, c, d}, hi} False{}:
+      +cq = Nat.div(q, 33n)
+      +r2 = Map.get.skip(Nat.sub(cq, ci), rest)
+      Map.lo(a, V, Bool, p, hi,
+        Map.has.go(a, V, MNode{q, c, d}, key, r2, cq,
+          Map.get.bit(r2, Nat.mod(q, 33n))))
+    case MNode{p, lo, MTip{}} True{}:
       (MNode{p, lo, MTip{}}, False{})
-    case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
+    case MNode{p, lo, MLeaf{k, v}} True{}:
       Map.hi(a, V, Bool, p, lo, Map.has.leaf(a, V, v, key, k))
-    case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
-      Map.hi(a, V, Bool, p, lo, Map.has.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
+    case MNode{p, lo, MNode{+q, c, d}} True{}:
+      +cq = Nat.div(q, 33n)
+      +r2 = Map.get.skip(Nat.sub(cq, ci), rest)
+      Map.hi(a, V, Bool, p, lo,
+        Map.has.go(a, V, MNode{q, c, d}, key, r2, cq,
+          Map.get.bit(r2, Nat.mod(q, 33n))))
     case m _:
       (m, False{})
 
@@ -3167,7 +3193,11 @@ def Map.has(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Bo
     case MLeaf{k, v}:
       Map.has.leaf(a, V, v, key, k)
     case MNode{+pos, lo, hi}:
-      Map.has.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
+      +k = key
+      +cq = Nat.div(pos, 33n)
+      +rest = Map.get.skip(cq, k)
+      Map.has.go(a, V, MNode{pos, lo, hi}, k, rest, cq,
+        Map.get.bit(rest, Nat.mod(pos, 33n)))
 
 def Map.get.leaf.eq(-V: Data, d: V, +v: V, k: String, found: Bool) ->
   Map<&2, V> & V:
@@ -3180,27 +3210,6 @@ def Map.get.leaf.eq(-V: Data, d: V, +v: V, k: String, found: Bool) ->
 def Map.get.leaf(-V: Data, d: V, +v: V, key: String, +k: String) ->
   Map<&2, V> & V:
   Map.get.leaf.eq(V, d, v, k, String.eq(key, k))
-
-# Map.get.go carries a cursor into the key: trie positions only grow on the
-# way down, so each level drops the characters between its position and the
-# child's instead of walking the key's shared prefix from its head again.
-def Map.get.bit(rest: String, off: Nat) -> Bool:
-  match rest:
-    case SNil{}:
-      False{}
-    case SCon{c, t}:
-      Pair.snd(Char, Bool, Map.bit.chr(c, off))
-
-# Most steps down the trie move 0 or 1 characters: those skip String.drop,
-# which rebuilds the head on a 0 step and recurses on a 1 step
-def Map.get.skip(n: Nat, s: String) -> String:
-  match n s:
-    case 0n s:
-      s
-    case 1n SCon{c, t}:
-      t
-    case n s:
-      String.drop(s, n)
 
 def Map.get.go(
   -V: Data, node: Map<&2, V>, d: V, key: String, +rest: String, ci: Nat, b: Bool

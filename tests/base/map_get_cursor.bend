@@ -33,6 +33,9 @@ def val(r: Map<&2, U32> & U32) -> String:
 def get(m: Map<&2, U32>, k: String, d: U32) -> String:
   val(Map.get(U32, d, m, k))
 
+def has(m: Map<&2, U32>, k: String) -> String:
+  Bool.show(Pair.snd(Map<&2, U32>, Bool, Map.has(&2, U32, m, k)))
+
 # The map handed back by one lookup still answers the next one.
 def twice.get(x: U32, r: Map<&2, U32> & U32) -> String:
   (m, y) = r
@@ -61,7 +64,11 @@ def main() -> IO(Unit):
     Unit <- IO.print(get(t, String.repeat("y", 1024n), 999))
     Unit <- IO.print(twice(t, key(64n, 5), key(64n, 6)))
     Unit <- IO.print(get(Map.set(&2, U32, Map.new(&2, U32), "\u{ffffffff}", 7), "\u{ffffffff}", 999))
-    IO.print(get(Map.set(&2, U32, Map.new(&2, U32), "\u{7fffffff}", 8), "\u{ffffffff}", 999))
+    Unit <- IO.print(get(Map.set(&2, U32, Map.new(&2, U32), "\u{7fffffff}", 8), "\u{ffffffff}", 999))
+    Unit <- IO.print(has(t, key(64n, 15)))
+    Unit <- IO.print(has(t, key(64n, 63)))
+    Unit <- IO.print(has(t, key(64n, 64)))
+    IO.print(has(m, "x"))
 
 #|1
 #|64
@@ -75,3 +82,7 @@ def main() -> IO(Unit):
 #|6/7
 #|7
 #|999
+#|True
+#|True
+#|False
+#|False
