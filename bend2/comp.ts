@@ -2627,9 +2627,10 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   sc.spares.splice(0);
 }
 
-// Per match, lent node and argument lays: the arms' one body if no arm needs the node open
-// (mat_eta); else a later enumeration, alone (f < 0) or field f of argument
-// j, tested first when for some value of it the match is then no match.
+// Per match, lent node and argument lays: the arms' one body if no arm
+// needs the node open (mat_eta); else a later enumeration, alone (f < 0) or
+// field f of argument j, tested first when for some value of it the match
+// is then no match.
 type Cols = [HTerm, HTerm | null, number?, number?, Of<"Mat">[]?];
 
 function mat_cols(x: Of<"Mat">, ty: HTerm | null, adt: Of<"ADT">,

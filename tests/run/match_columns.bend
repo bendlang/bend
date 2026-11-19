@@ -315,4 +315,4 @@ def main() -> U32:
   U32.add(U32.add(U32.add(dig(t, 1), dig(a, 2)), U32.add(dig(b, 3), dig(c, 4))),
     U32.add(U32.add(probe(c, 150n, 9), edig(ebuild(60n, EL{}), 2)), each(gen(5n, 1), 1)))
 
-#| 94322643
+#|94322643
