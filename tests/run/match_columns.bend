@@ -260,6 +260,14 @@ def two(t: T, p: P) -> T:
     case t0 _:
       t0
 
+# the node kept on one value of b, read on the other; a is never tested
+def one(t: T, p: P) -> T:
+  match t p:
+    case N{c, l, k, r} P{_, False{}, x}:
+      N{c, l, U32.add(k, x), r}
+    case t0 _:
+      t0
+
 # the enumeration rides in a tuple, as in Base's Map
 def bit(+k: U32, p: U32) -> U32 & Bool:
   (k, U32.is_eq(U32.and(U32.shrn(k, U32.to_nat(p)), 1), 1))
@@ -296,7 +304,8 @@ def each(t: T, +i: U32) -> U32:
       +j = U32.add(U32.mul(i, 7), k)
       U32.add(U32.add(U32.add(tsum(tag(l)), tsum(dflt(r))), U32.add(dig(wrap(l, U32.is_eq(U32.mod(j, 2), 0)), 3), dig(allred(r), 4))),
         U32.add(U32.add(U32.add(dig(two(l, P{U32.is_eq(U32.mod(j, 3), 0), U32.is_eq(U32.mod(j, 5), 0), j}), 5), dig(same3(keep(r, U32.is_eq(U32.mod(j, 4), 1))), 6)),
-          U32.add(psum(twice(l)), dig(put(r, bit(j, U32.mod(k, 31))), 8))), U32.add(U32.mul(each(l, j), 3), each(r, U32.add(j, 1)))))
+          U32.add(U32.add(psum(twice(l)), dig(put(r, bit(j, U32.mod(k, 31))), 8)),
+            dig(one(r, P{U32.is_eq(U32.mod(j, 2), 1), U32.is_eq(U32.mod(j, 7), 3), k}), 10))), U32.add(U32.mul(each(l, j), 3), each(r, U32.add(j, 1)))))
 
 def main() -> U32:
   +t = build(120n, L{})
@@ -306,4 +315,4 @@ def main() -> U32:
   U32.add(U32.add(U32.add(dig(t, 1), dig(a, 2)), U32.add(dig(b, 3), dig(c, 4))),
     U32.add(U32.add(probe(c, 150n, 9), edig(ebuild(60n, EL{}), 2)), each(gen(5n, 1), 1)))
 
-#| 2407158910
+#| 94322643
