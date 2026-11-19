@@ -937,8 +937,10 @@ function arm_self(arm: HTerm, n: number, self: HTerm,
       if (b === o.b && vs.every((v, j) => v === s.v[j])) {
         return s;
       }
-      const l = (lam ? Bend.Lam(s.k, s.i, (y: HTerm) => go(s.f(y), false),
-        s.s, s.q) : Bend.Let(s.k, s.i, vs, (ys: HTerm[]) => go(s.f(ys), false),
+      // An erased field's binder is entered with a fresh variable (emit_body),
+      // where back(ps) no longer matches: a field binder answers b.
+      const l = (lam ? Bend.Lam(s.k, s.i, hd && box ? () => b
+        : (y: HTerm) => go(s.f(y), false), s.s, s.q) : Bend.Let(s.k, s.i, vs, (ys: HTerm[]) => go(s.f(ys), false),
         s.s, s.q)) as Of<"Lam"> | Of<"Let">;
       FL.opens.set(l, { ps: o.ps, b });
       return l;
