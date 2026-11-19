@@ -1179,6 +1179,8 @@ function file_new(book: Bend.Book, js: boolean) {
     fids: new Set<Name>(),
     effs: new Map<string, [string, string]>(),
     hold: new Map<string, boolean>(),
+    cols: new Map<HTerm, Map<string, Cols>>(),
+    etas: new Map<HTerm, [HTerm, HTerm | null][]>(),
   };
 }
 
@@ -2556,32 +2558,23 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   const word = WORDS[adt.k] === W32;
   const at = lay_at(adt, args[0]);
   const lay = word ? lay_node(adt.k) : lay_lazy(args[0], at) ? BOX : at;
-  // A later enumeration, alone or a field of a record, is tested first when
-  // for some value of it this match re-forms its node on every arm.
   const lent = !val_owned(args[0]).length;
-  const box = lay === BOX && !rows && adt.k !== "Array" && adt.k !== "IO.OP";
-  const eta = box && mat_eta(x, adt, self, lent);
-  for (const [j, f, v] of !box || eta ? [] : args.flatMap((a, i) =>
-    (i && a.lay.arms ? Object.keys(a.lay.arms).length === 1 ? val_arm(a)
-      : [a] : []).flatMap((v, f) => mat_enum(v.lay) ? [[i, f - +(v === a),
-      v] as const] : []))) {
-    const ps = Object.keys(v.lay.arms!).map((c) =>
-      mat_pick(x, ty, j, c, f) as Of<"Mat">);
-    if (ps.some((p) => mat_eta(p, adt, self, lent))) {
-      const w = emit_alias(sc, v.ws[0], "o");
-      emit_chain(sc, ps.map((p, i) => [`${w} == ${i}`, () => {
-        const al = { ...sc, uses: new Map(sc.uses),
-          spares: sc.spares.slice() };
-        bind_dead(al, [p]);
-        emit_match(al, p, ty, args, dst);
-        spare_flush(al);
-      }]));
-      return void sc.spares.splice(0);
-    }
+  const [s, eta, j, f, ps] = lay === BOX && !rows && adt.k !== "Array"
+    && adt.k !== "IO.OP" ? mat_cols(x, ty, adt, args, lent) : [self];
+  if (ps?.length) {
+    const v = f! < 0 ? args[j!] : val_arm(args[j!])[f!];
+    const w = emit_alias(sc, v.ws[0], "o");
+    emit_chain(sc, ps.map((p, i) => [`${w} == ${i}`, () => {
+      const al = { ...sc, uses: new Map(sc.uses), spares: sc.spares.slice() };
+      bind_dead(al, [p]);
+      emit_match(al, p, ty, args, dst);
+      spare_flush(al);
+    }]));
+    return void sc.spares.splice(0);
   }
   const u = val_hold(sc, val_to(sc, args[0], word ? W32 : lay), "s");
   if (eta) {
-    bind_uses(sc, self, u, [eta], adt);
+    bind_uses(sc, s, u, [eta], adt);
     return emit_body(sc, eta, null, args.slice(1), dst);
   }
   if (rows !== null) {
@@ -2634,6 +2627,30 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
   sc.spares.splice(0);
 }
 
+// Per match, lent node and argument lays: the arms' one body if no arm needs the node open
+// (mat_eta); else a later enumeration, alone (f < 0) or field f of argument
+// j, tested first when for some value of it the match is then no match.
+type Cols = [HTerm, HTerm | null, number?, number?, Of<"Mat">[]?];
+
+function mat_cols(x: Of<"Mat">, ty: HTerm | null, adt: Of<"ADT">,
+  args: Val[], lent: boolean): Cols {
+  return memo(memo(FL.cols, x, () => new Map()), lent + args.map((a) =>
+    a.lay.ks + Object.keys(a.lay.arms ?? {})).join(), () => {
+    const [self, eta] = mat_eta(x, adt, lent);
+    for (const [j, f, v] of eta ? [] : args.flatMap((a, i) =>
+      (i && a.lay.arms ? Object.keys(a.lay.arms).length === 1 ? val_arm(a)
+        : [a] : []).flatMap((v, f) => mat_enum(v.lay) ? [[i, f - +(v === a),
+        v] as const] : []))) {
+      const ps = Object.keys(v.lay.arms!).map((c) =>
+        mat_pick(x, ty, j, c, f) as Of<"Mat">);
+      if (ps.some((p) => mat_eta(p, adt, lent)[1])) {
+        return [self, null, j, f, ps];
+      }
+    }
+    return [self, eta];
+  });
+}
+
 // An enumeration word: a Bool, a Cmp, any type of field-less constructors.
 function mat_enum(lay: Lay): boolean {
   return !!lay.arms && lay.ks.join() === "w32"
@@ -2647,34 +2664,55 @@ function mat_enum(lay: Lay): boolean {
 function mat_pick(t: HTerm, ty: HTerm | null, pos: number, c: Name,
   f = -1): HTerm {
   const s = term_force(t);
+  const re = (x: HTerm, y: HTerm, mk: (y: HTerm) => HTerm) => x === y ? s
+    : mk(y);
   if (s.$ === "Ann" || s.$ === "Rwt") {
-    return s.$ === "Ann" ? Bend.Ann(mat_pick(s.x, s.T, pos, c, f), s.T, s.s)
-      : Bend.Rwt(s.e, s.p, mat_pick(s.f, ty, pos, c, f), s.s);
+    return s.$ === "Ann" ? re(s.x, mat_pick(s.x, s.T, pos, c, f), (y) =>
+      Bend.Ann(y, s.T, s.s)) : re(s.f, mat_pick(s.f, ty, pos, c, f), (y) =>
+      Bend.Rwt(s.e, s.p, y, s.s));
   }
   if (s.$ === "Lam" && ty) {
     const all = ty_all(ty);
     const n = Number(all.q.$ !== "None");
-    return pos < n ? s : Bend.Lam(s.k, s.i, (y: HTerm) =>
-      mat_pick(s.f(y), all.B(y), pos - n, c, f), s.s, s.q);
+    const o = term_open(s);
+    return pos < n ? s : re(o.b, mat_pick(o.b, all.B(o.ps[0]), pos - n, c,
+      f), (b) => {
+      const l = Bend.Lam(s.k, s.i, (y: HTerm) => mat_pick(s.f(y), all.B(y),
+        pos - n, c, f), s.s, s.q) as Of<"Lam">;
+      FL.opens.set(l, { ps: o.ps, b });
+      return l;
+    });
   }
-  const g = s.$ === "Mat" ? FL.book.ctrs[s.k] : null;
-  if (pos === 0 && g) {
-    const h = mat_arms(s).arms.find(([k]) => k === c)?.[1];
-    return f >= 0 ? Bend.Mat(s.k, mat_pick(s.h, null, f, c), s.m, s.s)
-      : !h ? mat_arms(s).end : ty ? Bend.Ann(Bend.Lam("_", 0, () => h), ty)
-      : s;
+  const g = s.$ === "Mat" && FL.book.ctrs[s.k];
+  if (s.$ !== "Mat" || !g) {
+    return s;
   }
-  return s.$ !== "Mat" || !g || WORDS[g.f] || g.f === "Array"
-    || g.f === "IO.OP" ? s : Bend.Mat(s.k, mat_pick(s.h, null,
-      pos - 1 + ctr_live(g).length, c, f), mat_pick(s.m, ty, pos, c, f), s.s);
+  const h = mat_arms(s).arms.find(([k]) => k === c)?.[1];
+  const hm = (p: number, q: number, r: number) => {
+    const [a, b] = [mat_pick(s.h, null, p, c, r), q < 0 ? s.m
+      : mat_pick(s.m, ty, q, c, r)];
+    return a === s.h && b === s.m ? s : Bend.Mat(s.k, a, b, s.s);
+  };
+  return pos === 0 ? f >= 0 ? hm(f, -1, -1)
+    : g.f !== FL.book.ctrs[c].f ? s : !h ? mat_arms(s).end
+    : ty ? Bend.Ann(Bend.Lam("_", 0, (_: HTerm) => h), ty) : s
+    : WORDS[g.f] || g.f === "Array" || g.f === "IO.OP" ? s
+    : hm(pos - 1 + ctr_live(g).length, pos, f);
 }
 
 // A match on a box whose every arm re-forms the node, its fields read for
-// nothing else and the node used once on every path (at most once if
-// lent), is no match: the arms' one body takes the node whole, untaken. An arm that opens with a match on
-// its first field, an enumeration, is an arm per value.
-function mat_eta(x: Of<"Mat">, adt: Of<"ADT">, self: HTerm,
-  lent: boolean): HTerm | null {
+// nothing else and the node used once on every path (at most once if lent),
+// is no match: the arms' one body takes the node whole, untaken. An arm
+// that opens with a match on its first field, an enumeration, is an arm per
+// value.
+function mat_eta(x: Of<"Mat">, adt: Of<"ADT">,
+  lent: boolean): [HTerm, HTerm | null] {
+  return memo(FL.etas, x, () => [])[+lent] ??= mat_eta1(x, adt, lent,
+    probe("s"));
+}
+
+function mat_eta1(x: Of<"Mat">, adt: Of<"ADT">, lent: boolean,
+  self: HTerm): [HTerm, HTerm | null] {
   const cs = FL.book.ctrs;
   const fs = mat_ctrs(x, adt).flatMap(([k, h]): [HTerm, number,
     (ps: HTerm[]) => HTerm][] => {
@@ -2690,12 +2728,12 @@ function mat_eta(x: Of<"Mat">, adt: Of<"ADT">, self: HTerm,
       : [[h, n, at([])]];
   });
   const [rt, rn, rb] = fs.find(([, n]) => n > 0) ?? [];
-  const [b, f] = rn ? arm_self(rt!, rn, self, rb!) : [null, 1];
-  return f || rest_use([b!], probe_of(self)) > 1
-    || path_use(b!, probe_of(self)) < +!lent || !fs.every(([t, n, at]) => {
+  const [b, e0] = rn ? arm_self(rt!, rn, self, rb!) : [self, 1];
+  return e0 || rest_use([b], probe_of(self)) > 1
+    || !lent && path_use(b, probe_of(self)) < 1 || !fs.every(([t, n, at]) => {
       const [g, e] = n > 0 ? arm_self(t, n, self, at) : [t, 0];
-      return !e && term_same(g, n ? b! : arm_self(rt!, rn!, at([]), rb!)[0]);
-    }) ? null : b;
+      return !e && term_same(g, n ? b : arm_self(rt!, rn!, at([]), rb!)[0]);
+    }) ? [self, null] : [self, b];
 }
 
 // The least uses of p along any path: a match takes its least arm.
