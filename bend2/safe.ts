@@ -6,10 +6,10 @@
 // node with its type; the elaborator needs no inference. For a bare term
 // inside a type, it carries down the type bend2 checked it at: a lambda's
 // codomain or a match arm's constructor fields.
-// bend2 converts functions up to η; the kernel does not, and unfolds
-// defs only at applications. Emit functions η-long so the kernel can
-// compare both sides of an equation under their binders, where that form
-// is finite.
+// bend2 converts functions up to η; the kernel does not. Emit functions
+// η-long so the kernel can compare both sides of an equation under their
+// binders, where that form is finite. A returned function is annotated
+// to end its def's case tree.
 //
 // A datatype D<ps> with constructors cs is two defs: D.arms(ps, t)
 // switches on the tag t and gives the Σ chain of that constructor's
@@ -110,7 +110,7 @@ type Scope = {
   c: Bind[];     // bend2 variables by level
   d: number;     // bend2's depth
   D: number;     // the kernel's depth
-  cols: Cols;    // the tree's columns left
+  cols: Cols | null; // case-tree columns left; null when translating a value
   self: string;  // the def's kernel name
   empty: O[];    // the refutations at hand (a live variable of an empty type)
   sub: boolean;  // a self-call's argument: a word literal stays a constructor, which the kernel compares to a pattern
@@ -684,7 +684,7 @@ function quant(q: Quant): Q {
 // =====
 
 function scope_nil(): Scope {
-  return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false };
+  return { c: [], d: 0, D: 0, cols: null, self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false };
 }
 
 // binds the next bend2 variable to o, or to its original term v when
@@ -772,16 +772,21 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   }
   const [x, T] = open(t);
   const all = all_of(e, T);
+  // A returned function is a value, not another declared case-tree column.
+  // Ann makes that boundary visible to the kernel's unfolding rule.
+  if (top === undefined && s.cols?.length === 0 && all !== null) {
+    return { $: "Ann", x: tree(e, { ...s, cols: null }, t, fs), T: term(e, s, T!, false) };
+  }
   // a specialized column takes its argument: a λ binds it (no kernel
   // binder), a match goes to the arm it takes, whose fields it binds so
-  const v = top === undefined ? s.cols[0] ?? null : null;
+  const v = top === undefined ? s.cols?.[0] ?? null : null;
   if (v !== null && x.$ === "Lam") {
-    const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, { $: "Efq" }, all?.A ?? null, v);
+    const s2 = scope_bind({ ...s, cols: s.cols!.slice(1) }, { $: "Efq" }, all?.A ?? null, v);
     return tree(e, s2, x.f(B.Var(x.k, s.d)), fs);
   }
   if (v !== null && node(x)) {
     const [h, vs] = pick(e, x, v);
-    return tree(e, { ...s, cols: [...vs, ...s.cols.slice(1)] }, h, fs);
+    return tree(e, { ...s, cols: [...vs, ...s.cols!.slice(1)] }, h, fs);
   }
   // a leaf of a function type goes η-long if finite (see the header),
   // and a chain splits its fields under λs
@@ -794,7 +799,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // inside a chain, split the field off first; else take the column
   const fs2 = top === undefined ? fs : [...fs.slice(0, -1), { ...top, n: top.n - 1 }];
   const wrap = (o: O): O => top === undefined ? o : { $: "Prj", h: o };
-  const s1 = top === undefined ? { ...s, cols: s.cols.slice(1) } : s;
+  const s1 = top === undefined ? { ...s, cols: s.cols?.slice(1) ?? null } : s;
   const q = all === null ? 1 : quant(all.q);
   if (x.$ === "Lam") {
     const l = s.D;
@@ -1081,7 +1086,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     }
     case "Typ": return { $: "Typ", q: term(e, s, x.g, false) };
     case "All": return { $: "All", q: quant(x.q), l: s.D, A: term(e, s, x.A, false), B: term(e, scope_var(s, x.A), x.B(B.Var(x.k, s.d)), false) };
-    case "Lam": case "Mat": case "Efq": return tree(e, { ...s, cols: [] }, t, []);
+    case "Lam": case "Mat": case "Efq": return tree(e, { ...s, cols: null }, t, []);
     case "Let": return let_term(e, s, x, live);
     case "Ctr": return ctr_term(e, s, x, T, live);
     case "Lit": {
@@ -1336,22 +1341,22 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const ps = tld.x === 0 ? null : new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
   const t0 = B.term_higher(tld.e as B.LTerm);
   let t = ps === null ? B.term_higher(B.term_lower(t0)) : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
-  let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
+  let si: Scope = { ...s, c: [], d: 0, cols: Array.from({ length: tld.n - tld.x }, (_, j) => cols[tld.x + j] ?? null), sub: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
     const F = wnf(e.book, T);
-    const v = si.cols[0] ?? null;
+    const v = si.cols![0] ?? null;
     if (F.$ !== "All" || v === null && j === vs.length) {
       break;
     }
-    si = scope_bind({ ...si, cols: si.cols.slice(1) }, v !== null ? { $: "Efq" } : vs[j++][1], F.A, v ?? undefined);
+    si = scope_bind({ ...si, cols: si.cols!.slice(1) }, v !== null ? { $: "Efq" } : vs[j++][1], F.A, v ?? undefined);
     t = x.f(B.Var(x.k, si.d - 1));
   }
   return apps(tree(e, si, t, []), vs.slice(j));
 }
 
 // an argument at its domain A: an untyped λ or match (in a type) takes
-// A as its goal. Any other argument of a function type goes η-long at A
+// A as its goal. Every argument of a function type goes η-long at A
 // if finite (as a tree leaf): it may reach a type, as a side of an
 // equation whose carrier only the call knows. A live self-call's
 // argument stays whole, as the live check reads it, unless its binders
@@ -1359,9 +1364,9 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
 function arg_term(e: Safe, s: Scope, x: HTerm, A: HTerm, live: boolean): O {
   const [y, T] = open(x);
   const bare = node(y) || y.$ === "Ctr";
-  const all = bare ? null : all_of(e, A);
+  const all = y.$ === "Ctr" ? null : all_of(e, A);
   if (all !== null && eta_finite(e, A, s.d) && (!(live && s.sub) || T !== null && !qsig_eq(e, T, A, s.d))) {
-    return term(e, s, eta(x, all), live);
+    return term(e, s, eta(B.Ann(x, A), all), live);
   }
   return term(e, s, T === null && bare ? B.Ann(x, A) : x, live);
 }
