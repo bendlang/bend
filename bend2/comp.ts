@@ -83,7 +83,8 @@ type Intr = { C?: string | string[] | null; JS?: string };
 type Dom = [Bend.Quant, Name, HTerm];
 
 type Unit = { name: string; segs: Seg[]; n: number; lent: Set<string>;
-  lends: [string, string][]; clos: Set<string>; emit: () => void };
+  lends: [string, string][]; clos: Set<string>; emit: () => void;
+  wake: () => unknown };
 
 type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 
@@ -1064,11 +1065,6 @@ function fun_runs(tld?: Bend.TLD): tld is Bend.Def {
   return done_live(tld) || def_foreign(tld);
 }
 
-function done_defs(live = done_live): [Name, Bend.Def][] {
-  return [...FL.srcs.keys()].map((k) =>
-    [k, tld_of(k)] as [Name, Bend.Def]).filter(([, d]) => live(d));
-}
-
 function loop_of(k: Name): Name[] {
   const stack: Name[] = [];
   const visit = (k: Name) => {
@@ -1159,7 +1155,8 @@ function file_new(book: Bend.Book, js: boolean) {
     names: new Map<number, string>(),
     facts: new Set<string>(),
     heat: new Set<string>(),
-    when: new Map<string, (() => void)[]>(),
+    when: new Map<string, Set<() => unknown>>(),
+    stale: new Set<Unit>(),
     units: new Map<string, Unit>(),
     unit: null as Unit | null,
     tabs: new Map<string, number>(),
@@ -1251,8 +1248,13 @@ function file_book(roots: Name[]): void {
   }
 }
 
-function fact(kind: string, k = ""): boolean {
-  return FL.facts.has(kind + " " + k);
+function fact(kind: string, k = "", w = FL.unit?.wake): boolean {
+  const key = kind + " " + k;
+  const has = FL.facts.has(key);
+  if (w && !has) {
+    memo(FL.when, key, () => new Set()).add(w);
+  }
+  return has;
 }
 
 function fact_add(kind: string, k = ""): boolean {
@@ -1261,15 +1263,13 @@ function fact_add(kind: string, k = ""): boolean {
     return false;
   }
   FL.facts.add(key);
-  FL.when.get(key)?.splice(0).forEach((f) => f());
+  FL.when.get(key)?.forEach((w) => w());
   return true;
 }
 
 function fact_when(kind: string, k: string, f: () => void): void {
-  if (fact(kind, k)) {
+  if (fact(kind, k, f)) {
     f();
-  } else {
-    memo(FL.when, kind + " " + k, () => []).push(f);
   }
 }
 
@@ -1699,12 +1699,23 @@ function memo<K, V>(m: { get(k: K): V | undefined; set(k: K, v: V): void },
 
 function unit_new(name: string, emit: () => void): Unit {
   // unit_emit fills the rest
-  const u = { name, emit } as Unit;
+  const u = { name, emit, wake: () => FL.stale.add(u) } as Unit;
   FL.units.set(name, u);
+  u.wake();
   return u;
 }
 
+function unit_need(k: Name): void {
+  const tld = tld_of(k);
+  if (FL.srcs.has(k) && fun_runs(tld) && !FL.units.has(k)) {
+    unit_new(k, () => FL.js ? js_def(k, tld) : c_def(k, tld));
+  }
+}
+
 function unit_emit(u: Unit): void {
+  if (!FL.stale.delete(u)) {
+    return;
+  }
   FL.folds.clear();
   FL.unit = Object.assign(u, { segs: [], n: 0, lent: new Set(), lends: [],
     clos: new Set() });
@@ -1988,6 +1999,7 @@ function emit_task(sc: Scope, fid: string, rem: number, words: string[],
 
 function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
   const fid = seg_fid(k);
+  unit_need(k);
   sc.seg.fork ||= bang;
   if (bang || sc.seg.def !== k) {
     block(sc, `if (${bang ? "!seq"
@@ -2316,6 +2328,7 @@ function emit_expr(sc: Scope, tm: HTerm, ty0: HTerm | null,
       if (!def_foreign(m.tld)) {
         die(`a live call into the law ${Bend.name_key(g.k)}`);
       }
+      unit_need(g.k);
       return val_new([seg_clo(sc, seg_fid(g.k),
         emit_each(sc, m.args, m.args.map(() => BOX))
           .map((v) => val_box(sc, v)))], BOX);
@@ -2696,31 +2709,32 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
 // take one). rp pads the host's twelfth slot, freeing rax for the tail call.
 // WL_LOAD is a ladder: clang is O(n^2) on a fallthrough switch.
 
-function c_units(): Unit[] {
-  for (const [k, tld] of [...done_defs().reverse(),
-    ...done_defs(def_foreign)]) {
-    unit_new(k, () => {
-      const [dl, vals] = emit_open(k);
-      FL.unit!.segs.push(dl.seg);
-      if (def_foreign(tld)) {
-        emit_put(dl, null, val_new([ctr_build(dl, k, dl.seg.params)], BOX));
-      } else {
-        emit_body(dl, fun_of(k).h!, tld.T, vals, null);
-      }
-    });
+function c_def(k: Name, tld: Bend.Def): void {
+  const [dl, vals] = emit_open(k);
+  FL.unit!.segs.push(dl.seg);
+  if (def_foreign(tld)) {
+    emit_put(dl, null, val_new([ctr_build(dl, k, dl.seg.params)], BOX));
+  } else {
+    emit_body(dl, fun_of(k).h!, tld.T, vals, null);
   }
-  let was;
-  do {
-    was = FL.facts.size;
+}
+
+function c_units(): Unit[] {
+  ["main", ...FL.bangs, ...FL.fids].forEach(unit_need);
+  while (FL.stale.size > 0) {
     FL.units.forEach(unit_emit);
     const us = [...FL.units.values()];
-    const lent = graph_close(new Set(us.flatMap((u) => [...u.lent])),
-      us.flatMap((u) => u.lends.map(([at, r]) => [r, at])));
-    for (const [k] of done_defs()) {
-      brw_of(k).forEach((b, i) => b && !lent.has(arg_key(k, i))
-        && fact_add("own", arg_key(k, i)));
+    us.reverse().forEach(unit_emit);
+    if (FL.stale.size === 0) {
+      const lent = graph_close(new Set(us.flatMap((u) => [...u.lent])),
+        us.flatMap((u) => u.lends.map(([at, r]) => [r, at])));
+      for (const key of FL.when.keys()) {
+        if (key.startsWith("own ") && !lent.has(key.slice(4))) {
+          fact_add("own", key.slice(4));
+        }
+      }
     }
-  } while (was !== FL.facts.size);
+  }
   return [...FL.units.values()];
 }
 
@@ -2738,7 +2752,11 @@ function c_header(segs: Seg[], clos: string[]): string {
       cid(c.k, n, at < 0 ? 0 : n - 1 - at);
     }
   }
-  done_defs(def_foreign).forEach(([k]) => cid(k, fun_of(k).lays.length));
+  for (const k of FL.srcs.keys()) {
+    if (def_foreign(tld_of(k))) {
+      cid(k, fun_of(k).lays.length);
+    }
+  }
   const forky = graph_close(new Set(segs.filter((s) => s.fork)
     .map((s) => s.fid)), [...segs.flatMap((s) => [...s.refs].map((r) =>
     [r, s.fid])), ...clos.map((c) => [c, seg_fid(CLO_APPLY)])]);
@@ -2847,6 +2865,7 @@ function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
   if (!fun_runs(tld)) {
     die("a live call into the law " + Bend.name_key(k));
   }
+  unit_need(k);
   const f = name_id("$", k);
   if (def_foreign(tld) && exprs.length === fun_of(k).lays.length - 1) {
     const v = name_local(sc, "x");
@@ -3090,9 +3109,8 @@ export function js_lib(book: Bend.Book, mod = false): string {
     return done_live(t) && !t.b && t.x === 0 && io_base(FL.book, t.T) === null;
   });
   file_book(outs ?? ["main"]);
-  for (const [k, def] of done_defs(fun_runs)) {
-    unit_emit(unit_new(k, () => js_def(k, def)));
-  }
+  (outs ?? ["main"]).forEach(unit_need);
+  FL.units.forEach(unit_emit);
   const effs = [...FL.effs.values()]
     .map(([m, src]) => `(() => {\n${c_ids(src, m)}\n})();\n\n`).join("");
   const lib = outs === null ? "" : `export default {\n${outs.map((k) => {
