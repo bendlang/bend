@@ -2801,14 +2801,15 @@ function segs_base(segs: Seg[]): void {
       // neither stores nor pops it; not in the callee's own entry, where
       // the call closes a loop that clang would then vectorise
       const own = m?.[2] === fid;
-      // a short continuation that pops just this frame and pushes none runs
-      // after the arm that answers, so the frame is pushed only when none does
+      // a short continuation that pops just this frame, pushes none and calls
+      // no spin or drop (as an arm, above) runs after the arm that answers,
+      // so the frame is pushed only when none does
       const n = Number(m?.[4]);
       const r = b && m[5] !== "1"
         ? ls.lastIndexOf(`${m[1]}  WL_ROOM(${n + 1});`, i) : -1;
       const k = r > 0 ? segs.find((s) => s.fid === m![3]) : undefined;
       if (k && !k.spin && k.frame?.pop === n && k.lines.length <= 48
-        && !k.lines.some((x) => /WL_AGAIN|WL_PUSHN|\b(goto|break|continue)\b/.test(x))) {
+        && !k.lines.some((x) => /WL_AGAIN|WL_PUSHN|spin_|term_sink|\b(goto|break|continue)\b/.test(x))) {
         // only the push moves: the task path stays, as the call's own task
         // path below it reads the WL_CONT it sets
         const e = ls.indexOf(m![1] + "} else {", r);
