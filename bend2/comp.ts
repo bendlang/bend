@@ -210,8 +210,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "nat_divmod($0, $1)",
   },
   ...tpl_ops("Bool.", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
+  "List.length": { JS: "list_length($0)" },
   "String.append": { JS: "($0 + $1)" },
   "String.contains": { JS: "string_contains($0, $1)" },
+  "String.split": { JS: "string_split($0, $1)" },
   "String.eq": { JS: "($0 === $1)" },
   "String.length": { JS: "[...str_out($0)].length" },
   ...Object.fromEntries(Object.entries({
@@ -239,8 +241,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
 // Optimized
 // ---------
 
-// Per native constructor: builder, field readers, test. The runtime lays
-// out RUNTIME_ADTS; OWNED are Base names the compiler encodes, Base's alone.
+// Native constructor operations. OWNED reserves runtime type names for Base.
 
 const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
   Bool: {
@@ -328,8 +329,7 @@ function cid_mac(k: string): string {
 // Char
 // ====
 
-// A non-scalar Char is 0xDC00 and its u32 in three pieces (str_out writes
-// U+FFFD). The JS runtime copies this function.
+// Pack non-scalar characters after 0xDC00. str_out emits U+FFFD.
 function char_new(c: number): string {
   return c < 0xD800 ? String.fromCharCode(c)
     : c >= 0xE000 && c <= 0x10FFFF ? String.fromCodePoint(c)
@@ -2819,12 +2819,8 @@ export function compile_book(book: Bend.Book): string {
 // JS
 // --
 
-// Each effect source runs once in its own closure, registering with
-// io_eff(CID(k), run). A tail cycle's defs are one loop over their bodies
-// ($pc picks one), each turn binding parameters afresh, so a closure keeps
-// its own. Only a closure's tail call bounces (run_tail), so a call needs
-// run_loop only if its callee's tail calls reach one: it calls the callee's
-// entry $$k, declared after every def as run_loop over the def, or the def.
+// Each effect registers in its own closure. Tail cycles share a loop with
+// fresh bindings. Entry $$k uses run_loop for tail calls that reach closures.
 
 function js_call(sc: Scope, k: Name, args: HTerm[], tail = false): string {
   if (tail) {
@@ -2866,8 +2862,7 @@ function js_open(sc: Scope, x: Of<"Let">): HTerm {
   return o.b;
 }
 
-// A constructor's tag drops its namespace (matches stay type-local); effect
-// ids and public def names keep theirs.
+// Only constructor tags omit the namespace. Matches are type-local.
 function js_tag(k: Name): string {
   return k.slice(k.indexOf(":") + 1);
 }
@@ -3072,8 +3067,7 @@ function js_def(k: Name, def: Bend.Def): void {
   file_push(sc, "");
 }
 
-// Across a host edge a Nat comes in as a number nat_in checks; text gets
-// U+FFFD for non-scalars.
+// Host imports check Nat bounds and replace non-scalar text with U+FFFD.
 function host(A: HTerm | null, x: string, out: boolean): string {
   const k = ty_adt(A)?.k;
   return k === "Char" || k === "String" ? `str_${out ? "out" : "in"}(${x})`
@@ -3081,8 +3075,7 @@ function host(A: HTerm | null, x: string, out: boolean): string {
     : k === "F32" && !out ? `Math.fround(${x})` : x;
 }
 
-// A module (the .bend loader, -o <out>.mjs) roots and exports each callable
-// def by book name: "lib:value" differs from a root "lib.value".
+// Modules root and export callable defs by their full book names.
 export function js_lib(book: Bend.Book, mod = false): string {
   FL = file_new(book, true);
   const outs = !mod ? null : [...new Set(FL.book.order)].filter((k) => {
@@ -6049,6 +6042,37 @@ function string_contains(s, p) {
   return false;
 }
 
+function string_split(s, sep) {
+  const parts = [];
+  let start = 0;
+  for (let at = 0; at < s.length;) {
+    const end = at + char_len(s, at);
+    if (s.slice(at, end) === sep) {
+      parts.push(s.slice(start, at));
+      start = end;
+    }
+    at = end;
+  }
+  parts.push(s.slice(start));
+  return io_list(parts, parts.length);
+}
+
+function io_list(b, n) {
+  let xs = { $: "Nil" };
+  while (n > 0) {
+    xs = { $: "Con", head: b[--n], tail: xs };
+  }
+  return xs;
+}
+
+function list_length(xs) {
+  let n = 0;
+  for (; xs.$ === "Con"; xs = xs.tail) {
+    n++;
+  }
+  return nat_chk(n);
+}
+
 function str_out(s) {
   return s.replace(/\uDC00[^]{3}/gu, "\uFFFD");
 }
@@ -6300,14 +6324,6 @@ function io_bytes(text) {
 
 function io_text(b, n) {
   return new TextDecoder("utf-8", { ignoreBOM: true }).decode(b.subarray(0, n));
-}
-
-function io_list(b, n) {
-  let xs = { $: "Nil" };
-  while (n > 0) {
-    xs = { $: "Con", head: b[--n], tail: xs };
-  }
-  return xs;
 }
 
 function io_unlist(xs) {

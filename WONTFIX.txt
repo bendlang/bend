@@ -145,9 +145,8 @@ F32 that computes in the checker (#1017)
   F32 operations are axioms today; bit-level definitions are planned.
 
 Continuation passing for non-tail calls on the JS lane (#798, #802)
-  Deep recursion (String.length over 100k chars, List.length over 200k
-  elements) overflows the host stack. Until then String.length is an
-  intrinsic; other folds may overflow.
+  Deep non-tail recursion can overflow the host stack. String.split,
+  String.length and List.length use JS intrinsics.
 
 A native library target for pure defs (#813)
   Today the C output is one program with a `main`. Exporting chosen defs with
