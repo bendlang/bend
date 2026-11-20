@@ -1956,6 +1956,34 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
     : let_open(ps, ws, o.b));
 }
 
+// A let of U32 operations (total) moves below the next call that pushes a
+// frame and does not read it, when what it reads is read after the call: the
+// frame keeps the operands, not the result.
+function let_sink(x: Of<"Let">, ty: HTerm | null): HTerm | null {
+  const o = term_open(x);
+  const vs: Of<"Var">[] = [];
+  const pure = (t: HTerm): boolean => {
+    const s = term_strip(t);
+    const m = term_spine(s);
+    return s.$ === "Var" ? !!vs.push(s) : term_const(s)
+      || m.t.$ === "Ref" && m.t.k.startsWith("U32.") && !!intr_of(m.t.k)
+      && call_eta(s) === null && m.args.every(pure);
+  };
+  if (o.ps.length !== 1 || !pure(x.v[0])) {
+    return null;
+  }
+  const b = term_strip(o.b);
+  const sb = b.$ === "Let" ? let_sink(b, ty) : null;
+  const n = sb ?? (b.$ === "Let" ? b : anf(o.b, ty));
+  const m = n.$ === "Let" && term_open(n);
+  const at = (t: HTerm) => ty === null ? t : Bend.Ann(t, ty);
+  return m && n.k.length === 1 && term_spine(n.v[0]).k !== null
+    && !flat_call(n.v[0]) && rest_use([n.v[0]], o.ps[0]) === 0
+    && vs.every((p) => rest_use([m.b], p) > 0)
+    ? let_open(m.ps, n.v, at(let_open(o.ps, x.v, m.b)))
+    : sb && let_open(o.ps, x.v, at(sb));
+}
+
 // Emit
 // ====
 
@@ -2360,8 +2388,9 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
   if (args.length === 0 && fun_live(x, ty)) {
     return emit_put(sc, dst, emit_clo(sc, x, ty));
   }
-  const l = x.$ === "Let" || (args.length === 0 && x.$ !== "Lam")
-    ? anf(x, ty) : x;
+  const l = (x.$ === "Let" && args.length === 0 ? let_sink(x, ty) : null)
+    ?? (x.$ === "Let" || (args.length === 0 && x.$ !== "Lam")
+    ? anf(x, ty) : x);
   if (l !== x) {
     return emit_body(sc, l, ty, args, dst);
   }
