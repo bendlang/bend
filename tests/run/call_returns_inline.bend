@@ -2,7 +2,8 @@
 # in place, so the frame is pushed only when the callee does not answer:
 # continuations that read several frame words, an owned list kept across
 # the call, a pair result, a call into another tree def, a comb 30000 deep
-# and a search shaped like queens' solve
+# a search shaped like queens' solve, and the calls under parallel lets
+# (their task path must see the continuation's task first)
 import Base
 
 type T is Data:
@@ -87,6 +88,14 @@ def srch(+f: Nat, z: Bool, +c: U32, +full: U32, +acc: U32) -> U32:
       +cc = U32.and(full, U32.shr(U32.or(rest, U32.shl(b))))
       srch(g, U32.is_zero(rest), rest, full, srch(g, U32.is_zero(cc), cc, full, U32.add(acc, b)))
 
+def pv(+d: Nat, +s: U32) -> U32:
+  match d:
+    case 0n:
+      via(mk(8n, s), s)
+    case 1n+p:
+      a b = pv(p, U32.mul(s, 3)) pv(p, U32.add(s, 1))
+      U32.xor(a, U32.add(b, s))
+
 def main() -> IO(Unit):
   do IO<Unit>:
     Unit <- IO.print(U32.show(sum(mk(14n, 1), 5, 9)))
@@ -94,7 +103,8 @@ def main() -> IO(Unit):
     Unit <- IO.print(U32.show(two.fst(two(mk(13n, 3), 1))))
     Unit <- IO.print(U32.show(via(mk(11n, 4), 2)))
     Unit <- IO.print(U32.show(dep(comb(30000n, 1), 3)))
-    IO.print(U32.show(srch(40n, False{}, 4095, 4095, 0)))
+    Unit <- IO.print(U32.show(srch(40n, False{}, 4095, 4095, 0)))
+    IO.print(U32.show(pv(6n, 7)))
 
 #|3356384698
 #|92260352
@@ -102,3 +112,4 @@ def main() -> IO(Unit):
 #|460174074
 #|4061494932
 #|5225836
+#|772016070

@@ -2809,7 +2809,9 @@ function segs_base(segs: Seg[]): void {
       const k = r > 0 ? segs.find((s) => s.fid === m![3]) : undefined;
       if (k && !k.spin && k.frame?.pop === n && k.lines.length <= 48
         && !k.lines.some((x) => /WL_AGAIN|WL_PUSHN|\b(goto|break|continue)\b/.test(x))) {
-        const e = ls.indexOf(m![1] + "}", r) + 1;
+        // only the push moves: the task path stays, as the call's own task
+        // path below it reads the WL_CONT it sets
+        const e = ls.indexOf(m![1] + "} else {", r);
         const ws = ls.slice(r, e).map((x) => x.match(/^ *STK\((\d+)\) = (.+);$/))
           .filter((x) => x && +x[1] < n).map((x) => x![2]);
         const at = k.frame!.at;
@@ -2820,9 +2822,9 @@ function segs_base(segs: Seg[]): void {
             `    ${lay_c(k.ks[j])} ${p} = ${j < at.length ? ws[at[j]]
               : "r" + (j - at.length)};`), "    WL_OPEN",
           ...k.lines.map((x) => "    " + x), "  }}", "}"], m[1].length / 2),
-          ...ls.slice(r - 1, e));
-        ls.splice(r - 1, e - r + 1);
-        i = r - 1;
+          ...ls.slice(r - 1, e), m[1] + "}");
+        ls.splice(r, e - r);
+        i = r;
         continue;
       }
       if (m) {
