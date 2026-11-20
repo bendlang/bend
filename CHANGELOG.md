@@ -73,6 +73,8 @@ latest one; the GitHub release carries the same notes.
     `Window.frame` builds natively (PR #1883 by sebastianbreguel); C
     comments keep Unicode separators (PR #1972 by toprameen); process
     workers run in module mode (PR #1842 by toprameen).
+  - Runtime: worker-row growth snapshots ring cursors atomically, avoiding a
+    race with peer producers (#2104).
   - IO: TCP connect, accept, send and receive, UDP send and receive, and
     native file opens and writes retry after an interruption instead of
     failing (PRs #1909, #1910, #1911, #1912 by sebastianbreguel, #1878 by
