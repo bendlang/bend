@@ -2801,6 +2801,30 @@ function segs_base(segs: Seg[]): void {
       // neither stores nor pops it; not in the callee's own entry, where
       // the call closes a loop that clang would then vectorise
       const own = m?.[2] === fid;
+      // a short continuation that pops just this frame and pushes none runs
+      // after the arm that answers, so the frame is pushed only when none does
+      const n = Number(m?.[4]);
+      const r = b && m[5] !== "1"
+        ? ls.lastIndexOf(`${m[1]}  WL_ROOM(${n + 1});`, i) : -1;
+      const k = r > 0 ? segs.find((s) => s.fid === m![3]) : undefined;
+      if (k && !k.spin && k.frame?.pop === n && k.lines.length <= 48
+        && !k.lines.some((x) => /WL_AGAIN|WL_PUSHN|\b(goto|break|continue)\b/.test(x))) {
+        const e = ls.indexOf(m![1] + "}", r) + 1;
+        const ws = ls.slice(r, e).map((x) => x.match(/^ *STK\((\d+)\) = (.+);$/))
+          .filter((x) => x && +x[1] < n).map((x) => x![2]);
+        const at = k.frame!.at;
+        ls.splice(i, 1, ...seg_text([`if (!DEVICE && ${m[5]}) {`,
+          "  u32 wb_hit = 0;", "  do {", ...b!.map((x) => "    "
+            + x.replace(/WL_RETN\(\d+\);/, "wb_hit = 1; break;")),
+          "  } while (0);", "  if (wb_hit) {", ...k.params.map((p, j) =>
+            `    ${lay_c(k.ks[j])} ${p} = ${j < at.length ? ws[at[j]]
+              : "r" + (j - at.length)};`), "    WL_OPEN",
+          ...k.lines.map((x) => "    " + x), "  }}", "}"], m[1].length / 2),
+          ...ls.slice(r - 1, e));
+        ls.splice(r - 1, e - r + 1);
+        i = r - 1;
+        continue;
+      }
       if (m) {
         ls.splice(i, 1, ...b ? seg_text([`if (!DEVICE && ${m[5]}) {`,
           ...b.map((x) => "  " + x.replace(/WL_RETN\(\d+\);/,
