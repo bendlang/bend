@@ -682,13 +682,21 @@ function ty_value(K: HTerm | null): boolean {
     : !ty_holds(k, { tags: "ADT Qnt Eql", not: true });
 }
 
-function ty_srcs(T: HTerm): void {
+function ty_srcs(T: HTerm, add = src_add): void {
   const t = ty_wnf(T);
   if (t?.$ === "ADT" && !WORDS[t.k] && t.k !== "Array") {
-    src_add(t.k);
+    add(t.k);
   }
   (t?.$ === "All" ? [t.A, t.B(DUMMY)] : t?.$ === "Lam" ? [t.f(DUMMY)]
-    : t?.$ === "ADT" ? t.x : []).forEach(ty_srcs);
+    : t?.$ === "ADT" ? t.x : []).forEach((x) => ty_srcs(x, add));
+}
+
+// Foreign C lays out the types it names or takes, and what they hold.
+function ty_fix(k: Name): void {
+  const tld = tld_of(k);
+  if (!FL.fixed.has(k) && FL.fixed.add(k) && tld?.$ === "ADT") {
+    tld.c.forEach((c) => ctr_doms(c).forEach((F) => ty_srcs(F, ty_fix)));
+  }
 }
 
 // Lay
@@ -744,6 +752,41 @@ function lay_node(k: Name): Lay {
       lay.ks.push("w32");
     }
     return lay;
+  });
+}
+
+// A word's bits: a tag's, 32 for a w32, else 64.
+function lay_bits(lay: Lay): number[] {
+  const arms = Object.values(lay.arms ?? {}), t = +(arms.length > 1);
+  const bs = lay.arms ? t ? [32 - Math.clz32(arms.length - 1)] : []
+    : [lay.ks[0] === "w32" ? 32 : 64];
+  arms.forEach((ls) => ls.flatMap(lay_bits).forEach((b, i) =>
+    bs[t + i] = Math.max(bs[t + i] ?? 0, b)));
+  return bs;
+}
+
+// A node's w32 and tag words share words under 2^56 (trivial to the runtime)
+// when that drops its size class: at[j] is word j's [slot, shift, bits], the
+// shared words first. Not for a type the runtime or foreign C lays out.
+function node_pack(k: Name) {
+  return memo(FL.packs, k, () => {
+    const c = FL.book.ctrs[k];
+    const bs = c ? ctr_doms(c).map(lay_of).flatMap(lay_bits) : [];
+    const used: number[] = [];
+    let w = 0;
+    const at = bs.map((b) => b > 32 ? [w++, 0, b] : []);
+    bs.map((b, j) => [b, j]).sort((x, y) => y[0] - x[0]).forEach(([b, j]) => {
+      if (b <= 32) {
+        let i = used.findIndex((u) => u + b <= 56);
+        i = i < 0 ? used.push(0) - 1 : i;
+        at[j] = [i, used[i], b];
+        used[i] += b;
+      }
+    });
+    at.forEach((a) => a[0] += a[2] > 32 ? used.length : 0);
+    const n = w + used.length;
+    return OWNED.includes(c?.f) || FL.fixed.has(c?.f) || bs.length > WIDE
+      || cls_fit(n) >= cls_fit(bs.length) ? null : { n, at };
   });
 }
 
@@ -829,6 +872,10 @@ function ctr_build(sc: Scope, k: Name, exprs: string[], stat = false): string {
   if (lay_node(k).ks.join() === "w32" || exprs.length === 0) {
     return `term_pak(${cid}, ${exprs[0] ?? 0})`;
   }
+  const pk = node_pack(k);
+  exprs = !pk ? exprs : [...Array(pk.n).keys()].map((q) => pk.at.flatMap(
+    ([p, s, b], j) => p !== q ? [] : b > 32 ? [exprs[j]] : [`(u64)((u32)(${
+      exprs[j]})${b < 32 ? ` & ${2 ** b - 1}u` : ""}) << ${s}`]).join(" | "));
   if (stat) {
     fact_add("stat", k);
     const at = memo(FL.lits, exprs.join(", "), () =>
@@ -1150,6 +1197,8 @@ function file_new(book: Bend.Book, js: boolean) {
     flats: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
+    packs: new Map<Name, { n: number; at: number[][] } | null>(),
+    fixed: new Set<Name>(),
     lays: new Map<string, Lay>(),
     teles: new Map<HTerm, { doms: Dom[]; ret: HTerm }>(),
     keys: new WeakMap<HTerm, string>(),
@@ -1431,7 +1480,8 @@ function node_fill(sc: Scope, k: string, alloc: string,
 function node_fields(sc: Scope, t: string, r: string | null, k: Name,
   tail = false): Val[] {
   const node = lay_node(k);
-  const n = node.ks.length;
+  const pk = node_pack(k);
+  const n = pk?.n ?? node.ks.length;
   if (lay_packed(node)) {
     return val_arm(val_new(node.ks.map(() => `term_loc(${t})`), node));
   }
@@ -1443,8 +1493,11 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
   }
   file_push(sc, `u64 ${sp} = ${taken ? `ctr_take(e, ${t}, ${n}, ${fb})`
     : r === null ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
-  const ws = emit_hold(sc, node.ks.map((_, j) =>
-    taken ? `${fb}[${j}]` : `e.mem[${sp} + ${j}]`), "f", node.ks);
+  const ws = emit_hold(sc, node.ks.map((_, j) => {
+    const [q, s, b] = pk?.at[j] ?? [j, 0, 64];
+    const w = taken ? `${fb}[${q}]` : `e.mem[${sp} + ${q}]`;
+    return b > 32 ? w : `(u32)(${w} >> ${s})${b < 32 ? ` & ${2 ** b - 1}u` : ""}`;
+  }), "f", node.ks);
   const spare = { cls: cls_fit(n), name: sp, taken };
   if (r === null && tail) {
     sc.spares.push(spare);
@@ -2671,6 +2724,7 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
     x.endsWith(FL.js ? ".js" : ".c")) ?? die(miss + Bend.name_key(k)));
   const m = tld.m ?? "";
   const seen = FL.effs.get(path);
+  ty_srcs(tld.T, ty_fix);
   if (seen && seen[0] !== m) {
     die(`${path} is imported from two namespaces, '${seen[0]}' and '${m}'`);
   }
@@ -2679,7 +2733,10 @@ function effect_src(k: Name, tld: Bend.Def & { i: string[] }): void {
     const src = FL.js ? raw : raw.replace(/\\[ \t]*(\r\n?|\n)/g, "");
     FL.effs.set(path, [m, src]);
     if (!FL.js) c_ids(src, m, (p, q) => {
-      if (p === "CID" && q in FL.book.ctrs) src_add(FL.book.ctrs[q].f);
+      if (p === "CID" && q in FL.book.ctrs) {
+        src_add(FL.book.ctrs[q].f);
+        ty_fix(FL.book.ctrs[q].f);
+      }
       if (p === "FID" && fun_runs(tld_of(q))) {
         src_add(q);
         FL.fids.add(q);
@@ -2733,9 +2790,9 @@ function c_header(segs: Seg[], clos: string[]): string {
     cids.set(k, [n > WIDE ? 240 + Math.log2(n) : n, d]);
   for (const k of FL.srcs.keys()) {
     for (const c of (tld_of(k) as Bend.ADT).c ?? []) {
-      const lay = lay_node(c.k), n = lay.ks.length;
+      const lay = lay_node(c.k), pk = node_pack(c.k), n = pk?.n ?? lay.ks.length;
       const at = lay_holds(tele_unbind(c.T).ret, lay, k).ks.lastIndexOf("box");
-      cid(c.k, n, at < 0 ? 0 : n - 1 - at);
+      cid(c.k, n, at < 0 ? 0 : n - 1 - (pk?.at[at][0] ?? at));
     }
   }
   done_defs(def_foreign).forEach(([k]) => cid(k, fun_of(k).lays.length));
