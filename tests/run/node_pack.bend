@@ -4,8 +4,9 @@
 # to 2. Each is built, matched, rebuilt in place (flip), shared (twice,
 # qtwice), captured by a closure and a partial application (r_clo), held in
 # a List and a Maybe (r_poly and qhead drop what they do not keep), handed
-# to a fork and to a `!` call, and read down a deep spine. The keys use the
-# top bit, so a shift or mask out of place shows in the hashes.
+# to a fork and to a `!` call, read down a deep spine, and laid out in the
+# static image (k3). The keys use the top bit, so a shift or mask out of
+# place shows in the hashes.
 import Base
 
 type Col is Data:
@@ -166,6 +167,10 @@ def mh(m: Maybe<T>) -> U32:
     case Some{t}:
       hash(t, 9)
 
+# a constant tree: its nodes are laid out in the static image
+def k3() -> T:
+  Nd{Bl{}, Nd{Gr{}, Lf{}, 2147483648, False{}, Lf{}}, 4294967295, True{}, Nd{Ra{}, Lf{}, 1, True{}, Lf{}}}
+
 def r_clo() -> U32:
   +t = build(12n, 0)
   f = later(t)
@@ -178,6 +183,7 @@ def r_poly() -> U32:
 def main() -> IO(Unit):
   do IO<Unit>:
     Unit <- IO.print(U32.show(hash(build(12n, 0), 0)))
+    Unit <- IO.print(U32.show(U32.add(hash(k3(), 3), hash_par(k3()))))
     Unit <- IO.print(U32.show(hash_par(build(12n, 0))))
     Unit <- IO.print(U32.show(hash(flip(flip(flip(build(12n, 0)))), 0)))
     Unit <- IO.print(U32.show(twice(build(12n, 0))))
@@ -190,6 +196,7 @@ def main() -> IO(Unit):
     IO.print(U32.show(hh(hs(1000n), 0)))
 
 #|692408375
+#|495232873
 #|1245431191
 #|1668074648
 #|1937839566
