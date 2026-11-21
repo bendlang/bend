@@ -105,6 +105,8 @@ const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
 
+const BASE_MAX = 8;
+
 const USE0 = Bend.Emp<number>();
 
 const W32: Lay = { ks: ["w32"], arms: null };
@@ -501,6 +503,14 @@ function term_any(t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   const kids = term_kids(s);
   return kids.some((x, i) => term_any(x, p, tail && (s.$
     === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$))));
+}
+
+// The most calls of k along one path: a match takes its arm with the most.
+function term_calls(t: HTerm, k: Name): number {
+  const s = term_force(t);
+  return term_kids(s).map((x) => term_calls(x, k)).reduce((a, b) =>
+    s.$ === "Mat" ? Math.max(a, b) : a + b,
+  Number(s.$ === "App" && term_spine(s).k === k));
 }
 
 function term_const(t: HTerm): boolean {
@@ -1148,6 +1158,7 @@ function file_new(book: Bend.Book, js: boolean) {
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
+    trees: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
@@ -1986,16 +1997,17 @@ function emit_task(sc: Scope, fid: string, rem: number, words: string[],
     `task_node(e, ${seg_ref(sc, fid)}, ${cont}, ${idx}, ${rem})`, words);
 }
 
-function emit_jump(sc: Scope, args: string[], k: Name, bang = false): void {
+function emit_jump(sc: Scope, args: string[], k: Name, bang = false,
+  base: string[] = []): void {
   const fid = seg_fid(k);
   sc.seg.fork ||= bang;
   if (bang || sc.seg.def !== k) {
     block(sc, `if (${bang ? "!seq"
-      : `!DEVICE && !seq && fid_nofk(${fid})`}) {`, () =>
+      : `!DEVICE && !WL_SEQ(${sc.seg.fid}) && fid_nofk(${fid})`}) {`, () =>
       file_push(sc, `return term_tsk(${fid}, ${
         emit_task(sc, fid, 0, args)});`));
   }
-  file_push(sc, ...args.map((a, i) => `r${i} = ${a};`));
+  file_push(sc, ...args.map((a, i) => `r${i} = ${a};`), ...base);
   if (sc.seg.def !== k) {
     return file_push(sc, `WL_JMP(${seg_ref(sc, fid)});`);
   }
@@ -2464,14 +2476,18 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       .flatMap(([p, b]) => (pos.set(p, depth), depth += b.val.ws.length,
         b.val.ws));
     const kf = seg_fid(kn);
-    emit_chain(sc, [["seq", () => {
+    const on = `WL_SEQ(${sc.seg.fid})`;
+    const base = !c.b && memo(FL.trees, c.k!, (k) =>
+      term_calls(fun_of(k).h ?? DUMMY, k) > 1);
+    emit_chain(sc, [[on, () => {
       const fr = [...ws, seg_ref(sc, kf)];
       file_push(sc, `WL_ROOM(${fr.length});`,
         ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
     }], ...fork ? [] : [["", () => file_push(sc, `WL_CONT = term_tsk(${kf}, ${
       emit_task(sc, kf, 1, ws)});`,
       `WL_IDX = ${ws.length};`)] as [string, () => void]]]);
-    emit_jump(sc, cargs, c.k!, !fork && c.b);
+    emit_jump(sc, cargs, c.k!, !fork && c.b, base
+      ? [`//base ${seg_fid(c.k!)} ${kf} ${ws.length} ${fork ? 1 : on}`] : []);
     const top = i < calls.length - 1 ? depth : 0;
     const held = [...sc.uses].filter(([p]) => pos.has(p));
     const { ret } = fun_of(c.k!);
@@ -2724,6 +2740,110 @@ function c_units(): Unit[] {
   return [...FL.units.values()];
 }
 
+// A call that pushed its frame carries a //base line naming its callee and
+// its continuation, if the callee calls itself twice on one path (a tree's
+// calls mostly end at once; a list's test would run once per element for
+// one hit). The line becomes the callee's tests down to each arm that
+// returns at once, the other arms left empty, each jumping to that
+// continuation in place of its return. Lines before a test are run again by
+// the callee when no arm answers, so a test is kept only below lines that
+// just name words. An arm stays in the callee if it pushes, jumps, leaves
+// the loop, is past BASE_MAX lines or calls out of line: a spin (clang
+// inlines a spin with one site) or a drop (the call gives the segment it is
+// copied to a frame on every entry).
+function seg_base(s: Seg): string[] | null {
+  const ls = s.frame === null ? s.lines : [];
+  const bad = (x: string) =>
+    /WL_|STK\(|\b(seq|sp|goto|break|continue|return)\b|spin_|term_sink/.test(x);
+  let i = 0;
+  // the block of lines at depth d from line i: what of it returns at once
+  const block = (d: number): string[] | null => {
+    const tab = " ".repeat(d);
+    const out: string[] = [];
+    for (; ls[i]?.startsWith(tab); i++) {
+      if (!ls[i].startsWith(tab + "if (")) {
+        out.push(ls[i]);
+        continue;
+      }
+      const pre = out.length;
+      let n = 0;
+      let ok = out.every((x) =>
+        /^ *\w+ \w+ = ((?!\w\()[^;]|\b(term_loc|term_aux|term_peek|U32_BIN)\()*;$/.test(x));
+      do {
+        ok &&= !bad(ls[i]);
+        out.push(ls[i++]);
+        const arm = block(d + 2);
+        if (arm) {
+          out.push(...arm);
+          n = out.length;
+        }
+      } while (ls[i]?.startsWith(tab + "} else"));
+      while (ls[i]?.startsWith(tab)) {
+        i++;
+      }
+      return ok && n > pre ? [...out.slice(0, n), tab + "}"] : null;
+    }
+    const end = out.pop() ?? "";
+    return d > 0 && /^ *WL_RETN\(\d+\);$/.test(end) && out.length < BASE_MAX
+      && !out.some(bad) ? [...out, end] : null;
+  };
+  const out = block(0);
+  return out && [...seg_take(s), ...out];
+}
+
+function segs_base(segs: Seg[]): void {
+  const arms = new Map(segs.map((s) => [s.fid, seg_base(s)]));
+  for (const { fid, lines: ls } of segs) {
+    for (let i = ls.length; i-- > 0;) {
+      const m = ls[i].match(/^( *)\/\/base (\S+) (\S+) (\d+) (.+)$/);
+      const b = m && arms.get(m[2]);
+      // the frame's id is stored below the arms, so an answered call
+      // neither stores nor pops it; not in the callee's own entry, where
+      // the call closes a loop that clang would then vectorise
+      const own = m?.[2] === fid;
+      // a short continuation that pops just this frame, pushes none and calls
+      // no spin or drop (as an arm, above) runs after the arm that answers,
+      // so the frame is pushed only when none does
+      const n = Number(m?.[4]);
+      const r = b && m[5] !== "1"
+        ? ls.lastIndexOf(`${m[1]}  WL_ROOM(${n + 1});`, i) : -1;
+      const k = r > 0 ? segs.find((s) => s.fid === m![3]) : undefined;
+      if (k && !k.spin && k.frame?.pop === n && k.lines.length <= 48
+        && !k.lines.some((x) => /WL_AGAIN|WL_PUSHN|spin_|term_sink|\b(goto|break|continue)\b/.test(x))) {
+        // only the push moves: the task path stays, as the call's own task
+        // path below it reads the WL_CONT it sets
+        const e = ls.indexOf(m![1] + "} else {", r);
+        const ws = ls.slice(r, e).map((x) => x.match(/^ *STK\((\d+)\) = (.+);$/))
+          .filter((x) => x && +x[1] < n).map((x) => x![2]);
+        const at = k.frame!.at;
+        ls.splice(i, 1, ...seg_text([`if (!DEVICE && ${m[5]}) {`,
+          "  u32 wb_hit = 0;", "  do {", ...b!.map((x) => "    "
+            + x.replace(/WL_RETN\(\d+\);/, "wb_hit = 1; break;")),
+          "  } while (0);", "  if (wb_hit) {", ...k.params.map((p, j) =>
+            `    ${lay_c(k.ks[j])} ${p} = ${j < at.length ? ws[at[j]]
+              : "r" + (j - at.length)};`), "    WL_OPEN",
+          ...k.lines.map((x) => "    " + x), "  }}", "}"], m[1].length / 2),
+          ...ls.slice(r - 1, e), m[1] + "}");
+        ls.splice(r, e - r);
+        i = r;
+        continue;
+      }
+      if (m) {
+        ls.splice(i, 1, ...b ? seg_text([`if (!DEVICE && ${m[5]}) {`,
+          ...b.map((x) => "  " + x.replace(/WL_RETN\(\d+\);/,
+            `${own ? "WL_POPN(1); " : ""}WL_JMP(${m[3]});`)), "}",
+          ...own ? [] : [`if (${m[5]}) {`, `  STK(0) = ${m[3]};`,
+            "  WL_PUSHN(1);", "}"]], m[1].length / 2) : []);
+      }
+      if (b && !own) {
+        let at = i;
+        while (ls[--at].trim() !== `STK(${m![4]}) = ${m![3]};`);
+        ls.splice(at, 2, ls[at + 1].replace(/\d+/, m![4]));
+      }
+    }
+  }
+}
+
 function c_header(segs: Seg[], clos: string[]): string {
   const arg = val_new([""], W64);
   const entries = [...segs, seg_new("IO~emit", BOX, [arg]),
@@ -2795,6 +2915,7 @@ export function compile_book(book: Bend.Book): string {
   const dev = reach([...[...FL.bangs].map(seg_fid), ...wide ? clos : []]);
   const segs = all.filter((s) => !s.native && live.has(s.fid));
   const spins = all.filter((s) => s.native && live.has(s.fid));
+  segs_base(segs);
   const tabs = c_header(segs, clos);
   // a spin may call one defined after it
   const img = [`CONSTV u64 STAT_IMG[] = { ${FL.img.join(", ") || 0} };`,
@@ -3273,6 +3394,7 @@ using namespace metal;
 #define STK(I)    sp[(long)(I) * LANE_STEP]
 
 #define WL_RETN(N)  { rn = (N); sp -= LANE_STEP; WL_DYN((u32)STK(0)); }
+#define WL_SEQ(F) (seq || (!DEVICE && fid_nofk(F)))
 #define WL_CONT     STK(-3)
 #define WL_IDX      STK(-2)
 #define WL_POPN(N)  sp -= (N) * LANE_STEP
