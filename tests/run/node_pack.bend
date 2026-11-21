@@ -1,11 +1,11 @@
 # A heap node's U32 and tag fields share one word when that drops its size
 # class: T's Nd (c, k, b beside two boxes) goes from 8 words to 4, Q's Qn
 # (two U32, three Bools, a box) from 8 to 4, and H, boxed in a List, from 4
-# to 2. Each is built, matched, rebuilt in place (flip), shared (twice),
-# captured by a closure and a partial application (r_clo), held in a List
-# and a Maybe (r_poly, which drops the tree it does not keep), handed to a
-# fork and to a `!` call, and read down a deep spine. The keys use the top
-# bit, so a shift or mask out of place shows in the hashes.
+# to 2. Each is built, matched, rebuilt in place (flip), shared (twice,
+# qtwice), captured by a closure and a partial application (r_clo), held in
+# a List and a Maybe (r_poly and qhead drop what they do not keep), handed
+# to a fork and to a `!` call, and read down a deep spine. The keys use the
+# top bit, so a shift or mask out of place shows in the hashes.
 import Base
 
 type Col is Data:
@@ -126,6 +126,17 @@ def qh(q: Q, +h: U32) -> U32:
     case Qn{a, l, x, b, y, z}:
       qh(l, mix(mix(mix(mix(mix(h, a), bi(x)), b), bi(y)), bi(z)))
 
+# a shared Q read twice, and a List whose tail of Qs is dropped
+def qtwice(+q: Q) -> U32:
+  U32.add(qh(q, 0), qh(q, 1))
+
+def qhead(xs: List<Q>) -> U32:
+  match xs:
+    case Nil{}:
+      0
+    case q <> r:
+      qh(q, 2)
+
 def hs(+n: Nat) -> List<H>:
   match n:
     case 0n:
@@ -175,6 +186,7 @@ def main() -> IO(Unit):
     Unit <- IO.print(U32.show(hash_par!(build(10n, 7))))
     Unit <- IO.print(U32.show(hash(spine(3000n, Lf{}), 0)))
     Unit <- IO.print(U32.show(qh(qb(1000n), 0)))
+    Unit <- IO.print(U32.show(U32.add(qtwice(qb(50n)), qhead([qb(20n), qb(30n), qb(40n)]))))
     IO.print(U32.show(hh(hs(1000n), 0)))
 
 #|692408375
@@ -186,4 +198,5 @@ def main() -> IO(Unit):
 #|756992728
 #|2335103075
 #|1799177720
+#|1240449645
 #|246665000
