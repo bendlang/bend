@@ -3,10 +3,11 @@
 # (two U32, three Bools, a box) from 8 to 4, and H, boxed in a List, from 4
 # to 2. Each is built, matched, rebuilt in place (flip), shared (twice,
 # qtwice), captured by a closure and a partial application (r_clo), held in
-# a List and a Maybe (r_poly and qhead drop what they do not keep), handed
-# to a fork and to a `!` call, read down a deep spine, and laid out in the
-# static image (k3). The keys use the top bit, so a shift or mask out of
-# place shows in the hashes.
+# a List and a Maybe, dropped (r_poly, qhead, r_drop), handed to a fork and
+# to a `!` call, read down a deep spine, and laid out in the static image
+# (k3). The keys use the top bit, so a shift or mask out of place shows in
+# the hashes; r_drop's dropped tree lies next to the one it reads, so a
+# drop that walks the wrong word leaks or overwrites it.
 import Base
 
 type Col is Data:
@@ -171,6 +172,13 @@ def mh(m: Maybe<T>) -> U32:
 def k3() -> T:
   Nd{Bl{}, Nd{Gr{}, Lf{}, 2147483648, False{}, Lf{}}, 4294967295, True{}, Nd{Ra{}, Lf{}, 1, True{}, Lf{}}}
 
+# drops a big tree while another is live, then reads the live one
+def second(a: T, b: T) -> T:
+  b
+
+def r_drop() -> U32:
+  hash(second(build(14n, 3), build(14n, 5)), 0)
+
 def r_clo() -> U32:
   +t = build(12n, 0)
   f = later(t)
@@ -188,6 +196,7 @@ def main() -> IO(Unit):
     Unit <- IO.print(U32.show(hash(flip(flip(flip(build(12n, 0)))), 0)))
     Unit <- IO.print(U32.show(twice(build(12n, 0))))
     Unit <- IO.print(U32.show(r_clo()))
+    Unit <- IO.print(U32.show(r_drop()))
     Unit <- IO.print(U32.show(r_poly()))
     Unit <- IO.print(U32.show(hash_par!(build(10n, 7))))
     Unit <- IO.print(U32.show(hash(spine(3000n, Lf{}), 0)))
@@ -201,6 +210,7 @@ def main() -> IO(Unit):
 #|1668074648
 #|1937839566
 #|3347258723
+#|2880941446
 #|4140507220
 #|756992728
 #|2335103075
