@@ -96,3 +96,14 @@ because the flag's cell is in the room, so a step never sets `won`.
 the final cell; both laws (never won, never on the flag) read off it. No
 axioms, no TODOs, no `unsafe`: `bend PROOF.bend` answers "ALL PROOFS
 CHECK".
+
+### Timing the movement proof
+
+From the repository root, run the following command to time the no-win proof
+on a 120 × 80 board. The script builds a temporary copy of this demo and
+checks four directions from each cell, for 38,400 cell-direction pairs.
+The rendered-board proof is a separate workload and is omitted from this timing.
+
+```sh
+demos/app_win_is_bug_2d/bench_movement.sh bun bend2/main.ts
+```
