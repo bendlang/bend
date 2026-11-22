@@ -1335,13 +1335,13 @@ function term_subst(t: HTerm, m: Map<number, HTerm>): HTerm {
 
 // An arm's expression as it goes into the e-graph. lets: the probes of the
 // lets read through (an opaque leaf naming one makes the arm unsafe to
-// rebuild); cost: eq_cost of the arm as written; opq: a unique key per
-// opaque leaf that names a local.
+// rebuild); seen: its nodes as written, for eq_cost; bound: the classes
+// it binds by a let.
 type Region = { lets: Set<number>; bad: boolean; seen: [ENode, number][];
-  opq: number; bound: Set<number> };
+  bound: Set<number> };
 
 function eq_region_new(): Region {
-  return { lets: new Set(), bad: false, seen: [], opq: 0, bound: new Set() };
+  return { lets: new Set(), bad: false, seen: [], bound: new Set() };
 }
 
 function eq_seen_cost(g: EGraph, R: Region): number {
@@ -1360,7 +1360,9 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
     case "Ann": {
       const c = eg_term(g, s.x, env, R);
       const r = eg_find(g, c);
-      g.ty[r] ??= s.T;
+      if (g.ty[r] === null && !eq_names(s.T, env)) {
+        g.ty[r] = s.T;
+      }
       return r;
     }
     case "Var": {
@@ -1368,17 +1370,17 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
         return env.get(s.i)!;
       }
       if (s.i < 0 || s.v !== undefined) {
-        return eg_opaque(g, s, R);
+        return eg_opaque(g, s, R, env);
       }
       return leaf("v:" + s.i, s);
     }
     case "Lit": {
-      return s.k === "String" ? eg_opaque(g, s, R)
+      return s.k === "String" ? eg_opaque(g, s, R, env)
         : leaf("l:" + s.k + ":" + s.v, s, Bend.Ref(s.k));
     }
     case "Let": {
       if (s.k.length !== 1) {
-        return eg_opaque(g, s, R);
+        return eg_opaque(g, s, R, env);
       }
       const o = term_open(s);
       const cv = eg_term(g, s.v[0], env, R);
@@ -1396,7 +1398,7 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
       }
       const head = Bend.term_strip(h);
       if (head.$ !== "Ref" || head.b || tld_of(head.k)?.$ !== "Def") {
-        return eg_opaque(g, s, R);
+        return eg_opaque(g, s, R, env);
       }
       const nd = { op: "c:" + head.k, xs: xs.map((x) => eg_term(g, x, env, R)),
         t: null };
@@ -1412,18 +1414,35 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
       return c;
     }
     default: {
-      return eg_opaque(g, s, R);
+      return eg_opaque(g, s, R, env);
     }
   }
 }
 
-function eg_opaque(g: EGraph, s: HTerm, R: Region): number {
-  const ps = term_probes(s);
-  if ([...ps].some((p) => R.lets.has(p))) {
+// Whether t names a probe env reads through (a let's or an unfolded
+// def's parameter): such a term cannot be moved out of its binder.
+function eq_names(t: HTerm, env: Map<number, number>): boolean {
+  if (env.size === 0) {
+    return false;
+  }
+  for (const p of memo(FL.eq_probes, t, () => term_probes(t))) {
+    if (env.has(p)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function eg_opaque(g: EGraph, s: HTerm, R: Region,
+  env: Map<number, number>): number {
+  const ps = memo(FL.eq_probes, s, () => term_probes(s));
+  if (eq_names(s, env)) {
     R.bad = true;
   }
-  const op = ps.size === 0 ? "o:" + Bend.term_key(Bend.term_lower(s))
-    : "o#" + R.opq++;
+  // a closure is its own leaf: two equal texts may be checked at two types
+  const op = ps.size === 0 && !"Lam Mat Efq".includes(s.$)
+    ? "o:" + Bend.term_key(Bend.term_lower(s))
+    : "o#" + FL.eq_opq++;
   const c = eg_add(g, { op, xs: [], t: s });
   R.seen.push([g.cls[c][0], c]);
   return c;
@@ -1707,6 +1726,7 @@ function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null 
       : nd.op.startsWith("c:") ? kids().reduce((f: HTerm, a) => Bend.App(f, a),
         Bend.Ref(nd.op.slice(2)))
       : Bend.Ctr(nd.op.slice(2), kids());
+    if (T === null && (x.$ === "Lam" || x.$ === "Mat")) console.error("UNTYPED " + nd.op.slice(0, 40) + " " + Bend.term_show(Bend.term_lower(x)).slice(0, 200)); // DEBUG
     return T === null ? x : Bend.Ann(x, T);
   };
   const bind = (i: number, env: Map<number, HTerm>): HTerm => {
@@ -2112,6 +2132,8 @@ function file_new(book: Bend.Book, js: boolean) {
     eq_costs: new Map<Name, number>(),
     eq_sizes: new Map<Name, number>(),
     eq_stats: [] as number[][],
+    eq_opq: 0,
+    eq_probes: new Map<HTerm, Set<number>>(),
     drops: [] as Drop[],
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
