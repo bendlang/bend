@@ -315,7 +315,7 @@ export type Env = List<HTerm | ((s?: Span) => HTerm)>;
 export type Ctr  = { k: Name; n: number; T: HTerm; f: Name }
 export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
-export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; l?: Bool; };
+export type Def  = { $: "Def"; cancelsNatPair?: true; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; l?: Bool; };
 export type TLD  = ADT | Def;
 export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; tmps: Record<Name, Map<string, Name>>; };
 
@@ -2898,6 +2898,42 @@ export function body_flatten(b: Body, vars: PVar[], fr: () => number): LTerm {
 // a rewrite demands its evidence and steps to its body on {==}, else
 // sticks as a value.
 
+// Recognize f(Succ(a), Succ(b)) = f(a, b). The two zero cases remain
+// arbitrary and run through the original definition after cancellation.
+function successorArm(match: HTerm): HTerm | null {
+  while (match.$ === "Mat") {
+    if (match.k === "Succ") return match.h;
+    match = match.m;
+  }
+  return null;
+}
+
+function cancelsNatPair(name: Name, body: HTerm): boolean {
+  const first = successorArm(body);
+  if (first?.$ !== "Lam") return false;
+  const a = Var<HBody>("", -1);
+  const b = Var<HBody>("", -1);
+  const second = successorArm(first.f(a));
+  if (second?.$ !== "Lam") return false;
+  const call = second.f(b);
+  return call.$ === "App" && call.x === b
+    && call.f.$ === "App" && call.f.x === a
+    && call.f.f.$ === "Ref" && call.f.f.k === name;
+}
+
+// Inspect only already available constructors. A neutral or unevaluated
+// tail uses the ordinary evaluator, preserving the original demand order.
+function readyNat(term: HTerm): number | null {
+  let value = term_strip(term);
+  let offset = 0;
+  while (value.$ === "Ctr" && value.k === "Succ" && value.x.length === 1) {
+    offset++;
+    value = term_strip(value.x[0]);
+  }
+  if (value.$ === "Ctr" && value.k === "Zero" && value.x.length === 0) return offset;
+  return value.$ === "Lit" && value.k === "Nat" ? offset + value.v : null;
+}
+
 export function term_wnf(book: Book, term: HTerm): HTerm {
   const frs: Frame[] = [];
   let tm: HTerm = term;
@@ -2994,6 +3030,19 @@ export function term_wnf(book: Book, term: HTerm): HTerm {
         }
         if (run < tld.n || tld.v === null) {
           break focus;
+        }
+        if (tld.cancelsNatPair) {
+          const a = frs[frs.length - 1];
+          const b = frs[frs.length - 2];
+          if (a.$ === "APP" && b.$ === "APP") {
+            const x = readyNat(a.x);
+            const y = readyNat(b.x);
+            if (x !== null && y !== null && x > 0 && y > 0) {
+              const common = Math.min(x, y);
+              a.x = Lit("Nat", x - common);
+              b.x = Lit("Nat", y - common);
+            }
+          }
         }
         const rf: HTerm = tm;
         lhs = { t: () => rf, n: tld.n };
@@ -4012,6 +4061,9 @@ export function book_valid(book: Book, done: number = 0): void {
       }
       if (fin && tld.v !== null) {
         tld.e = def_check(book, k, tld);
+        if (tld.n === 2 && tld.v.$ === "Mat" && cancelsNatPair(k, tld.v)) {
+          tld.cancelsNatPair = true;
+        }
       }
     }
     if (fin) {
