@@ -40,13 +40,37 @@ def mix(+x: U32, +y: U32) -> U32:
 def twice(+a: Nat, +b: Nat) -> Nat:
   Nat.add(Nat.mul(Nat.add(a, b), Nat.add(b, a)), Nat.mul(Nat.add(a, b), 3n))
 
+# a Nat difference both ways round is two values; a literal picks an arm
+def both(+a: Nat, +b: Nat) -> Nat:
+  Nat.add(Nat.mul(Nat.sub(a, b), 10n), Nat.sub(b, a))
+
+def small(n: Nat) -> Nat:
+  match n:
+    case 0n:
+      100n
+    case 1n+p:
+      p
+
+# y and z are one value; the closures of the do block read both
+def shown(+x: Nat) -> IO(Unit):
+  +y = Nat.mul(x, Nat.add(x, 1n))
+  +z = Nat.mul(x, Nat.add(x, 1n))
+  do IO<Unit>:
+    IO.print(Nat.show(Nat.add(y, z)))
+    IO.print(Nat.show(Nat.add(Nat.add(small(0n), small(5n)), z)))
+
 def main() -> IO(Unit):
   do IO<Unit>:
+    shown(12n)
+    IO.print(Nat.show(Nat.add(both(10n, 3n), both(3n, 10n))))
     IO.print(Nat.show(sum(5000n, 0n)))
     IO.print(U32.show(mix(7, 5)))
     IO.print(Nat.show(twice(1000n, 234n)))
     IO.print(Nat.show(twice(16777216n, 1n)))
 
+#|312
+#|260
+#|77
 #|233275
 #|12
 #|1526458

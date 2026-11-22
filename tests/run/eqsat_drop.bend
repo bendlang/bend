@@ -13,6 +13,10 @@ type Cnt is Data:
   Cnt0{}
   Cnt{n: U32}
 
+type Wrap is Data:
+  W0{}
+  W{n: U32}
+
 type Opt is Data:
   Opt0{}
   Opt{v: U32}
@@ -62,6 +66,14 @@ def cnt.show(c: Cnt) -> U32:
     case Cnt{n}:
       n
 
+# W0{} answers 1 - 3 (wrapped), W{0} answers 3 - 1: not the same
+def wrap.show(w: Wrap) -> U32:
+  match w:
+    case W0{}:
+      4294967294
+    case W{n}:
+      U32.sub(3, U32.add(n, 1))
+
 def opt.get(o: Opt) -> U32:
   match o:
     case Opt{v}:
@@ -76,9 +88,11 @@ def main() -> IO(Unit):
     IO.print(U32.show(cnt.show(cnt(0n, Cnt0{}))))
     IO.print(U32.show(cnt.show(cnt(5n, Cnt0{}))))
     IO.print(U32.show(U32.add(opt.get(Opt0{}), opt.get(Opt{4}))))
+    IO.print(U32.show(U32.add(wrap.show(W0{}), wrap.show(W{1}))))
 
 #|100004218
 #|0
 #|9
 #|5
 #|4
+#|4294967295
