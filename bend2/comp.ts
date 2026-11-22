@@ -1494,6 +1494,31 @@ function eq_closed(T: HTerm): boolean {
   return !eq_names(T, { size: 1, has: (i: number) => i >= 0 } as any);
 }
 
+// Whether a def's checked body is a match below its lambdas.
+function eq_matches(e: any): boolean {
+  while (e?.$ === "Ann" || e?.$ === "Lam") {
+    e = e.$ === "Ann" ? e.x : e.f;
+  }
+  return e?.$ === "Mat";
+}
+
+// Whether an arm has nothing a rule could make cheaper: no call to a def,
+// no checked Nat operation and no division (closures included). Most arms
+// of numeric code are only word arithmetic and skip the e-graph.
+function eq_dull(t: HTerm): boolean {
+  return !term_any(t, (s) => {
+    if (s.$ !== "App" && s.$ !== "Ref") {
+      return false;
+    }
+    let h: HTerm = s;
+    while (h.$ === "App" || h.$ === "Ann") {
+      h = h.$ === "App" ? h.f : h.x;
+    }
+    return h.$ === "Ref" && (!intr_of(h.k) || EQ_CHECKED.has(h.k)
+      || h.k === "U32.div" || h.k === "U32.mod" || h.k === "Nat.divmod");
+  });
+}
+
 // Whether a def's checked body names some def other than itself twice, the
 // least eq_sites needs; a walk of the stored term, with no opening.
 function eq_twice(d: Name, e: unknown): boolean {
@@ -1910,7 +1935,7 @@ function eq_hope(g: EGraph, R: Region): boolean {
 // One arm: its e-graph, saturated, and its cheapest term if that is cheaper.
 function eq_region(t: HTerm): HTerm {
   const g = eg_new();
-  if (FL.eq_nodes > EQ_FILE) {
+  if (FL.eq_nodes > EQ_FILE || eq_dull(t)) {
     return t;
   }
   const R = eq_region_new();
@@ -2381,7 +2406,7 @@ function eq_sites(d: Name): void {
   const tld = tld_of(d);
   const fn = fun_of(d);
   if (FL.js || !done_live(tld) || tld.x > 0 || tld.u || d.includes("~")
-    || fn.h === null || !eq_twice(d, tld.e)) {
+    || fn.h === null || !eq_matches(tld.e) || !eq_twice(d, tld.e)) {
     if (process.env.EQSAT_LOG) console.error("SITES ret 1 " + d); // DEBUG
     return;
   }
