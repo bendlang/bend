@@ -13,7 +13,7 @@ function prompt_input() {
     fs.rmSync(dir, { recursive: true, force: true });
   }
   const write = fs.writeSync;
-  const read = fs.readvSync;
+  const read = fs.readSync;
   let output = "";
   fs.writeSync = function (fd, data, ...args) {
     const n = write(fd, data, ...args);
@@ -21,9 +21,9 @@ function prompt_input() {
     if (fd === 1) output += Buffer.from(data).subarray(at, at + n).toString();
     return n;
   };
-  fs.readvSync = function (...args) {
+  fs.readSync = function (...args) {
     fs.writeSync = write;
-    fs.readvSync = read;
+    fs.readSync = read;
     prompt_flushed = output === "prompt> ";
     return read(...args);
   };

@@ -101,10 +101,12 @@ export function exec(bin: string, args: string[], input?: Buffer | string,
     kid.stderr.on("data", (d: Buffer) => {
       errs.push(d);
       if (!heard) {
-        tail = (tail + d.toString()).slice(-4 * up.length);
-        heard = tail.includes(up);
+        const chunk = tail + d.toString();
+        heard = chunk.includes(up);
         if (heard) {
           clearTimeout(mute);
+        } else {
+          tail = chunk.slice(-up.length);
         }
       }
     });

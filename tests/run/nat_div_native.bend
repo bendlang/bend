@@ -1,11 +1,8 @@
-# Nat.div and Nat.mod run as native C (comp.ts OPERATIONS): one division
-# each, not Base's Pair.fst and Pair.snd of Nat.divmod, whose unused half
-# cost a drop test. The JS lane and the interpreter run Base's defs. Every
-# operand is scaled by the command line's length (1 in the harness), which
-# no compiler sees, so no lane folds a row: b = 0 (div answers 0, mod the
-# dividend), a < b, a = b, the largest Nat on either side, both names as
-# function values and partly applied, and a = b * (a / b) + a % b over a
-# countdown.
+# Nat.div and Nat.mod on operands scaled by the command line's length (1 in
+# the harness), which no compiler sees, so no lane folds a row: b = 0 (div
+# answers 0, mod the dividend), a < b, a = b, the largest Nat on either
+# side, both names as function values and partly applied, and
+# a = b * (a / b) + a % b over a countdown.
 import Base
 
 def big() -> Nat:

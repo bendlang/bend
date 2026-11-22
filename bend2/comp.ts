@@ -170,8 +170,6 @@ const CMPS = "is_eq:==:=== is_ne:!=:!== is_lt:< is_le:<= is_gt:> is_ge:>=";
 
 const AT = "$0[$1 & $0.length - 1]";
 
-const DIVMOD = ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"];
-
 const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("U32.", "add:+ sub:- and:& or:| xor:^",
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
@@ -241,9 +239,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("Nat.", "sub", "($0 < $1 ? 0 : $0 - $1)"),
   ...tpl_ops("Nat.", "is_lt", "($0 < $1)"),
   ...tpl_ops("Nat.", "min:< max:>", "($0 $o $1 ? $0 : $1)"),
-  "Nat.divmod": { C: DIVMOD, JS: "nat_divmod($0, $1)" },
-  "Nat.div": { C: DIVMOD[0] },
-  "Nat.mod": { C: DIVMOD[1] },
+  "Nat.divmod": {
+    C:  ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
+    JS: "nat_divmod($0, $1)",
+  },
   ...tpl_ops("Bool.", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   "String.append": { JS: "($0 + $1)" },
   "String.contains": { JS: "string_contains($0, $1)" },
@@ -4833,7 +4832,7 @@ INLINE u64 nat_chk(Env e, u64 n) {
 }
 
 INLINE u64 nat_mul(Env e, u64 a, u64 b) {
-  return nat_chk(e, (a | b) >> 32 != 0 && b != 0 && a > NAT_IMM / b
+  return nat_chk(e, (a | b) >> 32 && b && a > NAT_IMM / b
     ? NAT_IMM + 1 : a * b);
 }
 
@@ -5017,10 +5016,9 @@ OUTLINE Term rfc_wrap(Env e, Term t, u32 cnt) {
 }
 
 INLINE Term rfc_seal(Env e, Term t) {
-  if (term_tag(t) != TAG_CTR || term_rfc(t)) {
-    return t;
-  }
-  return rfc_wrap(e, t, 1);
+  u64 g = term_tag(t);
+  return !term_rfc(t) && (g == TAG_CTR
+    || BLK_SHR && (g == TAG_ARR || g == TAG_BUF)) ? rfc_wrap(e, t, 1) : t;
 }
 
 INLINE void rfc_bump(Env e, u64 r, u32 k) {
@@ -5044,13 +5042,10 @@ INLINE Term term_keep(Env e, Term t, u32 k) {
 // A redirect cell holds its target's loc over a 24-bit count, which only
 // atomic adds on the low word change: the loc bits never do. The host reads
 // the cell in one relaxed 64-bit load; the device's plain load may tear into
-// two halves, both holding the same loc. A shared node's fields never change
-// either, so ctr_take copies them before it acquires.
+// two halves with the same loc. Shared fields stay fixed, so ctr_take
+// copies them before acquiring.
 INLINE u64 term_peek(DEV u64* H, Term t) {
-  if (term_rfc(t)) {
-    return w64_load(&H[term_loc(t)]) >> 24;
-  }
-  return term_loc(t);
+  return term_rfc(t) ? w64_load(&H[term_loc(t)]) >> 24 : term_loc(t);
 }
 
 // Base's Map.bit on the key in place: a char is a presence bit, 32 code bits
