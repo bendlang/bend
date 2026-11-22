@@ -1131,8 +1131,11 @@ type EGraph = {
 };
 
 // EQ_NODES caps an arm's e-graph and EQ_ROUNDS its rule rounds; EQ_BODY is
-// the largest def body the unfold rule copies in.
+// the largest def body the unfold rule copies in; EQ_FILE caps the nodes of
+// every e-graph of a build together, past which arms are left as written.
 const EQ_NODES = 2000;
+
+const EQ_FILE = 400000;
 
 const EQ_ROUNDS = 8;
 
@@ -1338,10 +1341,11 @@ function term_subst(t: HTerm, m: Map<number, HTerm>): HTerm {
 // rebuild); seen: its nodes as written, for eq_cost; bound: the classes
 // it binds by a let.
 type Region = { lets: Set<number>; bad: boolean; seen: [ENode, number][];
-  bound: Set<number> };
+  bound: Set<number>; inner: boolean };
 
 function eq_region_new(): Region {
-  return { lets: new Set(), bad: false, seen: [], bound: new Set() };
+  return { lets: new Set(), bad: false, seen: [], bound: new Set(),
+    inner: false };
 }
 
 function eq_seen_cost(g: EGraph, R: Region): number {
@@ -1412,6 +1416,13 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
       const c = eg_add(g, nd);
       R.seen.push([nd, c]);
       return c;
+    }
+    case "Lam":
+    case "Mat": {
+      // a closure's own arms go through eq_walk; it is a leaf here
+      const w = eq_walk(s);
+      R.inner ||= w !== s;
+      return eg_opaque(g, w, R, env);
     }
     default: {
       return eg_opaque(g, s, R, env);
@@ -1772,6 +1783,9 @@ function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null 
 // One arm: its e-graph, saturated, and its cheapest term if that is cheaper.
 function eq_region(t: HTerm): HTerm {
   const g = eg_new();
+  if (FL.eq_nodes > EQ_FILE) {
+    return t;
+  }
   const R = eq_region_new();
   const root = eg_term(g, t, new Map(), R);
   if (R.bad || g.n > EQ_NODES) {
@@ -1781,10 +1795,12 @@ function eq_region(t: HTerm): HTerm {
   for (let i = 0; i < EQ_ROUNDS && g.n <= EQ_NODES && eg_round(g); i++) {
     if (process.env.EQSAT_LOG) console.error("  round " + i + " n=" + g.n + " classes=" + g.up.filter((u, c) => eg_find(g, c) === c).length); // DEBUG
   }
+  FL.eq_nodes += g.n;
   if (process.env.EQSAT_LOG) console.error("  extract"); // DEBUG
   const out = eg_extract(g, root, R);
   FL.eq_stats.push([g.n, cost, out?.[1] ?? cost]);
-  return out !== null && out[1] <= cost - 1 ? out[0] : t;
+  return out !== null && (out[1] <= cost - 1 || R.inner && out[1] <= cost)
+    ? out[0] : t;
 }
 
 // The case tree: lambdas, matches and a fork's let are kept, each arm's
@@ -2228,11 +2244,13 @@ function eq_sites(d: Name): void {
   const fn = fun_of(d);
   if (FL.js || !done_live(tld) || tld.x > 0 || tld.u || d.includes("~")
     || fn.h === null) {
+    if (process.env.EQSAT_LOG) console.error("SITES ret 1 " + d); // DEBUG
     return;
   }
   const n = tld.n;
   const doms = tele_unbind(tld.T).doms;
   if (doms.length !== n || doms.some(([, , A]) => term_probes(A).size > 0)) {
+    if (process.env.EQSAT_LOG) console.error("SITES ret 2 " + d); // DEBUG
     return;
   }
   const e = lt_strip(Bend.term_lower(fn.h)) as LT;
@@ -2253,8 +2271,10 @@ function eq_sites(d: Name): void {
     return l.t;
   });
   const g = leaves[0]?.[0];
+  if (process.env.EQSAT_LOG) console.error("SITES " + d + " ok=" + ok + " leaves=" + leaves.map(([k]) => k)); // DEBUG
   if (!ok || leaves.length < 2 || leaves.some(([k]) => k !== g)
     || (tld_of(g) as Bend.Def).u || tld_of(g).n !== 1) {
+    if (process.env.EQSAT_LOG) console.error("SITES ret 3 " + d); // DEBUG
     return;
   }
   // a parameter that is matched stays in d~s
@@ -2264,6 +2284,7 @@ function eq_sites(d: Name): void {
   });
   const gt = tele_unbind(tld_of(g).T);
   if (term_probes(gt.ret).size > 0) {
+    if (process.env.EQSAT_LOG) console.error("SITES ret 4 " + d); // DEBUG
     return;
   }
   const drop = new Set([...Array(n).keys()].filter((j) => !used.has(j)));
@@ -2278,6 +2299,7 @@ function eq_sites(d: Name): void {
     return lt_swap(l.t, c, Bend.Var("r", R) as LT);
   });
   if (es === null || ek === null) {
+    if (process.env.EQSAT_LOG) console.error("SITES ret 5 " + d); // DEBUG
     return;
   }
   const [ws, wk] = [d + "~s", d + "~k"];
@@ -2301,7 +2323,8 @@ function eq_sites(d: Name): void {
       const out = { ...def, e: Bend.def_check(book, k, def) };
       book.tlds[k] = out;
       return out;
-    } catch {
+    } catch (err) {
+      if (process.env.EQSAT_LOG) console.error("SITES check " + k + ": " + (typeof err === "object" && (err as any)?.$ === "Err" ? Bend.err_show(err as any) : String(err)).slice(0, 600)); // DEBUG
       return null;
     }
   };
@@ -2309,6 +2332,7 @@ function eq_sites(d: Name): void {
   const dk = ds && mk(wk, Tk, n + 1, Bend.Lam("r", R, ek) as LT);
   const dd = dk && mk(d + "~eq", tld.T, n, ed);
   if (dd === null) {
+    if (process.env.EQSAT_LOG) console.error("SITES ret 6 " + d); // DEBUG
     return;
   }
   FL.made[ws] = ds!;
@@ -2461,6 +2485,7 @@ function file_new(book: Bend.Book, js: boolean) {
     eq_sizes: new Map<Name, number>(),
     eq_stats: [] as number[][],
     eq_opq: 0,
+    eq_nodes: 0,
     eq_probes: new Map<HTerm, Set<number>>(),
     drops: [] as Drop[],
     fused: new Map<Name, Name | null>(),
