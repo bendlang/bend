@@ -1933,6 +1933,8 @@ function eq_region(t: HTerm): HTerm {
   if (process.env.EQSAT_LOG) console.error("  extract"); // DEBUG
   const out = eq_t("extract", () => eg_extract(g, root, R));
   FL.eq_stats.push([g.n, cost, out?.[1] ?? cost]);
+  const take = out !== null && (out[1] <= cost - 1 || R.inner && out[1] <= cost); // DEBUG
+  if (process.env.EQSAT_LOG && take) console.error("RULE arm " + g.n + " " + cost + " " + out![1]); // DEBUG
   return out !== null && (out[1] <= cost - 1 || R.inner && out[1] <= cost)
     ? out[0] : t;
 }
@@ -2239,6 +2241,7 @@ function eq_drops(roots: Name[]): void {
   }
   FL.book = { ...FL.book, tlds };
   FL.drops = drops;
+  if (process.env.EQSAT_LOG) drops.forEach((dr) => console.error("RULE drop " + dr.T + " " + dr.D)); // DEBUG
   for (const m of [FL.funs, FL.lays, FL.nodes, FL.holds, FL.hold,
     FL.eq_costs, FL.eq_sizes, FL.loops, FL.flats]) {
     m.clear();
@@ -2472,6 +2475,7 @@ function eq_sites(d: Name): void {
   FL.made[ws] = ds!;
   FL.made[wk] = dk!;
   fn.h = Bend.term_higher(dd.e!);
+  if (process.env.EQSAT_LOG) console.error("RULE sites " + d + " " + g); // DEBUG
 }
 
 function lt_swap(t: LT, from: LT, to: LT): LT {
@@ -2549,6 +2553,7 @@ function eq_fuse(f: Name, g: Name, n: number): Name | null {
     FL.funs.delete(k);
     return null;
   }
+  if (process.env.EQSAT_LOG) console.error("RULE fuse " + k); // DEBUG
   return k;
 }
 
