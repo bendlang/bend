@@ -1520,12 +1520,15 @@ function eg_opaque(g: EGraph, s: HTerm, R: Region,
 }
 
 // The static cost model, in rough instructions: a Nat add or mul 2 (its
-// limit test), a division 4, a heap node 6, a call to a def that recurses
-// 20 (a frame), and a call to a def that does not costs what its body does
-// (the emitter unfolds it). A U32 operation or a word-sized constructor is
-// 0.25: clang already shares pure word arithmetic within a function, so
-// binding one once saves next to nothing; an operation on literals is 0
-// (emit_fold folds it). An arm is rewritten only if this saves at least 1.
+// limit test, which clang cannot share), a division 4, a heap node 6, a
+// call to a def that recurses 20 (a frame), a call to a def that does not
+// what its body does (the emitter unfolds it), with a match 3 and 1 an arm.
+// U32 and F32 operations, word-sized constructors, operations on literals
+// and defs with no parameters cost 0: clang shares pure word arithmetic in
+// a function and the emitter folds constants, and measured, rewriting them
+// only moved code (a constant divisor became a multiply sequence, +5%
+// instructions on nestedloop; a shorter spin was inlined, +5.4% on nbody).
+// An arm is rewritten only if this saves at least 1.
 function eq_cost(g: EGraph, nd: ENode, c: number): number {
   const op = nd.op;
   if (op.startsWith("v:") || op.startsWith("l:") || op.startsWith("o:")) {
@@ -1536,14 +1539,14 @@ function eq_cost(g: EGraph, nd: ENode, c: number): number {
   }
   if (op.startsWith("k:")) {
     const T = g.ty[eg_find(g, c)];
-    return T && !lay_of(T).ks.includes("box") ? 0.25 : 6;
+    return T && !lay_of(T).ks.includes("box") ? 0 : 6;
   }
   const k = op.slice(2);
   if (intr_of(k)) {
     return nd.xs.every((x) => g.cls[eg_find(g, x)].some((n) =>
       n.op.startsWith("l:"))) ? 0
       : k === "U32.div" || k === "U32.mod" || k === "Nat.divmod" ? 4
-      : k.startsWith("Nat.") ? 2 : 0.25;
+      : k.startsWith("Nat.") ? 2 : 0;
   }
   return eq_def_cost(k);
 }
@@ -1552,6 +1555,9 @@ function eq_def_cost(k: Name): number {
   return memo(FL.eq_costs, k, () => {
     FL.eq_costs.set(k, 20);
     const h = fun_of(k).h;
+    if (tld_of(k).n === 0) {
+      return 0;
+    }
     if (h === null || term_any(h, (s) => s.$ === "Ref" && s.k === k)) {
       return 20;
     }
