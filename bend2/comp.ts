@@ -1103,6 +1103,313 @@ function flat_of(k: Name): boolean {
   });
 }
 
+// Drop
+// ====
+
+// A datatype D{} | P{f..} with no parameters and U32 or Nat fields, whose
+// D{} acts as P{0, ..} at every match the program runs, keeps P alone: D{}
+// is built as P{0, ..} and every D arm goes, so a value has no tag word and
+// a match one arm where it had two. Each match on the type must have both
+// arms, D's equal to P's at zero fields once both are normalised (literals
+// folded, x + 0, x * 1 and the like dropped, and D{} read as P{0, ..}):
+// replacing every D{} by P{0, ..} is then a simulation, values related by it
+// going to related results at every match. It is a fact about this
+// program's uses, so every def it reaches is checked, and the type is
+// refused if a foreign def, main or a def's type names it or D (C, the
+// printer or a type would see D). Each def that builds or matches D is
+// written again without it and elaborated by bend.ts' def_check against the
+// type with one constructor; if one is refused, nothing changes. C only.
+
+type Drop = { T: Name; D: Name; P: Name; zs: Bend.LTerm[] };
+
+const DROP_U32: Record<string, (a: number, b: number) => number> =
+  Object.setPrototypeOf({
+    "U32.add": (a: number, b: number) => (a + b) >>> 0,
+    "U32.sub": (a: number, b: number) => (a - b) >>> 0,
+    "U32.mul": (a: number, b: number) => Math.imul(a, b) >>> 0,
+    "U32.and": (a: number, b: number) => (a & b) >>> 0,
+    "U32.or": (a: number, b: number) => (a | b) >>> 0,
+    "U32.xor": (a: number, b: number) => (a ^ b) >>> 0,
+  }, null);
+
+// the unit u of each operation (x op u = x; also u op x = x if it commutes)
+const DROP_UNIT: Record<string, [number, boolean]> = Object.setPrototypeOf({
+  "U32.add": [0, true], "U32.sub": [0, false], "U32.mul": [1, true],
+  "U32.or": [0, true], "U32.xor": [0, true], "U32.and": [0xFFFFFFFF, true],
+  "Nat.add": [0, true], "Nat.mul": [1, true] }, null);
+
+function drop_lit(t: HTerm): number | null {
+  const s = Bend.term_strip(t);
+  return s.$ === "Lit" && (s.k === "U32" || s.k === "Nat") ? s.v : null;
+}
+
+// t with literals folded, units dropped and D{} read as P{0, ..}.
+function drop_norm(t: HTerm, dr: Drop): HTerm {
+  const go = (u: HTerm): HTerm => {
+    const s = Bend.term_strip(u);
+    switch (s.$) {
+      case "Ctr": {
+        return s.k === dr.D ? Bend.Ctr(dr.P, dr.zs.map((z) =>
+          Bend.term_higher(z))) : { ...s, x: s.x.map(go) };
+      }
+      case "Lam": {
+        return { ...s, f: (y: HTerm) => go(s.f(y)) };
+      }
+      case "Let": {
+        return { ...s, v: s.v.map(go), f: (ys: HTerm[]) => go(s.f(ys)) };
+      }
+      case "App": {
+        const xs: HTerm[] = [];
+        let h: HTerm = s;
+        for (let c: HTerm = s; c.$ === "App"; c = Bend.term_strip(c.f)) {
+          xs.unshift(go(c.x));
+          h = Bend.term_strip(c.f);
+        }
+        const k = h.$ === "Ref" ? h.k : "";
+        const [a, b] = xs.map(drop_lit);
+        const u = DROP_UNIT[k];
+        if (xs.length === 2 && a !== null && b !== null
+          && (DROP_U32[k] || k === "Nat.add" && a + b <= 0xFFFFFFFF)) {
+          return Bend.Lit(k.slice(0, 3) as "U32" | "Nat",
+            DROP_U32[k] ? DROP_U32[k](a, b) : a + b);
+        }
+        if (xs.length === 2 && u && b === u[0]) {
+          return xs[0];
+        }
+        if (xs.length === 2 && u && u[1] && a === u[0]) {
+          return xs[1];
+        }
+        if (k === "U32.inc" && xs.length === 1 && a !== null) {
+          return Bend.Lit("U32", (a + 1) >>> 0);
+        }
+        return xs.reduce((f: HTerm, x) => Bend.App(f, x), go(h));
+      }
+      default: {
+        return s;
+      }
+    }
+  };
+  return go(t);
+}
+
+// Whether a and b are the same case tree with equal leaves, normalised.
+function drop_same(a: HTerm, b: HTerm, dr: Drop): boolean {
+  const x = Bend.term_strip(a);
+  const y = Bend.term_strip(b);
+  if (x.$ === "Lam" || y.$ === "Lam") {
+    const p = probe("x");
+    return x.$ === "Lam" && y.$ === "Lam" && drop_same(x.f(p), y.f(p), dr);
+  }
+  if (x.$ === "Mat" || y.$ === "Mat" || x.$ === "Efq" || y.$ === "Efq") {
+    if (x.$ !== y.$) {
+      return false;
+    }
+    if (x.$ === "Efq") {
+      return true;
+    }
+    const [A, B] = [mat_arms(x), mat_arms(y)];
+    return A.arms.length === B.arms.length && A.arms.every(([k, h], i) =>
+      B.arms[i][0] === k && drop_same(h, B.arms[i][1], dr))
+      && drop_same(A.end, B.end, dr);
+  }
+  return term_same(drop_norm(x, dr), drop_norm(y, dr));
+}
+
+// Every match chain on T in t, under fresh probes, and whether D is built.
+function drop_scan(t: HTerm, T: Name, f: (m: HTerm) => void): void {
+  const go = (u: HTerm, head: boolean): void => {
+    const s = Bend.term_strip(u);
+    switch (s.$) {
+      case "Lam": {
+        return go(s.f(probe(s.k)), true);
+      }
+      case "Let": {
+        s.v.forEach((v) => go(v, true));
+        return go(s.f(s.k.map(probe)), true);
+      }
+      case "App": {
+        go(s.f, true);
+        return go(s.x, true);
+      }
+      case "Ctr": {
+        return s.x.forEach((x) => go(x, true));
+      }
+      case "Mat": {
+        const on = FL.book.ctrs[s.k]?.f === T;
+        if (on && head) {
+          f(s);
+        }
+        go(s.h, true);
+        return go(s.m, !on);
+      }
+      case "Rwt": {
+        return go(s.f, true);
+      }
+    }
+  };
+  go(t, true);
+}
+
+function drop_names(x: unknown, ks: Name[]): boolean {
+  return ks.some((k) => JSON.stringify(x, (j, v) => j === "s" ? undefined
+    : v).includes(`"k":"${k}"`));
+}
+
+function drop_try(T: Name, reach: Name[]): [Drop, Bend.Book] | null {
+  const adt = FL.book.tlds[T];
+  if (adt?.$ !== "ADT" || adt.b || adt.n !== 0 || adt.c.length !== 2
+    || OWNED.includes(T)) {
+    return null;
+  }
+  const [D, P] = adt.c[0].n === 0 ? adt.c : [adt.c[1], adt.c[0]];
+  const doms = ctr_doms(P);
+  if (D.n !== 0 || P.n === 0 || doms.length !== P.n) {
+    return null;
+  }
+  const zs: Bend.LTerm[] = [];
+  for (const F of doms) {
+    const k = ty_adt(F)?.k;
+    if (k !== "U32" && k !== "Nat") {
+      return null;
+    }
+    zs.push(Bend.Lit(k, 0));
+  }
+  const dr: Drop = { T, D: D.k, P: P.k, zs };
+  const book = { ...FL.book, tlds: Object.assign(Object.create(null),
+    FL.book.tlds, { [T]: { ...adt, c: [P] } }) };
+  let built = false;
+  for (const k of reach) {
+    const tld = FL.book.tlds[k];
+    if (tld?.$ !== "Def") {
+      continue;
+    }
+    const named = drop_names(Bend.term_lower(tld.T), [T, D.k]);
+    if (named && (def_foreign(tld) || k === "main")
+      || drop_names(Bend.term_lower(tld.T), [D.k])) {
+      return null;
+    }
+    if (!tld.e || !drop_names(tld.e, [D.k])) {
+      continue;
+    }
+    let ok = tld.x === 0;
+    drop_scan(Bend.term_higher(tld.e), T, (m) => {
+      const { arms } = mat_arms(m);
+      const hd = arms.find(([c]) => c === D.k)?.[1];
+      let hp = arms.find(([c]) => c === P.k)?.[1];
+      for (const z of zs) {
+        const l = hp && Bend.term_strip(hp);
+        hp = l?.$ === "Lam" ? l.f(Bend.term_higher(z)) : undefined;
+      }
+      ok &&= hd !== undefined && hp !== undefined && drop_same(hd, hp, dr);
+    });
+    if (!ok) {
+      return null;
+    }
+    built = true;
+    // the def again without D, elaborated against the type alone
+    const def: Bend.Def = { ...tld,
+      v: Bend.term_higher(drop_lt(lt_strip(tld.e), dr)) };
+    try {
+      book.tlds[k] = { ...def, v: null };
+      def.e = Bend.def_check(book, k, def);
+      book.tlds[k] = def;
+    } catch {
+      return null;
+    }
+  }
+  return built ? [dr, book] : null;
+}
+
+function lt_strip(t: any): any {
+  if (t === null || typeof t !== "object") {
+    return t;
+  }
+  if (Array.isArray(t)) {
+    return t.map(lt_strip);
+  }
+  if (t.$ === "Ann") {
+    return lt_strip(t.x);
+  }
+  const o: any = {};
+  for (const k in t) {
+    if (k !== "s" && k !== "c") {
+      o[k] = lt_strip(t[k]);
+    }
+  }
+  return o;
+}
+
+// An unannotated term with D{} built as P{0, ..} and D's arms gone.
+function drop_lt(t: any, dr: Drop): any {
+  if (t === null || typeof t !== "object") {
+    return t;
+  }
+  if (Array.isArray(t)) {
+    return t.map((x) => drop_lt(x, dr));
+  }
+  if (t.$ === "Ctr" && t.k === dr.D) {
+    return Bend.Ctr(dr.P, dr.zs);
+  }
+  if (t.$ === "Mat" && t.k === dr.D) {
+    return drop_lt(t.m, dr);
+  }
+  const o: any = {};
+  for (const k in t) {
+    o[k] = drop_lt(t[k], dr);
+  }
+  return o;
+}
+
+// The defs main reaches, by the names their checked terms call.
+function drop_reach(roots: Name[]): Name[] {
+  const seen = new Set<Name>();
+  const todo = [...roots];
+  const scan = (x: any): void => {
+    if (x === null || typeof x !== "object") {
+      return;
+    }
+    if (Array.isArray(x)) {
+      return x.forEach(scan);
+    }
+    if (x.$ === "Ref" && !seen.has(x.k)) {
+      todo.push(x.k);
+    }
+    for (const k in x) {
+      if (k !== "s" && k !== "T" && k !== "v" && k !== "c") {
+        scan(x[k]);
+      }
+    }
+  };
+  while (todo.length > 0) {
+    const k = todo.pop()!;
+    if (!seen.has(k)) {
+      seen.add(k);
+      const tld = FL.book.tlds[k];
+      scan(tld?.$ === "Def" ? tld.e : null);
+    }
+  }
+  return [...seen];
+}
+
+// Before any def is opened: each type whose default drops, and the book
+// with its one constructor and its rewritten defs; the layout caches the
+// check filled are emptied.
+function drop_book(roots: Name[]): void {
+  if (FL.js) {
+    return;
+  }
+  const reach = drop_reach(roots);
+  for (const T of Object.keys(FL.book.tlds)) {
+    const got = drop_try(T, reach);
+    if (got !== null) {
+      FL.book = got[1];
+    }
+  }
+  for (const m of [FL.lays, FL.nodes, FL.holds, FL.hold, FL.funs]) {
+    m.clear();
+  }
+}
+
 // Io
 // ==
 
@@ -1212,6 +1519,7 @@ function file_book(roots: Name[]): void {
         + " names both a constructor and a foreign def: name one apart");
     }
   }
+  drop_book(roots);
   roots.forEach(src_add);
   for (const d of FL.srcs.keys()) {
     const tld = tld_of(d);
