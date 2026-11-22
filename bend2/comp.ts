@@ -1391,22 +1391,29 @@ function drop_reach(roots: Name[]): Name[] {
   return [...seen];
 }
 
-// Before any def is opened: each type whose default drops, and the book
-// with its one constructor and its rewritten defs; the layout caches the
-// check filled are emptied.
+// Before any def is opened, once a file (file_book may run again for the
+// defs a pass made): each type whose default drops, and the book with its
+// one constructor and its rewritten defs; then the caches a layout or a body
+// went into are emptied.
+const DROPPED = new WeakSet<object>();
+
 function drop_book(roots: Name[]): void {
-  if (FL.js) {
+  if (FL.js || DROPPED.has(FL)) {
     return;
   }
+  DROPPED.add(FL);
   const reach = drop_reach(roots);
+  const book = FL.book;
   for (const T of Object.keys(FL.book.tlds)) {
     const got = drop_try(T, reach);
     if (got !== null) {
       FL.book = got[1];
     }
   }
-  for (const m of [FL.lays, FL.nodes, FL.holds, FL.hold, FL.funs]) {
-    m.clear();
+  if (FL.book !== book) {
+    for (const m of [FL.lays, FL.nodes, FL.holds, FL.hold, FL.funs]) {
+      m.clear();
+    }
   }
 }
 
