@@ -2048,7 +2048,7 @@ function eq_drop_term(t: HTerm, dr: Drop): HTerm {
 // Before any def is opened: the drops that hold, the book with their
 // types' one constructor, and every cache a layout or a body went into.
 function eq_drops(roots: Name[]): void {
-  if (FL.js) {
+  if (FL.js || process.env.EQSAT_NO?.includes("drop")) { // DEBUG toggle
     return;
   }
   if (process.env.EQSAT_LOG) console.error("REACH"); // DEBUG
@@ -2319,11 +2319,11 @@ function eq_def(d: Name): void {
   if (FL.js || f.h === null) {
     return;
   }
-  eq_sites(d);
+  if (!process.env.EQSAT_NO?.includes("sites")) eq_sites(d); // DEBUG toggle
   const h0 = f.h;
   const t0 = Date.now(); // DEBUG
   if (process.env.EQSAT_LOG) console.error("EQSAT> " + d); // DEBUG
-  f.h = eq_walk(f.h);
+  if (!process.env.EQSAT_NO?.includes("walk")) f.h = eq_walk(f.h); // DEBUG toggle
   if (process.env.EQSAT_LOG) console.error("EQSAT< " + d + " " + (Date.now() - t0) + "ms"); // DEBUG
   if (process.env.EQSAT_LOG && f.h !== h0) { // DEBUG
     console.error("EQSAT " + d + "\n  - " + Bend.term_show(Bend.term_lower(Bend.term_strip(h0)))
