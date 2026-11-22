@@ -42,7 +42,9 @@ def twice(+a: Nat, +b: Nat) -> Nat:
 
 # a Nat difference both ways round is two values; a literal picks an arm
 def both(+a: Nat, +b: Nat) -> Nat:
-  Nat.add(Nat.mul(Nat.sub(a, b), 10n), Nat.sub(b, a))
+  +d = Nat.sub(a, b)
+  +e = Nat.sub(b, a)
+  Nat.add(Nat.mul(Nat.add(d, 1n), Nat.add(d, 1n)), Nat.mul(Nat.add(e, 1n), 10n))
 
 def small(n: Nat) -> Nat:
   match n:
@@ -62,7 +64,8 @@ def shown(+x: Nat) -> IO(Unit):
 def main() -> IO(Unit):
   do IO<Unit>:
     shown(12n)
-    IO.print(Nat.show(Nat.add(both(10n, 3n), both(3n, 10n))))
+    IO.print(Nat.show(both(10n, 3n)))
+    IO.print(Nat.show(both(3n, 10n)))
     IO.print(Nat.show(sum(5000n, 0n)))
     IO.print(U32.show(mix(7, 5)))
     IO.print(Nat.show(twice(1000n, 234n)))
@@ -70,7 +73,8 @@ def main() -> IO(Unit):
 
 #|312
 #|260
-#|77
+#|74
+#|81
 #|233275
 #|12
 #|1526458
