@@ -1753,9 +1753,10 @@ function eq_def_size(k: Name): number {
 }
 
 // Extraction: the cheapest node per class by eq_cost, then the term, with a
-// let for each class read twice whose type is all words (a shared box
-// would turn its type to counted nodes program-wide, section 19), and for
-// each class the arm bound by a let as written.
+// let for each class read twice whose type is all words and that costs 1
+// or more (a shared box would turn its type to counted nodes program-wide,
+// as #2180 found; pure word arithmetic clang shares itself), and for each
+// class the arm bound by a let as written.
 function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null {
   const bound = new Set([...R.bound].map((c) => eg_find(g, c)));
   const n = g.up.length;
@@ -1801,7 +1802,7 @@ function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null 
   const leaf = (c: number) => pick[c]!.xs.length === 0
     && !pick[c]!.op.startsWith("c:");
   const lets = order.filter((c) => c !== top && !leaf(c) && g.ty[c] !== null
-    && (bound.has(c) || refs.get(c)! > 1 && word(c)));
+    && (bound.has(c) || refs.get(c)! > 1 && word(c) && best[c] >= 1));
   const shared = new Set(lets);
   let cost = 0;
   for (const c of order) {
