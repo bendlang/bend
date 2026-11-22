@@ -22,6 +22,10 @@ type Vv is Data:
   V0{}
   V{n: U32}
 
+type Pt is Data:
+  P0{}
+  Pt{x: U32}
+
 type Opt is Data:
   Opt0{}
   Opt{v: U32}
@@ -87,6 +91,22 @@ def v.show(w: Vv, +k: U32) -> U32:
     case V{n}:
       U32.add(k, U32.add(n, 1))
 
+# pt.show treats P0{} as Pt{0}; pt.bad, called only from a let's value,
+# does not (it answers 7), so Pt keeps both
+def pt.show(p: Pt) -> U32:
+  match p:
+    case P0{}:
+      0
+    case Pt{x}:
+      x
+
+def pt.bad(p: Pt) -> U32:
+  match p:
+    case P0{}:
+      7
+    case Pt{x}:
+      x
+
 def opt.get(o: Opt) -> U32:
   match o:
     case Opt{v}:
@@ -101,6 +121,7 @@ def main() -> IO(Unit):
     args : List<String> <- IO.args()
     +one : Nat = List.length(&1, String, args)
     +u : U32 = U32.from_nat(one)
+    +pb : U32 = pt.bad(P0{})
     +a0 : Acc = walk(Nat.mul(0n, one), U32.mul(5, u), Acc0{})
     IO.print(U32.show(acc.show(merge(walk(Nat.mul(100n, one), U32.sub(u, 1), Acc0{}), a0))))
     IO.print(U32.show(acc.show(merge(walk(Nat.sub(one, 1n), u, Acc0{}), Acc0{}))))
@@ -109,6 +130,7 @@ def main() -> IO(Unit):
     IO.print(U32.show(U32.add(opt.get(Opt0{}), opt.get(Opt{U32.mul(4, u)}))))
     IO.print(U32.show(U32.add(wrap.show(W0{}), wrap.show(W{u}))))
     IO.print(U32.show(U32.add(v.show(V0{}, U32.mul(7, u)), v.show(V{u}, u))))
+    IO.print(U32.show(U32.add(pb, U32.add(pt.show(P0{}), pt.show(Pt{u})))))
 
 #|100004218
 #|0
@@ -117,3 +139,4 @@ def main() -> IO(Unit):
 #|4
 #|4294967295
 #|10
+#|8

@@ -1382,8 +1382,9 @@ function drop_reach(roots: Name[]): Name[] {
     if (x.$ === "Ref" && !seen.has(x.k)) {
       todo.push(x.k);
     }
+    // a variable's v is its type; a let's v are its values
     for (const k in x) {
-      if (k !== "s" && k !== "T" && k !== "v" && k !== "c") {
+      if (k !== "s" && k !== "T" && k !== "c" && (k !== "v" || x.$ === "Let")) {
         scan(x[k]);
       }
     }
