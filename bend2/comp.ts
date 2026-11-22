@@ -1103,6 +1103,160 @@ function flat_of(k: Name): boolean {
   });
 }
 
+// Share
+// =====
+
+// An arm (a def's expression below its lambdas and matches) that computes
+// the same checked Nat operation or division twice computes it once, bound
+// at the arm's head, when clang could not merge the two: the term contains
+// a checked add or mul (its limit test posts an error, which clang does not
+// move), or one runs between two of its copies. Two divisions with nothing
+// checked between them clang already merges, and binding one in the source
+// only reshaped its loop (digitsum, +2.7% instructions). Only a term whose
+// variables are bound above the arm moves (none bound by one of its lets),
+// and none inside a closure.
+// The terms are pure, so the arm answers the same; a program that stops on
+// the Nat limit can stop at another point of the same run. C lane only.
+
+const SHARE_CHK = new Set(["Nat.add", "Nat.mul", "Nat.double"]);
+
+const SHARE_DIV: Record<string, string> = Object.setPrototypeOf({
+  "Nat.add": "Nat", "Nat.mul": "Nat", "Nat.double": "Nat", "Nat.div": "Nat",
+  "Nat.mod": "Nat", "U32.div": "U32", "U32.mod": "U32" }, null);
+
+type Copy = { t: HTerm; k: Name; at: number; to: number };
+
+function share_head(t: HTerm): [Name | null, HTerm[]] {
+  const xs: HTerm[] = [];
+  let h = Bend.term_strip(t);
+  while (h.$ === "App") {
+    xs.unshift(h.x);
+    h = Bend.term_strip(h.f);
+  }
+  return [h.$ === "Ref" ? h.k : null, xs];
+}
+
+// The arm's candidates and checked operations, numbered in the order the
+// arm runs them: arguments left to right, each before its call.
+function share_scan(t: HTerm, out: Copy[], chk: number[], n: { i: number },
+  bound: Set<number>): void {
+  const s = Bend.term_strip(t);
+  const at = n.i;
+  const go = (x: HTerm) => share_scan(x, out, chk, n, bound);
+  if (s.$ === "Let") {
+    const o = term_open(s);
+    o.ps.forEach((p) => bound.add(p.i));
+    s.v.forEach(go);
+    return go(o.b);
+  }
+  if (s.$ === "Ctr") {
+    return s.x.forEach(go);
+  }
+  if (s.$ !== "App") {
+    return;
+  }
+  const [k, xs] = share_head(s);
+  if (k === null) {
+    go(s.f);
+    return go(s.x);
+  }
+  xs.forEach(go);
+  n.i++;
+  if (SHARE_CHK.has(k)) {
+    chk.push(n.i);
+  }
+  if (k in SHARE_DIV && xs.length === 2) {
+    out.push({ t: s, k, at, to: n.i });
+  }
+}
+
+function share_arm(t: HTerm): HTerm {
+  const cs: Copy[] = [];
+  const chk: number[] = [];
+  const bound = new Set<number>();
+  share_scan(t, cs, chk, { i: 0 }, bound);
+  const groups: Copy[][] = [];
+  for (const c of cs) {
+    const g = groups.find((g) => term_same(g[0].t, c.t));
+    g ? g.push(c) : groups.push([c]);
+  }
+  const keep = groups.filter((g) => g.length > 1
+    && ![...share_frees(g[0].t)].some((p) => bound.has(p))
+    && (cs.some((c) => SHARE_CHK.has(c.k) && c.at >= g[0].at && c.to <= g[0].to)
+      || g.some((c, j) => j > 0 && chk.some((i) => i > g[j - 1].to && i <= c.at))))
+    .filter((g, _, all) => !all.some((o) => o !== g && g.every((c) =>
+      o.some((d) => d.at <= c.at && c.to <= d.to))));
+  return keep.reduceRight((b: HTerm, g) => Bend.Let(["x"], [0],
+    [Bend.Ann(g[0].t, Bend.Ref(SHARE_DIV[g[0].k]))], (ys: HTerm[]) =>
+      share_swap(b, g[0].t, ys[0]), undefined, [Bend.Many()]), t);
+}
+
+function share_frees(t: HTerm): Set<number> {
+  const out = new Set<number>();
+  term_any(t, (s) => (s.$ === "Var" && s.i >= 0 && out.add(s.i), false));
+  return out;
+}
+
+// t with each copy of s (outside closures) read from x.
+function share_swap(t: HTerm, s: HTerm, x: HTerm): HTerm {
+  const go = (u: HTerm): HTerm => {
+    if (u.$ === "Ann") {
+      return Bend.term_strip(u).$ === "App" && share_head(u)[0] !== null
+        && term_same(u, s) ? x : { ...u, x: go(u.x) };
+    }
+    switch (u.$) {
+      case "App": {
+        return term_same(u, s) ? x : { ...u, f: go(u.f), x: go(u.x) };
+      }
+      case "Let": {
+        return { ...u, v: u.v.map(go), f: (ys: HTerm[]) => go(u.f(ys)) };
+      }
+      case "Ctr": {
+        return { ...u, x: u.x.map(go) };
+      }
+      default: {
+        return u;
+      }
+    }
+  };
+  return go(t);
+}
+
+// The case tree, as it is; each arm through share_arm.
+// A changed lambda opens the walk again on each opening, so it never holds
+// a probe of another's.
+function share_walk(t: HTerm): HTerm {
+  switch (t.$) {
+    case "Ann": {
+      const x = share_walk(t.x);
+      return x === t.x ? t : { ...t, x };
+    }
+    case "Lam": {
+      const o = term_open(t);
+      return share_walk(o.b) === o.b ? t
+        : { ...t, f: (y: HTerm) => share_walk(t.f(y)) };
+    }
+    case "Mat": {
+      const [h, m] = [share_walk(t.h), share_walk(t.m)];
+      return h === t.h && m === t.m ? t : { ...t, h, m };
+    }
+    case "Efq":
+    case "Rwt": {
+      return t;
+    }
+    default: {
+      return share_arm(t);
+    }
+  }
+}
+
+function share_def(d: Name): void {
+  const f = fun_of(d);
+  if (!FL.js && f.h !== null) {
+    f.h = share_walk(f.h);
+  }
+}
+
 // Io
 // ==
 
@@ -1227,6 +1381,7 @@ function file_book(roots: Name[]): void {
     if (!done_live(tld)) {
       continue;
     }
+    share_def(d);
     const deps = new Set<Name>();
     let flat = true;
     term_any(fun_of(d).h!, (s, tail) => {
