@@ -1927,6 +1927,7 @@ function eq_region(t: HTerm): HTerm {
     if (process.env.EQSAT_LOG) console.error("  round " + i + " n=" + g.n + " classes=" + g.up.filter((u, c) => eg_find(g, c) === c).length); // DEBUG
   }
   FL.eq_nodes += g.n;
+  EQ_PROF.nodes = (EQ_PROF.nodes ?? 0) + g.n; EQ_PROF.maxn = Math.max(EQ_PROF.maxn ?? 0, g.n); // DEBUG
   // the arm as written, costed in the saturated graph: an operation on
   // what folded to a literal is free on both sides
   const cost = eq_seen_cost(g, R);
