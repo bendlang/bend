@@ -1519,17 +1519,22 @@ function flow_analyse(defs: Name[], es: Map<Name, any>) {
       F.esc(ret(d));
     }
   }
+  const open = new Map<string, boolean>();
   const fld = (n: number, k: Name, i: number) => {
     const c = F.kid(n, k + "#" + i);
-    if (flow_open(ctr_doms(FL.book.ctrs[k])[i] ?? null)) {
+    if (memo(open, k + "#" + i, () => flow_open(ctr_doms(FL.book.ctrs[k])[i]
+      ?? null))) {
       F.esc(c);
     }
     return c;
   };
-  const expr = (d: Name, t: any, env: Map<number, number>): number => {
+  const expr = (d: Name, t: any, env: number[]): number => {
     switch (t.$) {
+      case "Ann": {
+        return expr(d, t.x, env);
+      }
       case "Var": {
-        return env.get(t.i) ?? F.esc(F.mk());
+        return env[t.i] ?? F.esc(F.mk());
       }
       case "Ctr": {
         const n = F.mk();
@@ -1546,9 +1551,9 @@ function flow_analyse(defs: Name[], es: Map<Name, any>) {
         return n;
       }
       case "Let": {
-        const env2 = new Map(env);
-        t.v.forEach((v: any, j: number) => env2.set(t.i[j], expr(d, v, env)));
-        return expr(d, t.f, env2);
+        const vs = t.v.map((v: any) => expr(d, v, env));
+        vs.forEach((n: number, j: number) => env[t.i[j]] = n);
+        return expr(d, t.f, env);
       }
       case "Rwt": {
         return expr(d, t.f, env);
@@ -1588,10 +1593,15 @@ function flow_analyse(defs: Name[], es: Map<Name, any>) {
       }
     }
   };
-  const skel = (d: Name, t: any, pend: number[], env: Map<number, number>,
+  // binders are depths: a deeper one overwrites, a sibling sets its own
+  const skel = (d: Name, t: any, pend: number[], env: number[],
     out: number): void => {
+    if (t.$ === "Ann") {
+      return skel(d, t.x, pend, env, out);
+    }
     if (t.$ === "Lam" && pend.length > 0) {
-      return skel(d, t.f, pend.slice(1), new Map(env).set(t.i, pend[0]), out);
+      env[t.i] = pend[0];
+      return skel(d, t.f, pend.slice(1), env, out);
     }
     if (t.$ === "Mat" && pend.length > 0) {
       const sc = pend[0];
@@ -1611,8 +1621,8 @@ function flow_analyse(defs: Name[], es: Map<Name, any>) {
   for (const d of defs) {
     const tld = tld_of(d) as Bend.Def;
     if (tld.e && !def_foreign(tld)) {
-      const e = memo(es, d, () => lt_strip(tld.e));
-      skel(d, e, doms(d).map((_, j) => param(d, j)), new Map(), ret(d));
+      es.set(d, tld.e);
+      skel(d, tld.e, doms(d).map((_, j) => param(d, j)), [], ret(d));
     }
   }
   return { F, param, ret, calls, doms };
@@ -1653,8 +1663,8 @@ function flow_book(roots: Name[]): void {
     const kf = n.kids.get(k + "#" + live[0]);
     const FT = ctr_doms(FL.book.ctrs[k])[live[0]];
     // no catch-all arm, the field not of the type itself
-    if (n.mats.some((m) => m.t.k !== k && m.t.m.$ !== "Mat" && m.t.m.$ !== "Efq"
-      || m.t.k === k && m.t.m.$ !== "Mat" && m.t.m.$ !== "Efq")
+    const rest = (t: any): any => t.$ === "Ann" ? rest(t.x) : t;
+    if (n.mats.some((m) => !["Mat", "Efq"].includes(rest(m.t.m).$))
       || ty_adt(FT)?.k === T || kf === undefined) {
       continue;
     }
@@ -1783,12 +1793,16 @@ function flow_lt(e: any, n: number, drop: Set<number>,
   ctrAt: Map<any, [Name, number]>, matAt: Map<any, [Name, number]>,
   sig: Map<Name, { drop: Set<number> }>): any {
   let bad = false;
+  // the term comes out unannotated, for def_check to elaborate again
   const go = (t: any): any => {
     if (t === null || typeof t !== "object") {
       return t;
     }
     if (Array.isArray(t)) {
       return t.map(go);
+    }
+    if (t.$ === "Ann") {
+      return go(t.x);
     }
     if (ctrAt.has(t)) {
       return go(t.x[ctr_live_at(t.k, ctrAt.get(t)![1])]);
@@ -1803,7 +1817,9 @@ function flow_lt(e: any, n: number, drop: Set<number>,
     }
     const o: any = {};
     for (const k in t) {
-      o[k] = go(t[k]);
+      if (k !== "s" && k !== "c") {
+        o[k] = go(t[k]);
+      }
     }
     return o;
   };
@@ -1812,6 +1828,9 @@ function flow_lt(e: any, n: number, drop: Set<number>,
   const walk = (t: any, pend: (number | null)[]): any => {
     if (pend.length === 0) {
       return go(t);
+    }
+    if (t.$ === "Ann") {
+      return walk(t.x, pend);
     }
     if (t.$ === "Lam") {
       if (pend[0] !== null && drop.has(pend[0])) {
@@ -1852,6 +1871,9 @@ function flow_arm(h: any, n: number, i: number, gone: Set<number>): any {
   const binders: any[] = [];
   let b = h;
   for (let j = 0; j < n; j++) {
+    while (b?.$ === "Ann") {
+      b = b.x;
+    }
     if (b?.$ !== "Lam") {
       return { $: "Efq" };
     }
@@ -1887,18 +1909,21 @@ function lt_reads(t: any, vs: Set<number>): boolean {
     return true;
   }
   for (const k in t) {
-    if (k !== "T" && lt_reads(t[k], vs)) {
+    if (k !== "T" && k !== "s" && k !== "c" && lt_reads(t[k], vs)) {
       return true;
     }
   }
   return false;
 }
 
-function lt_spine(t: LT): [LT, LT[]] {
-  const xs: LT[] = [];
-  while (t.$ === "App") {
-    xs.unshift(t.x);
-    t = t.f;
+// a call's head and arguments, through annotations
+function lt_spine(t: any): [any, any[]] {
+  const xs: any[] = [];
+  while (t.$ === "App" || t.$ === "Ann") {
+    if (t.$ === "App") {
+      xs.unshift(t.x);
+    }
+    t = t.$ === "App" ? t.f : t.x;
   }
   return [t, xs];
 }
