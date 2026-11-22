@@ -1521,6 +1521,7 @@ function eg_round(g: EGraph): boolean {
     }
     const k = nd.op.slice(2);
     const [a, b] = nd.xs;
+    const T = g.ty[eg_find(g, c)];
     // fold: an operation on literals is its value; a Nat result past
     // 2^32 - 1 stays (a literal that size is not a word)
     if (nd.xs.length === 2 && EQ_U32[k]) {
@@ -1556,7 +1557,6 @@ function eg_round(g: EGraph): boolean {
     // pass 2^48 - 1 together, since no partial sum of Nats exceeds the
     // whole (#2175). Nat.mul is commutative (the same product) but not
     // associative (a later 0 hides an earlier overflow).
-    const T = g.ty[eg_find(g, c)];
     if ((EQ_AC.has(k) || k === "Nat.mul") && nd.xs.length === 2) {
       eq(c, eg_add(g, { op: nd.op, xs: [b, a], t: null }, T));
     }
@@ -1577,6 +1577,16 @@ function eg_round(g: EGraph): boolean {
         eq(c, r);
       }
     }
+    // fusion: f(g(ys)) is f~g(ys), g's case tree with f at its leaves
+    if (nd.xs.length === 1 && !intr_of(k)) {
+      for (const y of [...g.cls[eg_find(g, a)]]) {
+        const fg = y.op.startsWith("c:") ? eq_fuse(k, y.op.slice(2),
+          y.xs.length) : null;
+        if (fg !== null) {
+          eq(c, eg_add(g, { op: "c:" + fg, xs: y.xs, t: null }, T));
+        }
+      }
+    }
   }
   let hit = false;
   for (const [a, b] of todo) {
@@ -1590,9 +1600,13 @@ function eg_unfold(g: EGraph, k: Name, xs: number[]): number | null {
   const tld = tld_of(k);
   const f = fun_of(k);
   if (!done_live(tld) || f.h === null || xs.length !== tld.n
-    || eq_def_size(k) > EQ_BODY || eq_def_cost(k) >= 20) {
+    || eq_def_size(k) > EQ_BODY) {
     return null;
   }
+  // a def that costs a frame unfolds only through a match on a known
+  // constructor (case of a known constructor), so unfolding cannot run on
+  const rec = eq_def_cost(k) >= 20;
+  let known = false;
   const env = new Map<number, number>();
   let b = f.h;
   for (const x of xs) {
@@ -1603,15 +1617,17 @@ function eg_unfold(g: EGraph, k: Name, xs: number[]): number | null {
       b = o.b;
       continue;
     }
-    const arm = mat_head(s) ? eg_arm(g, s, x) : null;
+    const arm = mat_head(s) ? eg_arm(g, s, x, rec) : null;
     if (arm === null) {
       return null;
     }
     arm[1].forEach((y, i) => env.set(arm[0][i], y));
     b = arm[2];
+    known = true;
   }
   const s = Bend.term_strip(b);
-  if (mat_head(s) || s.$ === "Lam" || s.$ === "Let" && s.k.length > 1) {
+  if (mat_head(s) || s.$ === "Lam" || s.$ === "Let" && s.k.length > 1
+    || rec && !known) {
     return null;
   }
   const R = eq_region_new();
@@ -1621,12 +1637,13 @@ function eg_unfold(g: EGraph, k: Name, xs: number[]): number | null {
 
 // The arm a match takes on class x, if x holds a constructor or a literal:
 // the arm's field probes, the classes they take and the arm's body.
-function eg_arm(g: EGraph, m: HTerm, x: number): [number[], number[], HTerm] | null {
+function eg_arm(g: EGraph, m: HTerm, x: number,
+  rec = false): [number[], number[], HTerm] | null {
   let ctr: [Name, number[]] | null = null;
   for (const nd of g.cls[eg_find(g, x)]) {
     if (nd.op.startsWith("k:")) {
       ctr = [nd.op.slice(2), nd.xs];
-    } else if (nd.op.startsWith("l:Nat:")) {
+    } else if (nd.op.startsWith("l:Nat:") && !rec) {
       const v = Number(nd.op.slice(6));
       ctr = v === 0 ? ["Zero", []] : ["Succ", [eg_mklit(g, "Nat", v - 1)]];
     }
@@ -2314,6 +2331,69 @@ function lt_swap(t: LT, from: LT, to: LT): LT {
   return o;
 }
 
+// Fusion (deforestation): f(g(ys)), g a recursion that builds what f, a
+// recursion over it, takes apart, is f~g(ys): g's case tree with f applied
+// at each leaf (f is strict, so f(match ..) is the match of f's), written
+// unannotated and elaborated by def_check, which also checks that it
+// terminates. Its arms then go through the e-graph like any def's, where f
+// unfolds on the constructor the leaf builds and f(g(y)) folds back into
+// f~g(y) (the induction step: the same rule, applied to a call g makes on
+// a smaller value). f~g is kept only if no call to g is left in it, and
+// only call sites the cost model prefers take it.
+function eq_fuse(f: Name, g: Name, n: number): Name | null {
+  const k = f + "~" + g;
+  const got = FL.fused.get(k);
+  if (got !== undefined) {
+    return got;
+  }
+  FL.fused.set(k, null);
+  const [tf, tg] = [tld_of(f), tld_of(g)];
+  if (FL.js || f === g || intr_of(f) || intr_of(g) || !done_live(tf)
+    || !done_live(tg) || tf.n !== 1 || tg.n !== n || tf.u || tg.u
+    || tf.x > 0 || tg.x > 0 || f.includes("~") || g.includes("~")
+    || k in FL.book.tlds) {
+    return null;
+  }
+  const [hf, hg] = [fun_of(f).h, fun_of(g).h];
+  const rec = (h: HTerm | null, d: Name) => h !== null
+    && term_any(h, (s) => s.$ === "Ref" && s.k === d);
+  const df = tele_unbind(tf.T);
+  const dg = tele_unbind(tg.T).doms;
+  const R = ty_adt(df.doms[0]?.[2]);
+  if (!rec(hf, f) || !rec(hg, g) || R === null || dg.length !== n
+    || ![df.ret, ...dg.map(([, , A]) => A)].every((A) =>
+      term_probes(A).size === 0)) {
+    return null;
+  }
+  const e = lt_arms(lt_strip(Bend.term_lower(hg!)) as LT, n, (l) =>
+    Bend.App(Bend.Ref(f), l.t) as LT);
+  if (e === null) {
+    return null;
+  }
+  const T = dg.reduceRight((B: () => HTerm, [q, x, A]) => () =>
+    Bend.All(q, x, 0, A, () => B()), () => df.ret)();
+  const book = { ...FL.book, tlds: Object.assign(Object.create(null),
+    FL.book.tlds, FL.made) };
+  const def: Bend.Def = { $: "Def", n, x: 0, T, v: Bend.term_higher(e) };
+  book.tlds[k] = { ...def, v: null };
+  try {
+    def.e = Bend.def_check(book, k, def);
+  } catch {
+    return null;
+  }
+  FL.made[k] = def;
+  FL.fused.set(k, k);
+  const fn = fun_of(k);
+  fn.h = eq_walk(fn.h!);
+  if (rec(fn.h, g)) {
+    FL.fused.set(k, null);
+    delete FL.made[k];
+    FL.funs.delete(k);
+    return null;
+  }
+  return k;
+}
+
 function eq_def(d: Name): void {
   const f = fun_of(d);
   if (FL.js || f.h === null) {
@@ -2383,6 +2463,7 @@ function file_new(book: Bend.Book, js: boolean) {
     eq_opq: 0,
     eq_probes: new Map<HTerm, Set<number>>(),
     drops: [] as Drop[],
+    fused: new Map<Name, Name | null>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
