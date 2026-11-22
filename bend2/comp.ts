@@ -1250,9 +1250,17 @@ function drop_scan(t: HTerm, T: Name, f: (m: HTerm) => void): void {
   go(t, true);
 }
 
-function drop_names(x: unknown, ks: Name[]): boolean {
-  return ks.some((k) => JSON.stringify(x, (j, v) => j === "s" ? undefined
-    : v).includes(`"k":"${k}"`));
+// The text of a def's type and of its checked term, once a file.
+const DROP_TEXT = new WeakMap<Bend.Def, [string, string]>();
+
+function drop_text(d: Bend.Def): [string, string] {
+  const json = (x: unknown) => JSON.stringify(x, (j, v) => j === "s"
+    ? undefined : v);
+  return memo(DROP_TEXT, d, () => [json(Bend.term_lower(d.T)), json(d.e)]);
+}
+
+function drop_names(text: string, ks: Name[]): boolean {
+  return ks.some((k) => text.includes(`"k":"${k}"`));
 }
 
 function drop_try(T: Name, reach: Name[]): [Drop, Bend.Book] | null {
@@ -1283,12 +1291,12 @@ function drop_try(T: Name, reach: Name[]): [Drop, Bend.Book] | null {
     if (tld?.$ !== "Def") {
       continue;
     }
-    const named = drop_names(Bend.term_lower(tld.T), [T, D.k]);
-    if (named && (def_foreign(tld) || k === "main")
-      || drop_names(Bend.term_lower(tld.T), [D.k])) {
+    const [tT, te] = drop_text(tld);
+    if (drop_names(tT, [T, D.k]) && (def_foreign(tld) || k === "main")
+      || drop_names(tT, [D.k])) {
       return null;
     }
-    if (!tld.e || !drop_names(tld.e, [D.k])) {
+    if (!tld.e || !drop_names(te, [D.k])) {
       continue;
     }
     let ok = tld.x === 0;
