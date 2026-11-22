@@ -1172,9 +1172,7 @@ function eg_new(): EGraph {
   return { up: [], cls: [], ty: [], memo: new Map(), n: 0 };
 }
 
-let EG_WATCH = 0; // DEBUG
 function eg_find(g: EGraph, a: number): number {
-  if (++EG_WATCH > 3e8) throw new Error("watch"); // DEBUG
   while (g.up[a] !== a) {
     a = g.up[a] = g.up[g.up[a]];
   }
@@ -1250,7 +1248,6 @@ function eg_rebuild(g: EGraph): void {
     for (const [a, b] of clash) {
       again = eg_union(g, a, b) || again;
     }
-    if (process.env.EQSAT_LOG2) console.error("   rebuild pass clash=" + clash.length + " n=" + g.n); // DEBUG
   }
 }
 
@@ -1340,15 +1337,16 @@ function term_subst(t: HTerm, m: Map<number, HTerm>): HTerm {
   return m.size === 0 ? t : go(t);
 }
 
-// An arm's expression as it goes into the e-graph. lets: the probes of the
-// lets read through (an opaque leaf naming one makes the arm unsafe to
-// rebuild); seen: its nodes as written, for eq_cost; bound: the classes
-// it binds by a let.
-type Region = { lets: Set<number>; bad: boolean; seen: [ENode, number][];
+// An arm's expression as it goes into the e-graph. bad: a leaf names a
+// variable read through (a let's, an unfolded def's parameter), so the arm
+// cannot be rebuilt; seen: its nodes as written, for eq_cost; bound: the
+// classes it binds by a let; inner: a closure in it changed; away: the
+// expression is an unfolded def's body.
+type Region = { bad: boolean; seen: [ENode, number][];
   bound: Set<number>; inner: boolean; away: boolean };
 
 function eq_region_new(): Region {
-  return { lets: new Set(), bad: false, seen: [], bound: new Set(),
+  return { bad: false, seen: [], bound: new Set(),
     inner: false, away: false };
 }
 
@@ -1395,7 +1393,6 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
       }
       const o = term_open(s);
       const cv = eg_term(g, s.v[0], env, R);
-      R.lets.add(o.ps[0].i);
       R.bound.add(eg_find(g, cv));
       return eg_term(g, o.b, new Map(env).set(o.ps[0].i, cv), R);
     }
@@ -1479,7 +1476,7 @@ function eq_names(t: HTerm, env: Map<number, number>): boolean {
       case "Let":
       case "Mat":
       case "Rwt": {
-        return term_probes(x).values().some((p) => env.has(p));
+        return [...term_probes(x)].some((p) => env.has(p));
       }
       default: {
         return false;
@@ -1601,7 +1598,7 @@ function eq_def_cost(k: Name): number {
   return memo(FL.eq_costs, k, () => {
     FL.eq_costs.set(k, 20);
     const h = fun_of(k).h;
-    if (h === null || tld_of(k).u
+    if (h === null || (tld_of(k) as Bend.Def).u
       || term_any(h, (s) => s.$ === "Ref" && s.k === k)) {
       return 20;
     }
@@ -1623,8 +1620,7 @@ function eq_def_cost(k: Name): number {
 }
 
 // One round of the rules over every node; true if any class merged.
-function eg_round(g: EGraph): boolean { return eq_t("round", () => eg_round2(g)); }
-function eg_round2(g: EGraph): boolean {
+function eg_round(g: EGraph): boolean {
   const todo: [number, number][] = [];
   const eq = (a: number, b: number) => {
     todo.push([a, b]);
@@ -1635,9 +1631,7 @@ function eg_round2(g: EGraph): boolean {
       g.cls[c].forEach((nd) => snap.push([c, nd]));
     }
   }
-  if (process.env.EQSAT_LOG2) console.error("   round snap=" + snap.length); // DEBUG
   for (const [c, nd] of snap) {
-    if (process.env.EQSAT_LOG2) console.error("    node " + nd.op + " " + nd.xs.join(",")); // DEBUG
     if (g.n > EQ_NODES) {
       break;
     }
@@ -1881,7 +1875,6 @@ function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null 
       : nd.op.startsWith("c:") ? kids().reduce((f: HTerm, a) => Bend.App(f, a),
         Bend.Ref(nd.op.slice(2)))
       : Bend.Ctr(nd.op.slice(2), kids());
-    if (T === null && (x.$ === "Lam" || x.$ === "Mat")) console.error("UNTYPED " + nd.op.slice(0, 40) + " " + Bend.term_show(Bend.term_lower(x)).slice(0, 200)); // DEBUG
     return T === null ? x : Bend.Ann(x, T);
   };
   const bind = (i: number, env: Map<number, HTerm>): HTerm => {
@@ -1939,28 +1932,19 @@ function eq_region(t: HTerm): HTerm {
     return t;
   }
   const R = eq_region_new();
-  const root = eq_t("term", () => eg_term(g, t, new Map(), R));
-  EQ_PROF.regions = (EQ_PROF.regions ?? 0) + 1; // DEBUG
+  const root = eg_term(g, t, new Map(), R);
   if (R.bad || g.n > EQ_NODES) {
     return t;
   }
-  if (!R.inner && !eq_t("hope", () => eq_hope(g, R))) {
+  if (!R.inner && !eq_hope(g, R)) {
     return t;
   }
-  EQ_PROF.sat = (EQ_PROF.sat ?? 0) + 1; // DEBUG
-  for (let i = 0; i < EQ_ROUNDS && g.n <= EQ_NODES && eg_round(g); i++) {
-    if (process.env.EQSAT_LOG) console.error("  round " + i + " n=" + g.n + " classes=" + g.up.filter((u, c) => eg_find(g, c) === c).length); // DEBUG
-  }
+  for (let i = 0; i < EQ_ROUNDS && g.n <= EQ_NODES && eg_round(g); i++);
   FL.eq_nodes += g.n;
-  EQ_PROF.nodes = (EQ_PROF.nodes ?? 0) + g.n; EQ_PROF.maxn = Math.max(EQ_PROF.maxn ?? 0, g.n); // DEBUG
   // the arm as written, costed in the saturated graph: an operation on
   // what folded to a literal is free on both sides
   const cost = eq_seen_cost(g, R);
-  if (process.env.EQSAT_LOG) console.error("  extract"); // DEBUG
-  const out = eq_t("extract", () => eg_extract(g, root, R));
-  FL.eq_stats.push([g.n, cost, out?.[1] ?? cost]);
-  const take = out !== null && (out[1] <= cost - 1 || R.inner && out[1] <= cost); // DEBUG
-  if (process.env.EQSAT_LOG && take) console.error("RULE arm " + g.n + " " + cost + " " + out![1]); // DEBUG
+  const out = eg_extract(g, root, R);
   return out !== null && (out[1] <= cost - 1 || R.inner && out[1] <= cost)
     ? out[0] : t;
 }
@@ -2156,10 +2140,7 @@ function eq_same(a: HTerm, b: HTerm, dr: Drop): boolean {
       t: null }));
   eg_rebuild(g);
   for (let i = 0; i < EQ_ROUNDS && eg_find(g, ca) !== eg_find(g, cb)
-    && g.n <= EQ_NODES && eg_round(g); i++) {
-    if (process.env.EQSAT_LOG) console.error("  same round " + i + " n=" + g.n); // DEBUG
-  }
-  if (process.env.EQSAT_LOG && eg_find(g, ca) !== eg_find(g, cb)) { console.error("SAME? " + Bend.term_show(Bend.term_lower(x)) + " VS " + Bend.term_show(Bend.term_lower(y))); g.cls.forEach((ns, c) => ns.length && console.error("  " + c + ": " + ns.map((n) => n.op + "(" + n.xs + ")").join(" | "))); } // DEBUG
+    && g.n <= EQ_NODES && eg_round(g); i++);
   return !R.bad && eg_find(g, ca) === eg_find(g, cb);
 }
 
@@ -2201,7 +2182,6 @@ function eq_drop_try(T: Name, reach: Set<Name>): Drop | null {
     if (!tld.e) {
       continue;
     }
-    if (process.env.EQSAT_LOG) console.error(" scan " + k); // DEBUG
     let ok = true;
     eq_scan(Bend.term_higher(tld.e), (s) => {
       if (!ok) {
@@ -2223,13 +2203,11 @@ function eq_drop_try(T: Name, reach: Set<Name>): Drop | null {
         hp = l?.$ === "Lam" ? l.f(z) : undefined;
       }
       ok = hd !== undefined && hp !== undefined && eq_same(hd, hp, dr);
-      if (process.env.EQSAT_LOG && !ok) console.error("DROP no " + T + " at " + k + " " + (hd === undefined) + (hp === undefined)); // DEBUG
     });
     if (!ok) {
       return null;
     }
   }
-  if (process.env.EQSAT_LOG) console.error("DROP " + T + " built=" + built); // DEBUG
   return built ? dr : null;
 }
 
@@ -2243,15 +2221,12 @@ function eq_drop_term(t: HTerm, dr: Drop): HTerm {
 // Before any def is opened: the drops that hold, the book with their
 // types' one constructor, and every cache a layout or a body went into.
 function eq_drops(roots: Name[]): void {
-  if (FL.js || process.env.EQSAT_NO?.includes("drop")) { // DEBUG toggle
+  if (FL.js) {
     return;
   }
-  if (process.env.EQSAT_LOG) console.error("REACH"); // DEBUG
   const reach = eq_reach(roots);
-  if (process.env.EQSAT_LOG) console.error("REACH " + reach.size); // DEBUG
   const drops: Drop[] = [];
   for (const T of Object.keys(FL.book.tlds)) {
-    if (process.env.EQSAT_LOG) console.error("DROP? " + T); // DEBUG
     const dr = eq_drop_try(T, reach);
     if (dr !== null) {
       drops.push(dr);
@@ -2267,7 +2242,6 @@ function eq_drops(roots: Name[]): void {
   }
   FL.book = { ...FL.book, tlds };
   FL.drops = drops;
-  if (process.env.EQSAT_LOG) drops.forEach((dr) => console.error("RULE drop " + dr.T + " " + dr.D)); // DEBUG
   for (const m of [FL.funs, FL.lays, FL.nodes, FL.holds, FL.hold,
     FL.eq_costs, FL.eq_sizes, FL.loops, FL.flats]) {
     m.clear();
@@ -2407,13 +2381,11 @@ function eq_sites(d: Name): void {
   const fn = fun_of(d);
   if (FL.js || !done_live(tld) || tld.x > 0 || tld.u || d.includes("~")
     || fn.h === null || !eq_matches(tld.e) || !eq_twice(d, tld.e)) {
-    if (process.env.EQSAT_LOG) console.error("SITES ret 1 " + d); // DEBUG
     return;
   }
   const n = tld.n;
   const doms = tele_unbind(tld.T).doms;
   if (doms.length !== n || doms.some(([, , A]) => term_probes(A).size > 0)) {
-    if (process.env.EQSAT_LOG) console.error("SITES ret 2 " + d); // DEBUG
     return;
   }
   const e = lt_strip(Bend.term_lower(fn.h)) as LT;
@@ -2434,10 +2406,8 @@ function eq_sites(d: Name): void {
     return l.t;
   });
   const g = leaves[0]?.[0];
-  if (process.env.EQSAT_LOG) console.error("SITES " + d + " ok=" + ok + " leaves=" + leaves.map(([k]) => k)); // DEBUG
   if (!ok || leaves.length < 2 || leaves.some(([k]) => k !== g)
     || (tld_of(g) as Bend.Def).u || tld_of(g).n !== 1) {
-    if (process.env.EQSAT_LOG) console.error("SITES ret 3 " + d); // DEBUG
     return;
   }
   // a parameter that is matched stays in d~s
@@ -2447,7 +2417,6 @@ function eq_sites(d: Name): void {
   });
   const gt = tele_unbind(tld_of(g).T);
   if (term_probes(gt.ret).size > 0) {
-    if (process.env.EQSAT_LOG) console.error("SITES ret 4 " + d); // DEBUG
     return;
   }
   const drop = new Set([...Array(n).keys()].filter((j) => !used.has(j)));
@@ -2462,7 +2431,6 @@ function eq_sites(d: Name): void {
     return lt_swap(l.t, c, Bend.Var("r", R) as LT);
   });
   if (es === null || ek === null) {
-    if (process.env.EQSAT_LOG) console.error("SITES ret 5 " + d); // DEBUG
     return;
   }
   const [ws, wk] = [d + "~s", d + "~k"];
@@ -2487,7 +2455,6 @@ function eq_sites(d: Name): void {
       book.tlds[k] = out;
       return out;
     } catch (err) {
-      if (process.env.EQSAT_LOG) console.error("SITES check " + k + ": " + (typeof err === "object" && (err as any)?.$ === "Err" ? Bend.err_show(err as any) : String(err)).slice(0, 600)); // DEBUG
       return null;
     }
   };
@@ -2495,13 +2462,11 @@ function eq_sites(d: Name): void {
   const dk = ds && mk(wk, Tk, n + 1, Bend.Lam("r", R, ek) as LT);
   const dd = dk && mk(d + "~eq", tld.T, n, ed);
   if (dd === null) {
-    if (process.env.EQSAT_LOG) console.error("SITES ret 6 " + d); // DEBUG
     return;
   }
   FL.made[ws] = ds!;
   FL.made[wk] = dk!;
   fn.h = Bend.term_higher(dd.e!);
-  if (process.env.EQSAT_LOG) console.error("RULE sites " + d + " " + g); // DEBUG
 }
 
 function lt_swap(t: LT, from: LT, to: LT): LT {
@@ -2579,27 +2544,16 @@ function eq_fuse(f: Name, g: Name, n: number): Name | null {
     FL.funs.delete(k);
     return null;
   }
-  if (process.env.EQSAT_LOG) console.error("RULE fuse " + k); // DEBUG
   return k;
 }
 
-export const EQ_PROF: Record<string, number> = {}; // DEBUG
-function eq_t<T>(k: string, f: () => T): T { const t0 = performance.now(); try { return f(); } finally { EQ_PROF[k] = (EQ_PROF[k] ?? 0) + performance.now() - t0; } } // DEBUG
 function eq_def(d: Name): void {
   const f = fun_of(d);
   if (FL.js || f.h === null) {
     return;
   }
-  if (!process.env.EQSAT_NO?.includes("sites")) eq_t("sites", () => eq_sites(d)); // DEBUG toggle
-  const h0 = f.h;
-  const t0 = Date.now(); // DEBUG
-  if (process.env.EQSAT_LOG) console.error("EQSAT> " + d); // DEBUG
-  if (!process.env.EQSAT_NO?.includes("walk")) f.h = eq_t("walk", () => eq_walk(f.h!)); // DEBUG toggle
-  if (process.env.EQSAT_LOG) console.error("EQSAT< " + d + " " + (Date.now() - t0) + "ms"); // DEBUG
-  if (process.env.EQSAT_LOG && f.h !== h0) { // DEBUG
-    console.error("EQSAT " + d + "\n  - " + Bend.term_show(Bend.term_lower(Bend.term_strip(h0)))
-      + "\n  + " + Bend.term_show(Bend.term_lower(Bend.term_strip(f.h))));
-  }
+  eq_sites(d);
+  f.h = eq_walk(f.h);
 }
 
 // Io
@@ -2650,11 +2604,9 @@ function file_new(book: Bend.Book, js: boolean) {
     made: Object.create(null) as Record<Name, Bend.Def>,
     eq_costs: new Map<Name, number>(),
     eq_sizes: new Map<Name, number>(),
-    eq_stats: [] as number[][],
     eq_opq: 0,
     eq_nodes: 0,
     eq_depth: 0,
-    eq_probes: new Map<HTerm, Set<number>>(),
     drops: [] as Drop[],
     fused: new Map<Name, Name | null>(),
     funs: new Map<Name, Fun>(),
@@ -2721,7 +2673,7 @@ function file_book(roots: Name[]): void {
         + " names both a constructor and a foreign def: name one apart");
     }
   }
-  eq_t("drops", () => eq_drops(roots));
+  eq_drops(roots);
   roots.forEach(src_add);
   for (const d of FL.srcs.keys()) {
     const tld = tld_of(d);
