@@ -669,7 +669,7 @@ function ty_key(T: HTerm): string {
 }
 
 function tld_of(k: Name): Bend.TLD {
-  return FL.book.tlds[k];
+  return FL.book.tlds[k] ?? FL.made[k];
 }
 
 function ty_tag(t: HTerm | null, tags: string): boolean {
@@ -1103,6 +1103,673 @@ function flat_of(k: Name): boolean {
   });
 }
 
+// Eqsat
+// =====
+
+// eq_def rewrites a def's checked body by equality saturation. The case tree
+// (lambdas, matches, a fork's let) stays as it is; each arm's expression
+// below it (calls, constructors, literals, single lets; a closure or anything
+// else is an opaque leaf) goes into an e-graph, where a let's name is its
+// value's class. The rules below add equal terms, to a fixpoint or the
+// budget, and the cheapest term comes back out by eq_cost, a word-typed
+// class read twice bound once by a let (common subexpressions). An arm
+// changes only if that cost is lower than its own: the same model on the
+// arm as written, its lets counted once. Every rule is an equation of pure
+// terms; what moves is only when a value is computed, so a program that
+// stops (the Nat limit, @unsafe recursion) may stop at another point of the
+// same run, as with #2175 and #2180. C lane only.
+
+type ENode = { op: string; xs: number[]; t: HTerm | null };
+
+type EGraph = {
+  up: number[];
+  cls: ENode[][];
+  ty: (HTerm | null)[];
+  memo: Map<string, number>;
+  n: number;
+};
+
+// EQ_NODES caps an arm's e-graph and EQ_ROUNDS its rule rounds; EQ_BODY is
+// the largest def body the unfold rule copies in.
+const EQ_NODES = 2000;
+
+const EQ_ROUNDS = 8;
+
+const EQ_BODY = 48;
+
+const NAT_TOP = 2 ** 48 - 1;
+
+// U32 operations folded on literals, and which are commutative, associative
+// and have a unit (x op u = x). Bend's U32 wraps, so all of these hold on
+// every input; Nat.add and Nat.mul are added below with their own conditions.
+const EQ_U32: Record<string, (a: number, b: number) => number> = {
+  "U32.add": (a, b) => (a + b) >>> 0,
+  "U32.sub": (a, b) => (a - b) >>> 0,
+  "U32.mul": (a, b) => Math.imul(a, b) >>> 0,
+  "U32.and": (a, b) => (a & b) >>> 0,
+  "U32.or": (a, b) => (a | b) >>> 0,
+  "U32.xor": (a, b) => (a ^ b) >>> 0,
+};
+
+const EQ_AC = new Set(["U32.add", "U32.mul", "U32.and", "U32.or", "U32.xor",
+  "Nat.add"]);
+
+const EQ_UNIT: Record<string, [number, boolean]> = {
+  "U32.add": [0, true], "U32.sub": [0, false], "U32.mul": [1, true],
+  "U32.or": [0, true], "U32.xor": [0, true], "U32.and": [0xFFFFFFFF, true],
+  "Nat.add": [0, true], "Nat.mul": [1, true],
+};
+
+function eg_new(): EGraph {
+  return { up: [], cls: [], ty: [], memo: new Map(), n: 0 };
+}
+
+function eg_find(g: EGraph, a: number): number {
+  while (g.up[a] !== a) {
+    a = g.up[a] = g.up[g.up[a]];
+  }
+  return a;
+}
+
+function eg_key(g: EGraph, nd: ENode): string {
+  return nd.op + "(" + nd.xs.map((x) => eg_find(g, x)).join(",") + ")";
+}
+
+function eg_add(g: EGraph, nd: ENode, T: HTerm | null = null): number {
+  const key = eg_key(g, nd);
+  const got = g.memo.get(key);
+  if (got !== undefined) {
+    const c = eg_find(g, got);
+    g.ty[c] ??= T;
+    return c;
+  }
+  const c = g.up.length;
+  g.up.push(c);
+  g.cls.push([{ ...nd, xs: nd.xs.map((x) => eg_find(g, x)) }]);
+  g.ty.push(T);
+  g.memo.set(key, c);
+  g.n++;
+  return c;
+}
+
+function eg_union(g: EGraph, a: number, b: number): boolean {
+  let [x, y] = [eg_find(g, a), eg_find(g, b)];
+  if (x === y) {
+    return false;
+  }
+  if (g.cls[x].length < g.cls[y].length) {
+    [x, y] = [y, x];
+  }
+  g.up[y] = x;
+  g.cls[x].push(...g.cls[y]);
+  g.cls[y] = [];
+  g.ty[x] ??= g.ty[y];
+  return true;
+}
+
+// Congruence: two nodes with equal canonical keys are one class.
+function eg_rebuild(g: EGraph): void {
+  for (let again = true; again;) {
+    again = false;
+    g.memo.clear();
+    for (let c = 0; c < g.up.length; c++) {
+      if (eg_find(g, c) !== c) {
+        continue;
+      }
+      const seen = new Set<string>();
+      g.cls[c] = g.cls[c].filter((nd) => {
+        const k = eg_key(g, nd);
+        nd.xs = nd.xs.map((x) => eg_find(g, x));
+        if (seen.has(k)) {
+          return false;
+        }
+        seen.add(k);
+        const d = g.memo.get(k);
+        if (d !== undefined && eg_find(g, d) !== eg_find(g, c)) {
+          again = eg_union(g, d, c) || again;
+        } else {
+          g.memo.set(k, c);
+        }
+        return true;
+      });
+    }
+  }
+}
+
+function eg_lit(g: EGraph, c: number, k: "U32" | "Nat"): number | null {
+  for (const nd of g.cls[eg_find(g, c)]) {
+    if (nd.op.startsWith("l:" + k + ":")) {
+      return Number(nd.op.slice(k.length + 3));
+    }
+  }
+  return null;
+}
+
+function eg_mklit(g: EGraph, k: "U32" | "Nat", v: number): number {
+  return eg_add(g, { op: "l:" + k + ":" + v, xs: [],
+    t: Bend.Lit(k, v) }, Bend.Ref(k));
+}
+
+// The probes a term mentions, types included.
+function term_probes(t: HTerm): Set<number> {
+  const out = new Set<number>();
+  const go = (x: any): void => {
+    if (x === null || typeof x !== "object") {
+      return;
+    }
+    if (Array.isArray(x)) {
+      return x.forEach(go);
+    }
+    if (x.$ === "Var" && x.i >= 0 && x.i < 1 << 29) {
+      out.add(x.i);
+    }
+    for (const k in x) {
+      if (k !== "s" && k !== "c") {
+        go(x[k]);
+      }
+    }
+  };
+  go(Bend.term_lower(t, 1 << 29));
+  return out;
+}
+
+// HOAS substitution of probes, lazily under binders.
+function term_subst(t: HTerm, m: Map<number, HTerm>): HTerm {
+  const go = (x: HTerm): HTerm => {
+    switch (x.$) {
+      case "Var": {
+        return x.i >= 0 && m.has(x.i) ? m.get(x.i)! : x;
+      }
+      case "Lam": {
+        return { ...x, f: (y: HTerm) => go(x.f(y)) };
+      }
+      case "All": {
+        return { ...x, A: go(x.A), B: (y: HTerm) => go(x.B(y)) };
+      }
+      case "Let": {
+        return { ...x, v: x.v.map(go), f: (ys: HTerm[]) => go(x.f(ys)) };
+      }
+      case "App": {
+        return { ...x, f: go(x.f), x: go(x.x) };
+      }
+      case "Ctr":
+      case "ADT": {
+        return { ...x, x: x.x.map(go) } as HTerm;
+      }
+      case "Mat": {
+        return { ...x, h: go(x.h), m: go(x.m) };
+      }
+      case "Ann": {
+        return { ...x, x: go(x.x), T: go(x.T) };
+      }
+      case "Eql": {
+        return { ...x, a: go(x.a), b: go(x.b), T: go(x.T) };
+      }
+      case "Rwt": {
+        return { ...x, e: go(x.e), p: go(x.p), f: go(x.f) };
+      }
+      case "Typ": {
+        return { ...x, g: go(x.g) };
+      }
+      case "Min": {
+        return { ...x, a: go(x.a), b: go(x.b) };
+      }
+      default: {
+        return x;
+      }
+    }
+  };
+  return m.size === 0 ? t : go(t);
+}
+
+// An arm's expression as it goes into the e-graph. lets: the probes of the
+// lets read through (an opaque leaf naming one makes the arm unsafe to
+// rebuild); cost: eq_cost of the arm as written; opq: a unique key per
+// opaque leaf that names a local.
+type Region = { lets: Set<number>; bad: boolean; seen: [ENode, number][];
+  opq: number; bound: Set<number> };
+
+function eq_region_new(): Region {
+  return { lets: new Set(), bad: false, seen: [], opq: 0, bound: new Set() };
+}
+
+function eq_seen_cost(g: EGraph, R: Region): number {
+  return R.seen.reduce((s, [nd, c]) => s + eq_cost(g, nd, c), 0);
+}
+
+function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
+  R: Region): number {
+  const s = t;
+  const leaf = (op: string, x: HTerm, T: HTerm | null = null): number => {
+    const c = eg_add(g, { op, xs: [], t: x }, T);
+    R.seen.push([g.cls[c][0], c]);
+    return c;
+  };
+  switch (s.$) {
+    case "Ann": {
+      const c = eg_term(g, s.x, env, R);
+      const r = eg_find(g, c);
+      g.ty[r] ??= s.T;
+      return r;
+    }
+    case "Var": {
+      if (s.i >= 0 && env.has(s.i)) {
+        return env.get(s.i)!;
+      }
+      if (s.i < 0 || s.v !== undefined) {
+        return eg_opaque(g, s, R);
+      }
+      return leaf("v:" + s.i, s);
+    }
+    case "Lit": {
+      return s.k === "String" ? eg_opaque(g, s, R)
+        : leaf("l:" + s.k + ":" + s.v, s, Bend.Ref(s.k));
+    }
+    case "Let": {
+      if (s.k.length !== 1) {
+        return eg_opaque(g, s, R);
+      }
+      const o = term_open(s);
+      const cv = eg_term(g, s.v[0], env, R);
+      R.lets.add(o.ps[0].i);
+      R.bound.add(eg_find(g, cv));
+      return eg_term(g, o.b, new Map(env).set(o.ps[0].i, cv), R);
+    }
+    case "App":
+    case "Ref": {
+      const xs: HTerm[] = [];
+      let h: HTerm = s;
+      for (let c = Bend.term_strip(h); c.$ === "App"; c = Bend.term_strip(h)) {
+        xs.unshift(c.x);
+        h = c.f;
+      }
+      const head = Bend.term_strip(h);
+      if (head.$ !== "Ref" || head.b || tld_of(head.k)?.$ !== "Def") {
+        return eg_opaque(g, s, R);
+      }
+      const nd = { op: "c:" + head.k, xs: xs.map((x) => eg_term(g, x, env, R)),
+        t: null };
+      const c = eg_add(g, nd);
+      R.seen.push([nd, c]);
+      return c;
+    }
+    case "Ctr": {
+      const nd = { op: "k:" + s.k, xs: s.x.map((x) => eg_term(g, x, env, R)),
+        t: null };
+      const c = eg_add(g, nd);
+      R.seen.push([nd, c]);
+      return c;
+    }
+    default: {
+      return eg_opaque(g, s, R);
+    }
+  }
+}
+
+function eg_opaque(g: EGraph, s: HTerm, R: Region): number {
+  const ps = term_probes(s);
+  if ([...ps].some((p) => R.lets.has(p))) {
+    R.bad = true;
+  }
+  const op = ps.size === 0 ? "o:" + Bend.term_key(Bend.term_lower(s))
+    : "o#" + R.opq++;
+  const c = eg_add(g, { op, xs: [], t: s });
+  R.seen.push([g.cls[c][0], c]);
+  return c;
+}
+
+// The static cost model, in rough instructions: a word operation 1, a Nat
+// add or mul 2 (its limit test), a division 4, a heap node 6 (a word-sized
+// constructor 0.5), a call to a def that recurses 20 (a frame), and a call
+// to a def that does not costs what its body does (the emitter unfolds it).
+function eq_cost(g: EGraph, nd: ENode, c: number): number {
+  const op = nd.op;
+  if (op.startsWith("v:") || op.startsWith("l:") || op.startsWith("o:")) {
+    return 0;
+  }
+  if (op.startsWith("o#")) {
+    return 4;
+  }
+  if (op.startsWith("k:")) {
+    const T = g.ty[eg_find(g, c)];
+    return T && !lay_of(T).ks.includes("box") ? 0.5 : 6;
+  }
+  const k = op.slice(2);
+  if (intr_of(k)) {
+    return k === "U32.div" || k === "U32.mod" || k === "Nat.divmod" ? 4
+      : k.startsWith("Nat.") ? 2 : 1;
+  }
+  return eq_def_cost(k);
+}
+
+function eq_def_cost(k: Name): number {
+  return memo(FL.eq_costs, k, () => {
+    FL.eq_costs.set(k, 20);
+    const h = fun_of(k).h;
+    if (h === null || term_any(h, (s) => s.$ === "Ref" && s.k === k)) {
+      return 20;
+    }
+    let b = term_strip(h);
+    while (b.$ === "Lam") {
+      b = term_strip(term_open(b).b);
+    }
+    if (mat_head(b) || b.$ === "Let" && b.k.length > 1) {
+      return 3 + mat_arms(b).arms.length;
+    }
+    const g = eg_new();
+    const R = eq_region_new();
+    eg_term(g, b, new Map(), R);
+    return Math.min(20, eq_seen_cost(g, R));
+  });
+}
+
+// One round of the rules over every node; true if any class merged.
+function eg_round(g: EGraph): boolean {
+  let hit = false;
+  const eq = (a: number, b: number) => {
+    hit = eg_union(g, a, b) || hit;
+  };
+  const snap: [number, ENode][] = [];
+  for (let c = 0; c < g.up.length; c++) {
+    if (eg_find(g, c) === c) {
+      g.cls[c].forEach((nd) => snap.push([c, nd]));
+    }
+  }
+  for (const [c, nd] of snap) {
+    if (g.n > EQ_NODES) {
+      break;
+    }
+    if (!nd.op.startsWith("c:")) {
+      continue;
+    }
+    const k = nd.op.slice(2);
+    const [a, b] = nd.xs;
+    // fold: an operation on literals is its value; a Nat result past
+    // 2^32 - 1 stays (a literal that size is not a word)
+    if (nd.xs.length === 2 && EQ_U32[k]) {
+      const [x, y] = [eg_lit(g, a, "U32"), eg_lit(g, b, "U32")];
+      if (x !== null && y !== null) {
+        eq(c, eg_mklit(g, "U32", EQ_U32[k](x, y)));
+      }
+    }
+    if (nd.xs.length === 2 && (k === "Nat.add" || k === "Nat.mul")) {
+      const [x, y] = [eg_lit(g, a, "Nat"), eg_lit(g, b, "Nat")];
+      const v = x === null || y === null ? null : k === "Nat.add" ? x + y : x * y;
+      if (v !== null && v <= 0xFFFFFFFF) {
+        eq(c, eg_mklit(g, "Nat", v));
+      }
+    }
+    // unit: x + 0, x * 1, x | 0, x ^ 0, x & ~0, x - 0 are x
+    const u = EQ_UNIT[k];
+    if (u && nd.xs.length === 2) {
+      const lit = (x: number) => eg_lit(g, x, k.startsWith("Nat") ? "Nat" : "U32");
+      if (lit(b) === u[0]) {
+        eq(c, a);
+      }
+      if (u[1] && lit(a) === u[0]) {
+        eq(c, b);
+      }
+    }
+    // U32.inc(x) is x + 1
+    if (k === "U32.inc" && nd.xs.length === 1) {
+      eq(c, eg_add(g, { op: "c:U32.add", xs: [a, eg_mklit(g, "U32", 1)],
+        t: null }, g.ty[eg_find(g, c)]));
+    }
+    // commutativity and associativity: U32's wrap; Nat.add's both orders
+    // pass 2^48 - 1 together, since no partial sum of Nats exceeds the
+    // whole (#2175). Nat.mul is commutative (the same product) but not
+    // associative (a later 0 hides an earlier overflow).
+    const T = g.ty[eg_find(g, c)];
+    if ((EQ_AC.has(k) || k === "Nat.mul") && nd.xs.length === 2) {
+      eq(c, eg_add(g, { op: nd.op, xs: [b, a], t: null }, T));
+    }
+    if (EQ_AC.has(k) && nd.xs.length === 2) {
+      for (const l of g.cls[eg_find(g, a)]) {
+        if (l.op === nd.op && l.xs.length === 2) {
+          const r = eg_add(g, { op: nd.op, xs: [l.xs[1], b], t: null }, T);
+          eq(c, eg_add(g, { op: nd.op, xs: [l.xs[0], r], t: null }, T));
+        }
+      }
+    }
+    // unfold: a call to a def that does not recurse is its body at the
+    // arguments, a match in it taking the arm of an argument's known
+    // constructor (beta, delta, case of a known constructor)
+    if (!intr_of(k)) {
+      const r = eg_unfold(g, k, nd.xs);
+      if (r !== null) {
+        eq(c, r);
+      }
+    }
+  }
+  eg_rebuild(g);
+  return hit;
+}
+
+function eg_unfold(g: EGraph, k: Name, xs: number[]): number | null {
+  const tld = tld_of(k);
+  const f = fun_of(k);
+  if (!done_live(tld) || f.h === null || xs.length !== tld.n
+    || eq_def_size(k) > EQ_BODY || eq_def_cost(k) >= 20) {
+    return null;
+  }
+  const env = new Map<number, number>();
+  let b = f.h;
+  for (const x of xs) {
+    const s = term_strip(b);
+    if (s.$ === "Lam") {
+      const o = term_open(s);
+      env.set(o.ps[0].i, x);
+      b = o.b;
+      continue;
+    }
+    const arm = mat_head(s) ? eg_arm(g, s, x) : null;
+    if (arm === null) {
+      return null;
+    }
+    arm[1].forEach((y, i) => env.set(arm[0][i], y));
+    b = arm[2];
+  }
+  const s = term_strip(b);
+  if (mat_head(s) || s.$ === "Lam" || s.$ === "Let" && s.k.length > 1) {
+    return null;
+  }
+  const R = eq_region_new();
+  const c = eg_term(g, b, env, R);
+  return R.bad ? null : c;
+}
+
+// The arm a match takes on class x, if x holds a constructor or a literal:
+// the arm's field probes, the classes they take and the arm's body.
+function eg_arm(g: EGraph, m: HTerm, x: number): [number[], number[], HTerm] | null {
+  let ctr: [Name, number[]] | null = null;
+  for (const nd of g.cls[eg_find(g, x)]) {
+    if (nd.op.startsWith("k:")) {
+      ctr = [nd.op.slice(2), nd.xs];
+    } else if (nd.op.startsWith("l:Nat:")) {
+      const v = Number(nd.op.slice(6));
+      ctr = v === 0 ? ["Zero", []] : ["Succ", [eg_mklit(g, "Nat", v - 1)]];
+    }
+  }
+  if (ctr === null) {
+    return null;
+  }
+  const { arms, end } = mat_arms(m);
+  const hit = arms.find(([k]) => k === ctr![0]);
+  if (hit && FL.book.ctrs[ctr[0]]?.n !== ctr[1].length) {
+    return null;
+  }
+  let b = hit ? hit[1] : end;
+  const ys = hit ? ctr[1] : [x];
+  const ps: number[] = [];
+  for (const y of ys) {
+    const s = term_strip(b);
+    if (s.$ !== "Lam") {
+      return null;
+    }
+    const o = term_open(s);
+    ps.push(o.ps[0].i);
+    b = o.b;
+    void y;
+  }
+  return [ps, ys, b];
+}
+
+function eq_def_size(k: Name): number {
+  return memo(FL.eq_sizes, k, () => {
+    let n = 0;
+    term_any(fun_of(k).h!, () => (n++, n > EQ_BODY));
+    return n;
+  });
+}
+
+// Extraction: the cheapest node per class by eq_cost, then the term, with a
+// let for each class read twice whose type is all words (a shared box
+// would turn its type to counted nodes program-wide, section 19), and for
+// each class the arm bound by a let as written.
+function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null {
+  const bound = new Set([...R.bound].map((c) => eg_find(g, c)));
+  const n = g.up.length;
+  const best = new Array<number>(n).fill(Infinity);
+  const pick = new Array<ENode | null>(n).fill(null);
+  for (let again = true, i = 0; again && i < 64; i++) {
+    again = false;
+    for (let c = 0; c < n; c++) {
+      if (eg_find(g, c) !== c) {
+        continue;
+      }
+      for (const nd of g.cls[c]) {
+        const v = nd.xs.reduce((s, x) => s + best[eg_find(g, x)],
+          eq_cost(g, nd, c));
+        if (v < best[c] - 1e-9) {
+          best[c] = v;
+          pick[c] = nd;
+          again = true;
+        }
+      }
+    }
+  }
+  const top = eg_find(g, root);
+  if (!isFinite(best[top])) {
+    return null;
+  }
+  const refs = new Map<number, number>();
+  const order: number[] = [];
+  const visit = (c: number) => {
+    c = eg_find(g, c);
+    const r = (refs.get(c) ?? 0) + 1;
+    refs.set(c, r);
+    if (r === 1) {
+      pick[c]!.xs.forEach(visit);
+      order.push(c);
+    }
+  };
+  visit(top);
+  const word = (c: number) => {
+    const T = g.ty[c];
+    return T !== null && ty_adt(T) !== null && !lay_of(T).ks.includes("box");
+  };
+  const leaf = (c: number) => pick[c]!.xs.length === 0
+    && !pick[c]!.op.startsWith("c:");
+  const lets = order.filter((c) => c !== top && !leaf(c) && g.ty[c] !== null
+    && (bound.has(c) || refs.get(c)! > 1 && word(c)));
+  const shared = new Set(lets);
+  let cost = 0;
+  for (const c of order) {
+    cost += eq_cost(g, pick[c]!, c) * (shared.has(c) ? 1 : refs.get(c)!);
+  }
+  const build = (c: number, env: Map<number, HTerm>): HTerm => {
+    c = eg_find(g, c);
+    const got = env.get(c);
+    if (got !== undefined) {
+      return got;
+    }
+    const nd = pick[c]!;
+    const T = g.ty[c];
+    const kids = () => nd.xs.map((x) => build(x, env));
+    const x = nd.t !== null ? nd.t
+      : nd.op.startsWith("c:") ? kids().reduce((f: HTerm, a) => Bend.App(f, a),
+        Bend.Ref(nd.op.slice(2)))
+      : Bend.Ctr(nd.op.slice(2), kids());
+    return T === null ? x : Bend.Ann(x, T);
+  };
+  const bind = (i: number, env: Map<number, HTerm>): HTerm => {
+    if (i === lets.length) {
+      return build(top, env);
+    }
+    const c = lets[i];
+    const q = refs.get(c)! > 1 ? Bend.Many() : Bend.Lone();
+    return Bend.Let(["x"], [0], [build(c, env)], (ys: HTerm[]) =>
+      bind(i + 1, new Map(env).set(c, ys[0])), undefined, [q]);
+  };
+  return [bind(0, new Map()), cost];
+}
+
+// One arm: its e-graph, saturated, and its cheapest term if that is cheaper.
+function eq_region(t: HTerm): HTerm {
+  const g = eg_new();
+  const R = eq_region_new();
+  const root = eg_term(g, t, new Map(), R);
+  if (R.bad || g.n > EQ_NODES) {
+    return t;
+  }
+  const cost = eq_seen_cost(g, R);
+  for (let i = 0; i < EQ_ROUNDS && g.n <= EQ_NODES && eg_round(g); i++);
+  const out = eg_extract(g, root, R);
+  FL.eq_stats.push([g.n, cost, out?.[1] ?? cost]);
+  return out !== null && out[1] < cost - 0.5 ? out[0] : t;
+}
+
+// The case tree: lambdas, matches and a fork's let are kept, each arm's
+// expression goes through eq_region. An unchanged subtree is the same
+// object, so a def no rule improves is left exactly as it was.
+function eq_walk(t: HTerm): HTerm {
+  switch (t.$) {
+    case "Ann": {
+      const x = eq_walk(t.x);
+      return x === t.x ? t : { ...t, x };
+    }
+    case "Lam": {
+      const o = term_open(t);
+      const b = eq_walk(o.b);
+      return b === o.b ? t : { ...t, f: (y: HTerm) =>
+        term_subst(b, new Map([[o.ps[0].i, y]])) };
+    }
+    case "Mat": {
+      const [h, m] = [eq_walk(t.h), eq_walk(t.m)];
+      return h === t.h && m === t.m ? t : { ...t, h, m };
+    }
+    case "Efq":
+    case "Rwt": {
+      return t;
+    }
+    case "Let": {
+      if (t.k.length > 1) {
+        const o = term_open(t);
+        const b = eq_walk(o.b);
+        return b === o.b ? t : { ...t, f: (ys: HTerm[]) =>
+          term_subst(b, new Map(o.ps.map((p, j) => [p.i, ys[j]]))) };
+      }
+      return eq_region(t);
+    }
+    default: {
+      return eq_region(t);
+    }
+  }
+}
+
+function eq_def(d: Name): void {
+  const f = fun_of(d);
+  if (FL.js || f.h === null) {
+    return;
+  }
+  const h0 = f.h;
+  f.h = eq_walk(f.h);
+  if (process.env.EQSAT_LOG && f.h !== h0) { // DEBUG
+    console.error("EQSAT " + d + "\n  - " + Bend.term_show(Bend.term_lower(Bend.term_strip(h0)))
+      + "\n  + " + Bend.term_show(Bend.term_lower(Bend.term_strip(f.h))));
+  }
+}
+
 // Io
 // ==
 
@@ -1148,6 +1815,10 @@ function file_new(book: Bend.Book, js: boolean) {
     srcs: new Map<Name, Set<Name> | null>(),
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
+    made: Object.create(null) as Record<Name, Bend.Def>,
+    eq_costs: new Map<Name, number>(),
+    eq_sizes: new Map<Name, number>(),
+    eq_stats: [] as number[][],
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
     lays: new Map<string, Lay>(),
@@ -1227,6 +1898,7 @@ function file_book(roots: Name[]): void {
     if (!done_live(tld)) {
       continue;
     }
+    eq_def(d);
     const deps = new Set<Name>();
     let flat = true;
     term_any(fun_of(d).h!, (s, tail) => {
