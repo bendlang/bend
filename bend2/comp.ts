@@ -1137,6 +1137,8 @@ const EQ_NODES = 2000;
 
 const EQ_FILE = 400000;
 
+const EQ_DEPTH = 32;
+
 const EQ_ROUNDS = 8;
 
 const EQ_BODY = 48;
@@ -1424,8 +1426,14 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
     }
     case "Lam":
     case "Mat": {
-      // a closure's own arms go through eq_walk; it is a leaf here
+      // a closure's own arms go through eq_walk (not one copied in by an
+      // unfold, nor past EQ_DEPTH closures deep); it is a leaf here
+      if (R.away || FL.eq_depth >= EQ_DEPTH) {
+        return eg_opaque(g, s, R, env);
+      }
+      FL.eq_depth++;
       const w = eq_walk(s);
+      FL.eq_depth--;
       R.inner ||= w !== s;
       return eg_opaque(g, w, R, env);
     }
@@ -1568,11 +1576,12 @@ function eq_def_cost(k: Name): number {
   return memo(FL.eq_costs, k, () => {
     FL.eq_costs.set(k, 20);
     const h = fun_of(k).h;
+    if (h === null || tld_of(k).u
+      || term_any(h, (s) => s.$ === "Ref" && s.k === k)) {
+      return 20;
+    }
     if (tld_of(k).n === 0) {
       return 0;
-    }
-    if (h === null || term_any(h, (s) => s.$ === "Ref" && s.k === k)) {
-      return 20;
     }
     let b = Bend.term_strip(h);
     while (b.$ === "Lam") {
@@ -2613,6 +2622,7 @@ function file_new(book: Bend.Book, js: boolean) {
     eq_stats: [] as number[][],
     eq_opq: 0,
     eq_nodes: 0,
+    eq_depth: 0,
     eq_probes: new Map<HTerm, Set<number>>(),
     drops: [] as Drop[],
     fused: new Map<Name, Name | null>(),
