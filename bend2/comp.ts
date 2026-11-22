@@ -1259,7 +1259,9 @@ function acc_def(d: Name): void {
         m.args.forEach(flat);
       } else if (c) {
         cs.push(c);
-      } else {
+      } else if (!term_const(y)
+        || (Bend.u32_from_term(y) ?? nat_peel(y)[1]) !== 0) {
+        // a literal 0 adds nothing: the sum goes on as it is, untested
         a = Bend.Ann(Bend.App(Bend.App(Bend.Ref(op), a), Bend.Ann(x, R!)), R!);
       }
     };
