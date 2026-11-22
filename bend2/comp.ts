@@ -1343,11 +1343,11 @@ function term_subst(t: HTerm, m: Map<number, HTerm>): HTerm {
 // rebuild); seen: its nodes as written, for eq_cost; bound: the classes
 // it binds by a let.
 type Region = { lets: Set<number>; bad: boolean; seen: [ENode, number][];
-  bound: Set<number>; inner: boolean };
+  bound: Set<number>; inner: boolean; away: boolean };
 
 function eq_region_new(): Region {
   return { lets: new Set(), bad: false, seen: [], bound: new Set(),
-    inner: false };
+    inner: false, away: false };
 }
 
 function eq_seen_cost(g: EGraph, R: Region): number {
@@ -1366,7 +1366,10 @@ function eg_term(g: EGraph, t: HTerm, env: Map<number, number>,
     case "Ann": {
       const c = eg_term(g, s.x, env, R);
       const r = eg_find(g, c);
-      if (g.ty[r] === null && !eq_names(s.T, env)) {
+      // a type copied in from another def names that def's parameters by
+      // their levels there: it is taken only if it names nothing
+      if (g.ty[r] === null && !eq_names(s.T, env)
+        && (!R.away || eq_closed(s.T))) {
         g.ty[r] = s.T;
       }
       return r;
@@ -1476,6 +1479,11 @@ function eq_names(t: HTerm, env: Map<number, number>): boolean {
     }
   };
   return env.size > 0 && go(t);
+}
+
+// Whether a type names no variable at all.
+function eq_closed(T: HTerm): boolean {
+  return !eq_names(T, { size: 1, has: (i: number) => i >= 0 } as any);
 }
 
 // Whether a def's checked body names some def other than itself twice, the
@@ -1714,6 +1722,7 @@ function eg_unfold(g: EGraph, k: Name, xs: number[]): number | null {
     return null;
   }
   const R = eq_region_new();
+  R.away = true;
   const c = eg_term(g, b, env, R);
   return R.bad ? null : c;
 }
