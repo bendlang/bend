@@ -1862,6 +1862,14 @@ function node_fill(sc: Scope, k: string, alloc: string,
   return nd;
 }
 
+// Field word j of a node of k, from the word at(q) of its slot q: a word
+// that shares its slot (node_pack) is shifted out.
+function node_word(k: Name, j: number, at: (q: number) => string): string {
+  const [q, s, b] = node_pack(k)?.at[j] ?? [j, 0, 64];
+  const w = `(u32)(${at(q)} >> ${s})`;
+  return b > 32 ? at(q) : b < 32 ? `(${w} & ${2 ** b - 1}u)` : w;
+}
+
 function node_fields(sc: Scope, t: string, r: string | null, k: Name,
   tail = false): Val[] {
   const node = lay_node(k);
@@ -1881,11 +1889,8 @@ function node_fields(sc: Scope, t: string, r: string | null, k: Name,
   }
   file_push(sc, `u64 ${sp} = ${hot ? `ctr_take(e, ${t}, ${n}, ${fb})`
     : r === null ? `term_loc(${t})` : `term_peek(e.mem, ${t})`};`);
-  const ws = emit_hold(sc, node.ks.map((_, j) => {
-    const [q, s, b] = pk?.at[j] ?? [j, 0, 64];
-    const w = hot ? `${fb}[${q}]` : `e.mem[${sp} + ${q}]`;
-    return b > 32 ? w : `(u32)(${w} >> ${s})${b < 32 ? ` & ${2 ** b - 1}u` : ""}`;
-  }), "f", node.ks);
+  const ws = emit_hold(sc, node.ks.map((_, j) => node_word(k, j, (q) =>
+    hot ? `${fb}[${q}]` : `e.mem[${sp} + ${q}]`)), "f", node.ks);
   const spare = { cls: cls_fit(n), name: sp, taken };
   if (r === null && tail) {
     sc.spares.push(spare);
@@ -3803,7 +3808,8 @@ function emit_match(sc: Scope, x: Of<"Mat"> | Of<"Efq">,
         && term_strip(h).$ === "Mat" ? Object.keys(lays[0].arms ?? {}) : [];
       const inn = mat_arms(h);
       const split = e0.length < 2 ? [] : [...inn.arms.map(([c, a]) => arm(
-        `${is(k)} && (u32)e.mem[term_peek(e.mem, ${sw})] == ${e0.indexOf(c)}`,
+        `${is(k)} && (u32)${node_word(k, 0, (q) => `e.mem[term_peek(e.mem, ${
+          sw})${q ? ` + ${q}` : ""}]`)} == ${e0.indexOf(c)}`,
         a, [Bend.Ctr(c, [])])), ...inn.arms.length < e0.length
         ? [arm(is(k), inn.end, [])] : []];
       return split.some(([, b], i) => b !== (inn.arms[i]?.[1] ?? inn.end))
