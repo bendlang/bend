@@ -1448,10 +1448,13 @@ function eg_opaque(g: EGraph, s: HTerm, R: Region,
   return c;
 }
 
-// The static cost model, in rough instructions: a word operation 1, a Nat
-// add or mul 2 (its limit test), a division 4, a heap node 6 (a word-sized
-// constructor 0.5), a call to a def that recurses 20 (a frame), and a call
-// to a def that does not costs what its body does (the emitter unfolds it).
+// The static cost model, in rough instructions: a Nat add or mul 2 (its
+// limit test), a division 4, a heap node 6, a call to a def that recurses
+// 20 (a frame), and a call to a def that does not costs what its body does
+// (the emitter unfolds it). A U32 operation or a word-sized constructor is
+// 0.25: clang already shares pure word arithmetic within a function, so
+// binding one once saves next to nothing; an operation on literals is 0
+// (emit_fold folds it). An arm is rewritten only if this saves at least 1.
 function eq_cost(g: EGraph, nd: ENode, c: number): number {
   const op = nd.op;
   if (op.startsWith("v:") || op.startsWith("l:") || op.startsWith("o:")) {
@@ -1462,12 +1465,14 @@ function eq_cost(g: EGraph, nd: ENode, c: number): number {
   }
   if (op.startsWith("k:")) {
     const T = g.ty[eg_find(g, c)];
-    return T && !lay_of(T).ks.includes("box") ? 0.5 : 6;
+    return T && !lay_of(T).ks.includes("box") ? 0.25 : 6;
   }
   const k = op.slice(2);
   if (intr_of(k)) {
-    return k === "U32.div" || k === "U32.mod" || k === "Nat.divmod" ? 4
-      : k.startsWith("Nat.") ? 2 : 1;
+    return nd.xs.every((x) => g.cls[eg_find(g, x)].some((n) =>
+      n.op.startsWith("l:"))) ? 0
+      : k === "U32.div" || k === "U32.mod" || k === "Nat.divmod" ? 4
+      : k.startsWith("Nat.") ? 2 : 0.25;
   }
   return eq_def_cost(k);
 }
@@ -1713,6 +1718,12 @@ function eg_extract(g: EGraph, root: number, R: Region): [HTerm, number] | null 
   for (const c of order) {
     cost += eq_cost(g, pick[c]!, c) * (shared.has(c) ? 1 : refs.get(c)!);
   }
+  // a constructor or a closure takes its type from its annotation alone
+  if (order.some((c) => g.ty[c] === null && !shared.has(c)
+    && (pick[c]!.op.startsWith("k:") || pick[c]!.t?.$ === "Lam"
+      || pick[c]!.t?.$ === "Mat"))) {
+    return null;
+  }
   const build = (c: number, env: Map<number, HTerm>): HTerm => {
     c = eg_find(g, c);
     const got = env.get(c);
@@ -1756,7 +1767,7 @@ function eq_region(t: HTerm): HTerm {
   if (process.env.EQSAT_LOG) console.error("  extract"); // DEBUG
   const out = eg_extract(g, root, R);
   FL.eq_stats.push([g.n, cost, out?.[1] ?? cost]);
-  return out !== null && out[1] < cost - 0.5 ? out[0] : t;
+  return out !== null && out[1] <= cost - 1 ? out[0] : t;
 }
 
 // The case tree: lambdas, matches and a fork's let are kept, each arm's
@@ -2067,11 +2078,248 @@ function eq_drops(roots: Name[]): void {
   }
 }
 
+// One call site: a def d whose case tree ends, in every arm, in an
+// expression with exactly one call to the same def g on one argument (g
+// costs a frame or more and is not d) becomes
+//
+//   d(ps)          = d~k(g(d~s(qs)), ps)
+//   d~s(qs)        = d's case tree, each arm answering its call's argument
+//   d~k(r, ps)     = d's case tree, each arm's call replaced by r
+//
+// where qs are the parameters d~s reads (those matched or named in an
+// argument). For every input, d~s takes the arm d takes and answers that
+// arm's argument, and d~k takes the same arm with the call's value: d's
+// answer. g runs before the rest of the arm, so only the point at which a
+// stopping program stops can move. g then has one call site, which clang
+// inlines into the loop (listops' runOne: -21% instructions on the
+// integration branch); the term-level model cannot see that, so the rule's
+// gain is stated by measurement. The three bodies are written unannotated
+// and elaborated by bend.ts' def_check, which also refuses one that would
+// read an affine parameter twice; a refusal leaves d as it was.
+
+type LT = Bend.LTerm;
+
+function lt_strip(t: any): any {
+  if (t === null || typeof t !== "object") {
+    return t;
+  }
+  if (Array.isArray(t)) {
+    return t.map(lt_strip);
+  }
+  if (t.$ === "Ann") {
+    return lt_strip(t.x);
+  }
+  const o: any = {};
+  for (const k in t) {
+    if (k !== "s" && k !== "c") {
+      o[k] = lt_strip(t[k]);
+    }
+  }
+  return o;
+}
+
+function lt_spine(t: LT): [LT, LT[]] {
+  const xs: LT[] = [];
+  while (t.$ === "App") {
+    xs.unshift(t.x);
+    t = t.f;
+  }
+  return [t, xs];
+}
+
+// Calls to defs in t that run with t (not under a lambda or a match).
+function lt_calls(t: LT, out: [Name, LT, LT[]][] = []): [Name, LT, LT[]][] {
+  if (t.$ === "App" || t.$ === "Ref") {
+    const [h, xs] = lt_spine(t);
+    if (h.$ === "Ref") {
+      out.push([h.k, t, xs]);
+    }
+    xs.forEach((x) => lt_calls(x, out));
+    if (h.$ !== "Ref") {
+      lt_calls(h, out);
+    }
+  } else if (t.$ === "Let") {
+    t.v.forEach((v) => lt_calls(v, out));
+    lt_calls(t.f, out);
+  } else if (t.$ === "Ctr") {
+    t.x.forEach((x) => lt_calls(x, out));
+  }
+  return out;
+}
+
+function lt_vars(t: any, out = new Set<number>()): Set<number> {
+  if (t === null || typeof t !== "object") {
+    return out;
+  }
+  if (Array.isArray(t)) {
+    t.forEach((x) => lt_vars(x, out));
+    return out;
+  }
+  if (t.$ === "Var") {
+    out.add(t.i);
+  }
+  for (const k in t) {
+    lt_vars(t[k], out);
+  }
+  return out;
+}
+
+// The arms of a case tree over n parameters: f maps each leaf (with the
+// binder levels of the parameters bound so far, in order) and drop removes
+// the binder of each parameter it names. A leaf past an Efq is kept.
+type Leaf = { t: LT; ps: (number | null)[] };
+
+function lt_arms(t: LT, n: number, f: (l: Leaf) => LT,
+  drop: Set<number> = new Set(), ps: (number | null)[] = []): LT | null {
+  if (t.$ === "Efq") {
+    return t;
+  }
+  if (ps.length < n && t.$ === "Lam") {
+    const at = ps.length;
+    const b = lt_arms(t.f, n, f, drop, [...ps, t.i]);
+    return b === null ? null : drop.has(at) ? b : { ...t, f: b };
+  }
+  if (ps.length < n && t.$ === "Mat") {
+    const k = FL.book.ctrs[t.k]?.n;
+    if (k === undefined) {
+      return null;
+    }
+    // the arm opens k fields, then the parameters after the scrutinee
+    let h: LT | null = t.h;
+    const flds: LT[] = [];
+    for (let j = 0; j < k && h.$ === "Lam"; j++) {
+      flds.push(h);
+      h = h.f;
+    }
+    if (flds.length !== k) {
+      return null;
+    }
+    h = lt_arms(h, n, f, drop, [...ps, null]);
+    const m = lt_arms(t.m, n, f, drop, ps);
+    if (h === null || m === null) {
+      return null;
+    }
+    const hh = flds.reduceRight((b: LT, l) => ({ ...l, f: b }) as LT, h);
+    return { ...t, h: hh, m };
+  }
+  return ps.length === n && t.$ !== "Lam" && t.$ !== "Mat" ? f({ t, ps })
+    : null;
+}
+
+function eq_sites(d: Name): void {
+  const tld = tld_of(d);
+  const fn = fun_of(d);
+  if (FL.js || !done_live(tld) || tld.x > 0 || tld.u || d.includes("~")
+    || fn.h === null) {
+    return;
+  }
+  const n = tld.n;
+  const doms = tele_unbind(tld.T).doms;
+  if (doms.length !== n || doms.some(([, , A]) => term_probes(A).size > 0)) {
+    return;
+  }
+  const e = lt_strip(Bend.term_lower(fn.h)) as LT;
+  const leaves: [Name, LT, LT][] = [];
+  let ok = true;
+  const used = new Set<number>();
+  lt_arms(e, n, (l) => {
+    const cs = lt_calls(l.t).filter(([k]) => k !== d && !intr_of(k)
+      && done_live(tld_of(k)) && eq_def_cost(k) >= 20);
+    if (cs.length !== 1 || cs[0][2].length !== 1) {
+      ok = false;
+      return l.t;
+    }
+    const [k, call, [x]] = cs[0];
+    const vs = lt_vars(x);
+    l.ps.forEach((p, j) => p !== null && vs.has(p) && used.add(j));
+    leaves.push([k, call, x]);
+    return l.t;
+  });
+  const g = leaves[0]?.[0];
+  if (!ok || leaves.length < 2 || leaves.some(([k]) => k !== g)
+    || (tld_of(g) as Bend.Def).u || tld_of(g).n !== 1) {
+    return;
+  }
+  // a parameter that is matched stays in d~s
+  lt_arms(e, n, (l) => {
+    l.ps.forEach((p, j) => p === null && used.add(j));
+    return l.t;
+  });
+  const gt = tele_unbind(tld_of(g).T);
+  if (term_probes(gt.ret).size > 0) {
+    return;
+  }
+  const drop = new Set([...Array(n).keys()].filter((j) => !used.has(j)));
+  const arg = new Map(leaves.map(([, c, x]) => [c, x]));
+  const es = lt_arms(e, n, (l) => {
+    const [, c] = lt_calls(l.t).find(([k]) => k === g)!;
+    return arg.get(c)!;
+  }, drop);
+  const R = 1 << 20;
+  const ek = lt_arms(e, n, (l) => {
+    const [, c] = lt_calls(l.t).find(([k]) => k === g)!;
+    return lt_swap(l.t, c, Bend.Var("r", R) as LT);
+  });
+  if (es === null || ek === null) {
+    return;
+  }
+  const [ws, wk] = [d + "~s", d + "~k"];
+  const vs = [...Array(n).keys()].map((j) => Bend.Var(doms[j][1], R + 1 + j) as LT);
+  const call = (h: Name, xs: LT[]) => xs.reduce((f: LT, x) =>
+    Bend.App(f, x) as LT, Bend.Ref(h) as LT);
+  const ed = vs.reduceRight((b: LT, v, j) => Bend.Lam(doms[j][1], R + 1 + j,
+    b) as LT, call(wk, [call(g, [call(ws, vs.filter((_, j) => used.has(j)))]),
+    ...vs]));
+  const tele = (js: number[], ret: HTerm): HTerm => js.reduceRight(
+    (B: () => HTerm, j) => () => Bend.All(doms[j][0], doms[j][1], 0, doms[j][2],
+      () => B()), () => ret)();
+  const Ts = tele([...used].sort((a, b) => a - b), gt.doms[0][2]);
+  const Tk = Bend.All(Bend.Lone(), "r", 0, gt.ret, () => tld.T);
+  const book = { ...FL.book, tlds: Object.assign(Object.create(null),
+    FL.book.tlds, FL.made) };
+  const mk = (k: Name, T: HTerm, m: number, b: LT): Bend.Def | null => {
+    const def: Bend.Def = { $: "Def", n: m, x: 0, T, v: Bend.term_higher(b) };
+    book.tlds[k] = { ...def, v: null };
+    try {
+      const out = { ...def, e: Bend.def_check(book, k, def) };
+      book.tlds[k] = out;
+      return out;
+    } catch {
+      return null;
+    }
+  };
+  const ds = mk(ws, Ts, used.size, es);
+  const dk = ds && mk(wk, Tk, n + 1, Bend.Lam("r", R, ek) as LT);
+  const dd = dk && mk(d + "~eq", tld.T, n, ed);
+  if (dd === null) {
+    return;
+  }
+  FL.made[ws] = ds!;
+  FL.made[wk] = dk!;
+  fn.h = Bend.term_higher(dd.e!);
+}
+
+function lt_swap(t: LT, from: LT, to: LT): LT {
+  if (t === from) {
+    return to;
+  }
+  if (t === null || typeof t !== "object") {
+    return t;
+  }
+  const o: any = Array.isArray(t) ? [] : {};
+  for (const k in t) {
+    o[k] = typeof (t as any)[k] === "object" ? lt_swap((t as any)[k], from, to)
+      : (t as any)[k];
+  }
+  return o;
+}
+
 function eq_def(d: Name): void {
   const f = fun_of(d);
   if (FL.js || f.h === null) {
     return;
   }
+  eq_sites(d);
   const h0 = f.h;
   const t0 = Date.now(); // DEBUG
   if (process.env.EQSAT_LOG) console.error("EQSAT> " + d); // DEBUG
