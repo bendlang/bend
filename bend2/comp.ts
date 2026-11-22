@@ -1542,14 +1542,19 @@ function eq_cost(g: EGraph, nd: ENode, c: number): number {
     return T && !lay_of(T).ks.includes("box") ? 0 : 6;
   }
   const k = op.slice(2);
+  const lits = nd.xs.every((x) => g.cls[eg_find(g, x)].some((n) =>
+    n.op.startsWith("l:")));
   if (intr_of(k)) {
-    return nd.xs.every((x) => g.cls[eg_find(g, x)].some((n) =>
-      n.op.startsWith("l:"))) ? 0
+    return lits ? 0
       : k === "U32.div" || k === "U32.mod" || k === "Nat.divmod" ? 4
-      : k.startsWith("Nat.") ? 2 : 0;
+      : EQ_CHECKED.has(k) ? 2 : 0;
   }
-  return eq_def_cost(k);
+  const c0 = eq_def_cost(k);
+  return lits && c0 < 20 ? 0 : c0;
 }
+
+// The Nat operations that test the 2^48 limit (an error path clang keeps).
+const EQ_CHECKED = new Set(["Nat.add", "Nat.mul", "Nat.double"]);
 
 function eq_def_cost(k: Name): number {
   return memo(FL.eq_costs, k, () => {
@@ -1900,11 +1905,13 @@ function eq_region(t: HTerm): HTerm {
     return t;
   }
   EQ_PROF.sat = (EQ_PROF.sat ?? 0) + 1; // DEBUG
-  const cost = eq_seen_cost(g, R);
   for (let i = 0; i < EQ_ROUNDS && g.n <= EQ_NODES && eg_round(g); i++) {
     if (process.env.EQSAT_LOG) console.error("  round " + i + " n=" + g.n + " classes=" + g.up.filter((u, c) => eg_find(g, c) === c).length); // DEBUG
   }
   FL.eq_nodes += g.n;
+  // the arm as written, costed in the saturated graph: an operation on
+  // what folded to a literal is free on both sides
+  const cost = eq_seen_cost(g, R);
   if (process.env.EQSAT_LOG) console.error("  extract"); // DEBUG
   const out = eq_t("extract", () => eg_extract(g, root, R));
   FL.eq_stats.push([g.n, cost, out?.[1] ?? cost]);
