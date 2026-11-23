@@ -23,7 +23,12 @@ function cli_source_location() {
       return 1;
     }
     fs.writeFileSync(dep, "import Base\nimport ./missing.bend as M\n");
-    return reports([entry], ":2:8", "2>| import ./missing.bend as M") ? 0 : 2;
+    if (!reports([entry], ":2:8", "2>| import ./missing.bend as M")) {
+      return 2;
+    }
+    // an error in a def with a ~ parameter is in this file, not in Base
+    fs.writeFileSync(dep, "import Base\n\ndef total(~f: U32 -> U32, cost: U32) -> U32:\n  wrong\n");
+    return reports([dep], ":4:3", "4>|   wrong") ? 0 : 3;
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

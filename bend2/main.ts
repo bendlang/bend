@@ -1121,8 +1121,14 @@ function book_location(err: Bend.Err, seen: Map<string, string | null>): string 
     return "";
   }
   const files = [...seen].reverse();
-  const base = span.file.ns === "" && Object.values(err.bok.tlds)
-    .some((t) => t.b && t.T.s?.file === span.file);
+  // A def's ~ parameters are tlds marked b too, typed in the def's own file,
+  // in a book whose tlds inherit the others: skip them, and walk inherited.
+  const tlds = err.bok.tlds;
+  let base = false;
+  for (const k in tlds) {
+    base ||= span.file.ns === "" && !k.includes("~") && !!tlds[k].b
+      && tlds[k].T.s?.file === span.file;
+  }
   const source = files.find(([p, ns]) => ns === span.file.ns && (p === BASE) === base)
     ?? files.find(([, ns]) => ns === null);
   if (source === undefined) {
