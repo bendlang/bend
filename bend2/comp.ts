@@ -83,7 +83,11 @@ type Of<K> = Extract<HTerm, { $: K }>;
 
 // A value's bounds over a spin's whole run, as C over the spin's entry
 // arguments; p and add say it is parameter word p's current value plus add.
-type Iv = { lo: string; hi: string; p?: number; add?: number };
+// p and add: parameter word p plus add; sp and st: parameter word sp
+// stepped by st, a self call's form ("@k" plus word k, "~c" minus c, "~@k"
+// minus word k)
+type Iv = { lo: string; hi: string; p?: number; add?: number; sp?: number;
+  st?: string };
 
 // A spin's index analysis: what each self call passes for each parameter
 // word (forms), the roles read off them, each variable's bounds, and the
@@ -2981,9 +2985,18 @@ function ix_word(sc: Scope, w: string, sub = 0): Iv {
   if (role !== "down" && role !== "same") {
     // under an arm that took low successors off the countdown, that many
     // of its steps are still to come
-    const raw = ix_tmp(`${at} + ${role}ull * ${
-      less(ix_sat(`(u64)r${down}`), sc.low ?? 0)}`);
-    [lo, hi] = [ix_tmp(`(${raw} > ${IX_MAX} ? 0 : ${at})`), ix_sat(raw)];
+    const r = role.replace(/^~/, "");
+    const step = r[0] === "@" ? ix_sat(`(u64)r${r.slice(1)}`) : `${r}ull`;
+    const n = less(ix_sat(`(u64)r${down}`), sc.low ?? 0);
+    if (role[0] === "~") {
+      // down by step: under at by step times the steps to come, or wrapped
+      const raw = ix_tmp(`${step} * ${n}`);
+      [lo, hi] = [ix_tmp(`(${raw} > ${at} ? 0 : ${at} - ${raw})`),
+        ix_tmp(`(${raw} > ${at} ? ${IX_MAX} : ${at})`)];
+    } else {
+      const raw = ix_tmp(`${at} + ${step} * ${n}`);
+      [lo, hi] = [ix_tmp(`(${raw} > ${IX_MAX} ? 0 : ${at})`), ix_sat(raw)];
+    }
   }
   return { lo: sub === 0 ? lo : ix_tmp(`(${lo} > ${sub} ? ${lo} - ${sub} : 0)`),
     hi: less(hi, sub), p, add: -sub };
@@ -3016,6 +3029,13 @@ function ix_inl(sc: Scope, k: Name): boolean {
   }
   ix.seen = true;
   return ix.inl-- > 0;
+}
+
+// A call emitted in place (a step of a flat cycle) hands its parameters
+// the bounds of its arguments, as a helper's does.
+function ix_args(sc: Scope, ck: Spine, vs: Val[]): Val[] {
+  return FL.ix && sc.seg.native && vs.length === ck.xs.length
+    ? vs.map((v, i) => ({ ...v, iv: iv(sc, ck.xs[i]) })) : vs;
 }
 
 // A helper's result word `to` takes w: it is what every w it takes is.
@@ -3054,18 +3074,24 @@ function iv(sc: Scope, tm: HTerm): Iv {
     lo: ix_tmp(`(${a.lo} ${o} ${b.lo} ? ${a.lo} : ${b.lo})`),
     hi: ix_tmp(`(${a.hi} ${o} ${b.hi} ? ${a.hi} : ${b.hi})`) });
   const top = (hi: string): Iv => ({ lo: "0ull", hi: ix_tmp(hi) });
+  // a word down by a constant or by another word
+  const c = /^(\d+)ull$/.exec(b.hi);
+  const down = k !== "U32.sub" || a.p === undefined || a.add !== 0 ? {}
+    : c && b.lo === b.hi ? { sp: a.p, st: "~" + c[1] }
+    : b.p !== undefined && b.add === 0 ? { sp: a.p, st: "~@" + b.p } : {};
   // no bound in, none out: a check that cannot hold asks for no copy
   if ((a.hi === IX_MAX || m.args[1] && b.hi === IX_MAX)
     && /\.(sub|x?or|max|shln|shr)$/.test(k)) {
-    return IX_ANY;
+    return { ...IX_ANY, ...down };
   }
   switch (k) {
     case "U32.add":
     case "Nat.add": {
-      const c = /^(\d+)ull$/.exec(b.hi);
+      const by = k === "U32.add" && !c && a.p !== undefined && a.add === 0
+        && b.p !== undefined && b.add === 0 ? { sp: a.p, st: "@" + b.p } : {};
       return { ...sum(a, b, "+"), ...a.p !== undefined && c
         && b.lo === b.hi && a.add! >= 0
-        ? { p: a.p, add: a.add! + Number(c[1]) } : {} };
+        ? { p: a.p, add: a.add! + Number(c[1]) } : by };
     }
     case "U32.inc": {
       return { ...sum(a, one, "+"), ...a.p !== undefined && a.add! >= 0
@@ -3082,7 +3108,7 @@ function iv(sc: Scope, tm: HTerm): Iv {
     case "U32.sub": {
       const ok = ix_tmp(`${a.lo} >= ${b.hi}`);
       return { lo: ix_tmp(`(${ok} ? ${a.lo} - ${b.hi} : 0)`),
-        hi: ix_tmp(`(${ok} ? ${a.hi} - ${b.lo} : ${IX_MAX})`) };
+        hi: ix_tmp(`(${ok} ? ${a.hi} - ${b.lo} : ${IX_MAX})`), ...down };
     }
     case "Nat.sub": {
       return { lo: ix_tmp(`(${a.lo} > ${b.hi} ? ${a.lo} - ${b.hi} : 0)`),
@@ -3149,8 +3175,11 @@ function ix_forms(sc: Scope, ck: Spine, vals: Val[]): void {
     vals[i].ws.forEach((word, j) => {
       // a word of a record, or of a helper's result, is read by its name
       const g = j === 0 && got.p !== undefined ? got : ix_word(sc, word);
-      memo(FL.ix!.forms, w, () => new Set()).add(g.p !== w++ ? "?"
-        : g.add! > 0 ? "+" + g.add : String(g.add));
+      // itself stepped by another word, or down by a constant
+      const st = j === 0 && got.sp === w ? got.st : undefined;
+      memo(FL.ix!.forms, w, () => new Set()).add(st ?? (g.p !== w ? "?"
+        : g.add! > 0 ? "+" + g.add : String(g.add)));
+      w++;
     });
   });
 }
@@ -3163,8 +3192,14 @@ function ix_roles(ix: Ix, seg: Seg): boolean {
       : fs.every((f) => f[0] === "-" && f !== "-0") && seg.ks[p] === "w64"
       ? "down"
       : up.length > 0 && new Set(up).size === 1 && seg.ks[p] === "w32"
-        && fs.every((f) => f === "0" || f[0] === "+") ? up[0].slice(1) : "";
+        && fs.every((f) => f === "0" || f[0] === "+") ? up[0].slice(1)
+      : new Set(fs.filter((f) => f !== "0")).size === 1 && seg.ks[p] === "w32"
+        && /^~?@\d+$|^~\d+$/.test(fs.find((f) => f !== "0")!)
+        ? fs.find((f) => f !== "0")! : "";
   });
+  // a counter stepped by another word needs that word fixed for the loop
+  ix.roles = ix.roles.map((r) => /@/.test(r)
+    && ix.roles![Number(r.replace(/^~?@/, ""))] !== "same" ? "" : r);
   ix.info.clear();
   return ix.roles.includes("down");
 }
@@ -3508,7 +3543,8 @@ function emit_let(sc: Scope, x: Of<"Let">): void {
   if (FL.ix) {
     const got = iv(sc, x.v[0]);
     FL.ix.info.set(o.ps[0].i, got.hi === IX_MAX && got.p === undefined
-      && v.ws.length === 1 ? ix_word(sc, v.ws[0]) : got);
+      && got.sp === undefined && v.ws.length === 1
+      ? ix_word(sc, v.ws[0]) : got);
   }
   bind_uses(sc, o.ps[0], v, [o.b], ty_ann(x.v[0])!);
 }
@@ -3583,7 +3619,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
           ? emit_put(sc, dst, inl_q(sc, ck) ? emit_inl(sc, ck)
             : emit_spin(sc, ck))
           : emit_body({ ...sc, def: ck.k }, h!, ck.tld!.T,
-            emit_args(sc, ck, true), dst);
+            ix_args(sc, ck, emit_args(sc, ck, true)), dst);
       }
       if (!lay_eq(sc.seg.ret, ret)
         && (sc.seg.ret.arms !== null || ret.arms !== null)) {
