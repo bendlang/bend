@@ -86,6 +86,22 @@ def sumc(+n: Nat, +j: U32, +step: U32, s: Array<U32> & U32) -> Array<U32> & U32:
     case 1n+p:
       sumc(p, (j + step : U32), step, sumc.at(j, s))
 
+# the same, down by a word
+def sumd(+n: Nat, +j: U32, +step: U32, s: Array<U32> & U32) -> Array<U32> & U32:
+  match n:
+    case 0n:
+      s
+    case 1n+p:
+      sumd(p, (j - step : U32), step, sumc.at(j, s))
+
+# the same, the step growing by one each turn: no bound
+def sumg(+n: Nat, +j: U32, +step: U32, s: Array<U32> & U32) -> Array<U32> & U32:
+  match n:
+    case 0n:
+      s
+    case 1n+p:
+      sumg(p, (j + step : U32), (step + 1 : U32), sumc.at(j, s))
+
 def sumc.fin(r: Array<U32> & U32) -> U32:
   (a, +x) = r
   x
@@ -138,9 +154,15 @@ def main() -> IO(Unit):
     IO.print(U32.show(sumc.fin(sumc(nat(20), v(1), v(3), (upl(nat(64), v(0), v(1), [0 : U32*64n]), 0)))))
     IO.print(U32.show(sumc.fin(sumc(nat(20), v(1), v(5), (upl(nat(64), v(0), v(1), [0 : U32*64n]), 0)))))
     IO.print(U32.show(sumc.fin(sumc(nat(20), v(4294967290), v(1), (upl(nat(64), v(0), v(1), [0 : U32*64n]), 0)))))
+    # read-only, down by 1 from 31 (in range) and by 3 from 31 (under zero), over 32 cells
+    IO.print(U32.show(sumc.fin(sumd(nat(17), v(31), v(1), (upl(nat(32), v(0), v(1), [0 : U32*32n]), 0)))))
+    IO.print(U32.show(sumc.fin(sumd(nat(17), v(31), v(3), (upl(nat(32), v(0), v(1), [0 : U32*32n]), 0)))))
+    # read-only, a growing step from 1 over 32 cells: past the end
+    IO.print(U32.show(sumc.fin(sumg(nat(17), v(0), v(1), (upl(nat(32), v(0), v(1), [0 : U32*32n]), 0)))))
     # a column through two defs: in range, past the end
     IO.print(U32.show(colsum(nat(16), v(1), v(1), upl(nat(16), v(0), v(1), [0 : U32*16n]))))
     IO.print(U32.show(colsum(nat(16), v(1), v(5), upl(nat(16), v(0), v(1), [0 : U32*16n]))))
+
 
 
 
@@ -162,5 +184,8 @@ def main() -> IO(Unit):
 #|489379478
 #|4235580858
 #|1303532146
+#|1387629942
+#|1646206758
+#|3537615627
 #|3660892928
 #|2623740672
