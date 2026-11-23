@@ -2871,7 +2871,10 @@ function emit_native(sc: Scope, k: Name, to?: Name,
     const body = [...top, ...ix.conds.length === 0 ? loop(seg, 1) : [
       ...seg_text([...ix.tmps].filter(([t]) => need.has(t)).map(([t, ex]) =>
         `u64 ${t} = ${ex};`), 1),
-      `  if (!DEVICE && ${[...new Set(ix.conds)].join("\n    && ")}) {`,
+      // one test of all the checks: a chain of && reads to clang as a
+      // copy that runs once in 2^n, too cold to inline its calls into
+      `  if (!DEVICE${[...new Set(ix.conds)].map((c) =>
+        `\n    & (${c})`).join("")}) {`,
       ...loop(bare, 2), "  } else {", ...loop(seg, 2), "  }"],
     "  return 1;", "}"];
     // the device runs the masked copy alone: its length is the spin's
