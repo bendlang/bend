@@ -1247,31 +1247,43 @@ def List.sort.pair(-A: Data, x: A, y: A, le: Bool) -> List<&2, A>:
     case False{}:
       [y, x]
 
-# Start with the first pass's sorted pairs, without building singleton runs.
-def List.sort.pairs(~A: Data, ~le: A -> A -> Bool, xs: List<&2, A>) ->
-  List<&2, List<&2, A>>:
+# Seed with sorted pairs and count the input in the same tail walk.
+def List.sort.pairs(
+  ~A: Data, ~le: A -> A -> Bool, xs: List<&2, A>, n: Nat, acc: List<&2, List<&2, A>>
+) -> Nat & List<&2, List<&2, A>>:
   match xs:
     case Nil{}:
-      Nil{}
+      (n, acc)
     case x <> Nil{}:
-      [[x]]
+      (1n+n, [x] <> acc)
     case +x <> +y <> t:
-      List.sort.pair(A, x, y, le(x, y)) <> List.sort.pairs(~A, ~le, t)
+      List.sort.pairs(~A, ~le, t, 2n+n, List.sort.pair(A, x, y, le(x, y)) <> acc)
+
+# A reversed pass reads the later run first, but ties still pick the earlier run.
+def List.sort.merge(
+  ~A: Data, ~le: A -> A -> Bool, n: Nat, rev: Bool, l: List<&2, A>, r: List<&2, A>
+) -> List<&2, A>:
+  match rev:
+    case False{}:
+      List.merge.go(~A, ~le, n, (Nil{}, l, r))
+    case True{}:
+      List.merge.go(~A, ~le, n, (Nil{}, r, l))
 
 def List.sort.pass(
-  ~A: Data, ~le: A -> A -> Bool, +n: Nat, runs: List<&2, List<&2, A>>
+  ~A: Data, ~le: A -> A -> Bool, +n: Nat, +rev: Bool,
+  runs: List<&2, List<&2, A>>, acc: List<&2, List<&2, A>>
 ) -> List<&2, List<&2, A>>:
   match runs:
     case Nil{}:
-      Nil{}
+      acc
     case r <> Nil{}:
-      [r]
+      r <> acc
     case r1 <> r2 <> rest:
-      List.merge.go(~A, ~le, n, (Nil{}, r1, r2))
-        <> List.sort.pass(~A, ~le, n, rest)
+      List.sort.pass(~A, ~le, n, rev, rest, List.sort.merge(~A, ~le, n, rev, r1, r2) <> acc)
 
+# Prepending results alternates the scan direction without reversing a pass.
 def List.sort.go(
-  ~A: Data, ~le: A -> A -> Bool, fuel: Nat, +n: Nat, runs: List<&2, List<&2, A>>
+  ~A: Data, ~le: A -> A -> Bool, fuel: Nat, +n: Nat, +rev: Bool, runs: List<&2, List<&2, A>>
 ) -> List<&2, A>:
   match fuel:
     case 0n:
@@ -1283,17 +1295,15 @@ def List.sort.go(
         case r <> Nil{}:
           r
         case r1 <> r2 <> rest:
-          List.sort.go(~A, ~le, f, n,
-            List.sort.pass(~A, ~le, n, r1 <> r2 <> rest))
+          List.sort.go(~A, ~le, f, n, Bool.not(rev),
+            List.sort.pass(~A, ~le, n, rev, r1 <> r2 <> rest, Nil{}))
+
+def List.sort.start(~A: Data, ~le: A -> A -> Bool, seed: Nat & List<&2, List<&2, A>>) -> List<&2, A>:
+  (+n, runs) = seed
+  List.sort.go(~A, ~le, n, n, True{}, runs)
 
 def List.sort(~A: Data, ~le: A -> A -> Bool, xs: List<&2, A>) -> List<&2, A>:
-  match xs:
-    case Nil{}:
-      Nil{}
-    case h <> t:
-      +ys = {h <> t : List<&2, A>}
-      +n = List.length(&2, A, ys)
-      List.sort.go(~A, ~le, n, n, List.sort.pairs(~A, ~le, ys))
+  List.sort.start(~A, ~le, List.sort.pairs(~A, ~le, xs, 0n, Nil{}))
 
 def List.for_each(
   ~a: Quant, ~A: Kind(a), ~f: A -> IO(Unit), xs: List<a, A>
