@@ -283,7 +283,7 @@ function settings(
   if (given === undefined || given === "off") {
     return { off: given === "off", options: { ...rule.options } };
   }
-  if (typeof given !== "object" || given === null) {
+  if (typeof given !== "object" || given === null || Array.isArray(given)) {
     throw new Error(where + ' must be "off" or an object');
   }
   const { severity, ...options } = given;
@@ -320,6 +320,10 @@ export async function lint(
     unsaved: held,
   }: LintOptions = {},
 ): Promise<LintResult> {
+  const overrides = config.rules;
+  if (overrides !== undefined && (typeof overrides !== "object" || overrides === null || Array.isArray(overrides))) {
+    throw new Error("bend-lint config: `rules` must be an object");
+  }
   const strings = (xs: unknown): boolean =>
     xs === undefined || (Array.isArray(xs) && xs.every((x) => typeof x === "string"));
   const bad = rules.findIndex(

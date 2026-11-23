@@ -2056,6 +2056,24 @@ describe("cli", () => {
     });
   });
 
+  test("malformed rule maps and override arrays fail instead of using defaults", () => {
+    const rule = module(
+      "rules_map.js",
+      `[{ id: "test/map", run: (cx) => [cx.diag({ message: "ran with default options" })] }]`,
+    );
+    for (const [index, overrides] of [[], null, { "test/map": [] }].entries()) {
+      const config = fixture("bad_rules_" + index + ".json", JSON.stringify({ rules: overrides }));
+      expect(run(input, "--rules", rule, "--config", config)).toMatchObject({
+        status: 2,
+        stderr: expect.stringContaining(index === 2 ? "test/map must be" : "`rules` must be an object"),
+      });
+    }
+    const config = fixture("off_rules.json", JSON.stringify({ rules: { "test/map": "off" } }));
+    const off = run(input, "--rules", rule, "--config", config, "--json");
+    expect(off.status).toBe(0);
+    expect(JSON.parse(off.stdout).findings).toEqual([]);
+  });
+
   test("--fix writes only the linted file, and prints findings when fixes clash", () => {
     const dir = path.join(DIR, "fixroot");
     fs.mkdirSync(dir, { recursive: true });
