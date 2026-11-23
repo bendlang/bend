@@ -156,7 +156,7 @@ async function cli(): Promise<void> {
   if (args[0] === "guide" && args.length <= 2) {
     cli_guide(args[1] ?? "guide");
   } else if (args[0] === "base" && args.length <= 2) {
-    cli_base(args[1]);
+    await cli_base(args[1]);
   } else {
     await cli_file(args);
   }
@@ -522,13 +522,14 @@ function cli_build(bin: string, file: string): void {
 }
 
 // cli_base prints the base library; with --types, its type declarations
-// (every `type`, and every law whose result is a kind); with a name, the
+// (datatypes and defs or laws ending in a kind); with a name, the
 // blocks declaring it or a name under it (its law, its def, its @unsafe).
-function cli_base(what?: string): void {
+async function cli_base(what?: string): Promise<void> {
   const src = fs.readFileSync(BASE, "utf8");
   if (what === undefined) {
     return cli_say(1, src);
   }
+  const book = what === "--types" ? await book_read(BASE) : null;
   const want: string[] = [];
   let tag = "";
   for (const part of src.split(/\n(?=type |law |def |@)/)) {
@@ -539,10 +540,9 @@ function cli_base(what?: string): void {
       continue;
     }
     const s = text.replace(/(\n(#[^\n]*)?)+$/, "");
-    const last = s.slice(s.lastIndexOf("\n") + 1);
-    const ok = what === "--types"
-      ? m[1] === "type" || (m[1] === "law" && /^ *(Type|Data|Kind\(.*\))$/.test(last))
-      : m[2] === what || m[2].startsWith(what + ".");
+    const t = book?.tlds[m[2]];
+    const ok = book === null ? m[2] === what || m[2].startsWith(what + ".")
+      : t?.$ === "ADT" || (t?.$ === "Def" && Bend.tele_unbind(book, t.T).ret.$ === "Typ");
     if (ok) {
       want.push(s);
     }
