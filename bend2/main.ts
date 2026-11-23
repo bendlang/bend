@@ -264,8 +264,11 @@ async function cli_file(args: string[]): Promise<void> {
         named_parts(named);
       }
     } else if (a === "-o") {
-      i += 1;
-      outs.push(args[i] ?? cli_fail("-o needs an output file"));
+      const out = args[++i];
+      if (!out || out.startsWith("-")) {
+        cli_fail("-o needs an output file (use ./ for a name starting with -)");
+      }
+      outs.push(out);
     } else if (a === "--") {
       argv.push(...args.splice(i + 1));
     } else if (a.startsWith("-")) {
