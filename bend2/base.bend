@@ -2895,6 +2895,9 @@ def Array.write.at(
 def Array.write(~T: Data, ~f: String -> T -> IO(Unit), a: Array<T>) -> IO(Unit):
   Array.write.at(~T, ~f, Array.size(T, a))
 
+# Array.show walks from the last element to the first, so each step puts
+# one element's text in front of the rest: a walk from the first would copy
+# the text shown so far at every step.
 def Array.show.go(
   ~T: Data, ~f: String -> T -> String, n: Nat, +i: U32, s: String,
   r: Array<T> & T
@@ -2902,18 +2905,18 @@ def Array.show.go(
   match n:
     case 0n:
       (a, x) = r
-      f(s, x) ++ "]"
+      f("[", x) ++ s
     case 1n+p:
       (a, x) = r
-      +j = U32.inc(i)
-      Array.show.go(~T, ~f, p, j, f(s, x) ++ ", ", Array.get(T, a, j))
+      +j = U32.sub(i, 1)
+      Array.show.go(~T, ~f, p, j, f(", ", x) ++ s, Array.get(T, a, j))
 
 def Array.show.at(
   ~T: Data, ~f: String -> T -> String, an: Array<T> & U32
 ) -> String:
   (a, +n) = an
-  Array.show.go(~T, ~f, U32.to_nat(U32.sub(n, 1)), 0, "[",
-    Array.get(T, a, 0))
+  +i = U32.sub(n, 1)
+  Array.show.go(~T, ~f, U32.to_nat(i), i, "]", Array.get(T, a, i))
 
 def Array.show(~T: Data, ~f: String -> T -> String, a: Array<T>) -> String:
   Array.show.at(~T, ~f, Array.size(T, a))
