@@ -1511,6 +1511,267 @@ function def_fix(k: Name): boolean {
   return true;
 }
 
+// Clo
+// ===
+
+// A call that passes a source lambda to a def k calls k~cN instead: a copy
+// of k that takes the variables the lambda captures first, then k's other
+// parameters, and holds the lambda where k held its parameter, so it is
+// applied in place and no closure is built. A copy reached again with the
+// same lambda (k passing it on unchanged, or through a def k calls) is
+// called again, so a recursion keeps one copy. One copy per def and lambda,
+// CLO_MAX per def, none of a def over CLO_SIZE terms, and a copy of k that
+// passes k a new lambda leaves it a closure, so copies stop. A lambda
+// applied in place is reduced: a variable or a constant in place, any other
+// argument bound by a let. C only; it runs before file_book reads a body.
+
+const CLO_MAX = 64;
+const CLO_SIZE = 4096;
+const CLO_GROW = 16384;
+const CLO_BIG = 1 << 28;
+const CLO_FAIL = { clo: true };
+
+type CloBind = { k: Name; q: Bend.Quant; A: HTerm | null };
+
+type CloDef = { d: Name; env: CloBind[]; hit: boolean };
+
+function clo_book(roots: Name[]): void {
+  const todo = [...roots];
+  const seen = new Set<Name>();
+  while (todo.length > 0) {
+    const k = todo.pop()!;
+    const tld = tld_of(k);
+    if (seen.has(k) || !done_live(tld) || def_foreign(tld)) {
+      seen.add(k);
+      continue;
+    }
+    seen.add(k);
+    const f = fun_of(k);
+    const c: CloDef = { d: k, env: [], hit: false };
+    const e = clo_walk(c, f.h!, 0, tld.T);
+    if (c.hit) {
+      f.h = Bend.term_higher(e);
+    }
+    clo_vars(e, (y) => y.$ === "Ref" && todo.push(y.k));
+  }
+}
+
+// Every node of an LTerm, types included.
+function clo_vars(t: any, f: (y: any) => void): void {
+  if (t && typeof t === "object") {
+    if (t.$) {
+      f(t);
+    }
+    for (const j in t) {
+      j !== "s" && clo_vars(t[j], f);
+    }
+  }
+}
+
+function clo_walk(c: CloDef, t: HTerm, d: number, T: HTerm | null):
+  Bend.LTerm {
+  const s = Bend.term_force(t);
+  const go = (x: HTerm, U: HTerm | null = null, n = d) => clo_walk(c, x, n, U);
+  if (s.$ === "Ann") {
+    return Bend.Ann(go(s.x, s.T), Bend.term_lower(s.T, d), s.s);
+  }
+  if (s.$ === "Lam") {
+    const all = T && Bend.tele_open(FL.book, T);
+    const x: HTerm = Bend.Var(s.k, d);
+    c.env[d] = { k: s.k, q: all ? all.q : Bend.Many(), A: all ? all.A : null };
+    return Bend.Lam(s.k, d, go(s.f(x), all ? all.B(x) : null, d + 1), s.s,
+      s.q);
+  }
+  if (s.$ === "Let") {
+    const xs = s.k.map((k, j): HTerm => Bend.Var(k, d + j));
+    const vs = s.v.map((v) => go(v));
+    s.k.forEach((k, j) => c.env[d + j] = { k, q: s.q[j], A: ty_ann(s.v[j]) });
+    return Bend.Let(s.k, xs.map((_, j) => d + j), vs,
+      go(s.f(xs), T, d + s.k.length), s.s, s.q);
+  }
+  if (s.$ === "Mat") {
+    return Bend.Mat(s.k, go(s.h), go(s.m), s.s);
+  }
+  if (s.$ === "Ctr") {
+    return Bend.Ctr(s.k, s.x.map((x) => go(x)), s.s);
+  }
+  if (s.$ === "Rwt") {
+    return Bend.Rwt(Bend.term_lower(s.e, d), Bend.term_lower(s.p, d),
+      go(s.f, T), s.s);
+  }
+  if (s.$ !== "App") {
+    return Bend.term_lower(s, d);
+  }
+  const apps: Of<"App">[] = [];
+  let h: HTerm = s;
+  let U: HTerm | null = null;
+  for (; h.$ === "App" || h.$ === "Ann"; h = Bend.term_force(h.$ === "App"
+    ? h.f : h.x)) {
+    if (h.$ === "App") {
+      apps.unshift(h);
+      U = null;
+    } else {
+      U = h.T;
+    }
+  }
+  const all = apps.map((a) => a.x);
+  if (h.$ === "Lam") {
+    // a lambda applied in place
+    c.hit = true;
+    const lam = h;
+    const dom = U && Bend.tele_open(FL.book, U);
+    const a = term_strip(all[0]);
+    const re = (b: HTerm) => all.slice(1).reduce((g, x) => Bend.App(g, x), b);
+    return go(!dom || dom.q.$ === "None" || a.$ === "Var" || term_const(a)
+      ? re(lam.f(all[0])) : Bend.Let([lam.k], [0], [Bend.Ann(all[0], dom.A)],
+        (ys: HTerm[]) => re(lam.f(ys[0])), s.s, [Bend.Many()]), T);
+  }
+  const k = h.$ === "Ref" && !h.b ? h.k : "";
+  const tld = tld_of(k) as Bend.Def;
+  const doms = done_live(tld) && !def_foreign(tld) && !intr_of(k)
+    && all.length === fun_of(k).n ? tele_unbind(tld.T).doms : [];
+  const is = all.flatMap((a, i) => doms[i] && i < tld.n && dom_live(doms[i])
+    && Bend.term_strip(a).$ === "Lam" && Bend.tele_open(FL.book, doms[i][2])
+    ? [i] : []);
+  const g = is.length > 0 ? clo_site(c, k, all, is, d) : null;
+  if (g === null) {
+    return Bend.App(go(s.f), go(s.x), s.s);
+  }
+  c.hit = true;
+  return [...g.cs.map((l) => Bend.Ann(Bend.Var(c.env[l].k, l),
+    Bend.term_lower(c.env[l].A!, d))), ...all.filter((_, i) =>
+    !is.includes(i)).map((a) => go(a))].reduce((f: Bend.LTerm, x) =>
+    Bend.App(f, x), Bend.Ref(g.k));
+}
+
+// The copy of k for the lambdas at is, made if new: its name and the levels
+// it captures, in order: the live variables the lambdas read. A variable
+// they name in a type alone stays as it is (an open type, as in a cell).
+function clo_site(c: CloDef, k: Name, all: HTerm[], is: number[], d: number):
+  { k: Name; cs: number[] } | null {
+  const live = new Set<number>();
+  is.forEach((i) => clo_live(Bend.term_strip(all[i]), CLO_BIG, live));
+  const cs = [...live].sort((a, b) => a - b);
+  if (cs.some((l) => l >= d || !c.env[l]?.A || c.env[l].q.$ === "None")) {
+    return null;
+  }
+  // the lambda keeps its own type, the innermost
+  const lams = is.map((i) => {
+    let [x, T] = [Bend.term_force(all[i]), null as HTerm | null];
+    for (; x.$ === "Ann"; x = Bend.term_force(x.x)) {
+      T = x.T;
+    }
+    return Bend.term_lower(T ? Bend.Ann(x, T) : x, CLO_BIG);
+  });
+  const tys = cs.map((l) => Bend.term_lower(c.env[l].A!, CLO_BIG));
+  const ren = (t: Bend.LTerm) => JSON.stringify(t, (j, v) => j === "s"
+    ? undefined : v?.$ === "Var" && v.i >= 0 && v.i < CLO_BIG
+    ? "$" + cs.indexOf(v.i) : v);
+  const key = [is.join(), ...lams.map((t) => ren(t.$ === "Ann" ? t.x : t)),
+    ...cs.map((l, j) =>
+    c.env[l].q.$ + ren(tys[j]))].join("\n");
+  const mine = memo(FL.clos, k, () => new Map<string, Name | null>());
+  if (!mine.has(key)) {
+    const n = key.length;
+    const of = FL.clo_of.get(c.d);
+    mine.set(key, (mine.size + 1) * clo_size(k) > CLO_GROW
+      || mine.size >= CLO_MAX || (of?.k === k && n >= of.n)
+      || clo_size(k) > CLO_SIZE ? null
+      : clo_make(c, k, is, lams, cs, tys, n));
+  }
+  const g = mine.get(key);
+  return g ? { k: g, cs } : null;
+}
+
+// The free levels t reads at run time.
+function clo_live(t: HTerm, d: number, out: Set<number>): void {
+  const s = Bend.term_force(t);
+  if (s.$ === "Var") {
+    s.i >= 0 && s.i < CLO_BIG && out.add(s.i);
+  } else if (s.$ === "Lam") {
+    clo_live(s.f(Bend.Var(s.k, d)), d + 1, out);
+  } else if (s.$ === "Let") {
+    s.v.forEach((v) => clo_live(v, d, out));
+    clo_live(s.f(s.k.map((k, j) => Bend.Var(k, d + j))), d + s.k.length, out);
+  } else {
+    term_kids(s).forEach((x) => clo_live(x, d, out));
+  }
+}
+
+function clo_size(k: Name): number {
+  let n = 0;
+  clo_vars((tld_of(k) as Bend.Def).e, () => n++);
+  return n;
+}
+
+function clo_make(c: CloDef, k: Name, is: number[], lams: Bend.LTerm[],
+  cs: number[], tys: Bend.LTerm[], n: number): Name | null {
+  const tld = tld_of(k) as Bend.Def;
+  const f = fun_of(k);
+  let g = "";
+  for (let j = 0; tld_of(g = k + "~c" + j); j++);
+  const left = (env: Bend.Env) => Array.from({ length: f.n }, (_, i) =>
+    is.includes(i) ? Bend.term_higher(lams[is.indexOf(i)], env) : null);
+  let env0: Bend.Env = null;
+  [...lams, ...tys].forEach((t) => clo_vars(t, (y) => {
+    if (y.$ === "Var" && y.i >= 0 && y.i < CLO_BIG) {
+      env0 = Bend.list_set(env0, y.i, Bend.Var(y.k, y.i));
+    }
+  }));
+  const caps = <X>(mk: (b: CloBind, A: HTerm, B: (x: HTerm) => X) => X,
+    end: (env: Bend.Env) => X): X => {
+    const go = (j: number, env: Bend.Env): X => j === cs.length ? end(env)
+      : mk(c.env[cs[j]], Bend.term_higher(tys[j], env), (x) =>
+        go(j + 1, Bend.list_set(env, cs[j], x)));
+    return go(0, env0);
+  };
+  try {
+    const T = caps<HTerm>((b, A, B) => Bend.All(b.q, b.k, 0, A, B),
+      (env) => clo_tele(tld.T, left(env)));
+    const e = Bend.term_lower(Bend.Ann(caps<HTerm>((b, _, B) =>
+      Bend.Lam(b.k, 0, B), (env) => clo_rm(f.h!, left(env))), T));
+    FL.made[g] = { $: "Def", n: cs.length + tld.n - is.length, x: 0, T,
+      v: Bend.term_higher(e), e, u: tld.u || tld_of(c.d).u };
+  } catch (x) {
+    if (x !== CLO_FAIL) {
+      throw x;
+    }
+    return null;
+  }
+  FL.clo_of.set(g, { k, n });
+  return g;
+}
+
+// T with the parameters that left holds a value for filled with it.
+function clo_tele(T: HTerm, left: (HTerm | null)[]): HTerm {
+  if (!left.some((x) => x)) {
+    return T;
+  }
+  const a = Bend.tele_open(FL.book, T) ?? clo_fail();
+  return left[0] ? clo_tele(a.B(left[0]), left.slice(1)) : Bend.All(a.q, a.k,
+    a.i, a.A, (x: HTerm) => clo_tele(a.B(x), left.slice(1)), a.s);
+}
+
+// A def's body, its parameters that left holds a value for bound to it.
+function clo_rm(t: HTerm, left: (HTerm | null)[]): HTerm {
+  if (!left.some((x) => x)) {
+    return t;
+  }
+  const s = Bend.term_force(t);
+  return s.$ === "Ann" ? Bend.Ann(clo_rm(s.x, left), clo_tele(s.T, left), s.s)
+    : s.$ === "Lam" ? left[0] ? clo_rm(s.f(left[0]), left.slice(1))
+      : Bend.Lam(s.k, s.i, (x: HTerm) => clo_rm(s.f(x), left.slice(1)), s.s,
+        s.q)
+    : s.$ === "Mat" && !left[0] ? Bend.Mat(s.k, clo_rm(s.h, [...Array(
+      FL.book.ctrs[s.k].n).fill(null), ...left.slice(1)]), clo_rm(s.m, left),
+      s.s)
+    : s.$ === "Efq" ? s : clo_fail();
+}
+
+function clo_fail(): never {
+  throw CLO_FAIL;
+}
+
 // Io
 // ==
 
@@ -1557,6 +1818,8 @@ function file_new(book: Bend.Book, js: boolean) {
     loops: new Map<Name, Name[]>(),
     flats: new Map<Name, boolean>(),
     made: Object.create(null) as Record<Name, Bend.Def>,
+    clos: new Map<Name, Map<string, Name | null>>(),
+    clo_of: new Map<Name, { k: Name; n: number }>(),
     trees: new Map<Name, boolean>(),
     funs: new Map<Name, Fun>(),
     nodes: new Map<Name, Lay>(),
@@ -4255,6 +4518,7 @@ function segs_fuse(segs: Seg[], dev: Set<string>): Seg[] {
 
 export function compile_book(book: Bend.Book): string {
   FL = file_new(main_pure(book), false);
+  clo_book(["main"]);
   file_book(["main", ...RUNTIME_ADTS]);
   const us = c_units();
   const all = us.flatMap((u) => u.segs);
