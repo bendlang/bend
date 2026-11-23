@@ -1258,22 +1258,45 @@ function loop_head(h: Name): boolean {
     n + (FL.sites.get(c + " " + d) ?? 0), 0) === 1);
 }
 
-// A def that answers a Nat or a U32 and calls itself outside a tail goes on
-// in d~acc, which takes the sum so far first, if every such call is an
-// operand of a tail add: there, under successors, or bound by a let used
-// once. The other operands join the sum, bound before the calls, each call
-// takes it in turn (the last as a tail call), and any other answer is added
-// to it: no part of a sum of Nats passes the whole, and U32 wraps. d calls
-// d~acc with 0. A def in a tail cycle with another keeps its tail calls.
+// A def that answers a Nat, a U32 or a Bool and calls itself outside a tail
+// goes on in d~acc, which takes the result so far first, if every such call
+// is an operand of a tail op: a Nat add, a U32 add (inc), mul, xor, and or
+// or, a Bool or or xor, the first such op on a tail deciding which: there,
+// under successors, or bound by a let used once. The other operands join the
+// result, bound before the calls, each call takes it in turn (the last as a
+// tail call), and any other answer joins it: the ops are associative and
+// commutative, no part of a sum of Nats passes the whole, and U32 wraps. d
+// calls d~acc with the op's unit. A def in a tail cycle with another keeps
+// its tail calls.
 // loop_of opens d's body, so a let's probe is past every index term_lower
 // gives.
+const ACC_OPS: Record<string, Record<Name, HTerm>> = (() => {
+  const u = (k: "U32" | "Nat", v: number) => Bend.Lit(k, v) as HTerm;
+  const no = Bend.Ctr("False", []) as HTerm;
+  return { Nat: { "Nat.add": u("Nat", 0) }, U32: { "U32.add": u("U32", 0),
+    "U32.mul": u("U32", 1), "U32.xor": u("U32", 0), "U32.or": u("U32", 0),
+    "U32.and": u("U32", 0xFFFFFFFF) }, Bool: { "Bool.or": no, "Bool.xor": no } };
+})();
+
 function acc_def(d: Name): void {
   const f = fun_of(d);
   const { T, u } = tld_of(d) as Bend.Def;
   const R = ty_adt(tele_fill(T, Array(f.n).fill(DUMMY)));
-  const op = R?.k + ".add";
+  const ops = ACC_OPS[R?.k ?? ""] ?? {};
+  let op = "";
+  term_any(f.h!, (s, tail) => {
+    const m = term_spine(s);
+    const k = m.t.$ === "Ref" && m.t.k === "U32.inc" ? "U32.add" : m.t.$
+      === "Ref" ? m.t.k : "";
+    op ||= tail && k in ops && m.args.some((a) => term_any(a, (y) =>
+      term_spine(y).k === d)) ? k : "";
+    return op !== "";
+  });
+  const unit = ops[op];
+  const uv = (t: HTerm) => t.$ === "Ctr" && !t.x.length ? t.k
+    : Bend.u32_from_term(t) ?? nat_peel(t)[1];
   const w = d + "~acc";
-  if (FL.js || !intr_of(op) || R!.k === "F32" || f.lays.length >= WIDE
+  if (FL.js || !op || !intr_of(op) || f.lays.length >= WIDE
     || !term_any(f.h!, (s, tail) => !tail && term_spine(s).k === d)
     || loop_of(d).length > 1) {
     return;
@@ -1315,11 +1338,13 @@ function acc_def(d: Name): void {
         flat(Bend.Lit("Nat", n));
       } else if (m.t.$ === "Ref" && m.t.k === op) {
         m.args.forEach(flat);
+      } else if (m.t.$ === "Ref" && m.t.k === "U32.inc" && op === "U32.add") {
+        flat(m.args[0]);
+        flat(Bend.Lit("U32", 1));
       } else if (c) {
         cs.push(c);
-      } else if (!term_const(y)
-        || (Bend.u32_from_term(y) ?? nat_peel(y)[1]) !== 0) {
-        // a literal 0 adds nothing: the sum goes on as it is, untested
+      } else if (!term_const(y) || uv(y) !== uv(unit)) {
+        // the op's unit changes nothing: the result goes on as it is
         a = Bend.Ann(Bend.App(Bend.App(Bend.Ref(op), a), Bend.Ann(x, R!)), R!);
       }
     };
@@ -1334,7 +1359,7 @@ function acc_def(d: Name): void {
   if (!term_any(v, (s) => s.$ === "Ref" && s.k === d)) {
     FL.made[w] = { $: "Def", n: f.n + 1, x: 0, v, e, u,
       T: Bend.All(Bend.Many(), "acc", 0, R!, () => T) };
-    f.h = term_eta(Bend.App(Bend.Ref(w), Bend.Lit(R!.k as "Nat", 0)), T, f.n);
+    f.h = term_eta(Bend.App(Bend.Ref(w), unit), T, f.n);
   }
 }
 
@@ -1602,6 +1627,7 @@ function file_new(book: Bend.Book, js: boolean) {
     cnts: new Map<Name, number[]>(),
     cols: new Map<HTerm, Map<string, Cols>>(),
     etas: new Map<HTerm, [HTerm, HTerm | null][]>(),
+    dst: false,
   };
 }
 
@@ -1857,8 +1883,8 @@ function node_fill(sc: Scope, k: string, alloc: string,
   exprs: string[], seal = false): string {
   const nd = name_local(sc, k);
   arr_event(sc, exprs);
-  file_push(sc, `u64 ${nd} = ${alloc};`, ...exprs.map((w, j) =>
-    `e.mem[${nd} + ${j}] = ${seal ? `rfc_seal(e, ${w})` : w};`));
+  file_push(sc, `u64 ${nd} = ${alloc};`, ...exprs.flatMap((w, j) => w
+    ? [`e.mem[${nd} + ${j}] = ${seal ? `rfc_seal(e, ${w})` : w};`] : []));
   return nd;
 }
 
@@ -3620,8 +3646,12 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     let_open(o.ps.slice(i + 1), x.v.slice(i + 1), o.b));
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
+  const hole = fork ? null : ctr_hole(sc, calls[0], o.b, o.ps[0]);
+  // the dest takes the spare its node fits; the call's arguments the rest
+  const fit = hole ? sc.spares.findIndex((s) => s.cls === hole.cls) : -1;
+  const spares = fit < 0 ? [] : sc.spares.splice(fit, 1);
   calls.forEach((c, i) => {
-    const cvs = emit_args({ ...sc, rest: [chain[i]] }, c);
+    const cvs = emit_args({ ...sc, rest: [chain[i]] }, c, !!hole);
     const cargs = cvs.flatMap((v) => v.ws);
     const rr = ret_root(c.k!, cvs);
     const kn = seg_name("k");
@@ -3631,15 +3661,19 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
         b.val.ws));
     const kf = seg_fid(kn);
     const on = `WL_SEQ(${sc.seg.fid})`;
-    const base = !c.b && memo(FL.trees, c.k!, (k) =>
+    const base = !c.b && !hole && memo(FL.trees, c.k!, (k) =>
       term_calls(fun_of(k).h ?? DUMMY, k) > 1);
     emit_chain(sc, [[on, () => {
+      if (hole) {
+        return emit_dest({ ...sc, uses: new Map(sc.uses),
+          spares: spares.slice() }, x, hole.at);
+      }
       const fr = [...ws, seg_ref(sc, kf)];
       file_push(sc, `WL_ROOM(${fr.length});`,
         ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
-    }], ...fork ? [] : [["", () => file_push(sc, `WL_CONT = term_tsk(${kf}, ${
-      emit_task(sc, kf, 1, ws)});`,
-      `WL_IDX = ${ws.length};`)] as [string, () => void]]]);
+    }], ...fork ? [] : [["", () => (spare_flush({ ...sc, spares }),
+      file_push(sc, `WL_CONT = term_tsk(${kf}, ${emit_task(sc, kf, 1, ws)});`,
+        `WL_IDX = ${ws.length};`))] as [string, () => void]]]);
     emit_jump(sc, cargs, c.k!, !fork && c.b, base
       ? [`//base ${seg_fid(c.k!)} ${kf} ${ws.length} ${fork ? 1 : on}`] : []);
     const top = i < calls.length - 1 ? depth : 0;
@@ -3661,6 +3695,48 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
       [o.b]);
   }
   emit_body(sc, o.b, null, [], null);
+}
+
+// A constructor tail that boxes a call's result once is built before the
+// call, which fills that field (tail recursion modulo cons): the node goes
+// to the hole a Dst~put frame on top holds, else under a new one, and the
+// hole moves to its field. ctr_hole gives the field's slot and whether the
+// constructor is shared (its stores seal), and the node's size class. The
+// other fields run first, so none shares an owned value with the call; the
+// call leaves no frame, so it is not taken where it would be lent a value.
+function ctr_hole(sc: Scope, c: Spine, b: HTerm, p: Of<"Var">):
+  { at: string; cls: number } | null {
+  const x = term_strip(b);
+  if (FL.js || x.$ !== "Ctr" || c.b || Object.hasOwn(OPTIMIZED.Array, x.k)
+    || ret_at(c.k!) >= 0 || rest_use([b], p) !== 1 || sc.seg.ret !== BOX
+    || fun_of(c.k!).ret !== BOX || sc.seg.lane) {
+    return null;
+  }
+  const brw = brw_of(c.k!);
+  const own = (q: Of<"Var">, d: Bind) => val_owned(d.val).length > 0
+    && rest_use(c.xs, q) > 0 && (rest_use([b], q) > 0 || c.xs.some((a, i) =>
+      brw[i] && term_strip(a).$ === "Var" && probe_of(term_strip(a)) === q));
+  const ls = lay_node(x.k).arms![x.k];
+  const j = ctr_flds(x).findIndex((f) => term_strip(f).$ === "Var"
+    && probe_of(term_strip(f)) === p);
+  if (j < 0 || ls[j] !== BOX || [...sc.uses].some(([q, d]) => own(q, d))) {
+    return null;
+  }
+  const w = ls.slice(0, j).flatMap((l) => l.ks).length;
+  const pk = node_pack(x.k);
+  return { at: `${pk ? pk.at[w][0] : w}, ${Number(fact("ctr", x.k))}`,
+    cls: cls_fit(pk?.n ?? ls.flatMap((l) => l.ks).length) };
+}
+
+function emit_dest(sc: Scope, x: Of<"Let">, at: string): void {
+  const { ps, b } = term_open(x);
+  ps.forEach((p, i) => bind_uses(sc, p, val_new([""], BOX), [b],
+    ty_ann(x.v[i])!));
+  const r = emit_alias(sc, val_own(emit_expr(sc, b, null, BOX))[0], "r");
+  bind_dead(sc, []);
+  spare_flush(sc);
+  FL.dst = true;
+  file_push(sc, `WL_DEST(${r}, ${at});`);
 }
 
 function emit_row(sc: Scope, t: HTerm, ty: HTerm): number | null {
@@ -4175,7 +4251,8 @@ function segs_base(segs: Seg[]): void {
 function c_header(segs: Seg[], clos: string[]): string {
   const arg = val_new([""], W64);
   const entries = [...segs, seg_new("IO~emit", BOX, [arg]),
-    seg_new(CLO_APPLY, BOX, [arg, arg])];
+    seg_new(CLO_APPLY, BOX, [arg, arg]),
+    ...FL.dst ? [seg_new("Dst~put", BOX, [arg])] : []];
   const cids = new Map<Name, number[]>();
   const cid = (k: Name, n: number, d = 0) =>
     cids.set(k, [n > WIDE ? 240 + Math.log2(n) : n, d]);
@@ -4779,6 +4856,24 @@ using namespace metal;
     err_post(e.mem, ERR_DEEP); \
     return 0; \
   }
+// A hole is a field's word, bit 63 set if its node is shared (a store seals).
+// WL_DEST(R, J, S) puts node R in the hole of the Dst~put frame on top (or
+// pushes one [R, hole, FID]) and makes R's field J the hole.
+#define DST_PUT(H, X) do { \
+  u64 dh = (H); \
+  e.mem[dh & ~(1ull << 63)] = dh >> 63 ? rfc_seal(e, (X)) : (X); \
+} while (0)
+#define WL_DEST(R, J, S) do { \
+  if ((u32)STK(-1) == FID(Dst~put)) { \
+    DST_PUT(STK(-2), R); \
+  } else { \
+    WL_ROOM(3) \
+    STK(0) = (R); \
+    STK(2) = FID(Dst~put); \
+    WL_PUSHN(3); \
+  } \
+  STK(-2) = (term_loc(R) + (J)) | ((u64)(S) << 63); \
+} while (0)
 
 // Types
 // =====
@@ -5932,6 +6027,16 @@ ${segs}
     r0 = term_ctr(CID(Emit), l);
     WL_RETN(1);
   }}
+
+#ifdef FID_Dst_put
+  WL_CASE(FID(Dst~put))
+    WL_POPN(2);
+    DST_PUT(STK(1), r0);
+    WL_OPEN
+    r0 = STK(0);
+    WL_RETN(1);
+  }}
+#endif
 
   WL_CASE(FID(Clo~apply))
     Term fun = r0;
