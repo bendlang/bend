@@ -225,6 +225,14 @@ def main() -> String:
     );
   });
 
+  test("spaces the assignment after glued generic closers", async () => {
+    const source = "import Base\ndef main() -> List<List<U32>>:\n"
+      + "  xs: List<List<U32>>= [[7]]\n  xs\n";
+    expect(await fixed(source)).toContain("xs: List<List<U32>> = [[7]]");
+    const ge = "import Base\ndef main() -> Bool:\n  (7 >=4 : U32)\n";
+    expect(await fixed(ge)).toContain("(7 >= 4: U32)");
+  });
+
   test("preserves nested match, do and lambda body scopes", async () => {
     await fixed(
       "import Base\ndef f(x: Nat) -> Nat:\n    match x:\n        case 0n:\n            0n\n        case 1n+p:\n            p\ndef main() -> Nat:\n    f(1n)\n",

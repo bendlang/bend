@@ -86,6 +86,7 @@ its own output and compares that to the original program. If they differ you
 get a warning and no fix.
 
 Block-match arms keep their scope even when a body is under-indented.
+For a typed assignment, `Array<U32>=` formats as `Array<U32> =`.
 
 `style/file-length` (`tools/bend-lint/rules/file_length.bend`) warns when the file has more than
 `maxLines` lines (default 500). Imports don't count. No fix.

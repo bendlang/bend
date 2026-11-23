@@ -95,6 +95,9 @@ function tokens(source: string): Token[] {
       // `Box<-T` opens type arguments with an erased binder; `x<- m` is still a bind.
       if (source.startsWith("<-", at) && /[\w.]/.test(source[at - 1] ?? "")
         && !/\s/.test(source[at + 2] ?? "")) at++;
+      // Comparisons starting with `>` need whitespace on the left. A glued
+      // `>=` is a type-argument closer followed by assignment.
+      else if (source.startsWith(">=", at) && /\S/.test(source[at - 1] ?? "")) at++;
       else if (source.startsWith(">>", at) && /\s/.test(source[at - 1] ?? "")) at += 2;
       else at += (word?.[0] ?? number?.[0] ?? symbol?.[0] ?? c).length;
     }
