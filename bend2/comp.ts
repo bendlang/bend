@@ -97,7 +97,7 @@ type Iv = { lo: string; hi: string; p?: number; add?: number; sp?: number;
 type Ix = { forms: Map<number, Set<string>>; roles: string[] | null;
   info: Map<number, Iv>; conds: string[]; tmps: Map<string, string>;
   exs: Map<string, string>; outs: Map<string, Iv>; inl: number;
-  seen: boolean; lanes: Lane[] };
+  seen: boolean; lanes: Lane[]; wr?: boolean };
 
 // A countdown loop's lanes over an array (emit_lanes): the lane variable u,
 // the array words the turn hands b, b's result words that hold them, b's
@@ -3340,14 +3340,24 @@ function ix_roles(ix: Ix, seg: Seg): boolean {
 // The index of an access to a fixed array has a bound: the mask-free copy
 // needs it under the array's size, and reads the index as it is.
 function ix_site(sc: Scope, k: Name, m: Spine): boolean {
+  if (FL.ix && sc.seg.native && /^Array\.(set|swap)$/.test(k)) {
+    FL.ix.wr = true;
+  }
   if (!FL.ix?.roles || !sc.seg.native
     || !/^Array\.(get|set|swap)$/.test(k)) {
     return false;
   }
   const arr = iv(sc, m.args[0]);
   const at = iv(sc, m.args[1]);
+  // in a loop that writes, an access along a word's stride stays masked:
+  // bare, syrk's column read beside its row update ran 1.2x the cycles (an
+  // extra op on the address gives the masked speed back) and deriche's
+  // filters 1.1x the instructions (clang keeps their F32 coefficients in
+  // integer registers once the loop has two copies)
+  const stride = FL.ix.wr && at.p !== undefined
+    && /@/.test(FL.ix.roles[at.p]);
   if (arr.p === undefined || FL.ix.roles[arr.p] !== "same"
-    || at.hi === IX_MAX) {
+    || at.hi === IX_MAX || stride) {
     return false;
   }
   FL.ix.conds.push(`${at.hi} < (1ull << (blk_cls(r${arr.p}) - ${

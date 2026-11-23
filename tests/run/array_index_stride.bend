@@ -70,6 +70,26 @@ def grow(+n: Nat, +j: U32, +s: U32, a: Array<U32>) -> Array<U32>:
     case 1n+p:
       grow(p, (j + s : U32), (s + 1 : U32), a[j] <- (j + 11 : U32))
 
+def sumc.y(acc: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  (a, +x) = r
+  (a, (acc * 31 + x : U32))
+
+def sumc.at(+j: U32, s: Array<U32> & U32) -> Array<U32> & U32:
+  (a, acc) = s
+  sumc.y(acc, a[j])
+
+# acc * 31 + a[j] for n cells from j, step apart: a loop that only reads
+def sumc(+n: Nat, +j: U32, +step: U32, s: Array<U32> & U32) -> Array<U32> & U32:
+  match n:
+    case 0n:
+      s
+    case 1n+p:
+      sumc(p, (j + step : U32), step, sumc.at(j, s))
+
+def sumc.fin(r: Array<U32> & U32) -> U32:
+  (a, +x) = r
+  x
+
 # a sum over a column, step apart, through a cycle of two defs
 @unsafe
 def col.at(+n: Nat, +j: U32, +step: U32, acc: U32, r: Array<U32> & U32) -> Array<U32> & U32:
@@ -114,9 +134,14 @@ def main() -> IO(Unit):
     # a growing step: to 15, and past the end (its first step bounds nothing)
     IO.print(U32.show(sum(16, grow(nat(5), v(0), v(1), [0 : U32*16n]))))
     IO.print(U32.show(sum(32, grow(nat(17), v(0), v(1), [0 : U32*32n]))))
+    # a read-only column, step 3 then 5 over 64 cells: in range, past the end, wrapping
+    IO.print(U32.show(sumc.fin(sumc(nat(20), v(1), v(3), (upl(nat(64), v(0), v(1), [0 : U32*64n]), 0)))))
+    IO.print(U32.show(sumc.fin(sumc(nat(20), v(1), v(5), (upl(nat(64), v(0), v(1), [0 : U32*64n]), 0)))))
+    IO.print(U32.show(sumc.fin(sumc(nat(20), v(4294967290), v(1), (upl(nat(64), v(0), v(1), [0 : U32*64n]), 0)))))
     # a column through two defs: in range, past the end
     IO.print(U32.show(colsum(nat(16), v(1), v(1), upl(nat(16), v(0), v(1), [0 : U32*16n]))))
     IO.print(U32.show(colsum(nat(16), v(1), v(5), upl(nat(16), v(0), v(1), [0 : U32*16n]))))
+
 
 
 #|1520716073
@@ -134,5 +159,8 @@ def main() -> IO(Unit):
 #|236236819
 #|1332618953
 #|2261874949
+#|489379478
+#|4235580858
+#|1303532146
 #|3660892928
 #|2623740672
