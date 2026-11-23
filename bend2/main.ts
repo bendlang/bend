@@ -438,8 +438,8 @@ function cli_emit(book: Bend.Book, out: string): void {
 // cc_find is the first of $CC, clang and every clang-NN on PATH (newest
 // first) that is new enough: clang 14 for a CPU build, and for a GPU build
 // clang 19 (Apple clang 17, which ships LLVM 19), whose #embed
-// carries the device program. A $CC that is not one of these is skipped with
-// a warning, which names the compiler bend builds with instead.
+// carries the device program. A candidate must successfully print its
+// version. An unusable $CC is skipped with a warning naming the fallback.
 function cc_find(gpu: boolean): string {
   function dir_list(dir: string): string[] {
     try {
@@ -459,18 +459,18 @@ function cc_find(gpu: boolean): string {
     const [got, out] = Safe.run_read(cc, ["--version"]);
     const m   = /^(Apple )?(?:\w+ )?clang version (\d+)/m.exec(out);
     const need = gpu ? (m?.[1] === undefined ? 19 : 17) : 14;
-    if (m !== null && Number(m[2]) >= need) {
+    if (got.status === 0 && m !== null && Number(m[2]) >= need) {
       if (env && cc !== env) {
-        process.stderr.write("warning: $CC is not a clang " + want + " or newer (found "
+        process.stderr.write("warning: $CC is not a usable clang " + want + " or newer (found "
           + olds[0] + "), so bend builds with " + cc + "\n");
       }
       return cc;
     }
     const err = (got.error as NodeJS.ErrnoException | undefined)?.code;
-    olds.push(m !== null ? "clang " + m[2] + " as " + cc
-      : err === "ENOENT" ? "no " + cc + (/\s/.test(cc) ? " ($CC names one program, without flags)" : "")
+    olds.push(err === "ENOENT" ? "no " + cc + (/\s/.test(cc) ? " ($CC names one program, without flags)" : "")
       : err ? cc + ", which does not run (" + err + ")"
       : got.status !== 0 ? cc + ", which fails --version"
+      : m !== null ? "clang " + m[2] + " as " + cc
       : out ? cc + ", which is not clang" : cc + ", which prints no version");
   }
   throw "Error: bend needs clang " + want
