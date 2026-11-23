@@ -6109,6 +6109,7 @@ function run_lib(f, n) {
 
 const $0eff = Object.create(null);
 const io_file_append = new Set();
+let io_file_lines;
 
 function io_eff(k, run) {
   if (arguments.length > 2) {
@@ -6296,8 +6297,8 @@ function io_bytes(text) {
   return io_enc.encode(str_out(text));
 }
 
-function io_text(b, n) {
-  return new TextDecoder("utf-8", { ignoreBOM: true }).decode(b.subarray(0, n));
+function io_text(b, n, at = 0) {
+  return new TextDecoder("utf-8", { ignoreBOM: true }).decode(b.subarray(at, at + n));
 }
 
 function io_list(b, n) {

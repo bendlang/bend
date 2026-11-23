@@ -6,7 +6,7 @@ import Base
 import ./file_binary.bend as T
 
 def tmp(salt: U32) -> String:
-  "/tmp/bend_t_io_read_line_rest_" ++ U32.show(salt)
+  ".bend_t_io_read_line_rest_" ++ U32.show(salt)
 
 def line(m: File & Result<&1, &1, U32 & String, String>) -> IO(File):
   (f, r) = m
@@ -27,6 +27,8 @@ def main() -> IO(Unit):
     g : File <- IO.try(File, File.open(tmp(salt), "r"))
     m : File & Result<&1, &1, U32 & String, String> <- File.read_line(g, 64)
     g : File <- line(m)
+    b : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_at(g, 0, 3)
+    g : File <- T.read(b, [97, 98, 10], "positioned read leaves the line buffer alone")
     m : File & Result<&1, &1, U32 & String, String> <- File.read_line(g, 280)
     g : File <- line(m)
     m : File & Result<&1, &1, U32 & String, String> <- File.read_line(g, 64)
@@ -35,6 +37,8 @@ def main() -> IO(Unit):
     g : File <- line(m)
     m : File & Result<&1, &1, U32 & String, String> <- File.read_line(g, 3)
     g : File <- line(m)
+    b : File & Result<&1, &1, U32 & String, List<&2, U32>> <- File.read_bytes(g, 1)
+    g : File <- T.read(b, [103], "byte read takes the next buffered byte")
     m : File & Result<&1, &1, U32 & String, String> <- File.read(g, 64)
     g : File <- line(m)
     done : Unit <- File.close(g)
@@ -44,12 +48,14 @@ def main() -> IO(Unit):
 
 #|[ab
 #|]
+#|positioned read leaves the line buffer alone
 #|[0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789]
 #|[01234567890123456789
 #|]
 #|[abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij
 #|]
 #|[lon]
-#|[ger
+#|byte read takes the next buffered byte
+#|[er
 #|end
 #|last]
