@@ -4118,7 +4118,10 @@ FAR void term_fall(Env e, Term t, u32 d) {
 }
 
 FAR void term_sunk(Env e, Term t) {
-  if (rfc_last(e, &t)) {
+  // an array, a buffer or a closure goes straight to the walk
+  if (term_tag(t) != TAG_CTR) {
+    term_drop(e, t);
+  } else if (rfc_last(e, &t)) {
     term_fall(e, t, 0);
   }
 }
@@ -4216,14 +4219,27 @@ INLINE Term blk_keep(Env e, u64 at) {
   return v;
 }
 
-INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
-  COPY(e.mem + dst, e.mem + src, n);
-  for (u64 j = 0, k; keep && j != n; j += k) {
+// out of line on the host: the wrap that term_keep inlines there would
+// widen every copy's frame for cells it rarely keeps
+#if DEVICE
+INLINE
+#else
+FAR
+#endif
+void blk_keeps(Env e, u64 dst, u64 src, u64 n) {
+  for (u64 j = 0, k; j != n; j += k) {
     Term w = e.mem[dst + j];
     for (k = 1; j + k != n && e.mem[dst + j + k] == w; k += 1) {}
     if ((e.mem[dst + j] = term_keep(e, w, k)) != w) {
       e.mem[src + j] = e.mem[dst + j];
     }
+  }
+}
+
+INLINE void blk_fill(Env e, u64 dst, u64 src, u64 n, bool keep) {
+  COPY(e.mem + dst, e.mem + src, n);
+  if (keep) {
+    blk_keeps(e, dst, src, n);
   }
 }
 
