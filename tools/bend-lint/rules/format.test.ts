@@ -157,6 +157,14 @@ def main() -> String:
     expect(await fixed(source)).toContain("  [''', '#', 'a']  # tail\n");
   });
 
+  test("formats a glued < that no > closes as a comparison or a bind", async () => {
+    const compare = "import Base\ndef f(a: U32) -> Bool:\n  (a<4 : U32)\n";
+    expect(await fixed(compare)).toContain("(a < 4");
+    const bind =
+      'import Base\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    Unit<- IO.print("x")\n    IO.print("y")\n';
+    expect(await fixed(bind)).toContain('Unit <- IO.print("x")');
+  });
+
   test("keeps inline argument comments attached when wrapping", async () => {
     const source =
       "import Base\ndef f(x: U32, y: U32) -> U32:\n  x\ndef main() -> U32:\n  f(123, # first\n    456 # second\n  )\n";
