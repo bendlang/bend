@@ -33,6 +33,27 @@ function run(cmd: string[], dir: string): string {
   return "exit " + String(p.status) + "\n" + p.stdout + p.stderr;
 }
 
+test("default traces use only an absolute XDG cache directory", () => {
+  for (const requested of ["", "relative", path.join(TMP, "xdg")]) {
+    const b = book({ "main.bend": "import Base\ndef main() -> U32:\n  U32.inc(41)\n" });
+    const home = path.join(b.dir, "home");
+    fs.mkdirSync(home);
+    const env: NodeJS.ProcessEnv = { ...process.env, HOME: home, USERPROFILE: home, XDG_CACHE_HOME: requested,
+      BEND_NO_TELEMETRY: "1" };
+    delete env.BEND_CACHE;
+    const result = spawnSync("bun", [TOOL, "main.bend", "--bend", BEND2, "--min-ms", "0"], {
+      cwd: b.dir, encoding: "utf8", env,
+    });
+    expect(result.status).toBe(0);
+    const absolute = path.isAbsolute(requested);
+    const root = absolute ? requested : path.join(home, ".cache");
+    const saved = JSON.parse(fs.readFileSync(path.join(root, "bend-cache", "traces.json"), "utf8"));
+    expect(Object.keys(saved.traces).length).toBeGreaterThan(0);
+    const unused = absolute ? path.join(home, ".cache") : path.join(b.dir, requested);
+    expect(fs.existsSync(path.join(unused, "bend-cache", "traces.json"))).toBe(false);
+  }
+});
+
 function cached(b: { dir: string; cache: string }, entry: string, stats = false): string {
   // every check keeps a trace, so the skips are what the cases test
   return run([TOOL, entry, "--cache", b.cache, "--bend", BEND2, "--min-ms", "0", ...(stats ? ["--stats"] : [])], b.dir);
