@@ -2165,22 +2165,28 @@ function emit_native(sc: Scope, k: Name): string {
     ix.conds.forEach(mark);
     const top = seg_text([...seg.ks.flatMap((kd, i) =>
       arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg)], 1);
-    const body = [...top, ...ix.conds.length === 0 ? loop(seg, 1) : [
-      ...seg_text([...ix.tmps].filter(([t]) => need.has(t)).map(([t, ex]) =>
-        `u64 ${t} = ${ex};`), 1),
-      // one test of all the checks: a chain of && reads to clang as a
-      // copy that runs once in 2^n, too cold to inline its calls into
-      `  if (!DEVICE${[...new Set(ix.conds)].map((c) =>
-        `\n    & (${c})`).join("")}) {`,
-      ...loop(bare, 2), "  } else {", ...loop(seg, 2), "  }"],
-    "  return 1;", "}"];
+    const sig = (q: string, n: string) => `${q} Term ${n}(Env e, THR Term* o${
+      seg.ks.map((kd, i) => `, ${lay_c(kd)} r${i}`
+        + (arr_q(kd) ? `, u64 q${i}` : "")).join("")})`;
     // the device runs the masked copy alone: its length is the spin's
-    const text = [...top, ...loop(seg, 1), "  return 1;", "}"].join("\n");
-    const q = text.length + 1 < SPIN_FAR ? "INLINE"
-      : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
-    const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
-      `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")})`;
-    FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
+    const text = [...top, ...loop(seg, 1), "  return 1;", "}"];
+    const q = text.join("\n").length + 1 < SPIN_FAR ? "INLINE"
+      : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text.join("\n")) ? "FAR"
+      : "DFAR";
+    const head = sig(q, name);
+    if (ix.conds.length > 0) {
+      // The mask-free copy runs when the countdown allows IX_RUN steps and
+      // every check holds; its checks are computed there, so a short loop
+      // pays one test. One test of all the checks: a chain of && reads to
+      // clang as a copy that runs once in 2^n, too cold to inline into.
+      text.splice(0, text.length, `  if (!DEVICE && r${ix.roles!.indexOf("down")
+        } >= ${IX_RUN}) {`, ...seg_text([...ix.tmps].filter(([t]) =>
+        need.has(t)).map(([t, ex]) => `u64 ${t} = ${ex};`), 2),
+      `    if (${[...new Set(ix.conds)].join("\n      & ")}) {`,
+      ...seg_text(top, 2), ...loop(bare, 3), "      return 1;", "    }", "  }",
+      ...top, ...loop(seg, 1), "  return 1;", "}");
+    }
+    FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...text] });
   }));
   return seg_ref(sc, name);
 }
@@ -2195,6 +2201,8 @@ function emit_native(sc: Scope, k: Name): string {
 // its array's size, and once as before.
 
 const IX_MAX = "0xFFFFFFFFull";
+
+const IX_RUN = 16;
 
 const IX_ANY: Iv = { lo: "0ull", hi: IX_MAX };
 
