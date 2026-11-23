@@ -5660,11 +5660,9 @@ FAR void term_fall(Env e, Term t, u32 d) {
 }
 
 FAR void term_sunk(Env e, Term t) {
-  // an array, a buffer or a closure goes straight to the walk
-  if (term_tag(t) != TAG_CTR) {
-    term_drop(e, t);
-  } else if (rfc_last(e, &t)) {
-    term_fall(e, t, 0);
+  // past its count, an array, a buffer or a closure goes to the walk
+  if (rfc_last(e, &t)) {
+    term_tag(t) == TAG_CTR ? term_fall(e, t, 0) : term_drop(e, t);
   }
 }
 #else
