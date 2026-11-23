@@ -71,6 +71,17 @@ const LIB = "import Base\n\n" + Array.from({ length: 40 }, (_, i) =>
 const client = (j: number) =>
   `import Base\nimport ./lib.bend as Lib\n\ndef mine() -> {Lib.p${j} == Lib.p${j} : {U32.to_nat(${1000 + j}) == ${1000 + j}n : Nat}}:\n  {==}\n`;
 
+test("value options do not consume the next flag", () => {
+  const b = book({ "m.bend": "import Base\n\ndef p() -> {1n == 1n : Nat}:\n  {==}\n" });
+  for (const flag of ["--cache", "--bend", "--min-ms"]) {
+    const out = run([TOOL, "m.bend", "--min-ms", "0", flag, "--stats"], b.dir);
+    expect(out).toStartWith("exit 1\nbend-cache: " + flag + " needs a value\n");
+  }
+  expect(fs.existsSync(path.join(b.dir, "--stats"))).toBe(false);
+  expect(run([TOOL, "m.bend", "--min-ms", "0", "--cache", "./--stats"], b.dir)).toBe(plain(b, "m.bend"));
+  expect(fs.existsSync(path.join(b.dir, "--stats"))).toBe(true);
+});
+
 test("a library checked once serves every client", () => {
   const b = book({ "lib.bend": LIB, "a.bend": client(0), "b.bend": client(1) });
   expect(cached(b, "a.bend")).toBe(plain(b, "a.bend"));

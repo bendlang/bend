@@ -22,6 +22,9 @@ bend-cache <file.bend> [--cache <file.json>] [--bend <bend2 dir>] [--min-ms <ms>
   check runs again faster than its trace would hash.
 - `--stats`: how many defs were checked and skipped, on stderr.
 
+Prefix a cache or bend2 path starting with `--` with `./`, so it isn't
+read as an option.
+
 ## Disclaimer
 
 bend-cache is a development tool, and it may have bugs: a skip is
