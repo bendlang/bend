@@ -3081,8 +3081,7 @@ function host(A: HTerm | null, x: string, out: boolean): string {
     : k === "F32" && !out ? `Math.fround(${x})` : x;
 }
 
-// A module (the .bend loader, -o <out>.mjs) roots and exports each callable
-// def by book name: "lib:value" differs from a root "lib.value".
+// A module (the .bend loader, -o <out>.mjs) exports its own callable defs.
 export function js_lib(book: Bend.Book, mod = false): string {
   FL = file_new(book, true);
   const outs = !mod ? null : [...new Set(FL.book.order)].filter((k) => {
