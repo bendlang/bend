@@ -2,7 +2,9 @@
 # Base's polymorphic List.reverse and kept across a loop's turns) built
 # before the call that fills it (C lane): each store into a hole seals what
 # it stores, the root's and a call's answer alike. A map, a map of a map,
-# and two defs that fill each other's holes. Every size comes from the
+# two defs that fill each other's holes, a list read in another field and
+# passed to the call, and a call's answer read in another field (neither
+# is built before the call). Every size comes from the
 # command line's length (1 in the harness), which no compiler sees.
 import Base
 
@@ -46,12 +48,27 @@ def lsum(xs: List<&2, U32>, +a: U32) -> U32:
 def twice(+xs: List<&2, U32>) -> U32:
   U32.xor(lsum(xs, 0), lsum(inc2(inc2(xs)), 1))
 
+type CL is Data:
+  CL{n: U32, l: List<&2, U32>}
+
+def cl(c: CL) -> U32:
+  match c:
+    case CL{+n, l}:
+      lsum(l, n)
+
+def heads(+xs: List<&2, U32>) -> List<&2, U32>:
+  cl(CL{5, xs}) <> inc2(xs)
+
+def counted(+xs: List<&2, U32>) -> List<&2, U32>:
+  +h : List<&2, U32> = inc2(xs)
+  lsum(h, 0) <> h
+
 def rep(k: Nat, +xs: List<&2, U32>, +a: U32) -> U32:
   match k:
     case 0n:
       a
     case 1n+p:
-      rep(p, xs, U32.xor((a * 3 : U32), lsum(odd2(inc2(List.reverse(&2, U32, xs))), 1)))
+      rep(p, xs, U32.xor((a * 3 : U32), U32.xor(lsum(odd2(inc2(List.reverse(&2, U32, xs))), 1), U32.add(lsum(heads(xs), 2), lsum(counted(xs), 4)))))
 
 def rows(n: Nat, +i: U32) -> List<&2, List<&2, U32>>:
   match n:
@@ -71,4 +88,4 @@ def main() -> IO(Unit):
   do IO<Unit>:
     args : List<String> <- IO.args()
     IO.print(U32.show(all(rows(Nat.mul(20n, List.length(&1, String, args)), 3), 0)))
-#| 1503167218
+#| 174140108

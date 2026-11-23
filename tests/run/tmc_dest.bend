@@ -3,7 +3,9 @@
 # a list map that reuses each cell, a list built in a chain of two defs
 # (the second def's hole is the first's field), a tree insert through a
 # helper whose node packs its words (the hole's slot past the packed word),
-# the hole in a middle field with words read on both sides, a call that
+# the hole in a middle field with words read on both sides, a list lent to
+# another field's call and dropped before the hole's call, one the arm
+# never reads, a call that
 # answers at once, and a map 20,000 deep. Every size comes from the command
 # line's length (1 in the harness), which no compiler sees.
 import Base
@@ -106,6 +108,20 @@ def msum(m: M, +a: U32) -> U32:
     case MC{x, t, y}:
       msum(t, (a * 5 + x + y : U32))
 
+def tagd(l: L, j: L) -> L:
+  match l:
+    case N{}:
+      j
+    case C{h, t}:
+      C{(h + sum(j, 3) : U32), tagd(t, N{})}
+
+def tj(l: L, junk: L) -> L:
+  match l:
+    case N{}:
+      junk
+    case C{h, t}:
+      C{h, tj(t, N{})}
+
 def one(n: Nat) -> L:
   match n:
     case 0n:
@@ -122,10 +138,12 @@ def run(+k: Nat) -> String:
     ++ U32.show(tsum(fill(Nat.mul(k, 3000n), 1, E{}), 0)) ++ " "
     ++ U32.show(msum(mid(Nat.mul(k, 500n), 3), 0)) ++ " "
     ++ U32.show(sum(wrap(k), 0)) ++ " "
+    ++ U32.show(sum(tj(mk(Nat.mul(k, 30n), 1), mk(Nat.mul(k, 20n), 4)), 0)) ++ " "
+    ++ U32.show(sum(tagd(mk(Nat.mul(k, 50n), 2), mk(Nat.mul(k, 40n), 9)), 0)) ++ " "
     ++ U32.show(sum(inc(mk(Nat.mul(k, 20000n), 1)), 0))
 
 def main() -> IO(Unit):
   do IO<Unit>:
     args : List<String> <- IO.args()
     IO.print(run(List.length(&1, String, args)))
-#| 3861267348 9949488 2008994644 3112759308 38 2461048112
+#| 3861267348 9949488 2008994644 3112759308 38 2775178735 3229133477 2461048112
