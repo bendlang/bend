@@ -97,7 +97,13 @@ type Iv = { lo: string; hi: string; p?: number; add?: number; sp?: number;
 type Ix = { forms: Map<number, Set<string>>; roles: string[] | null;
   info: Map<number, Iv>; conds: string[]; tmps: Map<string, string>;
   exs: Map<string, string>; outs: Map<string, Iv>; inl: number;
-  seen: boolean };
+  seen: boolean; lanes: Lane[] };
+
+// A countdown loop's lanes over an array (emit_lanes): the lane variable u,
+// the array words the turn hands b, b's result words that hold them, b's
+// spin and lane variant. ok: the loop's copy passed its check (lane_arrs).
+type Lane = { u: string; arrs: string[]; rets: string[]; end: string;
+  step: string; fid?: string; ok?: boolean };
 
 type Row = [HTerm, number, number, number];
 
@@ -2766,10 +2772,28 @@ function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
   const names = ls.map((l) => l.match(/^ *(?:Term|u32) (\w+) = [^;]*;$/)?.[1]);
   const preds = [...seg.als].filter(([, ex]) => ex === `(${p} - 1)`)
     .map(([al]) => al);
+  // In the mask-free copy (forms known): a counter every self call steps by
+  // the same constant is that much further on each later turn, and an array
+  // the loop hands b, which b only reads and the loop does not write (the
+  // copy's own check, lane_arrs), is the same array on each later turn.
+  const ix = FL.ix?.roles && k === b && !fact("type", "Array") ? FL.ix : null;
+  const ctrs = new Map(ix ? seg.params.flatMap((q, i) => {
+    const fs = [...ix.forms.get(i) ?? []];
+    const c = fs.length === 1 && seg.ks[i] === "w32"
+      && /^\+(\d+)$|^@(\d+)$/.exec(fs[0]);
+    return !c ? [] : c[1] ? [[q, `${c[1]}u`] as [string, string]]
+      : ix.roles![Number(c[2])] === "same" && seg.ks[Number(c[2])] === "w32"
+        ? [[q, seg.params[Number(c[2])]] as [string, string]] : [];
+  }) : []);
+  const arrs = kb.flatMap((kd, j) => kd === "box" ? [j] : []);
+  const arr_ok = arrs.length === 0 || ix !== null && arrs.every((j) =>
+    seg.params.includes(ws[j]) && seg.ks[seg.params.indexOf(ws[j])] === "box");
   const ok = new Set([...names, ...preds, ...seg.params.filter((_, i) =>
-    !(st[i] & 6) && seg.ks[i] !== "box")]);
-  const text = [...ls, ...ws].join(" ");
-  if ([...fk.lays.flatMap((l) => l.ks), ...kb, ...fk.ret.ks].includes("box")
+    !(st[i] & 6) && seg.ks[i] !== "box"), ...ctrs.keys(),
+  ...arr_ok ? arrs.map((j) => ws[j]) : []]);
+  const text = [...ls, ...ws.filter((_, j) => !arrs.includes(j))].join(" ");
+  if ((arrs.length > 0 ? !arr_ok || k !== b
+    : [...fk.lays.flatMap((l) => l.ks), ...fk.ret.ks].includes("box"))
     || kb.length > 32 || !lay_eq(fk.ret, fb.ret) || fact("lane", b)
     || /\be\b/.test(text)
     || (text.match(/\b_\w+/g) ?? []).some((id) => !ok.has(id))) {
@@ -2781,28 +2805,44 @@ function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
   const each = (...lines: string[]) =>
     block(sc, `for (u32 l = 0; l < ${LANES}; l++) {`, () =>
       file_push(sc, ...lines));
-  const hit = `${u}n && ${u}b - (${p} - 1) < ${LANES}`;
+  const hit = `${u}n && ${u}b - (${p} - 1) < ${LANES}${arrs.map((j) =>
+    ` && ${ws[j]} == ${u}a${j}`).join("")}`;
+  const used = [...ctrs.keys()].filter((q) => new RegExp(`\\b${q}\\b`)
+    .test(text));
   const enter = (l: string, to: (j: number) => string) => [...preds.map(
-    (al) => `Term ${al} = ${p} - 1 - ${l};`), ...ls.map((x) => x.trim()),
+    (al) => `Term ${al} = ${p} - 1 - ${l};`), ...l === "0" ? [] : used.map((q) =>
+    `u32 ${q} = (u32)(${u}k_${q} + ${ctrs.get(q)} * ${l});`),
+  ...ls.map((x) => x.trim()),
     ...k === b ? q((j) => `${to(j).slice(1)} = ${ws[j]};`)
       : [`${emit_native(sc, k, b)}(${["e", u + "d", ...ws, ...q(to)]
         .join(", ")});`]];
   const step = emit_native(sc, b, b), end = emit_native(sc, b);
   const rn = fk.ret.ks.length;
+  // an array's lanes run once the loop's copy (lane_arrs) and b (lane_check)
+  // pass their checks: until then the gate reads 0
+  const gate = arrs.length > 0 ? `/*lanes ${u}*/` : "";
+  if (gate) {
+    FL.ix!.lanes.push({ u, arrs: arrs.map((j) => ws[j]), end, step,
+      rets: fb.ret.ks.flatMap((kd, j) => kd === "box" ? [`${o}[${j}]`] : []) });
+  }
   seg.pre.push("#if !DEVICE", `Term ${u}n = 0, ${u}b = 0, ${u}o[${LANES}][${
     rn}], ${u}d[${rn}];`, ...q((j) => `${lay_c(kb[j])} ${u}q${j}[${LANES}];`),
+    ...arrs.map((j) => `Term ${u}a${j} = 0;`),
     `u32 ${u}w = 0;`, `if (${p} >= ${LANES}) {`,
     ...seg_text([...q((j) => `${lay_c(kb[j])} ${u}s${j};`),
-      ...enter("0", (j) => `&${u}s${j}`), `${u}w = !__builtin_constant_p(${u}s${
-        c}) && ${u}s${c} >= ${LANE_MIN};`], 1), "}", "#endif");
+      ...enter("0", (j) => `&${u}s${j}`), `${u}w = ${gate ? `${gate}1 && ` : ""
+      }!__builtin_constant_p(${u}s${c}) && ${u}s${c} >= ${LANE_MIN};`], 1),
+    "}", "#endif");
   file_push(sc, "#if !DEVICE");
   block(sc, `if (${u}w && !(${hit}) && ${p} >= ${LANES}) {`, () => {
-    file_push(sc, `u32 ${u}e = 1;`);
+    file_push(sc, `u32 ${u}e = 1;`, ...used.map((q) => `u32 ${u}k_${q} = ${q};`),
+      ...arrs.map((j) => `${u}a${j} = ${ws[j]};`));
     each(...enter("l", (j) => `&${u}q${j}[l]`),
       `${u}e &= ${u}q${c}[l] == ${u}q${c}[0];`);
     block(sc, `for (Term n = ${u}e ? ${u}q${c}[0] : 0; n != 0; n--) {`, () =>
       each(`${step}(${["e", u + "d", ...q((j) => j === c ? "n"
-        : `${u}q${j}[l]`), ...q((j) => `&${u}q${j}[l]`)].join(", ")});`));
+        : arrs.includes(j) ? `${u}a${j}` : `${u}q${j}[l]`),
+      ...q((j) => `&${u}q${j}[l]`)].join(", ")});`));
     each(`if (${end}(${["e", u + "o[l]", ...q((j) => `${u}q${j}[l]`)]
       .join(", ")}) == 0) {`, "  return 0;", "}");
     file_push(sc, `${u}b = ${p} - 1;`, `${u}n = 1;`);
@@ -2811,6 +2851,66 @@ function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
     `${o}[${j}] = ${u}o[${u}b - (${p} - 1)][${j}];`)));
   seg.lines.push(seg.lines.pop() + " else");
   file_push(sc, "#endif");
+}
+
+// The lanes over an array run only when nothing but b touches the array
+// in the loop's copy: each line naming it (or b's result word that holds it,
+// or a copy of either) copies it, calls b, takes its location for a read, or
+// is the lanes' own; no write goes through such a location.
+function lane_arrs(seg: Seg, l: Lane): boolean {
+  const lines = [...seg.pre, ...seg.lines];
+  const al = new Set([...l.arrs, ...l.rets]);
+  const copy = /^\s*(?:Term |u32 |u64 )?([\w[\]]+) = ([\w[\]]+);$/;
+  for (let n = -1; n !== al.size;) {
+    n = al.size;
+    lines.forEach((x) => {
+      const m = copy.exec(x);
+      m && al.has(m[2]) && al.add(m[1]);
+    });
+  }
+  const esc = (w: string) => w.replace(/[[\]]/g, "\\$&");
+  const names = new RegExp(`(?<![\\w])(?:${[...al].map(esc).join("|")
+    })(?![\\w[])`);
+  const own = new RegExp(`\\b${l.u}\\w*`);
+  const locs = new Set<string>();
+  return lines.every((x) => {
+    if (!names.test(x) || copy.test(x) || own.test(x)
+      || x.includes(`${l.end}(e, `)) {
+      return true;
+    }
+    const m = /^\s*Term (\w+) = blk_loc\(e\.mem, [\w[\]]+\);$/.exec(x);
+    return m !== null && locs.add(m[1]) !== null;
+  }) && !lines.some((x) => locs.has(/blk_write\(e\.mem, \w+, (\w+),/
+    .exec(x)?.[1] ?? ""));
+}
+
+function lane_gate(lines: string[], u: string, ok: boolean): void {
+  const g = `/*lanes ${u}*/1`;
+  lines.forEach((x, i) => lines[i] = ok ? x : x.replace(g, `/*lanes ${u}*/0`));
+}
+
+// b's side, once every spin is emitted: its spin and lane variant (and the
+// spins they call) read arrays and compute words, and call nothing else.
+function lane_check(spins: Seg[]): void {
+  const by = new Map(spins.map((s) => [s.fid, s]));
+  const pure = (f: string, seen: Set<string>): boolean => {
+    const s = by.get(f);
+    if (seen.has(f)) {
+      return true;
+    }
+    seen.add(f);
+    return s !== undefined && [...s.lines.slice(1).join("\n")
+      .matchAll(/\b([A-Za-z_]\w*)\s*\(/g)].every(([, c]) =>
+      /^(?:blk_(?:loc|read|at|cls)|f32_\w+|u32_\w+|U32_BIN|WL_\w+|clz|if|for|while|switch|return|HOT|sizeof)$/
+        .test(c) || /^(?:spin|lane)_\w+$/.test(c) && pure(c, seen));
+  };
+  for (const l of LANE_SITES) {
+    const s = by.get(l.fid!);
+    if (s && l.ok && (fact("type", "Array") || !pure(l.end, new Set())
+      || !pure(l.step, new Set()))) {
+      lane_gate(s.lines, l.u, false);
+    }
+  }
 }
 
 // A foreign def's last parameter, past its live ones, is its continuation k.
@@ -2851,21 +2951,30 @@ function emit_native(sc: Scope, k: Name, to?: Name,
     };
     const ix: Ix = FL.ix = { forms: new Map(), roles: null, info: new Map(),
       conds: [], tmps: new Map(), exs: new Map(), outs: new Map(), inl: 0,
-      seen: false };
-    const seg = go();
+      seen: false, lanes: [] };
+    const first = go();
     // with helpers, the forms are read again off a pass that opens them
     const pass = () => {
       ix.info.clear();
       ix.outs.clear();
+      ix.lanes = [];
       ix.inl = ix.seen ? IX_INL : 0;
       return go();
     };
+    // a lane variant steps once: its helpers are emitted in place
+    const seg = to && !FL.js && ix.seen ? pass() : first;
     if (seg.spin && !FL.js && ix.seen) {
       ix.forms.clear();
       pass();
     }
     const bare = seg.spin && !FL.js && ix_roles(ix, seg) ? pass() : seg;
     FL.ix = null;
+    for (const l of bare === seg ? [] : ix.lanes) {
+      l.fid = name;
+      l.ok = ix.conds.length > 0 && lane_arrs(bare, l);
+      LANE_SITES.push(l);
+      lane_gate(bare.pre, l.u, l.ok);
+    }
     bare.refs.forEach((r) => seg.refs.add(r));
     // each copy opens with its own lanes (pre)
     const loop = (s: Seg, tab: number) => [...seg_text([...s.pre,
@@ -2898,7 +3007,7 @@ function emit_native(sc: Scope, k: Name, to?: Name,
     const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
       `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")}${
       to ? fun_of(to).lays.flatMap((l) => l.ks).map((kd, i) =>
-        `, THR ${lay_c(kd)}* q${i}`).join("") : ""})`;
+        `, THR ${lay_c(kd)}* lq${i}`).join("") : ""})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
     const st = [...seg.st].map((x) => x ?? 0);
     if (to) {
@@ -2942,6 +3051,8 @@ function place_take(sc: Scope, [a, i, v]: HTerm[]): boolean {
 const IX_MAX = "0xFFFFFFFFull";
 
 const IX_RUN = 16;
+
+let LANE_SITES: Lane[] = [];
 
 const IX_ANY: Iv = { lo: "0ull", hi: IX_MAX };
 
@@ -3607,7 +3718,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
       if (sc.seg.lane === ck.k) {
         const ws = emit_args(sc, ck, true).flatMap((v) => v.ws);
         spare_flush(sc);
-        return file_push(sc, ...ws.map((w, i) => `*q${i} = ${w};`),
+        return file_push(sc, ...ws.map((w, i) => `*lq${i} = ${w};`),
           "return 2;");
       }
       const { h, ret } = fun_of(ck.k);
@@ -4308,6 +4419,7 @@ function segs_fuse(segs: Seg[], dev: Set<string>): Seg[] {
 }
 
 export function compile_book(book: Bend.Book): string {
+  LANE_SITES = [];
   FL = file_new(main_pure(book), false);
   file_book(["main", ...RUNTIME_ADTS]);
   const us = c_units();
@@ -4321,6 +4433,7 @@ export function compile_book(book: Bend.Book): string {
   const dev = reach([...[...FL.bangs].map(seg_fid), ...wide ? clos : []]);
   const segs = segs_fuse(all.filter((s) => !s.native && live.has(s.fid)), dev);
   const spins = all.filter((s) => s.native && live.has(s.fid));
+  lane_check(spins);
   segs_base(segs);
   const tabs = c_header(segs, clos);
   // a spin may call one defined after it
