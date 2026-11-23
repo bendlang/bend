@@ -3042,7 +3042,7 @@ def Map.diff(a, b, n):
 def Map.new(a, -V: Kind(a)) -> Map<a, V>:
   MTip{}
 
-# Map.upd.go, Map.ins.go, Map.has.go and Map.pop.go take the node they are
+# Map.upd.go, Map.ins.go and Map.has.go take the node they are
 # in, whole, and the key's bit at it: the child they descend into is that
 # node's field, a node rebuilt
 def Map.ins.splice.bit(
@@ -3292,21 +3292,37 @@ def Map.pop.leaf(a, -V: Kind(a), v: V, key: String, +k: String) ->
   Map<a, V> & Maybe<a, V>:
   Map.pop.leaf.eq(a, V, v, k, String.eq(key, k))
 
-def Map.pop.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
-  Map<a, V> & Maybe<a, V>:
-  match node kb:
-    case MNode{p, MTip{}, hi} Tuple{key, False{}}:
+# A well-formed trie only advances down the key. A raw MNode can move
+# backward, in which case restart from the full key as Map.bit did.
+def Map.pop.skip(+key: String, +rest: String, +ci: Nat, +cq: Nat, back: Bool) -> String:
+  match back:
+    case True{}:
+      String.drop(key, cq)
+    case False{}:
+      Map.get.skip(Nat.sub(cq, ci), rest)
+
+def Map.pop.go(
+  -a: Quant, -V: Kind(a), node: Map<a, V>, +key: String, +rest: String, +ci: Nat, b: Bool
+) -> Map<a, V> & Maybe<a, V>:
+  match node b:
+    case MNode{p, MTip{}, hi} False{}:
       (hi, None{})
-    case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
+    case MNode{p, MLeaf{k, v}, hi} False{}:
       Map.pop.lo(a, V, p, hi, Map.pop.leaf(a, V, v, key, k))
-    case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
-      Map.pop.lo(a, V, p, hi, Map.pop.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
-    case MNode{p, lo, MTip{}} Tuple{key, True{}}:
+    case MNode{p, MNode{+q, c, d}, hi} False{}:
+      +cq = Nat.div(q, 33n)
+      +r2 = Map.pop.skip(key, rest, ci, cq, Nat.is_lt(cq, ci))
+      Map.pop.lo(a, V, p, hi,
+        Map.pop.go(a, V, MNode{q, c, d}, key, r2, cq, Map.get.bit(r2, Nat.mod(q, 33n))))
+    case MNode{p, lo, MTip{}} True{}:
       (lo, None{})
-    case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
+    case MNode{p, lo, MLeaf{k, v}} True{}:
       Map.pop.hi(a, V, p, lo, Map.pop.leaf(a, V, v, key, k))
-    case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
-      Map.pop.hi(a, V, p, lo, Map.pop.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
+    case MNode{p, lo, MNode{+q, c, d}} True{}:
+      +cq = Nat.div(q, 33n)
+      +r2 = Map.pop.skip(key, rest, ci, cq, Nat.is_lt(cq, ci))
+      Map.pop.hi(a, V, p, lo,
+        Map.pop.go(a, V, MNode{q, c, d}, key, r2, cq, Map.get.bit(r2, Nat.mod(q, 33n))))
     case m _:
       (m, None{})
 
@@ -3317,7 +3333,10 @@ def Map.pop(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Ma
     case MLeaf{k, v}:
       Map.pop.leaf(a, V, v, key, k)
     case MNode{+pos, lo, hi}:
-      Map.pop.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
+      +k = key
+      +cq = Nat.div(pos, 33n)
+      +rest = String.drop(k, cq)
+      Map.pop.go(a, V, MNode{pos, lo, hi}, k, rest, cq, Map.get.bit(rest, Nat.mod(pos, 33n)))
 
 def Map.del.fin(a, -V: Kind(a), r: Map<a, V> & Maybe<a, V>) -> Map<a, V>:
   (m2, x) = r
