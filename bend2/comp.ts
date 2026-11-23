@@ -3171,13 +3171,6 @@ function ix_inl(sc: Scope, k: Name): boolean {
   return ix.inl-- > 0;
 }
 
-// A call emitted in place (a step of a flat cycle) hands its parameters
-// the bounds of its arguments, as a helper's does.
-function ix_args(sc: Scope, ck: Spine, vs: Val[]): Val[] {
-  return FL.ix && sc.seg.native && vs.length === ck.xs.length
-    ? vs.map((v, i) => ({ ...v, iv: iv(sc, ck.xs[i]) })) : vs;
-}
-
 // A helper's result word `to` takes w: it is what every w it takes is.
 function ix_out(sc: Scope, to: string, w: string): void {
   const outs = FL.ix!.outs;
@@ -3759,7 +3752,7 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
           ? emit_put(sc, dst, inl_q(sc, ck) ? emit_inl(sc, ck)
             : emit_spin(sc, ck))
           : emit_body({ ...sc, def: ck.k }, h!, ck.tld!.T,
-            ix_args(sc, ck, emit_args(sc, ck, true)), dst);
+            emit_args(sc, ck, true), dst);
       }
       if (!lay_eq(sc.seg.ret, ret)
         && (sc.seg.ret.arms !== null || ret.arms !== null)) {
