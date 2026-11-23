@@ -2899,12 +2899,13 @@ function js_expr(sc: Scope, tm: HTerm, ty0: HTerm | null = null): string {
     case "Ref":
     case "App": {
       const m = term_spine(x);
+      const y = m.k !== null ? emit_fold(sc, x)
+        : call_eta(x) ?? (m.t.$ !== "Ref" ? m.h : null);
+      if (y !== null && y !== x) {
+        return js_expr(sc, y, ty);
+      }
       if (m.k !== null) {
         return js_call(sc, m.k, m.xs);
-      }
-      const y = call_eta(x) ?? (m.t.$ !== "Ref" ? m.h : null);
-      if (y !== null) {
-        return js_expr(sc, y, ty);
       }
       return js_call(sc, m.t.k, intr_of(m.t.k)?.C === null ? [...m.args,
         Bend.Lit("U32", lay_arr(lay_el(m.all[0])).lgs)] : m.args);
