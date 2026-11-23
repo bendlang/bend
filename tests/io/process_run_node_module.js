@@ -11,6 +11,7 @@ function process_run_node_module() {
     const output = path.join(dir, "main.cjs");
     const preload = path.join(dir, "preload.cjs");
     const marker = path.join(dir, "spawned");
+    const old = path.join(dir, "old.cjs");
     fs.writeFileSync(input, `import Base
 
 def answer(r: Result<&1, &1, U32 & String, U32 & (String & String)>) -> Bool:
@@ -50,11 +51,17 @@ child.spawn = function (...args) {
     }
     const load = "await import(" + JSON.stringify(
       require("node:url").pathToFileURL(output).href) + ")";
-    const flags = [["--input-type=module"], ["--input-type", "module"]];
-    for (let i = 0; i < flags.length; i += 1) {
+    // The last run is a Node before 20.16: no process.getBuiltinModule.
+    fs.writeFileSync(old, "delete process.getBuiltinModule;\n");
+    const runs = [
+      ["--input-type=module", "-e", load],
+      ["--input-type", "module", "-e", load],
+      ["--require", old, output],
+    ];
+    for (let i = 0; i < runs.length; i += 1) {
       fs.rmSync(marker, { force: true });
       const ran = child.spawnSync(node,
-        [...flags[i], "--require", preload, "-e", load],
+        ["--require", preload, ...runs[i]],
         { ...options, timeout: 3000 });
       if (ran.error) {
         throw ran.error;
