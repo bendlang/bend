@@ -1925,15 +1925,33 @@ law F32.read:
   for s: String
   Maybe<&2, F32>
 
+# For a pair of zeros, choose the negative one for min and the positive
+# one for max. The reciprocal's sign distinguishes -0 from +0.
+def F32.minmax.zero(a: F32, b: F32, both: Bool) -> Bool:
+  match both:
+    case False{}:
+      F32.is_lt(a, b)
+    case True{}:
+      F32.is_lt(F32.div(1.0, a), 0.0)
+
+def F32.minmax.left(a: F32, +b: F32, zero: Bool) -> Bool:
+  match zero:
+    case False{}:
+      F32.is_lt(a, b)
+    case True{}:
+      F32.minmax.zero(a, b, F32.is_eq(b, 0.0))
+
 def F32.min(a: F32, b: F32) -> F32:
   match a b:
     case F32{+x} F32{+y}:
-      Bool.pick(F32, F32.is_lt(F32{x}, F32{y}), F32{x}, F32{y})
+      +less = F32.minmax.left(F32{x}, F32{y}, F32.is_eq(F32{x}, 0.0))
+      Bool.pick(F32, less, F32{x}, F32{y})
 
 def F32.max(a: F32, b: F32) -> F32:
   match a b:
     case F32{+x} F32{+y}:
-      Bool.pick(F32, F32.is_lt(F32{x}, F32{y}), F32{y}, F32{x})
+      +less = F32.minmax.left(F32{x}, F32{y}, F32.is_eq(F32{x}, 0.0))
+      Bool.pick(F32, less, F32{y}, F32{x})
 
 def F32.clamp(x: F32, lo: F32, hi: F32) -> F32:
   F32.min(F32.max(x, lo), hi)
