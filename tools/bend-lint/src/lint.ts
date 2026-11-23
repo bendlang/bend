@@ -237,21 +237,20 @@ const FIXES: ReadonlyArray<
 
 export function readConfig(file: string): Config {
   try {
+    let config: unknown;
     if ([".js", ".ts"].includes(path.extname(file))) {
       const module = import.meta.require(url.pathToFileURL(path.resolve(file)).href);
       if (!Object.hasOwn(module, "config")) {
         throw new Error("must export a named `config` object");
       }
-      if (
-        typeof module.config !== "object" ||
-        module.config === null ||
-        Array.isArray(module.config)
-      ) {
-        throw new Error("`config` must be an object");
-      }
-      return module.config;
+      config = module.config;
+    } else {
+      config = JSON.parse(fs.readFileSync(file, "utf8"));
     }
-    return JSON.parse(fs.readFileSync(file, "utf8"));
+    if (typeof config !== "object" || config === null || Array.isArray(config)) {
+      throw new Error("`config` must be an object");
+    }
+    return config as Config;
   } catch (e) {
     throw new Error(file + ": " + (e instanceof Error ? e.message : String(e)));
   }
