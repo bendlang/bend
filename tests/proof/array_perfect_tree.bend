@@ -1,6 +1,6 @@
 # Array.get and Array.set on a perfect tree, proved (#2059, #1934): the U32 mask, halving shift,
 # branch bit and right-half index of Array's descent, as Nat facts, and the leaf each slot reads.
-# Self-contained: every lemma is proved here, over Base only.
+# The Array laws are for Nat elements. Self-contained: every lemma is proved here, over Base only.
 import Base
 
 # Nat
@@ -284,7 +284,7 @@ def le_p2s(+v: Nat, +e: Nat, +h: le(Nat.pow(2n, 1n+e), v)) -> le(Nat.double(Nat.
   %Equal.sym(Nat, Nat.double(Nat.pow(2n, e)), Nat.pow(2n, 1n+e), tps(e)) : le(_, v)
   h
 
-# Twice a difference: 2(x - p) = 2x - 2p and 1 + 2(x - p) = (1 + 2x) - 2p, for p <= x.
+# Twice a difference: 2(x - q) = 2x - 2q and 1 + 2(x - q) = (1 + 2x) - 2q, for q <= x.
 def dsub(+q: Nat, +x: Nat, +h: le(q, x)) -> {Nat.double(Nat.sub(x, q)) == Nat.sub(Nat.double(x), Nat.double(q)) : Nat}:
   match q:
     case 0n:
@@ -309,7 +309,7 @@ def dsub1(+q: Nat, +x: Nat, +h: le(q, x)) -> {1n+Nat.double(Nat.sub(x, q)) == Na
         case 1n++y:
           dsub1(r, y, h)
 
-# The right half of a node: q <= i < 2q gives i - q < q.
+# q <= i < q + c gives i - q < c; with c = q, the right half of a node.
 def sublt(+q: Nat, +i: Nat, +c: Nat, +hle: le(q, i), +hlt: lt(i, Nat.add(q, c))) -> lt(Nat.sub(i, q), c):
   match q:
     case 0n:
@@ -935,7 +935,7 @@ def size_build(+d: Nat, +l: List<&2, Nat>) -> {(build(d, l), U32.shln(1, d)) == 
       %size_build(e, l) : {(build(1n+e, l), U32.shln(1, 1n+e)) == Array.size.node(Nat, build(e, drop(Nat.pow(2n, e), l)), _) : Array<Nat> & U32}
       {==}
 
-def lesub2.h(+q: Nat, +n: Nat, +h: le(Nat.double(q), n)) -> le(Nat.add(q, q), n):
+def le_add_double(+q: Nat, +n: Nat, +h: le(Nat.double(q), n)) -> le(Nat.add(q, q), n):
   %double_eq_add(q) : le(_, n)
   h
 
@@ -947,18 +947,11 @@ def build_upd_hi(+e: Nat, +l: List<&2, Nat>, +i: Nat, +v: Nat, +h: le(Nat.pow(2n
       {==}
     case 1n++f:
       +hf = le_trans(Nat.pow(2n, f), Nat.double(Nat.pow(2n, f)), i, le_double(Nat.pow(2n, f)), le_p2s(i, f, h))
-      +hr = lesub(Nat.pow(2n, f), Nat.pow(2n, f), i, lesub2.h(Nat.pow(2n, f), i, le_p2s(i, f, h)))
+      +hr = lesub(Nat.pow(2n, f), Nat.pow(2n, f), i, le_add_double(Nat.pow(2n, f), i, le_p2s(i, f, h)))
       %build_upd_hi(f, l, i, v, hf) : {build(1n+f, l) == ANode{_, build(f, drop(Nat.pow(2n, f), upd(l, i, v)))} : Array<Nat>}
       %drop_upd_hi(Nat.pow(2n, f), l, i, v, hf) : {build(1n+f, l) == ANode{build(f, l), build(f, _)} : Array<Nat>}
       %build_upd_hi(f, drop(Nat.pow(2n, f), l), Nat.sub(i, Nat.pow(2n, f)), v, hr) : {build(1n+f, l) == ANode{build(f, l), _} : Array<Nat>}
       {==}
-
-def pre(d: Nat) -> Nat:
-  match d:
-    case 0n:
-      0n
-    case 1n+e:
-      e
 
 def lt0_le1(+n: Nat, +h: le(1n, n)) -> lt(0n, n):
   match n:
@@ -978,10 +971,10 @@ def hi_right(+x: U32, +e: Nat, +hle: le(Nat.pow(2n, e), U32.to_nat(x)), +hi: lt(
 
 def hl_right(+e: Nat, +l: List<&2, Nat>, +hl: le(Nat.pow(2n, 1n+e), len(l))) -> le(Nat.pow(2n, e), len(drop(Nat.pow(2n, e), l))):
   %len_drop(Nat.pow(2n, e), l) : le(Nat.pow(2n, e), _)
-  lesub(Nat.pow(2n, e), Nat.pow(2n, e), len(l), lesub2.h(Nat.pow(2n, e), len(l), le_p2s(len(l), e, hl)))
+  lesub(Nat.pow(2n, e), Nat.pow(2n, e), len(l), le_add_double(Nat.pow(2n, e), len(l), le_p2s(len(l), e, hl)))
 
 # get.go descends to leaf to_nat(x); b is the branch bit at the root.
-def get_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +h: lt(d, 32n), +hi: lt(U32.to_nat(x), Nat.pow(2n, d)), +b: Bool, +eb: {b == Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pre(d))) : Bool}) -> {(build(d, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(d, l), U32.shln(1, d), x, U32.is_lt(x, U32.shr(U32.shln(1, d)))) : Array<Nat> & Nat}:
+def get_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +h: lt(d, 32n), +hi: lt(U32.to_nat(x), Nat.pow(2n, d)), +b: Bool, +eb: {b == Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pred(d))) : Bool}) -> {(build(d, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(d, l), U32.shln(1, d), x, U32.is_lt(x, U32.shr(U32.shln(1, d)))) : Array<Nat> & Nat}:
   match d:
     case 0n:
       %lt1_zero(U32.to_nat(x), hi) : {(build(0n, l), nth(l, _)) == (build(0n, l), nth(l, 0n)) : Array<Nat> & Nat}
@@ -995,7 +988,7 @@ def get_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +h: lt(d, 32n), +hi: lt(U32.to_n
           %is_lt_r(x, e, hE) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, _) : Array<Nat> & Nat}
           %eb : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, _) : Array<Nat> & Nat}
           %shr_shln_r(e, h) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.swap.lo(Nat, build(e, drop(Nat.pow(2n, e), l)), Array.get.go(Nat, build(e, l), _, x, U32.is_lt(x, U32.shr(_)))) : Array<Nat> & Nat}
-          %get_go(e, l, x, hE, hiL, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pre(e))), {==}) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.swap.lo(Nat, build(e, drop(Nat.pow(2n, e), l)), _) : Array<Nat> & Nat}
+          %get_go(e, l, x, hE, hiL, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pred(e))), {==}) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.swap.lo(Nat, build(e, drop(Nat.pow(2n, e), l)), _) : Array<Nat> & Nat}
           {==}
         case False{}:
           +hE = lt_pred(e, 32n, h)
@@ -1004,7 +997,7 @@ def get_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +h: lt(d, 32n), +hi: lt(U32.to_n
           %is_lt_r(x, e, hE) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, _) : Array<Nat> & Nat}
           %eb : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, _) : Array<Nat> & Nat}
           %shr_shln_r(e, h) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.swap.hi(Nat, build(e, l), Array.get.go(Nat, build(e, drop(Nat.pow(2n, e), l)), _, U32.sub(x, _), U32.is_lt(U32.sub(x, _), U32.shr(_)))) : Array<Nat> & Nat}
-          %get_go(e, drop(Nat.pow(2n, e), l), U32.sub(x, U32.shln(1, e)), hE, hi_right(x, e, hle, hi), Nat.is_lt(U32.to_nat(U32.sub(x, U32.shln(1, e))), Nat.pow(2n, pre(e))), {==}) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.swap.hi(Nat, build(e, l), _) : Array<Nat> & Nat}
+          %get_go(e, drop(Nat.pow(2n, e), l), U32.sub(x, U32.shln(1, e)), hE, hi_right(x, e, hle, hi), Nat.is_lt(U32.to_nat(U32.sub(x, U32.shln(1, e))), Nat.pow(2n, pred(e))), {==}) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == Array.swap.hi(Nat, build(e, l), _) : Array<Nat> & Nat}
           %sub_r(x, e, hle, hi) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == (build(1n+e, l), nth(drop(Nat.pow(2n, e), l), _)) : Array<Nat> & Nat}
           %nth_drop(Nat.pow(2n, e), l, U32.to_nat(x), hle) : {(build(1n+e, l), nth(l, U32.to_nat(x))) == (build(1n+e, l), _) : Array<Nat> & Nat}
           {==}
@@ -1012,7 +1005,7 @@ def get_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +h: lt(d, 32n), +hi: lt(U32.to_n
 def get_r(+d: Nat, +l: List<&2, Nat>, +x: U32, +h: lt(d, 32n), +hi: lt(U32.to_nat(x), Nat.pow(2n, d))) -> {(build(d, l), nth(l, U32.to_nat(x))) == Array.get(Nat, build(d, l), x) : Array<Nat> & Nat}:
   %size_build(d, l) : {(build(d, l), nth(l, U32.to_nat(x))) == Array.get.at(Nat, x, _) : Array<Nat> & Nat}
   %mask_r(x, d, h, hi) : {(build(d, l), nth(l, U32.to_nat(x))) == Array.get.go(Nat, build(d, l), U32.shln(1, d), _, U32.is_lt(_, U32.shr(U32.shln(1, d)))) : Array<Nat> & Nat}
-  get_go(d, l, x, h, hi, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pre(d))), {==})
+  get_go(d, l, x, h, hi, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pred(d))), {==})
 
 # Reading slot x of the perfect tree of depth d < 32 over l, for x < 2^d, keeps the tree and answers entry x of l.
 law array_get_perfect:
@@ -1027,7 +1020,7 @@ def array_get_perfect(d, l, x, h, hi):
   Equal.sym(Array<Nat> & Nat, (build(d, l), nth(l, U32.to_nat(x))), Array.get(Nat, build(d, l), x), get_r(d, l, x, h, hi))
 
 # swap.go replaces leaf to_nat(x); b is the branch bit at the root.
-def set_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +v: Nat, +h: lt(d, 32n), +hi: lt(U32.to_nat(x), Nat.pow(2n, d)), +hl: le(Nat.pow(2n, d), len(l)), +b: Bool, +eb: {b == Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pre(d))) : Bool}) -> {(build(d, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.go(Nat, build(d, l), U32.shln(1, d), x, v, U32.is_lt(x, U32.shr(U32.shln(1, d)))) : Array<Nat> & Nat}:
+def set_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +v: Nat, +h: lt(d, 32n), +hi: lt(U32.to_nat(x), Nat.pow(2n, d)), +hl: le(Nat.pow(2n, d), len(l)), +b: Bool, +eb: {b == Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pred(d))) : Bool}) -> {(build(d, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.go(Nat, build(d, l), U32.shln(1, d), x, v, U32.is_lt(x, U32.shr(U32.shln(1, d)))) : Array<Nat> & Nat}:
   match d:
     case 0n:
       %lt1_zero(U32.to_nat(x), hi) : {(ALeaf{nth(upd(l, _, v), 0n)}, nth(l, _)) == (ALeaf{v}, nth(l, 0n)) : Array<Nat> & Nat}
@@ -1043,7 +1036,7 @@ def set_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +v: Nat, +h: lt(d, 32n), +hi: lt
           %is_lt_r(x, e, hE) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, v, _) : Array<Nat> & Nat}
           %eb : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, v, _) : Array<Nat> & Nat}
           %shr_shln_r(e, h) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.lo(Nat, build(e, drop(Nat.pow(2n, e), l)), Array.swap.go(Nat, build(e, l), _, x, v, U32.is_lt(x, U32.shr(_)))) : Array<Nat> & Nat}
-          %set_go(e, l, x, v, hE, hiL, hlL, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pre(e))), {==}) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.lo(Nat, build(e, drop(Nat.pow(2n, e), l)), _) : Array<Nat> & Nat}
+          %set_go(e, l, x, v, hE, hiL, hlL, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pred(e))), {==}) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.lo(Nat, build(e, drop(Nat.pow(2n, e), l)), _) : Array<Nat> & Nat}
           %drop_upd_lo(Nat.pow(2n, e), l, U32.to_nat(x), v, hiL) : {(ANode{build(e, upd(l, U32.to_nat(x), v)), build(e, _)}, nth(l, U32.to_nat(x))) == (ANode{build(e, upd(l, U32.to_nat(x), v)), build(e, drop(Nat.pow(2n, e), l))}, nth(l, U32.to_nat(x))) : Array<Nat> & Nat}
           {==}
         case False{}:
@@ -1053,7 +1046,7 @@ def set_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +v: Nat, +h: lt(d, 32n), +hi: lt
           %is_lt_r(x, e, hE) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, v, _) : Array<Nat> & Nat}
           %eb : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.go(Nat, build(1n+e, l), U32.shln(1, 1n+e), x, v, _) : Array<Nat> & Nat}
           %shr_shln_r(e, h) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.hi(Nat, build(e, l), Array.swap.go(Nat, build(e, drop(Nat.pow(2n, e), l)), _, U32.sub(x, _), v, U32.is_lt(U32.sub(x, _), U32.shr(_)))) : Array<Nat> & Nat}
-          %set_go(e, drop(Nat.pow(2n, e), l), U32.sub(x, U32.shln(1, e)), v, hE, hi_right(x, e, hle, hi), hl_right(e, l, hl), Nat.is_lt(U32.to_nat(U32.sub(x, U32.shln(1, e))), Nat.pow(2n, pre(e))), {==}) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.hi(Nat, build(e, l), _) : Array<Nat> & Nat}
+          %set_go(e, drop(Nat.pow(2n, e), l), U32.sub(x, U32.shln(1, e)), v, hE, hi_right(x, e, hle, hi), hl_right(e, l, hl), Nat.is_lt(U32.to_nat(U32.sub(x, U32.shln(1, e))), Nat.pow(2n, pred(e))), {==}) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == Array.swap.hi(Nat, build(e, l), _) : Array<Nat> & Nat}
           %sub_r(x, e, hle, hi) : {(build(1n+e, upd(l, U32.to_nat(x), v)), nth(l, U32.to_nat(x))) == (ANode{build(e, l), build(e, upd(drop(Nat.pow(2n, e), l), _, v))}, nth(drop(Nat.pow(2n, e), l), _)) : Array<Nat> & Nat}
           %build_upd_hi(e, l, U32.to_nat(x), v, hle) : {(ANode{_, build(e, drop(Nat.pow(2n, e), upd(l, U32.to_nat(x), v)))}, nth(l, U32.to_nat(x))) == (ANode{build(e, l), build(e, upd(drop(Nat.pow(2n, e), l), Nat.sub(U32.to_nat(x), Nat.pow(2n, e)), v))}, nth(drop(Nat.pow(2n, e), l), Nat.sub(U32.to_nat(x), Nat.pow(2n, e)))) : Array<Nat> & Nat}
           %drop_upd_hi(Nat.pow(2n, e), l, U32.to_nat(x), v, hle) : {(ANode{build(e, l), build(e, _)}, nth(l, U32.to_nat(x))) == (ANode{build(e, l), build(e, upd(drop(Nat.pow(2n, e), l), Nat.sub(U32.to_nat(x), Nat.pow(2n, e)), v))}, nth(drop(Nat.pow(2n, e), l), Nat.sub(U32.to_nat(x), Nat.pow(2n, e)))) : Array<Nat> & Nat}
@@ -1063,7 +1056,7 @@ def set_go(+d: Nat, +l: List<&2, Nat>, +x: U32, +v: Nat, +h: lt(d, 32n), +hi: lt
 def set_r(+d: Nat, +l: List<&2, Nat>, +x: U32, +v: Nat, +h: lt(d, 32n), +hi: lt(U32.to_nat(x), Nat.pow(2n, d)), +hl: le(Nat.pow(2n, d), len(l))) -> {build(d, upd(l, U32.to_nat(x), v)) == Array.set(Nat, build(d, l), x, v) : Array<Nat>}:
   %size_build(d, l) : {build(d, upd(l, U32.to_nat(x), v)) == Array.set.fin(Nat, Array.swap.at(Nat, x, v, _)) : Array<Nat>}
   %mask_r(x, d, h, hi) : {build(d, upd(l, U32.to_nat(x), v)) == Array.set.fin(Nat, Array.swap.go(Nat, build(d, l), U32.shln(1, d), _, v, U32.is_lt(_, U32.shr(U32.shln(1, d))))) : Array<Nat>}
-  %set_go(d, l, x, v, h, hi, hl, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pre(d))), {==}) : {build(d, upd(l, U32.to_nat(x), v)) == Array.set.fin(Nat, _) : Array<Nat>}
+  %set_go(d, l, x, v, h, hi, hl, Nat.is_lt(U32.to_nat(x), Nat.pow(2n, pred(d))), {==}) : {build(d, upd(l, U32.to_nat(x), v)) == Array.set.fin(Nat, _) : Array<Nat>}
   {==}
 
 # Writing slot x of the perfect tree of depth d < 32 over l, for x < 2^d and 2^d entries, builds over l with entry x replaced.
@@ -1086,6 +1079,13 @@ def sample() -> List<&2, Nat>:
 # Slot 2 of the 4-slot tree over [10, 20, 30, 40] reads 30.
 law main:
   {Array.get(Nat, build(2n, sample()), 2) == (build(2n, sample()), 30n) : Array<Nat> & Nat}
+
+# Writing 99 to slot 2 of that tree gives the tree over [10, 20, 99, 40].
+law sample_set:
+  {Array.set(Nat, build(2n, sample()), 2, 99n) == build(2n, [10n, 20n, 99n, 40n]) : Array<Nat>}
+
+def sample_set():
+  array_set_perfect(2n, sample(), 2, 99n, {==}, {==}, {==})
 
 def main():
   array_get_perfect(2n, sample(), 2, {==}, {==})
