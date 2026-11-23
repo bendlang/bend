@@ -368,7 +368,8 @@ function print(doc: Doc, width: number, indent: number, newline: string): string
       const f = pending.pop()!,
         d = f.doc;
       if (typeof d === "string") {
-        if (d.includes("\n")) return true;
+        const lf = d.indexOf("\n");
+        if (lf >= 0) return lf - Number(d[lf - 1] === "\r") <= remaining;
         remaining -= d.length;
       } else if (Array.isArray(d)) pending.push(...d.map((doc) => ({ ...f, doc })).reverse());
       else if (d.kind === "line") {
