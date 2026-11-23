@@ -4153,12 +4153,16 @@ function segs_base(segs: Seg[]): void {
         const ws = ls.slice(r, e).map((x) => x.match(/^ *STK\((\d+)\) = (.+);$/))
           .filter((x) => x && +x[1] < n).map((x) => x![2]);
         const at = k.frame!.at;
+        // the answer goes to wb_ words: written to the r words, it would
+        // be a select on the path where no arm answers, which jumps with them
+        const rs = k.params.slice(at.length).map((_, j) => `wb_r${j}`);
         ls.splice(i, 1, ...seg_text([`if (!DEVICE && ${m[5]}) {`,
-          "  u32 wb_hit = 0;", "  do {", ...b!.map((x) => "    "
-            + x.replace(/WL_RETN\(\d+\);/, "wb_hit = 1; break;")),
+          "  u32 wb_hit = 0;", ...rs.map((w) => `  Term ${w} = 0;`), "  do {",
+          ...b!.map((x) => "    " + x.replace(/^( *)r(\d+) = /, "$1wb_r$2 = ")
+            .replace(/WL_RETN\(\d+\);/, "wb_hit = 1; break;")),
           "  } while (0);", "  if (wb_hit) {", ...k.params.map((p, j) =>
             `    ${lay_c(k.ks[j])} ${p} = ${j < at.length ? ws[at[j]]
-              : "r" + (j - at.length)};`), "    WL_OPEN",
+              : rs[j - at.length]};`), "    WL_OPEN",
           ...k.lines.map((x) => "    " + x), "  }}", "}"], m[1].length / 2),
           ...ls.slice(r - 1, e), m[1] + "}");
         ls.splice(r, e - r);
