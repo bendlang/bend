@@ -172,7 +172,8 @@ them.
 A fix is a title, an applicability (`safe`, `suggested`, `dangerous`) and edits.
 An edit swaps a span for text. A span is a source from `cx.sources` and two
 offsets. A zero-length span inserts. Offsets are integer UTF-16 units inside the
-source, and edits in one fix can't overlap.
+source. Edits in a fix can be returned in any order, but ones in the same
+source can't overlap.
 
 ```ts
 const span = { file: cx.root, beg: 0, end: 1 };
