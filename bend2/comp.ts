@@ -3601,6 +3601,41 @@ function emit_body(sc: Scope, tm: HTerm, ty0: HTerm | null, args: Val[],
   }
 }
 
+// The s segment, on the noted frame of a fork's first call: the second
+// call's arguments as its first continuation reads them, into a task whose
+// result goes to the future in r0; the frame's continuation becomes the w
+// segment. The w segment, its return target: the first result as the first
+// continuation keeps it, then the future's words as the second call's.
+function fork_lazy(k1: [Scope, Seg["frame"], [Of<"Var">, Bind][], Val, HTerm[]],
+  sname: string, c: Spine, after: HTerm, k2: string, n: number,
+  p: Of<"Var">, A: HTerm): void {
+  const [sc0, frame, held, rs, rest] = k1;
+  const wname = seg_name("w");
+  const fut = val_new([name_local(sc0, "fk")], W64);
+  const ss = seg_open(sc0, sname, sc0.seg.ret, frame, held, fut, rest);
+  const cargs = emit_args({ ...ss, rest: [after] }, c)
+    .flatMap((v) => v.ws);
+  spare_flush(ss);
+  const fj = seg_fid(c.k!);
+  file_push(ss, `STK(0) = ${seg_ref(ss, seg_fid(wname))};`,
+    `return term_tsk(${seg_ref(ss, fj)}, ${emit_task(ss, fj, 0, cargs,
+      fut.ws[0], 0)});`);
+  const wr = val_new(rs.ws.map(() => name_local(sc0, p.k)), rs.lay, rs.rs);
+  const ws = seg_open(sc0, wname, sc0.seg.ret, frame, held, wr, rest);
+  bind_uses(ws, p, wr, rest, A);
+  const ls = [...ws.uses].filter(([q]) => q === p).flatMap(([, b]) =>
+    b.val.ws);
+  if (ls.length !== n) {
+    die(`lazy fork: ${ls.length} words where the first continuation keeps ${n}`);
+  }
+  const rw = fun_of(c.k!).ret.ks.length;
+  file_push(ws, ...n > 0 ? [`WL_ROOM(${n});`,
+    ...ls.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${n});`] : [],
+    "{", `  DEV Term* fk_v = WL_FKWAIT;`,
+    ...[...Array(rw).keys()].map((j) => `  r${j} = fk_v[${j}];`),
+    "  WL_FKFREE(fk_v);", "}", `WL_JMP(${seg_ref(ws, k2)});`);
+}
+
 function emit_fork(sc: Scope, x: Of<"Let">): void {
   const o = term_open(x);
   const calls = x.v.map(term_spine);
@@ -3634,7 +3669,17 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     let_open(o.ps.slice(i + 1), x.v.slice(i + 1), o.b));
   const pos = new Map<Of<"Var">, number>();
   let depth = 0;
+  // A two-call fork run in sequence notes its first frame on the thread's
+  // fork list; a hungry pool turns the oldest noted frame's second call into
+  // a task (the s segment, on that frame) and the frame's continuation into
+  // the w segment, which waits for the task's result.
+  const lazy = !FL.js && calls.length === 2 && !calls.some((c) => c.b);
+  const sname = lazy ? seg_name("s") : "";
+  let k1: [Scope, Seg["frame"], [Of<"Var">, Bind][], Val, HTerm[]] | null = null;
   calls.forEach((c, i) => {
+    if (lazy && i === 1) {
+      file_push(sc, "WL_FKDROP");
+    }
     const cvs = emit_args({ ...sc, rest: [chain[i]] }, c);
     const cargs = cvs.flatMap((v) => v.ws);
     const rr = ret_root(c.k!, cvs);
@@ -3647,9 +3692,14 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     const on = `WL_SEQ(${sc.seg.fid})`;
     const base = !c.b && memo(FL.trees, c.k!, (k) =>
       term_calls(fun_of(k).h ?? DUMMY, k) > 1);
+    if (lazy && i === 1) {
+      fork_lazy(k1!, sname, c, chain[1], kf, ws.length, o.ps[0],
+        ty_ann(x.v[0])!);
+    }
     emit_chain(sc, [[on, () => {
       const fr = [...ws, seg_ref(sc, kf)];
-      file_push(sc, `WL_ROOM(${fr.length});`,
+      file_push(sc, ...lazy && i === 0 ? [`WL_FKNOTE(${ws.length}, ${
+        seg_ref(sc, seg_fid(sname))})`] : [], `WL_ROOM(${fr.length});`,
         ...fr.map((w, j) => `STK(${j}) = ${w};`), `WL_PUSHN(${fr.length});`);
     }], ...fork ? [] : [["", () => file_push(sc, `WL_CONT = term_tsk(${kf}, ${
       emit_task(sc, kf, 1, ws)});`,
@@ -3661,9 +3711,10 @@ function emit_fork(sc: Scope, x: Of<"Let">): void {
     const { ret } = fun_of(c.k!);
     const rest = [...hold.keys(), chain[i]];
     const rs = val_new(ret.ks.map(() => name_local(sc, o.ps[i].k)), ret, rr);
-    sc = seg_open(sc, kn, sc.seg.ret, { pop: depth - top,
-      at: held.flatMap(([p, b]) => b.val.ws.map((_, j) =>
-        pos.get(p)! + j - top)) }, held, rs, rest);
+    const frame = { pop: depth - top, at: held.flatMap(([p, b]) =>
+      b.val.ws.map((_, j) => pos.get(p)! + j - top)) };
+    k1 = i === 0 ? [sc, frame, held, rs, rest] : k1;
+    sc = seg_open(sc, kn, sc.seg.ret, frame, held, rs, rest);
     bind_uses(sc, o.ps[i], rs, rest, ty_ann(x.v[i])!);
   });
   if (fork) {
@@ -4192,8 +4243,11 @@ function segs_base(segs: Seg[]): void {
 
 function c_header(segs: Seg[], clos: string[]): string {
   const arg = val_new([""], W64);
+  // Fk~fut: a split's future, as wide as any result
+  const fut = Math.max(1, ...segs.map((s) => s.ret.ks.length));
   const entries = [...segs, seg_new("IO~emit", BOX, [arg]),
-    seg_new(CLO_APPLY, BOX, [arg, arg])];
+    seg_new(CLO_APPLY, BOX, [arg, arg]),
+    seg_new("Fk~fut", BOX, Array(fut).fill(arg))];
   const cids = new Map<Name, number[]>();
   const cid = (k: Name, n: number, d = 0) =>
     cids.set(k, [n > WIDE ? 240 + Math.log2(n) : n, d]);
@@ -4238,6 +4292,7 @@ function c_header(segs: Seg[], clos: string[]): string {
   `#define WL_LAST(X) switch (war) { ${reg("case #: r# = (X); break;")} }`,
   `#define WL_SAVE(V) ${reg("(V)[#] = r#;", resw)}`,
   `#define WL_TAKE(V) ${reg("r# = (V)[#];", resw)}`,
+  `#define WL_ZERO ${reg("r# = 0;")}`,
   `#define WL_SIG Env e, DEV Term* sp, u32 seq, u32 rn, Term ${ws.join(
     ", Term ")}`, `#define WL_ALL e, sp, seq, rn, ${ws.join(", ")}`,
   `#define WL_TABLE ${entries.map((s) => `WL_X(${s.fid})`).join(" ")
@@ -4797,6 +4852,21 @@ using namespace metal;
     err_post(e.mem, ERR_DEEP); \
     return 0; \
   }
+// A task run in sequence by a thread with a fork list (seq's FK_SEQ bit)
+// notes each two-call fork, so that a hungry pool can split the oldest (Lazy
+// forks).
+#if DEVICE
+#define WL_FKNOTE(N, S)
+#define WL_FKDROP
+#define WL_FKWAIT   (err_post(e.mem, ERR_FIDS), e.mem)
+#define WL_FKFREE(V)
+#else
+#define WL_FKNOTE(N, S) if (seq & FK_SEQ) { fk_note(e, sp + (N), S); }
+#define WL_FKDROP       if (seq & FK_SEQ) { fk_drop(e); }
+#define WL_FKWAIT       fk_wait(e, sp)
+#define WL_FKFREE(V)    heap_free(e, cls_fit(fid_arity(FID(Fk~fut)) + 2), \
+  (u64)((V) - e.mem))
+#endif
 
 // Types
 // =====
@@ -4896,6 +4966,15 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 #define STAT_OFF (STAK_OFF + CUBE * STAK_LEN)
 #define HEAP_OFF (STAT_OFF + PAGE_UP(STAT_LEN))
 
+// a thread's fork list, past its allocator's words (Lazy forks)
+#define FK_TOP  (3 * NCLS_ALL)
+#define FK_SEQ  4
+#define FK_ON(e) (DEVICE ? 0 : (e).alc[FK_TOP] ? FK_SEQ : 0)
+#define FK_LOW  (FK_TOP + 1)
+#define FK_BITS (FK_TOP + 2)
+#define FK_ME   (FK_TOP + 3)
+#define FK_NEXT (FK_TOP + 4)
+
 // Globals
 // =======
 
@@ -4905,7 +4984,7 @@ enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
 #if !DEVICE
 
 static u64*    CORPUS;
-static u64    ALC[CUBE_T][3 * NCLS_ALL] __attribute__((aligned(128)));
+static u64    ALC[CUBE_T][4 * NCLS_ALL] __attribute__((aligned(128)));
 static u32    KEEP_WORDS;
 static u32    CUBE_LOG = 7;
 static u32    bank_lock;
@@ -5914,6 +5993,204 @@ WL_TABLE WL_X(FID_ENTER)
 static const WlFn wl_tab[] = { WL_TABLE };
 #undef WL_X
 FAR Term work_loop(Env e, DEV Term* sp, Term t, u32 seq);
+
+// Lazy forks
+// ==========
+
+// A drain runs its tasks in sequence. Each two-call fork there notes its
+// first call's frame on the thread's fork list (FK_TOP; the frame's id word
+// and its s segment); its first continuation drops the note. While threads
+// hunt (fk_hungry, past their claims) and fewer tasks wait than hunt, a note
+// turns the thread's oldest unsplit frame into a task: the s segment reads
+// the second call's arguments off that frame into a task whose result goes
+// to a future, in a slot of the thread's box, and puts the w segment in the
+// frame's id word. Returning there, w takes the task back and runs it, or
+// waits for whoever took it, running others' tasks meanwhile. The oldest
+// frame holds the largest part left; a drain ends when its claims do, as a
+// claim waits for every task split off it. A split task's last delivery
+// hands back its future like a join; whoever ran the task drops it.
+
+typedef struct { DEV Term* at; u32 site; u32 slot; Term task; Term fut; } FkEnt;
+
+static void* pool_mmap(u64 bytes);
+
+#define FK_SLOTS 64
+static u32  fk_hungry;
+static u32  fk_boxed;
+static u32  fk_hunters;
+static u32  fk_sleepers;
+static pthread_mutex_t fk_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t  fk_bell = PTHREAD_COND_INITIALIZER;
+static u64  fk_mask[CUBE_T] __attribute__((aligned(128)));
+static Term fk_box[CUBE_T][FK_SLOTS] __attribute__((aligned(128)));
+
+#if defined(__aarch64__)
+#define fk_relax() __asm__ volatile("yield")
+#elif defined(__x86_64__)
+#define fk_relax() __builtin_ia32_pause()
+#else
+#define fk_relax() ((void)0)
+#endif
+
+static void fk_init(u64* alc, u32 w) {
+  if (pool_size < 2) {
+    return;
+  }
+  FkEnt* l = pool_mmap(1ull << 32);
+  alc[FK_TOP]  = (u64)l;
+  alc[FK_LOW]  = (u64)l;
+  alc[FK_BITS] = 0;
+  alc[FK_ME]   = w;
+}
+
+static Term fk_call(Env e, DEV Term* sp, u32 site, Term fut) {
+  WL_BANK
+  u32 rn  = 0;
+  u32 seq = 1;
+  WL_ZERO
+  r0 = fut;
+  return wl_tab[site](WL_ALL);
+}
+
+static Term fk_take(Env e) {
+  if (a32_load(&fk_boxed) == 0) {
+    return 0;
+  }
+  u32 me = (u32)e.alc[FK_ME];
+  for (u32 i = 0; i < pool_size; i += 1) {
+    u32 w = (me + 1 + i) % pool_size;
+    u64 m = __atomic_load_n(&fk_mask[w], __ATOMIC_ACQUIRE);
+    while (m != 0) {
+      u32  s = __builtin_ctzll(m);
+      Term t = __atomic_load_n(&fk_box[w][s], __ATOMIC_ACQUIRE);
+      m &= m - 1;
+      if (t != 0 && __atomic_compare_exchange_n(&fk_box[w][s], &t, 0, false,
+          __ATOMIC_ACQ_REL, __ATOMIC_RELAXED)) {
+        __atomic_fetch_and(&fk_mask[w], ~(1ull << s), __ATOMIC_RELAXED);
+        a32_sub(&fk_boxed, 1);
+        return t;
+      }
+    }
+  }
+  return 0;
+}
+
+// The thread's oldest unsplit frame below its newest (whose frame may not
+// be written yet) becomes a task, at most once per FK_GAP ns of a thread:
+// tasks too small to be worth a split would otherwise be split at every
+// fork while a drain's tail is hungry.
+#define FK_GAP 20000
+static u64 io_tick(void);
+
+FAR void fk_poll(Env e) {
+  FkEnt* lo   = (FkEnt*)e.alc[FK_LOW];
+  FkEnt* hi   = (FkEnt*)e.alc[FK_TOP] - 1;
+  u64    bits = e.alc[FK_BITS];
+  if (lo >= hi || ~bits == 0 || err_seen(e.mem)) {
+    return;
+  }
+  u64 now = io_tick();
+  if (now < e.alc[FK_NEXT]) {
+    return;
+  }
+  e.alc[FK_NEXT] = now + FK_GAP;
+  u32 me   = (u32)e.alc[FK_ME];
+  u32 slot = __builtin_ctzll(~bits);
+  e.alc[FK_LOW]  = (u64)(lo + 1);
+  e.alc[FK_BITS] = bits | 1ull << slot;
+  Term fut = term_tsk(FID(Fk~fut), task_node(e, FID(Fk~fut), TERM_HOLE, 0, 1));
+  Term t   = fk_call(e, lo->at, lo->site, fut);
+  lo->slot = slot;
+  lo->task = t;
+  lo->fut  = fut;
+  a32_add(&fk_boxed, 1);
+  __atomic_store_n(&fk_box[me][slot], t, __ATOMIC_RELEASE);
+  __atomic_fetch_or(&fk_mask[me], 1ull << slot, __ATOMIC_RELEASE);
+  if (a32_load(&fk_sleepers) != 0) {
+    pthread_mutex_lock(&fk_lock);
+    pthread_cond_signal(&fk_bell);
+    pthread_mutex_unlock(&fk_lock);
+  }
+}
+
+// A hunter that found nothing for a while sleeps until a task is boxed or
+// the drain's claims end (or a millisecond passes).
+static void fk_sleep(void) {
+  struct timespec ts;
+  clock_gettime(CLOCK_REALTIME, &ts);
+  ts.tv_nsec += 1000000;
+  ts.tv_sec  += ts.tv_nsec / 1000000000;
+  ts.tv_nsec %= 1000000000;
+  pthread_mutex_lock(&fk_lock);
+  a32_add(&fk_sleepers, 1);
+  if (a32_load(&fk_boxed) == 0 && a32_load_acq(&pool_done) != 0) {
+    pthread_cond_timedwait(&fk_bell, &fk_lock, &ts);
+  }
+  a32_sub(&fk_sleepers, 1);
+  pthread_mutex_unlock(&fk_lock);
+}
+
+static void fk_wake(void) {
+  pthread_mutex_lock(&fk_lock);
+  pthread_cond_broadcast(&fk_bell);
+  pthread_mutex_unlock(&fk_lock);
+}
+
+INLINE void fk_note(Env e, DEV Term* at, u32 site) {
+  FkEnt* t = (FkEnt*)e.alc[FK_TOP];
+  t->at   = at;
+  t->site = site;
+  e.alc[FK_TOP] = (u64)(t + 1);
+  if (a32_load(&fk_hungry) > a32_load(&fk_boxed)) {
+    fk_poll(e);
+  }
+}
+
+INLINE void fk_drop(Env e) {
+  u64 t = e.alc[FK_TOP] - sizeof(FkEnt);
+  e.alc[FK_TOP] = t;
+  e.alc[FK_LOW] = e.alc[FK_LOW] > t ? t : e.alc[FK_LOW];
+}
+
+// Runs others' tasks until *c is 0 (with c NULL, until the drain's claims
+// are done).
+static void fk_help(Env e, DEV Term* sp, DEV u32* c) {
+  a32_add(&fk_hungry, 1);
+  for (u32 n = 0; (c ? a32_load_acq(c) : a32_load_acq(&pool_done)) != 0
+    && !err_seen(e.mem);) {
+    Term t = fk_take(e);
+    if (t != 0) {
+      a32_sub(&fk_hungry, 1);
+      work_loop(e, sp, t, 1 | FK_SEQ);
+      a32_add(&fk_hungry, 1);
+      n = 0;
+    } else if (++n % 64 == 0) {
+      n < 64 * 64 || c != NULL ? (void)sched_yield() : fk_sleep();
+    } else {
+      fk_relax();
+    }
+  }
+  a32_sub(&fk_hungry, 1);
+}
+
+// w's wait: the second call's result words.
+FAR DEV Term* fk_wait(Env e, DEV Term* sp) {
+  fk_drop(e);
+  FkEnt* t   = (FkEnt*)e.alc[FK_TOP];
+  u32    me  = (u32)e.alc[FK_ME];
+  Term   tk  = t->task;
+  Term   fut = t->fut;
+  e.alc[FK_BITS] &= ~(1ull << t->slot);
+  if (__atomic_compare_exchange_n(&fk_box[me][t->slot], &tk, 0, false,
+      __ATOMIC_ACQ_REL, __ATOMIC_RELAXED)) {
+    __atomic_fetch_and(&fk_mask[me], ~(1ull << t->slot), __ATOMIC_RELAXED);
+    a32_sub(&fk_boxed, 1);
+    work_loop(e, sp, tk, 1 | FK_SEQ);
+  } else {
+    fk_help(e, sp, a32_at(e.mem, task_tail(fut) + 1));
+  }
+  return e.mem + term_loc(fut);
+}
 #endif
 
 static Term work_loop(Env e, DEV Term* sp, Term t, u32 seq) {
@@ -5978,6 +6255,12 @@ ${segs}
     WL_DYN(f);
   }}
 
+  WL_CASE(FID(Fk~fut))
+    WL_OPEN
+    err_post(e.mem, ERR_FIDS);
+    return 0;
+  }}
+
   // A task's continuation is a heap task, made by code running in turns:
   // on the host it runs so, as a scheduler that took it would (a drain
   // task's sequence ends with the task).
@@ -6037,7 +6320,7 @@ INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 strid
   }
   a32_store_rel(get, *get + 1);
   for (;;) {
-    Term r = work_loop(e, stk, t, seq);
+    Term r = work_loop(e, stk, t, seq ? 1 | FK_ON(e) : 0);
     if (r == 0 || err_seen(H)) {
       return 2;
     }
@@ -6320,10 +6603,21 @@ static u32 pool_rows(Env e, DEV Term* stk) {
     u32 rows = c >> 15 & 255;
     u32 step = c >> 23 & 1 ? 1 : pool_step(rows);
     if (r >= rows * step) {
+      bool hunt = !(c >> 23 & 1) && e.alc[FK_TOP];
+      if (hunt) {
+        a32_add(&fk_hunters, 1);
+      }
       if (n != 0 && a32_sub_rel(&pool_done, n) == n) {
         pthread_mutex_lock(&pool_lock);
         pthread_cond_signal(&pool_join);
         pthread_mutex_unlock(&pool_lock);
+        if (a32_load(&fk_sleepers) != 0) {
+          fk_wake();
+        }
+      }
+      if (hunt) {
+        fk_help(e, stk, NULL);
+        a32_sub_rel(&fk_hunters, 1);
       }
       return c >> 24;
     }
@@ -6345,6 +6639,7 @@ static u32 pool_rows(Env e, DEV Term* stk) {
 
 static void* pool_work(void* arg) {
   Term* stk  = pool_stack();
+  fk_init(ALC[(uintptr_t)arg], (u32)(uintptr_t)arg);
   u32   seen = 0;
   for (;;) {
     POOL_WAIT(a32_load(&pool_row) >> 24 == seen, pool_wake)
@@ -6407,6 +6702,9 @@ OUTLINE void pool_turn(bool grow, u32 rows) {
   pthread_mutex_unlock(&pool_lock);
   pool_rows((Env){ CORPUS, ALC[0] }, io_stk);
   POOL_WAIT(a32_load_acq(&pool_done) != 0, pool_join)
+  while (a32_load_acq(&fk_hunters) != 0) {
+    fk_relax();
+  }
 }
 
 // Gpu
@@ -7420,6 +7718,7 @@ static void io_step(Env e, IoWork* a) {
 OUTLINE void io_loop(u64* H) {
   Env e = { H, ALC[0] };
   io_stk = pool_stack();
+  fk_init(ALC[0], 0);
   signal(SIGPIPE, SIG_IGN);
   if (pipe(io_wake_fd) || fcntl(io_wake_fd[0], F_SETFL, O_NONBLOCK)) {
     err_fail("the event loop failed to open");
