@@ -16,7 +16,12 @@ def apply(f: @+p: String -> Bool, p: String) -> Bool:
 
 def unfold(-h: Char, -t: String, -p: String) ->
   {String.contains(SCon{h, t}, p) ==
-    String.contains.if(t, p, String.starts_with(SCon{h, t}, p)) : Bool}:
+    String.contains.if(t, p, String.contains.at(p, h, t)) : Bool}:
+  {==}
+
+# An empty pattern is found at the first position, whatever follows it.
+def empty_pattern(-h: Char, -t: String) ->
+  {String.contains(SCon{h, t}, "") == True{} : Bool}:
   {==}
 
 def main() -> IO(Unit):

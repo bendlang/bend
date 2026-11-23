@@ -1,5 +1,5 @@
-# JS exports keep own __proto__ keys and distinguish imported dep:value
-# from a root dep.value, including when the export object is spread.
+# JS exports keep own __proto__ keys and a root dep.value, and leave the
+# imported dep:value internal, including when the export object is spread.
 import Base
 
 def Module.export_keys() -> IO(U32):

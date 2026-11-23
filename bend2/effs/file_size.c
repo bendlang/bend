@@ -21,6 +21,7 @@ static Term file_size_pack(Env e, IoWork* w) {
 
 Term file_size_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
+  io_sync();
   return io_work(w, file_size_call, file_size_pack);
 }
 

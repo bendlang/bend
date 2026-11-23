@@ -73,6 +73,8 @@ function tokens(source: string): Token[] {
       kind = "comment";
     } else if (c === '"' || c === "'") {
       at++;
+      // In ''', the middle apostrophe is the character.
+      if (c === "'" && source[at] === "'") at++;
       while (at < source.length) {
         if (source[at] === "\\") {
           at += 2;
@@ -90,7 +92,9 @@ function tokens(source: string): Token[] {
         /^(?:<&>|\.&\.|\.\|\.|\.\^\.|->|=>|<-|==|!=|<=|>=|<<|&&|\|\||\+\+|<>|&[012])/.exec(
           source.slice(at),
         );
-      if (source.startsWith("<-", at) && /[\w.]/.test(source[at - 1] ?? "")) at++;
+      // `Box<-T` opens type arguments with an erased binder; `x<- m` is still a bind.
+      if (source.startsWith("<-", at) && /[\w.]/.test(source[at - 1] ?? "")
+        && !/\s/.test(source[at + 2] ?? "")) at++;
       else if (source.startsWith(">>", at) && /\s/.test(source[at - 1] ?? "")) at += 2;
       else at += (word?.[0] ?? number?.[0] ?? symbol?.[0] ?? c).length;
     }
@@ -104,17 +108,28 @@ function tokens(source: string): Token[] {
   return out;
 }
 
+type Level = { children: Node[]; group?: Extract<Node, { open: Token }> };
+
+// A glued '<' that no '>' closes was a comparison or a bind ('a<4', 'x<- m'), not type
+// arguments: its tokens go back to the enclosing group.
+function unwind(stack: Level[]): void {
+  while (stack[stack.length - 1].group?.open.text === "<") {
+    const level = stack.pop()!;
+    const parent = stack[stack.length - 1].children;
+    parent.splice(parent.indexOf(level.group!), 1, level.group!.open, ...level.children);
+  }
+}
+
 function tree(ts: Token[]): Node[] {
   const root: Node[] = [];
-  const stack: Array<{ children: Node[]; group?: Extract<Node, { open: Token }> }> = [
-    { children: root },
-  ];
+  const stack: Level[] = [{ children: root }];
   for (let i = 0; i < ts.length; i++) {
     const t = ts[i],
       prev = ts[i - 1];
     const close = DELIMITERS.get(t.text);
     // Bend distinguishes type arguments from comparisons by a glued '<'.
     const angle = t.text === "<" && prev?.end === t.beg && /^[\w.]+$/.test(prev.text);
+    if ([")", "]", "}"].includes(t.text)) unwind(stack);
     const frame = stack[stack.length - 1];
     if (close && (t.text !== "<" || angle)) {
       const group = { open: t, close: { ...t, text: close }, children: [] as Node[] };
@@ -125,6 +140,7 @@ function tree(ts: Token[]): Node[] {
       stack.pop();
     } else frame.children.push(t);
   }
+  unwind(stack);
   if (stack.length !== 1) throw new Error("format/layout: unbalanced delimiters");
   return root;
 }
@@ -171,7 +187,8 @@ function separator(a: Node, b: Node): string {
     y = first(b),
     l = x.text,
     r = y.text;
-  if (y.kind === "comment") return "  ";
+  // `%# note` is a rewrite, `%  # note` a modulo.
+  if (y.kind === "comment") return l === "%" && x.end === y.beg ? "" : "  ";
   if (r === "," || r === ";" || r === ":" || r === "?" || r === "!" || r === ".") return "";
   if (l === "," || l === ";" || l === ":") return " ";
   if (["~", "@", "?", "!", "\\"].includes(l)) return "";

@@ -78,7 +78,11 @@ a tracing garbage collector.
 
 Blocking work leaves the loop in two ways. `io_work(w, call, pack)` runs
 `call(w)` on a helper thread, then `pack(e, w)` on the loop; `pack`'s value
-is the answer. `call` has no `Env`: it may only touch `w`.
+is the answer. `call` has no `Env`: it may only touch `w`. A job that can
+reach stdout's destination (a file it opens, reads or writes, or a process
+that can read that file) calls `io_sync()` first: it flushes stdout, so
+`IO.print`'s earlier output lands before the job's. Other `io_work` jobs
+keep stdout buffered.
 `io_wait_on(w, fd, POLLIN, 0, more)` parks until `fd` is ready (`POLLIN` or
 `POLLOUT`), then runs `more(e, w)` on the loop; `more` may call
 `io_wait_on` again. Both return `IO_PARK`, which the effect returns.
@@ -163,6 +167,51 @@ one of the effect's files. The two sides count from different zeros:
 `io_tick()` reads `CLOCK_MONOTONIC`, whose zero the OS picks (on Linux,
 boot), and `performance.now()` starts with the process. Only the
 difference between two reads means the same on every lane.
+
+## Building the C yourself
+
+`bend x.bend -o x` builds with a fixed command and takes no flags. When
+your `.c` calls a library, or the binary needs a flag, emit the C and build
+it yourself:
+
+```bash
+bend x.bend -o x.c
+clang -std=c11 -O3 x.c -lpthread -lm -o x
+```
+
+That is the command `bend` runs, with clang 14 or newer. Some programs need
+more:
+
+- A window on Linux: add `-lX11 -ldl`. Audio on Linux: add `-lasound`.
+- A window, audio or a `!` on macOS: add `-x objective-c -fobjc-arc
+  -fmodules` before `x.c`.
+- A library your `.c` calls: add `-lfoo` after `x.c`, or the path of its
+  `libfoo.a` to link it statically, then the libraries it depends on.
+
+A program with a `!` needs clang 19 or newer (Apple clang 17) and a second
+step, which writes the GPU program to `x.gpu`, beside the binary. On macOS:
+
+```bash
+clang -DBEND_METAL=1 -x objective-c -fobjc-arc -fmodules \
+  -std=c11 -O3 x.c -lpthread -lm -o x
+./x +RTS --gpu-build
+```
+
+On Linux, with the CUDA toolkit at `$CUDA` (`/usr/local/cuda`, usually):
+
+```bash
+clang -DBEND_CUDA=1 -I$CUDA/include -L$CUDA/lib64 -L$CUDA/lib \
+  -std=c11 -O3 x.c -lpthread -lm -o x -lcuda -lnvrtc
+./x +RTS --gpu-build
+```
+
+Without `-DBEND_CUDA=1`, the `!` runs on the CPU.
+
+On macOS, a binary targets the machine that built it: its macOS version
+and its CPU. To also run on older Macs and on Intel ones, add
+`-mmacosx-version-min=11.0 -arch arm64 -arch x86_64`. `-static` does not
+work there, since Apple ships no static libc: link your own libraries by
+their `.a` and leave the system's dynamic.
 
 ## Compatibility
 

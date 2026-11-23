@@ -11,6 +11,11 @@ import { formatBend } from "../formatter.js";
 // `case` or `def` header, `=>` lambda opener, `;`, `(` or parenthesized `,`
 // to that body's column. [source, formatted]
 const pinned = [
+  ...[0, 1, 2].map((q) => {
+    const source = "def Box.pure(-A: Type, x: A) -> A: x\n\n"
+      + `def main() -> Quant:\n  do Box<Quant>:\n    return &${q}\n`;
+    return [source, source];
+  }),
   ...[0, 1, 2].flatMap((q) => [
     [
       `def main()->Quant:\n    (x=&0;&${q})\n`,
@@ -299,9 +304,18 @@ test("uses tabs when requested and is idempotent", () => {
   assert.equal(formatBend(once, { tabSize: 4, insertSpaces: false }), once);
 });
 
-test("keeps Bend prefix forms glued without changing infix operators", () => {
+test("formats Bend prefix forms without changing infix operators", () => {
   const source = "law use:\n    for + value: U32\n    List< & 2,U32>\n    & item:U32 -> { item==item:U32}\n    \\ {}\n    % proof : {==}";
-  assert.equal(formatBend(source), "law use:\n  for +value: U32\n  List<&2, U32>\n  &item: U32 -> {item == item: U32}\n  \\{}\n  %proof : {==}");
+  assert.equal(formatBend(source), "law use:\n  for +value: U32\n  List<&2, U32>\n  &item: U32 -> {item == item: U32}\n  \\{}\n  % proof : {==}");
+  assert.equal(formatBend("return U32 & U32"), "return U32 & U32");
+});
+
+test("keeps the gap after % that separates modulo from rewrite", () => {
+  const rewrite = "def f() -> U32:\n    pick(5 %# use eq\n      eq : U32; 7)\n";
+  assert.equal(formatBend(rewrite), "def f() -> U32:\n  pick(5 %# use eq\n    eq : U32; 7)\n");
+  assert.equal(formatBend("def f() -> U32:\n    pick(5 %eq : U32; 7)"), "def f() -> U32:\n  pick(5 %eq : U32; 7)");
+  assert.equal(formatBend("def f() -> U32:\n    (17\n      % 5 : U32)"), "def f() -> U32:\n  (17\n    % 5 : U32)");
+  assert.equal(formatBend("def f() -> U32:\n    (17 %  # modulo\n      5)"), "def f() -> U32:\n  (17 %  # modulo\n    5)");
 });
 
 test("keeps floating point exponents intact", () => {
@@ -317,6 +331,13 @@ test("preserves adjacency in natural-number successor patterns", () => {
 test("keeps adjacent parallel binders and template quantities", () => {
   assert.equal(formatBend("+a +b=x y"), "+a +b = x y");
   assert.equal(formatBend("f(~ & 2,~T,[1,2])"), "f(~&2, ~T, [1, 2])");
+});
+
+test("keeps erased parameters glued to their opener", () => {
+  assert.equal(formatBend("type Box<-T: Type> is Type:\n  Box{}"), "type Box<-T: Type> is Type:\n  Box{}");
+  assert.equal(formatBend("def G(-B: @-x: A -> Type) -> Type:\n  A"), "def G(-B: @-x: A -> Type) -> Type:\n  A");
+  assert.equal(formatBend("law L:\n  for f: @+x: F32 -> F32\n  Type"), "law L:\n  for f: @+x: F32 -> F32\n  Type");
+  assert.equal(formatBend("do IO<Unit>:\n  x : U32 <- f()"), "do IO<Unit>:\n  x : U32 <- f()");
 });
 
 test("formats dot operators and keeps continuation operators infix", () => {
@@ -385,6 +406,13 @@ test("mixed line endings and the final-newline state survive formatting", () => 
 
 test("preserves body layout across dedents, declarations, and delimiters", { skip: !runnable && "needs bun and bend2/main.ts" }, () => {
   const cases = [
+    ["import Base\ndef main()->U32:\n    (17\n      % 5 : U32)\n", "2\n"],
+    ...["%eq", "%# use the equality\n         eq"].map((proof) => [
+      "import Base\ndef pick(x: U32, y: U32) -> U32:\n  y\n"
+        + "def rewrite(eq: {0 == 0 : U32}) -> U32:\n    pick(5 "
+        + proof + " : U32; 7)\ndef main() -> U32:\n  rewrite({==})\n",
+      "7\n",
+    ]),
     ["import Base\ndef g(a:Bool,b:Bool)->Nat:\n  match a:\n    case True{}:\n      match b:\n        case True{}:\n  10n\n          case False{}:\n  20n\n    case False{}:\n  30n\ndef main()->Nat:\n  g(True{},False{})\n", "20n\n"],
     ["import Base\ndef g(a: Bool, b: Bool) -> Nat:\n  match a:\n    case True{}:\n      match b:case True{}:\n  10n\n              case False{}:\n  20n\n    case False{}:\n  30n\ndef main() -> Nat:\n  g(True{}, False{})\n", "20n\n"],
     ["import Base\ndef  g(a: Bool, b: Bool) -> IO(Unit):\n  match a:\n    case True{}:\n      match b: case True{}:\n  IO.print(\"10\")\n               case False{}:\n                 do IO<Unit>:\n                   IO.print(\"20\")\n                   IO.print(\"21\")\n    case False{}:\n  IO.print(\"30\")\ndef main() -> IO(Unit):\n  g(True{}, False{})\n", "20\n21\n"],

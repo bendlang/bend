@@ -55,6 +55,12 @@ describe("format/layout", () => {
       "import Base\n\ndef constructor() -> U32:\n  1\n\ndef toString() -> U32:\n  2\n\ndef valueOf() -> U32:\n  3\n",
     );
   });
+  test("keeps % glued to a following comment, which makes it a rewrite", () => {
+    const source = "def f(eq: {0 == 0: U32}) -> U32:\n  pick(5 %# use eq\n    eq: U32; 7)\n";
+    expect(format(source, opts)).toBe(source);
+    const modulo = "def f(x: U32) -> U32:\n  (x %  # modulo\n    5)\n";
+    expect(format(modulo, opts)).toBe(modulo);
+  });
   test("validates its own defaults, union and unknown options", () => {
     expect(formatOptions({})).toEqual(opts);
     expect(formatOptions({ wrapAtWidth: "never" })).toEqual({ ...opts, wrapAtWidth: "never" });
@@ -144,6 +150,19 @@ def main() -> String:
     expect(output).toContain("# header,= and http://example.org");
     expect(output).toContain("# trailing,=comment");
     expect(await fixed("import Base\ndef main() -> Char:\n  '='\n")).toContain("  '='");
+  });
+
+  test("preserves a raw apostrophe in a list of characters", async () => {
+    const source = "import Base\ndef main()->List<Char>: [''','#','a'] #tail\n";
+    expect(await fixed(source)).toContain("  [''', '#', 'a']  # tail\n");
+  });
+
+  test("formats a glued < that no > closes as a comparison or a bind", async () => {
+    const compare = "import Base\ndef f(a: U32) -> Bool:\n  (a<4 : U32)\n";
+    expect(await fixed(compare)).toContain("(a < 4");
+    const bind =
+      'import Base\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    Unit<- IO.print("x")\n    IO.print("y")\n';
+    expect(await fixed(bind)).toContain('Unit <- IO.print("x")');
   });
 
   test("keeps inline argument comments attached when wrapping", async () => {

@@ -21,11 +21,20 @@ static int file_open_mode(const char* mode) {
   return -1;
 }
 
+#ifdef CID(File.read_line)
+static void file_line_drop(int fd);
+#endif
+
 static void file_open_call(IoWork* w) {
   int fd;
   do {
     fd = open(w->data, (int)w->word, 0644);
   } while (fd < 0 && errno == EINTR);
+#ifdef CID(File.read_line)
+  if (fd >= 0) {
+    file_line_drop(fd);
+  }
+#endif
   w->made = (intptr_t)io_sys_end(w, fd);
 }
 
@@ -48,6 +57,7 @@ static Term file_open_start(Env e, Term* f, IoWork* w, u64 cons) {
   if (w->code != 0) {
     return file_open_pack(e, w);
   }
+  io_sync();
   return io_work(w, file_open_call, file_open_pack);
 }
 

@@ -1,4 +1,5 @@
 # Node module-mode launches must preserve Process.run and worker preloads.
+# So must a Node without getBuiltinModule (before 20.16), by a preload.
 # JS-only: runs real Node; skips when Bun cannot find node on PATH.
 import Base
 

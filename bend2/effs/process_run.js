@@ -2,10 +2,12 @@
 // =======
 
 const PROCESS_WORKER = `
-// Eval workers may inherit module mode, where require is undefined.
-const { errno, signals } = process.getBuiltinModule("node:os").constants;
-const { parentPort } = process.getBuiltinModule("node:worker_threads");
-const { spawn } = process.getBuiltinModule("node:child_process");
+// Eval workers may inherit module mode, where require is undefined; Node
+// before 20.16 has no getBuiltinModule, but its eval workers have require.
+const load = process.getBuiltinModule ?? require;
+const { errno, signals } = load("node:os").constants;
+const { parentPort } = load("node:worker_threads");
+const { spawn } = load("node:child_process");
 let port;
 let flag;
 

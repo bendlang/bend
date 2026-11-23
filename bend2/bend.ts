@@ -335,7 +335,7 @@ export type Body  = Match | Local | LTerm
 
 // Parser
 export type File  = { str: string; ns: string; al: Record<Name, Name>; };
-export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; };
+export type Parse = File & { book: Book; dir: string; pos: number; stk: number[][]; idx: Map<Name, number[]>; frs: number; ann: Set<number>; };
 export type Span  = { file: File; beg: number; end: number; };
 
 // Machine
@@ -2407,11 +2407,12 @@ export function parse_body(p: Parse, col: number = 0): Body {
     ts.push(parse_term(p));
     parse_skip(p);
   }
-  const at = p.pos;
-  let T = ts.length === 1 && parse_take(p, ":") ? parse_term(p) : null;
+  const [at, hs] = [p.pos, p.book.hols];
+  let T = ts.length === 1 && parse_at(p, ":") && !p.ann.has(at) && parse_take(p, ":") ? parse_term(p) : null;
   parse_skip(p);
   if (T !== null && !parse_at(p, "=")) {
-    [p.pos, T] = [at, null];
+    p.ann.add(at);
+    [p.pos, p.book.hols, T] = [at, hs, null];
   }
   if (T === null && q.$ === "Lone" && ts.length === 1 && !(parse_at(p, "=") && !parse_at(p, "=="))) {
     const w = term_write(p, ts[0], beg);
@@ -2590,13 +2591,14 @@ export function parse_def(p: Parse, u: Bool): void {
 }
 
 export function parse_book(book: Book, dir: string, src: string, ns: string, al: Record<Name, Name>): void {
-  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ns, al };
+  const p: Parse = { book, dir, str: src, pos: 0, stk: [], idx: new Map(), frs: 0, ann: new Set(), ns, al };
   while (true) {
     parse_skip(p);
     if (p.pos >= p.str.length) {
       return;
     }
     p.frs = 0;
+    p.ann.clear();
     parse_close(p, 0);
     if (parse_take(p, "@")) {
       if (!parse_word(p, "unsafe")) {

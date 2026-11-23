@@ -1,9 +1,21 @@
 // File
 // ====
 
+#ifdef CID(File.read_line)
+static int file_line_sync(int fd);
+#endif
+
+// A write lands where the program has read to, past what File.read_line
+// buffered (file_line_sync).
 static void file_write_fill(IoWork* w, int at_offset) {
   int fd = (int)w->hand;
   ssize_t n = 0;
+#ifdef CID(File.read_line)
+  w->code = (u32)file_line_sync(fd);
+  if (w->code != 0) {
+    return;
+  }
+#endif
   for (uint64_t at = 0; n >= 0 && at < w->size; at += (uint64_t)n) {
     do {
       n = at_offset ? pwrite(fd, w->data + at, w->size - at, (off_t)(w->made + at))
@@ -33,6 +45,7 @@ static Term file_write_pack(Env e, IoWork* w) {
 Term file_write_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cstr(e, f[1], &w->size);
+  io_sync();
   return io_work(w, file_write_call, file_write_pack);
 }
 
@@ -49,8 +62,11 @@ Term file_write_bytes_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cbuf(e, f[1], &w->size, CID(Con));
   w->code = w->data == NULL ? EINVAL : 0;
-  return w->code ? file_write_pack(e, w)
-    : io_work(w, file_write_call, file_write_pack);
+  if (w->code) {
+    return file_write_pack(e, w);
+  }
+  io_sync();
+  return io_work(w, file_write_call, file_write_pack);
 }
 
 static void __attribute__((constructor)) file_write_bytes_use(void) {
@@ -71,8 +87,11 @@ Term file_write_at_run(Env e, Term* f, IoWork* w) {
   w->data = io_cbuf(e, f[2], &w->size, CID(Con));
   int flags = fcntl((int)w->hand, F_GETFL);
   w->code = w->data == NULL || (flags >= 0 && (flags & O_APPEND)) ? EINVAL : 0;
-  return w->code ? file_write_pack(e, w)
-    : io_work(w, file_write_at_call, file_write_pack);
+  if (w->code) {
+    return file_write_pack(e, w);
+  }
+  io_sync();
+  return io_work(w, file_write_at_call, file_write_pack);
 }
 
 static void __attribute__((constructor)) file_write_at_use(void) {
