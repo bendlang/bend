@@ -1671,6 +1671,27 @@ describe("review fixes", () => {
     }])).toEqual({ text: "a😀<B>c!", skipped: 0, elsewhere: 0 });
   });
 
+  test("ordered fixes allow boundary inserts but keep the first conflicting fix", () => {
+    const file: Source = { path: "<fix>", text: "abcde", root: true, base: false };
+    const edits = (
+      ...changes: [beg: number, end: number, text: string][]
+    ): Edit[] => changes.map(([beg, end, text]) => ({ span: { file, beg, end }, text }));
+    const diag: Diag = {
+      code: "test/ordered", severity: "hint", message: "",
+      fixes: [
+        edits([0, 1, "A"]),
+        edits([1, 1, "<"]),
+        edits([1, 2, "B"]),
+        edits([1, 1, "<"]),
+        edits([2, 2, ">"]),
+        edits([2, 2, "!"], [4, 5, "dropped"]),
+        edits([2, 4, "C"]),
+        edits([3, 5, "dropped"]),
+      ].map((edits) => ({ title: "edit", applicability: "safe", edits })),
+    };
+    expect(applyFixes(file, [diag])).toEqual({ text: "A<B>Ce", skipped: 2, elsewhere: 0 });
+  });
+
   test("a fix that also edits another file is skipped whole", () => {
     const file: Source = { path: "<fix>", text: "abc", root: true, base: false };
     const other: Source = { path: "<other>", text: "xyz", root: false, base: false };

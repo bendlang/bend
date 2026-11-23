@@ -485,6 +485,8 @@ export function applyFixes(
   levels: Applicability[] = ["safe"],
 ): { text: string; skipped: number; elsewhere: number } {
   const kept: Edit[] = [];
+  let right = 0;
+  let lastInsert = -1;
   let skipped = 0;
   let elsewhere = 0;
   for (const fix of diags.flatMap((d) => d.fixes).filter((f) => levels.includes(f.applicability))) {
@@ -495,16 +497,24 @@ export function applyFixes(
       elsewhere += 1;
       continue;
     }
-    const fresh = fix.edits.filter(
+    // Rule findings usually arrive in source order. Past the accepted ranges,
+    // only a second insertion at the last boundary can clash.
+    const ordered = fix.edits.every(({ span }) =>
+      span.beg >= right && (span.beg !== span.end || span.beg > lastInsert));
+    const fresh = ordered ? fix.edits : fix.edits.filter(
       (e) =>
         !kept.some(
           (k) => k.span.beg === e.span.beg && k.span.end === e.span.end && k.text === e.text,
         ),
     );
-    if (fresh.some((e) => kept.some((k) => clash(k, e)))) {
+    if (!ordered && fresh.some((e) => kept.some((k) => clash(k, e)))) {
       skipped += 1;
     } else {
-      kept.push(...fresh);
+      for (const e of fresh) {
+        kept.push(e);
+        right = Math.max(right, e.span.end);
+        if (e.span.beg === e.span.end) lastInsert = Math.max(lastInsert, e.span.end);
+      }
     }
   }
   return { text: apply(file.text, kept), skipped, elsewhere };
