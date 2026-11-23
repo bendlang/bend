@@ -116,66 +116,6 @@ curl -fsSL https://bend-lang.com/install.sh | sh
 This `bend` ignores a project's `bunfig.toml` and `.env`; `bun bend2/main.ts`
 from a checkout reads them, so check untrusted code with `bend`.
 
-### Building emitted C
-
-`bend file.bend -o file.c` emits one C translation unit. To build it yourself,
-use the same baseline command as `bend file.bend -o file`:
-
-```bash
-cc -std=c11 -O3 file.c -lpthread -lm -o file
-```
-
-For a CPU build, use clang 14 or newer. Use `clang` in the command if `cc`
-selects another compiler. When Bend builds the binary itself, it checks `$CC`
-first, then `clang` and versioned `clang-NN` commands. Compile the emitted C
-when you need extra compiler or linker flags.
-
-On Linux, add `-lX11 -ldl` when the emitted C includes `<X11/...>` (Window),
-and `-lasound` when it includes `<alsa/...>` (Audio). On macOS, add
-`-x objective-c -fobjc-arc -fmodules` when the program uses `!` or contains a
-`#import` (for example, Window). A CPU-only build without framework imports
-can omit the Objective-C flags.
-
-To build `!` kernels for the GPU, compile with clang 19 or newer (Apple clang
-17 or newer on macOS) and add the GPU flags. On macOS, add `-DBEND_METAL=1`,
-then run:
-
-```bash
-./file +RTS --gpu-build
-```
-
-On Linux, set the `CUDA` shell variable to a CUDA toolkit directory that
-contains `include/nvrtc.h`, such as `/usr/local/cuda`. This variable is for
-the manual command below. When building a binary itself, Bend searches
-`$CUDA_HOME`, `$CUDA_PATH`, `/usr/local/cuda`, and `/opt/cuda` in that order.
-
-```bash
-CUDA=/usr/local/cuda
-clang -DBEND_CUDA=1 -I"$CUDA/include" -L"$CUDA/lib64" -L"$CUDA/lib" \
-  -std=c11 -O3 file.c -lpthread -lm -o file -lcuda -lnvrtc
-./file +RTS --gpu-build
-```
-
-Include the Linux window or audio libraries if needed. The second step writes
-`file.gpu` beside the binary. Without CUDA, Bend's Linux build runs `!` on the
-CPU.
-
-Foreign `.c` imports are copied into the emitted C. If that code calls an
-external library, add `-lfoo` after `file.c`, or name the static archive
-explicitly with `/path/to/libfoo.a`. Put any libraries that `foo` itself
-requires after it. `bend file.bend -o bin` cannot pass these extra arguments.
-
-On macOS, a fully static binary is not supported because Apple does not ship a
-static libc. `-static` fails with a missing `crt0.o`; static archives for other
-libraries are fine while `libSystem` remains dynamic. Use `otool -L file` to
-check the result. A CPU binary with every extra library linked statically
-lists only `/usr/lib/libSystem.B.dylib`. By default, macOS builds target the
-build machine's OS version and CPU. For a universal binary running
-on macOS 11 or newer, pass `-mmacosx-version-min=11.0 -arch arm64 -arch x86_64`
-to your `cc` command. Alternatively,
-`MACOSX_DEPLOYMENT_TARGET=11.0 bend file.bend -o file` passes the deployment
-target through to `cc`, but it does not add the second architecture.
-
 ### 2. Tell your agent to use Bend:
 
 Add this to your `AGENTS.md`:
@@ -259,6 +199,7 @@ def add_zero(x):
 # References
 
 - Guide: [GUIDE.md](guide/GUIDE.md), also printed by `bend guide`.
+- Effects: [EFFECTS.md](guide/EFFECTS.md), custom effects in C and JS, and how to build the C that `-o x.c` emits.
 - Demos: [demos/](demos), apps, servers and proofs, each with its `LAWS.bend`.
 - Base: [base.bend](bend2/base.bend), the base library, also printed by `bend base`.
 - Paper: [BendTT: An Affine Dependent Type Theory](paper/BendTT.pdf).
