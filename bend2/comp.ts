@@ -1292,8 +1292,9 @@ function acc_def(d: Name): void {
       term_spine(y).k === d)) ? k : "";
     return op !== "";
   });
+  op ||= R?.k + ".add" in ops ? R!.k + ".add" : "";
   const unit = ops[op];
-  const uv = (t: HTerm) => t.$ === "Ctr" && !t.x.length ? t.k
+  const uv = (t: HTerm) => t.$ === "Ctr" && /^(True|False)$/.test(t.k) ? t.k
     : Bend.u32_from_term(t) ?? nat_peel(t)[1];
   const w = d + "~acc";
   if (FL.js || !op || !intr_of(op) || f.lays.length >= WIDE
@@ -4864,12 +4865,12 @@ using namespace metal;
   e.mem[dh & ~(1ull << 63)] = dh >> 63 ? rfc_seal(e, (X)) : (X); \
 } while (0)
 #define WL_DEST(R, J, S) do { \
-  if ((u32)STK(-1) == FID(Dst~put)) { \
+  if ((u32)STK(-1) == FID_Dst_put) { \
     DST_PUT(STK(-2), R); \
   } else { \
     WL_ROOM(3) \
     STK(0) = (R); \
-    STK(2) = FID(Dst~put); \
+    STK(2) = FID_Dst_put; \
     WL_PUSHN(3); \
   } \
   STK(-2) = (term_loc(R) + (J)) | ((u64)(S) << 63); \
@@ -6029,7 +6030,7 @@ ${segs}
   }}
 
 #ifdef FID_Dst_put
-  WL_CASE(FID(Dst~put))
+  WL_CASE(FID_Dst_put)
     WL_POPN(2);
     DST_PUT(STK(1), r0);
     WL_OPEN
