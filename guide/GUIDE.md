@@ -525,20 +525,18 @@ characters: `U32.show` needs no module. A module's path is plain names
 (letters, digits, `_` and `-`, no digit first): `math.bend` is a module,
 `math.extra.bend` is refused. A law left open in one file may be filled in
 another as `def M.name(..)`, so a proof can ship separately from its claim.
-`import 0x<hash>/main.bend as P` imports a package by content hash, fetched
-from the hub and checked against it; `bend main.bend --publish` uploads a file
-with everything it imports and prints that line.
-`import <name>@<version>/main.bend as P` is the same package by the name
-its author gave it on the hub, with `bend main.bend --publish
-<name>@<version>` after `bend login`.
+`import 0x<hash>/main.bend as P` fetches a package from the hub and checks
+its content hash. `bend main.bend --publish` uploads the entry and its imports.
+Repeat `--extra <file>` to add text files without importing them.
+`import <name>@<version>/main.bend as P` selects the same package by hub name;
+publish with `bend main.bend --publish <name>@<version>` after `bend login`.
 
-A publish is public and permanent, under BendHub's terms
-(https://bend-lang.com/bendai/terms#s18). Put a `LICENSE` file
-next to your entry file, ideally opening with a line like
-`SPDX-License-Identifier: MIT`; `--publish` takes every file named exactly
-`LICENSE` beside a published file, and a package without one is MIT-0. You are
-responsible for what you publish, so pick the license it may carry. Adding a
-`LICENSE` changes a package's hash: publish it as a new version.
+Publishing is public and permanent under BendHub's terms
+(https://bend-lang.com/bendai/terms#s18). Put a `LICENSE`
+beside the entry; published files also carry their adjacent `LICENSE`.
+Ideally start it with `SPDX-License-Identifier: MIT`. Without a `LICENSE`,
+the package is MIT-0. You are responsible for what you publish.
+Adding `LICENSE` changes the package hash: publish a new version.
 
 ## Tooling
 
