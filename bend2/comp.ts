@@ -1546,6 +1546,13 @@ function clo_book(roots: Name[]): void {
     }
     seen.add(k);
     const f = fun_of(k);
+    // a body with no lambda in a call is not walked
+    const strip = (t: any): any => t.$ === "Ann" ? strip(t.x) : t;
+    if (tld.e && !lt_any(tld.e, (t) => t.$ === "App"
+      && (strip(t.f).$ === "Lam" || strip(t.x).$ === "Lam"))) {
+      clo_vars(tld.e, (y) => y.$ === "Ref" && todo.push(y.k));
+      continue;
+    }
     const c: CloDef = { d: k, env: [], hit: false };
     const e = clo_walk(c, f.h!, 0, tld.T);
     if (c.hit) {
