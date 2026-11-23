@@ -290,6 +290,14 @@ test("raw apostrophe programs run the same after formatting", { skip: !runnable 
   }
 });
 
+test("formats around multiline strings without changing their bytes", () => {
+  const literal = "\"first\\\"\r\n\t# not a comment\n  last\"";
+  const before = `import   Base\r\n\ndef main()->IO(Unit):\r\n    IO.print(${literal})# real comment`;
+  const expected = `import Base\r\n\ndef main() -> IO(Unit):\r\n  IO.print(${literal})  # real comment`;
+  assert.equal(formatBend(before), expected);
+  assert.equal(formatBend(expected), expected);
+});
+
 test("preserves angle spacing because Bend uses it to disambiguate syntax", () => {
   assert.equal(formatBend("import Base\ndef main()->Bool:\n    (2 >=1:U32)\n"), "import Base\ndef main() -> Bool:\n  (2 >= 1: U32)\n");
   assert.equal(formatBend("import Base\ndef main()->Bool:\n    (2\n     >=1:U32)\n"), "import Base\ndef main() -> Bool:\n  (2\n   >= 1: U32)\n");
@@ -384,7 +392,7 @@ test("semicolon pins respect delimiters, literals, and comments", () => {
     ["def f() -> U32:\n    (x:U32=1; x\n                  )\n", "def f() -> U32:\n  (x: U32 = 1; x\n    )\n"],
     ["def f() -> List<U32>:\n    [1, (x:U32=2; x),\n                  3]\n", "def f() -> List<U32>:\n  [1, (x: U32 = 2; x),\n    3]\n"],
     ['def f() -> String:\n    "a; b" # ; comment\n', 'def f() -> String:\n  "a; b"  # ; comment\n'],
-    ['def f() -> String:\n    "a;\n                  b"\n', 'def f() -> String:\n    "a;\n                  b"\n'],
+    ['def f() -> String:\n    "a;\n                  b"\n', 'def f() -> String:\n  "a;\n                  b"\n'],
   ]) {
     assert.equal(formatBend(source), expected);
     assert.equal(formatBend(expected), expected);
@@ -426,6 +434,9 @@ test("preserves body layout across dedents, declarations, and delimiters", { ski
     ["import Base\ndef main() -> Array<U32>:\n  a = [0 : U32 * 2n]\n  (a[0]<-7;a[1]<-8\n           a[0]<-9)\n", "[9, 8]\n"],
     ["import Base\ndef main() -> Array<U32>:\n  a = [0 : U32 * 2n]\n  (a[0]<-7;x : Result<&2,&2,U32,U32> = Done{1};a[1]<-8\n                                               a[0]<-9)\n", "[9, 8]\n"],
     ["import Base\ndef keep(a: Array<U32>, n: U32) -> Array<U32>:\n  a\ndef main() -> Array<U32>:\n  a = [0 : U32 * 2n]\n  keep((a[0]<-7;a[1]<-8\n                a[0]<-9\n    ),\n    0)\n", "[9, 8]\n"],
+    ["import Base\ndef keep(s: String, a: Array<U32>) -> Array<U32>:\n  a\n"
+      + "def main()->Array<U32>:\n    a=[0 : U32*2n]\n    keep(\"first\n  # still text\",(a[0]<-7\n"
+      + " ".repeat("  # still text\",(".length) + "a[1]<-8))\n", "[7, 8]\n"],
   ];
   const directory = mkdtempSync(join(tmpdir(), "bend-fmt-cases-"));
   const file = join(directory, "main.bend");

@@ -12,7 +12,7 @@ type Token = {
 
 type Line = {
   indent: string;
-  code: string;
+  ending: string;
   comment: string;
   commentGap: boolean;
   tokens: Token[];
@@ -34,32 +34,43 @@ function gluedPercent(line: Line, index: number): boolean {
   return next ? !next.gap : line.comment !== "" && !line.commentGap;
 }
 
-function splitLine(text: string): Line {
-  const indent = text.match(/^[\t ]*/)?.[0] ?? "";
-  const code = text.slice(indent.length);
+// A logical line ends at a newline outside a literal.
+function readLine(source: string, start: number, lines: Line[]): number {
+  let i = start;
+  while (source[i] === " " || source[i] === "\t") i++;
+  const indent = source.slice(start, i);
+  let bol = start;
   const tokens: Token[] = [];
-  let i = 0;
+  let commentAt = -1;
   let hadGap = false;
-  while (i < code.length) {
-    if (/\s/.test(code[i])) {
+  while (i < source.length) {
+    const char = source[i];
+    if (char === "\n" || (char === "\r" && source[i + 1] === "\n")) break;
+    if (/\s/.test(char)) {
       hadGap = tokens.length > 0;
       i++;
       continue;
     }
-    if (code[i] === "#") break;
-    const start = i;
-    const char = code[i];
+    if (char === "#") {
+      commentAt = i;
+      const end = source.indexOf("\n", i + 1);
+      i = end < 0 ? source.length : source[end - 1] === "\r" ? end - 1 : end;
+      break;
+    }
+    const tokenAt = i;
+    const col = i - bol;
     let kind: Token["kind"] = "symbol";
     if (char === "\"" || char === "'") {
       kind = "literal";
       const quote = char;
       i++;
       // In ''', the first apostrophe after the opener is the character.
-      if (quote === "'" && code[i] === "'") i++;
+      if (quote === "'" && source[i] === "'") i++;
       let escaped = false;
       let closed = false;
-      while (i < code.length) {
-        const next = code[i++];
+      while (i < source.length) {
+        const next = source[i++];
+        if (next === "\n") bol = i;
         if (escaped) escaped = false;
         else if (next === "\\") escaped = true;
         else if (next === quote) {
@@ -70,35 +81,44 @@ function splitLine(text: string): Line {
       if (!closed) throw new Error("unterminated literal");
     } else if (tokens.length === 1 && tokens[0].text === "import" && hadGap) {
       kind = "word";
-      while (i < code.length && !/\s/.test(code[i]) && code[i] !== "#") i++;
+      while (i < source.length && !/\s/.test(source[i]) && source[i] !== "#") i++;
     } else if (HEAD.test(char)) {
       kind = "word";
       i++;
-      while (i < code.length && WORD.test(code[i])) i++;
+      while (i < source.length && WORD.test(source[i])) i++;
     } else if (DIGIT.test(char)) {
       kind = "number";
       i++;
-      while (i < code.length && DIGIT.test(code[i])) i++;
-      if (code[i] === "." && DIGIT.test(code[i + 1] ?? "")) {
+      while (i < source.length && DIGIT.test(source[i])) i++;
+      if (source[i] === "." && DIGIT.test(source[i + 1] ?? "")) {
         i++;
-        while (i < code.length && DIGIT.test(code[i])) i++;
+        while (i < source.length && DIGIT.test(source[i])) i++;
       }
-      if (/[eE]/.test(code[i] ?? "") && DIGIT.test(code[i + 1] ?? "") || /[eE]/.test(code[i] ?? "") && /[+-]/.test(code[i + 1] ?? "") && DIGIT.test(code[i + 2] ?? "")) {
+      if (/[eE]/.test(source[i] ?? "") && DIGIT.test(source[i + 1] ?? "") || /[eE]/.test(source[i] ?? "") && /[+-]/.test(source[i + 1] ?? "") && DIGIT.test(source[i + 2] ?? "")) {
         i++;
-        if (/[+-]/.test(code[i] ?? "")) i++;
-        while (i < code.length && DIGIT.test(code[i])) i++;
+        if (/[+-]/.test(source[i] ?? "")) i++;
+        while (i < source.length && DIGIT.test(source[i])) i++;
       }
-      if (code[i] === "n") i++;
+      if (source[i] === "n") i++;
     } else {
       // A comparison needs a left operand separated from >; Box<-T opens a <, not a bind.
-      const multi = MULTI.find((value) => code.startsWith(value, i) && (value !== ">=" || !tokens.length || hadGap && tokens.at(-1)?.text !== ",")
-        && (value !== "<-" || hadGap || tokens.at(-1)?.kind !== "word" || !HEAD.test(code[i + 2] ?? "")));
+      const multi = MULTI.find((value) => source.startsWith(value, i) && (value !== ">=" || !tokens.length || hadGap && tokens.at(-1)?.text !== ",")
+        && (value !== "<-" || hadGap || tokens.at(-1)?.kind !== "word" || !HEAD.test(source[i + 2] ?? "")));
       i += multi?.length ?? 1;
     }
-    tokens.push({ text: code.slice(start, i), kind, gap: hadGap, col: indent.length + start });
+    tokens.push({ text: source.slice(tokenAt, i), kind, gap: hadGap, col });
     hadGap = false;
   }
-  return { indent, code: code.slice(0, i).trim(), comment: code.slice(i), commentGap: hadGap, tokens };
+  const ending = i === source.length ? "" : source[i] === "\r" ? "\r\n" : "\n";
+  const comment = commentAt < 0 ? "" : source.slice(commentAt, i);
+  lines.push({ indent, ending, comment, commentGap: hadGap, tokens });
+  return i + ending.length;
+}
+
+function splitLines(source: string): Line[] {
+  const lines: Line[] = [];
+  for (let i = 0; i < source.length;) i = readLine(source, i, lines);
+  return lines;
 }
 
 function unary(tokens: Token[], index: number): boolean {
@@ -152,14 +172,20 @@ function needsSpace(tokens: Token[], index: number): boolean {
   return true;
 }
 
-// The formatted code and where each token starts in it.
-function formatTokens(tokens: Token[]): [string, number[]] {
+// The formatted code and the physical column of each formatted token.
+function formatTokens(tokens: Token[], col: number): [string, number[]] {
   let output = "";
   const starts: number[] = [];
   for (let i = 0; i < tokens.length; i++) {
-    if (needsSpace(tokens, i)) output += " ";
-    starts.push(output.length);
-    output += tokens[i].text;
+    if (needsSpace(tokens, i)) {
+      output += " ";
+      col++;
+    }
+    starts.push(col);
+    const text = tokens[i].text;
+    output += text;
+    const lf = text.lastIndexOf("\n");
+    col = lf < 0 ? col + text.length : text.length - lf - 1;
   }
   return [output, starts];
 }
@@ -249,7 +275,7 @@ function indentDepths(lines: Line[], loose = looseLines(lines), anchors: (Token 
   let wasLoose = false;
   let brackets = 0;
   for (const [index, line] of lines.entries()) {
-    if (line.code === "" && line.comment === "") {
+    if (line.tokens.length === 0 && line.comment === "") {
       depths.push(-1);
       continue;
     }
@@ -306,13 +332,9 @@ function fingerprint(lines: Line[]): string {
 }
 
 export function formatBend(source: string, options: FormatOptions = {}): string {
-  const endings = source.match(/\r?\n/g) ?? [];
-  const finalEol = source.endsWith("\n");
-  const rawLines = source.split(/\r?\n/);
-  if (finalEol) rawLines.pop();
   let lines: Line[];
   try {
-    lines = rawLines.map(splitLine);
+    lines = splitLines(source);
   } catch {
     return source;
   }
@@ -326,8 +348,8 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   const pins: { from: number; to: number; prefix: string; scope?: BodyScope }[] = [];
   const bodyPins = new Map<Token, typeof pins[number]>();
   const formatted = lines.map((line, index) => {
-    const ending = endings[index] ?? "";
-    if (line.code === "" && line.comment === "") return ending;
+    const { ending } = line;
+    if (line.tokens.length === 0 && line.comment === "") return ending;
     for (let at = pins.length - 1; at >= 0; at--) {
       if ((pins[at].scope?.end ?? lines.length) < index) pins.splice(at, 1);
     }
@@ -338,9 +360,9 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
     if (anchor && pin && pins.at(-1) !== pin) pins.push(pin);
     const prefix = pin ? pin.prefix + " ".repeat(width - pin.from + pin.to - pin.prefix.length)
       : spaces ? " ".repeat(depths[index] * size) : "\t".repeat(depths[index]);
-    const [code, starts] = formatTokens(line.tokens);
+    const [code, starts] = formatTokens(line.tokens, prefix.length);
     for (const { at, scope } of bodies[index]) {
-      const pin = { from: line.tokens[at].col, to: prefix.length + starts[at], prefix, scope };
+      const pin = { from: line.tokens[at].col, to: starts[at], prefix: prefix.slice(0, starts[at]), scope };
       pins.push(pin);
       bodyPins.set(line.tokens[at], pin);
     }
@@ -349,7 +371,7 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
     return prefix + code + (gluedPercent(line, line.tokens.length - 1) ? "" : "  ") + line.comment + ending;
   }).join("");
   try {
-    if (fingerprint(lines) !== fingerprint(formatted.replace(/\r\n/g, "\n").split("\n").slice(0, finalEol ? -1 : undefined).map(splitLine))) return source;
+    if (fingerprint(lines) !== fingerprint(splitLines(formatted))) return source;
   } catch {
     return source;
   }
