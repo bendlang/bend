@@ -1075,7 +1075,10 @@ async function book_read(file: string, base?: Bend.Book,
 
 // a failed check: bend2's reason, which book_err prints under FAIL
 class Check_Fail {
-  constructor(readonly why: unknown) {}
+  readonly why: unknown;
+  constructor(why: unknown) {
+    this.why = why;
+  }
 }
 
 function book_seed(base: Bend.Book): Bend.Book {
