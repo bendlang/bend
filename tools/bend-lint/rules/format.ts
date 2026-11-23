@@ -57,6 +57,8 @@ function tokens(source: string): Token[] {
   const out: Token[] = [];
   let at = 0,
     start = 0;
+  let typeKeyword = false,
+    typeName = false;
   while (at < source.length) {
     const beg = at,
       c = source[at];
@@ -92,13 +94,19 @@ function tokens(source: string): Token[] {
         /^(?:<&>|\.&\.|\.\|\.|\.\^\.|->|=>|<-|==|!=|<=|>=|<<|&&|\|\||\+\+|<>|&[012])/.exec(
           source.slice(at),
         );
-      // `Box<-T` opens type arguments with an erased binder; `x<- m` is still a bind.
-      if (source.startsWith("<-", at) && /[\w.]/.test(source[at - 1] ?? "")
-        && !/\s/.test(source[at + 2] ?? "")) at++;
+      // Only a datatype header can open an angle telescope with `-`.
+      // Elsewhere `<-` is one token, even without spaces around a do bind.
+      if (typeName && source.startsWith("<-", at)
+        && /[\w.]/.test(source[at - 1] ?? "")) at++;
       else if (source.startsWith(">>", at) && /\s/.test(source[at - 1] ?? "")) at += 2;
       else at += (word?.[0] ?? number?.[0] ?? symbol?.[0] ?? c).length;
     }
-    out.push({ text: source.slice(beg, at), beg, end: at, col: beg - start, kind });
+    const text = source.slice(beg, at);
+    out.push({ text, beg, end: at, col: beg - start, kind });
+    if (kind === "code") {
+      typeName = typeKeyword;
+      typeKeyword = text === "type";
+    }
     if (kind === "newline") start = at;
     else if (kind === "literal") {
       const newline = out[out.length - 1].text.lastIndexOf("\n");
