@@ -466,9 +466,10 @@ function term_spine(tm: HTerm): Spine {
   });
 }
 
-function term_eta(t: HTerm, T: HTerm, n: number): HTerm {
-  return n === 0 ? t : Bend.Ann(Bend.Lam("x", 0, (y: HTerm) =>
-    term_eta(Bend.App(t, y), ty_all(T).B(y), n - 1)), T);
+// named: the params take T's names, as a def's own do
+function term_eta(t: HTerm, T: HTerm, n: number, named = false): HTerm {
+  return n === 0 ? t : Bend.Ann(Bend.Lam(named ? ty_all(T).k : "x", 0,
+    (y: HTerm) => term_eta(Bend.App(t, y), ty_all(T).B(y), n - 1, named)), T);
 }
 
 function call_eta(t: HTerm): HTerm | null {
@@ -1165,13 +1166,18 @@ function acc_def(d: Name): void {
       (xs: HTerm[]) => cs.reduce((a, m) => Bend.Ann(m.all.reduce((g, x) =>
         Bend.App(g, x), Bend.App(Bend.Ref(w), a)), R!), xs[0]));
   };
+  // the types in d's body name its params by level: lowered and raised
+  // again first, they follow the params when acc goes in front of them
+  const h = Bend.term_higher(Bend.term_lower(f.h!));
   const e = Bend.term_lower(Bend.Lam("acc", 0, (a: HTerm) =>
-    go(f.h!, a, new Map())));
+    go(h, a, new Map())));
   const v = Bend.term_higher(e);
   if (!term_any(v, (s) => s.$ === "Ref" && s.k === d)) {
     FL.made[w] = { $: "Def", n: f.n + 1, x: 0, v, e,
       T: Bend.All(Bend.Many(), "acc", 0, R!, () => T) };
-    f.h = term_eta(Bend.App(Bend.Ref(w), Bend.Lit(R!.k as "Nat", 0)), T, f.n);
+    // a type var of d's own params reads as one only by T's name and level
+    f.h = Bend.term_higher(Bend.term_lower(term_eta(Bend.App(Bend.Ref(w),
+      Bend.Lit(R!.k as "Nat", 0)), T, f.n, true)));
   }
 }
 
