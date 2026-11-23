@@ -103,7 +103,7 @@ type Ix = { forms: Map<number, Set<string>>; roles: string[] | null;
 // the array words the turn hands b, b's result words that hold them, b's
 // spin and lane variant. ok: the loop's copy passed its check (lane_arrs).
 type Lane = { u: string; arrs: string[]; rets: string[]; end: string;
-  step: string; fid?: string; ok?: boolean };
+  step: string; aj: number[]; uni: number[]; fid?: string; ok?: boolean };
 
 type Row = [HTerm, number, number, number];
 
@@ -2786,7 +2786,10 @@ function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
         ? [[q, seg.params[Number(c[2])]] as [string, string]] : [];
   }) : []);
   const arrs = kb.flatMap((kd, j) => kd === "box" ? [j] : []);
-  const arr_ok = arrs.length === 0 || ix !== null && arrs.every((j) =>
+  // one array: with two, clang leaves the lane step scalar (doitgen: 2.2x
+  // the instructions, 1.9x the cycles of no lanes)
+  const arr_ok = arrs.length === 0 || ix !== null && arrs.length === 1
+    && arrs.every((j) =>
     seg.params.includes(ws[j]) && seg.ks[seg.params.indexOf(ws[j])] === "box");
   const ok = new Set([...names, ...preds, ...seg.params.filter((_, i) =>
     !(st[i] & 6) && seg.ks[i] !== "box"), ...ctrs.keys(),
@@ -2821,8 +2824,15 @@ function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
   // an array's lanes run once the loop's copy (lane_arrs) and b (lane_check)
   // pass their checks: until then the gate reads 0
   const gate = arrs.length > 0 ? `/*lanes ${u}*/` : "";
+  // there a word every lane enters with (it names no turn's own word) steps
+  // as one word for all lanes once lane_check sees b hand it on as it is
+  const own = new RegExp(`\\b(?:${[...preds, ...used, ...names.filter(
+    (x): x is string => !!x), "l"].join("|")})\\b`);
+  const uni = gate ? kb.flatMap((_, j) => j !== c && !arrs.includes(j)
+    && !own.test(ws[j]) ? [j] : []) : [];
   if (gate) {
     FL.ix!.lanes.push({ u, arrs: arrs.map((j) => ws[j]), end, step,
+      aj: arrs, uni,
       rets: fb.ret.ks.flatMap((kd, j) => kd === "box" ? [`${o}[${j}]`] : []) });
   }
   seg.pre.push("#if !DEVICE", `Term ${u}n = 0, ${u}b = 0, ${u}o[${LANES}][${
@@ -2839,9 +2849,11 @@ function emit_lanes(sc: Scope, k: Name, ws: string[], ls: string[],
       ...arrs.map((j) => `${u}a${j} = ${ws[j]};`));
     each(...enter("l", (j) => `&${u}q${j}[l]`),
       `${u}e &= ${u}q${c}[l] == ${u}q${c}[0];`);
+    file_push(sc, ...uni.map((j) => `${lay_c(kb[j])} ${u}u${j} = ${u}q${j}[0];`));
     block(sc, `for (Term n = ${u}e ? ${u}q${c}[0] : 0; n != 0; n--) {`, () =>
       each(`${step}(${["e", u + "d", ...q((j) => j === c ? "n"
-        : arrs.includes(j) ? `${u}a${j}` : `${u}q${j}[l]`),
+        : arrs.includes(j) ? `${u}a${j}` : uni.includes(j)
+          ? `/*uni ${u} ${j}*/${u}q${j}[l]` : `${u}q${j}[l]`),
       ...q((j) => `&${u}q${j}[l]`)].join(", ")});`));
     each(`if (${end}(${["e", u + "o[l]", ...q((j) => `${u}q${j}[l]`)]
       .join(", ")}) == 0) {`, "  return 0;", "}");
@@ -2904,11 +2916,28 @@ function lane_check(spins: Seg[]): void {
       /^(?:blk_(?:loc|read|at|cls)|f32_\w+|u32_\w+|U32_BIN|WL_\w+|clz|if|for|while|switch|return|HOT|sizeof)$/
         .test(c) || /^(?:spin|lane)_\w+$/.test(c) && pure(c, seen));
   };
+  // the lane step's j-th word out is its j-th word in, through copies
+  const same = (f: string, j: number): boolean => {
+    const lines = by.get(f)?.lines ?? [];
+    const set = new Map<string, Set<string>>();
+    lines.forEach((x) => {
+      const m = /^\s*(?:Term |u32 |u64 )?(\*?\w+) = (\w+);$/.exec(x);
+      m && m[2] !== "0" && memo(set, m[1], () => new Set()).add(m[2]);
+    });
+    const from = (w: string, n: number): boolean => w === `r${j}` || n > 0
+      && (set.get(w)?.size ?? 0) > 0 && [...set.get(w)!].every((y) =>
+        from(y, n - 1));
+    return from(`*lq${j}`, 16);
+  };
   for (const l of LANE_SITES) {
     const s = by.get(l.fid!);
     if (s && l.ok && (fact("type", "Array") || !pure(l.end, new Set())
-      || !pure(l.step, new Set()))) {
+      || !pure(l.step, new Set()) || !l.aj.every((j) => same(l.step, j)))) {
       lane_gate(s.lines, l.u, false);
+    }
+    for (const j of s && l.ok ? l.uni.filter((j) => same(l.step, j)) : []) {
+      const w = `/*uni ${l.u} ${j}*/${l.u}q${j}[l]`;
+      s!.lines = s!.lines.map((x) => x.split(w).join(`${l.u}u${j}`));
     }
   }
 }
