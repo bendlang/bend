@@ -1528,7 +1528,6 @@ function def_fix(k: Name): boolean {
 const CLO_MAX = 64;
 const CLO_SIZE = 4096;
 const CLO_GROW = 16384;
-const CLO_BIG = 1 << 28;
 const CLO_FAIL = { clo: true };
 
 type CloBind = { k: Name; q: Bend.Quant; A: HTerm | null };
@@ -1640,36 +1639,55 @@ function clo_walk(c: CloDef, t: HTerm, d: number, T: HTerm | null):
   c.hit = true;
   return [...g.cs.map((l) => Bend.Ann(Bend.Var(c.env[l].k, l),
     Bend.term_lower(c.env[l].A!, d))), ...all.filter((_, i) =>
-    !is.includes(i)).map((a) => go(a))].reduce((f: Bend.LTerm, x) =>
+    !g.ks.includes(i)).map((a) => go(a))].reduce((f: Bend.LTerm, x) =>
     Bend.App(f, x), Bend.Ref(g.k));
 }
 
 // The copy of k for the lambdas at is, made if new: its name and the levels
-// it captures, in order: the live variables the lambdas read. A variable
-// they name in a type alone stays as it is (an open type, as in a cell).
+// it captures, in order. k's erased arguments are filled in too, so the
+// copy's types are the caller's. It captures every variable the lambdas and
+// those arguments name, the ones they read at run time live, the others (a
+// type's) erased, and the variables their types name in turn.
 function clo_site(c: CloDef, k: Name, all: HTerm[], is: number[], d: number):
-  { k: Name; cs: number[] } | null {
+  { k: Name; cs: number[]; ks: number[] } | null {
+  const tld = tld_of(k) as Bend.Def;
+  const doms = tele_unbind(tld.T).doms;
+  const ks = all.flatMap((_, i) => i < tld.n && (is.includes(i)
+    || !dom_live(doms[i])) ? [i] : []);
   const live = new Set<number>();
-  is.forEach((i) => clo_live(Bend.term_strip(all[i]), CLO_BIG, live));
-  const cs = [...live].sort((a, b) => a - b);
-  if (cs.some((l) => l >= d || !c.env[l]?.A || c.env[l].q.$ === "None")) {
-    return null;
-  }
-  // the lambda keeps its own type, the innermost
-  const lams = is.map((i) => {
+  is.forEach((i) => clo_live(Bend.term_strip(all[i]), d, d, live));
+  // a lambda keeps its own type, the innermost
+  const xs = ks.map((i) => {
     let [x, T] = [Bend.term_force(all[i]), null as HTerm | null];
-    for (; x.$ === "Ann"; x = Bend.term_force(x.x)) {
+    for (; is.includes(i) && x.$ === "Ann"; x = Bend.term_force(x.x)) {
       T = x.T;
     }
-    return Bend.term_lower(T ? Bend.Ann(x, T) : x, CLO_BIG);
+    return Bend.term_lower(T ? Bend.Ann(x, T) : x, d);
   });
-  const tys = cs.map((l) => Bend.term_lower(c.env[l].A!, CLO_BIG));
-  const ren = (t: Bend.LTerm) => JSON.stringify(t, (j, v) => j === "s"
-    ? undefined : v?.$ === "Var" && v.i >= 0 && v.i < CLO_BIG
-    ? "$" + cs.indexOf(v.i) : v);
-  const key = [is.join(), ...lams.map((t) => ren(t.$ === "Ann" ? t.x : t)),
-    ...cs.map((l, j) =>
-    c.env[l].q.$ + ren(tys[j]))].join("\n");
+  const caps = new Set<number>();
+  const free = (t: Bend.LTerm, n: number) => clo_vars(t, (y) => y.$ === "Var"
+    && y.i >= 0 && y.i < n && caps.add(y.i));
+  xs.forEach((x) => free(x, d));
+  const tys = new Map<number, Bend.LTerm>();
+  for (const l of caps) {
+    const A = l < d ? c.env[l]?.A : null;
+    if (!A || (live.has(l) && c.env[l].q.$ === "None")) {
+      return null;
+    }
+    tys.set(l, Bend.term_lower(A, l));
+    free(tys.get(l)!, l);
+  }
+  const cs = [...caps].sort((a, b) => a - b);
+  const qs = cs.map((l) => live.has(l));
+  // binders and bound variables relative to n, captures by their place
+  const ren = (t: Bend.LTerm, n: number) => JSON.stringify(t, function (j, v) {
+    return j === "s" ? undefined : v?.$ === "Var" && v.i >= 0 ? v.i < n
+      ? "$" + cs.indexOf(v.i) : "#" + (v.i - n) : j === "i" && this.$ !== "Var"
+      ? [v].flat().map((i: number) => i - n) : v;
+  });
+  const key = [ks.join(), is.join(), ...xs.map((x, j) => ren(is.includes(
+    ks[j]) && x.$ === "Ann" ? x.x : x, d)), ...cs.map((l, j) =>
+    (qs[j] ? c.env[l].q.$ : "None") + ren(tys.get(l)!, l))].join("\n");
   const mine = memo(FL.clos, k, () => new Map<string, Name | null>());
   if (!mine.has(key)) {
     const n = key.length;
@@ -1677,24 +1695,25 @@ function clo_site(c: CloDef, k: Name, all: HTerm[], is: number[], d: number):
     mine.set(key, (mine.size + 1) * clo_size(k) > CLO_GROW
       || mine.size >= CLO_MAX || (of?.k === k && n >= of.n)
       || clo_size(k) > CLO_SIZE ? null
-      : clo_make(c, k, is, lams, cs, tys, n));
+      : clo_make(c, k, ks, xs, cs, qs, tys, n));
   }
   const g = mine.get(key);
-  return g ? { k: g, cs } : null;
+  return g ? { k: g, cs, ks } : null;
 }
 
-// The free levels t reads at run time.
-function clo_live(t: HTerm, d: number, out: Set<number>): void {
+// The free levels below n that t reads at run time, its binders at d on.
+function clo_live(t: HTerm, d: number, n: number, out: Set<number>): void {
   const s = Bend.term_force(t);
   if (s.$ === "Var") {
-    s.i >= 0 && s.i < CLO_BIG && out.add(s.i);
+    s.i >= 0 && s.i < n && out.add(s.i);
   } else if (s.$ === "Lam") {
-    clo_live(s.f(Bend.Var(s.k, d)), d + 1, out);
+    clo_live(s.f(Bend.Var(s.k, d)), d + 1, n, out);
   } else if (s.$ === "Let") {
-    s.v.forEach((v) => clo_live(v, d, out));
-    clo_live(s.f(s.k.map((k, j) => Bend.Var(k, d + j))), d + s.k.length, out);
+    s.v.forEach((v) => clo_live(v, d, n, out));
+    clo_live(s.f(s.k.map((k, j) => Bend.Var(k, d + j))), d + s.k.length, n,
+      out);
   } else {
-    term_kids(s).forEach((x) => clo_live(x, d, out));
+    term_kids(s).forEach((x) => clo_live(x, d, n, out));
   }
 }
 
@@ -1704,33 +1723,33 @@ function clo_size(k: Name): number {
   return n;
 }
 
-function clo_make(c: CloDef, k: Name, is: number[], lams: Bend.LTerm[],
-  cs: number[], tys: Bend.LTerm[], n: number): Name | null {
+// k's body and type are lowered and raised again first: a cell's levels
+// are its def's, and the copy's are not.
+function clo_make(c: CloDef, k: Name, ks: number[], xs: Bend.LTerm[],
+  cs: number[], qs: boolean[], tys: Map<number, Bend.LTerm>, n: number):
+  Name | null {
   const tld = tld_of(k) as Bend.Def;
   const f = fun_of(k);
+  const [h, T0] = [f.h!, tld.T].map((t) =>
+    Bend.term_higher(Bend.term_lower(t)));
   let g = "";
   for (let j = 0; tld_of(g = k + "~c" + j); j++);
   const left = (env: Bend.Env) => Array.from({ length: f.n }, (_, i) =>
-    is.includes(i) ? Bend.term_higher(lams[is.indexOf(i)], env) : null);
-  let env0: Bend.Env = null;
-  [...lams, ...tys].forEach((t) => clo_vars(t, (y) => {
-    if (y.$ === "Var" && y.i >= 0 && y.i < CLO_BIG) {
-      env0 = Bend.list_set(env0, y.i, Bend.Var(y.k, y.i));
-    }
-  }));
-  const caps = <X>(mk: (b: CloBind, A: HTerm, B: (x: HTerm) => X) => X,
-    end: (env: Bend.Env) => X): X => {
+    ks.includes(i) ? Bend.term_higher(xs[ks.indexOf(i)], env) : null);
+  const caps = <X>(mk: (b: CloBind, q: Bend.Quant, A: HTerm,
+    B: (x: HTerm) => X) => X, end: (env: Bend.Env) => X): X => {
     const go = (j: number, env: Bend.Env): X => j === cs.length ? end(env)
-      : mk(c.env[cs[j]], Bend.term_higher(tys[j], env), (x) =>
-        go(j + 1, Bend.list_set(env, cs[j], x)));
-    return go(0, env0);
+      : mk(c.env[cs[j]], qs[j] ? c.env[cs[j]].q : Bend.None(),
+        Bend.term_higher(tys.get(cs[j])!, env), (x) =>
+          go(j + 1, Bend.list_set(env, cs[j], x)));
+    return go(0, null);
   };
   try {
-    const T = caps<HTerm>((b, A, B) => Bend.All(b.q, b.k, 0, A, B),
-      (env) => clo_tele(tld.T, left(env)));
-    const e = Bend.term_lower(Bend.Ann(caps<HTerm>((b, _, B) =>
-      Bend.Lam(b.k, 0, B), (env) => clo_rm(f.h!, left(env))), T));
-    FL.made[g] = { $: "Def", n: cs.length + tld.n - is.length, x: 0, T,
+    const T = caps<HTerm>((b, q, A, B) => Bend.All(q, b.k, 0, A, B),
+      (env) => clo_tele(T0, left(env)));
+    const e = Bend.term_lower(Bend.Ann(caps<HTerm>((b, _q, _A, B) =>
+      Bend.Lam(b.k, 0, B), (env) => clo_rm(h, left(env))), T));
+    FL.made[g] = { $: "Def", n: cs.length + tld.n - ks.length, x: 0, T,
       v: Bend.term_higher(e), e, u: tld.u || tld_of(c.d).u };
   } catch (x) {
     if (x !== CLO_FAIL) {
@@ -2798,7 +2817,8 @@ function emit_args(sc: Scope, ck: Spine, jump = false, fork = false,
   // A flat def that does not loop is lent an owned box its caller still
   // uses: the def keeps it where it owns it.
   xs.forEach((x, i) => vs[i] ??= brw[i] || lend && (lend[i] = !!live[i]
-    && lays[i] === BOX && (ty_adt(live[i][2])?.k ?? "Array") !== "Array"
+    && lays[i] === BOX && sc.uses.get(probe_of(x))!.val.lay === BOX
+    && (ty_adt(live[i][2])?.k ?? "Array") !== "Array"
     && loop_of(k).length === 0 && rest_use(sc.rest, probe_of(x)) > 0
     && val_owned(sc.uses.get(probe_of(x))!.val).length > 0) ? null
     : bind_pop(sc, x, lays[i]));
