@@ -5690,9 +5690,9 @@ static bool io_bit(u8* set, int fd, bool put) {
 
 static void io_wait(Env e, bool block) {
   int top  = io_wake_fd[0];
-  u64 soon = io_park != NULL ? io_park->next->time : 0;
+  u64 soon = io_park ? io_park->next->time : 0;
   io_parked(a) {
-    if (a->evts != 0 && (int)a->word > top) {
+    if (a->evts && (int)a->word > top) {
       top = (int)a->word;
     }
   }
@@ -5700,7 +5700,7 @@ static void io_wait(Env e, bool block) {
   u8* set = io_mem(calloc(2, len));
   io_bit(set, io_wake_fd[0], true);
   io_parked(a) {
-    if (a->evts != 0) {
+    if (a->evts) {
       io_bit(set + (a->evts == POLLOUT) * len, (int)a->word, true);
     }
   }
@@ -5723,7 +5723,7 @@ static void io_wait(Env e, bool block) {
   io_park = NULL;
   while (todo != NULL) {
     IoWork* a   = io_pop(&todo);
-    bool    due = (a->evts != 0
+    bool    due = (a->evts
         && io_bit(set + (a->evts == POLLOUT) * len, (int)a->word, false))
       || (a->time != 0 && a->time <= now);
     if (!due) {
@@ -5830,30 +5830,32 @@ OUTLINE void io_loop(u64* H) {
   Env e = { H, ALC[0] };
   io_stk = pool_stack();
   signal(SIGPIPE, SIG_IGN);
-  if (pipe(io_wake_fd) || fcntl(io_wake_fd[0], F_SETFL, O_NONBLOCK)) {
+  int fd = 0;
+  while (fd < 3 && (fcntl(fd, F_GETFD) >= 0 || open("/dev/null", O_RDWR) == fd)) {
+    fd += 1;
+  }
+  if (fd < 3 || pipe(io_wake_fd)
+    || fcntl(io_wake_fd[0], F_SETFL, O_NONBLOCK)) {
     err_fail("the event loop failed to open");
   }
   Term m = corpus_eval(H, term_tsk(MAIN_FID, task_node(e, MAIN_FID,
     TERM_HOLE, 0, 0)));
   io_spawn(m);
   u64 look = 0;
-  for (u32 n = 0;; n += 1) {
-    if (io_runs == NULL) {
-      if (io_live == 0) {
-        return;
-      }
-      if (io_park == NULL && io_busy == 0) {
+  for (u32 n = 0; io_runs || io_live; n += 1) {
+    if (!io_runs) {
+      if (!io_park && !io_busy) {
         io_sync();
         err_fail("deadlock: every computation waits on a channel");
       }
       io_wait(e, true);
       continue;
     }
-    if ((n & 63) == 0) {
-      if (io_busy != 0) {
+    if (!(n & 63)) {
+      if (io_busy) {
         io_take(e);
       }
-      if (io_park != NULL) {
+      if (io_park) {
         u64 now = io_tick();
         if (now >= look || io_park->next->time - 1 < now) {
           look = now + 10000000;
