@@ -116,6 +116,21 @@ curl -fsSL https://bend-lang.com/install.sh | sh
 This `bend` ignores a project's `bunfig.toml` and `.env`; `bun bend2/main.ts`
 from a checkout reads them, so check untrusted code with `bend`.
 
+Run a published entry with `bend name@1.0.0.0/main.bend` or
+`bend 0x<hash>/main.bend`. An existing local path takes precedence.
+
+For an inline program:
+
+```bash
+bend --script 'import Base
+def main() -> Nat:
+  42n'
+```
+
+Inline imports resolve from the current directory, which must be writable.
+The temporary source is removed before execution, including on load failure.
+`--publish` and `--checkup` still need a local entry file.
+
 ### 2. Tell your agent to use Bend:
 
 Add this to your `AGENTS.md`:
