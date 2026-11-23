@@ -77,6 +77,30 @@ test("a library checked once serves every client", () => {
   warm(b, "b.bend");
 });
 
+test("parallel writers keep every project warm", async () => {
+  const defs = (prefix: string, count: number, offset: number) =>
+    "import Base\n\n" + Array.from({ length: count }, (_, i) =>
+      `def ${prefix}_${i}() -> U32:\n  ${offset + i}\n\n`).join("");
+  const jobs = Array.from({ length: 8 }, (_, i) => `job${i}.bend`);
+  const b = book({
+    "seed.bend": defs("seed", 4096, 0),
+    ...Object.fromEntries(jobs.map((f, i) => [f, defs(`job${i}`, 1024, 10000 + i * 1024)])),
+  });
+  expect(cached(b, "seed.bend")).toStartWith("exit 0\n");
+  await Promise.all(jobs.map(async (f) => {
+    const p = Bun.spawn(["bun", TOOL, f, "--cache", b.cache, "--bend", BEND2, "--min-ms", "0"], {
+      cwd: b.dir, env: { ...process.env, BEND_NO_TELEMETRY: "1" },
+      stdout: "ignore", stderr: "pipe",
+    });
+    const [code, stderr] = await Promise.all([p.exited, new Response(p.stderr).text()]);
+    expect(code).toBe(0);
+    expect(stderr).not.toContain("cannot write");
+  }));
+  for (const f of jobs) {
+    expect(cached(b, f, true)).toMatch(/^bend-cache: checked 0, skipped [1-9]\d*/m);
+  }
+}, 15000);
+
 test("an edit to a library def rechecks it and what read it", () => {
   same({ "lib.bend": LIB, "a.bend": client(3) }, "a.bend", [
     ["lib.bend", "U32.to_nat(1003) == 1003n", "U32.to_nat(1003) == 1004n"],
