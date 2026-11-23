@@ -2,7 +2,7 @@
 
 `bend <file.bend> --check-only`, with a proof cache. A def whose check read
 nothing that changed since a run where it passed is skipped. The output is
-the CLI's, byte for byte, exit code included.
+the CLI's, byte for byte, including source locations and exit code.
 
 ```sh
 bun tools/bend-cache/src/cache.ts PROOF.bend
