@@ -2255,10 +2255,13 @@ function emit_unfold(sc: Scope, m: Spine): HTerm | null {
     return null;
   }
   const fs = emit_fold_args(sc, m);
-  const doms = tele_unbind(m.tld!.T).doms;
-  const lets = fs.map((a, i) => !m.live[i] || term_const(a)
-    || term_strip(a).$ === "Var" ? null
-    : { p: probe("a"), v: Bend.Ann(a, doms[i][2]) });
+  let T = m.tld!.T;
+  const lets = fs.map((a, i) => {
+    const f = ty_all(T);
+    T = f.B(a);
+    return !m.live[i] || term_const(a) || term_strip(a).$ === "Var" ? null
+      : { p: probe("a"), v: Bend.Ann(a, f.A) };
+  });
   const bad = (y: HTerm): boolean => y.$ === "Lam" || mat_head(y)
     || lets.some((l) => l?.p === y && term_any(l.v, bad));
   let xs = fs.map((a, i) => lets[i]?.p ?? a);
