@@ -1565,14 +1565,14 @@ function arr_new(sc: Scope, d: string, v: Val, el: Lay): string {
   return `blk_new(e, ${arr}, ${d}, ${lgs}, ${ws.length}, ${fv})`;
 }
 
-function arr_q(k: Kind): boolean {
-  return k === "box" && fact("type", "Array");
+function arr_q(k: Kind, f: string): boolean {
+  return k === "box" && fact("type", "Array") && !fact("free", f);
 }
 
 function arr_loc(sc: Scope, a: string): string {
   const p = sc.seg.params.indexOf(a);
   return sc.seg.ks.reduce((s, k, i) => sc.seg.native
-    && arr_q(k) && (p < 0 || p === i)
+    && arr_q(k, sc.seg.fid) && (p < 0 || p === i)
     ? `${a} == h${i} ? q${i} : ${s}` : s, `blk_loc(e.mem, ${a})`);
 }
 
@@ -2067,7 +2067,7 @@ function emit_spin(sc: Scope, ck: Spine): Val {
   out.ws.forEach((w) => FL.locals.set(w, "o"));
   file_push(sc, `Term ${o}[${out.ws.length}];`);
   const ks = lays.flatMap((l) => l.ks);
-  const xs = ws.flatMap((w, i) => !arr_q(ks[i]) ? [w]
+  const xs = ws.flatMap((w, i) => !arr_q(ks[i], name) ? [w]
     : [w = emit_alias(sc, w, "a"), arr_loc(sc, w)]);
   block(sc, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(sc, "return 0;"));
@@ -2095,14 +2095,19 @@ function emit_native(sc: Scope, k: Name): string {
     emit_body(sl, fun_of(k).h!, tld_of(k).T, vals,
       val_new(seg.ret.ks.map((_, j) => `o[${j}]`), seg.ret));
     const body = [...seg_text([...seg.ks.flatMap((kd, i) =>
-      arr_q(kd) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
+      arr_q(kd, name) ? [`Term h${i} = r${i};`] : []), ...seg_take(seg),
       seg.spin ? "WL_SPIN" : "for (;;) {"],
       1), ...seg_text(seg.lines, 2), "  break;", "  }", "  return 1;", "}"];
     const text = body.join("\n");
+    if (seg.ks.includes("box") && (/term_sink|blk_(free|half|node)/.test(text)
+      || [...seg.refs].some((r) => fact("free", r)))) {
+      fact_add("free", name);
+    }
     const q = text.length + 1 < SPIN_FAR ? "INLINE"
       : seg.spin && /\bf32_(?:unbox|rewrap)\(/.test(text) ? "FAR" : "DFAR";
     const head = `${q} Term ${name}(Env e, THR Term* o${seg.ks.map((kd, i) =>
-      `, ${lay_c(kd)} r${i}` + (arr_q(kd) ? `, u64 q${i}` : "")).join("")})`;
+      `, ${lay_c(kd)} r${i}` + (arr_q(kd, name) ? `, u64 q${i}` : ""))
+      .join("")})`;
     FL.unit!.segs.push({ ...seg, head, lines: [head + " {", ...body] });
   }));
   return seg_ref(sc, name);
