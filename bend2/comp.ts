@@ -3352,6 +3352,7 @@ typedef u32 __attribute__((may_alias)) u32a;
 #define RFC_BIT   (1ull << 63)
 #define RFC_CNT   ((1u << 24) - 1)
 #define NAT_IMM   ((1ull << 48) - 1)
+#define ILP32     (sizeof(void*) < 8)
 
 enum { ERR_RING = 1, ERR_TAGS, ERR_HEAP, ERR_FIDS, ERR_NATS, ERR_RFCS,
   ERR_DEEP, ERR_ARRS, ERR_CNTS };
@@ -4695,7 +4696,7 @@ static void* pool_mmap(u64 bytes) {
 }
 
 static Term* pool_stack(void) {
-  u64   len = 1ull << 31;
+  u64   len = 1ull << (ILP32 ? 26 : 31);
   u64   alt = 4 * SIGSTKSZ;
   char* p   = pool_mmap(len + 16384 + alt);
   if (mprotect(p + len, 16384, PROT_NONE)) {
@@ -5230,7 +5231,8 @@ static void cube_run(u64* H, bool gpu) {
 // ======
 
 // The cores map 8 GiB at a high base and double it in place; the banks move
-// up past the pages. The GPU maps its whole span once.
+// up past the pages. A 32-bit host maps 1 GiB, and 64 MiB per stack. The
+// GPU maps its whole span once.
 
 static u64 corpus_size;
 
@@ -5286,8 +5288,8 @@ static bool corpus_grow(u64* H, u64 need) {
 static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
-  u64 size   = (!gpu ? 1ull << 33 : bytes != 0 ? bytes : gpu_span())
-    & ~16383ull;
+  u64 size   = (!gpu ? 1ull << (ILP32 ? 30 : 33) : bytes != 0 ? bytes
+    : gpu_span()) & ~16383ull;
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   u64* H     = CORPUS;
   corpus_lay(H, size);
