@@ -610,8 +610,17 @@ export async function bendRule(file: string): Promise<LintRule> {
           span && t && { path: span.file.path, beg: t.points[span.beg], end: t.points[span.end] }
         );
       };
+      let sourcesByPath: Map<string, Source> | undefined;
       const span = (s: Spot): Span => {
-        const src = cx.sources.find((x) => x.path === s.path);
+        if (sourcesByPath === undefined) {
+          sourcesByPath = new Map();
+          for (const file of cx.sources) {
+            if (!sourcesByPath.has(file.path)) {
+              sourcesByPath.set(file.path, file);
+            }
+          }
+        }
+        const src = sourcesByPath.get(s.path);
         if (src === undefined) {
           throw new Error(
             "rule " + id + " reported a span in " + s.path + ", which is not in the book",
