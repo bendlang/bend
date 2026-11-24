@@ -1508,6 +1508,15 @@ describe("options", () => {
     }
   });
 
+  test("a config directory does not hide a parent config file", async () => {
+    const top = path.join(DIR, "config_directory");
+    const file = path.join(top, "child", "file.bend");
+    fs.mkdirSync(path.join(top, "child", "bend-lint.json"), { recursive: true });
+    fs.writeFileSync(path.join(top, "bend-lint.json"), '{"rules":{"test/echo":"off"}}');
+    fs.writeFileSync(file, USERLAND);
+    expect(await messages(undefined, file)).toEqual([]);
+  });
+
   test("module configs require a named object export and preserve load errors", () => {
     for (const extension of ["js", "ts"]) {
       for (const [name, text, error] of [

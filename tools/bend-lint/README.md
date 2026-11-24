@@ -94,7 +94,7 @@ Block-match arms keep their scope even when a body is under-indented.
 
 Put a `bend-lint.json`, `bend-lint.js` or `bend-lint.ts` next to the file you're
 linting or in any parent folder, or point at one with `--config`. The closest
-folder wins. Inside a folder, JSON beats JS beats TS. Only one file is read.
+folder with a config file wins. Inside a folder, JSON beats JS beats TS.
 
 ```json
 {
