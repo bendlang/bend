@@ -76,6 +76,8 @@ type Row = [HTerm, number, number, number];
 
 type Open = { ps: Of<"Var">[]; b: HTerm };
 
+type Cell = number | boolean;
+
 type Intr = { C?: string | string[] | null; JS?: string };
 
 type Dom = [Bend.Quant, Name, HTerm];
@@ -99,7 +101,7 @@ const FOLD_FUEL = 8192;
 
 const EXACT = { fround: Math.fround, imul: Math.imul };
 
-const ROWS = new Map<string, (...xs: unknown[]) => number>();
+const ROWS = new Map<string, (...xs: unknown[]) => Cell>();
 
 const SPIN_FAR = 8192;
 
@@ -2503,7 +2505,7 @@ function emit_row(sc: Scope, t: HTerm, ty: HTerm): number | null {
   if (k === "F32" && term_const(s)) {
     return Bend.u32_from_term(s, "F32");
   }
-  const v = row_val(sc, s, ty);
+  const v = row_val(sc, s, ty) as number | null;
   return v === null ? null : k === "F32" ? Bend.f32_to_bits(v) : v;
 }
 
@@ -2515,7 +2517,7 @@ function row_term(sc: Scope, t: HTerm): HTerm {
   return emit_fold(sc, s) ?? s;
 }
 
-function row_val(sc: Scope, s: HTerm, ty: HTerm | null): number | null {
+function row_val(sc: Scope, s: HTerm, ty: HTerm | null): Cell | null {
   if (term_const(s)) {
     const c = term_strip(s) as Of<"Ctr">;
     const k = ty === null ? FL.book.ctrs[c.k].f : ty_adt(ty)?.k;
@@ -3059,7 +3061,7 @@ function js_def(k: Name, def: Bend.Def): void {
     }
     block(sc, pc ? "for (;;) switch ($pc) {" : "for (;;) {", () =>
       loop.forEach((d, i) => {
-        const fx = { ...sc, fresh: new Map() };
+        const fx = { ...sc, fresh: new Map(), fuel: { n: FOLD_FUEL } };
         const ps = fun_of(d).live.map(([, x]) => name_local(fx, x));
         block(fx, pc ? `case ${i}: {` : "{", () => {
           file_push(fx, ...ps.map((p, j) => `const ${p} = $${j};`));
