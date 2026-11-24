@@ -1,18 +1,7 @@
-# a def whose parameters span past WIDE words takes its wide records
-# boxed. One whose type has no box words stays boxed until a use needs
-# its words, and a match reads them in place: matched, passed back
-# whole, dropped unread, threaded through a loop, and a sum matched on
-# its tag. Read again, even after a constant fold, a use that needs its
-# words reads them in place and the node stays: lent to lend's pick
-# after sum1 reads it, it is passed as it is. One holding a heap field
-# (W's list) opens on entry, so passing it to g, which borrows, keeps g
-# borrowing for L; read again it stays boxed, so peek, lent a closure's
-# W around a read that stores it in H, keeps borrowing. A closure that
-# captures a boxed record still used after it shares the node. One that
-# a later call of a fork reads first, or that a fork's call reads and
-# its join reads again (forked's c), keeps the words its frame and join
-# took at the fork; tree's 4096 leaves run those forks in sequence on
-# any thread count.
+# Records may be read, returned whole, or dropped. Reuse survives borrowed
+# calls, closures, and forks, including later reads in the caller and join.
+# Records with heap fields obey the same ownership rules. The tree repeats
+# these cases on 4096 leaves.
 import Base
 
 type R0 is Data:
