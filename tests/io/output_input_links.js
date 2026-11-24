@@ -59,13 +59,28 @@ function output_input_links() {
     fs.symlinkSync(dir, alias);
     const fresh = path.join(dir, "fresh.js");
     const normalized = dir + "/./out.js";
+    const symlink = path.join(dir, "same.js");
+    const hardlink = path.join(dir, "same.c");
+    const dangling = path.join(dir, "not-yet.c");
+    fs.symlinkSync("out.js", symlink);
+    fs.linkSync(link, hardlink);
+    fs.symlinkSync("fresh.js", dangling);
+    const subdir = path.join(dir, "sub");
+    fs.mkdirSync(path.join(subdir, "nested"), { recursive: true });
+    const deep = path.join(dir, "deep");
+    fs.symlinkSync(path.join(subdir, "nested"), deep);
+    const via_parent = deep + "/../later.js";
+    const later = path.join(subdir, "later.js");
     for (const outs of [[link, normalized],
       [fresh, path.join(alias, "fresh.js")],
+      [link, symlink], [link, hardlink], [fresh, dangling], [dangling, fresh],
+      [later, via_parent],
       [binary, binary + ".gpu"], [binary + ".gpu", binary]]) {
       const got = build(ok, ...outs);
       if (!rejects(got, "conflicts with -o")
         || !outs.every((out) => got.stderr.includes("-o " + out + " "))
         || fs.existsSync(ok) || fs.existsSync(fresh)
+        || fs.existsSync(later)
         || !existing.every((out) => fs.readFileSync(out, "utf8") === sentinel)) {
         return code;
       }
