@@ -562,6 +562,12 @@ try {
       && hub.license?.id === (want === "see LICENSE" ? null
         : want.slice(0, -" (LICENSE)".length)));
   }
+  const checkout = path.join(TMP, "src@rev", "main.bend");
+  fs.mkdirSync(path.dirname(checkout), { recursive: true });
+  fs.writeFileSync(checkout, two);
+  const at = await bend(["--publish", checkout], { BEND_HUB: ORIGIN });
+  check("--publish before an entry in a directory with @: " + at.err,
+    at.code === 0 && at.out.startsWith(pkg_hash({ "main.bend": two }) + "\n"));
   const bare = { "lic_none.bend": use("two.bend"), "two.bend": two };
   const none = await publish("none", { ...bare, "LICENSE.md": "MIT\n" });
   check("a LICENSE.md alone is left out, and the notice says MIT-0 and"

@@ -258,9 +258,9 @@ async function cli_file(args: string[]): Promise<void> {
       checkup = true;
     } else if (a === "--publish") {
       publish = true;
-      if (args[i + 1]?.includes("@")) {
-        i += 1;
-        named = args[i];
+      const next = args[i + 1];
+      if (next?.includes("@") && !next.endsWith(".bend")) {
+        named = args[++i];
         named_parts(named);
       }
     } else if (a === "-o") {
