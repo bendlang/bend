@@ -513,20 +513,31 @@ export function applyFixes(
 // bend's own error layout; the head names the severity and the code, and
 // each fix follows as a unified diff of the lines it touches.
 export function render(d: Diag): string {
-  const fixes = d.fixes.map(
-    (fix) =>
+  const fixes = d.fixes.map((fix) => {
+    const files = new Map<Source, { edits: Edit[]; beg: number; end: number }>();
+    for (const edit of fix.edits) {
+      const { file, beg, end } = edit.span;
+      const group = files.get(file);
+      if (group === undefined) {
+        files.set(file, { edits: [edit], beg, end });
+      } else {
+        group.edits.push(edit);
+        group.beg = Math.min(group.beg, beg);
+        group.end = Math.max(group.end, end);
+      }
+    }
+    return (
       "\n\nFix: " +
       fix.title +
       " [" +
       fix.applicability +
       "]" +
-      [...new Set(fix.edits.map((e) => e.span.file))]
-        .map((file) => {
-          const mine = fix.edits.filter((e) => e.span.file === file);
+      [...files]
+        .map(([file, { edits: mine, beg, end }]) => {
           const ls = starts(file, file.text);
-          const first = line(ls, Math.min(...mine.map((e) => e.span.beg)));
+          const first = line(ls, beg);
           const from = ls[first];
-          const to = ls[line(ls, Math.max(...mine.map((e) => e.span.end))) + 1] ?? file.text.length;
+          const to = ls[line(ls, end) + 1] ?? file.text.length;
           const old = file.text.slice(from, to);
           const gone = old.match(LINE) ?? [];
           const came =
@@ -559,8 +570,9 @@ export function render(d: Diag): string {
             [...show(gone, "-"), ...show(came, "+")].join("\n")
           );
         })
-        .join(""),
-  );
+        .join("")
+    );
+  });
   return layout(loaded, d, HEAD[d.severity] + " [" + d.code + "]:") + fixes.join("");
 }
 
