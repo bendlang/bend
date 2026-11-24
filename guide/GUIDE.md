@@ -552,7 +552,7 @@ bend file.bend -o file.js # emit the JS source instead
 bend file.bend -o f.mjs   # emit an ES module of its non-IO defs, for JS to import
 bend file.bend --verdict  # check; then recheck with the proven BendTT kernel
 bend page.html -o dist    # bundle a web page that imports .bend files
-./file +RTS --threads 8   # run a native binary on 8 CPU threads
+./file +RTS --threads 8   # lazy workers; full frontiers wake all
 ./file +RTS --gpu 4GB     # cap the GPU heap at 4GB; off runs ! calls on the CPU
 ```
 
