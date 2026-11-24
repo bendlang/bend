@@ -2895,9 +2895,6 @@ def Array.write.at(
 def Array.write(~T: Data, ~f: String -> T -> IO(Unit), a: Array<T>) -> IO(Unit):
   Array.write.at(~T, ~f, Array.size(T, a))
 
-# Array.show walks from the last element to the first, so each step puts
-# one element's text in front of the rest: a walk from the first would copy
-# the text shown so far at every step.
 def Array.show.go(
   ~T: Data, ~f: String -> T -> String, n: Nat, +i: U32, s: String,
   r: Array<T> & T
