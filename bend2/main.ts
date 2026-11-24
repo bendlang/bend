@@ -49,7 +49,7 @@ const USAGE = [
   ["bend base [--types|<name>]", "print Base, its types, or a name and subnames"],
   ["bend update", "install the latest bend (curl | sh, shown first)"],
   ["bend version", "print the version"],
-  ["bend guide", "print the Bend guide"],
+  ["bend guide [<name>]", "print the Bend guide or a named guide"],
 ];
 
 const USE_W = Math.max(...USAGE.map(([use]) => use.length));
@@ -153,9 +153,15 @@ async function cli(): Promise<void> {
     }
     return;
   }
-  if (args[0] === "guide" && args.length <= 2) {
+  if (args[0] === "guide") {
+    if (args.length > 2) {
+      cli_fail("guide takes one optional name: bend guide [<name>]");
+    }
     cli_guide(args[1] ?? "guide");
-  } else if (args[0] === "base" && args.length <= 2) {
+  } else if (args[0] === "base") {
+    if (args.length > 2) {
+      cli_fail("base takes one optional selector: bend base [--types|<name>]");
+    }
     cli_base(args[1]);
   } else {
     await cli_file(args);
