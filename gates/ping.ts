@@ -365,6 +365,11 @@ try {
   check("valid body literal text does not add an independent import",
     header_check.code === 0 && header_run.code === 0
     && header_run.out.endsWith("5n\n"));
+  fs.writeFileSync(header_source, "import Base # keep\nimport ./sum.bend\n");
+  const malformed = await bend([header_source, "--checkup"]);
+  check("--checkup rejects a header import without its alias: " + malformed.err,
+    malformed.code === 1 && malformed.out === ""
+    && malformed.err.includes("expected 'import Base' or 'import <path> as <Name>'"));
   const no_base = path.join(TMP, "no-base.bend");
   fs.writeFileSync(no_base,
     "def main() -> String:\n  \"body\nimport Base\n\"\n");

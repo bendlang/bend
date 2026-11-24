@@ -364,9 +364,12 @@ async function cli_checkup(file: string): Promise<void> {
     if (!/^import(\s|$)/.test(line)) {
       break;
     }
-    const m = /^import\s+(\S+)\s+as\s+[A-Za-z_][A-Za-z0-9_]*\s*(?:#.*)?$/
+    const m = /^import\s+(\S+)(?:\s+as\s+([A-Za-z_]\w*))?\s*(?:#.*)?$/
       .exec(line);
-    if (m === null) {
+    if (m === null || (m[2] === undefined && m[1] !== "Base")) {
+      cli_fail(file + ": expected 'import Base' or 'import <path> as <Name>', got " + line);
+    }
+    if (m[2] === undefined) {
       continue;
     }
     const at = m[1].startsWith("/") ? m[1]
