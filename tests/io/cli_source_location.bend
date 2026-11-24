@@ -1,4 +1,5 @@
-# A CLI error names the file, line and column of the source text.
+# A CLI error names the file, line and column of the source text, also in a
+# def with a ~ parameter.
 import Base
 
 def Cli.source_location() -> IO(U32):

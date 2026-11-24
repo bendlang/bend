@@ -1121,8 +1121,8 @@ function book_location(err: Bend.Err, seen: Map<string, string | null>): string 
     return "";
   }
   const files = [...seen].reverse();
-  const base = span.file.ns === "" && Object.values(err.bok.tlds)
-    .some((t) => t.b && t.T.s?.file === span.file);
+  const bool = err.bok.tlds.Bool;
+  const base = !!bool?.b && bool.T.s?.file === span.file;
   const source = files.find(([p, ns]) => ns === span.file.ns && (p === BASE) === base)
     ?? files.find(([, ns]) => ns === null);
   if (source === undefined) {
