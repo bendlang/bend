@@ -391,6 +391,14 @@ test("semicolon pins respect delimiters, literals, and comments", () => {
   }
 });
 
+test("keeps a leading UTF-8 byte-order mark while formatting", () => {
+  const source = "\uFEFFimport Base\r\ndef main()->U32:\n    7";
+  const formatted = "\uFEFFimport Base\r\ndef main() -> U32:\n  7";
+  assert.equal(formatBend(source), formatted);
+  assert.equal(formatBend(formatted), formatted);
+  assert.equal(formatBend("\uFEFF"), "\uFEFF");
+});
+
 test("mixed line endings and the final-newline state survive formatting", () => {
   for (const source of [
     "import Base\r\ndef main()->U32:\n    7\r\n",

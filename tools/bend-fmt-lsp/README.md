@@ -31,6 +31,7 @@ preserves line breaks, blank lines, comments, literal spelling, each line ending
 indentation and safe token spacing without wrapping code. Nested match arms
 stay with their match even when an arm body dedents. When a document cannot
 be tokenized safely, the server returns no edits.
+A leading UTF-8 byte-order mark stays in place.
 
 ## Editor setup
 

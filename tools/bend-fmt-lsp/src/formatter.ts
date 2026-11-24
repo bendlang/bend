@@ -309,6 +309,8 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   const endings = source.match(/\r?\n/g) ?? [];
   const finalEol = source.endsWith("\n");
   const rawLines = source.split(/\r?\n/);
+  const bom = source.startsWith("\uFEFF") ? "\uFEFF" : "";
+  if (bom) rawLines[0] = rawLines[0].slice(1);
   if (finalEol) rawLines.pop();
   let lines: Line[];
   try {
@@ -353,5 +355,5 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   } catch {
     return source;
   }
-  return formatted;
+  return bom + formatted;
 }
