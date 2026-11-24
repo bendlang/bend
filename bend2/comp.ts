@@ -1273,23 +1273,23 @@ function fact_when(kind: string, k: string, f: () => void): void {
   }
 }
 
-function facts_hot(def: Name, B: HTerm | null, force: boolean,
+function facts_hot(def: Name, B: HTerm, force: boolean,
   local = false): void {
-  const key = [def, force, local, B && ty_key(B)].join(" ");
+  const key = [def, force, local, ty_key(B)].join(" ");
   if (FL.heat.has(key)) {
     return;
   }
   FL.heat.add(key);
-  const w = ty_wnf(B);
-  if (w?.$ === "Lam") {
+  const w = ty_wnf(B)!;
+  if (w.$ === "Lam") {
     return facts_hot(def, w.f(DUMMY), force, local);
   }
-  if (w?.$ !== "ADT") {
+  if (w.$ !== "ADT") {
     if (!force) {
       return;
     }
     const hot = (x: HTerm) => facts_hot(def, x, true, local);
-    const m = w?.$ === "App" && term_spine(w);
+    const m = w.$ === "App" && term_spine(w);
     const fam = m && done_live(m.tld) && term_strip(Bend.term_unapply(
       m.all.reduce((b, x) => Bend.term_apply(b, x), m.tld.v!))[0]);
     if (m && fam && fam.$ === "Mat") {
@@ -1299,17 +1299,17 @@ function facts_hot(def: Name, B: HTerm | null, force: boolean,
       }
       return;
     }
-    if (w?.$ === "Mat") {
+    if (w.$ === "Mat") {
       return term_kids(w).forEach(hot);
     }
-    const dom = w?.$ === "Var" && !local
+    const dom = w.$ === "Var" && !local
       && tele_unbind(tld_of(def).T).doms[w.i];
     if (dom && dom[1] === w.k && !dom_live(dom)) {
       fact_add("arg", arg_key(def, w.i));
     } else if (ty_tag(w, "All Var App")) {
       fact_add("open");
     } else if (!ty_tag(w, "Typ Qnt Qua Min Eql Rfl Lit Ctr Efq Ref")) {
-      die(`a type the C facts cannot read (${w?.$ ?? "no type"})`);
+      die(`a type the C facts cannot read (${w.$})`);
     }
     return;
   }
@@ -1922,7 +1922,7 @@ function anf(t: HTerm, ty: HTerm | null = null): HTerm {
         return go(o.b, top, T);
       }
       case "Lam": {
-        const all = T && Bend.tele_open(FL.book, T);
+        const all = T && ty_all(T);
         if (all?.q.$ !== "None") {
           return s;
         }
@@ -2523,7 +2523,7 @@ function row_val(sc: Scope, s: HTerm, ty: HTerm | null): Cell | null {
     const k = ty === null ? FL.book.ctrs[c.k].f : ty_adt(ty)?.k;
     const u = k === "U32" || k === "F32" ? Bend.u32_from_term(c, k) : null;
     return u !== null ? k === "F32" ? Bend.f32_from_bits(u) : u
-      : k === "Nat" ? nat_peel(c)[1] : k === "Bool" ? c.k === "True" : null;
+      : k === "Nat" ? nat_peel(c)[1] : null;
   }
   const m = term_spine(s);
   const js = m.t.$ === "Ref" ? intr_of(m.t.k)?.JS : undefined;
@@ -3033,9 +3033,6 @@ function js_match(sc: Scope, x: HTerm, ty: HTerm | null, args: string[]): void {
 }
 
 function js_def(k: Name, def: Bend.Def): void {
-  if (intr_of(k)) {
-    return;
-  }
   const sc = scope_new();
   sc.seg.def = k;
   FL.unit!.segs.push(sc.seg);
