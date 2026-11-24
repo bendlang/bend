@@ -362,23 +362,15 @@ function probe(k: Name): Of<"Var"> {
   return p;
 }
 
-function term_same(a: HTerm, b: HTerm, d = 1 << 29): boolean {
+function term_same(a: HTerm, b: HTerm): boolean {
   const x = Bend.term_strip(a);
-  const y = Bend.term_strip(b) as any;
-  const key = (t: HTerm) => JSON.stringify(Bend.term_lower(t, d), (k, v) =>
-    k === "s" ? undefined : v?.$ === "Ann" ? Bend.term_strip(v) : v);
-  if (x === y || x.$ !== y.$) {
+  const y = Bend.term_strip(b);
+  if (x === y || x.$ !== y.$ || (x.$ === "Ctr" && x.k !== (y as Of<"Ctr">).k)) {
     return x === y;
   }
-  if (x.$ === "Lam") {
-    const v: HTerm = Bend.Var(x.k, d);
-    return x.k === y.k && x.q?.$ === y.q?.$ && term_same(x.f(v), y.f(v), d + 1);
-  }
-  return x.$ === "App" ? term_same(x.f, y.f, d) && term_same(x.x, y.x, d)
-    : x.$ === "Ctr" ? x.k === y.k && x.x.length === y.x.length
-      && x.x.every((t, i) => term_same(t, y.x[i], d))
-    : x.$ === "Mat" ? x.k === y.k && term_same(x.h, y.h, d)
-      && term_same(x.m, y.m, d) : key(x) === key(y);
+  const key = (t: HTerm) => JSON.stringify(Bend.term_lower(t, 1 << 29),
+    (k, v) => k === "s" ? undefined : v?.$ === "Ann" ? Bend.term_strip(v) : v);
+  return key(x) === key(y);
 }
 
 function probe_of(t: HTerm): Of<"Var"> {
