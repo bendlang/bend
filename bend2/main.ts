@@ -506,7 +506,9 @@ function cli_build(bin: string, file: string): void {
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
   const libs  = [["X11", "X11", "dl"], ["alsa", "asound"]].flatMap(([h, ...ls]) =>
     !mac && c.includes("#include <" + h + "/") ? ls.map((l) => "-l" + l) : []);
-  const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
+  // a 32-bit host: 64-bit file offsets and clocks, and no preserve_none
+  const cpu = [...objc, "-std=c11", "-O3", "-D_FILE_OFFSET_BITS=64",
+    "-D_TIME_BITS=64", "-Wno-ignored-attributes", file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];
   const gpu = mac ? ["-DBEND_METAL=1", ...cpu]
     : ["-DBEND_CUDA=1", "-I" + cuda + "/include", "-L" + cuda + "/lib64",

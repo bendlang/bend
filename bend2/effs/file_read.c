@@ -105,6 +105,17 @@ static void file_line_drop(int fd) {
 
 #endif
 
+// A 32-bit host has no room for a buffer of max bytes: there it starts at
+// 64 KiB and doubles as it fills. w->size is its length until the answer.
+// How many bytes fit past got.
+static u64 file_read_room(IoWork* w, u64 got) {
+  if (got == w->size && got < w->word) {
+    w->size = w->size < w->word / 2 ? w->size * 2 : w->word;
+    w->data = io_mem(realloc(w->data, w->size + 1));
+  }
+  return w->size - got;
+}
+
 // read(2) answers what is there, not what was asked: a pipe, a terminal
 // and a short read all stop before max. Fill the buffer or reach EOF, so
 // a caller that asked for n bytes gets n unless the file ends first,
@@ -117,17 +128,19 @@ static void file_read_fill(IoWork* w, int at) {
   w->code = 0;
 #ifdef CID(File.read_line)
   FileLine* b = at ? NULL : file_line_of(fd, false);
-  got = b != NULL ? file_line_take(b, w->data, w->word, 0, NULL) : 0;
+  got = b != NULL
+    ? file_line_take(b, w->data, file_read_room(w, 0), 0, NULL) : 0;
   if (got > 0 && got == w->word) {
     w->size = got;
     return;
   }
 #endif
   do {
-    u64     want = w->word - got;
+    u64     want = file_read_room(w, got);
     ssize_t n;
     do {
-      n = at ? pread(fd, w->data + got, want, (off_t)(w->made + got))
+      n = at ? pread(fd, w->data + got, want,
+                 (off_t)((uintptr_t)w->made + got))
              : read(fd, w->data + got, want);
     } while (n < 0 && errno == EINTR);
     if (n <= 0) {
@@ -147,7 +160,8 @@ static Term file_read_start(Term file, u64 max, IoWork* w,
   IoCall call, IoPack pack) {
   w->hand = (intptr_t)io_hand_v(file);
   w->word = max < INT32_MAX ? max : INT32_MAX;
-  w->data = io_mem(malloc(w->word + 1));
+  w->size = ILP32 && w->word > 65536 ? 65536 : w->word;
+  w->data = io_mem(malloc(w->size + 1));
   io_sync();
   return io_work(w, call, pack);
 }
@@ -203,7 +217,8 @@ static void file_read_line_call(IoWork* w) {
       b->head = 0;
       b->tail = (u64)n;
     }
-    got += file_line_take(b, w->data + got, w->word - got, 1, &end);
+    u64 room = file_read_room(w, got);
+    got += file_line_take(b, w->data + got, room, 1, &end);
   }
   w->size = got;
 }

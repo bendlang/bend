@@ -18,7 +18,8 @@ static void file_write_fill(IoWork* w, int at_offset) {
 #endif
   for (uint64_t at = 0; n >= 0 && at < w->size; at += (uint64_t)n) {
     do {
-      n = at_offset ? pwrite(fd, w->data + at, w->size - at, (off_t)(w->made + at))
+      n = at_offset ? pwrite(fd, w->data + at, w->size - at,
+                        (off_t)((uintptr_t)w->made + at))
                     : write(fd, w->data + at, w->size - at);
     } while (n < 0 && errno == EINTR);
     // no progress would retry forever (#1445)

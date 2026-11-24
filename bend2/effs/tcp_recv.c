@@ -31,7 +31,10 @@ static Term tcp_recv_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
     return io_tup(e, io_hand(w->hand), io_poll_end(e, w,
       term_pak(CID(Unit), 0), io_fail(e, EINVAL, NULL)));
   }
-  w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;
+  // a 32-bit host has no room for a 2 GiB buffer: there a recv fills 16 MiB
+  // at most, which max allows
+  u64 cap = ILP32 ? 1 << 24 : INT32_MAX;
+  w->made = (intptr_t)(f[1] < cap ? f[1] : cap);
   w->data = io_mem(malloc((size_t)w->made));
   return more(e, w);
 }
