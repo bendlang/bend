@@ -2365,8 +2365,17 @@ def String.split(s: String, +sep: Char) -> List<&2, String>:
     case SCon{+h, t}:
       String.split.fin(h, String.split(t, sep), Char.is_eq(h, sep))
 
+# CRLF is one separator; a CR on its own is part of its line.
 def String.lines(s: String) -> List<&2, String>:
-  String.split(s, '\n')
+  match s:
+    case SNil{}:
+      [SNil{}]
+    case SCon{'\r', SCon{'\n', t}}:
+      SNil{} <> String.lines(t)
+    case SCon{'\n', t}:
+      SNil{} <> String.lines(t)
+    case SCon{h, t}:
+      String.split.push(h, String.lines(t))
 
 def String.repeat(+s: String, n: Nat) -> String:
   match n:
