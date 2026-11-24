@@ -18,7 +18,7 @@ latest one; the GitHub release carries the same notes.
 - **Base**: `Array.get_unchecked`, an `@unsafe` read without the wrap mask
   (PR #1880 by adeerkhan); `U32.popcount` and `U32.ctz` (PR #1905 by
   MattCozendey); merge sort starts from sorted pairs (PR #2018 by
-  toprameen).
+  toprameen); `String.quote` emits ordinary ASCII directly.
 - **IO**: positioned byte writes (PR #1887 by vicmcorrea);
   `File.open(path, "r+")` opens an existing file to read and write (PR
   #1853 by EpsilonPhoenix); a pointer event is one `Press` for a mouse, a
