@@ -486,8 +486,9 @@ function cc_find(gpu: boolean): string {
 // (Arch's) that holds nvrtc.h, its libraries in lib64 or, as nix lays them,
 // lib; else the ! runs on the cores, and the build says so). On macOS a
 // program with a framework (#import: a window, audio) builds as Objective-C;
-// on Linux it links the X11 (plus libdl, for dlopen before glibc 2.34) and
-// ALSA libraries it includes.
+// on Linux it links libdl (for dlopen before glibc 2.34) for a program that
+// includes the X11 headers, and the ALSA library it includes. Xlib itself is
+// loaded at run time by window.c, so a Window binary starts without libX11.
 // The GPU program's build runs without the user's $BENDRTS.
 function cli_build(bin: string, file: string): void {
   const c     = fs.readFileSync(file, "utf8");
@@ -504,7 +505,7 @@ function cli_build(bin: string, file: string): void {
   const cc    = cc_find(bangs);
   const objc  = mac && (bangs || /^#import /m.test(c))
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
-  const libs  = [["X11", "X11", "dl"], ["alsa", "asound"]].flatMap(([h, ...ls]) =>
+  const libs  = [["X11", "dl"], ["alsa", "asound"]].flatMap(([h, ...ls]) =>
     !mac && c.includes("#include <" + h + "/") ? ls.map((l) => "-l" + l) : []);
   const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];

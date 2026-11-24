@@ -49,6 +49,100 @@ typedef struct {
 #include <limits.h>
 #include <langinfo.h>
 #include <locale.h>
+#include <pthread.h>
+
+// Xlib is loaded at run time, like XRender and RandR below: a Window binary
+// starts on a machine without libX11, and a build needs only its headers.
+static bool bx11_ok;
+static pthread_once_t bx11_once = PTHREAD_ONCE_INIT;
+
+#define BX11_FNS(X) \
+  X(XChangeProperty) X(XClearWindow) X(XCloseDisplay) X(XCloseIM) \
+  X(XCreateBitmapFromData) X(XCreateIC) X(XCreateImage) X(XCreatePixmap) \
+  X(XCreatePixmapCursor) X(XCreateSimpleWindow) X(XDestroyIC) \
+  X(XFilterEvent) X(XFlush) X(XFree) X(XFreeCursor) X(XFreeEventData) \
+  X(XFreePixmap) X(XGetAtomName) X(XGetEventData) X(XGetICValues) \
+  X(XGetInputFocus) X(XGetWindowProperty) X(XGrabPointer) X(XInternAtom) \
+  X(XLookupString) X(XMapRaised) X(XNextEvent) X(XOpenDisplay) X(XOpenIM) \
+  X(XPending) X(XPutImage) X(XQueryExtension) X(XSelectInput) X(XSendEvent) \
+  X(XSetICFocus) X(XSetLocaleModifiers) X(XSetWMNormalHints) \
+  X(XSetWMProtocols) X(XStoreName) X(XSupportsLocale) X(XUngrabPointer) \
+  X(XUnsetICFocus) X(Xutf8LookupString) X(XWarpPointer)
+
+#define BX11_DECL(fn) static __typeof__(&fn) bx11_##fn;
+BX11_FNS(BX11_DECL)
+#undef BX11_DECL
+
+static void bx11_load(void) {
+  void* lib = dlopen("libX11.so.6", RTLD_LAZY | RTLD_GLOBAL);
+  if (lib == NULL) {
+    return;
+  }
+  bx11_ok = true;
+#define BX11_LOAD(fn) do { \
+  bx11_##fn = (__typeof__(&fn))dlsym(lib, #fn); \
+  if (bx11_##fn == NULL) { \
+    bx11_ok = false; \
+  } \
+} while (0);
+  BX11_FNS(BX11_LOAD)
+#undef BX11_LOAD
+}
+
+static Display* bx11_none(const char* name) {
+  (void)name;
+  return NULL;
+}
+
+static __typeof__(&XOpenDisplay) bx11_open(void) {
+  pthread_once(&bx11_once, bx11_load);
+  return bx11_ok ? bx11_XOpenDisplay : bx11_none;
+}
+
+#define XChangeProperty (*bx11_XChangeProperty)
+#define XClearWindow (*bx11_XClearWindow)
+#define XCloseDisplay (*bx11_XCloseDisplay)
+#define XCloseIM (*bx11_XCloseIM)
+#define XCreateBitmapFromData (*bx11_XCreateBitmapFromData)
+#define XCreateIC (*bx11_XCreateIC)
+#define XCreateImage (*bx11_XCreateImage)
+#define XCreatePixmap (*bx11_XCreatePixmap)
+#define XCreatePixmapCursor (*bx11_XCreatePixmapCursor)
+#define XCreateSimpleWindow (*bx11_XCreateSimpleWindow)
+#define XDestroyIC (*bx11_XDestroyIC)
+#define XFilterEvent (*bx11_XFilterEvent)
+#define XFlush (*bx11_XFlush)
+#define XFree (*bx11_XFree)
+#define XFreeCursor (*bx11_XFreeCursor)
+#define XFreeEventData (*bx11_XFreeEventData)
+#define XFreePixmap (*bx11_XFreePixmap)
+#define XGetAtomName (*bx11_XGetAtomName)
+#define XGetEventData (*bx11_XGetEventData)
+#define XGetICValues (*bx11_XGetICValues)
+#define XGetInputFocus (*bx11_XGetInputFocus)
+#define XGetWindowProperty (*bx11_XGetWindowProperty)
+#define XGrabPointer (*bx11_XGrabPointer)
+#define XInternAtom (*bx11_XInternAtom)
+#define XLookupString (*bx11_XLookupString)
+#define XMapRaised (*bx11_XMapRaised)
+#define XNextEvent (*bx11_XNextEvent)
+#define XOpenDisplay (*bx11_open())
+#define XOpenIM (*bx11_XOpenIM)
+#define XPending (*bx11_XPending)
+#define XPutImage (*bx11_XPutImage)
+#define XQueryExtension (*bx11_XQueryExtension)
+#define XSelectInput (*bx11_XSelectInput)
+#define XSendEvent (*bx11_XSendEvent)
+#define XSetICFocus (*bx11_XSetICFocus)
+#define XSetLocaleModifiers (*bx11_XSetLocaleModifiers)
+#define XSetWMNormalHints (*bx11_XSetWMNormalHints)
+#define XSetWMProtocols (*bx11_XSetWMProtocols)
+#define XStoreName (*bx11_XStoreName)
+#define XSupportsLocale (*bx11_XSupportsLocale)
+#define XUngrabPointer (*bx11_XUngrabPointer)
+#define XUnsetICFocus (*bx11_XUnsetICFocus)
+#define Xutf8LookupString (*bx11_Xutf8LookupString)
+#define XWarpPointer (*bx11_XWarpPointer)
 
 #ifdef CID(Window.fullscreen)
 // XRender is loaded at run time, like RandR below: only Xlib headers are needed.
