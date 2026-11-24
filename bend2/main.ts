@@ -626,11 +626,13 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
         }).transform(src);
         let end = 0;
         let line = 0;
+        let col = 0;
         for (const [i, m] of mods.entries()) {
           const skip = i * mark.length;
           const at = marked.indexOf(mark, end + skip) - skip;
-          line += src.slice(end, at).split("\n").length - 1;
-          const col = at - src.lastIndexOf("\n", at - 1) - 1;
+          const lines = src.slice(end, at).split(/\r\n?|\n/);
+          line += lines.length - 1;
+          col = lines.length === 1 ? col + at - end : lines[lines.length - 1].length;
           m.text = "\n".repeat(line) + " ".repeat(col) + m.text;
           code.set(m.id, m);
           end = at;

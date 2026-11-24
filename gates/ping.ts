@@ -390,6 +390,12 @@ try {
     + " with no crash banner: " + page.err, page.code === 1
     && page.err.includes("Could not resolve: \"./none.ts\"")
     && page.err.includes("page.ts:1:") && !page.err.includes("Bun v"));
+  const cr_page = path.join(TMP, "cr-page.html");
+  fs.writeFileSync(cr_page, "<p>header</p>\r<p>next</p>\r\n"
+    + "<script type=\"module\">const value = ;</script>\r");
+  const cr_run = await bend([cr_page, "-o", path.join(TMP, "dist")]);
+  check("inline JS errors count CR and CRLF as single line breaks",
+    cr_run.code === 1 && cr_run.err.includes(cr_page + ":3:37"));
   const bad_file = path.join(TMP, "bad.bend");
   const sum_file = path.join(TMP, "sum.bend");
   const unsafe_file = path.join(TMP, "unsafe.bend");
