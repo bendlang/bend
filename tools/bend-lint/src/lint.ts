@@ -414,6 +414,7 @@ export async function lint(
     if (!Array.isArray(out)) {
       throw new TypeError("rule " + rule.id + " must return an array of diagnostics");
     }
+    if (out.length === 0) continue;
     const settled = out.map((d): Diag => ({
       ...d,
       code: rule.id,
