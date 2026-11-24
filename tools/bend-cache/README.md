@@ -12,6 +12,9 @@ bun tools/bend-cache/src/cache.ts PROOF.bend
 bend-cache <file.bend> [--cache <file.json>] [--bend <bend2 dir>] [--min-ms <ms>] [--stats]
 ```
 
+Run `bun tools/bend-cache/src/cache.ts --help` (or `-h`) for this usage
+without loading Bend or opening a cache.
+
 - `--cache` (or `BEND_CACHE`): the traces, one JSON file. Default:
   `$XDG_CACHE_HOME/bend-cache/traces.json` (`~/.cache/...`). One file serves
   every project: ten files that import the same library share its traces.

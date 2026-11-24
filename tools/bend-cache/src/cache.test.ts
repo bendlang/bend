@@ -33,6 +33,20 @@ function run(cmd: string[], dir: string): string {
   return "exit " + String(p.status) + "\n" + p.stdout + p.stderr;
 }
 
+test("help succeeds without opening a file or loading the checker", () => {
+  const dir = fs.mkdtempSync(path.join(TMP, "help-"));
+  for (const flag of ["--help", "-h"]) {
+    const result = spawnSync("bun", [TOOL, flag], {
+      cwd: dir, encoding: "utf8",
+      env: { ...process.env, BEND_DIR: dir, BEND_CACHE: path.join(dir, "unused.json") },
+    });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toStartWith("usage: bend-cache <file.bend>");
+    expect(result.stderr).toBe("");
+  }
+  expect(fs.readdirSync(dir)).toEqual([]);
+});
+
 function cached(b: { dir: string; cache: string }, entry: string, stats = false): string {
   // every check keeps a trace, so the skips are what the cases test
   return run([TOOL, entry, "--cache", b.cache, "--bend", BEND2, "--min-ms", "0", ...(stats ? ["--stats"] : [])], b.dir);
