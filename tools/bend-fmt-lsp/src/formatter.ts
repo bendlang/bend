@@ -334,7 +334,15 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
     const width = line.indent.length;
     if (!loose[index]) while (pins.length > 0 && pins[pins.length - 1].from > width) pins.pop();
     const anchor = anchors[index];
-    const pin = anchor ? bodyPins.get(anchor) : pins.filter((pin) => pin.from <= width).pop();
+    let pin = anchor ? bodyPins.get(anchor) : undefined;
+    if (!anchor) {
+      for (let at = pins.length - 1; at >= 0; at--) {
+        if (pins[at].from <= width) {
+          pin = pins[at];
+          break;
+        }
+      }
+    }
     if (anchor && pin && pins.at(-1) !== pin) pins.push(pin);
     const prefix = pin ? pin.prefix + " ".repeat(width - pin.from + pin.to - pin.prefix.length)
       : spaces ? " ".repeat(depths[index] * size) : "\t".repeat(depths[index]);
