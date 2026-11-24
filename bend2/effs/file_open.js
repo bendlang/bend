@@ -19,6 +19,11 @@ function file_open_with(name, mode) {
     if (mode === "a") {
       io_file_append.add(fd);
     }
+    if (mode === "r") {
+      (io_file_lines ??= new Map()).set(fd, null);
+    } else {
+      io_file_lines?.delete(fd);
+    }
     return io_done(fd);
   } catch (e) {
     return io_fail(-e.errno);

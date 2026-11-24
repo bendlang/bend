@@ -8,6 +8,7 @@ function file_close(file) {
   } catch (e) {
   }
   io_file_append.delete(file);
+  io_file_lines?.delete(file);
   return { $: CID(Unit) };
 }
 
