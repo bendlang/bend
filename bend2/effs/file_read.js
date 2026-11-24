@@ -9,10 +9,10 @@
 // already given them up). Bun's readSync skips the syscall for 0 bytes,
 // so a 0-byte read goes through readvSync and fails on a bad handle as C
 // does; neither needs bun:ffi, which node lacks.
-// max is a cap, not a size: the buffer starts at what a regular file holds
-// past the given offset (one byte more, to see its end) or 64 KiB. It doubles
-// up to max as bytes arrive, so a read capped far above the available data
-// commits only what it reads (#1983). A line starts at 64 KiB whatever the file.
+// A regular file's size is a hint, not a bound on the bytes left (#1983).
+// The hint leaves one extra byte for the EOF check. A line starts at 64 KiB.
+const FILE_READ_INITIAL = 256 * 1024 + 1;
+
 function file_read_room(fs, file, len, line, offset) {
   let room = 65536;
   try {
@@ -28,11 +28,16 @@ function file_read_room(fs, file, len, line, offset) {
 function file_read_with(file, max, offset, pack, line = false) {
   const fs = require("fs");
   const len = Math.min(max, 2147483647);
-  let b = new Uint8Array(file_read_room(fs, file, len, line, offset));
+  const room = file_read_room(fs, file, len, line, offset);
+  // A sequential read may already be near EOF. Probe large hints first,
+  // keeping the prefix small so a full read has little to copy on growth.
+  const initial = offset === null && room > FILE_READ_INITIAL
+    ? Math.min(FILE_READ_INITIAL, Math.ceil(room / 16)) : room;
+  let b = new Uint8Array(initial);
   let got = 0;
   do {
     if (got === b.length) {
-      const c = new Uint8Array(Math.min(len, b.length * 2));
+      const c = new Uint8Array(room > b.length ? room : Math.min(len, b.length * 2));
       c.set(b);
       b = c;
     }
