@@ -5927,16 +5927,12 @@ int main(int argc, char** argv) {
       }
       i += 1;
     } else if (!strcmp(a, "--gpu")) {
-      double n   = strtod(v, &end);
-      u64    mul = !strcmp(end, "GB") ? 1ull << 30
-        : !strcmp(end, "MB") ? 1ull << 20 : 0;
-      mem = (u64)(n * (double)mul);
-      if (!strcmp(v, "off")) {
-        gpu = 0;
-      } else if (!strcmp(v, "on")
-        || (mem >= 16384 && end == v + strspn(v, "0123456789."))) {
-        gpu = 1;
-      } else {
+      double n = strtod(v, &end);
+      n  *= !strcmp(end, "GB") ? 1 << 30 : !strcmp(end, "MB") ? 1 << 20 : 0;
+      mem = n >= 16384 && n < 0x1p64 && end == v + strspn(v, "0123456789.")
+        ? n : 0;
+      gpu = strcmp(v, "off") != 0;
+      if (gpu && strcmp(v, "on") && !mem) {
         err_fail("expected on, off or a size like 4GB after --gpu");
       }
       i += 1;
@@ -6147,10 +6143,11 @@ function cli(argv) {
       process.exit(0);
     } else {
       const re = a === "--threads" ? /^0*[1-9]\d*$/ : a === "--gpu"
-        ? /^(on|off|(\d*(?:\.\d*)?)([GM])B)$/ : undefined;
+        ? /^(on|off|([\d.]*)([GM])B)$/ : undefined;
       const m  = re?.exec(argv[++i]);
       if (!m || m[3]
-        && !(m[2] * 2 ** (m[3] === "G" ? 30 : 20) >= 16384)) {
+        && !((m[2] *= 2 ** (m[3] === "G" ? 30 : 20)) >= 16384
+          && m[2] < 2 ** 64)) {
         io_errs("bend: " + (re === undefined ? "unknown runtime option " + a
           : a === "--gpu" ? "expected on, off or a size like 4GB after --gpu"
           : "expected a thread count of 1 or more after --threads"));
