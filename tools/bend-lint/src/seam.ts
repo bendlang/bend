@@ -788,13 +788,14 @@ const checked = async (
 // foreign code), with `text` in place of the files on disk, one check at a
 // time. A fact is kept only if a filter wants it, and only if its span maps
 // to the linted file (or, with scope program, to any file but Base).
-export const check = (
+export const check = async (
   m: Loaded,
   file: string,
   filters: FactFilter[],
   signal: AbortSignal,
   text?: ReadonlyMap<string, string>,
 ): Promise<Checked> => {
+  signal.throwIfAborted();
   const turn = queue.then(async (): Promise<Checked> => {
     signal.throwIfAborted();
     try {
@@ -808,7 +809,16 @@ export const check = (
     }
   });
   queue = turn.catch(() => undefined);
-  return turn;
+  // Reject the caller promptly, but keep the backend turn and its cleanup
+  // in the queue until it is safe for another check to take the hooks.
+  const cancelled = Promise.withResolvers<never>();
+  const abort = () => cancelled.reject(signal.reason);
+  signal.addEventListener("abort", abort, { once: true });
+  try {
+    return await Promise.race([turn, cancelled.promise]);
+  } finally {
+    signal.removeEventListener("abort", abort);
+  }
 };
 
 // The facts one rule asked for, of those kept for all rules. A filter that

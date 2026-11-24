@@ -342,7 +342,8 @@ next to the file. `unsaved` maps file paths to editor text that isn't saved yet;
 new files and imports need not exist on disk. Bend and the rules read that text
 for that run only, without creating files or directories. Runs
 at the same time wait for each other's check, one at a time; rules still run
-side by side. `position(span)` gives an LSP range.
+side by side. Aborting a run rejects it without waiting for another check
+in the queue. `position(span)` gives an LSP range.
 
 `findConfig(file)` checks the file's directory, then each parent, for
 `bend-lint.json`, `.js` or `.ts`. Closest directory wins, then JSON, JS, TS.
