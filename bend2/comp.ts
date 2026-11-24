@@ -3075,13 +3075,13 @@ function js_def(k: Name, def: Bend.Def): void {
   file_push(sc, "");
 }
 
-// Across a host edge a Nat comes in as a number nat_in checks; text gets
-// U+FFFD for non-scalars.
+// Across a host edge nat_in checks a Nat, a U32 is masked; text gets U+FFFD
+// for non-scalars.
 function host(A: HTerm | null, x: string, out: boolean): string {
   const k = ty_adt(A)?.k;
   return k === "Char" || k === "String" ? `str_${out ? "out" : "in"}(${x})`
-    : k === "Nat" && !out ? `nat_in(${x})`
-    : k === "F32" && !out ? `Math.fround(${x})` : x;
+    : out ? x : k === "Nat" ? `nat_in(${x})`
+    : k === "F32" ? `Math.fround(${x})` : k === "U32" ? `${x} >>> 0` : x;
 }
 
 // A module (the .bend loader, -o <out>.mjs) exports its own callable defs.
