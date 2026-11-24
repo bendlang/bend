@@ -730,19 +730,19 @@ export async function bendRule(file: string): Promise<LintRule> {
   };
 }
 
-async function cli(argv: string[]): Promise<number> {
-  const { values, positionals } = util.parseArgs({
-    args: argv,
-    options: OPTIONS,
-    allowPositionals: true,
-  });
-  if (values.help) {
-    console.log(USAGE);
-    return 0;
+function cli_args(argv: string[]) {
+  try {
+    const parsed = util.parseArgs({ args: argv, options: OPTIONS, allowPositionals: true });
+    if (!parsed.values.help && parsed.positionals.length !== 1) {
+      throw new Error("give one .bend file\n" + USAGE);
+    }
+    return parsed;
+  } catch (e) {
+    return fail(e);
   }
-  if (positionals.length !== 1) {
-    throw new Error("give one .bend file\n" + USAGE);
-  }
+}
+
+async function cli({ values, positionals }: NonNullable<typeof given>): Promise<number> {
   const modules = await Promise.all(
     (values.rules ?? []).map(async (file): Promise<LintRule[]> => {
       if (file.endsWith(".bend")) {
@@ -818,26 +818,20 @@ function fail(e: unknown): never {
 // Side effects
 // ============
 
-// The CLI's --bend is read here, before bend loads; a library uses $BEND_DIR.
-const given = import.meta.main
-  ? util.parseArgs({
-      args: process.argv.slice(2),
-      options: OPTIONS,
-      allowPositionals: true,
-      strict: false,
-    }).values
-  : undefined;
-
-if (given?.help) {
-  process.exit(await cli(process.argv.slice(2)).catch(fail));
+// Check CLI arguments before discovery; library users still select with BEND_DIR.
+const given = import.meta.main ? cli_args(process.argv.slice(2)) : undefined;
+if (given?.values.help) {
+  console.log(USAGE);
+  process.exit(0);
 }
 
-const loaded = await load(typeof given?.bend === "string" ? given.bend : undefined).catch((e: unknown) =>
+const bend = given?.values.bend;
+const loaded = await load(typeof bend === "string" ? bend : undefined).catch((e: unknown) =>
   import.meta.main ? fail(e) : Promise.reject(e),
 );
 
 export const { BEND2 } = loaded;
 
-if (import.meta.main) {
-  process.exit(await cli(process.argv.slice(2)).catch(fail));
+if (given !== undefined) {
+  process.exit(await cli(given).catch(fail));
 }

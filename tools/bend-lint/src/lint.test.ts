@@ -2016,6 +2016,24 @@ describe("cli", () => {
     expect([bad.ok, bad.findings[0].code]).toEqual([false, "bend/check"]);
   });
 
+  test("bad arguments are reported before trying to load Bend", () => {
+    const missing = path.join(DIR, "missing-bend");
+    for (const [args, expected] of [
+      [["--unknown"], "Unknown option '--unknown'"],
+      [[], "give one .bend file"],
+      [[input, "--config"], "argument missing"],
+    ] as const) {
+      expect(run("--bend", missing, ...args)).toMatchObject({
+        status: 2,
+        stderr: expect.stringContaining(expected),
+      });
+    }
+    expect(run("--bend", missing, "--help")).toMatchObject({
+      status: 0,
+      stdout: expect.stringContaining("usage: "),
+    });
+  });
+
   test("--bend and BEND_DIR choose the bend to load; a wrong one exits 2", () => {
     expect(run(input, "--bend", path.dirname(BEND2)).status).toBe(0);
     const env = spawnSync(process.execPath, [CLI, input], {
