@@ -2,13 +2,13 @@
 # the bytes sent for a page. PROOF.bend must prove them.
 import Base
 import ./main.bend as Srv
+import ./SPEC.bend as Spec
 
-# LAW: the response of any page is some head, then a blank line, then
-# the page: a client that cuts at the blank line reads the page back.
+# LAW: the response of any page is SPEC.bend's head, then a blank
+# line, then the page.
 law page_after_blank:
   for +page: String
-  exs head: String
-  {head ++ ("\r\n\r\n" ++ page) == Srv.http_response(page) : String}
+  {Spec.head() ++ ("\r\n\r\n" ++ page) == Srv.http_response(page) : String}
 
 # LAW: the response determines the page: two equal responses come
 # from equal pages.
