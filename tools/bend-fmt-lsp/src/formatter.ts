@@ -296,13 +296,21 @@ function indentDepths(lines: Line[], loose = looseLines(lines), anchors: (Token 
   return depths;
 }
 
-function fingerprint(lines: Line[]): string {
-  const depths = indentDepths(lines);
-  return lines.map((line, index) => {
-    if (line.tokens.length === 0) return "";
-    const texts = line.tokens.map((token, at) => token.text + (gluedPercent(line, at) ? "\u0001" : ""));
-    return depths[index] + ":" + texts.join("\u0000");
-  }).join("\n");
+function sameShape(before: Line[], depths: number[], after: Line[]): boolean {
+  if (before.length !== after.length) return false;
+  const nextDepths = indentDepths(after);
+  for (let row = 0; row < before.length; row++) {
+    const a = before[row], b = after[row];
+    if (a.tokens.length !== b.tokens.length) return false;
+    if (a.tokens.length === 0) continue;
+    if (depths[row] !== nextDepths[row]) return false;
+    for (let i = 0; i < a.tokens.length; i++) {
+      const text = a.tokens[i].text;
+      if (text !== b.tokens[i].text ||
+        (text === "%" && gluedPercent(a, i) !== gluedPercent(b, i))) return false;
+    }
+  }
+  return true;
 }
 
 export function formatBend(source: string, options: FormatOptions = {}): string {
@@ -348,8 +356,11 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
     if (line.comment === "") return prefix + code + ending;
     return prefix + code + (gluedPercent(line, line.tokens.length - 1) ? "" : "  ") + line.comment + ending;
   }).join("");
+  if (formatted === source) return source;
   try {
-    if (fingerprint(lines) !== fingerprint(formatted.replace(/\r\n/g, "\n").split("\n").slice(0, finalEol ? -1 : undefined).map(splitLine))) return source;
+    const nextLines = formatted.split(/\r?\n/);
+    if (finalEol) nextLines.pop();
+    if (!sameShape(lines, depths, nextLines.map(splitLine))) return source;
   } catch {
     return source;
   }
