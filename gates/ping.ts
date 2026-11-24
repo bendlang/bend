@@ -462,6 +462,14 @@ try {
   const argv = await bend([argn, "x", "--", "--verdict"]);
   check("a plain run gets its arguments: " + argv.err, argv.code === 0
     && argv.out === "3\n");
+  const dashed = "-argn.bend";
+  fs.copyFileSync(argn, path.join(TMP, dashed));
+  const escaped = await bend(["--", dashed, "--verdict"]);
+  check("a separator before the file lets a plain run take a dashed name",
+    escaped.code === 0 && escaped.out === "2\n");
+  const escaped_check = await bend(["--check-only", "--", dashed]);
+  check("options before the separator still apply to a dashed file",
+    escaped_check.code === 0 && escaped_check.out.startsWith("ALL PROOFS CHECK\n"));
   // a built program's runtime options are BENDRTS's, then those between
   // +RTS and -RTS; the rest are its arguments, -- among them, and --RTS
   // (dropped) makes every one after it the program's
