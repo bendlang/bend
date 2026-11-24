@@ -90,9 +90,11 @@ function splitLine(text: string): Line {
       }
       if (code[i] === "n") i++;
     } else {
-      // A comparison needs a left operand separated from >; Box<-T opens a <, not a bind.
-      const multi = MULTI.find((value) => code.startsWith(value, i) && (value !== ">=" || !tokens.length || hadGap && tokens.at(-1)?.text !== ",")
-        && (value !== "<-" || hadGap || tokens.at(-1)?.kind !== "word" || !HEAD.test(code[i + 2] ?? "")));
+      // Only a datatype header can open its erased parameter list with <-.
+      const typeParams = tokens.length === 2 && tokens[0].text === "type";
+      const multi = MULTI.find((value) => code.startsWith(value, i)
+        && (value !== ">=" || !tokens.length || hadGap && tokens.at(-1)?.text !== ",")
+        && (value !== "<-" || !typeParams));
       i += multi?.length ?? 1;
     }
     tokens.push({ text: code.slice(start, i), kind, gap: hadGap, col: indent.length + start });
