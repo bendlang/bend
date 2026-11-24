@@ -19,11 +19,13 @@ function cli_source_location() {
         && run.stderr.includes("\n--> " + fs.realpathSync(dep) + position + "\n");
     };
     if (!reports([dep], ":4:3", "4>|   wrong")
-      || !reports([entry, "--check-only"], ":4:3", "4>|   wrong")) {
+      || !reports([entry, "--check-only"], ":4:3", "4>|   wrong")
+      || !reports([entry, "--checkup"], ":4:3", "4>|   wrong")) {
       return 1;
     }
     fs.writeFileSync(dep, "import Base\nimport ./missing.bend as M\n");
-    return reports([entry], ":2:8", "2>| import ./missing.bend as M") ? 0 : 2;
+    return reports([entry], ":2:8", "2>| import ./missing.bend as M")
+      && reports([entry, "--checkup"], ":2:8", "2>| import ./missing.bend as M") ? 0 : 2;
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

@@ -373,12 +373,13 @@ async function cli_checkup(file: string): Promise<void> {
       : path.join(path.dirname(file), m[1]);
     cli_say(1, "--- " + m[1] + " ---\n");
     let code = 1;
+    const seen = new Map<string, string | null>();
     try {
       const own = /^(?:[\t\r ]*(?:#[^\n]*)?\n)*[\t ]*import Base\s/
         .test(fs.readFileSync(at, "utf8"));
-      code = book_run(await book_read(at, own ? base : undefined), [at]);
+      code = book_run(await book_read(at, own ? base : undefined, seen), [at]);
     } catch (e) {
-      cli_say(2, book_err(e) + "\n");
+      cli_say(2, book_err(e, seen) + "\n");
     }
     if (code !== 0) {
       cli_say(1, "exit " + String(code) + "\n");
