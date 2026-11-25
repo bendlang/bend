@@ -363,18 +363,24 @@ function print(doc: Doc, width: number, indent: number, newline: string): string
   const stack: Frame[] = [{ doc, indent, flat: false }];
   let out = " ".repeat(indent),
     col = indent;
-  const fits = (remaining: number, pending: Frame[]): boolean => {
-    while (remaining >= 0 && pending.length) {
-      const f = pending.pop()!,
-        d = f.doc;
+  const pending: Pick<Frame, "doc" | "flat">[] = [];
+  const fits = (remaining: number, doc: Doc): boolean => {
+    // Probe local frames first, then look back through the printer's stack
+    // without copying the siblings the probe will probably never reach.
+    let at = stack.length;
+    pending.length = 0;
+    pending.push({ doc, flat: true });
+    while (remaining >= 0 && (pending.length > 0 || at > 0)) {
+      const { doc: d, flat } = pending.pop() ?? stack[--at];
       if (typeof d === "string") {
         if (d.includes("\n")) return true;
         remaining -= d.length;
-      } else if (Array.isArray(d)) pending.push(...d.map((doc) => ({ ...f, doc })).reverse());
-      else if (d.kind === "line") {
-        if (d.hard || !f.flat) return true;
+      } else if (Array.isArray(d)) {
+        for (let i = d.length - 1; i >= 0; --i) pending.push({ doc: d[i], flat });
+      } else if (d.kind === "line") {
+        if (d.hard || !flat) return true;
         remaining -= d.flat.length;
-      } else pending.push({ doc: d.doc, indent: f.indent + (d.amount ?? 0), flat: true });
+      } else pending.push({ doc: d.doc, flat: true });
     }
     return remaining >= 0;
   };
@@ -384,8 +390,9 @@ function print(doc: Doc, width: number, indent: number, newline: string): string
     if (typeof d === "string") {
       out += d;
       col = d.includes("\n") ? d.length - d.lastIndexOf("\n") - 1 : col + d.length;
-    } else if (Array.isArray(d)) stack.push(...d.map((doc) => ({ ...f, doc })).reverse());
-    else if (d.kind === "line") {
+    } else if (Array.isArray(d)) {
+      for (let i = d.length - 1; i >= 0; --i) stack.push({ doc: d[i], indent: f.indent, flat: f.flat });
+    } else if (d.kind === "line") {
       if (!d.hard && (f.flat || width === Infinity)) {
         out += d.flat;
         col += d.flat.length;
@@ -399,10 +406,7 @@ function print(doc: Doc, width: number, indent: number, newline: string): string
       stack.push({
         doc: d.doc,
         indent: f.indent,
-        flat:
-          f.flat ||
-          width === Infinity ||
-          fits(width - col, [...stack, { doc: d.doc, indent: f.indent, flat: true }]),
+        flat: f.flat || width === Infinity || fits(width - col, d.doc),
       });
   }
   return out.trimEnd();
