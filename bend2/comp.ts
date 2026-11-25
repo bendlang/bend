@@ -552,8 +552,9 @@ function intr_of(k: Name): Intr | undefined {
 
 function op_bare(t: HTerm): boolean {
   const s = term_strip(t);
-  return s.$ === "Var" || term_const(s) && !(FL.js && s.$ === "Ctr"
-    && (s.k in OPTIMIZED.Array || Bend.u32_from_term(s, "F32")! >= 2 ** 31));
+  return s.$ === "Var" || term_const(s) && !(s.$ === "Ctr"
+    && (s.k in OPTIMIZED.Array
+      || FL.js && Bend.u32_from_term(s, "F32")! >= 2 ** 31));
 }
 
 function tpl_ops(pre: string, names: string, C: string, JS = C) {
