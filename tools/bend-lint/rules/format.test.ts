@@ -160,9 +160,11 @@ def main() -> String:
   test("formats a glued < that no > closes as a comparison or a bind", async () => {
     const compare = "import Base\ndef f(a: U32) -> Bool:\n  (a<4 : U32)\n";
     expect(await fixed(compare)).toContain("(a < 4");
-    const bind =
-      'import Base\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    Unit<- IO.print("x")\n    IO.print("y")\n';
-    expect(await fixed(bind)).toContain('Unit <- IO.print("x")');
+    for (const gap of ["", " "]) {
+      const bind = 'import Base\ndef main() -> IO(Unit):\n  do IO<Unit>:\n'
+        + `    Unit<-${gap}IO.print("x")\n    IO.print("y")\n`;
+      expect(await fixed(bind)).toContain('Unit <- IO.print("x")');
+    }
   });
 
   test("keeps inline argument comments attached when wrapping", async () => {
