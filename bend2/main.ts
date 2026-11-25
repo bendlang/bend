@@ -59,6 +59,7 @@ const HELP = `Bend ${VERSION}${BUILD}: check, run, build and publish Bend progra
 usage:
 ${USAGE.map(([use, say]) => `  ${use.padEnd(USE_W)}  ${say}`).join("\n")}
 
+Use \`--\` before a filename that starts with \`-\`.
 Read the guide (\`bend guide\`) before writing Bend code.
 `;
 
@@ -267,7 +268,9 @@ async function cli_file(args: string[]): Promise<void> {
       i += 1;
       outs.push(args[i] ?? cli_fail("-o needs an output file"));
     } else if (a === "--") {
-      argv.push(...args.splice(i + 1));
+      if (file === undefined) file = args[++i];
+      for (i += 1; i < args.length; i += 1) argv.push(args[i]);
+      break;
     } else if (a.startsWith("-")) {
       cli_fail("unknown option " + a);
     } else if (file !== undefined) {
@@ -290,8 +293,8 @@ async function cli_file(args: string[]): Promise<void> {
   if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
     cli_fail((verdict ? "--verdict" : "--check-only") + " takes no other option");
   }
-  // args go to a plain run only: any option (all start with -) refuses them
-  if (argv.length !== 0 && args.some((a) => a.startsWith("-") && a !== "--")) {
+  // Only a plain run accepts arguments after the file.
+  if (argv.length !== 0 && (only || verdict || checkup || publish || outs.length !== 0)) {
     cli_fail("arguments go to a run: bend <file.bend> [args]");
   }
   if (checkup && outs.length !== 0) {
