@@ -321,16 +321,17 @@ async function cli_file(args: string[]): Promise<void> {
     const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
     const outputs = new Map<string, string>();
+    const inodes = new Map<string, string>();
     for (const out of outs) {
       const binary = !/\.(mjs|c?js|c|bendtt)$/.test(out);
-      const full = path.resolve(out);
-      const at = path.join(path_real(path.dirname(full)), path.basename(full));
-      for (const key of binary ? [at, at + ".gpu"] : [at]) {
-        const other = outputs.get(key);
+      for (const name of binary ? [out, out + ".gpu"] : [out]) {
+        const [key, inode] = output_slot(name);
+        const other = outputs.get(key) ?? (inode === undefined ? undefined : inodes.get(inode));
         if (other !== undefined) {
           cli_fail("-o " + out + " conflicts with -o " + other);
         }
         outputs.set(key, out);
+        if (inode !== undefined) inodes.set(inode, out);
       }
       if (output_conflicts(out, ins)) {
         cli_fail("-o " + out + " is a file the program reads, or a directory");
@@ -392,6 +393,26 @@ async function cli_checkup(file: string): Promise<void> {
 
 function path_real(p: string): string {
   return fs.existsSync(p) ? fs.realpathSync(p) : path.resolve(p);
+}
+
+// A dangling symlink can name an output that another -o will create.
+function output_slot(file: string): [string, string?] {
+  let at = file;
+  let seen: Set<string> | undefined;
+  for (;;) {
+    const parent = path.dirname(at);
+    const dir = fs.existsSync(parent) ? fs.realpathSync.native(parent) : path.resolve(parent);
+    at = path.join(dir, path.basename(at));
+    const st = fs.lstatSync(at, { bigint: true, throwIfNoEntry: false });
+    if (!st?.isSymbolicLink()) {
+      return [at, st === undefined ? undefined : `${st.dev}:${st.ino}`];
+    }
+    seen ??= new Set();
+    if (seen.has(at)) cli_fail("-o " + file + " has a symbolic link loop");
+    seen.add(at);
+    const to = fs.readlinkSync(at);
+    at = path.isAbsolute(to) ? to : dir + path.sep + to;
+  }
 }
 
 // same_file compares device and inode, so links to one file agree.

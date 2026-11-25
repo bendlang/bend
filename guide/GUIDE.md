@@ -546,15 +546,17 @@ Bend is a single command:
 
 ```bash
 bend file.bend            # check; run main (IO compiled; a value normalized)
-bend file.bend -o file    # compile to a native binary (clang 14+; 19+ with `!`)
-bend file.bend -o file.c  # emit the C source instead
-bend file.bend -o file.js # emit the JS source instead
-bend file.bend -o f.mjs   # emit an ES module of its non-IO defs, for JS to import
+bend file.bend -o file    # native binary (clang 14+; 19+ with `!`)
+bend file.bend -o file.c  # C source
+bend file.bend -o file.js # JS source
+bend file.bend -o f.mjs   # ES module of non-IO defs
 bend file.bend --verdict  # check; then recheck with the proven BendTT kernel
 bend page.html -o dist    # bundle a web page that imports .bend files
 ./file +RTS --threads 8   # run a native binary on 8 CPU threads
 ./file +RTS --gpu 4GB     # cap the GPU heap at 4GB; off runs ! calls on the CPU
 ```
+
+Multiple `-o` outputs must name distinct files, including through links.
 
 A `main` that returns `IO` runs compiled; one that returns a value is normalized
 by the checker (slow for big work) and printed; a file with no `main` just
