@@ -390,6 +390,16 @@ try {
     + " with no crash banner: " + page.err, page.code === 1
     && page.err.includes("Could not resolve: \"./none.ts\"")
     && page.err.includes("page.ts:1:") && !page.err.includes("Bun v"));
+  const tmpl = path.join(TMP, "template.html");
+  const tmpl_dist = path.join(TMP, "template-dist");
+  const inert = '<script type="module">const inert = ;</script>';
+  fs.writeFileSync(tmpl, "<template><template>" + inert + "</template></template>"
+    + '<script type="module">console.log("outer script");</script>');
+  const tmpl_run = await bend([tmpl, "-o", tmpl_dist]);
+  check("a template script is kept as markup, the outer script is bundled",
+    tmpl_run.code === 0 && fs.readFileSync(path.join(tmpl_dist, "template.html"), "utf8")
+      .includes(inert) && fs.readdirSync(tmpl_dist).some((f) => f.endsWith(".js")
+        && fs.readFileSync(path.join(tmpl_dist, f), "utf8").includes("outer script")));
   const bad_file = path.join(TMP, "bad.bend");
   const sum_file = path.join(TMP, "sum.bend");
   const unsafe_file = path.join(TMP, "unsafe.bend");

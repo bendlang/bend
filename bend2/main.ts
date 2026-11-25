@@ -591,9 +591,21 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
         while (src.includes(mark)) {
           mark += "_";
         }
-        const marked = new HTMLRewriter().on("script", {
+        let templates = 0;
+        const rewriter = () => {
+          templates = 0;
+          return new HTMLRewriter().on("template", {
+            element(el) {
+              if (el.namespaceURI === "http://www.w3.org/1999/xhtml") {
+                templates++;
+                el.onEndTag(() => { templates--; });
+              }
+            },
+          });
+        };
+        const marked = rewriter().on("script", {
           element(el) {
-            if (is_inline_module(el)) {
+            if (templates === 0 && is_inline_module(el)) {
               el.prepend(mark);
             }
           },
@@ -601,10 +613,10 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
         const mods: Inline[] = [];
         let mod: Inline | null = null;
         let serial = 0;
-        const html = new HTMLRewriter().on("script", {
+        const html = rewriter().on("script", {
           element(el) {
             mod = null;
-            if (is_inline_module(el)) {
+            if (templates === 0 && is_inline_module(el)) {
               let name: string;
               let id: string;
               do {
