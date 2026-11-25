@@ -260,11 +260,11 @@ export function readConfig(file: string): Config {
 // The nearest config; JSON, JS, then TS within each directory.
 export function findConfig(file: string): Config {
   for (let dir = path.dirname(path.resolve(file)); ; dir = path.dirname(dir)) {
-    const config = CONFIG_FILES.map((name) => path.join(dir, name)).find((candidate) =>
-      fs.existsSync(candidate),
-    );
-    if (config !== undefined) {
-      return readConfig(config);
+    for (const name of CONFIG_FILES) {
+      const config = path.join(dir, name);
+      if (fs.statSync(config, { throwIfNoEntry: false })?.isFile()) {
+        return readConfig(config);
+      }
     }
     if (path.dirname(dir) === dir) {
       return {};
