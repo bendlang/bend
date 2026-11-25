@@ -53,7 +53,8 @@ latest one; the GitHub release carries the same notes.
   MattCozendey); a `!` program built for the CPU because no CUDA toolkit
   was found says so (PR #1888); colliding output requests are refused
   before anything is written (PR #2010 by vicmcorrea); a hyphenated
-  published file prints valid aliases (PR #1849 by vicmcorrea).
+  published file prints valid aliases (PR #1849 by vicmcorrea);
+  `--checkup` reports malformed import headers instead of skipping them.
 - **Fixes**:
   - Checker and verdict: a law names its module's own def when a Base
     constructor shares the name (#1236, PR #2047 by nicolas-abril); `!=`
