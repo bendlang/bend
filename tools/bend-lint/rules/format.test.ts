@@ -204,6 +204,18 @@ def main() -> String:
     expect(await fixed(multiline)).toContain('#inside literal\nlast line"  # outside');
   });
 
+  test("counts a multiline literal's first physical line toward wrap width", async () => {
+    for (const ending of ["\n", "\r\n"]) {
+      const literal = `"fifteen chars!${ending}x"`;
+      const source = "import Base\n\ndef choose(n: U32, s: String) -> String:\n  s\n"
+        + `\ndef main() -> String:\n  choose(0, ${literal})\n`;
+      const wrapped = await fixed(source, { ...opts, wrapAtWidth: 22 });
+      expect(wrapped).toContain(`  choose(\n    0,\n    ${literal}\n  )`);
+      const fitting = await fixed(source, { ...opts, wrapAtWidth: 27 });
+      expect(fitting).toContain(`  choose(0, ${literal})`);
+    }
+  });
+
   test("handles nested type arguments, successors, quantities and templates", async () => {
     await fixed(
       "import Base\ndef identity(~T: Type, x: T) -> T:\n  x\ndef main() -> List<List<U32>>:\n  identity(~List<List<U32>>, [[1, 2], [3]])\n",
