@@ -18,8 +18,8 @@ bend-cache <file.bend> [--cache <file.json>] [--bend <bend2 dir>] [--min-ms <ms>
   A cache it cannot write is a warning: the verdict stands.
 - `--bend` (or `BEND_DIR`): the bend2 sources to run. Default: this repo's
   `bend2/`.
-- `--min-ms`: only a check slower than this keeps a trace (0.2). A cheap
-  check runs again faster than its trace would hash.
+- `--min-ms`: a finite non-negative duration (default 0.2). Only checks
+  slower than this keep a trace; cheaper ones are faster to rerun.
 - `--stats`: how many defs were checked and skipped, on stderr.
 
 ## Disclaimer

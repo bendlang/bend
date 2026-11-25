@@ -143,6 +143,15 @@ test("a cache it cannot write warns, and the verdict stands", () => {
   expect(out.replace(/bend-cache: cannot write .*\n/, "")).toBe(plain(b, "m.bend"));
 });
 
+test("blank and non-finite cache thresholds fail without writing a trace", () => {
+  const b = book({ "m.bend": "import Base\n\ndef main() -> U32:\n  1\n" });
+  for (const ms of ["", " ", "Infinity", "1e309"]) {
+    const out = run([TOOL, "m.bend", "--cache", b.cache, "--bend", BEND2, "--min-ms", ms], b.dir);
+    expect(out).toStartWith("exit 1\nbend-cache: --min-ms needs a finite non-negative number of ms\n");
+    expect(fs.existsSync(b.cache)).toBe(false);
+  }
+});
+
 test("a bend2 that changed where the seam patches stops with drift", () => {
   const dir = path.join(TMP, "drift");
   fs.cpSync(BEND2, dir, { recursive: true, filter: (s) => !/node_modules|[\\/]docs\b/.test(s) });

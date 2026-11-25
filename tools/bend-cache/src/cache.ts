@@ -47,9 +47,10 @@ function options(args: string[]): Options {
     } else if (a === "--bend") {
       opts.bend = path.resolve(val());
     } else if (a === "--min-ms") {
-      opts.min = Number(val());
-      if (!(opts.min >= 0)) {
-        fail("--min-ms needs a number of ms");
+      const ms = val().trim();
+      opts.min = Number(ms);
+      if (ms === "" || !Number.isFinite(opts.min) || opts.min < 0) {
+        fail("--min-ms needs a finite non-negative number of ms");
       }
     } else if (a === "--stats") {
       opts.stats = true;
