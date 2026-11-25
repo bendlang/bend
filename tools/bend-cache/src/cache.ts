@@ -125,7 +125,7 @@ const FIELDS = "tlds,ctrs,order,hols,tmps";
 type Bend = typeof import("../../../bend2/bend.ts");
 type Main = {
   book_read(file: string, base?: unknown, seen?: Map<string, string | null>): Promise<any>;
-  book_err(e: unknown): string;
+  book_err(e: unknown, seen?: Map<string, string | null>): string;
   cli_verdict(book: any, kernel: boolean): number;
   term_refs(t: object, out: Set<string>): void;
   check(): Promise<void>;
@@ -337,10 +337,11 @@ async function main(): Promise<void> {
   const st: Stats = { checked: 0, skipped: 0, kept: 0 };
   const made: Array<[string, Trace]> = [];
   M.CACHE_HOOK.valid = (book) => trace_valid(B, M, opts, ver, book, st, made);
+  const seen = new Map<string, string | null>();
   try {
-    process.exitCode = M.cli_verdict(await M.book_read(opts.file), false);
+    process.exitCode = M.cli_verdict(await M.book_read(opts.file, undefined, seen), false);
   } catch (e) {
-    process.stderr.write(M.book_err(e) + "\n");
+    process.stderr.write(M.book_err(e, seen) + "\n");
     process.exitCode = 1;
   }
   // a cache it cannot write costs the next run its skips, not this verdict
