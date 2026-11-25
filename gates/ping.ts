@@ -365,6 +365,13 @@ try {
   check("valid body literal text does not add an independent import",
     header_check.code === 0 && header_run.code === 0
     && header_run.out.endsWith("5n\n"));
+  const alias_dir = path.join(TMP, "checkup-alias");
+  fs.mkdirSync(alias_dir);
+  const alias = path.join(alias_dir, "entry.bend");
+  fs.symlinkSync(header_source, alias);
+  const linked = await bend([alias, "--checkup"], { BEND_NO_TELEMETRY: "1" });
+  check("--checkup resolves imports from the symlink target's directory",
+    linked.code === 0 && linked.out === header_run.out);
   const no_base = path.join(TMP, "no-base.bend");
   fs.writeFileSync(no_base,
     "def main() -> String:\n  \"body\nimport Base\n\"\n");

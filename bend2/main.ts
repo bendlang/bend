@@ -356,6 +356,8 @@ async function cli_file(args: string[]): Promise<void> {
 async function cli_checkup(file: string): Promise<void> {
   const base = await book_read(BASE);
   let bad = false;
+  file = fs.realpathSync(file);
+  const dir = path.dirname(file);
   for (const raw of fs.readFileSync(file, "utf8").split("\n")) {
     const line = raw.trim();
     if (line === "" || line.startsWith("#")) {
@@ -370,7 +372,7 @@ async function cli_checkup(file: string): Promise<void> {
       continue;
     }
     const at = m[1].startsWith("/") ? m[1]
-      : path.join(path.dirname(file), m[1]);
+      : path.join(dir, m[1]);
     cli_say(1, "--- " + m[1] + " ---\n");
     let code = 1;
     try {
