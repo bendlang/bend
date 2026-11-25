@@ -2649,12 +2649,22 @@ def Char.quote(+q: U32, c: Char) -> String:
       Char.quote.at(x, k, U32.is_zero(k), (x < 32 : U32) || U32.is_eq(x, 127)
         || (x >= 55296 : U32) && (x <= 57343 : U32) || (x > 1114111 : U32))
 
+# Plain ASCII goes straight into the reversed result.
+def String.quote.char(+x: U32, acc: String, plain: Bool) -> String:
+  match plain:
+    case True{}:
+      SCon{Chr{x}, acc}
+    case False{}:
+      String.reverse.go(Char.quote(34, Chr{x}), acc)
+
 def String.quote.go(s: String, acc: String) -> String:
   match s:
     case SNil{}:
       String.reverse(SCon{Chr{34}, acc})
-    case SCon{c, t}:
-      String.quote.go(t, String.reverse.go(Char.quote(34, c), acc))
+    case SCon{Chr{+x}, t}:
+      +plain = (x >= 32 : U32) && (x < 127 : U32)
+        && U32.is_ne(x, 34) && U32.is_ne(x, 92)
+      String.quote.go(t, String.quote.char(x, acc, plain))
 
 def String.quote(s: String) -> String:
   String.quote.go(s, "\"")
