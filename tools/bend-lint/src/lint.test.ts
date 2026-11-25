@@ -1129,6 +1129,25 @@ describe("lint", () => {
     expect((await lint(path.join(DIR, "missing.bend"), [neverRun])).ok).toBe(false);
   });
 
+  test("a checked Base does not make its names visible to earlier imports", async () => {
+    fixture("base_order_lib.bend", "def xs() -> List<Nat>:\n  []\n");
+    const base = "import Base\n";
+    const lib = "import ./base_order_lib.bend as L\n";
+    const body = "\ndef main() -> List<Nat>:\n  L.xs()\n";
+    const late = lib + base + body;
+    const early = fixture("base_order_early.bend", "# header\n\n" + base + lib + body);
+    const file = fixture("base_order_late.bend", late);
+    expect((await lint(early, [])).ok).toBe(true);
+    for (const res of [
+      await lint(file, []),
+      await lint(early, [], { unsaved: new Map([[early, late]]) }),
+    ]) {
+      expect(res.ok).toBe(false);
+      expect(res.diags.map((d) => d.code)).toEqual(["bend/check"]);
+      expect(res.diags[0].message).toContain("a declared datatype");
+    }
+  });
+
   test("an error finding stops later rules; the code is always the rule's id", async () => {
     const stamp: LintRule = {
       id: "test/stamp",

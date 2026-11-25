@@ -699,7 +699,8 @@ const checked = async (
   const texts = new Map<string, string>();
   let declarations: Name[] = [];
   reads = texts;
-  const seeded = real !== "" && /^(?:[\t\r ]*(?:(?:#|import )[^\n]*)?\n)*[\t ]*import Base\s/
+  // Reusing a checked Base is equivalent only when the loader would read it first.
+  const seeded = real !== "" && /^(?:[\t\r ]*(?:#[^\n]*)?\n)*[\t ]*import Base\s/
     .test(fs.readFileSync(real, "utf8"));
   const key = fs.readFileSync(Bend.BASE_BEND, "utf8");
   if (seeded && BASE?.key !== key) {
