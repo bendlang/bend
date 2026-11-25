@@ -143,6 +143,7 @@ for that rule to finish or cooperate with cancellation.
 Build findings with `cx.diag()`. Severity defaults to `warning`. Rules run in
 order and see earlier findings in `cx.prior`. The first `error` ends the run:
 the rest of that rule's findings and every later rule are dropped.
+A rule that returns no findings leaves the prior finding list untouched.
 
 What's on `cx`:
 
