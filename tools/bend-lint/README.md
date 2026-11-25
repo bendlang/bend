@@ -116,8 +116,9 @@ export const config = {
 ```
 
 Rules still come from `--rules`; config sets their options and severity.
-`"off"` turns a rule off. Severities are `error`, `warning`, `information` and `hint`, and an
-`error` stops the rules after it.
+`rules`, when present, must be an object keyed by rule id. Each entry is an
+options object or `"off"`. Severities are `error`, `warning`, `information`
+and `hint`, and an `error` stops the rules after it.
 
 If a rule declares defaults for its options, unknown keys and wrong types are
 rejected. Otherwise the rule checks its own options.
