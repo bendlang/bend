@@ -335,9 +335,15 @@ test("keeps adjacent parallel binders and template quantities", () => {
 
 test("keeps erased parameters glued to their opener", () => {
   assert.equal(formatBend("type Box<-T: Type> is Type:\n  Box{}"), "type Box<-T: Type> is Type:\n  Box{}");
+  assert.equal(formatBend("type Box<- T:Type> is Type:\n  Box{}"), "type Box<-T: Type> is Type:\n  Box{}");
   assert.equal(formatBend("def G(-B: @-x: A -> Type) -> Type:\n  A"), "def G(-B: @-x: A -> Type) -> Type:\n  A");
   assert.equal(formatBend("law L:\n  for f: @+x: F32 -> F32\n  Type"), "law L:\n  for f: @+x: F32 -> F32\n  Type");
   assert.equal(formatBend("do IO<Unit>:\n  x : U32 <- f()"), "do IO<Unit>:\n  x : U32 <- f()");
+});
+
+test("formats compact do binds without interpreting them as erased parameters", () => {
+  assert.equal(formatBend("do IO<Unit>:\n  Unit<-IO.print(\"x\")"), "do IO<Unit>:\n  Unit <- IO.print(\"x\")");
+  assert.equal(formatBend("do IO<Unit>:\n  x:Unit<-IO.print(\"x\")"), "do IO<Unit>:\n  x: Unit <- IO.print(\"x\")");
 });
 
 test("formats dot operators and keeps continuation operators infix", () => {
