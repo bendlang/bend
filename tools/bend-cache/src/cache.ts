@@ -41,7 +41,10 @@ function options(args: string[]): Options {
   };
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
-    const val = (): string => args[++i] ?? fail(a + " needs a value");
+    const val = (): string => {
+      const value = args[++i];
+      return value && !value.startsWith("--") ? value : fail(a + " needs a value");
+    };
     if (a === "--cache") {
       opts.cache = path.resolve(val());
     } else if (a === "--bend") {
