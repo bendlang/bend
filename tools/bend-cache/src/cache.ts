@@ -332,7 +332,12 @@ function write_store(file: string, ver: string, made: Array<[string, Trace]>): v
 // ====
 
 async function main(): Promise<void> {
-  const opts = options(process.argv.slice(2));
+  const argv = process.argv.slice(2);
+  if (argv.length === 1 && (argv[0] === "--help" || argv[0] === "-h")) {
+    process.stdout.write(USAGE + "\n");
+    return;
+  }
+  const opts = options(argv);
   const { B, M, ver } = await load(opts.bend);
   const st: Stats = { checked: 0, skipped: 0, kept: 0 };
   const made: Array<[string, Trace]> = [];
