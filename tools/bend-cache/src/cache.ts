@@ -21,6 +21,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as url from "node:url";
+import { dlopen } from "bun:ffi";
 
 // Options
 // =======
@@ -315,17 +316,33 @@ function read_store(file: string, ver: string): Store {
   }
 }
 
-// the traces made, merged into the store as it is now (another run may
-// have written since)
+// Hold one stable inode across replacing the JSON file itself. Readers
+// still see a complete old or new snapshot without taking this lock.
 function write_store(file: string, ver: string, made: Array<[string, Trace]>): void {
-  const store = read_store(file, ver);
-  for (const [k, tr] of made) {
-    store.traces[k] = tr;
-  }
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  const tmp = file + "." + String(process.pid);
-  fs.writeFileSync(tmp, JSON.stringify(store));
-  fs.renameSync(tmp, file);
+  const lib = dlopen(process.platform === "darwin" ? "libSystem.dylib" : "libc.so.6", {
+    flock: { args: ["i32", "i32"], returns: "i32" },
+  });
+  try {
+    const fd = fs.openSync(file + ".lock", "a");
+    try {
+      const LOCK_EX = 2;
+      if (lib.symbols.flock(fd, LOCK_EX) !== 0) {
+        throw new Error("cannot lock the trace store");
+      }
+      const store = read_store(file, ver);
+      for (const [k, tr] of made) {
+        store.traces[k] = tr;
+      }
+      const tmp = file + "." + String(process.pid);
+      fs.writeFileSync(tmp, JSON.stringify(store));
+      fs.renameSync(tmp, file);
+    } finally {
+      fs.closeSync(fd);
+    }
+  } finally {
+    lib.close();
+  }
 }
 
 // Main
