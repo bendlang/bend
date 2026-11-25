@@ -335,6 +335,9 @@ if (result.ok) {
 }
 ```
 
+`applyFixes` keeps rule order for conflicts. Disjoint fixes reported in
+source order don't have to re-check the fixes already accepted.
+
 Set `BEND_DIR` before importing bend-lint to pick a Bend checkout. Import
 bend-lint before you load Bend yourself, so the patching happens first. `lint`
 takes `{ config, signal, unsaved }` as a third argument. Without `config` it looks
