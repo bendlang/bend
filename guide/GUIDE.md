@@ -487,12 +487,12 @@ def main() -> String:
   U32.show(a) ++ " = " ++ Nat.show(b)
 ```
 
-Every def is named `Type.verb`, and the same verbs recur across `Nat`, `U32`
-and `F32`: `add sub mul div mod` for arithmetic, `and or xor not shl shr` for
-bits (`U32` only), `cmp` (returning `Cmp`, not on `F32`) and `is_eq is_ne is_lt
-is_le is_gt is_ge` (returning `Bool`) for comparisons, `show` to `String` and
-`read` back from it (answering a `Maybe`). Operators and `<`-style comparisons
-are just sugar for these. Beyond numbers there are `Bool`, `Cmp`, `Maybe`,
+`Nat`, `U32`, `F32` share `Type.verb` names: `add sub mul div mod` for
+arithmetic; `and or xor not shl shr` for bits (`U32` only); `cmp` for `Cmp`
+(not `F32`); `is_eq is_ne is_lt is_le is_gt is_ge` for `Bool`; `show` for
+`String`; `read` for `Maybe`. Operators and comparisons are sugar.
+`F32.lerp(x,x,t)` returns finite x for finite t; t=0/1 retains
+the endpoint's signed zero. Beyond numbers there are `Bool`, `Cmp`, `Maybe`,
 `Result`, `List`, `Array`, a string-keyed `Map` (`new set get has del keys`;
 `get` takes a default, and `get` and `has` hand the map back beside their
 result), `Set` on top of it, the `Equal` lemmas, and the effects. `bend base`
