@@ -858,19 +858,28 @@ function pkg_files(file: string, book: Bend.Book,
   // .bend files come first, so a foreign file's .bend, its directory a
   // prefix of the file's path, is checked inside dir before its path is cut
   const files: Record<string, string> = {};
+  const root_entries = fs.readdirSync(dir);
+  // Match the directory entry exactly, even on a case-insensitive filesystem.
+  const licensed = new Map([[path.dirname(ent), root_entries.includes("LICENSE")]]);
   for (const [p, src] of raws) {
     if (p.split("/").slice(0, -1).some((s) => s.toLowerCase() === "license")) {
       throw "Error: " + src + " cannot be published: it is in a directory"
         + " named license, which clashes with a LICENSE file; rename it";
     }
     files[p] = pkg_read(p, src, dir, "move it");
-    if (fs.readdirSync(path.dirname(src)).includes("LICENSE")) {
+    const parent = path.dirname(src);
+    let has_license = licensed.get(parent);
+    if (has_license === undefined) {
+      has_license = fs.readdirSync(parent).includes("LICENSE");
+      licensed.set(parent, has_license);
+    }
+    if (has_license) {
       const lic = path.posix.join(path.posix.dirname(p), "LICENSE");
-      files[lic] = pkg_read(lic, path.join(path.dirname(src), "LICENSE"), dir,
+      files[lic] = pkg_read(lic, path.join(parent, "LICENSE"), dir,
         "it is the LICENSE beside " + src + "; copy it");
     }
   }
-  if (fs.readdirSync(dir).includes("README.md")) {
+  if (root_entries.includes("README.md")) {
     files["README.md"] = pkg_read("README.md", path.join(dir, "README.md"), dir,
       "it is the README.md beside " + file + "; copy it");
     if (Buffer.byteLength(files["README.md"]) > README_MAX) {
