@@ -137,6 +137,18 @@ test("a skipped def's instance name does not follow it", () => {
   }, "m.bend", [["m.bend", "2n)", "3n)"]]);
 });
 
+test("a malformed trace map falls back to a full check and is rebuilt", () => {
+  const b = book({ "m.bend": "import Base\n\ndef p() -> {1n == 1n : Nat}:\n  {==}\n" });
+  const want = plain(b, "m.bend");
+  expect(cached(b, "m.bend")).toBe(want);
+  const { ver } = JSON.parse(fs.readFileSync(b.cache, "utf8"));
+  for (const traces of [null, undefined, []]) {
+    fs.writeFileSync(b.cache, JSON.stringify({ ver, traces }));
+    expect(cached(b, "m.bend")).toBe(want);
+    warm(b, "m.bend");
+  }
+});
+
 test("a cache it cannot write warns, and the verdict stands", () => {
   const b = book({ "m.bend": "import Base\n\ndef p() -> {1n == 1n : Nat}:\n  {==}\n" });
   const out = run([TOOL, "m.bend", "--cache", "/dev/null/traces.json", "--bend", BEND2, "--min-ms", "0"], b.dir);

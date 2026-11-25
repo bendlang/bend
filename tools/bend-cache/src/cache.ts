@@ -305,14 +305,15 @@ function trace_valid(B: Bend, M: Main, opts: Options, ver: string, book: any, st
   }
 }
 
-// one JSON file per cache; another bend2 version starts it over
+// one JSON file per cache; a different version or malformed map starts it over
 function read_store(file: string, ver: string): Store {
   try {
-    const s = JSON.parse(fs.readFileSync(file, "utf8")) as Store;
-    return s.ver === ver ? s : { ver, traces: {} };
-  } catch {
-    return { ver, traces: {} };
-  }
+    const s = JSON.parse(fs.readFileSync(file, "utf8")) as Store | null;
+    if (s?.ver === ver && s.traces !== null && typeof s.traces === "object" && !Array.isArray(s.traces)) {
+      return s;
+    }
+  } catch {}
+  return { ver, traces: {} };
 }
 
 // the traces made, merged into the store as it is now (another run may
