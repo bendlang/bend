@@ -4199,15 +4199,19 @@ INLINE u32 ring_lap(u32 pos) {
   return ~(u32)(pos / RING_LEN) & 1;
 }
 
-INLINE void ring_push(DEV u64* H, u32 r, Term tsk) {
-  u32 pos = a32_add(ring_put(H, r), 1);
-  if (pos - a32_load_acq(ring_get(H, r)) >= RING_LEN) {
-    err_post(H, ERR_RING);
-    return;
-  }
+// A full ring refuses a push: put only moves onto a slot it fills.
+INLINE bool ring_push(DEV u64* H, u32 r, Term tsk) {
+  u32 pos = a32_load(ring_put(H, r));
+  do {
+    if (pos - a32_load_acq(ring_get(H, r)) >= RING_LEN) {
+      return false;
+    }
+  } while (!atomic_compare_exchange_weak_explicit(A32(ring_put(H, r)), &pos,
+    pos + 1, RLX, RLX));
   DEV u32* lo = (DEV u32*)ring_slot(H, r, pos);
   a32_store(lo, (u32)tsk);
   a32_store_rel(lo + 1, (u32)(tsk >> 32) | (ring_lap(pos) << 31));
+  return true;
 }
 
 INLINE u32 ring_flip(u32 i) {
@@ -4237,6 +4241,17 @@ INLINE void turn_set(DEV u64* H, u64 f) {
 #define turn_take(H) a32_exch(a32_at(H, H_CURSOR), 0)
 
 #define ring_pick(b, s, c) ((b) + (s) * (a32_add(c, 1) & (CUBE_T - 1)))
+
+// A refused task goes to the next ring its rule picks, out of line.
+FAR void task_miss(DEV u64* H, Term k, u32 base, u32 stride, TG u32* cur) {
+  for (u32 n = 0; n < CUBE_T; n += 1) {
+    if (ring_push(H, stride != 0 ? ring_pick(base, stride, cur)
+      : ring_flip(a32_add(a32_at(H, H_CURSOR), 1) & (u32)(LANES - 1)), k)) {
+      return;
+    }
+  }
+  err_post(H, ERR_RING);
+}
 
 // Task
 // ====
@@ -4286,8 +4301,10 @@ INLINE void task_deal(DEV u64* H, Term join, u32 base, u32 stride, TG u32* cur) 
     Term k = H[loc + i];
     if (term_tag(k) == TAG_TSK) {
       H[loc + i] = TERM_HOLE;
-      ring_push(H, stride != 0 ? ring_pick(base, stride, cur)
-        : ring_flip(g & (u32)(LANES - 1)), k);
+      if (!ring_push(H, stride != 0 ? ring_pick(base, stride, cur)
+        : ring_flip(g & (u32)(LANES - 1)), k)) {
+        task_miss(H, k, base, stride, cur);
+      }
       g += 1;
     }
   }
@@ -4461,7 +4478,9 @@ INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 strid
       Term k    = H[task_tail(r)];
       if (stride != 0 && nofk && (DEVICE || k == TERM_HOLE
         || !fid_resw(term_aux(k)) || fid_nofk(term_aux(k)))) {
-        ring_push(H, ring_pick(base, stride, cur), r);
+        if (!ring_push(H, ring_pick(base, stride, cur), r)) {
+          task_miss(H, r, base, stride, cur);
+        }
         return 2;
       }
       t      = r;
