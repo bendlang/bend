@@ -462,6 +462,24 @@ try {
   const argv = await bend([argn, "x", "--", "--verdict"]);
   check("a plain run gets its arguments: " + argv.err, argv.code === 0
     && argv.out === "3\n");
+  if (process.platform === "linux") {
+    const src = path.join(TMP, "closed-stdin.bend");
+    const bin = path.join(TMP, "closed-stdin");
+    fs.writeFileSync(src, "import Base\n"
+      + "def show(p: File & Result<&1, &1, U32 & String, String>) -> IO(Unit):\n"
+      + "  (f, r) = p\n  match r:\n"
+      + "    case Done{s}:\n      do IO<Unit>:\n"
+      + "        u : Unit <- IO.print(String.quote(s))\n        File.close(f)\n"
+      + "    case Fail{e}:\n      File.close(f)\n"
+      + "def main() -> IO(Unit):\n  do IO<Unit>:\n"
+      + "    f : File <- IO.try(File, File.open(\"/dev/stdin\", \"r\"))\n"
+      + "    p : File & Result<&1, &1, U32 & String, String> <- File.read(f, 4)\n"
+      + "    show(p)\n");
+    const built = await bend([src, "-o", bin]);
+    const eof = await run("bash", ["-c", 'exec "$1" <&-', "--", bin]);
+    check("closed stdin reads EOF in a native program: " + built.err + eof.err,
+      built.code === 0 && eof.code === 0 && eof.out === "\"\"\n");
+  }
   // a built program's runtime options are BENDRTS's, then those between
   // +RTS and -RTS; the rest are its arguments, -- among them, and --RTS
   // (dropped) makes every one after it the program's
