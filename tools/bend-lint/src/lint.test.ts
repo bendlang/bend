@@ -1211,6 +1211,64 @@ describe("lint", () => {
     await expect(pending).rejects.toBe(reason);
   });
 
+  test("aborting a queued check does not wait for another import", async () => {
+    const entered = Promise.withResolvers<void>();
+    const release = Promise.withResolvers<void>();
+    const hub = Bun.serve({
+      hostname: "127.0.0.1",
+      port: 0,
+      async fetch(req) {
+        const route = new URL(req.url).pathname;
+        if (route === "/started") {
+          await entered.promise;
+          return new Response();
+        }
+        if (route === "/release") {
+          release.resolve();
+          return new Response();
+        }
+        entered.resolve();
+        await release.promise;
+        return new Response("not found", { status: 404 });
+      },
+    });
+    const blocked = fixture("held-import.bend",
+      "import 0x0123456789abcdef0123456789abcdef/main.bend as Pak\n");
+    const code = `
+      const [cli, blocked, good] = Bun.argv.slice(1);
+      const { lint } = await import(cli);
+      const running = lint(blocked, []);
+      await fetch(process.env.BEND_HUB + "/started");
+      const controller = new AbortController();
+      const queued = lint(good, [], { signal: controller.signal })
+        .then(() => "resolved", (e) => e);
+      controller.abort("cancelled");
+      // Cancellation settles in this turn, before the blocked HTTP request ends.
+      console.log(await Promise.race([queued, new Promise((done) =>
+        setImmediate(done, "still queued"))]));
+      await fetch(process.env.BEND_HUB + "/release");
+      await running;
+      if ((await lint(good, [])).ok) console.log("queue recovered");
+    `;
+    const child = Bun.spawn([process.execPath, "-e", code, "--", CLI, blocked, userland], {
+      env: {
+        ...process.env,
+        BEND_DIR: BEND2,
+        BEND_HUB: hub.url.origin,
+        BEND_LIB: path.join(DIR, "held-lib"),
+      },
+      stdout: "pipe",
+    });
+    try {
+      expect(await new Response(child.stdout).text()).toBe("cancelled\nqueue recovered\n");
+      expect(await child.exited).toBe(0);
+    } finally {
+      release.resolve();
+      hub.stop(true);
+      child.kill();
+    }
+  });
+
   test("new unsaved files and imports are checked without creating them on disk", async () => {
     const dir = path.join(DIR, "virtual", "nested");
     const file = path.join(dir, "main.bend");
