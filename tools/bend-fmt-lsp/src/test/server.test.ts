@@ -62,11 +62,11 @@ test("serves formatting over an LSP stdio session", async (context) => {
     jsonrpc: "2.0",
     id: 2,
     method: "textDocument/formatting",
-    params: { textDocument: { uri: "file:///main.bend" }, options: { tabSize: 2, insertSpaces: true } },
+    params: { textDocument: { uri: "file:///main.bend" }, options: { tabSize: 2, insertSpaces: true, insertFinalNewline: true } },
   });
   assert.deepEqual((await formatted).result, [{
     range: { start: { line: 0, character: 0 }, end: { line: 1, character: 5 } },
-    newText: "def main() -> U32:\n  0",
+    newText: "def main() -> U32:\n  0\n",
   }]);
 
   send(child, {

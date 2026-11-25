@@ -1,6 +1,8 @@
 export type FormatOptions = {
   tabSize?: number;
   insertSpaces?: boolean;
+  insertFinalNewline?: boolean;
+  trimFinalNewlines?: boolean;
 };
 
 type Token = {
@@ -325,7 +327,7 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
   // A line at or right of an inline body's column moves as far as that body.
   const pins: { from: number; to: number; prefix: string; scope?: BodyScope }[] = [];
   const bodyPins = new Map<Token, typeof pins[number]>();
-  const formatted = lines.map((line, index) => {
+  let formatted = lines.map((line, index) => {
     const ending = endings[index] ?? "";
     if (line.code === "" && line.comment === "") return ending;
     for (let at = pins.length - 1; at >= 0; at--) {
@@ -352,6 +354,10 @@ export function formatBend(source: string, options: FormatOptions = {}): string 
     if (fingerprint(lines) !== fingerprint(formatted.replace(/\r\n/g, "\n").split("\n").slice(0, finalEol ? -1 : undefined).map(splitLine))) return source;
   } catch {
     return source;
+  }
+  if (options.trimFinalNewlines) formatted = formatted.replace(/(\r?\n)(?:\r?\n)+$/, "$1");
+  if (options.insertFinalNewline && !formatted.endsWith("\n")) {
+    formatted += endings.at(-1) ?? "\n";
   }
   return formatted;
 }

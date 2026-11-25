@@ -404,6 +404,17 @@ test("mixed line endings and the final-newline state survive formatting", () => 
   }
 });
 
+test("honors explicit end-of-file newline preferences", () => {
+  const source = "import Base\r\ndef main() -> U32:\r\n  7";
+  assert.equal(formatBend(source, { insertFinalNewline: true }), source + "\r\n");
+  assert.equal(
+    formatBend(source + "\r\n\n\r\n", { trimFinalNewlines: true }),
+    source + "\r\n",
+  );
+  const unfinished = 'def f() -> String:\n  "unfinished\n\n';
+  assert.equal(formatBend(unfinished, { trimFinalNewlines: true }), unfinished);
+});
+
 test("preserves body layout across dedents, declarations, and delimiters", { skip: !runnable && "needs bun and bend2/main.ts" }, () => {
   const cases = [
     ["import Base\ndef main()->U32:\n    (17\n      % 5 : U32)\n", "2\n"],
