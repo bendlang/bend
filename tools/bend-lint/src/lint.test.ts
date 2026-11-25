@@ -1671,6 +1671,27 @@ describe("review fixes", () => {
     }])).toEqual({ text: "a😀<B>c!", skipped: 0, elsewhere: 0 });
   });
 
+  test("a multi-file patch preview keeps file order and groups interleaved edits", () => {
+    const first = { path: "b.bend", text: "# abcd\n", root: true, base: false };
+    const second = { path: "a.bend", text: "# wxyz\n", root: false, base: false };
+    const edit = (file: Source, at: number, text: string): Edit =>
+      ({ span: { file, beg: at, end: at + 1 }, text });
+    const preview = render({
+      code: "test/preview",
+      message: "update comments",
+      severity: "warning",
+      fixes: [{
+        title: "update comments",
+        applicability: "safe",
+        edits: [edit(first, 2, "A"), edit(second, 3, "X"), edit(first, 4, "C"), edit(second, 5, "Z")],
+      }],
+    });
+    expect(preview.slice(preview.indexOf("\n---"))).toBe(
+      "\n--- b.bend\n+++ b.bend\n@@ -1,1 +1,1 @@\n-# abcd\n+# AbCd"
+      + "\n--- a.bend\n+++ a.bend\n@@ -1,1 +1,1 @@\n-# wxyz\n+# wXyZ",
+    );
+  });
+
   test("a fix that also edits another file is skipped whole", () => {
     const file: Source = { path: "<fix>", text: "abc", root: true, base: false };
     const other: Source = { path: "<other>", text: "xyz", root: false, base: false };

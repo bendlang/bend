@@ -47,6 +47,7 @@ also edits another file is skipped. When two fixes overlap, the later one is
 skipped. Run it again to get it.
 All edit offsets refer to the original text. Accepted edits are assembled in one
 pass rather than copying the whole file for each edit.
+In a multi-file preview, files appear in the order their first edit was reported.
 
 Exit code is 0 if there were no errors (warnings don't count), 1 for a checker
 or rule error, and 2 for bad arguments or a crash.
