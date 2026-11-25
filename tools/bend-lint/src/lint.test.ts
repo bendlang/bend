@@ -2056,6 +2056,21 @@ describe("cli", () => {
     });
   });
 
+  test("rejects JSON configs that are not objects, explicit or discovered", () => {
+    const dir = path.join(DIR, "bad_json_config");
+    fs.mkdirSync(dir);
+    const source = path.join(dir, "main.bend");
+    fs.writeFileSync(source, USERLAND);
+    const config = path.join(dir, "bend-lint.json");
+    for (const text of ["null", "[]", "7", "\"a\"", "true"]) {
+      fs.writeFileSync(config, text);
+      for (const out of [run(source), run(input, "--config", config)]) {
+        expect(out.status).toBe(2);
+        expect(out.stderr).toContain(config + ": `config` must be an object");
+      }
+    }
+  });
+
   test("--fix writes only the linted file, and prints findings when fixes clash", () => {
     const dir = path.join(DIR, "fixroot");
     fs.mkdirSync(dir, { recursive: true });
