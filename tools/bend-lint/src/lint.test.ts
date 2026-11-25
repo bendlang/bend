@@ -983,6 +983,31 @@ describe("lint", () => {
     expect(render(res.diags[1])).toContain("Context:");
   });
 
+  test("fix previews show CRLF preserved on both sides or removed only on the new side", async () => {
+    const text = "import Base\r\n\r\ndef main() -> U32:\r\n  1\r\n";
+    const file = fixture("preview-crlf.bend", text);
+    const rule: LintRule = {
+      id: "test/preview-crlf",
+      run: (cx) => {
+        const beg = cx.root.text.indexOf("  1");
+        const span = { file: cx.root, beg, end: beg + 5 };
+        return [
+          cx.diag({
+            message: "Try these edits",
+            fixes: [
+              { title: "Replace the value", applicability: "safe", edits: [{ span, text: "  2\r\n" }] },
+              { title: "Use LF", applicability: "safe", edits: [{ span, text: "  1\n" }] },
+            ],
+          }),
+        ];
+      },
+    };
+    const result = await lint(file, [rule]);
+    const preview = render(result.diags[0]);
+    expect(preview).toContain("\n-  1\r\n+  2\r\n");
+    expect(preview.endsWith("\n-  1\r\n+  1")).toBe(true);
+  });
+
   test("only rules with facts get facts", async () => {
     const look: LintRule = {
       id: "test/look",

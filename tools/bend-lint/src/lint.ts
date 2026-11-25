@@ -540,11 +540,8 @@ export function render(d: Diag): string {
           const name = file.path;
           const range = (n: number): string => (n === 0 ? first : first + 1) + "," + n;
           const show = (xs: string[], sign: string): string[] =>
-            xs.map(
-              (l) =>
-                sign +
-                l.replace(/\r?\n$/, "") +
-                (l.endsWith("\n") ? "" : "\n\\ No newline at end of file"),
+            xs.map((l) =>
+              sign + (l.endsWith("\n") ? l.slice(0, -1) : l + "\n\\ No newline at end of file"),
             );
           return (
             "\n--- " +
