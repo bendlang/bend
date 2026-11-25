@@ -50,6 +50,7 @@ pass rather than copying the whole file for each edit.
 
 Exit code is 0 if there were no errors (warnings don't count), 1 for a checker
 or rule error, and 2 for bad arguments or a crash.
+Help and argument errors do not require a Bend checkout or download.
 
 `--json` prints the findings as JSON. The format is in
 [JSON output](#json-output).
