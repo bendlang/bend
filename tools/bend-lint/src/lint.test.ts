@@ -1778,6 +1778,20 @@ describe("rules written in Bend", () => {
     expect(res.diags.every((d) => d.span?.file === root(res.sources))).toBe(true);
   });
 
+  test("Bend rule diagnostics and fixes map across multiple surrogate pairs", async () => {
+    const source = "# 😀🚀 é\n" + USERLAND;
+    const file = fixture("unicode_offsets.bend", source);
+    const comma = await bendRule(fixture("unicode_comma_rule.bend", COMMA_BEND));
+    const types = await bendRule(fixture("unicode_types_rule.bend", TYPES_BEND));
+    const res = await lint(file, [comma, types]);
+    expect(res.diags.map((d) => d.code)).toEqual([comma.id, types.id]);
+    const span = res.diags[1].span!;
+    expect(source.slice(span.beg, span.end)).toBe("x");
+    expect(applyFixes(root(res.sources), res.diags).text).toBe(
+      source.replace("generic(~N,a)", "generic(~N, a)"),
+    );
+  });
+
   test("a rule reads the term view through effects", async () => {
     const rule = await bendRule(fixture("tree_rule.bend", TREE_BEND));
     const res = await lint(userland, [rule]);

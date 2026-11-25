@@ -304,6 +304,7 @@ and any foreign `CID(...)` references. The option helpers and configuration
 values are unchanged.
 
 Spans count Unicode code points here. TypeScript counts UTF-16 units.
+The bridge indexes only surrogate pairs, where the two offsets differ.
 
 The rule is compiled once and runs on Bend's JavaScript runtime. Use tail
 recursion over long text or lists to stay inside the stack. Streaming facts
