@@ -1549,6 +1549,31 @@ describe("options", () => {
 });
 
 describe("review fixes", () => {
+  test("fix validation accepts unordered edits and rejects interior insertions", async () => {
+    const file = fixture("ordered_edits.bend", "#abcd\n");
+    const rule = (insert: number): LintRule => ({
+      id: "test/edit-order",
+      run: (cx) => {
+        const span = (beg: number, end: number) => ({ file: cx.root, beg, end });
+        return [cx.diag({
+          message: "change the comment",
+          fixes: [{
+            title: "change the comment",
+            applicability: "safe",
+            edits: [
+              { span: span(3, 5), text: "CD" },
+              { span: span(insert, insert), text: "-" },
+              { span: span(1, 3), text: "AB" },
+            ],
+          }],
+        })];
+      },
+    });
+    const safe = await lint(file, [rule(3)]);
+    expect(applyFixes(root(safe.sources), safe.diags).text).toBe("#AB-CD\n");
+    await expect(lint(file, [rule(2)])).rejects.toThrow(/two that clash/);
+  });
+
   test("facts come only from the linted file: none from Base, with or without seeding", async () => {
     for (const [name, head] of [
       ["base_comment.bend", "import Base # comment"],

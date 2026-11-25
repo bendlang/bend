@@ -419,15 +419,7 @@ export async function lint(
       code: rule.id,
       severity: severity ?? d.severity,
     }));
-    const broken = settled
-      .flatMap((d) => d.fixes)
-      .find((f) =>
-        f.edits.some(
-          ({ span }, i) =>
-            !validRange(span.beg, span.end, span.file.text.length) ||
-            f.edits.some((o, j) => j !== i && clash(f.edits[i], o)),
-        ),
-      );
+    const broken = settled.flatMap((d) => d.fixes).find((f) => invalidFix(f.edits));
     if (broken !== undefined) {
       throw new TypeError(
         "rule " +
@@ -460,13 +452,37 @@ function clash(a: Edit, b: Edit): boolean {
   );
 }
 
+function editOrder(a: Edit, b: Edit): number {
+  return a.span.beg - b.span.beg || a.span.end - b.span.end;
+}
+
+function invalidFix(edits: Edit[]): boolean {
+  if (edits.some(({ span }) => !validRange(span.beg, span.end, span.file.text.length))) {
+    return true;
+  }
+  if (edits.length < 2) return false;
+  const byFile = new Map<Source, Edit[]>();
+  for (const edit of edits) {
+    const group = byFile.get(edit.span.file);
+    if (group === undefined) byFile.set(edit.span.file, [edit]);
+    else group.push(edit);
+  }
+  // In range order any overlap has an adjacent pair that clashes.
+  for (const group of byFile.values()) {
+    group.sort(editOrder);
+    for (let i = 1; i < group.length; i++) {
+      if (clash(group[i - 1], group[i])) return true;
+    }
+  }
+  return false;
+}
+
 // Apply non-clashing edits at original UTF-16 offsets, assembling the source once.
 function apply(text: string, edits: Edit[]): string {
   if (edits.length === 0) return text;
   const parts: string[] = [];
   let at = 0;
-  for (const { span, text: replacement } of [...edits]
-    .sort((a, b) => a.span.beg - b.span.beg || a.span.end - b.span.end)) {
+  for (const { span, text: replacement } of [...edits].sort(editOrder)) {
     parts.push(text.slice(at, span.beg), replacement);
     at = span.end;
   }
