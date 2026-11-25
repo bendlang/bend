@@ -48,7 +48,7 @@ const USAGE = [
   ["bend <page.html> -o <dir>", "bundle a page that imports .bend files"],
   ["bend base [--types|<name>]", "print Base, its types, or a name and subnames"],
   ["bend update", "install the latest bend (curl | sh, shown first)"],
-  ["bend version", "print the version"],
+  ["bend version", "print the version (also bend --version)"],
   ["bend guide", "print the Bend guide"],
 ];
 
@@ -134,7 +134,7 @@ const PLUGIN: BunPlugin = {
 // version check, so the check never delays the command's own work.
 async function cli(): Promise<void> {
   const args = process.argv.slice(2);
-  if (args[0] === "version" && args.length === 1) {
+  if ((args[0] === "version" || args[0] === "--version") && args.length === 1) {
     return cli_say(1, "bend " + VERSION + BUILD + "\n");
   }
   if (args[0] === "update" && args.length === 1) {
