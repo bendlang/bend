@@ -6,7 +6,8 @@ GitHub.
 
 ## An effect def
 
-An effect is a def of type `IO(R)` whose body is two imports:
+An effect is a def of type `IO(R)` whose body imports its host implementation.
+To support both native and JS execution, import both files:
 
 ```python
 def Clock.now() -> IO(U32):
@@ -14,10 +15,11 @@ def Clock.now() -> IO(U32):
   import "./clock.js"
 ```
 
-Each file registers the effect under its def with `io_eff(CID(Clock.now),
-..)`. The `.c` file serves `bend x.bend -o x`; the `.js` file
-serves `bend x.bend -o x.js` and `bend x.bend`. Every effect in Base is
-built this way: `bend2/effs/*.c` and `*.js` are the reference.
+Each imported file registers the effect with `io_eff(CID(Clock.now), ...)`.
+The `.c` file serves `bend x.bend -o x`; the `.js` file serves
+`bend x.bend -o x.js` and `bend x.bend`. If a program targets only one of
+those lanes, it only needs that lane's import. See `bend2/effs/*.c` and
+`bend2/effs/*.js` for examples from Base.
 
 ## The C side
 
