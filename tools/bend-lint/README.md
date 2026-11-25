@@ -64,11 +64,11 @@ source it tries, in order:
 3. A release downloaded from GitHub. It matches `bend version` if Bend is on
    your PATH, otherwise it takes the latest.
 
-Downloads are cached in `~/.cache/bend-lint/`. `XDG_CACHE_HOME` moves that, and
-on Windows it's under `LOCALAPPDATA`. With no network it falls back to the
-newest complete cached release, ignoring interrupted downloads. Completeness
-includes Base's host-effect files. Missing files trigger a fresh download;
-concurrent downloads keep already returned checkout directories in place.
+Downloads are cached in `~/.cache/bend-lint/`. An absolute `XDG_CACHE_HOME`
+moves that; the Windows default is under `LOCALAPPDATA`. With no network it
+falls back to the newest complete cached release, ignoring interrupted
+downloads. Completeness includes Base's host-effect files. Missing files
+trigger a fresh download; concurrent downloads leave paths already in use alone.
 
 ## Rules included
 

@@ -31,7 +31,8 @@ type Options = { file: string; cache: string; bend: string; min: number; stats: 
 
 function options(args: string[]): Options {
   const here = path.dirname(url.fileURLToPath(import.meta.url));
-  const home = process.env.XDG_CACHE_HOME ?? path.join(os.homedir(), ".cache");
+  const xdg = process.env.XDG_CACHE_HOME ?? "";
+  const home = path.isAbsolute(xdg) ? xdg : path.join(os.homedir(), ".cache");
   const opts: Options = {
     file: "",
     cache: process.env.BEND_CACHE ?? path.join(home, "bend-cache", "traces.json"),

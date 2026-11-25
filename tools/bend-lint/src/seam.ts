@@ -129,11 +129,12 @@ const EFF = /^effs\/[\w.-]+$/;
 const GIVE = "give a bend checkout with --bend <dir> or BEND_DIR";
 
 // Downloaded bends, one folder per release.
+const xdg = process.env.XDG_CACHE_HOME ?? "";
 const CACHE = nodePath.join(
-  process.env.XDG_CACHE_HOME ??
-    (process.platform === "win32"
+  nodePath.isAbsolute(xdg) ? xdg
+    : process.platform === "win32"
       ? (process.env.LOCALAPPDATA ?? nodePath.join(os.homedir(), "AppData", "Local"))
-      : nodePath.join(os.homedir(), ".cache")),
+      : nodePath.join(os.homedir(), ".cache"),
   "bend-lint",
 );
 
