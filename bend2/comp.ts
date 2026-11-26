@@ -885,7 +885,7 @@ function mat_lits(x: HTerm, k: Name, self: HTerm): Row[] {
     cov: ((w: HTerm) => HTerm) | null) => {
     const h = mat_arms(t).arms[0]?.[1];
     if (h && bits === 32) {
-      ws.push([h, bits, val, 0]);
+      ws.unshift([h, bits, val, 0]);
       return;
     }
     const { arms, end } = mat_arms(h ?? t);
